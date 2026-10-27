@@ -1,0 +1,2802 @@
+{
+  "status": "draft",
+  "templates": [
+    {
+      "template_id": "NRS-484B-200-1@motor_vehicle_driver",
+      "law_id": "NRS-484B-200-1",
+      "actor": "motor_vehicle_driver",
+      "quote": "Upon all highways of sufficient width a vehicle must be driven upon the right half of the highway, except as follows: (a) When overtaking and passing another vehicle proceeding in the same direction under the laws governing such movements [NRS-484B-207-1, NRS-484B-210-1, NRS-484B-213-1, NRS-484B-213-2a, NRS-484B-213-2b, NRS-484B-213-2c]; (b) When the right half of the highway is closed to traffic; (c) Upon a highway divided into three lanes for traffic under the laws applicable thereon [NRS-484B-223-2]; (d) Upon a highway designated and posted for one-way traffic; or (e) When the highway is not of sufficient width.",
+      "structure": {
+        "law_id": "NRS-484B-200-1",
+        "activation": {
+          "condition": "the subject is driven on a highway of sufficient width for two lines of traffic AND the highway is not posted one-way",
+          "numeric_conditions": [
+            {
+              "variable": "road_capacity_for_traffic_lines",
+              "operator": ">=",
+              "value": 2,
+              "unit": "traffic lines"
+            }
+          ]
+        },
+        "obligation": {
+          "description": "Drive on the right half of a sufficiently wide, two-way highway unless a stated exception applies.",
+          "type": "must"
+        },
+        "exceptions": [
+          {
+            "trigger": "Overtaking and passing a same-direction vehicle under the governing rules",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "(a) When overtaking and passing another vehicle proceeding in the same direction under the laws governing such movements"
+          },
+          {
+            "trigger": "The right half is closed to traffic",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "(b) When the right half of the highway is closed to traffic"
+          },
+          {
+            "trigger": "Highway divided into three traffic lanes",
+            "effect": "replaces",
+            "replacement_obligation": "Follow the rules applicable to the three-lane highway",
+            "source_clause": "(c) Upon a highway divided into three lanes for traffic under the laws applicable thereon",
+            "numeric_conditions": [
+              {
+                "variable": "road_lane_count",
+                "operator": "==",
+                "value": 3,
+                "unit": "lanes"
+              }
+            ]
+          },
+          {
+            "trigger": "Highway designated and posted one-way",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "(d) Upon a highway designated and posted for one-way traffic"
+          },
+          {
+            "trigger": "Highway not sufficiently wide",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "(e) When the highway is not of sufficient width."
+          }
+        ],
+        "timing": {
+          "description": "the duty holds at every instant; each frame in the left half must be covered by an exception; an overtaking excursion is excepted only for its duration — the return is governed by the overtaking rules the text cites"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "sufficient width",
+            "note": "'sufficient width' is a judgement about the road, resolvable from st.lane_width plus a declared vehicle width"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "road_directionality",
+        "road_lane_count",
+        "road_capacity_for_traffic_lines",
+        "road_lateral_geometry",
+        "obstruction_geometry",
+        "other_vehicles",
+        "traffic_control_devices",
+        "commanded_turn_path"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "st.highway",
+          "note": "the highway and its two halves"
+        },
+        {
+          "atom": "st.centre_line",
+          "note": "the division between the directions"
+        },
+        {
+          "atom": "rel.occupies",
+          "note": "which half the footprint is in"
+        },
+        {
+          "atom": "drv.overtaking",
+          "note": "exception (a)"
+        },
+        {
+          "atom": "st.lane_adjacency",
+          "note": "exception (c): a three-lane highway"
+        },
+        {
+          "atom": "st.one_way_roadway",
+          "note": "exception (d)"
+        },
+        {
+          "atom": "dev.regulatory_sign",
+          "note": "exception (d): posted one_way"
+        },
+        {
+          "atom": "st.lane_width",
+          "note": "exception (e): the highway is not of sufficient width"
+        },
+        {
+          "atom": "dev.temporary_traffic_control",
+          "note": "exception (b): the right half closed to traffic"
+        },
+        {
+          "atom": "st.obstruction",
+          "note": "the same"
+        }
+      ],
+      "source_residue": [
+        "'sufficient width' is a judgement about the road, resolvable from st.lane_width plus a declared vehicle width"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-213-2a@motor_vehicle_driver",
+      "law_id": "NRS-484B-213-2a",
+      "actor": "motor_vehicle_driver",
+      "quote": "A vehicle must not be driven to the left side of the highway at any time: When approaching the crest of a grade or upon a curve in the highway where the driver’s view is obstructed within such distance as to create a hazard in the event another vehicle might approach from the opposite direction. Subsection 2 does not apply upon a one-way highway.",
+      "structure": {
+        "law_id": "NRS-484B-213-2a",
+        "activation": {
+          "condition": "the subject is approaching the crest of a grade or is on a curve AND the view ahead is obstructed within a hazard-creating distance"
+        },
+        "obligation": {
+          "description": "Do not drive left of center on a curve or near a crest when sight obstruction creates an oncoming-traffic hazard.",
+          "type": "must_not"
+        },
+        "exceptions": [
+          {
+            "trigger": "The highway is one-way",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "Subsection 2 does not apply upon a one-way highway."
+          }
+        ],
+        "timing": {
+          "description": "'at any time': every instant left of centre within the obstructed-view zone is a violation, independent of any pass; the subject must be back on its own side before the obstructed-view zone begins"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "such distance as to create a hazard",
+            "note": "'such distance as to create a hazard' is a judgement element: the sight-distance bound must be declared"
+          },
+          {
+            "phrase": "available_sight_distance",
+            "note": "Hazard-creating sight distance has no statutory number."
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "road_directionality",
+        "road_lateral_geometry",
+        "curve_at_turn",
+        "road_grade",
+        "sight_distance",
+        "other_vehicles",
+        "commanded_turn_path"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "st.grade",
+          "note": "approaching the crest of a grade — the sign change"
+        },
+        {
+          "atom": "st.curvature",
+          "note": "or a curve"
+        },
+        {
+          "atom": "st.sight_distance",
+          "note": "the driver's view along the road"
+        },
+        {
+          "atom": "drv.sight_distance_adequate",
+          "note": "operationalizes 'obstructed within such distance as to create a hazard'"
+        },
+        {
+          "atom": "st.centre_line",
+          "note": "the centre of the highway"
+        },
+        {
+          "atom": "rel.occupies",
+          "note": "the footprint on the left side"
+        },
+        {
+          "atom": "drv.approaching",
+          "note": "the subject is approaching the crest or curve"
+        },
+        {
+          "atom": "st.one_way_roadway",
+          "note": "the exception"
+        },
+        {
+          "atom": "rel.oncoming",
+          "note": "the vehicle that might approach from the opposite direction"
+        }
+      ],
+      "source_residue": [
+        "'such distance as to create a hazard' is a judgement element: the sight-distance bound must be declared"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-227-1@motor_vehicle_driver",
+      "law_id": "NRS-484B-227-1",
+      "actor": "motor_vehicle_driver",
+      "quote": "Every vehicle driven upon a divided highway must be driven only upon the right-hand roadway and must not be driven over, across or within any dividing space, barrier or section or make any left turn, semicircular turn or U-turn, except through an opening in the barrier or dividing section or space or at a crossover or intersection established by a public authority.",
+      "structure": {
+        "law_id": "NRS-484B-227-1",
+        "activation": {
+          "condition": "the highway is divided AND the subject is driven on it"
+        },
+        "obligation": {
+          "description": "Do not leave the right-hand roadway, cross its divider, or make a U-turn except at a permitted opening, crossover, or intersection.",
+          "type": "must_not"
+        },
+        "exceptions": [
+          {
+            "trigger": "Turn uses an opening in the barrier or dividing space",
+            "effect": "replaces",
+            "replacement_obligation": "Use the opening for the turn and otherwise remain on the right-hand roadway",
+            "source_clause": "except through an opening in the barrier or dividing section or space"
+          },
+          {
+            "trigger": "Turn uses a crossover or intersection established by public authority",
+            "effect": "replaces",
+            "replacement_obligation": "Use the established crossover or intersection and otherwise remain on the right-hand roadway",
+            "source_clause": "or at a crossover or intersection established by a public authority."
+          }
+        ],
+        "timing": {
+          "description": "the right-hand-roadway duty holds at every instant; the crossing of the dividing space, or the turn, is the act judged"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "established by a public authority",
+            "note": "whether a crossover was 'established by a public authority' is an administrative fact; the observable substitute is the physical opening"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "road_directionality",
+        "divider_geometry",
+        "intersection_geometry",
+        "commanded_turn_path"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "st.median_or_divider",
+          "note": "the dividing space, barrier or section, with its opening attribute"
+        },
+        {
+          "atom": "st.roadway",
+          "note": "the two separate roadways of the divided highway"
+        },
+        {
+          "atom": "rel.occupies",
+          "note": "which roadway the footprint is on, and any overlap of the dividing space"
+        },
+        {
+          "atom": "st.lane_direction",
+          "note": "the right-hand roadway for the subject's direction"
+        },
+        {
+          "atom": "drv.turning",
+          "note": "a left or semicircular turn"
+        },
+        {
+          "atom": "drv.u_turn",
+          "note": "a U-turn"
+        },
+        {
+          "atom": "st.intersection",
+          "note": "an established crossover or intersection"
+        },
+        {
+          "atom": "drv.wrong_way",
+          "note": "driving on the roadway of the opposite direction"
+        }
+      ],
+      "source_residue": [
+        "whether a crossover was 'established by a public authority' is an administrative fact; the observable substitute is the physical opening"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-300-1@motor_vehicle_driver",
+      "law_id": "NRS-484B-300-1",
+      "actor": "motor_vehicle_driver",
+      "quote": "it is unlawful for any driver to disobey the instructions of any official traffic-control device placed in accordance with the provisions of chapters 484A to 484E, inclusive, of NRS",
+      "structure": {
+        "law_id": "NRS-484B-300-1",
+        "activation": {
+          "condition": "an official traffic-control device governs the subject's approach or lane AND the device is placed under the traffic chapters"
+        },
+        "obligation": {
+          "description": "Obey the applicable official traffic-control device.",
+          "type": "must"
+        },
+        "exceptions": [
+          {
+            "trigger": "A police officer directs otherwise at the time",
+            "effect": "replaces",
+            "replacement_obligation": "Obey the officer’s direction",
+            "source_clause": "unless at the time otherwise directed by a police officer."
+          },
+          {
+            "trigger": "The device is governed by the cited signal-specific provisions",
+            "effect": "replaces",
+            "replacement_obligation": "Apply the cited signal-specific rule to interpret the indication",
+            "source_clause": "Except as otherwise provided in NRS 484B.307"
+          }
+        ],
+        "timing": {
+          "description": "obedience is owed for as long as the device governs the subject; the device's instruction must be observable to the subject before the conduct judged"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "device-specific instructions",
+            "note": "this line is the general obedience duty: what counts as disobedience is fixed by the device-specific rules, several of which it cites"
+          },
+          {
+            "phrase": "placed in accordance with",
+            "note": "whether a device was 'placed in accordance with' the chapters is an administrative fact, not observable"
+          },
+          {
+            "phrase": "uncataloged cross-reference",
+            "note": "the text cites NRS 484B.307(11), which is outside the corpus (removed_target)"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "traffic_control_devices",
+        "officer_direction",
+        "ego_trajectory"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "dev.traffic_signal",
+          "note": "any official traffic-control device: signal heads"
+        },
+        {
+          "atom": "dev.regulatory_sign",
+          "note": "or a regulatory sign"
+        },
+        {
+          "atom": "dev.stop_sign",
+          "note": "or a stop sign"
+        },
+        {
+          "atom": "dev.yield_sign",
+          "note": "or a yield sign"
+        },
+        {
+          "atom": "dev.speed_limit_sign",
+          "note": "or a speed limit sign"
+        },
+        {
+          "atom": "dev.lane_control_signal",
+          "note": "or an overhead lane signal"
+        },
+        {
+          "atom": "dev.governs",
+          "note": "the device applies to the subject's lane or approach"
+        },
+        {
+          "atom": "dev.position",
+          "note": "where the device is"
+        },
+        {
+          "atom": "kin.velocity",
+          "note": "what the subject did in response"
+        },
+        {
+          "atom": "rel.occupies",
+          "note": "the subject's position against the instruction"
+        },
+        {
+          "atom": "dev.human_direction",
+          "note": "the exception: a police officer directing otherwise"
+        }
+      ],
+      "source_residue": [
+        "this line is the general obedience duty: what counts as disobedience is fixed by the device-specific rules, several of which it cites",
+        "whether a device was 'placed in accordance with' the chapters is an administrative fact, not observable",
+        "the text cites NRS 484B.307(11), which is outside the corpus (removed_target)"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-363-3@motor_vehicle_driver",
+      "law_id": "NRS-484B-363-3",
+      "actor": "motor_vehicle_driver",
+      "quote": "The driver of a vehicle shall not make a U-turn in an area designated as a school zone or school crossing zone except:",
+      "structure": {
+        "law_id": "NRS-484B-363-3",
+        "activation": {
+          "condition": "the subject is driving in a school zone or school crossing zone AND the zone's condition is in effect"
+        },
+        "obligation": {
+          "description": "Do not make a U-turn in an active school or school-crossing zone unless an exception applies.",
+          "type": "must_not"
+        },
+        "exceptions": [
+          {
+            "trigger": "No children are present",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "(a) When there are no children present;",
+            "numeric_conditions": [
+              {
+                "variable": "children_count",
+                "operator": "==",
+                "value": 0,
+                "unit": "persons"
+              }
+            ]
+          },
+          {
+            "trigger": "School is not in session that day",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "(b) On a day on which school is not in session;"
+          },
+          {
+            "trigger": "Turn falls in the stated out-of-operation interval",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "(c) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation;",
+            "numeric_conditions": [
+              {
+                "variable": "school_schedule.time_since_end",
+                "operator": ">=",
+                "value": 0.5,
+                "unit": "hours"
+              },
+              {
+                "variable": "school_schedule.time_until_next_start",
+                "operator": ">=",
+                "value": 0.5,
+                "unit": "hours"
+              }
+            ]
+          },
+          {
+            "trigger": "During class hours an operational beacon is not flashing its zone-limit indication",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "(d) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect;"
+          },
+          {
+            "trigger": "Without an operational beacon, the zone sign says the limit is not in effect",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "(e) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone or school crossing zone indicates that the speed limit is not in effect."
+          }
+        ],
+        "timing": {
+          "description": "the U-turn is a single manoeuvre, judged where it is completed inside the zone; the zone condition is judged at the time of the manoeuvre",
+          "numeric_conditions": [
+            {
+              "variable": "school_schedule.time_since_end",
+              "operator": ">=",
+              "value": 0.5,
+              "unit": "hours"
+            },
+            {
+              "variable": "school_schedule.time_until_next_start",
+              "operator": ">=",
+              "value": 0.5,
+              "unit": "hours"
+            }
+          ]
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "school is in session",
+            "note": "'school is in session' and 'school hours' are legal/calendar classes, not atoms: reading assumptions declared per trace"
+          },
+          {
+            "phrase": "zone condition",
+            "note": "the beacon's flashing state is the one observable form of the condition; without it the rule reports unknown"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "school_zone_context",
+        "school_schedule",
+        "children_count",
+        "traffic_control_devices"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "dev.zone_sign",
+          "note": "kind school or school_crossing"
+        },
+        {
+          "atom": "drv.within_signed_zone",
+          "note": "inside such a zone"
+        },
+        {
+          "atom": "drv.u_turn",
+          "note": "the prohibited manoeuvre"
+        },
+        {
+          "atom": "kin.heading",
+          "note": "the heading reversal"
+        },
+        {
+          "atom": "ru.child",
+          "note": "exception (a): no children present"
+        },
+        {
+          "atom": "dev.speed_limit_beacon",
+          "note": "its flashing attribute"
+        },
+        {
+          "atom": "drv.condition_in_effect",
+          "note": "whether the zone's condition holds"
+        },
+        {
+          "atom": "env.civil_time",
+          "note": "the date and time of day"
+        }
+      ],
+      "source_residue": [
+        "'school is in session' and 'school hours' are legal/calendar classes, not atoms: reading assumptions declared per trace",
+        "the beacon's flashing state is the one observable form of the condition; without it the rule reports unknown"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-403-1@motor_vehicle_driver",
+      "law_id": "NRS-484B-403-1",
+      "actor": "motor_vehicle_driver",
+      "quote": "A U-turn may be made on any road where the turn can be made with safety",
+      "structure": {
+        "law_id": "NRS-484B-403-1",
+        "activation": {
+          "condition": "the subject makes a U-turn on a road"
+        },
+        "obligation": {
+          "description": "Make a U-turn only when it can be made safely and no cited prohibition controls.",
+          "type": "must"
+        },
+        "exceptions": [
+          {
+            "trigger": "A cited specific U-turn prohibition controls",
+            "effect": "replaces",
+            "replacement_obligation": "Follow the applicable prohibition on signs, district, divided roads, school zones, or visibility",
+            "source_clause": "A U-turn may be made on any road where the turn can be made with safety, except as prohibited by this section [NRS-484B-403-2, NRS-484B-403-3] and by the provisions of NRS 484B.227, 484B.363 and 484B.407 [NRS-484B-227-1, NRS-484B-363-3, NRS-484B-407]."
+          }
+        ],
+        "timing": {
+          "description": "safety is judged over the whole manoeuvre, from the first heading change to the completion"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "with safety",
+            "note": "tier S: 'with safety' is the whole standard; this line is the permission that the cited prohibitions carve into"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "ego_speed",
+        "obstruction_geometry",
+        "sight_distance",
+        "other_vehicles",
+        "commanded_turn_path"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "drv.u_turn",
+          "note": "the manoeuvre"
+        },
+        {
+          "atom": "st.roadway",
+          "note": "the road it is made on"
+        },
+        {
+          "atom": "drv.time_to_conflict",
+          "note": "operationalizes 'with safety'"
+        },
+        {
+          "atom": "rel.oncoming",
+          "note": "traffic from the opposite direction"
+        },
+        {
+          "atom": "drv.following",
+          "note": "traffic behind"
+        },
+        {
+          "atom": "st.sight_distance",
+          "note": "the view available for the manoeuvre"
+        },
+        {
+          "atom": "kin.speed",
+          "note": "the speed of the surrounding traffic"
+        },
+        {
+          "atom": "drv.hard_deceleration",
+          "note": "another user forced to brake"
+        }
+      ],
+      "source_residue": [
+        "tier S: 'with safety' is the whole standard; this line is the permission that the cited prohibitions carve into"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-403-2@motor_vehicle_driver",
+      "law_id": "NRS-484B-403-2",
+      "actor": "motor_vehicle_driver",
+      "quote": "If an official traffic-control device indicates that a U-turn is prohibited, the driver shall obey the directions of the device.",
+      "structure": {
+        "law_id": "NRS-484B-403-2",
+        "activation": {
+          "condition": "an official traffic-control device prohibits a U-turn and governs the driver's approach at the place"
+        },
+        "obligation": {
+          "description": "Do not make a U-turn contrary to a governing prohibition device.",
+          "type": "must_not"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "the manoeuvre is the violation, judged where it occurs within the device's region"
+        },
+        "judgment_calls_needed": []
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "traffic_control_devices"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "dev.regulatory_sign",
+          "note": "code no_u_turn"
+        },
+        {
+          "atom": "dev.governs",
+          "note": "the device applies to the subject's approach"
+        },
+        {
+          "atom": "dev.position",
+          "note": "where the device is"
+        },
+        {
+          "atom": "drv.u_turn",
+          "note": "the manoeuvre made"
+        },
+        {
+          "atom": "kin.heading",
+          "note": "the heading reversal"
+        },
+        {
+          "atom": "rel.occupies",
+          "note": "where the manoeuvre was made relative to the device's region"
+        }
+      ],
+      "source_residue": []
+    },
+    {
+      "template_id": "NRS-484B-403-3@motor_vehicle_driver",
+      "law_id": "NRS-484B-403-3",
+      "actor": "motor_vehicle_driver",
+      "quote": "The driver of a vehicle shall not make a U-turn in a business district, except at an intersection or on a divided highway where an appropriate opening or crossing place exists.",
+      "structure": {
+        "law_id": "NRS-484B-403-3",
+        "activation": {
+          "condition": "the subject is driving in a business district"
+        },
+        "obligation": {
+          "description": "Do not make a U-turn in a business district outside the stated permitted locations.",
+          "type": "must_not"
+        },
+        "exceptions": [
+          {
+            "trigger": "Turn is at an intersection",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "except at an intersection or on a divided highway where an appropriate opening or crossing place exists."
+          },
+          {
+            "trigger": "Turn is on a divided highway at an appropriate opening or crossing",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "except at an intersection or on a divided highway where an appropriate opening or crossing place exists."
+          }
+        ],
+        "timing": {
+          "description": "the manoeuvre is judged at the place it is made"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "business district",
+            "note": "'business district' is a legal region class: a reading assumption declared per map or per trace, never read from the scene"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "district_type",
+        "intersection_geometry",
+        "divider_geometry"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "drv.u_turn",
+          "note": "the manoeuvre"
+        },
+        {
+          "atom": "st.intersection",
+          "note": "the exception: at an intersection"
+        },
+        {
+          "atom": "st.median_or_divider",
+          "note": "the exception: a divided highway with an opening"
+        },
+        {
+          "atom": "kin.position",
+          "note": "where the turn was made"
+        },
+        {
+          "atom": "kin.heading",
+          "note": "the heading reversal"
+        },
+        {
+          "atom": "rel.occupies",
+          "note": "the footprint during the manoeuvre"
+        }
+      ],
+      "source_residue": [
+        "'business district' is a legal region class: a reading assumption declared per map or per trace, never read from the scene"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-407@motor_vehicle_driver",
+      "law_id": "NRS-484B-407",
+      "actor": "motor_vehicle_driver",
+      "quote": "A vehicle shall not be turned so as to proceed in the opposite direction upon any curve, or upon the approach to or near the crest of a grade, where such vehicle cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet.",
+      "structure": {
+        "law_id": "NRS-484B-407",
+        "activation": {
+          "condition": "the subject is on a curve, or on the approach to or near the crest of a grade, AND the subject cannot be seen from 500 feet by a driver approaching from either direction",
+          "numeric_conditions": [
+            {
+              "variable": "sight_distance.minimum_from_either_approach",
+              "operator": "<",
+              "value": 500,
+              "unit": "feet"
+            }
+          ]
+        },
+        "obligation": {
+          "description": "Do not reverse direction on a curve or near a crest if approaching drivers cannot see the vehicle from the required distance in either direction.",
+          "type": "must_not"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "the manoeuvre is judged where it is made; the visibility test is geometric at that point"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "500-foot sight-line construction",
+            "note": "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "curve_at_turn",
+        "road_grade",
+        "sight_distance",
+        "other_vehicles",
+        "commanded_turn_path"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "drv.u_turn",
+          "note": "turning to proceed in the opposite direction"
+        },
+        {
+          "atom": "st.curvature",
+          "note": "a curve"
+        },
+        {
+          "atom": "st.grade",
+          "note": "the approach to or near the crest of a grade"
+        },
+        {
+          "atom": "st.sight_distance",
+          "note": "the distance within which the vehicle can be seen, against the 500-foot requirement"
+        },
+        {
+          "atom": "rel.oncoming",
+          "note": "a vehicle approaching from either direction"
+        },
+        {
+          "atom": "drv.approaching",
+          "note": "the same, from behind"
+        },
+        {
+          "atom": "kin.position",
+          "note": "where the manoeuvre is made"
+        }
+      ],
+      "source_residue": [
+        "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-413-1@motor_vehicle_driver",
+      "law_id": "NRS-484B-413-1",
+      "actor": "motor_vehicle_driver",
+      "quote": "A driver shall not turn a vehicle from a direct course upon a highway unless and until such movement can be made with reasonable safety, and then only after giving a clearly audible signal by sounding the horn if any pedestrian may be affected by such movement and after giving an appropriate signal if any other vehicle may be affected by such movement.",
+      "structure": {
+        "law_id": "NRS-484B-413-1",
+        "activation": {
+          "condition": "the subject turns from a direct course on a highway AND a pedestrian or another vehicle may be affected by the movement"
+        },
+        "obligation": {
+          "description": "Turn from direct course only when reasonably safe; sound the horn if a pedestrian may be affected and signal if another vehicle may be affected.",
+          "type": "must"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "'unless and until … and then only after': the safety condition, then the horn to a pedestrian and the signal to a vehicle, and only then the movement; how far before the movement the signal must be given comes from the next subsection's distances"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "reasonable safety",
+            "note": "tier S: 'reasonable safety' is the standard; 'may be affected' also needs a declared conflict bound"
+          },
+          {
+            "phrase": "audible horn evidence",
+            "note": "the horn duty needs audio on the source, or the rule reports unknown"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "other_vehicles",
+        "pedestrians",
+        "ego_turn_signal",
+        "ego_horn",
+        "commanded_signal",
+        "commanded_horn"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "drv.turning",
+          "note": "turning from a direct course"
+        },
+        {
+          "atom": "drv.lane_change",
+          "note": "or otherwise leaving the direct course"
+        },
+        {
+          "atom": "drv.time_to_conflict",
+          "note": "operationalizes 'reasonable safety'"
+        },
+        {
+          "atom": "ru.pedestrian",
+          "note": "a pedestrian who may be affected"
+        },
+        {
+          "atom": "sig.horn",
+          "note": "the clearly audible warning owed to that pedestrian"
+        },
+        {
+          "atom": "sig.turn_indicator",
+          "note": "the appropriate signal owed to other vehicles"
+        },
+        {
+          "atom": "sig.hand_signal",
+          "note": "or an arm signal"
+        },
+        {
+          "atom": "drv.following",
+          "note": "a vehicle that may be affected"
+        },
+        {
+          "atom": "rel.surface_gap",
+          "note": "the clearance to those users"
+        }
+      ],
+      "source_residue": [
+        "tier S: 'reasonable safety' is the standard; 'may be affected' also needs a declared conflict bound",
+        "the horn duty needs audio on the source, or the rule reports unknown"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-413-2@motor_vehicle_driver",
+      "law_id": "NRS-484B-413-2",
+      "actor": "motor_vehicle_driver",
+      "quote": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather.",
+      "structure": {
+        "law_id": "NRS-484B-413-2",
+        "activation": {
+          "condition": "the subject is about to turn right or left, or otherwise change course"
+        },
+        "obligation": {
+          "description": "Signal a turn or other course change continuously over the applicable approach distance.",
+          "type": "must"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "the signal must run continuously over the last 100 feet before the change in a business or residential district, and over the last 300 feet elsewhere; 'continuously' — a signal switched on and off inside the distance does not satisfy the rule; the trace must cover at least the last 300 feet of approach for the longer case to be decidable",
+          "numeric_conditions": [
+            {
+              "variable": "ego_signal_continuous_distance",
+              "operator": ">=",
+              "value": 100,
+              "unit": "feet",
+              "when": "in business or residential district"
+            },
+            {
+              "variable": "ego_signal_continuous_distance",
+              "operator": ">=",
+              "value": 300,
+              "unit": "feet",
+              "when": "outside business or residential district"
+            }
+          ]
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "business or residential district",
+            "note": "'business or residential district' is a legal region class: a reading assumption that selects which of the two distances applies"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "ego_turn_signal",
+        "ego_signal_continuous_distance",
+        "district_type",
+        "commanded_signal"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "sig.turn_indicator",
+          "note": "the signal, left or right"
+        },
+        {
+          "atom": "sig.hand_signal",
+          "note": "or the arm signal with its meaning"
+        },
+        {
+          "atom": "drv.distance_while",
+          "note": "the path length over which the signal has been shown continuously"
+        },
+        {
+          "atom": "kin.path_length",
+          "note": "the 100-foot and 300-foot thresholds"
+        },
+        {
+          "atom": "drv.turning",
+          "note": "the turn or course change that follows"
+        },
+        {
+          "atom": "drv.lane_change",
+          "note": "'otherwise turn from a direct course'"
+        },
+        {
+          "atom": "env.precipitation",
+          "note": "'regardless of the weather' — no weather excuse"
+        },
+        {
+          "atom": "kin.speed",
+          "note": "the speed that converts the distance into a time"
+        }
+      ],
+      "source_residue": [
+        "'business or residential district' is a legal region class: a reading assumption that selects which of the two distances applies"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-413-3@motor_vehicle_driver",
+      "law_id": "NRS-484B-413-3",
+      "actor": "motor_vehicle_driver",
+      "quote": "A driver shall not stop or suddenly decrease the speed of a vehicle without first giving an appropriate signal to the driver of any vehicle immediately to the rear.",
+      "structure": {
+        "law_id": "NRS-484B-413-3",
+        "activation": {
+          "condition": "the subject stops or suddenly decreases speed AND a vehicle is immediately to the rear"
+        },
+        "obligation": {
+          "description": "Give an appropriate signal to the immediately following driver before stopping or suddenly slowing.",
+          "type": "must"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "'without first giving' — the signal must precede the stop or the deceleration; a lead time for the signal must be declared; the text gives no distance for this case"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "suddenly",
+            "note": "'suddenly' is a judgement element: a deceleration bound must be declared"
+          },
+          {
+            "phrase": "signal lead time",
+            "note": "a brake lamp is an actuation, not the deceleration: the rule reads both"
+          },
+          {
+            "phrase": "observed_deceleration_vs_sudden_bound",
+            "note": "Sudden slowing has no statutory deceleration bound."
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "other_vehicles",
+        "ego_brake_signal",
+        "ego_trajectory",
+        "commanded_speed_profile",
+        "commanded_signal"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "drv.stopped",
+          "note": "the stop"
+        },
+        {
+          "atom": "drv.hard_deceleration",
+          "note": "operationalizes 'suddenly decrease the speed'"
+        },
+        {
+          "atom": "kin.accel_longitudinal",
+          "note": "the deceleration itself"
+        },
+        {
+          "atom": "sig.brake_lamp",
+          "note": "the appropriate signal to the vehicle behind"
+        },
+        {
+          "atom": "sig.hand_signal",
+          "note": "or an arm signal, meaning stop_or_slow"
+        },
+        {
+          "atom": "drv.following",
+          "note": "the vehicle immediately to the rear"
+        },
+        {
+          "atom": "rel.ahead_behind_in_lane",
+          "note": "that vehicle is behind in the same lane"
+        },
+        {
+          "atom": "rel.surface_gap",
+          "note": "how close it is"
+        }
+      ],
+      "source_residue": [
+        "'suddenly' is a judgement element: a deceleration bound must be declared",
+        "a brake lamp is an actuation, not the deceleration: the rule reads both"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-600-1a@motor_vehicle_driver",
+      "law_id": "NRS-484B-600-1a",
+      "actor": "motor_vehicle_driver",
+      "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than is reasonable or proper, having due regard for the traffic, surface and width of the highway, the weather and other highway conditions.",
+      "structure": {
+        "law_id": "NRS-484B-600-1a",
+        "activation": {
+          "condition": "the subject drives or operates a vehicle of any kind"
+        },
+        "obligation": {
+          "description": "Do not drive faster than is reasonable or proper for traffic, road, weather, and other conditions.",
+          "type": "must_not"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "the basic speed rule binds at every instant; the conditions it is judged against change frame by frame"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "reasonable or proper",
+            "note": "tier S: 'reasonable or proper' is the whole obligation. Any rule is a surrogate whose bounds come from a stopping- or sight-distance model, declared as an operationalization claim"
+          },
+          {
+            "phrase": "operating_speed_vs_reasonable_speed",
+            "note": "Reasonable speed has no statutory numeric bound here."
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "road_lateral_geometry",
+        "weather_surface_conditions",
+        "other_vehicles",
+        "sight_distance",
+        "obstruction_geometry",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "kin.speed",
+          "note": "the speed driven"
+        },
+        {
+          "atom": "drv.queue_behind",
+          "note": "the traffic the speed is judged against"
+        },
+        {
+          "atom": "kin.velocity",
+          "note": "the surrounding traffic's speeds"
+        },
+        {
+          "atom": "st.lane_width",
+          "note": "the width of the highway"
+        },
+        {
+          "atom": "st.roadway",
+          "note": "its surface"
+        },
+        {
+          "atom": "env.wet_road",
+          "note": "a surface condition"
+        },
+        {
+          "atom": "env.ice_or_snow",
+          "note": "another"
+        },
+        {
+          "atom": "env.precipitation",
+          "note": "the weather"
+        },
+        {
+          "atom": "env.visibility",
+          "note": "another highway condition"
+        },
+        {
+          "atom": "st.curvature",
+          "note": "the geometry the speed must suit"
+        },
+        {
+          "atom": "drv.sight_distance_adequate",
+          "note": "the surrogate for a reasonable and proper speed"
+        },
+        {
+          "atom": "drv.stopping_distance",
+          "note": "the same"
+        }
+      ],
+      "source_residue": [
+        "tier S: 'reasonable or proper' is the whole obligation. Any rule is a surrogate whose bounds come from a stopping- or sight-distance model, declared as an operationalization claim"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-600-1b@motor_vehicle_driver",
+      "law_id": "NRS-484B-600-1b",
+      "actor": "motor_vehicle_driver",
+      "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: Such a rate of speed as to endanger the life, limb or property of any person.",
+      "structure": {
+        "law_id": "NRS-484B-600-1b",
+        "activation": {
+          "condition": "the subject drives or operates a vehicle of any kind"
+        },
+        "obligation": {
+          "description": "Do not drive at a speed that endangers a person or property.",
+          "type": "must_not"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "judged at every instant, against whoever is exposed at that instant"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "endanger",
+            "note": "tier S: 'endanger' is the whole obligation; the bounds are a surrogate"
+          },
+          {
+            "phrase": "operating_speed_vs_endangerment_bound",
+            "note": "Endangerment cannot be reduced to a statutory speed number."
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "ego_trajectory",
+        "other_vehicles",
+        "pedestrians",
+        "obstruction_geometry",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "kin.speed",
+          "note": "the speed driven"
+        },
+        {
+          "atom": "drv.time_to_conflict",
+          "note": "the surrogate for endangerment"
+        },
+        {
+          "atom": "rel.surface_gap",
+          "note": "the clearance to persons and property"
+        },
+        {
+          "atom": "ru.pedestrian",
+          "note": "the persons whose life or limb is at risk"
+        },
+        {
+          "atom": "drv.vulnerable_road_user",
+          "note": "the class most exposed"
+        },
+        {
+          "atom": "drv.stopping_distance",
+          "note": "whether a halt would be possible in the space available"
+        },
+        {
+          "atom": "rel.contact",
+          "note": "the outcome the rule is about"
+        },
+        {
+          "atom": "st.obstruction",
+          "note": "property on or beside the roadway"
+        }
+      ],
+      "source_residue": [
+        "tier S: 'endanger' is the whole obligation; the bounds are a surrogate"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-600-1c@motor_vehicle_driver",
+      "law_id": "NRS-484B-600-1c",
+      "actor": "motor_vehicle_driver",
+      "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than that posted by a public authority for the particular portion of highway being traversed.",
+      "structure": {
+        "law_id": "NRS-484B-600-1c",
+        "activation": {
+          "condition": "a public authority has posted a speed limit for the portion of highway AND the subject drives on that portion"
+        },
+        "obligation": {
+          "description": "Do not exceed the governing posted speed limit.",
+          "type": "must_not",
+          "numeric_conditions": [
+            {
+              "variable": "ego_speed",
+              "operator": "<=",
+              "value": null,
+              "unit": "mph",
+              "value_from": "posted_speed_limit"
+            }
+          ]
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "the limit binds at every instant on the posted portion; the violation is any instant above the posted value, subject to a declared measurement tolerance"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "governing posted limit",
+            "note": "where no sign is visible in the trace, the governing limit is a reading assumption and the rule reports unknown without it"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "posted_speed_limit",
+        "traffic_control_devices",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "dev.speed_limit_sign",
+          "note": "kind maximum, with its value and unit — the limit posted for that portion"
+        },
+        {
+          "atom": "dev.governs",
+          "note": "the portion of highway the sign controls"
+        },
+        {
+          "atom": "drv.within_signed_zone",
+          "note": "kind speed_zone, where the limit is zoned"
+        },
+        {
+          "atom": "kin.speed",
+          "note": "the speed driven, against the posted value"
+        },
+        {
+          "atom": "rel.occupies",
+          "note": "which portion of highway the subject is on"
+        },
+        {
+          "atom": "dev.position",
+          "note": "where the sign stands, which fixes where the limit starts"
+        }
+      ],
+      "source_residue": [
+        "where no sign is visible in the trace, the governing limit is a reading assumption and the rule reports unknown without it"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-600-1e@motor_vehicle_driver",
+      "law_id": "NRS-484B-600-1e",
+      "actor": "motor_vehicle_driver",
+      "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: In any event, a rate of speed greater than 80 miles per hour.",
+      "structure": {
+        "law_id": "NRS-484B-600-1e",
+        "activation": {
+          "condition": "the subject drives or operates a vehicle of any kind on any highway"
+        },
+        "obligation": {
+          "description": "Do not exceed the absolute highway speed cap.",
+          "type": "must_not",
+          "numeric_conditions": [
+            {
+              "variable": "ego_speed",
+              "operator": "<=",
+              "value": 80,
+              "unit": "mph"
+            }
+          ]
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "'in any event' — the cap binds at every instant regardless of any posted limit; a single frame above 80 mph is the violation, subject to a declared measurement tolerance"
+        },
+        "judgment_calls_needed": []
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "kin.speed",
+          "note": "the speed driven, against the 80 mph absolute cap"
+        },
+        {
+          "atom": "kin.velocity",
+          "note": "the measurement it comes from"
+        },
+        {
+          "atom": "ru.subject",
+          "note": "the vehicle judged — any kind"
+        }
+      ],
+      "source_residue": []
+    },
+    {
+      "template_id": "NRS-484B-603-1@motor_vehicle_driver",
+      "law_id": "NRS-484B-603-1",
+      "actor": "motor_vehicle_driver",
+      "quote": "The fact that the speed of a vehicle is lower than the prescribed limits does not relieve a driver from the duty to decrease speed when approaching and crossing an intersection, when approaching and going around a curve, when approaching a hill crest, when traveling upon any narrow or winding highway, or when special hazards exist or may exist with respect to pedestrians or other traffic, or by reason of weather or other highway conditions, and speed must be decreased as may be necessary to avoid colliding with any person, vehicle or other conveyance on or entering a highway in compliance with legal requirements and the duty of all persons to use due care.",
+      "structure": {
+        "law_id": "NRS-484B-603-1",
+        "activation": {
+          "condition": "the subject approaches or crosses an intersection, approaches or rounds a curve, approaches a hill crest, travels a narrow or winding highway, or a special hazard exists with respect to pedestrians, other traffic, weather or highway conditions"
+        },
+        "obligation": {
+          "description": "Decrease speed as necessary for the winding road or other listed hazard and maintain a speed compatible with due care.",
+          "type": "must"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "the decrease must come on the approach — before the hazard, not at it; the reduced speed is held while the condition lasts"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "decrease as may be necessary",
+            "note": "tier S: the duty is 'decrease as may be necessary' with 'due care'; any threshold is a surrogate"
+          },
+          {
+            "phrase": "posted limit is no defence",
+            "note": "the rule expressly says compliance with a posted limit is no defence, so a rule reading only kin.speed against a sign misses it"
+          },
+          {
+            "phrase": "speed_after_vs_before_hazard_approach",
+            "note": "The required reduction is as necessary, without a fixed amount."
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "curve_at_turn",
+        "road_grade",
+        "sight_distance",
+        "obstruction_geometry",
+        "other_vehicles",
+        "pedestrians",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "kin.speed",
+          "note": "the speed, and whether it decreases"
+        },
+        {
+          "atom": "kin.accel_longitudinal",
+          "note": "the decrease itself"
+        },
+        {
+          "atom": "drv.approaching",
+          "note": "the approach to the intersection, curve or crest"
+        },
+        {
+          "atom": "st.intersection",
+          "note": "the intersection approached and crossed"
+        },
+        {
+          "atom": "st.curvature",
+          "note": "the curve"
+        },
+        {
+          "atom": "st.grade",
+          "note": "the hill crest"
+        },
+        {
+          "atom": "st.lane_width",
+          "note": "a narrow highway"
+        },
+        {
+          "atom": "ru.pedestrian",
+          "note": "the special hazard with respect to pedestrians"
+        },
+        {
+          "atom": "env.precipitation",
+          "note": "weather conditions"
+        },
+        {
+          "atom": "env.visibility",
+          "note": "other highway conditions"
+        },
+        {
+          "atom": "drv.time_to_conflict",
+          "note": "the surrogate: the speed needed to avoid colliding"
+        },
+        {
+          "atom": "drv.stopping_distance",
+          "note": "the same"
+        },
+        {
+          "atom": "dev.speed_limit_sign",
+          "note": "the prescribed limit that does not relieve the duty"
+        }
+      ],
+      "source_residue": [
+        "tier S: the duty is 'decrease as may be necessary' with 'due care'; any threshold is a surrogate",
+        "the rule expressly says compliance with a posted limit is no defence, so a rule reading only kin.speed against a sign misses it"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-623-1@motor_vehicle_driver",
+      "law_id": "NRS-484B-623-1",
+      "actor": "motor_vehicle_driver",
+      "quote": "A person shall not drive a motor vehicle at such a slow speed as to impede the normal and reasonable movement of traffic except when reduced speed is necessary for safe operation or in compliance with law.",
+      "structure": {
+        "law_id": "NRS-484B-623-1",
+        "activation": {
+          "condition": "the subject drives a motor vehicle where normal and reasonable traffic movement could be affected"
+        },
+        "obligation": {
+          "description": "Do not drive so slowly as to impede normal, reasonable traffic movement unless reduced speed is necessary for safety or required by law.",
+          "type": "must_not"
+        },
+        "exceptions": [
+          {
+            "trigger": "Reduced speed is necessary for safe operation",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "except when reduced speed is necessary for safe operation"
+          },
+          {
+            "trigger": "Reduced speed complies with law",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "or in compliance with law."
+          }
+        ],
+        "timing": {
+          "description": "impeding is not instantaneous: a duration for which the slow speed and the queue must persist has to be declared; judged while both the slow speed and the impeded traffic hold"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "normal and reasonable movement",
+            "note": "tier S: 'normal and reasonable movement' is the whole standard; the speed margin, the queue size and the duration are all surrogate parameters"
+          },
+          {
+            "phrase": "operating_speed_vs_impeding_bound",
+            "note": "Impeding normal traffic has no statutory speed number."
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "other_vehicles",
+        "obstruction_geometry",
+        "posted_speed_limit",
+        "weather_surface_conditions",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "kin.speed",
+          "note": "the subject's slow speed"
+        },
+        {
+          "atom": "drv.speed_below_traffic",
+          "note": "operationalizes 'impede the normal and reasonable movement of traffic'"
+        },
+        {
+          "atom": "drv.queue_behind",
+          "note": "the traffic held up"
+        },
+        {
+          "atom": "drv.following",
+          "note": "the vehicles immediately behind"
+        },
+        {
+          "atom": "drv.slower_than_posted",
+          "note": "the relation to the posted limit"
+        },
+        {
+          "atom": "dev.speed_limit_sign",
+          "note": "that limit"
+        },
+        {
+          "atom": "drv.forced_halt",
+          "note": "the exception: a reduced speed necessary for safe operation"
+        },
+        {
+          "atom": "env.precipitation",
+          "note": "a condition that makes a reduced speed necessary"
+        },
+        {
+          "atom": "st.obstruction",
+          "note": "the same"
+        }
+      ],
+      "source_residue": [
+        "tier S: 'normal and reasonable movement' is the whole standard; the speed margin, the queue size and the duration are all surrogate parameters"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-627-2@motor_vehicle_driver",
+      "law_id": "NRS-484B-627-2",
+      "actor": "motor_vehicle_driver",
+      "quote": "A person shall not bring a vehicle to a complete stop upon a roadway so as to impede or block the normal and reasonable movement of traffic unless the stop is necessary for safe operation or in compliance with law.",
+      "structure": {
+        "law_id": "NRS-484B-627-2",
+        "activation": {
+          "condition": "the subject operates a vehicle on a roadway where normal and reasonable traffic movement could be affected"
+        },
+        "obligation": {
+          "description": "Do not make a complete roadway stop that impedes or blocks normal, reasonable traffic unless safety or law requires it.",
+          "type": "must_not",
+          "numeric_conditions": [
+            {
+              "variable": "ego_speed",
+              "operator": "==",
+              "value": 0,
+              "unit": "mph"
+            }
+          ]
+        },
+        "exceptions": [
+          {
+            "trigger": "Stop is necessary for safe operation",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "unless the stop is necessary for safe operation"
+          },
+          {
+            "trigger": "Stop complies with law",
+            "effect": "displaces",
+            "replacement_obligation": null,
+            "source_clause": "or in compliance with law."
+          }
+        ],
+        "timing": {
+          "description": "a complete stop must persist to be this offence; the duration bound separates it from a traffic pause; the blocking is judged while the stop lasts"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "normal and reasonable movement",
+            "note": "tier S: 'normal and reasonable movement' is the whole standard"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "ego_trajectory",
+        "other_vehicles",
+        "traffic_control_devices",
+        "obstruction_geometry",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "drv.stopped",
+          "note": "the complete stop"
+        },
+        {
+          "atom": "st.roadway",
+          "note": "the roadway it is made on"
+        },
+        {
+          "atom": "rel.occupies",
+          "note": "the position of the stopped vehicle"
+        },
+        {
+          "atom": "drv.queue_behind",
+          "note": "the traffic blocked"
+        },
+        {
+          "atom": "drv.hard_deceleration",
+          "note": "traffic behind forced to brake"
+        },
+        {
+          "atom": "drv.forced_halt",
+          "note": "the exception: a stop necessary for safe operation or required by law"
+        },
+        {
+          "atom": "dev.traffic_signal",
+          "note": "a device that makes the stop lawful"
+        },
+        {
+          "atom": "kin.velocity",
+          "note": "the surrounding traffic's movement"
+        }
+      ],
+      "source_residue": [
+        "tier S: 'normal and reasonable movement' is the whole standard"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-653-1a@motor_vehicle_driver",
+      "law_id": "NRS-484B-653-1a",
+      "actor": "motor_vehicle_driver",
+      "quote": "It is unlawful for a person to: Drive a vehicle in willful or wanton disregard of the safety of persons or property on a highway or premises to which the public has access.",
+      "structure": {
+        "law_id": "NRS-484B-653-1a",
+        "activation": {
+          "condition": "the subject drives a vehicle on a highway or on premises to which the public has access"
+        },
+        "obligation": {
+          "description": "Do not drive in willful or wanton disregard of safety.",
+          "type": "must_not"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "judged over the whole episode; recklessness is a pattern, not a frame; a trace long enough to show a pattern is needed — a single hard input is not the offence"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "willful or wanton disregard",
+            "note": "tier S, and 'willful or wanton disregard' is interior state: any rule is a surrogate whose verdicts are evidence, not a legal conclusion"
+          },
+          {
+            "phrase": "public-access premises",
+            "note": "'premises to which the public has access' is a legal region class — a reading assumption"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "ego_trajectory",
+        "other_vehicles",
+        "pedestrians",
+        "weather_surface_conditions",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "drv.time_to_conflict",
+          "note": "the surrogate for disregard of safety"
+        },
+        {
+          "atom": "drv.hard_deceleration",
+          "note": "another user forced into an emergency manoeuvre"
+        },
+        {
+          "atom": "kin.speed",
+          "note": "the speed relative to the conditions"
+        },
+        {
+          "atom": "kin.accel_longitudinal",
+          "note": "the subject's own violent inputs"
+        },
+        {
+          "atom": "kin.yaw_rate",
+          "note": "the same, in steering"
+        },
+        {
+          "atom": "rel.surface_gap",
+          "note": "the clearances left"
+        },
+        {
+          "atom": "rel.contact",
+          "note": "the extreme outcome"
+        },
+        {
+          "atom": "st.highway",
+          "note": "the highway, or premises to which the public has access"
+        },
+        {
+          "atom": "ru.pedestrian",
+          "note": "the persons whose safety is disregarded"
+        }
+      ],
+      "source_residue": [
+        "tier S, and 'willful or wanton disregard' is interior state: any rule is a surrogate whose verdicts are evidence, not a legal conclusion",
+        "'premises to which the public has access' is a legal region class — a reading assumption"
+      ]
+    },
+    {
+      "template_id": "LVMC-11-12-060@motor_vehicle_driver",
+      "law_id": "LVMC-11-12-060",
+      "actor": "motor_vehicle_driver",
+      "quote": "No vehicle in front of the driveway, entrance or approaches to a fire station shall be turned so as to proceed in the opposite direction.",
+      "structure": {
+        "law_id": "LVMC-11-12-060",
+        "activation": {
+          "condition": "the subject operates a vehicle in front of a fire station driveway, entrance or approach, or at its driveway"
+        },
+        "obligation": {
+          "description": "Do not reverse direction in front of a fire-station entrance or use its driveway for that purpose.",
+          "type": "must_not"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "a three-point turn through the driveway is an episode; entry, reversal and exit are all needed; the reversal in front of the entrance is judged where it occurs"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "for the purpose of turning",
+            "note": "'for the purpose of turning' is purpose; the completed reversal is the observable evidence"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "fire_station_entrance",
+        "ego_trajectory",
+        "commanded_turn_path"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "st.fire_station_entrance",
+          "note": "the driveway, entrance or approaches to a fire station"
+        },
+        {
+          "atom": "drv.u_turn",
+          "note": "turning to proceed in the opposite direction"
+        },
+        {
+          "atom": "kin.heading",
+          "note": "the heading reversal"
+        },
+        {
+          "atom": "rel.occupies",
+          "note": "the footprint in front of or in the entrance"
+        },
+        {
+          "atom": "kin.position",
+          "note": "where the manoeuvre is made"
+        },
+        {
+          "atom": "st.driveway_or_alley_entrance",
+          "note": "the driveway used to turn"
+        },
+        {
+          "atom": "kin.path_length",
+          "note": "the path into and out of the driveway"
+        }
+      ],
+      "source_residue": [
+        "'for the purpose of turning' is purpose; the completed reversal is the observable evidence"
+      ]
+    },
+    {
+      "template_id": "LVMC-11-16-060@motor_vehicle_driver",
+      "law_id": "LVMC-11-16-060",
+      "actor": "motor_vehicle_driver",
+      "quote": "The prima facie speed limit is twenty-five miles per hour on all streets and highways unless a different speed limit is posted as set forth in this Title [NRS-484B-600-1c].",
+      "structure": {
+        "law_id": "LVMC-11-16-060",
+        "activation": {
+          "condition": "the subject drives on a street or highway in the City AND no different speed limit is posted for that stretch"
+        },
+        "obligation": {
+          "description": "Apply the prima facie default speed limit on an unposted City street.",
+          "type": "must",
+          "numeric_conditions": [
+            {
+              "variable": "ego_speed",
+              "operator": "<=",
+              "value": 25,
+              "unit": "mph"
+            }
+          ]
+        },
+        "exceptions": [
+          {
+            "trigger": "A different limit is posted for the stretch",
+            "effect": "replaces",
+            "replacement_obligation": "Use the different posted speed limit",
+            "source_clause": "unless a different speed limit is posted as set forth in this Title"
+          }
+        ],
+        "timing": {
+          "description": "the default limit binds at every instant on an unposted street; a posted sign displaces it from the point the sign governs"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "prima facie",
+            "note": "'prima facie' is a rebuttable legal status"
+          },
+          {
+            "phrase": "absence of posted sign",
+            "note": "establishing that nothing is posted requires observing the absence of a sign over the whole stretch — a stronger demand than reading one"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "posted_speed_limit",
+        "traffic_control_devices",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "kin.speed",
+          "note": "against the 25 mph prima facie limit"
+        },
+        {
+          "atom": "dev.speed_limit_sign",
+          "note": "a different posted limit, which displaces it"
+        },
+        {
+          "atom": "dev.governs",
+          "note": "the stretch a posted sign controls"
+        },
+        {
+          "atom": "st.roadway",
+          "note": "the street travelled"
+        },
+        {
+          "atom": "rel.occupies",
+          "note": "which street the subject is on"
+        }
+      ],
+      "source_residue": [
+        "'prima facie' is a rebuttable legal status",
+        "establishing that nothing is posted requires observing the absence of a sign over the whole stretch — a stronger demand than reading one"
+      ]
+    },
+    {
+      "template_id": "LVMC-11-22-010@motor_vehicle_driver",
+      "law_id": "LVMC-11-22-010",
+      "actor": "motor_vehicle_driver",
+      "quote": "A person shall, when operating a vehicle, give his full time and attention to the operation of the vehicle.",
+      "structure": {
+        "law_id": "LVMC-11-22-010",
+        "activation": {
+          "condition": "the subject is operating a vehicle"
+        },
+        "obligation": {
+          "description": "Give full time and attention while operating the vehicle.",
+          "type": "must"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "the duty holds for the whole time the vehicle is operated; inattention shows only as a pattern over a window, not in one frame"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "full time and attention",
+            "note": "tier S: 'full time and attention' is interior state and the whole obligation; any rule is a surrogate whose verdicts are evidence, not a legal conclusion"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "ego_trajectory",
+        "traffic_control_devices",
+        "other_vehicles",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "kin.yaw_rate",
+          "note": "the surrogate: unsteady steering"
+        },
+        {
+          "atom": "kin.position",
+          "note": "lane-keeping quality"
+        },
+        {
+          "atom": "drv.straddles_marking",
+          "note": "drift across markings"
+        },
+        {
+          "atom": "kin.accel_longitudinal",
+          "note": "late or erratic speed control"
+        },
+        {
+          "atom": "drv.hard_deceleration",
+          "note": "late reactions"
+        },
+        {
+          "atom": "drv.time_to_conflict",
+          "note": "conflicts the subject did not anticipate"
+        },
+        {
+          "atom": "dev.traffic_signal",
+          "note": "a device the subject reacts to late"
+        },
+        {
+          "atom": "kin.speed",
+          "note": "speed inconsistent with the situation"
+        }
+      ],
+      "source_residue": [
+        "tier S: 'full time and attention' is interior state and the whole obligation; any rule is a surrogate whose verdicts are evidence, not a legal conclusion"
+      ]
+    },
+    {
+      "template_id": "LVMC-11-22-020@motor_vehicle_driver",
+      "law_id": "LVMC-11-22-020",
+      "actor": "motor_vehicle_driver",
+      "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character in a careless or imprudent manner on any highway in the City.",
+      "structure": {
+        "law_id": "LVMC-11-22-020",
+        "activation": {
+          "condition": "the subject drives or operates a vehicle of any kind on a highway in the City"
+        },
+        "obligation": {
+          "description": "Do not operate a vehicle carelessly or imprudently on a City highway.",
+          "type": "must_not"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "judged over the episode; carelessness is a pattern; a trace long enough to show one is needed"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "careless or imprudent",
+            "note": "tier S: 'careless or imprudent' is the whole obligation; the rule is a surrogate. It overlaps the state reckless-driving standard, so a reading must say how the two compose"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "ego_trajectory",
+        "other_vehicles",
+        "pedestrians",
+        "weather_surface_conditions",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "drv.time_to_conflict",
+          "note": "the surrogate for carelessness"
+        },
+        {
+          "atom": "drv.hard_deceleration",
+          "note": "violent inputs"
+        },
+        {
+          "atom": "kin.yaw_rate",
+          "note": "the same, in steering"
+        },
+        {
+          "atom": "kin.speed",
+          "note": "speed against the conditions"
+        },
+        {
+          "atom": "rel.surface_gap",
+          "note": "the clearances left"
+        },
+        {
+          "atom": "rel.contact",
+          "note": "the extreme outcome"
+        },
+        {
+          "atom": "st.highway",
+          "note": "a highway in the City"
+        },
+        {
+          "atom": "ru.pedestrian",
+          "note": "those exposed"
+        }
+      ],
+      "source_residue": [
+        "tier S: 'careless or imprudent' is the whole obligation; the rule is a surrogate. It overlaps the state reckless-driving standard, so a reading must say how the two compose"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-270-7a@cycle_or_scooter_operator",
+      "law_id": "NRS-484B-270-7a",
+      "actor": "cycle_or_scooter_operator",
+      "quote": "The operator of a bicycle, an electric bicycle or an electric scooter shall not: Intentionally interfere with the movement of a motor vehicle.",
+      "structure": {
+        "law_id": "NRS-484B-270-7a",
+        "activation": {
+          "condition": "the subject is riding a bicycle, electric bicycle or electric scooter near a motor vehicle whose movement could be affected"
+        },
+        "obligation": {
+          "description": "Do not intentionally interfere with a motor vehicle’s movement.",
+          "type": "must_not"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "judged whenever the rider and the vehicle share a conflict; the motorist's reaction follows the rider's movement"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "intentionally",
+            "note": "tier S and 'intentionally': intent is interior state; the rule is a surrogate"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "ego_speed",
+        "other_vehicles",
+        "commanded_turn_path"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "ru.subject",
+          "note": "the rider judged"
+        },
+        {
+          "atom": "ru.bicycle",
+          "note": "the machine ridden"
+        },
+        {
+          "atom": "ru.electric_bicycle",
+          "note": "or an electric bicycle"
+        },
+        {
+          "atom": "ru.electric_scooter",
+          "note": "or an electric scooter"
+        },
+        {
+          "atom": "ru.motor_vehicle",
+          "note": "the vehicle interfered with"
+        },
+        {
+          "atom": "kin.velocity",
+          "note": "its movement"
+        },
+        {
+          "atom": "drv.time_to_conflict",
+          "note": "the surrogate for interference"
+        },
+        {
+          "atom": "drv.hard_deceleration",
+          "note": "the motorist forced to brake"
+        },
+        {
+          "atom": "rel.surface_gap",
+          "note": "the clearance"
+        }
+      ],
+      "source_residue": [
+        "tier S and 'intentionally': intent is interior state; the rule is a surrogate"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-768-1@cycle_or_scooter_operator",
+      "law_id": "NRS-484B-768-1",
+      "actor": "cycle_or_scooter_operator",
+      "quote": "Except as otherwise provided in subsection 2, an operator of a bicycle, an electric bicycle or an electric scooter upon a roadway shall not turn from a direct course unless the movement may be made with reasonable safety and the operator gives an appropriate signal. The operator shall give the appropriate signal at least one time but is not required to give the signal continuously. An operator of a bicycle, an electric bicycle or an electric scooter is not required to give a signal if: (a) The bicycle, electric bicycle or electric scooter is in a designated turn lane; or (b) Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands on the bicycle, electric bicycle or electric scooter.",
+      "structure": {
+        "law_id": "NRS-484B-768-1",
+        "activation": {
+          "condition": "the subject rides a bicycle, electric bicycle or electric scooter on a roadway AND the subject turns from a direct course"
+        },
+        "obligation": {
+          "description": "Turn from direct course only when reasonably safe and after giving an appropriate signal at least once, unless a signal exception applies.",
+          "type": "must"
+        },
+        "exceptions": [
+          {
+            "trigger": "Rider is in a designated turn lane",
+            "effect": "replaces",
+            "replacement_obligation": "Turn only when reasonably safe; the signal is not required",
+            "source_clause": "(a) The bicycle, electric bicycle or electric scooter is in a designated turn lane;"
+          },
+          {
+            "trigger": "Safe operation requires both hands on the machine",
+            "effect": "replaces",
+            "replacement_obligation": "Turn only when reasonably safe; the signal is not required",
+            "source_clause": "(b) Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands on the bicycle, electric bicycle or electric scooter."
+          }
+        ],
+        "timing": {
+          "description": "the signal precedes the turn; the signal need be given only once — unlike a driver's, it is expressly not continuous, so a rule must not require it to persist",
+          "numeric_conditions": [
+            {
+              "variable": "ego_hand_signal.count_before_turn",
+              "operator": ">=",
+              "value": 1,
+              "unit": "signals"
+            }
+          ]
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "reasonable safety",
+            "note": "'reasonable safety' is a judgement element"
+          },
+          {
+            "phrase": "both hands needed for safe operation",
+            "note": "whether safe operation required both hands is a judgement about the rider's situation"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "rider_subtype",
+        "ego_hand_signal",
+        "designated_turn_lane",
+        "obstruction_geometry",
+        "other_vehicles",
+        "rider_posture",
+        "commanded_turn_path",
+        "commanded_signal"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "ru.subject",
+          "note": "the rider judged"
+        },
+        {
+          "atom": "ru.bicycle",
+          "note": "the machine"
+        },
+        {
+          "atom": "ru.electric_bicycle",
+          "note": "or an electric bicycle"
+        },
+        {
+          "atom": "ru.electric_scooter",
+          "note": "or an electric scooter"
+        },
+        {
+          "atom": "st.roadway",
+          "note": "the roadway ridden on"
+        },
+        {
+          "atom": "drv.turning",
+          "note": "the turn from a direct course"
+        },
+        {
+          "atom": "sig.hand_signal",
+          "note": "the appropriate signal, given at least once"
+        },
+        {
+          "atom": "drv.time_to_conflict",
+          "note": "operationalizes 'reasonable safety'"
+        },
+        {
+          "atom": "st.turn_lane",
+          "note": "exception (a): a designated turn lane"
+        },
+        {
+          "atom": "ru.rider_posture",
+          "note": "exception (b): hands_on_controls — both hands needed for safe operation"
+        }
+      ],
+      "source_residue": [
+        "'reasonable safety' is a judgement element",
+        "whether safe operation required both hands is a judgement about the rider's situation"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-769@cycle_or_scooter_operator",
+      "law_id": "NRS-484B-769",
+      "actor": "cycle_or_scooter_operator",
+      "quote": "An operator of a bicycle, an electric bicycle or an electric scooter upon a roadway shall give all signals by hand and arm in the manner required by NRS 484B.420 [DEF-NRS-484B-420], except that the operator may give a signal for a right turn by extending his or her right hand and arm horizontally and to the right side of the bicycle, electric bicycle or electric scooter.",
+      "structure": {
+        "law_id": "NRS-484B-769",
+        "activation": {
+          "condition": "the subject rides on a roadway and gives a signal"
+        },
+        "obligation": {
+          "description": "Give roadway signals by hand and arm in the prescribed manner.",
+          "type": "must"
+        },
+        "exceptions": [
+          {
+            "trigger": "Giving a right-turn signal",
+            "effect": "replaces",
+            "replacement_obligation": "May extend the right hand and arm horizontally to the right",
+            "source_clause": "except that the operator may give a signal for a right turn by extending his or her right hand and arm horizontally and to the right side of the bicycle, electric bicycle or electric scooter."
+          }
+        ],
+        "timing": {
+          "description": "the signal's form is judged when it is given; the preceding line fixes when it must be given"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "hand-signal meanings from referenced definition",
+            "note": "the general hand-signal meanings come from a provision rendered as a definition, not as a corpus line"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_hand_signal",
+        "rider_subtype",
+        "ego_trajectory",
+        "commanded_signal"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "sig.hand_signal",
+          "note": "the arm signal and its meaning ∈ {left, right, stop_or_slow}"
+        },
+        {
+          "atom": "ru.subject",
+          "note": "the rider judged"
+        },
+        {
+          "atom": "ru.bicycle",
+          "note": "the machine"
+        },
+        {
+          "atom": "ru.electric_bicycle",
+          "note": "or an electric bicycle"
+        },
+        {
+          "atom": "ru.electric_scooter",
+          "note": "or an electric scooter"
+        },
+        {
+          "atom": "st.roadway",
+          "note": "the roadway ridden on"
+        },
+        {
+          "atom": "drv.turning",
+          "note": "the movement signalled"
+        },
+        {
+          "atom": "ru.rider_posture",
+          "note": "which arm is extended and how"
+        }
+      ],
+      "source_residue": [
+        "the general hand-signal meanings come from a provision rendered as a definition, not as a corpus line"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-777-1@cycle_or_scooter_operator",
+      "law_id": "NRS-484B-777-1",
+      "actor": "cycle_or_scooter_operator",
+      "quote": "Every person operating a bicycle, an electric bicycle or an electric scooter upon a roadway shall, except: (a) When traveling at a lawful rate of speed commensurate with the speed of any nearby traffic; (b) When preparing to turn left; or (c) When doing so would not be safe, ride as near to the right side of the roadway as practicable, exercising due care when passing a standing vehicle or one proceeding in the same direction. For purposes of paragraph (c) of subsection 1, the conditions under which it is not safe to operate a bicycle, an electric bicycle or an electric scooter as near to the right side of the roadway as practicable include, without limitation: (a) When fixed or moving objects, parked or moving vehicles, bicycles, pedestrians, animals or surface hazards impede access to the right side of the roadway. (b) When a lane is too narrow for a bicycle and a vehicle to travel safely side by side within the lane.",
+      "structure": {
+        "law_id": "NRS-484B-777-1",
+        "activation": {
+          "condition": "the subject rides a bicycle, electric bicycle or electric scooter on a roadway"
+        },
+        "obligation": {
+          "description": "Ride as near the right side as practicable, with due care when passing, unless an exception applies.",
+          "type": "must"
+        },
+        "exceptions": [
+          {
+            "trigger": "Rider travels at a lawful speed commensurate with nearby traffic",
+            "effect": "replaces",
+            "replacement_obligation": "Near-right positioning is not required; retain due care when passing",
+            "source_clause": "(a) When traveling at a lawful rate of speed commensurate with the speed of any nearby traffic;"
+          },
+          {
+            "trigger": "Rider prepares to turn left",
+            "effect": "replaces",
+            "replacement_obligation": "Near-right positioning is not required; retain due care when passing",
+            "source_clause": "(b) When preparing to turn left;"
+          },
+          {
+            "trigger": "Near-right travel is unsafe, including an object, surface hazard, or narrow lane",
+            "effect": "replaces",
+            "replacement_obligation": "Ride in a practicable safer position; retain due care when passing",
+            "source_clause": "Every person operating a bicycle, an electric bicycle or an electric scooter upon a roadway shall, except: (a) When traveling at a lawful rate of speed commensurate with the speed of any nearby traffic; (b) When preparing to turn left; or (c) When doing so would not be safe, ride as near to the right side of the roadway as practicable, exercising due care when passing a standing vehicle or one proceeding in the same direction. For purposes of paragraph (c) of subsection 1, the conditions under which it is not safe to operate a bicycle, an electric bicycle or an electric scooter as near to the right side of the roadway as practicable include, without limitation: (a) When fixed or moving objects, parked or moving vehicles, bicycles, pedestrians, animals or surface hazards impede access to the right side of the roadway. (b) When a lane is too narrow for a bicycle and a vehicle to travel safely side by side within the lane."
+          }
+        ],
+        "timing": {
+          "description": "the position is judged while riding, and the exceptions are evaluated frame by frame as the hazards come and go"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "as practicable and due care",
+            "note": "'as practicable' and 'due care' are judgement elements: a lateral-offset bound and a clearance bound must be declared"
+          },
+          {
+            "phrase": "lateral_offset_from_right_edge",
+            "note": "As-near-as-practicable lateral position needs human judgment."
+          },
+          {
+            "phrase": "rider_speed_difference_from_nearby_traffic",
+            "note": "Commensurate speed needs a declared comparison standard."
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "ego_speed",
+        "rider_subtype",
+        "road_lateral_geometry",
+        "obstruction_geometry",
+        "other_vehicles",
+        "pedestrians",
+        "commanded_turn_path"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "ru.subject",
+          "note": "the rider judged"
+        },
+        {
+          "atom": "ru.bicycle",
+          "note": "the machine"
+        },
+        {
+          "atom": "ru.electric_bicycle",
+          "note": "or an electric bicycle"
+        },
+        {
+          "atom": "ru.electric_scooter",
+          "note": "or an electric scooter"
+        },
+        {
+          "atom": "st.roadway",
+          "note": "the roadway"
+        },
+        {
+          "atom": "st.road_edge",
+          "note": "the right side of the roadway"
+        },
+        {
+          "atom": "rel.occupies",
+          "note": "the lateral position"
+        },
+        {
+          "atom": "kin.speed",
+          "note": "(a) a lawful speed commensurate with nearby traffic"
+        },
+        {
+          "atom": "drv.speed_below_traffic",
+          "note": "the comparison with nearby traffic"
+        },
+        {
+          "atom": "drv.turning",
+          "note": "(b) preparing to turn left"
+        },
+        {
+          "atom": "st.obstruction",
+          "note": "(c) fixed or moving objects and surface hazards"
+        },
+        {
+          "atom": "drv.standing_or_parked",
+          "note": "(c) parked vehicles impeding access to the right"
+        },
+        {
+          "atom": "ru.pedestrian",
+          "note": "(c) pedestrians"
+        },
+        {
+          "atom": "st.lane_width",
+          "note": "(c) a lane too narrow to share side by side"
+        },
+        {
+          "atom": "rel.surface_gap",
+          "note": "the clearance when passing a standing vehicle"
+        }
+      ],
+      "source_residue": [
+        "'as practicable' and 'due care' are judgement elements: a lateral-offset bound and a clearance bound must be declared"
+      ]
+    },
+    {
+      "template_id": "NRS-484B-785-1a@cycle_or_scooter_operator",
+      "law_id": "NRS-484B-785-1a",
+      "actor": "cycle_or_scooter_operator",
+      "quote": "Except as otherwise provided in an ordinance enacted pursuant to NRS 484A.469 [DEF-LVMC-11-40-185-A], an electric scooter may be operated: On a roadway, bicycle lane, path or route at a speed of not more than 15 miles per hour.",
+      "structure": {
+        "law_id": "NRS-484B-785-1a",
+        "activation": {
+          "condition": "the subject operates an electric scooter on a roadway, bicycle lane, path or route"
+        },
+        "obligation": {
+          "description": "For the electric-scooter subtype, do not exceed the roadway/path speed cap unless a valid local ordinance provides otherwise.",
+          "type": "must_not",
+          "numeric_conditions": [
+            {
+              "variable": "ego_speed",
+              "operator": "<=",
+              "value": 15,
+              "unit": "mph"
+            }
+          ]
+        },
+        "exceptions": [
+          {
+            "trigger": "A local ordinance enacted under the cited provision provides otherwise",
+            "effect": "replaces",
+            "replacement_obligation": "Apply the local ordinance’s speed rule",
+            "source_clause": "Except as otherwise provided in an ordinance enacted pursuant to NRS 484A.469"
+          }
+        ],
+        "timing": {
+          "description": "the 15 mph cap binds at every instant of operation"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "local ordinance not included as a corpus line",
+            "note": "the local ordinance that may displace this rule is rendered as a definition, not as a corpus line"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "rider_subtype",
+        "road_path_type",
+        "local_scooter_rule",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "ru.electric_scooter",
+          "note": "the machine"
+        },
+        {
+          "atom": "kin.speed",
+          "note": "against the 15 mph cap"
+        },
+        {
+          "atom": "st.roadway",
+          "note": "the roadway"
+        },
+        {
+          "atom": "st.bicycle_lane_or_path",
+          "note": "the bicycle lane, path or route"
+        },
+        {
+          "atom": "rel.occupies",
+          "note": "which of them the machine is on"
+        },
+        {
+          "atom": "dev.regulatory_sign",
+          "note": "any local ordinance's signage"
+        }
+      ],
+      "source_residue": [
+        "the local ordinance that may displace this rule is rendered as a definition, not as a corpus line"
+      ]
+    },
+    {
+      "template_id": "LVMC-11-40-070@cycle_or_scooter_operator",
+      "law_id": "LVMC-11-40-070",
+      "actor": "cycle_or_scooter_operator",
+      "quote": "Any person operating a bicycle, electric bicycle, or electric scooter shall obey the instructions of official traffic-control signals, signs and other control devices applicable to vehicles, unless otherwise directed by a Police Officer.",
+      "structure": {
+        "law_id": "LVMC-11-40-070",
+        "activation": {
+          "condition": "an official traffic-control signal, sign or device applicable to vehicles governs the rider's approach AND the subject operates a bicycle, electric bicycle or electric scooter"
+        },
+        "obligation": {
+          "description": "Obey official vehicle-applicable traffic-control signals, signs, and devices.",
+          "type": "must"
+        },
+        "exceptions": [
+          {
+            "trigger": "A police officer directs otherwise",
+            "effect": "replaces",
+            "replacement_obligation": "Obey the officer’s direction",
+            "source_clause": "unless otherwise directed by a Police Officer."
+          }
+        ],
+        "timing": {
+          "description": "obedience is owed while the device governs the rider; the indication must be observable before the conduct judged"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "device-specific rule composition",
+            "note": "what obedience requires comes from the device-specific rules: rule composition"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "traffic_control_devices",
+        "officer_direction",
+        "rider_subtype",
+        "ego_trajectory"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "ru.bicycle",
+          "note": "the machine"
+        },
+        {
+          "atom": "ru.electric_bicycle",
+          "note": "or an electric bicycle"
+        },
+        {
+          "atom": "ru.electric_scooter",
+          "note": "or an electric scooter"
+        },
+        {
+          "atom": "dev.traffic_signal",
+          "note": "the signals applicable to vehicles"
+        },
+        {
+          "atom": "dev.stop_sign",
+          "note": "the signs"
+        },
+        {
+          "atom": "dev.regulatory_sign",
+          "note": "and other control devices"
+        },
+        {
+          "atom": "dev.governs",
+          "note": "which apply to the rider's approach or lane"
+        },
+        {
+          "atom": "kin.velocity",
+          "note": "the rider's response"
+        },
+        {
+          "atom": "dev.human_direction",
+          "note": "the exception: a police officer directing otherwise"
+        }
+      ],
+      "source_residue": [
+        "what obedience requires comes from the device-specific rules: rule composition"
+      ]
+    },
+    {
+      "template_id": "LVMC-11-40-080@cycle_or_scooter_operator",
+      "law_id": "LVMC-11-40-080",
+      "actor": "cycle_or_scooter_operator",
+      "quote": "Whenever authorized signs are erected indicating that no right turn, left turn or U-turn is permitted, it shall be unlawful for any person operating a bicycle, electric bicycle, or electric scooter to disobey the direction of any such sign, except where such person dismounts from the bicycle, electric bicycle, or electric scooter to make any such turn, in which event such person shall then obey the regulations applicable to pedestrians.",
+      "structure": {
+        "law_id": "LVMC-11-40-080",
+        "activation": {
+          "condition": "authorized signs prohibit a right turn, left turn or U-turn and govern the approach of the subject riding a bicycle, electric bicycle or electric scooter"
+        },
+        "obligation": {
+          "description": "Do not ride through a prohibited U-turn where an authorized sign governs.",
+          "type": "must_not"
+        },
+        "exceptions": [
+          {
+            "trigger": "Rider dismounts before making the turn",
+            "effect": "replaces",
+            "replacement_obligation": "Obey the rules applicable to pedestrians",
+            "source_clause": "except where such person dismounts from the bicycle, electric bicycle, or electric scooter to make any such turn, in which event such person shall then obey the regulations applicable to pedestrians."
+          }
+        ],
+        "timing": {
+          "description": "the turn is the act judged; the dismount must precede the turn for the exception to hold"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "dismount inference",
+            "note": "a dismount is read from posture and speed; a source that cannot tell a walked machine from a ridden one reports unknown"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "traffic_control_devices",
+        "rider_subtype",
+        "rider_posture",
+        "ego_trajectory",
+        "commanded_dismount"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "dev.regulatory_sign",
+          "note": "codes no_right_turn, no_left_turn, no_u_turn"
+        },
+        {
+          "atom": "dev.governs",
+          "note": "the approach the sign controls"
+        },
+        {
+          "atom": "ru.bicycle",
+          "note": "the machine"
+        },
+        {
+          "atom": "ru.electric_bicycle",
+          "note": "or an electric bicycle"
+        },
+        {
+          "atom": "ru.electric_scooter",
+          "note": "or an electric scooter"
+        },
+        {
+          "atom": "drv.turning",
+          "note": "the turn made"
+        },
+        {
+          "atom": "drv.u_turn",
+          "note": "or the U-turn"
+        },
+        {
+          "atom": "ru.rider_posture",
+          "note": "whether the rider dismounted"
+        },
+        {
+          "atom": "ru.pedestrian",
+          "note": "the class the rider then joins"
+        },
+        {
+          "atom": "kin.speed",
+          "note": "walking speed as the evidence of dismounting"
+        }
+      ],
+      "source_residue": [
+        "a dismount is read from posture and speed; a source that cannot tell a walked machine from a ridden one reports unknown"
+      ]
+    },
+    {
+      "template_id": "LVMC-11-40-130@cycle_or_scooter_operator",
+      "law_id": "LVMC-11-40-130",
+      "actor": "cycle_or_scooter_operator",
+      "quote": "It shall be unlawful for any person to operate a bicycle at a speed greater than is reasonable and prudent under the conditions then existing.",
+      "structure": {
+        "law_id": "LVMC-11-40-130",
+        "activation": {
+          "condition": "the subject operates a bicycle"
+        },
+        "obligation": {
+          "description": "For the bicycle subtype, do not ride faster than is reasonable and prudent for conditions.",
+          "type": "must_not"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "judged at every instant, against the conditions at that instant"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "reasonable and prudent under the conditions",
+            "note": "tier S: 'reasonable and prudent under the conditions' is the whole obligation; the bound is a surrogate"
+          },
+          {
+            "phrase": "bicycle_speed_vs_reasonable_speed",
+            "note": "Reasonable and prudent bicycle speed needs human judgment."
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "rider_subtype",
+        "weather_surface_conditions",
+        "curve_at_turn",
+        "obstruction_geometry",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "ru.bicycle",
+          "note": "the machine"
+        },
+        {
+          "atom": "kin.speed",
+          "note": "the speed ridden"
+        },
+        {
+          "atom": "drv.time_to_conflict",
+          "note": "the surrogate for prudence"
+        },
+        {
+          "atom": "drv.stopping_distance",
+          "note": "the same, against the space available"
+        },
+        {
+          "atom": "ru.pedestrian",
+          "note": "the users around"
+        },
+        {
+          "atom": "env.visibility",
+          "note": "the conditions then existing"
+        },
+        {
+          "atom": "env.wet_road",
+          "note": "the same"
+        },
+        {
+          "atom": "st.curvature",
+          "note": "the geometry the speed must suit"
+        },
+        {
+          "atom": "rel.surface_gap",
+          "note": "the clearances left"
+        }
+      ],
+      "source_residue": [
+        "tier S: 'reasonable and prudent under the conditions' is the whole obligation; the bound is a surrogate"
+      ]
+    },
+    {
+      "template_id": "LVMC-11-40-185-B@cycle_or_scooter_operator",
+      "law_id": "LVMC-11-40-185-B",
+      "actor": "cycle_or_scooter_operator",
+      "quote": "It shall be unlawful for any person to perform stunts or wheelies, ride on handlebars, operate at unsafe speeds, or engage in any other reckless behavior while operating an electric bicycle or electric scooter on a public roadway or sidewalk, or a lane, path or route designated for bicycle, electric bicycle, or electric scooter use.",
+      "structure": {
+        "law_id": "LVMC-11-40-185-B",
+        "activation": {
+          "condition": "the subject operates an electric bicycle or electric scooter on a public roadway, sidewalk, or a lane, path or route designated for such machines"
+        },
+        "obligation": {
+          "description": "For electric-bicycle or scooter subtype, do not perform listed stunts, ride at unsafe speed, or behave recklessly.",
+          "type": "must_not"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "judged while the machine is operated; a stunt or a pattern of reckless behaviour needs a window, not a frame"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "unsafe speeds and reckless behavior",
+            "note": "tier S for the 'unsafe speeds' and 'reckless behaviour' limbs; the stunt limb is concrete and reads ru.rider_posture directly"
+          },
+          {
+            "phrase": "operating_speed_vs_unsafe_bound",
+            "note": "Unsafe speed has no statutory numeric bound here."
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "rider_subtype",
+        "rider_posture",
+        "ego_trajectory",
+        "road_path_type",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "ru.electric_bicycle",
+          "note": "the machine"
+        },
+        {
+          "atom": "ru.electric_scooter",
+          "note": "or an electric scooter"
+        },
+        {
+          "atom": "ru.rider_posture",
+          "note": "stunt — a wheel off the ground, or a person on the handlebars"
+        },
+        {
+          "atom": "kin.yaw_rate",
+          "note": "the erratic steering of reckless behaviour"
+        },
+        {
+          "atom": "kin.accel_longitudinal",
+          "note": "the same, longitudinally"
+        },
+        {
+          "atom": "kin.speed",
+          "note": "'unsafe speeds'"
+        },
+        {
+          "atom": "drv.time_to_conflict",
+          "note": "the surrogate for recklessness"
+        },
+        {
+          "atom": "st.roadway",
+          "note": "a public roadway"
+        },
+        {
+          "atom": "st.sidewalk",
+          "note": "or sidewalk"
+        },
+        {
+          "atom": "st.bicycle_lane_or_path",
+          "note": "or a designated lane, path or route"
+        },
+        {
+          "atom": "rel.surface_gap",
+          "note": "the clearances left to others"
+        }
+      ],
+      "source_residue": [
+        "tier S for the 'unsafe speeds' and 'reckless behaviour' limbs; the stunt limb is concrete and reads ru.rider_posture directly"
+      ]
+    }
+  ]
+}
