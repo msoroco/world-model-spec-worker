@@ -1,0 +1,9 @@
+# Right-turn signal-distance capability
+
+Three linked business-district probes request indicator onset at 95, 100, and 105 feet before the authored right-turn station. The 100-foot middle command is an engineering setpoint; actual continuously signaled distance is measured from original positions to trajectory-derived course-change onset and retains sampling brackets. Only measured evidence can support a later expected numeric outcome. The baseline is unselected.
+
+The runner authors an intersection, frontage and freight-loading-zone objects, requests native VehicleLightState.RightBlinker, uses actual native VehicleControl, captures every original frame with supplied PipelineCapture, and retains four lossless FFV1 source views with pixel hashes. Exact offline commands/hashes are in result.json. Later use `runtime.py capture` on an operator-owned endpoint and `analyze.py --attempt PATH --output REPORT`; analysis decodes a configurable right-lamp ROI from the original view, measures brightness variation, continuous API signal, traveled distance and a same-setting follow-up decision. Saved conversion and final video composition use the supplied runtime process/render commands.
+
+Unverified: native object rendering/use, business district physical frontage, right-lamp ROI validity, pixel visibility, controller path tracking, measured signal distance, source completeness, duration, and final video decode. Public-way and business-district status are explicit synthetic assumptions. No CARLA run or physical acceptance occurred.
+
+The analysis checks every original trace, evidence, channel and camera frame/time join, and uses supplied worker_exchange.media.audit receipts bound to source and mapping SHA. 413(2) also computes the right-lamp pixel ROI during that same source decode. Final composed video validation remains a separate downstream check.

@@ -1,0 +1,5 @@
+# testing__C215286__NRS-484B-113-2__motor_vehicle_driver
+
+Exact law and witness: The driver of a vehicle: Shall not back into an intersection, on or over a crosswalk, or around a street corner.
+
+Baseline is unselected. Every listed nonbaseline case has its own inline construction, frozen config, and capability measurement procedure. Run each case with `runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case CASE --output FRESH_DIRECTORY`. Later local capture uses `runtime.py capture` against an operator-owned server, followed by `analyze.py --attempt PATH --output REPORT`, the supplied `runtime.py validate-native`, `runtime.py process` and `runtime.py render`. Analysis reuses the shared lossless source-video decoder/receipt, validates source-frame/channel joins, and emits a draft native result. Native geometry/device realization, controller motion, camera visibility, duration and channel completeness remain unverified until original capture. Administrative public-way and device status are explicit synthetic context, not measured physics. No physical or legal acceptance is claimed.

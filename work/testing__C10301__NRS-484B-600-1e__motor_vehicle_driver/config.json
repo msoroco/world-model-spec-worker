@@ -1,0 +1,210 @@
+{
+  "assignment_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver",
+  "cell_id": "C10301",
+  "law_id": "NRS-484B-600-1e",
+  "actor": "motor_vehicle_driver",
+  "mode": "absolute_speed",
+  "case": {
+    "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below",
+    "target_law_id": "NRS-484B-600-1e",
+    "target_type": "boundary_probe",
+    "rationale": "Statutory speed probe; at is commanded 0.5mph inside compliant side, not equality. Measured speed controls later classification.",
+    "variable_assignments": {
+      "commanded_approach_speed": {
+        "kind": "controller",
+        "value": 33.528,
+        "unit": "m/s"
+      },
+      "commanded_turn_path": {
+        "kind": "controller",
+        "value": "travel"
+      },
+      "ego_speed": {
+        "kind": "subject_behavior",
+        "value": null,
+        "unit": "m/s"
+      },
+      "authored_context": {
+        "kind": "world_setup",
+        "value": {
+          "public_highway": "synthetic test assumption; not inferred from rendering",
+          "physical_driver": "modeled controller acting on conventional passenger vehicle",
+          "official_devices": "native asset identity is not proof of public legal authority",
+          "witness_required_context": [
+            "Establish vehicle access, qualifying classification and personal operation.",
+            "Preserve unresolved territorial applicability, statutory definitions and emergency-departure scope; do not infer a parking obligation from this speed law.",
+            "Retain an actual marked access aisle and specify its location and geometry relative to ego's route.",
+            "Retain speed in mph with provenance and uncertainty, without inferring a high-speed demonstration is already realized.",
+            "Retain the marked access aisle and establish its location relative to the travel route.",
+            "Specify alley length, width, clearance and controller support for any proposed speed observations; the catalog supplies no incompatible dimensions.",
+            "Verify supported route geometry and controller capability for the speed observations."
+          ]
+        }
+      }
+    },
+    "unresolved_judgment_calls": [],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "native velocity norm",
+          "time_window": "entire original execution",
+          "reference_frame": "native CARLA world XYZ",
+          "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+        },
+        {
+          "name": "kin.velocity",
+          "unit": "raw",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame kin.velocity measurement projection; source native actor/device APIs and retained authored geometry",
+          "time_window": "entire original execution",
+          "reference_frame": "native CARLA world XYZ",
+          "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+        },
+        {
+          "name": "ru.subject",
+          "unit": "raw",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame ru.subject measurement projection; source native actor/device APIs and retained authored geometry",
+          "time_window": "entire original execution",
+          "reference_frame": "native CARLA world XYZ",
+          "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+        },
+        {
+          "name": "kin.position",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame kin.position measurement projection; source native actor/device APIs and retained authored geometry",
+          "time_window": "entire original execution",
+          "reference_frame": "native CARLA world XYZ",
+          "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "authored_context",
+          "unit": "object",
+          "method": "retained synthetic assumptions and exact required witness context"
+        }
+      ],
+      "limitations": [
+        "Measured native projections preserve raw positions, speeds, body geometry, device states and event histories; no legal verdict, inferred public authority or judgment cutoff.",
+        "Engineering cessation <=0.05m/s and 0.5mph tracking tolerance are measurement conventions, never legal tolerances."
+      ]
+    },
+    "paired_probe_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__speed_triple",
+    "deliberate_differences": [
+      "commanded_approach_speed"
+    ],
+    "probe": {
+      "primary_variable": "commanded_approach_speed",
+      "comparison_or_standard": "statutory speed maximum",
+      "target_value_or_branch": 33.528,
+      "threshold_ref": "NRS-484B-600-1e",
+      "operator": "<=",
+      "unit": "m/s",
+      "test_value": 33.528,
+      "epsilon_used": 0.22352,
+      "threshold_value": 35.7632
+    }
+  },
+  "selected_case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below",
+  "supported_case_ids": [
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__baseline",
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below",
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__at",
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above"
+  ],
+  "duration_s": 45,
+  "max_ticks": 900,
+  "controller": {
+    "speed_kp": 0.28,
+    "brake_kp": 0.45,
+    "steer_kp": 1.5,
+    "gap_kp": 0.5,
+    "maximum_speed_mps": 40,
+    "red_brake_start_x_m": -30,
+    "stop_brake_start_x_m": -30,
+    "other_brake_start_y_m": 20
+  },
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity",
+    "ru.subject",
+    "kin.position"
+  ],
+  "observations": [
+    {
+      "name": "kin.speed",
+      "mandatory": true
+    },
+    {
+      "name": "kin.velocity",
+      "mandatory": true
+    },
+    {
+      "name": "ru.subject",
+      "mandatory": true
+    },
+    {
+      "name": "kin.position",
+      "mandatory": true
+    }
+  ],
+  "cameras": [
+    {
+      "x": -8,
+      "z": 4,
+      "pitch": -15,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "x": 0.7,
+      "y": -0.3,
+      "z": 1.5,
+      "pitch": 0,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "x": -2,
+      "z": 16,
+      "pitch": -80,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "x": -4,
+      "y": 4,
+      "z": 2,
+      "pitch": -5,
+      "yaw": -30,
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "authored_test_context": {
+    "public_highway": "synthetic test assumption; not inferred from rendering",
+    "physical_driver": "modeled controller acting on conventional passenger vehicle",
+    "official_devices": "native asset identity is not proof of public legal authority",
+    "witness_required_context": [
+      "Establish vehicle access, qualifying classification and personal operation.",
+      "Preserve unresolved territorial applicability, statutory definitions and emergency-departure scope; do not infer a parking obligation from this speed law.",
+      "Retain an actual marked access aisle and specify its location and geometry relative to ego's route.",
+      "Retain speed in mph with provenance and uncertainty, without inferring a high-speed demonstration is already realized.",
+      "Retain the marked access aisle and establish its location relative to the travel route.",
+      "Specify alley length, width, clearance and controller support for any proposed speed observations; the catalog supplies no incompatible dimensions.",
+      "Verify supported route geometry and controller capability for the speed observations."
+    ],
+    "public_way": "explicit synthetic assumption, not native map evidence",
+    "device_authority": "explicit synthetic assumption where required",
+    "native_device_presence": "must be measured during future live run",
+    "wet_road": false
+  },
+  "public_way_road_ids": [
+    1
+  ]
+}

@@ -1,0 +1,962 @@
+{
+  "assignment_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C215286",
+  "law_id": "NRS-484B-113-2",
+  "cases": [
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral definition retained and not selected by default.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "reverse"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 200
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "crosswalk_polygon": {
+          "kind": "world_setup",
+          "value": [
+            [
+              148,
+              0
+            ],
+            [
+              152,
+              0
+            ],
+            [
+              152,
+              3.5
+            ],
+            [
+              148,
+              3.5
+            ]
+          ]
+        },
+        "residence_district": {
+          "kind": "world_setup",
+          "value": "synthetic authored district; native appearance unconfirmed"
+        },
+        "street_corner_maneuver": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "intersection_polygon": {
+          "kind": "world_setup",
+          "value": [
+            [
+              490,
+              -10
+            ],
+            [
+              510,
+              -10
+            ],
+            [
+              510,
+              10
+            ],
+            [
+              490,
+              10
+            ]
+          ]
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.backing",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "Physical legal/judgment conclusions remain unresolved; synthetic authored jurisdiction and authority contexts retain provenance."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__outside_crosswalk_reverse",
+      "target_law_id": "NRS-484B-113-2",
+      "target_type": "compliant_attempt",
+      "rationale": "Backing remains entirely upstream of marked crossing; no street-corner maneuver.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "reverse"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 230
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "crosswalk_polygon": {
+          "kind": "world_setup",
+          "value": [
+            [
+              148,
+              0
+            ],
+            [
+              152,
+              0
+            ],
+            [
+              152,
+              3.5
+            ],
+            [
+              148,
+              3.5
+            ]
+          ]
+        },
+        "residence_district": {
+          "kind": "world_setup",
+          "value": "synthetic authored district; native appearance unconfirmed"
+        },
+        "street_corner_maneuver": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "intersection_polygon": {
+          "kind": "world_setup",
+          "value": [
+            [
+              490,
+              -10
+            ],
+            [
+              510,
+              -10
+            ],
+            [
+              510,
+              10
+            ],
+            [
+              490,
+              10
+            ]
+          ]
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.backing",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "Physical legal/judgment conclusions remain unresolved; synthetic authored jurisdiction and authority contexts retain provenance."
+        ]
+      },
+      "paired_probe_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__crosswalk_pair",
+      "deliberate_differences": [
+        "route_start_s"
+      ],
+      "probe": {
+        "primary_variable": "route_start_s",
+        "comparison_or_standard": "exact plain branch; no judgment standard",
+        "target_value_or_branch": "outside_crosswalk_reverse"
+      }
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__over_crosswalk_reverse",
+      "target_law_id": "NRS-484B-113-2",
+      "target_type": "violating_attempt",
+      "rationale": "Same reverse controller requests crossing footprint overlap; no street-corner maneuver.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "reverse"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 190
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "crosswalk_polygon": {
+          "kind": "world_setup",
+          "value": [
+            [
+              148,
+              0
+            ],
+            [
+              152,
+              0
+            ],
+            [
+              152,
+              3.5
+            ],
+            [
+              148,
+              3.5
+            ]
+          ]
+        },
+        "residence_district": {
+          "kind": "world_setup",
+          "value": "synthetic authored district; native appearance unconfirmed"
+        },
+        "street_corner_maneuver": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "intersection_polygon": {
+          "kind": "world_setup",
+          "value": [
+            [
+              490,
+              -10
+            ],
+            [
+              510,
+              -10
+            ],
+            [
+              510,
+              10
+            ],
+            [
+              490,
+              10
+            ]
+          ]
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.backing",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "Physical legal/judgment conclusions remain unresolved; synthetic authored jurisdiction and authority contexts retain provenance."
+        ]
+      },
+      "paired_probe_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__crosswalk_pair",
+      "deliberate_differences": [
+        "route_start_s"
+      ],
+      "probe": {
+        "primary_variable": "route_start_s",
+        "comparison_or_standard": "exact plain branch; no judgment standard",
+        "target_value_or_branch": "over_crosswalk_reverse"
+      }
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__outside_intersection_reverse",
+      "target_law_id": "NRS-484B-113-2",
+      "target_type": "compliant_attempt",
+      "rationale": "Straight backing stays downstream of the authored native junction; no street-corner maneuver and no crosswalk overlap.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "reverse"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 600
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "crosswalk_polygon": {
+          "kind": "world_setup",
+          "value": [
+            [
+              148,
+              0
+            ],
+            [
+              152,
+              0
+            ],
+            [
+              152,
+              3.5
+            ],
+            [
+              148,
+              3.5
+            ]
+          ]
+        },
+        "residence_district": {
+          "kind": "world_setup",
+          "value": "synthetic authored district; native appearance unconfirmed"
+        },
+        "street_corner_maneuver": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "intersection_polygon": {
+          "kind": "world_setup",
+          "value": [
+            [
+              490,
+              -10
+            ],
+            [
+              510,
+              -10
+            ],
+            [
+              510,
+              10
+            ],
+            [
+              490,
+              10
+            ]
+          ]
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.backing",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "Physical legal/judgment conclusions remain unresolved; synthetic authored jurisdiction and authority contexts retain provenance."
+        ]
+      },
+      "paired_probe_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__intersection_pair",
+      "deliberate_differences": [
+        "route_start_s"
+      ],
+      "probe": {
+        "primary_variable": "route_start_s",
+        "comparison_or_standard": "exact plain branch; no judgment standard",
+        "target_value_or_branch": "outside_intersection_reverse"
+      }
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__into_intersection_reverse",
+      "target_law_id": "NRS-484B-113-2",
+      "target_type": "violating_attempt",
+      "rationale": "Identical straight reverse controller crosses road 2 into native junction connector 11, with observed footprint against authored intersection bounds; no street-corner maneuver.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "reverse"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 550
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "crosswalk_polygon": {
+          "kind": "world_setup",
+          "value": [
+            [
+              148,
+              0
+            ],
+            [
+              152,
+              0
+            ],
+            [
+              152,
+              3.5
+            ],
+            [
+              148,
+              3.5
+            ]
+          ]
+        },
+        "residence_district": {
+          "kind": "world_setup",
+          "value": "synthetic authored district; native appearance unconfirmed"
+        },
+        "street_corner_maneuver": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "intersection_polygon": {
+          "kind": "world_setup",
+          "value": [
+            [
+              490,
+              -10
+            ],
+            [
+              510,
+              -10
+            ],
+            [
+              510,
+              10
+            ],
+            [
+              490,
+              10
+            ]
+          ]
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.backing",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "Physical legal/judgment conclusions remain unresolved; synthetic authored jurisdiction and authority contexts retain provenance."
+        ]
+      },
+      "paired_probe_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__intersection_pair",
+      "deliberate_differences": [
+        "route_start_s"
+      ],
+      "probe": {
+        "primary_variable": "route_start_s",
+        "comparison_or_standard": "exact plain branch; no judgment standard",
+        "target_value_or_branch": "into_intersection_reverse"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__outside_crosswalk_reverse",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__over_crosswalk_reverse"
+      ],
+      "deliberate_differences": [
+        "route_start_s"
+      ],
+      "fixed_conditions": "identical runner.py, road.xodr, cameras, participant blueprints, controller gains, weather defaults and observation methods; only listed scalar configuration differences change"
+    },
+    {
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__outside_intersection_reverse",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__into_intersection_reverse"
+      ],
+      "deliberate_differences": [
+        "route_start_s"
+      ],
+      "fixed_conditions": "identical runner.py, road.xodr, cameras, participant blueprints, controller gains, weather defaults and observation methods; only listed scalar configuration differences change"
+    }
+  ],
+  "observations": [
+    {
+      "name": "drv.backing",
+      "mandatory": true,
+      "note": "the subject is backing"
+    },
+    {
+      "name": "st.intersection",
+      "mandatory": true,
+      "note": "the intersection region"
+    },
+    {
+      "name": "st.crosswalk",
+      "mandatory": true,
+      "note": "the crosswalk region"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "note": "the footprint overlapping the intersection or crosswalk while backing"
+    },
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "note": "'around a street corner' \u2014 a heading change while reversing"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "note": "the heading change during the reverse movement"
+    },
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "note": "original kinematic trace"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "note": "original kinematic trace"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+      "sha256": "ce08229004950ad62aa65dbfc26bab3a87d623e7f37289bd5d4e878ce7a3ab63"
+    },
+    {
+      "path": "runtime/main-pipeline-v1/SOURCE-MANIFEST.json",
+      "sha256": "0c076c6fe5ff133c19b9a8daf4f5074e7cabe087639be216954317f8119d927f"
+    },
+    {
+      "path": "runtime/main-pipeline-v1/capabilities/catalogue.json",
+      "sha256": "8c9524f0218a397b63a087b7d038580b7510a086bb2cd65f57de74cd8de95a8a"
+    },
+    {
+      "path": "updates/004.json",
+      "sha256": "3dd0441dd34214032258c114597575d30b7c16d935050d0768700158cf8ce65c"
+    },
+    {
+      "path": "skills/worker-preparation/SKILL.md",
+      "sha256": "3241d475f18ec2c53f754a2315e520ddc48bde58dc27f44a1a1fedcf8f19f8ef"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "native map/device realization, actor tracking, camera visibility and duration require an actual original capture",
+    "authored administrative context is synthetic and must be retained separately from physics"
+  ],
+  "baseline_selected": false,
+  "summary_text_conflicts": []
+}

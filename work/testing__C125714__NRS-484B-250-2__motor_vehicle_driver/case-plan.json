@@ -1,0 +1,1026 @@
+{
+  "assignment_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C125714",
+  "law_id": "NRS-484B-250-2",
+  "cases": [
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Measured crossing-entry timing at a median-opening intersection.; baseline is an attempted physical construction, not an observation.",
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel"
+        },
+        "test_branch": {
+          "kind": "controller",
+          "value": "neutral"
+        },
+        "highway_context": {
+          "kind": "world_setup",
+          "value": {
+            "layout": "median_opening",
+            "control": "other_vehicle",
+            "administrative_status": "unconfirmed"
+          }
+        },
+        "commanded_release_offset_s": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "approximately the same time",
+          "note": "Exact law contains qualitative entry simultaneity although supplied summary residue is empty; no tolerance is adopted."
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.intersection",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "witness_context",
+            "unit": "structured",
+            "method": "exact authored witness requirements; public/administrative facts are assumptions requiring separate evidence"
+          }
+        ],
+        "limitations": [
+          "No CARLA execution occurred. Native map meshing, blueprint spawn availability, server/client versions, physical tracking, frame capture and camera visibility require first-run readback.",
+          "All route/controller completion tolerances are engineering criteria; no statutory or subjective meaning is assigned.",
+          "Original raw histories and output validation are implemented; synthetic fixtures validate contracts and do not establish physical feasibility."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay-0000",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed ego release delay; measure both full-footprint crossing-entry times without deciding approximate simultaneity",
+      "paired_probe_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay",
+      "deliberate_differences": [
+        "commanded_release_delay_s"
+      ],
+      "probe": {
+        "primary_variable": "commanded_release_delay_s",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "commanded_release_delay_s": 1.0
+        }
+      },
+      "sweep_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay",
+      "sweep_spec_version": "fd3883d8c02ee03fb5e827d06cd6b8422182ff20e00648ec3e8d07b3b382ed0b",
+      "sweep_point": {
+        "commanded_release_delay_s": 1.0
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel"
+        },
+        "test_branch": {
+          "kind": "controller",
+          "value": "arrival_offset_sweep"
+        },
+        "highway_context": {
+          "kind": "world_setup",
+          "value": {
+            "layout": "median_opening",
+            "control": "other_vehicle",
+            "administrative_status": "explicit synthetic public-highway and no-official-control assumptions"
+          }
+        },
+        "commanded_release_offset_s": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "s"
+        },
+        "commanded_release_delay_s": {
+          "kind": "controller",
+          "value": 1.0,
+          "unit": "s",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.intersection",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "witness_context",
+            "unit": "structured",
+            "method": "exact authored witness requirements; public/administrative facts are assumptions requiring separate evidence"
+          }
+        ],
+        "limitations": [
+          "No CARLA execution occurred. Native map meshing, blueprint spawn availability, server/client versions, physical tracking, frame capture and camera visibility require first-run readback.",
+          "All route/controller completion tolerances are engineering criteria; no statutory or subjective meaning is assigned.",
+          "Original raw histories and output validation are implemented; synthetic fixtures validate contracts and do not establish physical feasibility."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "entry_time_difference_s",
+          "unit": "s",
+          "measurement": {
+            "method": "difference of original 20Hz full-body entry-bracket midpoints; retain both brackets",
+            "time_window": "full approach through both crossing entries",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "approximately the same time"
+      ]
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay-0001",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed ego release delay; measure both full-footprint crossing-entry times without deciding approximate simultaneity",
+      "paired_probe_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay",
+      "deliberate_differences": [
+        "commanded_release_delay_s"
+      ],
+      "probe": {
+        "primary_variable": "commanded_release_delay_s",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "commanded_release_delay_s": 5.0
+        }
+      },
+      "sweep_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay",
+      "sweep_spec_version": "fd3883d8c02ee03fb5e827d06cd6b8422182ff20e00648ec3e8d07b3b382ed0b",
+      "sweep_point": {
+        "commanded_release_delay_s": 5.0
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel"
+        },
+        "test_branch": {
+          "kind": "controller",
+          "value": "arrival_offset_sweep"
+        },
+        "highway_context": {
+          "kind": "world_setup",
+          "value": {
+            "layout": "median_opening",
+            "control": "other_vehicle",
+            "administrative_status": "explicit synthetic public-highway and no-official-control assumptions"
+          }
+        },
+        "commanded_release_offset_s": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "s"
+        },
+        "commanded_release_delay_s": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "s",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.intersection",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "witness_context",
+            "unit": "structured",
+            "method": "exact authored witness requirements; public/administrative facts are assumptions requiring separate evidence"
+          }
+        ],
+        "limitations": [
+          "No CARLA execution occurred. Native map meshing, blueprint spawn availability, server/client versions, physical tracking, frame capture and camera visibility require first-run readback.",
+          "All route/controller completion tolerances are engineering criteria; no statutory or subjective meaning is assigned.",
+          "Original raw histories and output validation are implemented; synthetic fixtures validate contracts and do not establish physical feasibility."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "entry_time_difference_s",
+          "unit": "s",
+          "measurement": {
+            "method": "difference of original 20Hz full-body entry-bracket midpoints; retain both brackets",
+            "time_window": "full approach through both crossing entries",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "approximately the same time"
+      ]
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay-0002",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed ego release delay; measure both full-footprint crossing-entry times without deciding approximate simultaneity",
+      "paired_probe_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay",
+      "deliberate_differences": [
+        "commanded_release_delay_s"
+      ],
+      "probe": {
+        "primary_variable": "commanded_release_delay_s",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "commanded_release_delay_s": 3.0
+        }
+      },
+      "sweep_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay",
+      "sweep_spec_version": "fd3883d8c02ee03fb5e827d06cd6b8422182ff20e00648ec3e8d07b3b382ed0b",
+      "sweep_point": {
+        "commanded_release_delay_s": 3.0
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel"
+        },
+        "test_branch": {
+          "kind": "controller",
+          "value": "arrival_offset_sweep"
+        },
+        "highway_context": {
+          "kind": "world_setup",
+          "value": {
+            "layout": "median_opening",
+            "control": "other_vehicle",
+            "administrative_status": "explicit synthetic public-highway and no-official-control assumptions"
+          }
+        },
+        "commanded_release_offset_s": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "s"
+        },
+        "commanded_release_delay_s": {
+          "kind": "controller",
+          "value": 3.0,
+          "unit": "s",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.intersection",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "witness_context",
+            "unit": "structured",
+            "method": "exact authored witness requirements; public/administrative facts are assumptions requiring separate evidence"
+          }
+        ],
+        "limitations": [
+          "No CARLA execution occurred. Native map meshing, blueprint spawn availability, server/client versions, physical tracking, frame capture and camera visibility require first-run readback.",
+          "All route/controller completion tolerances are engineering criteria; no statutory or subjective meaning is assigned.",
+          "Original raw histories and output validation are implemented; synthetic fixtures validate contracts and do not establish physical feasibility."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "entry_time_difference_s",
+          "unit": "s",
+          "measurement": {
+            "method": "difference of original 20Hz full-body entry-bracket midpoints; retain both brackets",
+            "time_window": "full approach through both crossing entries",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "approximately the same time"
+      ]
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay-0003",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed ego release delay; measure both full-footprint crossing-entry times without deciding approximate simultaneity",
+      "paired_probe_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay",
+      "deliberate_differences": [
+        "commanded_release_delay_s"
+      ],
+      "probe": {
+        "primary_variable": "commanded_release_delay_s",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "commanded_release_delay_s": 2.0
+        }
+      },
+      "sweep_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay",
+      "sweep_spec_version": "fd3883d8c02ee03fb5e827d06cd6b8422182ff20e00648ec3e8d07b3b382ed0b",
+      "sweep_point": {
+        "commanded_release_delay_s": 2.0
+      },
+      "selection_rank": 3,
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel"
+        },
+        "test_branch": {
+          "kind": "controller",
+          "value": "arrival_offset_sweep"
+        },
+        "highway_context": {
+          "kind": "world_setup",
+          "value": {
+            "layout": "median_opening",
+            "control": "other_vehicle",
+            "administrative_status": "explicit synthetic public-highway and no-official-control assumptions"
+          }
+        },
+        "commanded_release_offset_s": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "s"
+        },
+        "commanded_release_delay_s": {
+          "kind": "controller",
+          "value": 2.0,
+          "unit": "s",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.intersection",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "witness_context",
+            "unit": "structured",
+            "method": "exact authored witness requirements; public/administrative facts are assumptions requiring separate evidence"
+          }
+        ],
+        "limitations": [
+          "No CARLA execution occurred. Native map meshing, blueprint spawn availability, server/client versions, physical tracking, frame capture and camera visibility require first-run readback.",
+          "All route/controller completion tolerances are engineering criteria; no statutory or subjective meaning is assigned.",
+          "Original raw histories and output validation are implemented; synthetic fixtures validate contracts and do not establish physical feasibility."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "entry_time_difference_s",
+          "unit": "s",
+          "measurement": {
+            "method": "difference of original 20Hz full-body entry-bracket midpoints; retain both brackets",
+            "time_window": "full approach through both crossing entries",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "approximately the same time"
+      ]
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay-0004",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed ego release delay; measure both full-footprint crossing-entry times without deciding approximate simultaneity",
+      "paired_probe_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay",
+      "deliberate_differences": [
+        "commanded_release_delay_s"
+      ],
+      "probe": {
+        "primary_variable": "commanded_release_delay_s",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "commanded_release_delay_s": 4.0
+        }
+      },
+      "sweep_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__release_delay",
+      "sweep_spec_version": "fd3883d8c02ee03fb5e827d06cd6b8422182ff20e00648ec3e8d07b3b382ed0b",
+      "sweep_point": {
+        "commanded_release_delay_s": 4.0
+      },
+      "selection_rank": 4,
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel"
+        },
+        "test_branch": {
+          "kind": "controller",
+          "value": "arrival_offset_sweep"
+        },
+        "highway_context": {
+          "kind": "world_setup",
+          "value": {
+            "layout": "median_opening",
+            "control": "other_vehicle",
+            "administrative_status": "explicit synthetic public-highway and no-official-control assumptions"
+          }
+        },
+        "commanded_release_offset_s": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "s"
+        },
+        "commanded_release_delay_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.intersection",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "witness_context",
+            "unit": "structured",
+            "method": "exact authored witness requirements; public/administrative facts are assumptions requiring separate evidence"
+          }
+        ],
+        "limitations": [
+          "No CARLA execution occurred. Native map meshing, blueprint spawn availability, server/client versions, physical tracking, frame capture and camera visibility require first-run readback.",
+          "All route/controller completion tolerances are engineering criteria; no statutory or subjective meaning is assigned.",
+          "Original raw histories and output validation are implemented; synthetic fixtures validate contracts and do not establish physical feasibility."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "entry_time_difference_s",
+          "unit": "s",
+          "measurement": {
+            "method": "difference of original 20Hz full-body entry-bracket midpoints; retain both brackets",
+            "time_window": "full approach through both crossing entries",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "approximately the same time"
+      ]
+    }
+  ],
+  "comparisons": [],
+  "observations": [
+    {
+      "name": "st.intersection",
+      "mandatory": true,
+      "note": "the intersection"
+    },
+    {
+      "name": "st.lane_enters",
+      "mandatory": true,
+      "note": "the lanes on which the two vehicles enter are approaches to the same intersection from different highways; the exception reads which intersection a device controls through the lanes it governs"
+    },
+    {
+      "name": "drv.entering_intersection",
+      "mandatory": true,
+      "note": "both vehicles entering"
+    },
+    {
+      "name": "drv.arrival_order",
+      "mandatory": true,
+      "note": "'at approximately the same time' \u2014 the simultaneity tolerance is the parameter"
+    },
+    {
+      "name": "rel.bearing",
+      "mandatory": true,
+      "note": "which vehicle is on the other's right"
+    },
+    {
+      "name": "drv.yields_to",
+      "mandatory": true,
+      "note": "the vehicle on the left gives way"
+    },
+    {
+      "name": "dev.traffic_signal",
+      "mandatory": true,
+      "note": "the exception: a controlled intersection"
+    },
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "note": "the left-turn exception"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "sha256": "363c1fe10588eac7dfbea1aec4e7dbba31bdc16e0a4a8c92ec2c37f2da784cfa"
+    },
+    {
+      "path": "runtime/main-pipeline-v1/SOURCE-MANIFEST.json",
+      "sha256": "0c076c6fe5ff133c19b9a8daf4f5074e7cabe087639be216954317f8119d927f"
+    },
+    {
+      "path": "runtime/main-pipeline-v1/scenario_pipeline/worker_exchange/execution_manifest.py",
+      "sha256": "d7c9b9458e001a15211f6a85a57a82d0aea2a7b63122a81bc0005d6059c41e75"
+    },
+    {
+      "path": "updates/004.json",
+      "sha256": "3dd0441dd34214032258c114597575d30b7c16d935050d0768700158cf8ce65c"
+    },
+    {
+      "path": "skills/scenario-coverage-cases/SKILL.md",
+      "sha256": "98f43ffbb303a72cf2eded11ad61f74e1f3f238475f369bec760e6d8321e2b51"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Actual entry-time difference and its sample bracket are unmeasured.",
+    "Native crossing/median mesh, actor paths, camera visibility, and duration need first-run evidence.",
+    "The phrase approximately the same time remains unresolved; no legal timing tolerance is authored."
+  ]
+}

@@ -1,0 +1,259 @@
+{
+  "assignment_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver",
+  "cell_id": "C136559",
+  "law_id": "NRS-484B-600-1c",
+  "actor": "motor_vehicle_driver",
+  "mode": "posted_speed",
+  "case": {
+    "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__below",
+    "target_law_id": "NRS-484B-600-1c",
+    "target_type": "boundary_probe",
+    "rationale": "Statutory speed probe; at is commanded 0.5mph inside compliant side, not equality. Measured speed controls later classification.",
+    "variable_assignments": {
+      "commanded_approach_speed": {
+        "kind": "controller",
+        "value": 8.9408,
+        "unit": "m/s"
+      },
+      "commanded_turn_path": {
+        "kind": "controller",
+        "value": "travel"
+      },
+      "ego_speed": {
+        "kind": "subject_behavior",
+        "value": null,
+        "unit": "m/s"
+      },
+      "authored_context": {
+        "kind": "world_setup",
+        "value": {
+          "public_highway": "synthetic test assumption; not inferred from rendering",
+          "physical_driver": "modeled controller acting on conventional passenger vehicle",
+          "official_devices": "native asset identity is not proof of public legal authority",
+          "witness_required_context": [
+            "Establish highway dedication, public access, boundaries, posted rate and unit, jurisdiction and governed portion and direction.",
+            "Establish narrow-road geometry and vehicle clearance, qualifying operation and relevant identity or automation facts.",
+            "Establish qualifying vehicle operation, highway dedication, public access and boundaries.",
+            "Establish sign placement, rate and unit, public-authority jurisdiction and governed route boundaries and direction.",
+            "Preserve the recovered assumption: where no sign is visible in the trace, the governing limit is a reading assumption and the rule reports unknown without it.",
+            "Retain sign position, vehicle occupancy and speed without treating sign location alone as proof of all governed boundaries.",
+            "Retain unresolved statutory references and emergency-departure scope; add no measurement tolerance or duration requirement.",
+            "Verify narrow-road geometry and vehicle clearance."
+          ]
+        }
+      },
+      "posted_speed_limit": {
+        "kind": "world_setup",
+        "value": 25,
+        "unit": "mph"
+      }
+    },
+    "unresolved_judgment_calls": [],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "dev.speed_limit_sign",
+          "unit": "raw",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame dev.speed_limit_sign measurement projection; source native actor/device APIs and retained authored geometry",
+          "time_window": "entire original execution",
+          "reference_frame": "native CARLA world XYZ",
+          "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+        },
+        {
+          "name": "dev.governs",
+          "unit": "raw",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame dev.governs measurement projection; source native actor/device APIs and retained authored geometry",
+          "time_window": "entire original execution",
+          "reference_frame": "native CARLA world XYZ",
+          "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+        },
+        {
+          "name": "drv.within_signed_zone",
+          "unit": "raw",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame drv.within_signed_zone measurement projection; source native actor/device APIs and retained authored geometry",
+          "time_window": "entire original execution",
+          "reference_frame": "native CARLA world XYZ",
+          "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+        },
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "native velocity norm",
+          "time_window": "entire original execution",
+          "reference_frame": "native CARLA world XYZ",
+          "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+        },
+        {
+          "name": "rel.occupies",
+          "unit": "raw",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame rel.occupies measurement projection; source native actor/device APIs and retained authored geometry",
+          "time_window": "entire original execution",
+          "reference_frame": "native CARLA world XYZ",
+          "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+        },
+        {
+          "name": "dev.position",
+          "unit": "raw",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame dev.position measurement projection; source native actor/device APIs and retained authored geometry",
+          "time_window": "entire original execution",
+          "reference_frame": "native CARLA world XYZ",
+          "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+        },
+        {
+          "name": "kin.position",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame kin.position measurement projection; source native actor/device APIs and retained authored geometry",
+          "time_window": "entire original execution",
+          "reference_frame": "native CARLA world XYZ",
+          "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "authored_context",
+          "unit": "object",
+          "method": "retained synthetic assumptions and exact required witness context"
+        }
+      ],
+      "limitations": [
+        "Measured native projections preserve raw positions, speeds, body geometry, device states and event histories; no legal verdict, inferred public authority or judgment cutoff.",
+        "Engineering cessation <=0.05m/s and 0.5mph tracking tolerance are measurement conventions, never legal tolerances."
+      ]
+    },
+    "paired_probe_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__speed_triple",
+    "deliberate_differences": [
+      "commanded_approach_speed"
+    ],
+    "probe": {
+      "primary_variable": "commanded_approach_speed",
+      "comparison_or_standard": "statutory speed maximum",
+      "target_value_or_branch": 8.9408,
+      "threshold_ref": "posted_speed_limit",
+      "operator": "<=",
+      "unit": "m/s",
+      "test_value": 8.9408,
+      "epsilon_used": 0.22352,
+      "threshold_value": 11.176
+    }
+  },
+  "selected_case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__below",
+  "supported_case_ids": [
+    "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__baseline",
+    "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__below",
+    "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__at",
+    "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above"
+  ],
+  "duration_s": 45,
+  "max_ticks": 900,
+  "controller": {
+    "speed_kp": 0.28,
+    "brake_kp": 0.45,
+    "steer_kp": 1.5,
+    "gap_kp": 0.5,
+    "maximum_speed_mps": 40,
+    "red_brake_start_x_m": -30,
+    "stop_brake_start_x_m": -30,
+    "other_brake_start_y_m": 20
+  },
+  "required_atoms": [
+    "dev.speed_limit_sign",
+    "dev.governs",
+    "drv.within_signed_zone",
+    "kin.speed",
+    "rel.occupies",
+    "dev.position",
+    "kin.position"
+  ],
+  "observations": [
+    {
+      "name": "dev.speed_limit_sign",
+      "mandatory": true
+    },
+    {
+      "name": "dev.governs",
+      "mandatory": true
+    },
+    {
+      "name": "drv.within_signed_zone",
+      "mandatory": true
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true
+    },
+    {
+      "name": "dev.position",
+      "mandatory": true
+    },
+    {
+      "name": "kin.position",
+      "mandatory": true
+    }
+  ],
+  "cameras": [
+    {
+      "x": -8,
+      "z": 4,
+      "pitch": -15,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "x": 0.7,
+      "y": -0.3,
+      "z": 1.5,
+      "pitch": 0,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "x": -2,
+      "z": 16,
+      "pitch": -80,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "x": -4,
+      "y": 4,
+      "z": 2,
+      "pitch": -5,
+      "yaw": -30,
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "authored_test_context": {
+    "public_highway": "synthetic test assumption; not inferred from rendering",
+    "physical_driver": "modeled controller acting on conventional passenger vehicle",
+    "official_devices": "native asset identity is not proof of public legal authority",
+    "witness_required_context": [
+      "Establish highway dedication, public access, boundaries, posted rate and unit, jurisdiction and governed portion and direction.",
+      "Establish narrow-road geometry and vehicle clearance, qualifying operation and relevant identity or automation facts.",
+      "Establish qualifying vehicle operation, highway dedication, public access and boundaries.",
+      "Establish sign placement, rate and unit, public-authority jurisdiction and governed route boundaries and direction.",
+      "Preserve the recovered assumption: where no sign is visible in the trace, the governing limit is a reading assumption and the rule reports unknown without it.",
+      "Retain sign position, vehicle occupancy and speed without treating sign location alone as proof of all governed boundaries.",
+      "Retain unresolved statutory references and emergency-departure scope; add no measurement tolerance or duration requirement.",
+      "Verify narrow-road geometry and vehicle clearance."
+    ],
+    "public_way": "explicit synthetic assumption, not native map evidence",
+    "device_authority": "explicit synthetic assumption where required",
+    "native_device_presence": "must be measured during future live run",
+    "wet_road": false
+  },
+  "public_way_road_ids": [
+    1
+  ]
+}
