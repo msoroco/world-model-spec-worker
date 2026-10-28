@@ -100,6 +100,8 @@ def read_rows(path):
 def main():
     p=argparse.ArgumentParser(description=__doc__);sub=p.add_subparsers(dest='command',required=True)
     a=sub.add_parser('selftest');a.add_argument('--runtime',default=str(Path(__file__).resolve().parents[2]));a.add_argument('--output',required=True);a.add_argument('--lake');a.add_argument('--validator');a.add_argument('--compare-to')
+    a=sub.add_parser('compatibility-example');a.add_argument('--output',required=True)
+    a=sub.add_parser('compatibility');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--fixture',required=True);a.add_argument('--output',required=True);a.add_argument('--library',required=True);a.add_argument('--validator',required=True)
     a=sub.add_parser('verify');a.add_argument('--runtime',type=Path,required=True)
     a=sub.add_parser('materialize');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--output',required=True)
     a=sub.add_parser('offline');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--output',required=True);a.add_argument('--python',default=sys.executable)
@@ -114,6 +116,13 @@ def main():
     if args.command=='selftest':
         from .runtime_verify import run
         result=run(args.runtime,args.output,args.validator,args.lake,args.compare_to)
+    elif args.command=='compatibility-example':
+        from .compatibility_example import build
+        m,c,f=build(Path(__file__).resolve().parents[2],args.output)
+        result={'manifest':str(m),'case':c,'fixture':str(f),'scope':'software diagnostic only'}
+    elif args.command=='compatibility':
+        from .package_compatibility import run
+        result=run(args.manifest,args.case,args.fixture,args.output,args.library,args.validator)
     elif args.command=='verify':result=verify(args.runtime)
     elif args.command=='materialize':result=materialize(args.manifest,args.case,args.output);result={'case_id':result['case_id'],'materialized':True}
     elif args.command=='offline':result=offline(args.manifest,args.case,args.output,args.python)

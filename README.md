@@ -5,3 +5,5 @@ Read START_HERE.md. This repository supplies the main pipeline runtime, law inpu
 Implementation goes in work/<assignment-id>/. inputs/ and runtime/ are frozen sources. Existing migration-candidates are untrusted references, not accepted packages. Physical motion, visibility, adequate duration and recording acceptance require later local verification.
 
 Follow UPDATE.md and numbered notices at safe checkpoints. Only the lead merges main, commits and pushes the batch return branch; do not force-push. See MIGRATION.md for setup, shared interfaces, readiness and takeover.
+
+Update 005 continues the existing return branch and requires package-specific output compatibility; see START_HERE.md and the update-005 section of MIGRATION.md. No remote agent is launched automatically.

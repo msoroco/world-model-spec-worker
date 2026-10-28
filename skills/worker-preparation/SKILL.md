@@ -56,3 +56,18 @@ code, not just a note that a GPU is needed. Distinguish readiness_kind capabilit
 from delivery_prepared; neither means physical acceptance. Run the shared actual
 fixture selftest and every case offline check. Push the configured return branch
 when finished. Operator launch is manual.
+
+## Update 005: output compatibility
+
+Continue the current return branch; do not restart the scenario packages. Read
+MIGRATION.md's update-005 section. Write canonical frame identities during capture
+with native_output.FrameMap and finalize measured results with write_result. Do
+not translate or rewrite faulty original evidence after capture. Use world_restore
+snapshot/restore with guaranteed cleanup and readback, keeping resource ownership
+local. Reuse environmental acquisition methods; a named channel is not a source.
+Every exact case needs acquisition mappings and a source-bound compatibility
+receipt from its actual bundled analysis, existing validator, converter and video
+processing. The generic runtime selftest alone cannot qualify a new package.
+Fixtures establish software compatibility only; unknown physical outcomes remain
+unconfirmed. Do not drop mandatory observations or fabricate physical success to
+pass tests. Fix the pilot first, then the four existing partitions.
