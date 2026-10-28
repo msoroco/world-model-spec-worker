@@ -1,10 +1,7 @@
-# Standalone demo-test preparation trial v2
-Read START_HERE.md to manually initiate the lead agent. There are 22 assignments across four partitions (6/6/5/5). No GPU or upstream repository is available to the worker. No trial is launched by this repository.
+# Portable scenario preparation
 
-Checks before starting: `python3 worker_check.py`, `python3 -m unittest discover -s tests`, then each example `runner.py --check` and `python3 -m unittest discover -s examples/<name>/tests`.
+Read START_HERE.md. This repository supplies the main pipeline runtime, law inputs, worked examples, and four demo-test partitions (22 assignments: 6/6/5/5). No upstream repository, database, GPU, NERSC tools or simulator is required for preparation. The operator manually starts the agent.
 
-The examples contain successful historical construction/case/result references with CPU checks; their native assumptions and endpoint restrictions must be adapted, not inherited. Historical provenance strings are not operational prerequisites. Target software and capture helper sources are supplied in runtime/.
+Implementation goes in work/<assignment-id>/. inputs/ and runtime/ are frozen sources. Existing migration-candidates are untrusted references, not accepted packages. Physical motion, visibility, adequate duration and recording acceptance require later local verification.
 
-Return branch: worker/demo-test-preparation-v2. All statuses are validated; ready is executable first-run readiness, not physical or statutory acceptance. The lead explicitly runs each returned --check and tests. No tests start a simulator.
-
-Updates: inspect UPDATE.md and run `python3 update_status.py`; follow unseen numbered notices at safe checkpoints. Explicit resume releases pauses. Commit work before merging origin/main; do not force-push. Only the lead handles Git.
+Follow UPDATE.md and numbered notices at safe checkpoints. Only the lead merges main, commits and pushes the batch return branch; do not force-push. See MIGRATION.md for setup, shared interfaces, readiness and takeover.

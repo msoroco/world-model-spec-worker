@@ -1,0 +1,716 @@
+{
+  "assignment_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver",
+  "cell_id": "C160013",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-127-3",
+  "cases": [
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral definition only; never selected or simulated by default",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "follow"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "authored_context": {
+          "kind": "world_setup",
+          "value": {
+            "public_highway": "explicit synthetic assumption",
+            "two_directional_highways": true,
+            "witness_contexts": [
+              "Document ordering, towing and coupling configurations and all consecutive group spaces.",
+              "Establish caravan or motorcade membership independently of common speed or queue behavior.",
+              "Establish group membership independently of observed following behavior and preserve unresolved caravan terminology.",
+              "Establish highway dedication and public vehicular availability.",
+              "Establish public-highway status and outside-business-district classification using external legal-region evidence or an explicit external assumption.",
+              "Identify all qualifying group vehicles, ordering, driver relationships, coupling and towing arrangements and consecutive spaces.",
+              "Make ego and the preceding control vehicle qualifying motor vehicles.",
+              "Retain potential entry-and-occupancy context for vehicles and combinations without deciding sufficient space or without danger.",
+              "Support the fixed outside-business-district classification with external legal-region evidence or an explicit external assumption, retaining the supplied frontage and building-use definition."
+            ],
+            "outside_business_district": "explicit external legal-region assumption",
+            "caravan_membership": "explicit common-purpose assumption for ego and lead; merge actor is not a caravan member"
+          }
+        },
+        "commanded_gap": {
+          "kind": "controller",
+          "value": 10.0,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "sufficient space",
+          "note": "tier S: 'sufficient space \u2026 without danger' is the whole obligation, so any gap value is a surrogate"
+        },
+        {
+          "phrase": "without danger",
+          "note": "tier S: 'sufficient space \u2026 without danger' is the whole obligation, so any gap value is a surrogate"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.following",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "drv.queue_behind",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "rel.same_direction",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "ru.trailer_or_combination",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "drv.lane_change_feasible",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "caravan_gap",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "full original trace",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_context",
+            "unit": "object",
+            "method": "config.json exact assumptions and source witness"
+          }
+        ],
+        "limitations": [
+          "Channels store measured physical evidence with explicit methods. Structured raw evidence does not assert legal meaning, intent, safety or hazard.",
+          "Native map geometry and authored legal-region assumptions remain distinguished."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__gap_10",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "boundary_probe",
+      "rationale": "Unlabeled fixed physical gap sweep; sufficient space and without danger remain unresolved",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "follow"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "authored_context": {
+          "kind": "world_setup",
+          "value": {
+            "public_highway": "explicit synthetic assumption",
+            "two_directional_highways": true,
+            "witness_contexts": [
+              "Document ordering, towing and coupling configurations and all consecutive group spaces.",
+              "Establish caravan or motorcade membership independently of common speed or queue behavior.",
+              "Establish group membership independently of observed following behavior and preserve unresolved caravan terminology.",
+              "Establish highway dedication and public vehicular availability.",
+              "Establish public-highway status and outside-business-district classification using external legal-region evidence or an explicit external assumption.",
+              "Identify all qualifying group vehicles, ordering, driver relationships, coupling and towing arrangements and consecutive spaces.",
+              "Make ego and the preceding control vehicle qualifying motor vehicles.",
+              "Retain potential entry-and-occupancy context for vehicles and combinations without deciding sufficient space or without danger.",
+              "Support the fixed outside-business-district classification with external legal-region evidence or an explicit external assumption, retaining the supplied frontage and building-use definition."
+            ],
+            "outside_business_district": "explicit external legal-region assumption",
+            "caravan_membership": "explicit common-purpose assumption for ego and lead; merge actor is not a caravan member"
+          }
+        },
+        "commanded_gap": {
+          "kind": "controller",
+          "value": 10.0,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "sufficient space",
+          "note": "tier S: 'sufficient space \u2026 without danger' is the whole obligation, so any gap value is a surrogate"
+        },
+        {
+          "phrase": "without danger",
+          "note": "tier S: 'sufficient space \u2026 without danger' is the whole obligation, so any gap value is a surrogate"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.following",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "drv.queue_behind",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "rel.same_direction",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "ru.trailer_or_combination",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "drv.lane_change_feasible",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "caravan_gap",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "full original trace",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_context",
+            "unit": "object",
+            "method": "config.json exact assumptions and source witness"
+          }
+        ],
+        "limitations": [
+          "Channels store measured physical evidence with explicit methods. Structured raw evidence does not assert legal meaning, intent, safety or hazard.",
+          "Native map geometry and authored legal-region assumptions remain distinguished."
+        ]
+      },
+      "paired_probe_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "commanded_gap"
+      ],
+      "probe": {
+        "primary_variable": "commanded_gap",
+        "comparison_or_standard": "physical geometry or explicit deterministic branch; no legal judgment cutoff",
+        "target_value_or_branch": 10.0
+      }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__gap_20",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "boundary_probe",
+      "rationale": "Unlabeled fixed physical gap sweep; sufficient space and without danger remain unresolved",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "follow"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "authored_context": {
+          "kind": "world_setup",
+          "value": {
+            "public_highway": "explicit synthetic assumption",
+            "two_directional_highways": true,
+            "witness_contexts": [
+              "Document ordering, towing and coupling configurations and all consecutive group spaces.",
+              "Establish caravan or motorcade membership independently of common speed or queue behavior.",
+              "Establish group membership independently of observed following behavior and preserve unresolved caravan terminology.",
+              "Establish highway dedication and public vehicular availability.",
+              "Establish public-highway status and outside-business-district classification using external legal-region evidence or an explicit external assumption.",
+              "Identify all qualifying group vehicles, ordering, driver relationships, coupling and towing arrangements and consecutive spaces.",
+              "Make ego and the preceding control vehicle qualifying motor vehicles.",
+              "Retain potential entry-and-occupancy context for vehicles and combinations without deciding sufficient space or without danger.",
+              "Support the fixed outside-business-district classification with external legal-region evidence or an explicit external assumption, retaining the supplied frontage and building-use definition."
+            ],
+            "outside_business_district": "explicit external legal-region assumption",
+            "caravan_membership": "explicit common-purpose assumption for ego and lead; merge actor is not a caravan member"
+          }
+        },
+        "commanded_gap": {
+          "kind": "controller",
+          "value": 20.0,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "sufficient space",
+          "note": "tier S: 'sufficient space \u2026 without danger' is the whole obligation, so any gap value is a surrogate"
+        },
+        {
+          "phrase": "without danger",
+          "note": "tier S: 'sufficient space \u2026 without danger' is the whole obligation, so any gap value is a surrogate"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.following",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "drv.queue_behind",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "rel.same_direction",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "ru.trailer_or_combination",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "drv.lane_change_feasible",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "caravan_gap",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "full original trace",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_context",
+            "unit": "object",
+            "method": "config.json exact assumptions and source witness"
+          }
+        ],
+        "limitations": [
+          "Channels store measured physical evidence with explicit methods. Structured raw evidence does not assert legal meaning, intent, safety or hazard.",
+          "Native map geometry and authored legal-region assumptions remain distinguished."
+        ]
+      },
+      "paired_probe_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "commanded_gap"
+      ],
+      "probe": {
+        "primary_variable": "commanded_gap",
+        "comparison_or_standard": "physical geometry or explicit deterministic branch; no legal judgment cutoff",
+        "target_value_or_branch": 20.0
+      }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__gap_30",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "boundary_probe",
+      "rationale": "Unlabeled fixed physical gap sweep; sufficient space and without danger remain unresolved",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "follow"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "authored_context": {
+          "kind": "world_setup",
+          "value": {
+            "public_highway": "explicit synthetic assumption",
+            "two_directional_highways": true,
+            "witness_contexts": [
+              "Document ordering, towing and coupling configurations and all consecutive group spaces.",
+              "Establish caravan or motorcade membership independently of common speed or queue behavior.",
+              "Establish group membership independently of observed following behavior and preserve unresolved caravan terminology.",
+              "Establish highway dedication and public vehicular availability.",
+              "Establish public-highway status and outside-business-district classification using external legal-region evidence or an explicit external assumption.",
+              "Identify all qualifying group vehicles, ordering, driver relationships, coupling and towing arrangements and consecutive spaces.",
+              "Make ego and the preceding control vehicle qualifying motor vehicles.",
+              "Retain potential entry-and-occupancy context for vehicles and combinations without deciding sufficient space or without danger.",
+              "Support the fixed outside-business-district classification with external legal-region evidence or an explicit external assumption, retaining the supplied frontage and building-use definition."
+            ],
+            "outside_business_district": "explicit external legal-region assumption",
+            "caravan_membership": "explicit common-purpose assumption for ego and lead; merge actor is not a caravan member"
+          }
+        },
+        "commanded_gap": {
+          "kind": "controller",
+          "value": 30.0,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "sufficient space",
+          "note": "tier S: 'sufficient space \u2026 without danger' is the whole obligation, so any gap value is a surrogate"
+        },
+        {
+          "phrase": "without danger",
+          "note": "tier S: 'sufficient space \u2026 without danger' is the whole obligation, so any gap value is a surrogate"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.following",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "drv.queue_behind",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "rel.same_direction",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "ru.trailer_or_combination",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "drv.lane_change_feasible",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          },
+          {
+            "name": "caravan_gap",
+            "unit": "structured physical evidence",
+            "sampling_rate_hz": 20,
+            "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+            "time_window": "full original trace",
+            "reference_frame": "CARLA world",
+            "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_context",
+            "unit": "object",
+            "method": "config.json exact assumptions and source witness"
+          }
+        ],
+        "limitations": [
+          "Channels store measured physical evidence with explicit methods. Structured raw evidence does not assert legal meaning, intent, safety or hazard.",
+          "Native map geometry and authored legal-region assumptions remain distinguished."
+        ]
+      },
+      "paired_probe_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "commanded_gap"
+      ],
+      "probe": {
+        "primary_variable": "commanded_gap",
+        "comparison_or_standard": "physical geometry or explicit deterministic branch; no legal judgment cutoff",
+        "target_value_or_branch": 30.0
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__gap_10",
+        "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__gap_20",
+        "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__gap_30"
+      ],
+      "deliberate_differences": [
+        "commanded_gap"
+      ],
+      "fixed_conditions": [
+        "authored map/props",
+        "physical actor blueprints",
+        "controller implementation and gains",
+        "camera poses/encoding/rate",
+        "all world_setup assignments"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "drv.following",
+      "mandatory": true
+    },
+    {
+      "name": "rel.surface_gap",
+      "mandatory": true
+    },
+    {
+      "name": "drv.queue_behind",
+      "mandatory": true
+    },
+    {
+      "name": "rel.same_direction",
+      "mandatory": true
+    },
+    {
+      "name": "ru.trailer_or_combination",
+      "mandatory": true
+    },
+    {
+      "name": "drv.lane_change_feasible",
+      "mandatory": true
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/assignment.json",
+      "sha256": "61edccbf3065c67799170377f01a6603424b993a11464ab86e55bdb575406562"
+    },
+    {
+      "path": "runtime/stage-contracts.json",
+      "sha256": "b2d79b4fe50551442a2ab72ff6d7caf1307f5bf35ce404effcad8f1227c0b14a"
+    },
+    {
+      "path": "runtime/target-environment.json",
+      "sha256": "54cb0e9fa1a623a62dd06c9621de4bc7527f6a70180cb5e15d4350050cc6b8da"
+    },
+    {
+      "path": "runtime/worker_exchange/runtime_contract.py",
+      "sha256": "75ddf915c058be66d17e0f80068a27d9cf2bd49c41165b13cd4a75611dabc600"
+    },
+    {
+      "path": "runtime/python/pipeline_capture.py",
+      "sha256": "c88fc6cd6e0d942ed545ec92f58e59334f68f08aeaa8bf1e5e8b910df2f4a5fe"
+    },
+    {
+      "path": "examples/intersection/native/scene-stop257-v1.xodr",
+      "sha256": "4194001e64788f188eb254ef3632eb551c49136efe0d44d51331ebae8326fe27"
+    },
+    {
+      "path": "START_HERE.md",
+      "sha256": "98b3aae1db4bd4c6f9b15f0350eb50ee85e6e3f8811e78b8ee959a12d69811a1"
+    },
+    {
+      "path": "updates/003.json",
+      "sha256": "404f7d2064cfe4d262fde6d47f5aea6d27139664896678811ad2313059428ce6"
+    },
+    {
+      "path": "work/_shared/contracts.py",
+      "sha256": "5f42c782c2eb0886efc7d2b92c826c8653dd81193e81eb6ca07ebd612a5532d5"
+    },
+    {
+      "path": "work/_shared/recording.py",
+      "sha256": "c1a9b18e88dfc9de20e0e65b2647099e7b4e326d24bc7d2b95885e5a856d2e52"
+    },
+    {
+      "path": "work/_shared/worker_exchange/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "work/_shared/worker_exchange/common.py",
+      "sha256": "4d2c87889af2dc2c3b32cdbf6fe83ebe9a5bef2dcd6a78e604f0444759023c5d"
+    },
+    {
+      "path": "work/_shared/worker_exchange/runtime_contract.py",
+      "sha256": "75ddf915c058be66d17e0f80068a27d9cf2bd49c41165b13cd4a75611dabc600"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "CARLA unavailable; actual tracking, asset inventory, light emission, maneuver completion and source dependency versions remain first-run measurements.",
+    "Geometric occupancy and raw actor histories do not resolve a subjective judgment, statutory reference-point convention, shared purpose, intent, or public-highway status.",
+    "Body-length estimate is checked against actual bounding boxes, and each frozen gap retains collision/containment failures without range changes."
+  ]
+}

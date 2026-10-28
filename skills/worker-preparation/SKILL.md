@@ -1,0 +1,58 @@
+---
+name: worker-preparation
+description: Prepare explicitly assigned scenario packages in the portable Git worker repository, without CARLA, NERSC, SQLite or canonical acceptance. Use for exported partition batches and their CPU-only returns.
+---
+
+# Portable worker preparation
+
+Read START_HERE.md and batch.json first. This workflow owns file routing in the
+worker repository; the original six scenario skills retain their substantive
+law/evidence rules. Their main-project SQLite, output-root and resource paths
+are reference descriptions, not worker operations. The standalone worker's
+work/<assignment-id>/ contains implementation. In the main project's
+set-review-workspaces-v2 layout, work/ is accepted review output only; imported
+implementation belongs in state/operations/worker_exchange/. Demo review case
+symlinks intentionally share edits with full-set cases; do not restrict them.
+
+Use inputs/<assignment-id>/assignment.json for the fixed law, cell, actor, role,
+branches and objective. Read the supplied witnesses, prior guidance and declared
+dependencies. Do not rebuild scope or repeat completed evidence. Missing source
+material or runtime capability remains an explicit limitation.
+
+The lead may delegate at most batch.max_workers independent assignment owners.
+Each subagent writes only work/<assignment-id>/; only the lead integrates shared
+changes and commits/pushes the return branch. Frozen runtime helpers cannot be
+edited: propose helper changes under an assignment's work directory for local
+review. A shared demo/full assignment is one task even if multiple partitions
+reference it. Process remaining partitions in waves; do not wait for conversation
+when independent work is available.
+
+Implement configuration-driven construction/controllers, capture checks and
+saved-only conversion/rendering/auditing as required by the assignment. Keep
+all generated files and fixtures small and textual. CPU tests must not connect
+to CARLA. Run runtime checks lazily, not at module import. Small fake fixtures
+can test schemas and joins, never establish physical capability or acceptance.
+
+Use result.json and HANDOFF.md under the assignment directory. Report commands,
+exit codes and hashed logs, implementation assumptions and remaining GPU checks.
+Prepared means CPU-tested and ready for local runtime verification. It does not
+mean physically verified, accepted, compliant or statutorily complete. For
+missing dependencies, commit a partial/blocked result and continue other work.
+
+Never run NERSC tools, use the main campaign database, drive a simulation,
+register a recording, relabel research, or modify set membership. Run
+python3 worker_check.py --complete before returning the batch. Follow the
+exact result format in START_HERE.md.
+
+## Shared runtime migration
+
+Read MIGRATION.md and use the version/hash bound in batch.runtime. Reuse supplied
+capture, conversion, rendering and validation; never recreate those components.
+Old migration candidates are untrusted scenario-specific references. Prove the
+400-2a pilot before partition delegation. Every ready package needs a validated
+execution-manifest.json listing every expanded nonbaseline case and an exact
+construction SHA. Capability packages need executable measurement/finalization
+code, not just a note that a GPU is needed. Distinguish readiness_kind capability
+from delivery_prepared; neither means physical acceptance. Run the shared actual
+fixture selftest and every case offline check. Push the configured return branch
+when finished. Operator launch is manual.

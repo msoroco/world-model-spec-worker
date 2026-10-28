@@ -1,5 +1,5 @@
 import copy,json,pathlib,subprocess,sys,tempfile,unittest
-sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/'runtime'))
+sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/'runtime/main-pipeline-v1/scenario_pipeline'))
 from worker_exchange.common import read,write,sha,tree
 from worker_exchange.preparation import check
 from worker_exchange.updates import state,publish

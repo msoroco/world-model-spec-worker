@@ -1,0 +1,772 @@
+{
+  "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C129731",
+  "law_id": "NRS-484B-407",
+  "cases": [
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral definition retained and not selected by default.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "u_turn"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 350
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "maneuver_station_m": {
+          "kind": "controller",
+          "value": 430.0
+        },
+        "requested_sight_distance": {
+          "kind": "controller",
+          "value": 152.4
+        },
+        "sight_distance": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "crest_elevation_profile": {
+          "kind": "world_setup",
+          "value": "road.xodr: crest at station 500m, radius from vertical polynomial"
+        },
+        "curve_at_turn": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "500-foot sight-line construction",
+          "note": "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.u_turn",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.grade",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "Physical legal/judgment conclusions remain unresolved; synthetic authored jurisdiction and authority contexts retain provenance."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__sight_below",
+      "target_law_id": "NRS-484B-407",
+      "target_type": "boundary_probe",
+      "rationale": "500-foot two-approach visibility probe; desired horizon must be measured. Station-to-horizon calibration is outstanding, never infer achieved distance.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "u_turn"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 350
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "maneuver_station_m": {
+          "kind": "controller",
+          "value": 425.0
+        },
+        "requested_sight_distance": {
+          "kind": "controller",
+          "value": 147.4
+        },
+        "sight_distance": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "crest_elevation_profile": {
+          "kind": "world_setup",
+          "value": "road.xodr: crest at station 500m, radius from vertical polynomial"
+        },
+        "curve_at_turn": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "500-foot sight-line construction",
+          "note": "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.u_turn",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.grade",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "Physical legal/judgment conclusions remain unresolved; synthetic authored jurisdiction and authority contexts retain provenance."
+        ]
+      },
+      "paired_probe_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "requested_sight_distance",
+        "maneuver_station_m"
+      ],
+      "probe": {
+        "primary_variable": "maneuver_station_m",
+        "comparison_or_standard": "500-foot statutory sight distance",
+        "target_value_or_branch": 147.4,
+        "threshold_ref": "NRS-484B-407.visibility_500_feet",
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 147.4,
+        "epsilon_used": 5.0
+      }
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__sight_at",
+      "target_law_id": "NRS-484B-407",
+      "target_type": "boundary_probe",
+      "rationale": "500-foot two-approach visibility probe; desired horizon must be measured. Station-to-horizon calibration is outstanding, never infer achieved distance.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "u_turn"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 350
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "maneuver_station_m": {
+          "kind": "controller",
+          "value": 430.0
+        },
+        "requested_sight_distance": {
+          "kind": "controller",
+          "value": 152.4
+        },
+        "sight_distance": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "crest_elevation_profile": {
+          "kind": "world_setup",
+          "value": "road.xodr: crest at station 500m, radius from vertical polynomial"
+        },
+        "curve_at_turn": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "500-foot sight-line construction",
+          "note": "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.u_turn",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.grade",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "Physical legal/judgment conclusions remain unresolved; synthetic authored jurisdiction and authority contexts retain provenance."
+        ]
+      },
+      "paired_probe_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "requested_sight_distance",
+        "maneuver_station_m"
+      ],
+      "probe": {
+        "primary_variable": "maneuver_station_m",
+        "comparison_or_standard": "500-foot statutory sight distance",
+        "target_value_or_branch": 152.4,
+        "threshold_ref": "NRS-484B-407.visibility_500_feet",
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 152.4,
+        "epsilon_used": 5.0
+      }
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__sight_above",
+      "target_law_id": "NRS-484B-407",
+      "target_type": "boundary_probe",
+      "rationale": "500-foot two-approach visibility probe; desired horizon must be measured. Station-to-horizon calibration is outstanding, never infer achieved distance.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "u_turn"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 350
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "maneuver_station_m": {
+          "kind": "controller",
+          "value": 435.0
+        },
+        "requested_sight_distance": {
+          "kind": "controller",
+          "value": 157.4
+        },
+        "sight_distance": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "crest_elevation_profile": {
+          "kind": "world_setup",
+          "value": "road.xodr: crest at station 500m, radius from vertical polynomial"
+        },
+        "curve_at_turn": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "500-foot sight-line construction",
+          "note": "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.u_turn",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.grade",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "measurements.project: original native actor/map/device/raycast evidence, never requested targets",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "20Hz sample resolution; native mesh and geometry uncertainty retained; missing mandatory measurement fails capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "Physical legal/judgment conclusions remain unresolved; synthetic authored jurisdiction and authority contexts retain provenance."
+        ]
+      },
+      "paired_probe_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "requested_sight_distance",
+        "maneuver_station_m"
+      ],
+      "probe": {
+        "primary_variable": "maneuver_station_m",
+        "comparison_or_standard": "500-foot statutory sight distance",
+        "target_value_or_branch": 157.4,
+        "threshold_ref": "NRS-484B-407.visibility_500_feet",
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 157.4,
+        "epsilon_used": 5.0
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__sight_below",
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__sight_at",
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__sight_above"
+      ],
+      "deliberate_differences": [
+        "maneuver_station_m",
+        "requested_sight_distance"
+      ],
+      "fixed_conditions": "identical runner.py, road.xodr, cameras, participant blueprints, controller gains, weather defaults and observation methods; only listed scalar configuration differences change"
+    }
+  ],
+  "observations": [
+    {
+      "name": "drv.u_turn",
+      "mandatory": true,
+      "note": "turning to proceed in the opposite direction"
+    },
+    {
+      "name": "st.curvature",
+      "mandatory": true,
+      "note": "a curve"
+    },
+    {
+      "name": "st.grade",
+      "mandatory": true,
+      "note": "the approach to or near the crest of a grade"
+    },
+    {
+      "name": "st.sight_distance",
+      "mandatory": true,
+      "note": "the distance within which the vehicle can be seen, against the 500-foot requirement"
+    },
+    {
+      "name": "rel.oncoming",
+      "mandatory": true,
+      "note": "a vehicle approaching from either direction"
+    },
+    {
+      "name": "drv.approaching",
+      "mandatory": true,
+      "note": "the same, from behind"
+    },
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "note": "where the manoeuvre is made"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "note": "original kinematic trace"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "note": "original kinematic trace"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+      "sha256": "0b9167fb3848ed650761a454a94e32900db92c2467350e1a45fb1bc997ea515f"
+    },
+    {
+      "path": "runtime/stage-contracts.json",
+      "sha256": "b2d79b4fe50551442a2ab72ff6d7caf1307f5bf35ce404effcad8f1227c0b14a"
+    },
+    {
+      "path": "runtime/target-environment.json",
+      "sha256": "54cb0e9fa1a623a62dd06c9621de4bc7527f6a70180cb5e15d4350050cc6b8da"
+    },
+    {
+      "path": "runtime/python/pipeline_capture.py",
+      "sha256": "c88fc6cd6e0d942ed545ec92f58e59334f68f08aeaa8bf1e5e8b910df2f4a5fe"
+    },
+    {
+      "path": "runtime/python/traffic_spec_adapter/geometry.py",
+      "sha256": "6127c9b966d9cbda8a89232067b1ab224c05b5a362dab3e1c197b802d09f2402"
+    },
+    {
+      "path": "examples/intersection/original-construction.json",
+      "sha256": "5fbdcbd8973180e1358d669bc3dc635e42aff7a113f7e96ecdc6fc01285e3a81"
+    },
+    {
+      "path": "examples/numeric/native/scene.xodr",
+      "sha256": "efb6d8e5fd0c5f8aaf628c6d9ea762682ceff11b365ff2822d782ae3ccada111"
+    },
+    {
+      "path": "updates/002.json",
+      "sha256": "debf22d0850b656d3b4f85fdf4af4c98d10ebe8753145aa4f9b29554906edaad"
+    },
+    {
+      "path": "updates/003.json",
+      "sha256": "404f7d2064cfe4d262fde6d47f5aea6d27139664896678811ad2313059428ce6"
+    },
+    {
+      "path": "runtime/worker_exchange/runtime_contract.py",
+      "sha256": "75ddf915c058be66d17e0f80068a27d9cf2bd49c41165b13cd4a75611dabc600"
+    },
+    {
+      "path": "work/_shared/contracts.py",
+      "sha256": "5f42c782c2eb0886efc7d2b92c826c8653dd81193e81eb6ca07ebd612a5532d5"
+    },
+    {
+      "path": "work/_shared/recording.py",
+      "sha256": "c1a9b18e88dfc9de20e0e65b2647099e7b4e326d24bc7d2b95885e5a856d2e52"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    {
+      "requirement": "Establish physical station-to-two-approach sight-horizon mapping for the frozen 147.4/152.4/157.4m probes and complete every-frame search extent.",
+      "category": "live_measurement",
+      "evidence": "No native CARLA raycast/mesh observations exist. road.xodr crest and measured nine-point projection are implemented; desired station choices are not physical feasibility evidence.",
+      "next_action": "Run declared static native setup calibration retaining geometry/rays; freeze justified stations before case execution, update exact deliberate differences and source provenance without inventing legal thresholds.",
+      "requires_live_execution": true
+    }
+  ],
+  "baseline_selected": false,
+  "summary_text_conflicts": []
+}

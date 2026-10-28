@@ -1,0 +1,791 @@
+{
+  "assignment_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver",
+  "law_id": "NRS-484B-127-1",
+  "cell_id": "C101303",
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral unselected baseline; no simulation requested.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "change_lane"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "authored_context": {
+          "kind": "world_setup",
+          "value": {
+            "public_highway": "synthetic test assumption; not inferred from rendering",
+            "physical_driver": "modeled controller acting on conventional passenger vehicle",
+            "official_devices": "native asset identity is not proof of public legal authority",
+            "witness_required_context": [
+              "Establish highway dedication and public availability, both speeds, separation, surrounding traffic and highway condition throughout following.",
+              "Identify ego's ordinary physical-control driver and both qualifying vehicles.",
+              "Identify the driver and both vehicles, and establish public-highway status.",
+              "Make the control vehicle a qualifying moving lead vehicle during an actual following interval before the lane change.",
+              "Make the separate control vehicle a qualifying moving lead vehicle in ego's initial lane and establish an actual following interval before the lane change.",
+              "Provide connected lanes and a supported lane-change route containing the hill crest.",
+              "Provide connected lanes supporting the intended lane change in a scene containing a hill crest.",
+              "Retain both speeds, separation, traffic and highway conditions through the following interval without selecting a reasonable-and-prudent cutoff."
+            ]
+          }
+        },
+        "commanded_following_gap": {
+          "kind": "controller",
+          "value": 30,
+          "unit": "m"
+        },
+        "observed_following_gap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.following",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.following measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "drv.time_gap",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.time_gap measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame rel.surface_gap measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "rel.ahead_behind_in_lane",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame rel.ahead_behind_in_lane measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "native velocity norm",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "env.wet_road",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame env.wet_road measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "env.ice_or_snow",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame env.ice_or_snow measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "drv.queue_behind",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.queue_behind measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.hard_deceleration measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame kin.position measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_context",
+            "unit": "object",
+            "method": "retained synthetic assumptions and exact required witness context"
+          }
+        ],
+        "limitations": [
+          "Measured native projections preserve raw positions, speeds, body geometry, device states and event histories; no legal verdict, inferred public authority or judgment cutoff.",
+          "Engineering cessation <=0.05m/s and 0.5mph tracking tolerance are measurement conventions, never legal tolerances."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__gap_capability_15",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "rationale": "Physical controller capability only; not an accepted judgment sweep point or anticipated compliance label.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "change_lane"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "authored_context": {
+          "kind": "world_setup",
+          "value": {
+            "public_highway": "synthetic test assumption; not inferred from rendering",
+            "physical_driver": "modeled controller acting on conventional passenger vehicle",
+            "official_devices": "native asset identity is not proof of public legal authority",
+            "witness_required_context": [
+              "Establish highway dedication and public availability, both speeds, separation, surrounding traffic and highway condition throughout following.",
+              "Identify ego's ordinary physical-control driver and both qualifying vehicles.",
+              "Identify the driver and both vehicles, and establish public-highway status.",
+              "Make the control vehicle a qualifying moving lead vehicle during an actual following interval before the lane change.",
+              "Make the separate control vehicle a qualifying moving lead vehicle in ego's initial lane and establish an actual following interval before the lane change.",
+              "Provide connected lanes and a supported lane-change route containing the hill crest.",
+              "Provide connected lanes supporting the intended lane change in a scene containing a hill crest.",
+              "Retain both speeds, separation, traffic and highway conditions through the following interval without selecting a reasonable-and-prudent cutoff."
+            ]
+          }
+        },
+        "commanded_following_gap": {
+          "kind": "controller",
+          "value": 15,
+          "unit": "m"
+        },
+        "observed_following_gap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "reasonable and prudent",
+          "note": "tier S: 'reasonable and prudent' is the whole standard; the headway bound is a surrogate"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.following",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.following measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "drv.time_gap",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.time_gap measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame rel.surface_gap measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "rel.ahead_behind_in_lane",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame rel.ahead_behind_in_lane measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "native velocity norm",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "env.wet_road",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame env.wet_road measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "env.ice_or_snow",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame env.ice_or_snow measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "drv.queue_behind",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.queue_behind measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.hard_deceleration measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame kin.position measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_context",
+            "unit": "object",
+            "method": "retained synthetic assumptions and exact required witness context"
+          }
+        ],
+        "limitations": [
+          "Measured native projections preserve raw positions, speeds, body geometry, device states and event histories; no legal verdict, inferred public authority or judgment cutoff.",
+          "Engineering cessation <=0.05m/s and 0.5mph tracking tolerance are measurement conventions, never legal tolerances."
+        ]
+      },
+      "paired_probe_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__gap_capability",
+      "deliberate_differences": [
+        "commanded_following_gap"
+      ],
+      "probe": {
+        "primary_variable": "commanded_following_gap",
+        "comparison_or_standard": "engineering gap tracking capability; reasonable/prudent remains unresolved",
+        "target_value_or_branch": 15
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__gap_capability_30",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "rationale": "Physical controller capability only; not an accepted judgment sweep point or anticipated compliance label.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "change_lane"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "authored_context": {
+          "kind": "world_setup",
+          "value": {
+            "public_highway": "synthetic test assumption; not inferred from rendering",
+            "physical_driver": "modeled controller acting on conventional passenger vehicle",
+            "official_devices": "native asset identity is not proof of public legal authority",
+            "witness_required_context": [
+              "Establish highway dedication and public availability, both speeds, separation, surrounding traffic and highway condition throughout following.",
+              "Identify ego's ordinary physical-control driver and both qualifying vehicles.",
+              "Identify the driver and both vehicles, and establish public-highway status.",
+              "Make the control vehicle a qualifying moving lead vehicle during an actual following interval before the lane change.",
+              "Make the separate control vehicle a qualifying moving lead vehicle in ego's initial lane and establish an actual following interval before the lane change.",
+              "Provide connected lanes and a supported lane-change route containing the hill crest.",
+              "Provide connected lanes supporting the intended lane change in a scene containing a hill crest.",
+              "Retain both speeds, separation, traffic and highway conditions through the following interval without selecting a reasonable-and-prudent cutoff."
+            ]
+          }
+        },
+        "commanded_following_gap": {
+          "kind": "controller",
+          "value": 30,
+          "unit": "m"
+        },
+        "observed_following_gap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "reasonable and prudent",
+          "note": "tier S: 'reasonable and prudent' is the whole standard; the headway bound is a surrogate"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.following",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.following measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "drv.time_gap",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.time_gap measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame rel.surface_gap measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "rel.ahead_behind_in_lane",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame rel.ahead_behind_in_lane measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "native velocity norm",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "env.wet_road",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame env.wet_road measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "env.ice_or_snow",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame env.ice_or_snow measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "drv.queue_behind",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.queue_behind measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.hard_deceleration measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame kin.position measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_context",
+            "unit": "object",
+            "method": "retained synthetic assumptions and exact required witness context"
+          }
+        ],
+        "limitations": [
+          "Measured native projections preserve raw positions, speeds, body geometry, device states and event histories; no legal verdict, inferred public authority or judgment cutoff.",
+          "Engineering cessation <=0.05m/s and 0.5mph tracking tolerance are measurement conventions, never legal tolerances."
+        ]
+      },
+      "paired_probe_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__gap_capability",
+      "deliberate_differences": [
+        "commanded_following_gap"
+      ],
+      "probe": {
+        "primary_variable": "commanded_following_gap",
+        "comparison_or_standard": "engineering gap tracking capability; reasonable/prudent remains unresolved",
+        "target_value_or_branch": 30
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__gap_capability_45",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "rationale": "Physical controller capability only; not an accepted judgment sweep point or anticipated compliance label.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "change_lane"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "authored_context": {
+          "kind": "world_setup",
+          "value": {
+            "public_highway": "synthetic test assumption; not inferred from rendering",
+            "physical_driver": "modeled controller acting on conventional passenger vehicle",
+            "official_devices": "native asset identity is not proof of public legal authority",
+            "witness_required_context": [
+              "Establish highway dedication and public availability, both speeds, separation, surrounding traffic and highway condition throughout following.",
+              "Identify ego's ordinary physical-control driver and both qualifying vehicles.",
+              "Identify the driver and both vehicles, and establish public-highway status.",
+              "Make the control vehicle a qualifying moving lead vehicle during an actual following interval before the lane change.",
+              "Make the separate control vehicle a qualifying moving lead vehicle in ego's initial lane and establish an actual following interval before the lane change.",
+              "Provide connected lanes and a supported lane-change route containing the hill crest.",
+              "Provide connected lanes supporting the intended lane change in a scene containing a hill crest.",
+              "Retain both speeds, separation, traffic and highway conditions through the following interval without selecting a reasonable-and-prudent cutoff."
+            ]
+          }
+        },
+        "commanded_following_gap": {
+          "kind": "controller",
+          "value": 45,
+          "unit": "m"
+        },
+        "observed_following_gap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "reasonable and prudent",
+          "note": "tier S: 'reasonable and prudent' is the whole standard; the headway bound is a surrogate"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.following",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.following measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "drv.time_gap",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.time_gap measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame rel.surface_gap measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "rel.ahead_behind_in_lane",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame rel.ahead_behind_in_lane measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "native velocity norm",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "env.wet_road",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame env.wet_road measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "env.ice_or_snow",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame env.ice_or_snow measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "drv.queue_behind",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.queue_behind measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame drv.hard_deceleration measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "same-original-frame kin.position measurement projection; source native actor/device APIs and retained authored geometry",
+            "time_window": "entire original execution",
+            "reference_frame": "native CARLA world XYZ",
+            "uncertainty": "50ms frame/event bracket plus native geometry and sensor uncertainty; no inferred legal precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_context",
+            "unit": "object",
+            "method": "retained synthetic assumptions and exact required witness context"
+          }
+        ],
+        "limitations": [
+          "Measured native projections preserve raw positions, speeds, body geometry, device states and event histories; no legal verdict, inferred public authority or judgment cutoff.",
+          "Engineering cessation <=0.05m/s and 0.5mph tracking tolerance are measurement conventions, never legal tolerances."
+        ]
+      },
+      "paired_probe_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__gap_capability",
+      "deliberate_differences": [
+        "commanded_following_gap"
+      ],
+      "probe": {
+        "primary_variable": "commanded_following_gap",
+        "comparison_or_standard": "engineering gap tracking capability; reasonable/prudent remains unresolved",
+        "target_value_or_branch": 45
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__gap_capability_15",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__gap_capability_30",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__gap_capability_45"
+      ],
+      "deliberate_differences": [
+        "commanded_following_gap"
+      ],
+      "fixed_conditions": [
+        "identical runner/map/camera/controller implementation, physics, weather, actor blueprints, initial subject transform, route and timing",
+        "authored law context except explicitly changed scalar assignment"
+      ],
+      "status": "draft"
+    }
+  ],
+  "observations": [
+    {
+      "name": "drv.following",
+      "mandatory": true
+    },
+    {
+      "name": "drv.time_gap",
+      "mandatory": true
+    },
+    {
+      "name": "rel.surface_gap",
+      "mandatory": true
+    },
+    {
+      "name": "rel.ahead_behind_in_lane",
+      "mandatory": true
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true
+    },
+    {
+      "name": "env.wet_road",
+      "mandatory": true
+    },
+    {
+      "name": "env.ice_or_snow",
+      "mandatory": true
+    },
+    {
+      "name": "drv.queue_behind",
+      "mandatory": true
+    },
+    {
+      "name": "drv.hard_deceleration",
+      "mandatory": true
+    },
+    {
+      "name": "kin.position",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json",
+      "sha256": "053eb3da7cadaca8afe47f10f641591995209610d0a3beb4080b02b383862b36"
+    },
+    {
+      "path": "runtime/stage-contracts.json",
+      "sha256": "b2d79b4fe50551442a2ab72ff6d7caf1307f5bf35ce404effcad8f1227c0b14a"
+    },
+    {
+      "path": "runtime/target-environment.json",
+      "sha256": "54cb0e9fa1a623a62dd06c9621de4bc7527f6a70180cb5e15d4350050cc6b8da"
+    },
+    {
+      "path": "runtime/python/pipeline_capture.py",
+      "sha256": "c88fc6cd6e0d942ed545ec92f58e59334f68f08aeaa8bf1e5e8b910df2f4a5fe"
+    },
+    {
+      "path": "runtime/python/original_observations.py",
+      "sha256": "34a5b4d2143c1142daaadd378f436326700ee919c516750020d25d5674e8ff92"
+    },
+    {
+      "path": "updates/003.json",
+      "sha256": "404f7d2064cfe4d262fde6d47f5aea6d27139664896678811ad2313059428ce6"
+    },
+    {
+      "path": "work/_shared/contracts.py",
+      "sha256": "5f42c782c2eb0886efc7d2b92c826c8653dd81193e81eb6ca07ebd612a5532d5"
+    },
+    {
+      "path": "work/_shared/recording.py",
+      "sha256": "c1a9b18e88dfc9de20e0e65b2647099e7b4e326d24bc7d2b95885e5a856d2e52"
+    },
+    {
+      "path": "work/_shared/worker_exchange/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "work/_shared/worker_exchange/common.py",
+      "sha256": "4d2c87889af2dc2c3b32cdbf6fe83ebe9a5bef2dcd6a78e604f0444759023c5d"
+    },
+    {
+      "path": "work/_shared/worker_exchange/runtime_contract.py",
+      "sha256": "75ddf915c058be66d17e0f80068a27d9cf2bd49c41165b13cd4a75611dabc600"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Measured physical gap tracking and hill-crest lane-change feasibility for the existing frozen capability settings; judgment sweep range cannot be accepted from synthetic software fixtures.",
+    "Actual original-run visibility, capture, vehicle dynamics and first-run target realization remain unmeasured."
+  ],
+  "summary_text_conflicts": [
+    {
+      "source": "assignment.summary.required_observations[drv.time_gap] and timing_requirements",
+      "conflict": "Summary calls headway an operationalization and assumes a bound; exact law supplies only reasonable and prudent. No legal headway bound is adopted.",
+      "resolution": "retain raw gap/speed/time histories and unresolved phrase"
+    }
+  ]
+}
