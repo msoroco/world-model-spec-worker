@@ -9,7 +9,7 @@ def require(condition, message):
         raise ValueError(message)
 
 
-def check(repo, complete=False):
+def check(repo, complete=False, require_ready=False):
     repo = Path(repo)
     batch = read(repo/'batch.json')
     require(batch['mode'] == 'six_step_preparation', 'Wrong batch mode')
@@ -24,7 +24,7 @@ def check(repo, complete=False):
         if rel in batch['frozen_files'] or rel == 'batch.json':
             continue
         parts = Path(rel).parts
-        require(len(parts)>2 and parts[0]=='work' and parts[1] in batch['assignments'], 'Unapproved output: '+rel)
+        require(len(parts)>2 and parts[0]=='work' and parts[1] in (*batch['assignments'], '_shared'), 'Unapproved output: '+rel)
         path = within(repo, rel)
         require(path.stat().st_size <= 2*1024*1024, 'Oversized return')
         text = path.read_text()
@@ -69,7 +69,7 @@ def check(repo, complete=False):
             require(construction.get('cell_id')==original['cell_id'] and construction.get('actor')==original['actor'], 'Construction identity mismatch')
             require(construction['entrypoint']=='runner.py', 'Noncanonical entrypoint')
             for entry in construction['files']:
-                require(within(folder,entry['path']).read_text()==entry['content'], 'Inline/materialized construction mismatch')
+                require(within(repo,entry['source']).read_text()==entry['content'] if entry.get('source') else within(folder,entry['path']).read_text()==entry['content'], 'Inline/materialized construction mismatch')
             require('runner.py' in {f['path'] for f in construction['files']}, 'Runner omitted from construction')
             proposal = read(folder/'proposals/cases.json')
             require(proposal.get('cell_id')==original['cell_id'] and proposal.get('actor')==original['actor'] and proposal.get('status')=='draft', 'Noncanonical cases proposal identity')
@@ -90,5 +90,7 @@ def check(repo, complete=False):
                 require(test.get('exit_code')==0 and test.get('command'), 'CPU test did not pass')
                 require(sha(within(folder,test['log']))==test['sha256'], 'Missing/changed test log')
         results[aid]=result
+    if require_ready:
+        require(len(results)==len(batch['assignments']) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
     return {'batch_id':batch['batch_id'],'results':results,'files':files,'package_sha256':digest(files),
             'verification':'Static contract only; explicitly run CPU tests before local adoption'}
