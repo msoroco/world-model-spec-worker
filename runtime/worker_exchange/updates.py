@@ -41,7 +41,7 @@ def publish(repo, notice_file, changed_files, receipt_root, push=False):
     if read(repo/'batch.json')!=old: raise ValueError('Do not manually edit batch.json')
     files=set(changed_files)
     for rel in files:
-        if not rel.startswith(('skills/','inputs/','runtime/','examples/','START_HERE.md','worker_check.py')):
+        if not rel.startswith(('skills/','inputs/','runtime/','examples/','tests/','START_HERE.md','worker_check.py')):
             raise ValueError('Update file outside permitted inputs/code')
         within(repo,rel)
     dirty=set(git('diff','--name-only','HEAD').splitlines()) | set(git('ls-files','--others','--exclude-standard').splitlines())

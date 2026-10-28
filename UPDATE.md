@@ -1,2 +1,2 @@
 # Updates
-Run python3 update_status.py. Process unseen numbered JSON notices through 002 in order.
+Process unseen numbered JSON notices in order through 003. Run python3 update_status.py.
