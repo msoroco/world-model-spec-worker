@@ -157,5 +157,146 @@
       ]
     }
   },
-  "existing_evidence": []
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "the subject turns to proceed in the opposite direction",
+      "the place is a curve, or the approach to or near the crest of a grade",
+      "the subject cannot be seen from 500 feet by a driver approaching from either direction"
+    ],
+    "exceptions": [],
+    "id": "NRS-484B-407",
+    "required_observations": [
+      {
+        "atom": "drv.u_turn",
+        "note": "turning to proceed in the opposite direction"
+      },
+      {
+        "atom": "st.curvature",
+        "note": "a curve"
+      },
+      {
+        "atom": "st.grade",
+        "note": "the approach to or near the crest of a grade"
+      },
+      {
+        "atom": "st.sight_distance",
+        "note": "the distance within which the vehicle can be seen, against the 500-foot requirement"
+      },
+      {
+        "atom": "rel.oncoming",
+        "note": "a vehicle approaching from either direction"
+      },
+      {
+        "atom": "drv.approaching",
+        "note": "the same, from behind"
+      },
+      {
+        "atom": "kin.position",
+        "note": "where the manoeuvre is made"
+      }
+    ],
+    "residue": [
+      "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+    ],
+    "source": "NRS 484B.407",
+    "subject": "driver",
+    "theme": "turns_and_signals",
+    "tier": "C",
+    "timing_requirements": [
+      {
+        "kind": "point_event",
+        "requirement": "the manoeuvre is judged where it is made; the visibility test is geometric at that point"
+      }
+    ],
+    "title": "Turning on curve or crest of grade prohibited in certain circumstances"
+  },
+  "template_provenance": "supplied_draft_not_automatically_authoritative",
+  "templates": [
+    {
+      "template_id": "NRS-484B-407@motor_vehicle_driver",
+      "law_id": "NRS-484B-407",
+      "actor": "motor_vehicle_driver",
+      "quote": "A vehicle shall not be turned so as to proceed in the opposite direction upon any curve, or upon the approach to or near the crest of a grade, where such vehicle cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet.",
+      "structure": {
+        "law_id": "NRS-484B-407",
+        "activation": {
+          "condition": "the subject is on a curve, or on the approach to or near the crest of a grade, AND the subject cannot be seen from 500 feet by a driver approaching from either direction",
+          "numeric_conditions": [
+            {
+              "variable": "sight_distance.minimum_from_either_approach",
+              "operator": "<",
+              "value": 500,
+              "unit": "feet"
+            }
+          ]
+        },
+        "obligation": {
+          "description": "Do not reverse direction on a curve or near a crest if approaching drivers cannot see the vehicle from the required distance in either direction.",
+          "type": "must_not"
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "the manoeuvre is judged where it is made; the visibility test is geometric at that point"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "500-foot sight-line construction",
+            "note": "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "curve_at_turn",
+        "road_grade",
+        "sight_distance",
+        "other_vehicles",
+        "commanded_turn_path"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "drv.u_turn",
+          "note": "turning to proceed in the opposite direction"
+        },
+        {
+          "atom": "st.curvature",
+          "note": "a curve"
+        },
+        {
+          "atom": "st.grade",
+          "note": "the approach to or near the crest of a grade"
+        },
+        {
+          "atom": "st.sight_distance",
+          "note": "the distance within which the vehicle can be seen, against the 500-foot requirement"
+        },
+        {
+          "atom": "rel.oncoming",
+          "note": "a vehicle approaching from either direction"
+        },
+        {
+          "atom": "drv.approaching",
+          "note": "the same, from behind"
+        },
+        {
+          "atom": "kin.position",
+          "note": "where the manoeuvre is made"
+        }
+      ],
+      "source_residue": [
+        "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+      ]
+    }
+  ],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ]
 }

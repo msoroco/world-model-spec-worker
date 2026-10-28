@@ -244,5 +244,95 @@
       ]
     }
   },
-  "existing_evidence": []
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "the subject is approaching an intersection",
+      "another vehicle has already entered the intersection from a different highway",
+      "the intersection is not controlled by official traffic-control devices"
+    ],
+    "exceptions": [
+      "intersections controlled by official traffic-control devices, unless the signal is inoperative (the subsection-4 case)",
+      "vehicles approaching from opposite directions where one is making or intending a left turn"
+    ],
+    "id": "NRS-484B-250-1",
+    "required_observations": [
+      {
+        "atom": "st.intersection",
+        "note": "the intersection region and its boundary"
+      },
+      {
+        "atom": "st.lane_enters",
+        "note": "the lanes on which the two vehicles approach enter the same intersection; the exception reads which intersection a device controls through the lanes it governs"
+      },
+      {
+        "atom": "drv.approaching",
+        "note": "the subject approaching it"
+      },
+      {
+        "atom": "drv.entering_intersection",
+        "note": "the other vehicle has entered from a different highway"
+      },
+      {
+        "atom": "drv.arrival_order",
+        "note": "who entered first"
+      },
+      {
+        "atom": "drv.yields_to",
+        "note": "the subject gives way"
+      },
+      {
+        "atom": "drv.in_intersection",
+        "note": "the other vehicle inside the region"
+      },
+      {
+        "atom": "dev.traffic_signal",
+        "note": "the exception: an intersection controlled by a device"
+      },
+      {
+        "atom": "dev.stop_sign",
+        "note": "the same"
+      },
+      {
+        "atom": "dev.yield_sign",
+        "note": "the same"
+      },
+      {
+        "atom": "drv.turning",
+        "note": "the exception for a left-turning vehicle from the opposite direction"
+      },
+      {
+        "atom": "rel.oncoming",
+        "note": "that vehicle approaches from the opposite direction"
+      }
+    ],
+    "residue": [],
+    "source": "NRS 484B.250(1); with 484B.250(5)",
+    "subject": "driver",
+    "theme": "intersections_and_right_of_way",
+    "tier": "C",
+    "timing_requirements": [
+      {
+        "kind": "ordering",
+        "requirement": "the other vehicle's entry precedes the subject's; that order is the whole test"
+      },
+      {
+        "kind": "continuous",
+        "requirement": "the duty lasts while the other vehicle is in the intersection"
+      }
+    ],
+    "title": "Vehicle approaching or entering intersection (1)"
+  },
+  "template_provenance": "derive_fresh_from_exact_law_and_summary_using_supplied_contract",
+  "templates": [],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ]
 }

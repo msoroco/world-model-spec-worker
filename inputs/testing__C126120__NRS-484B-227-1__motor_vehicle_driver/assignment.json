@@ -111,5 +111,164 @@
       "status": "accepted",
       "recording_id": "5152b5e2f221e247f54a9ba7cfbf80add3b9c8d9fee1c4fe35e7c79f4fb1eadf"
     }
+  ],
+  "summary": {
+    "activation_conditions": [
+      "the highway is divided",
+      "the subject is driven on it"
+    ],
+    "exceptions": [
+      "through an opening in the barrier, dividing section or space",
+      "at a crossover or intersection established by a public authority"
+    ],
+    "id": "NRS-484B-227-1",
+    "required_observations": [
+      {
+        "atom": "st.median_or_divider",
+        "note": "the dividing space, barrier or section, with its opening attribute"
+      },
+      {
+        "atom": "st.roadway",
+        "note": "the two separate roadways of the divided highway"
+      },
+      {
+        "atom": "rel.occupies",
+        "note": "which roadway the footprint is on, and any overlap of the dividing space"
+      },
+      {
+        "atom": "st.lane_direction",
+        "note": "the right-hand roadway for the subject's direction"
+      },
+      {
+        "atom": "drv.turning",
+        "note": "a left or semicircular turn"
+      },
+      {
+        "atom": "drv.u_turn",
+        "note": "a U-turn"
+      },
+      {
+        "atom": "st.intersection",
+        "note": "an established crossover or intersection"
+      },
+      {
+        "atom": "drv.wrong_way",
+        "note": "driving on the roadway of the opposite direction"
+      }
+    ],
+    "residue": [
+      "whether a crossover was 'established by a public authority' is an administrative fact; the observable substitute is the physical opening"
+    ],
+    "source": "NRS 484B.227(1)",
+    "subject": "driver",
+    "theme": "roadway_position",
+    "tier": "C",
+    "timing_requirements": [
+      {
+        "kind": "continuous",
+        "requirement": "the right-hand-roadway duty holds at every instant"
+      },
+      {
+        "kind": "point_event",
+        "requirement": "the crossing of the dividing space, or the turn, is the act judged"
+      }
+    ],
+    "title": "Driving on divided highway (1)"
+  },
+  "template_provenance": "supplied_draft_not_automatically_authoritative",
+  "templates": [
+    {
+      "template_id": "NRS-484B-227-1@motor_vehicle_driver",
+      "law_id": "NRS-484B-227-1",
+      "actor": "motor_vehicle_driver",
+      "quote": "Every vehicle driven upon a divided highway must be driven only upon the right-hand roadway and must not be driven over, across or within any dividing space, barrier or section or make any left turn, semicircular turn or U-turn, except through an opening in the barrier or dividing section or space or at a crossover or intersection established by a public authority.",
+      "structure": {
+        "law_id": "NRS-484B-227-1",
+        "activation": {
+          "condition": "the highway is divided AND the subject is driven on it"
+        },
+        "obligation": {
+          "description": "Do not leave the right-hand roadway, cross its divider, or make a U-turn except at a permitted opening, crossover, or intersection.",
+          "type": "must_not"
+        },
+        "exceptions": [
+          {
+            "trigger": "Turn uses an opening in the barrier or dividing space",
+            "effect": "replaces",
+            "replacement_obligation": "Use the opening for the turn and otherwise remain on the right-hand roadway",
+            "source_clause": "except through an opening in the barrier or dividing section or space"
+          },
+          {
+            "trigger": "Turn uses a crossover or intersection established by public authority",
+            "effect": "replaces",
+            "replacement_obligation": "Use the established crossover or intersection and otherwise remain on the right-hand roadway",
+            "source_clause": "or at a crossover or intersection established by a public authority."
+          }
+        ],
+        "timing": {
+          "description": "the right-hand-roadway duty holds at every instant; the crossing of the dividing space, or the turn, is the act judged"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "established by a public authority",
+            "note": "whether a crossover was 'established by a public authority' is an administrative fact; the observable substitute is the physical opening"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_trajectory",
+        "road_directionality",
+        "divider_geometry",
+        "intersection_geometry",
+        "commanded_turn_path"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "st.median_or_divider",
+          "note": "the dividing space, barrier or section, with its opening attribute"
+        },
+        {
+          "atom": "st.roadway",
+          "note": "the two separate roadways of the divided highway"
+        },
+        {
+          "atom": "rel.occupies",
+          "note": "which roadway the footprint is on, and any overlap of the dividing space"
+        },
+        {
+          "atom": "st.lane_direction",
+          "note": "the right-hand roadway for the subject's direction"
+        },
+        {
+          "atom": "drv.turning",
+          "note": "a left or semicircular turn"
+        },
+        {
+          "atom": "drv.u_turn",
+          "note": "a U-turn"
+        },
+        {
+          "atom": "st.intersection",
+          "note": "an established crossover or intersection"
+        },
+        {
+          "atom": "drv.wrong_way",
+          "note": "driving on the roadway of the opposite direction"
+        }
+      ],
+      "source_residue": [
+        "whether a crossover was 'established by a public authority' is an administrative fact; the observable substitute is the physical opening"
+      ]
+    }
+  ],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
   ]
 }

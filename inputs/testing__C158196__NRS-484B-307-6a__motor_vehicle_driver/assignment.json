@@ -197,5 +197,85 @@
       ]
     }
   },
-  "existing_evidence": []
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "a steady yellow indication faces the subject",
+      "the subject is approaching the intersection"
+    ],
+    "exceptions": [],
+    "id": "NRS-484B-307-6a",
+    "required_observations": [
+      {
+        "atom": "dev.traffic_signal",
+        "note": "states circular_yellow then circular_red"
+      },
+      {
+        "atom": "dev.governs",
+        "note": "the head faces the subject"
+      },
+      {
+        "atom": "st.lane_enters",
+        "note": "the lane facing the signal enters the intersection the prohibition names"
+      },
+      {
+        "atom": "kin.time",
+        "note": "the instant the red indication begins"
+      },
+      {
+        "atom": "drv.entering_intersection",
+        "note": "the entry, which must not fall after the red begins"
+      },
+      {
+        "atom": "st.intersection",
+        "note": "the intersection boundary"
+      },
+      {
+        "atom": "drv.crossing_line",
+        "note": "crossing the stop line or boundary"
+      },
+      {
+        "atom": "kin.speed",
+        "note": "the approach speed"
+      },
+      {
+        "atom": "drv.stopping_distance",
+        "note": "whether a stop on the yellow was achievable"
+      }
+    ],
+    "residue": [
+      "the yellow itself imposes no duty: this line is only the warning and the red-entry prohibition"
+    ],
+    "source": "NRS 484B.307(6)(a)",
+    "subject": "driver",
+    "theme": "devices_and_signals",
+    "tier": "C",
+    "timing_requirements": [
+      {
+        "kind": "ordering",
+        "requirement": "the test is the order of two events: the red indication appearing and the footprint entering the intersection"
+      },
+      {
+        "kind": "point_event",
+        "requirement": "entry while red is shown is the violation; entry on yellow is not"
+      },
+      {
+        "kind": "span",
+        "requirement": "the trace must cover the yellow-to-red transition and the entry"
+      }
+    ],
+    "title": "Traffic controlled by official traffic-control devices (6)(a)"
+  },
+  "template_provenance": "derive_fresh_from_exact_law_and_summary_using_supplied_contract",
+  "templates": [],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ]
 }

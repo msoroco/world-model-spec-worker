@@ -188,5 +188,97 @@
       ]
     }
   },
-  "existing_evidence": []
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "the intersection is controlled by a traffic-control signal that is installed with uncovered vehicular signals",
+      "the signal is inoperative when the subject enters"
+    ],
+    "exceptions": [],
+    "id": "NRS-484B-250-4",
+    "required_observations": [
+      {
+        "atom": "dev.traffic_signal",
+        "note": "the head, with its uncovered attribute"
+      },
+      {
+        "atom": "dev.inoperative",
+        "note": "installed and uncovered but showing no valid indication"
+      },
+      {
+        "atom": "st.lane_enters",
+        "note": "the lane the inoperative signal governs enters the intersection in question"
+      },
+      {
+        "atom": "st.stop_line",
+        "note": "the clearly marked stop line"
+      },
+      {
+        "atom": "st.crosswalk",
+        "note": "the near-side crosswalk"
+      },
+      {
+        "atom": "st.sight_distance",
+        "note": "the point where the view of the through highway opens"
+      },
+      {
+        "atom": "rel.visible",
+        "note": "'a clear view of approaching traffic': the traffic on the intersecting highway in the subject's line of sight from the stopping point"
+      },
+      {
+        "atom": "drv.stopped",
+        "note": "the required halt"
+      },
+      {
+        "atom": "drv.entering_intersection",
+        "note": "entry after the halt"
+      },
+      {
+        "atom": "drv.arrival_order",
+        "note": "vehicles that previously completed a stop"
+      },
+      {
+        "atom": "drv.in_intersection",
+        "note": "vehicles already inside"
+      },
+      {
+        "atom": "drv.yields_to",
+        "note": "the yield after the stop"
+      }
+    ],
+    "residue": [
+      "'proceed cautiously' after the stop is a judgement element"
+    ],
+    "source": "NRS 484B.250(4)",
+    "subject": "driver",
+    "theme": "intersections_and_right_of_way",
+    "tier": "C",
+    "timing_requirements": [
+      {
+        "kind": "ordering",
+        "requirement": "stop first, then proceed: the halt precedes entry, and the yield is owed to whoever completed a stop earlier"
+      },
+      {
+        "kind": "duration",
+        "requirement": "a full halt at the stop line, not a slowing"
+      },
+      {
+        "kind": "span",
+        "requirement": "deciding 'previously completed a stop' needs the other vehicles' histories, so the trace must cover their approaches too"
+      }
+    ],
+    "title": "Vehicle approaching or entering intersection (4)"
+  },
+  "template_provenance": "derive_fresh_from_exact_law_and_summary_using_supplied_contract",
+  "templates": [],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ]
 }

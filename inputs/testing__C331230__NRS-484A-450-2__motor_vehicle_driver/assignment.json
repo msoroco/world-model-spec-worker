@@ -186,5 +186,97 @@
       ]
     }
   },
-  "existing_evidence": []
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "the subject is the driver of a vehicle",
+      "the subject is approaching an intersection whose approach is indicated by a stop sign"
+    ],
+    "exceptions": [],
+    "id": "NRS-484A-450-2",
+    "required_observations": [
+      {
+        "atom": "dev.stop_sign",
+        "note": "a stop sign at the intersection"
+      },
+      {
+        "atom": "dev.governs",
+        "note": "the sign faces the subject's approach"
+      },
+      {
+        "atom": "st.lane_enters",
+        "note": "the subject's lane is an approach to the intersection the sign governs"
+      },
+      {
+        "atom": "drv.approaching",
+        "note": "the subject is approaching that intersection"
+      },
+      {
+        "atom": "st.crosswalk",
+        "note": "the near-side crosswalk, marked or unmarked"
+      },
+      {
+        "atom": "st.stop_line",
+        "note": "a clearly marked stop line, if there is one"
+      },
+      {
+        "atom": "st.intersection",
+        "note": "the intersection region and its boundary"
+      },
+      {
+        "atom": "st.sight_distance",
+        "note": "where a view of approaching traffic on the intersecting highway first opens, when there is neither crosswalk nor stop line"
+      },
+      {
+        "atom": "rel.visible",
+        "note": "'where the driver has a view of approaching traffic': the traffic on the intersecting highway in the subject's line of sight from the stopping point"
+      },
+      {
+        "atom": "drv.stopped",
+        "note": "a full halt"
+      },
+      {
+        "atom": "drv.crossing_line",
+        "note": "the footprint crossing the crosswalk / stop line boundary"
+      },
+      {
+        "atom": "drv.entering_intersection",
+        "note": "the footprint entering the intersection"
+      }
+    ],
+    "residue": [
+      "which of the three halting references applies is a map question (is there a crosswalk, is there a marked stop line); the third is the first point from which approaching traffic is in the subject's line of sight (rel.visible), and only as good as the source's line-of-sight test"
+    ],
+    "source": "NRS 484A.450(2)",
+    "subject": "driver",
+    "theme": "intersections_and_right_of_way",
+    "tier": "C",
+    "timing_requirements": [
+      {
+        "kind": "ordering",
+        "requirement": "the halt occurs before the footprint crosses the halting reference — the near-side crosswalk, or the stop line if there is no crosswalk, or the point where the view of the intersecting highway opens if there is neither"
+      },
+      {
+        "kind": "duration",
+        "requirement": "a full stop, not a rolling minimum: speed at or below the drv.stopped epsilon for at least its span parameter"
+      },
+      {
+        "kind": "ordering",
+        "requirement": "the halt precedes entering the intersection"
+      }
+    ],
+    "title": "Designation of through highways and intersections requiring stop or yield (2)"
+  },
+  "template_provenance": "derive_fresh_from_exact_law_and_summary_using_supplied_contract",
+  "templates": [],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ]
 }

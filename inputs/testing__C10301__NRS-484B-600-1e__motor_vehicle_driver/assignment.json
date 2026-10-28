@@ -184,5 +184,103 @@
       ]
     }
   },
-  "existing_evidence": []
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "the subject drives or operates a vehicle of any kind on any highway"
+    ],
+    "exceptions": [],
+    "id": "NRS-484B-600-1e",
+    "required_observations": [
+      {
+        "atom": "kin.speed",
+        "note": "the speed driven, against the 80 mph absolute cap"
+      },
+      {
+        "atom": "kin.velocity",
+        "note": "the measurement it comes from"
+      },
+      {
+        "atom": "ru.subject",
+        "note": "the vehicle judged — any kind"
+      }
+    ],
+    "residue": [],
+    "source": "NRS 484B.600(1)(e)",
+    "subject": "driver",
+    "theme": "speed",
+    "tier": "C",
+    "timing_requirements": [
+      {
+        "kind": "continuous",
+        "requirement": "'in any event' — the cap binds at every instant regardless of any posted limit"
+      },
+      {
+        "kind": "point_event",
+        "requirement": "a single frame above 80 mph is the violation, subject to a declared measurement tolerance"
+      }
+    ],
+    "title": "Basic rule (1)(e)"
+  },
+  "template_provenance": "supplied_draft_not_automatically_authoritative",
+  "templates": [
+    {
+      "template_id": "NRS-484B-600-1e@motor_vehicle_driver",
+      "law_id": "NRS-484B-600-1e",
+      "actor": "motor_vehicle_driver",
+      "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: In any event, a rate of speed greater than 80 miles per hour.",
+      "structure": {
+        "law_id": "NRS-484B-600-1e",
+        "activation": {
+          "condition": "the subject drives or operates a vehicle of any kind on any highway"
+        },
+        "obligation": {
+          "description": "Do not exceed the absolute highway speed cap.",
+          "type": "must_not",
+          "numeric_conditions": [
+            {
+              "variable": "ego_speed",
+              "operator": "<=",
+              "value": 80,
+              "unit": "mph"
+            }
+          ]
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "'in any event' — the cap binds at every instant regardless of any posted limit; a single frame above 80 mph is the violation, subject to a declared measurement tolerance"
+        },
+        "judgment_calls_needed": []
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "kin.speed",
+          "note": "the speed driven, against the 80 mph absolute cap"
+        },
+        {
+          "atom": "kin.velocity",
+          "note": "the measurement it comes from"
+        },
+        {
+          "atom": "ru.subject",
+          "note": "the vehicle judged — any kind"
+        }
+      ],
+      "source_residue": []
+    }
+  ],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ]
 }

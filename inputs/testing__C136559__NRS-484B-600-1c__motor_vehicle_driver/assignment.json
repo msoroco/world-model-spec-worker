@@ -182,5 +182,140 @@
       ]
     }
   },
-  "existing_evidence": []
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "a public authority has posted a speed limit for the portion of highway",
+      "the subject drives on that portion"
+    ],
+    "exceptions": [],
+    "id": "NRS-484B-600-1c",
+    "required_observations": [
+      {
+        "atom": "dev.speed_limit_sign",
+        "note": "kind maximum, with its value and unit — the limit posted for that portion"
+      },
+      {
+        "atom": "dev.governs",
+        "note": "the portion of highway the sign controls"
+      },
+      {
+        "atom": "drv.within_signed_zone",
+        "note": "kind speed_zone, where the limit is zoned"
+      },
+      {
+        "atom": "kin.speed",
+        "note": "the speed driven, against the posted value"
+      },
+      {
+        "atom": "rel.occupies",
+        "note": "which portion of highway the subject is on"
+      },
+      {
+        "atom": "dev.position",
+        "note": "where the sign stands, which fixes where the limit starts"
+      }
+    ],
+    "residue": [
+      "where no sign is visible in the trace, the governing limit is a reading assumption and the rule reports unknown without it"
+    ],
+    "source": "NRS 484B.600(1)(c)",
+    "subject": "driver",
+    "theme": "speed",
+    "tier": "C",
+    "timing_requirements": [
+      {
+        "kind": "continuous",
+        "requirement": "the limit binds at every instant on the posted portion"
+      },
+      {
+        "kind": "point_event",
+        "requirement": "the violation is any instant above the posted value, subject to a declared measurement tolerance"
+      }
+    ],
+    "title": "Basic rule (1)(c)"
+  },
+  "template_provenance": "supplied_draft_not_automatically_authoritative",
+  "templates": [
+    {
+      "template_id": "NRS-484B-600-1c@motor_vehicle_driver",
+      "law_id": "NRS-484B-600-1c",
+      "actor": "motor_vehicle_driver",
+      "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than that posted by a public authority for the particular portion of highway being traversed.",
+      "structure": {
+        "law_id": "NRS-484B-600-1c",
+        "activation": {
+          "condition": "a public authority has posted a speed limit for the portion of highway AND the subject drives on that portion"
+        },
+        "obligation": {
+          "description": "Do not exceed the governing posted speed limit.",
+          "type": "must_not",
+          "numeric_conditions": [
+            {
+              "variable": "ego_speed",
+              "operator": "<=",
+              "value": null,
+              "unit": "mph",
+              "value_from": "posted_speed_limit"
+            }
+          ]
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "the limit binds at every instant on the posted portion; the violation is any instant above the posted value, subject to a declared measurement tolerance"
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "governing posted limit",
+            "note": "where no sign is visible in the trace, the governing limit is a reading assumption and the rule reports unknown without it"
+          }
+        ]
+      },
+      "parameter_refs": [
+        "ego_speed",
+        "posted_speed_limit",
+        "traffic_control_devices",
+        "commanded_speed_profile"
+      ],
+      "source_required_observations": [
+        {
+          "atom": "dev.speed_limit_sign",
+          "note": "kind maximum, with its value and unit — the limit posted for that portion"
+        },
+        {
+          "atom": "dev.governs",
+          "note": "the portion of highway the sign controls"
+        },
+        {
+          "atom": "drv.within_signed_zone",
+          "note": "kind speed_zone, where the limit is zoned"
+        },
+        {
+          "atom": "kin.speed",
+          "note": "the speed driven, against the posted value"
+        },
+        {
+          "atom": "rel.occupies",
+          "note": "which portion of highway the subject is on"
+        },
+        {
+          "atom": "dev.position",
+          "note": "where the sign stands, which fixes where the limit starts"
+        }
+      ],
+      "source_residue": [
+        "where no sign is visible in the trace, the governing limit is a reading assumption and the rule reports unknown without it"
+      ]
+    }
+  ],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ]
 }

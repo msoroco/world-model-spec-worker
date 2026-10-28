@@ -189,5 +189,91 @@
       ]
     }
   },
-  "existing_evidence": []
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "the subject is within an intersection intending to turn left",
+      "a vehicle approaches from the opposite direction, within the intersection or so close as to be an immediate hazard"
+    ],
+    "exceptions": [
+      "once the subject has yielded and signalled as required, the turn may be made and the oncoming drivers then owe the yield"
+    ],
+    "id": "NRS-484B-253",
+    "required_observations": [
+      {
+        "atom": "drv.in_intersection",
+        "note": "the subject is within the intersection"
+      },
+      {
+        "atom": "st.lane_enters",
+        "note": "the lanes of the opposing vehicles are approaches to the intersection the subject is within"
+      },
+      {
+        "atom": "drv.turning",
+        "note": "intending to turn left"
+      },
+      {
+        "atom": "sig.turn_indicator",
+        "note": "'having given a signal when and as required'"
+      },
+      {
+        "atom": "rel.oncoming",
+        "note": "a vehicle approaching from the opposite direction"
+      },
+      {
+        "atom": "drv.approaching",
+        "note": "that vehicle is within the intersection or close to it"
+      },
+      {
+        "atom": "drv.time_to_conflict",
+        "note": "operationalizes 'so close as to constitute an immediate hazard'"
+      },
+      {
+        "atom": "drv.yields_to",
+        "note": "the left-turning subject gives way"
+      },
+      {
+        "atom": "drv.arrival_order",
+        "note": "the order through the conflict point"
+      },
+      {
+        "atom": "kin.speed",
+        "note": "the oncoming vehicle's speed sets the hazard distance"
+      }
+    ],
+    "residue": [
+      "'immediate hazard' is a judgement element: the time-to-conflict bound must be declared"
+    ],
+    "source": "NRS 484B.253",
+    "subject": "driver",
+    "theme": "intersections_and_right_of_way",
+    "tier": "Q",
+    "timing_requirements": [
+      {
+        "kind": "ordering",
+        "requirement": "yield first, then turn; the duty ends when the hazard has passed"
+      },
+      {
+        "kind": "advance",
+        "requirement": "the signal must have been given 'when and as required' — the advance distance comes from the turn-signal rule"
+      },
+      {
+        "kind": "continuous",
+        "requirement": "the hazard test is re-evaluated while the subject waits"
+      }
+    ],
+    "title": "Vehicle turning left"
+  },
+  "template_provenance": "derive_fresh_from_exact_law_and_summary_using_supplied_contract",
+  "templates": [],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ]
 }

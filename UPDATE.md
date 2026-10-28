@@ -1,2 +1,2 @@
 # Updates
-Read updates/001.md. Apply unseen numbered notices in order.
+Run python3 update_status.py. Process unseen numbered JSON notices through 002 in order.

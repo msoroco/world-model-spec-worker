@@ -82,5 +82,88 @@
       ]
     }
   },
-  "existing_evidence": []
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "the subject is a truck or combination 80 inches or more in overall width",
+      "the vehicle ahead in the same lane is also a truck or combination 80 inches or more wide",
+      "the subject is following it",
+      "the highway has fewer than two lanes for traffic in the subject's direction"
+    ],
+    "exceptions": [
+      "while overtaking and passing another vehicle or combination",
+      "on a highway with two or more lanes available for traffic moving in the same direction",
+      "'whenever conditions permit' — the space need not be left where traffic or the road makes it impossible"
+    ],
+    "id": "NRS-484B-127-2",
+    "required_observations": [
+      {
+        "atom": "ru.truck",
+        "note": "both the subject and the vehicle it follows"
+      },
+      {
+        "atom": "ru.trailer_or_combination",
+        "note": "a combination counts as well"
+      },
+      {
+        "atom": "kin.extent",
+        "note": "overall width, to apply the 80-inch class"
+      },
+      {
+        "atom": "drv.following",
+        "note": "the subject is following the lead truck"
+      },
+      {
+        "atom": "rel.surface_gap",
+        "note": "the longitudinal space, against the 500-foot requirement"
+      },
+      {
+        "atom": "rel.ahead_behind_in_lane",
+        "note": "same lane, subject behind"
+      },
+      {
+        "atom": "drv.laned_roadway",
+        "note": "the exemption: two or more lanes in the same direction"
+      },
+      {
+        "atom": "st.lane_adjacency",
+        "note": "the count of lanes in the subject's direction"
+      },
+      {
+        "atom": "drv.overtaking",
+        "note": "the carve-out while overtaking"
+      }
+    ],
+    "residue": [
+      "'whenever conditions permit' is a judgement element",
+      "overall width of a non-subject vehicle can only be estimated from kin.extent"
+    ],
+    "source": "NRS 484B.127(2)",
+    "subject": "truck_driver",
+    "theme": "following",
+    "tier": "Q",
+    "timing_requirements": [
+      {
+        "kind": "continuous",
+        "requirement": "the 500-foot space is a standing requirement while following, not a single-instant test"
+      },
+      {
+        "kind": "duration",
+        "requirement": "a momentary closure during and immediately after an overtake is excepted; a bound on how long the gap may be short must be declared"
+      }
+    ],
+    "title": "Following too closely (2)"
+  },
+  "template_provenance": "derive_fresh_from_exact_law_and_summary_using_supplied_contract",
+  "templates": [],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ]
 }

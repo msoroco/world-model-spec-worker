@@ -149,5 +149,71 @@
       ]
     }
   },
-  "existing_evidence": []
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "two or more motor vehicles are driven in a caravan or motorcade",
+      "they are outside a business district"
+    ],
+    "exceptions": [],
+    "id": "NRS-484B-127-3",
+    "required_observations": [
+      {
+        "atom": "drv.following",
+        "note": "the vehicles in the caravan, each behind the next"
+      },
+      {
+        "atom": "rel.surface_gap",
+        "note": "the space between consecutive vehicles"
+      },
+      {
+        "atom": "drv.queue_behind",
+        "note": "a caravan or motorcade is a queue travelling together"
+      },
+      {
+        "atom": "rel.same_direction",
+        "note": "they move as one group"
+      },
+      {
+        "atom": "ru.trailer_or_combination",
+        "note": "'whether or not towing'"
+      },
+      {
+        "atom": "drv.lane_change_feasible",
+        "note": "operationalizes 'sufficient space for another vehicle to enter and occupy without danger'"
+      },
+      {
+        "atom": "kin.speed",
+        "note": "the gap needed scales with speed"
+      }
+    ],
+    "residue": [
+      "tier S: 'sufficient space … without danger' is the whole obligation, so any gap value is a surrogate",
+      "'outside of a business district' is a legal region class — a reading assumption, never read from the scene",
+      "whether vehicles form a caravan (a shared purpose) is not observable; only a queue at a common speed is"
+    ],
+    "source": "NRS 484B.127(3)",
+    "subject": "driver",
+    "theme": "following",
+    "tier": "S",
+    "timing_requirements": [
+      {
+        "kind": "continuous",
+        "requirement": "the spacing is required throughout the caravan's travel"
+      }
+    ],
+    "title": "Following too closely (3)"
+  },
+  "template_provenance": "derive_fresh_from_exact_law_and_summary_using_supplied_contract",
+  "templates": [],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ]
 }
