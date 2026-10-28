@@ -54,12 +54,11 @@ register a recording, relabel research, or modify set membership. Run
 python3 worker_check.py --complete before returning the batch. Follow the
 exact result format in START_HERE.md.
 
-## Shared runtime migration
+## Shared runtime
 
-Read MIGRATION.md and use the version/hash bound in batch.runtime. Reuse supplied
+Read START_HERE.md and use the version/hash bound in batch.runtime. Reuse supplied
 capture, conversion, rendering and validation; never recreate those components.
-Old migration candidates are untrusted scenario-specific references. Prove the
-400-2a pilot before partition delegation. Every ready package needs a validated
+Every ready package needs a validated
 execution-manifest.json listing every expanded nonbaseline case and an exact
 construction SHA. Capability packages need executable measurement/finalization
 code, not just a note that a GPU is needed. Distinguish readiness_kind capability
@@ -69,8 +68,7 @@ when finished. Operator launch is manual.
 
 ## Output compatibility
 
-Continue the current return branch; do not restart the scenario packages. Read
-MIGRATION.md's update-005 section. Write canonical frame identities during capture
+Write canonical frame identities during capture
 with native_output.FrameMap and finalize measured results with write_result. Do
 not translate or rewrite faulty original evidence after capture. Use world_restore
 snapshot/restore with guaranteed cleanup and readback, keeping resource ownership
@@ -80,4 +78,4 @@ receipt from its actual bundled analysis, existing validator, converter and vide
 processing. The generic runtime selftest alone cannot qualify a new package.
 Fixtures establish software compatibility only; unknown physical outcomes remain
 unconfirmed. Do not drop mandatory observations or fabricate physical success to
-pass tests. Fix the pilot first, then the four existing partitions.
+pass tests. Validate one exact case end to end before expanding all partitions.
