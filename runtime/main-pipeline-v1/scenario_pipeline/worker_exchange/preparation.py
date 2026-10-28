@@ -27,9 +27,8 @@ def check(repo, complete=False, require_ready=False):
         require(len(parts)>2 and parts[0]=='work' and parts[1] in (*batch['assignments'], '_shared'), 'Unapproved output: '+rel)
         path = within(repo, rel)
         require(path.stat().st_size <= 2*1024*1024, 'Oversized return')
-        text = path.read_text()
         if path.suffix == '.py':
-            ast.parse(text)
+            ast.parse(path.read_text())
     results, all_ids = {}, set()
     for aid, item in batch['assignments'].items():
         folder = repo/'work'/aid
@@ -64,7 +63,10 @@ def check(repo, complete=False, require_ready=False):
                 if result.get('readiness_kind') not in ('capability','delivery_prepared'):
                     raise ValueError('Declare first-run capability versus delivery preparation')
                 from .execution_manifest import validate as validate_execution_manifest
-                validate_execution_manifest(repo,aid)
+                executable=validate_execution_manifest(repo,aid)
+                if batch['runtime'].get('package_compatibility_required'):
+                    from .package_compatibility import check_receipts
+                    check_receipts(repo,folder,executable)
             require(plan['cases'] and plan['observations'], 'Ready with no cases/observations')
             for filename in ('runner.py','config.json','construction.json','proposals/cases.json'):
                 require((folder/filename).is_file(), 'Missing executable artifact '+filename)

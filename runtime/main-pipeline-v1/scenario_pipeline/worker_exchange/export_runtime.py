@@ -94,7 +94,7 @@ def export(project,destination,fixture_attempt=None,capability_root=None):
     if fixture_attempt:fixture(fixture_attempt,destination/'fixtures/retained-speed')
     tests=destination/'tests';tests.mkdir()
     for name in ('test_traffic_spec_adapter.py','test_original_participant_projection.py','test_native_control_observations.py',
-                 'test_native_road_profile.py','test_control_portions.py','test_webm_export.py','test_lane_signal_measurement.py','test_full_footprint.py','test_optical_measurements.py','test_environment_relocation.py','test_runtime_handoff.py'):
+                 'test_native_road_profile.py','test_control_portions.py','test_webm_export.py','test_lane_signal_measurement.py','test_full_footprint.py','test_optical_measurements.py','test_environment_relocation.py','test_runtime_handoff.py','test_native_output.py','test_world_restore.py','test_package_compatibility.py'):
         shutil.copyfile(source/'tests'/name,tests/name)
     capture_test=source/'tests/test_pipeline_capture.py'
     text=capture_test.read_text().replace("parents[2]/'scripts/","parents[1]/'python/")
