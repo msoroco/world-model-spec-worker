@@ -1,0 +1,88 @@
+{
+  "template_id": "NRS-484B-407@motor_vehicle_driver",
+  "law_id": "NRS-484B-407",
+  "actor": "motor_vehicle_driver",
+  "quote": "A vehicle shall not be turned so as to proceed in the opposite direction upon any curve, or upon the approach to or near the crest of a grade, where such vehicle cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet.",
+  "structure": {
+    "law_id": "NRS-484B-407",
+    "activation": {
+      "condition": "the subject turns to proceed in the opposite direction; the place is a curve, or the approach to or near the crest of a grade; the subject cannot be seen from 500 feet by a driver approaching from either direction",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "A vehicle shall not be turned so as to proceed in the opposite direction upon any curve, or upon the approach to or near the crest of a grade, where such vehicle cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet.",
+      "type": "must_not",
+      "numeric_conditions": [
+        {
+          "variable": "sight_distance.minimum_from_either_approach",
+          "operator": "<",
+          "value": 500,
+          "unit": "feet"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "the manoeuvre is judged where it is made; the visibility test is geometric at that point",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "500-foot sight-line construction",
+        "note": "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "draft frozen case values; no inferred legal cutoff"
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": "draft frozen case values; no inferred legal cutoff"
+    },
+    {
+      "name": "route_start_s",
+      "kind": "world_setup",
+      "range_or_domain": "draft frozen case values; no inferred legal cutoff"
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "draft frozen case values; no inferred legal cutoff"
+    },
+    {
+      "name": "ego_trajectory",
+      "kind": "subject_behavior",
+      "range_or_domain": "draft frozen case values; no inferred legal cutoff"
+    },
+    {
+      "name": "maneuver_station_m",
+      "kind": "controller",
+      "range_or_domain": "draft frozen case values; no inferred legal cutoff"
+    },
+    {
+      "name": "requested_sight_distance",
+      "kind": "controller",
+      "range_or_domain": "draft frozen case values; no inferred legal cutoff"
+    },
+    {
+      "name": "sight_distance",
+      "kind": "subject_behavior",
+      "range_or_domain": "draft frozen case values; no inferred legal cutoff"
+    },
+    {
+      "name": "crest_elevation_profile",
+      "kind": "world_setup",
+      "range_or_domain": "draft frozen case values; no inferred legal cutoff"
+    },
+    {
+      "name": "curve_at_turn",
+      "kind": "world_setup",
+      "range_or_domain": "draft frozen case values; no inferred legal cutoff"
+    }
+  ]
+}

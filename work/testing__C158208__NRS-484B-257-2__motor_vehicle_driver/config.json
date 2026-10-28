@@ -1,0 +1,942 @@
+{
+  "law_id": "NRS-484B-257-2",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C158208",
+  "supported_case_ids": [
+    "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__baseline",
+    "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__occupied_yield_attempt",
+    "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__occupied_no_yield_attempt"
+  ],
+  "selected_case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__occupied_yield_attempt",
+  "simulate_baseline_by_default": false,
+  "cases": [
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral definition retained and not selected by default.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 450
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "yield_hold_s": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "proper_yield_sign": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "officer_control": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "signal_control": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "stop_line": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "crosswalk": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "through_highway": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "other_vehicle_within_intersection": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "approaching_hazard_exercised": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "proceed cautiously",
+          "note": "'proceed cautiously' and 'immediate hazard' are judgement elements"
+        },
+        {
+          "phrase": "immediate hazard",
+          "note": "'immediate hazard' is a judgement element"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.stop_sign",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "dev.yield_sign",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.stop_line",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.in_intersection",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "No CARLA execution: spawn inventory, road import, collision/departure, controller tracking and camera visibility unverified.",
+          "Mandatory raw atom streams are implemented only for direct telemetry; remaining atom projections require completion against retained original-frame PipelineCapture evidence.",
+          "Primary encoded review videos are not implemented; runner saves four synchronized original RGB PNG sequences and exact frame map.",
+          "Native properly erected yield sign and governed-lane verification not implemented; OpenDRIVE-only topology cannot establish a rendered device.",
+          "Nearest-view fallback and absence of sidewalk-derived crosswalk need physical inventory; authored topology alone is insufficient.",
+          "Cross participant and yield timing are requests; immediate hazard/cautiousness have no adopted threshold."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__occupied_yield_attempt",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "compliant_attempt",
+      "rationale": "Other vehicle is within the intersection, independent of approaching-hazard interpretation. Yield outcome remains measured, not assumed.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 450
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "yield_hold_s": {
+          "kind": "controller",
+          "value": 8.0
+        },
+        "proper_yield_sign": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "officer_control": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "signal_control": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "stop_line": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "crosswalk": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "through_highway": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "other_vehicle_within_intersection": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "approaching_hazard_exercised": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "proceed cautiously",
+          "note": "'proceed cautiously' and 'immediate hazard' are judgement elements"
+        },
+        {
+          "phrase": "immediate hazard",
+          "note": "'immediate hazard' is a judgement element"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.stop_sign",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "dev.yield_sign",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.stop_line",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.in_intersection",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "No CARLA execution: spawn inventory, road import, collision/departure, controller tracking and camera visibility unverified.",
+          "Mandatory raw atom streams are implemented only for direct telemetry; remaining atom projections require completion against retained original-frame PipelineCapture evidence.",
+          "Primary encoded review videos are not implemented; runner saves four synchronized original RGB PNG sequences and exact frame map.",
+          "Native properly erected yield sign and governed-lane verification not implemented; OpenDRIVE-only topology cannot establish a rendered device.",
+          "Nearest-view fallback and absence of sidewalk-derived crosswalk need physical inventory; authored topology alone is insufficient.",
+          "Cross participant and yield timing are requests; immediate hazard/cautiousness have no adopted threshold."
+        ]
+      },
+      "paired_probe_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "yield_hold_s"
+      ],
+      "probe": {
+        "primary_variable": "yield_hold_s",
+        "comparison_or_standard": "exact plain branch; no judgment standard",
+        "target_value_or_branch": "occupied_yield_attempt"
+      },
+      "deterministic_branch": {
+        "source_clause": "yielding to vehicles not so obligated to stop or yield and which are within the intersection",
+        "judgment_context": [
+          {
+            "phrase": "proceed cautiously",
+            "note": "'proceed cautiously' and 'immediate hazard' are judgement elements",
+            "status": "fixed_assumption",
+            "reason": "Occupied-intersection branch; no approaching-hazard cutoff. Cautiousness is fixed synthetic context, not measured.",
+            "world_setup_refs": [
+              "other_vehicle_within_intersection"
+            ]
+          },
+          {
+            "phrase": "immediate hazard",
+            "note": "'immediate hazard' is a judgement element",
+            "status": "not_exercised",
+            "reason": "Occupied-intersection branch; no approaching-hazard cutoff. Cautiousness is fixed synthetic context, not measured.",
+            "world_setup_refs": []
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__occupied_no_yield_attempt",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "violating_attempt",
+      "rationale": "Other vehicle is within the intersection, independent of approaching-hazard interpretation. Yield outcome remains measured, not assumed.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 450
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "yield_hold_s": {
+          "kind": "controller",
+          "value": 0.0
+        },
+        "proper_yield_sign": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "officer_control": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "signal_control": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "stop_line": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "crosswalk": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "through_highway": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "other_vehicle_within_intersection": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "approaching_hazard_exercised": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "proceed cautiously",
+          "note": "'proceed cautiously' and 'immediate hazard' are judgement elements"
+        },
+        {
+          "phrase": "immediate hazard",
+          "note": "'immediate hazard' is a judgement element"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.stop_sign",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "dev.yield_sign",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.stop_line",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.in_intersection",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "No CARLA execution: spawn inventory, road import, collision/departure, controller tracking and camera visibility unverified.",
+          "Mandatory raw atom streams are implemented only for direct telemetry; remaining atom projections require completion against retained original-frame PipelineCapture evidence.",
+          "Primary encoded review videos are not implemented; runner saves four synchronized original RGB PNG sequences and exact frame map.",
+          "Native properly erected yield sign and governed-lane verification not implemented; OpenDRIVE-only topology cannot establish a rendered device.",
+          "Nearest-view fallback and absence of sidewalk-derived crosswalk need physical inventory; authored topology alone is insufficient.",
+          "Cross participant and yield timing are requests; immediate hazard/cautiousness have no adopted threshold."
+        ]
+      },
+      "paired_probe_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "yield_hold_s"
+      ],
+      "probe": {
+        "primary_variable": "yield_hold_s",
+        "comparison_or_standard": "exact plain branch; no judgment standard",
+        "target_value_or_branch": "occupied_no_yield_attempt"
+      },
+      "deterministic_branch": {
+        "source_clause": "yielding to vehicles not so obligated to stop or yield and which are within the intersection",
+        "judgment_context": [
+          {
+            "phrase": "proceed cautiously",
+            "note": "'proceed cautiously' and 'immediate hazard' are judgement elements",
+            "status": "fixed_assumption",
+            "reason": "Occupied-intersection branch; no approaching-hazard cutoff. Cautiousness is fixed synthetic context, not measured.",
+            "world_setup_refs": [
+              "other_vehicle_within_intersection"
+            ]
+          },
+          {
+            "phrase": "immediate hazard",
+            "note": "'immediate hazard' is a judgement element",
+            "status": "not_exercised",
+            "reason": "Occupied-intersection branch; no approaching-hazard cutoff. Cautiousness is fixed synthetic context, not measured.",
+            "world_setup_refs": []
+          }
+        ]
+      }
+    }
+  ],
+  "mechanism": "yield",
+  "vehicle_blueprint": "vehicle.lincoln.mkz_2020",
+  "hz": 20,
+  "duration_s": 45,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "location": [
+        -12,
+        0,
+        12
+      ],
+      "pitch": -35,
+      "fov": 90
+    },
+    {
+      "name": "chase",
+      "width": 1280,
+      "height": 720,
+      "location": [
+        -7,
+        0,
+        3
+      ],
+      "pitch": -12,
+      "fov": 80
+    },
+    {
+      "name": "driver",
+      "width": 1280,
+      "height": 720,
+      "location": [
+        0,
+        0,
+        1.6
+      ],
+      "pitch": 0,
+      "fov": 80
+    },
+    {
+      "name": "oblique",
+      "width": 1280,
+      "height": 720,
+      "location": [
+        -4,
+        5,
+        5
+      ],
+      "pitch": -25,
+      "fov": 80
+    }
+  ],
+  "observations": [
+    {
+      "name": "dev.stop_sign",
+      "mandatory": true,
+      "note": "a stop sign at one or more entrances, outside a through-highway setting"
+    },
+    {
+      "name": "dev.yield_sign",
+      "mandatory": true,
+      "note": "or a yield sign"
+    },
+    {
+      "name": "dev.governs",
+      "mandatory": true,
+      "note": "which approach the sign faces"
+    },
+    {
+      "name": "st.lane_enters",
+      "mandatory": true,
+      "note": "which lanes enter the intersection, so that 'one or more entrances thereto' and the other drivers' obligations can be read"
+    },
+    {
+      "name": "drv.stopped",
+      "mandatory": true,
+      "note": "the halt before entering"
+    },
+    {
+      "name": "st.stop_line",
+      "mandatory": true,
+      "note": "the reference point, as in the preceding subsection"
+    },
+    {
+      "name": "st.crosswalk",
+      "mandatory": true,
+      "note": "the same"
+    },
+    {
+      "name": "drv.entering_intersection",
+      "mandatory": true,
+      "note": "the entry the stop precedes"
+    },
+    {
+      "name": "drv.in_intersection",
+      "mandatory": true,
+      "note": "vehicles already within"
+    },
+    {
+      "name": "drv.time_to_conflict",
+      "mandatory": true,
+      "note": "operationalizes 'so closely as to constitute an immediate hazard'"
+    },
+    {
+      "name": "drv.yields_to",
+      "mandatory": true,
+      "note": "the yield to vehicles not obliged to stop"
+    },
+    {
+      "name": "dev.human_direction",
+      "mandatory": true,
+      "note": "the officer exception"
+    },
+    {
+      "name": "dev.traffic_signal",
+      "mandatory": true,
+      "note": "the signal exception"
+    },
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "note": "original kinematic trace"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "note": "original kinematic trace"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "note": "original kinematic trace"
+    }
+  ],
+  "route_extents": [
+    {
+      "road_id": 1,
+      "length": 490,
+      "search_distance_m": 230
+    }
+  ],
+  "delivery_gaps": [
+    "No CARLA execution: spawn inventory, road import, collision/departure, controller tracking and camera visibility unverified.",
+    "Mandatory raw atom streams are implemented only for direct telemetry; remaining atom projections require completion against retained original-frame PipelineCapture evidence.",
+    "Primary encoded review videos are not implemented; runner saves four synchronized original RGB PNG sequences and exact frame map.",
+    "Native properly erected yield sign and governed-lane verification not implemented; OpenDRIVE-only topology cannot establish a rendered device.",
+    "Nearest-view fallback and absence of sidewalk-derived crosswalk need physical inventory; authored topology alone is insufficient.",
+    "Cross participant and yield timing are requests; immediate hazard/cautiousness have no adopted threshold."
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      "public highway is synthetic authored fact; not jurisdictional evidence"
+    ],
+    "proper_sign_and_rendering_confirmed": false
+  }
+}

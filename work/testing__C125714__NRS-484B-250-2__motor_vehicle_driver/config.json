@@ -1,0 +1,228 @@
+{
+  "assignment_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver",
+  "cell_id": "C125714",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-250-2",
+  "supported_case_ids": [
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__baseline"
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Measured crossing-entry timing at a median-opening intersection.; baseline is an attempted physical construction, not an observation.",
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel"
+        },
+        "test_branch": {
+          "kind": "controller",
+          "value": "neutral"
+        },
+        "highway_context": {
+          "kind": "world_setup",
+          "value": {
+            "layout": "median_opening",
+            "control": "other_vehicle",
+            "administrative_status": "unconfirmed"
+          }
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "approximately the same time",
+          "note": "Exact law contains qualitative entry simultaneity although supplied summary residue is empty; no tolerance is adopted."
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.intersection",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "witness_context",
+            "unit": "structured",
+            "method": "exact authored witness requirements; public/administrative facts are assumptions requiring separate evidence"
+          }
+        ],
+        "limitations": [
+          "CARLA unavailable: no simulator connection, version readback, blueprint inventory, physics execution, RGB visibility, or measured observations were produced.",
+          "All geometric dimensions and controller gains are engineering draft choices, not statutory standards.",
+          "No downstream legal label or physical acceptance is claimed.",
+          "Median-opening connected crossing and right-side participant controllers are not implemented.",
+          "No faithful arrival-time sweep realization or physical yielding finalizer; approximate simultaneity remains unresolved."
+        ]
+      }
+    }
+  ],
+  "baseline_selected": false,
+  "maneuver": "travel",
+  "required_atoms": [
+    "st.intersection",
+    "st.lane_enters",
+    "drv.entering_intersection",
+    "drv.arrival_order",
+    "rel.bearing",
+    "drv.yields_to",
+    "dev.traffic_signal",
+    "drv.turning"
+  ],
+  "implementation_gaps": [
+    "Physical arrival release-offset sweep is executable on connected two-crossing OpenDRIVE; rendered median/opening and official-device/native-governance evidence remain unvalidated.",
+    "Required atom-by-atom streams and complete yielding finalizer remain incomplete. Approximate-simultaneity is unresolved, never assigned a cutoff."
+  ],
+  "timeout_s": 45.0,
+  "live_binding": null,
+  "cameras": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "location": {
+        "x": -8,
+        "y": 0,
+        "z": 5
+      },
+      "rotation": {
+        "pitch": -15,
+        "yaw": 0,
+        "roll": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "location": {
+        "x": -5,
+        "y": -4,
+        "z": 2
+      },
+      "rotation": {
+        "pitch": -5,
+        "yaw": 15,
+        "roll": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "location": {
+        "x": 2,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "pitch": -5,
+        "yaw": 180,
+        "roll": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "location": {
+        "x": -2,
+        "y": 4,
+        "z": 2
+      },
+      "rotation": {
+        "pitch": -5,
+        "yaw": -15,
+        "roll": 0
+      }
+    }
+  ],
+  "physical_sweep_execution": {
+    "cli": "--sweep-index 0..4",
+    "release_offset_grid_s": [
+      -2.0,
+      -1.0,
+      0.0,
+      1.0,
+      2.0
+    ],
+    "engineering_rationale": "Fixed physical release delays around simultaneous controller release; actual entry offsets are measured from full footprint brackets. Not a simultaneity tolerance or guaranteed target match.",
+    "status": "executable_draft; feasibility and recording completeness unconfirmed"
+  }
+}

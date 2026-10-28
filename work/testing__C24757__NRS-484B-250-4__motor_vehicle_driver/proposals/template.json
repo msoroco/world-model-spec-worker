@@ -1,0 +1,69 @@
+{
+  "template_id": "NRS-484B-250-4@motor_vehicle_driver",
+  "law_id": "NRS-484B-250-4",
+  "actor": "motor_vehicle_driver",
+  "quote": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
+  "structure": {
+    "law_id": "NRS-484B-250-4",
+    "activation": {
+      "condition": "the intersection is controlled by a traffic-control signal that is installed with uncovered vehicular signals; the signal is inoperative when the subject enters",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": [
+        {
+          "kind": "ordering",
+          "requirement": "stop first, then proceed: the halt precedes entry, and the yield is owed to whoever completed a stop earlier"
+        },
+        {
+          "kind": "duration",
+          "requirement": "a full halt at the stop line, not a slowing"
+        },
+        {
+          "kind": "span",
+          "requirement": "deciding 'previously completed a stop' needs the other vehicles' histories, so the trace must cover their approaches too"
+        }
+      ],
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "proceed cautiously",
+        "note": "'proceed cautiously' after the stop is a judgement element"
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "exact draft case assignments"
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": "exact draft case assignments"
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "recorded only"
+    },
+    {
+      "name": "authored_context",
+      "kind": "world_setup",
+      "range_or_domain": "exact draft case assignments"
+    },
+    {
+      "name": "commanded_halt",
+      "kind": "controller",
+      "range_or_domain": "exact draft case assignments"
+    }
+  ]
+}

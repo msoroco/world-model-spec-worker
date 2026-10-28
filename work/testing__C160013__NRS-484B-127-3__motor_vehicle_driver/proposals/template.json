@@ -1,0 +1,82 @@
+{
+  "template_id": "NRS-484B-127-3@motor_vehicle_driver",
+  "law_id": "NRS-484B-127-3",
+  "actor": "motor_vehicle_driver",
+  "quote": "Motor vehicles being driven upon any highway outside of a business district in a caravan or motorcade, whether or not towing other vehicles, shall be operated to allow sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger.",
+  "structure": {
+    "law_id": "NRS-484B-127-3",
+    "activation": {
+      "condition": "two or more motor vehicles are driven in a caravan or motorcade; they are outside a business district",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Motor vehicles being driven upon any highway outside of a business district in a caravan or motorcade, whether or not towing other vehicles, shall be operated to allow sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": [
+        {
+          "kind": "continuous",
+          "requirement": "the spacing is required throughout the caravan's travel"
+        }
+      ],
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "tier S: 'sufficient space \u2026 without danger' is the whole obligation, so any gap value is a surrogate",
+        "note": "Unresolved supplied summary residue; no standard adopted"
+      },
+      {
+        "phrase": "'outside of a business district' is a legal region class \u2014 a reading assumption, never read from the scene",
+        "note": "Unresolved supplied summary residue; no standard adopted"
+      },
+      {
+        "phrase": "whether vehicles form a caravan (a shared purpose) is not observable; only a queue at a common speed is",
+        "note": "Unresolved supplied summary residue; no standard adopted"
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": [
+        "5"
+      ]
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": [
+        "follow"
+      ]
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": [
+        "None"
+      ]
+    },
+    {
+      "name": "authored_context",
+      "kind": "world_setup",
+      "range_or_domain": [
+        "{'public_highway': 'explicit synthetic assumption', 'witness_contexts': ['Document ordering, towing and coupling configurations and all consecutive group spaces.', 'Establish caravan or motorcade membership independently of common speed or queue behavior.', 'Establish group membership independently of observed following behavior and preserve unresolved caravan terminology.', 'Establish highway dedication and public vehicular availability.', 'Establish public-highway status and outside-business-district classification using external legal-region evidence or an explicit external assumption.', 'Identify all qualifying group vehicles, ordering, driver relationships, coupling and towing arrangements and consecutive spaces.', 'Make ego and the preceding control vehicle qualifying motor vehicles.', 'Retain potential entry-and-occupancy context for vehicles and combinations without deciding sufficient space or without danger.', 'Support the fixed outside-business-district classification with external legal-region evidence or an explicit external assumption, retaining the supplied frontage and building-use definition.'], 'caravan_membership': 'explicit synthetic assumption for ego and lead, not inferred from motion', 'outside_business_district': 'explicit synthetic assumption; no scene-derived legal classification'}"
+      ]
+    },
+    {
+      "name": "commanded_gap_m",
+      "kind": "controller",
+      "range_or_domain": [
+        "15",
+        "30",
+        "45",
+        "None"
+      ]
+    }
+  ]
+}

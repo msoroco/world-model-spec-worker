@@ -1,0 +1,530 @@
+{
+  "cell_id": "C331230",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral definition, unselected",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "authored_context": {
+          "kind": "world_setup",
+          "value": {
+            "public_highway": "explicit synthetic assumption",
+            "witness_contexts": [
+              "An eligible motor vehicle and driver with actual physical control.",
+              "Complete approach and crossing trace; distinguish unrelated pedestrian and delivery-device routes.",
+              "Establish eligible vehicle classification and driver attribution.",
+              "Establish intersection boundaries and opposing sidewalk connections defining the near-side crosswalk.",
+              "Establish sign orientation and governance of the subject approach.",
+              "Keep unrelated pedestrian and delivery-device routes distinct.",
+              "Near-side crosswalk boundaries established by opposing sidewalk lateral-line connections.",
+              "Observe approach, cessation, and subsequent crossing without adding a minimum stationary duration.",
+              "Stop-sign governance and qualifying two-way intersection geometry."
+            ]
+          }
+        },
+        "commanded_halt": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which of the three halting references applies is a map question (is there a crosswalk, is there a marked stop line); the third is the first point from which approaching traffic is in the subject's line of sight (rel.visible), and only as good as the source's line-of-sight test"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.stop_sign",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.stop_line",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "drv.crossing_line",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_context",
+            "unit": "object",
+            "method": "config.json exact assumptions and source witness"
+          }
+        ],
+        "limitations": [
+          "Raw graphs are not finalized per-atom JSONL channels; first-run readiness is partial."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__halt",
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "compliant_attempt",
+      "rationale": "Plain statutory branch; actual outcome requires original measured evidence",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "authored_context": {
+          "kind": "world_setup",
+          "value": {
+            "public_highway": "explicit synthetic assumption",
+            "witness_contexts": [
+              "An eligible motor vehicle and driver with actual physical control.",
+              "Complete approach and crossing trace; distinguish unrelated pedestrian and delivery-device routes.",
+              "Establish eligible vehicle classification and driver attribution.",
+              "Establish intersection boundaries and opposing sidewalk connections defining the near-side crosswalk.",
+              "Establish sign orientation and governance of the subject approach.",
+              "Keep unrelated pedestrian and delivery-device routes distinct.",
+              "Near-side crosswalk boundaries established by opposing sidewalk lateral-line connections.",
+              "Observe approach, cessation, and subsequent crossing without adding a minimum stationary duration.",
+              "Stop-sign governance and qualifying two-way intersection geometry."
+            ]
+          }
+        },
+        "commanded_halt": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which of the three halting references applies is a map question (is there a crosswalk, is there a marked stop line); the third is the first point from which approaching traffic is in the subject's line of sight (rel.visible), and only as good as the source's line-of-sight test"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.stop_sign",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.stop_line",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "drv.crossing_line",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_context",
+            "unit": "object",
+            "method": "config.json exact assumptions and source witness"
+          }
+        ],
+        "limitations": [
+          "Raw graphs are not finalized per-atom JSONL channels; first-run readiness is partial."
+        ]
+      },
+      "paired_probe_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "commanded_halt"
+      ],
+      "probe": {
+        "primary_variable": "commanded_halt",
+        "comparison_or_standard": "exact target law clause; no judgment cutoff",
+        "target_value_or_branch": true
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_halt",
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "violating_attempt",
+      "rationale": "Plain statutory branch; actual outcome requires original measured evidence",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "authored_context": {
+          "kind": "world_setup",
+          "value": {
+            "public_highway": "explicit synthetic assumption",
+            "witness_contexts": [
+              "An eligible motor vehicle and driver with actual physical control.",
+              "Complete approach and crossing trace; distinguish unrelated pedestrian and delivery-device routes.",
+              "Establish eligible vehicle classification and driver attribution.",
+              "Establish intersection boundaries and opposing sidewalk connections defining the near-side crosswalk.",
+              "Establish sign orientation and governance of the subject approach.",
+              "Keep unrelated pedestrian and delivery-device routes distinct.",
+              "Near-side crosswalk boundaries established by opposing sidewalk lateral-line connections.",
+              "Observe approach, cessation, and subsequent crossing without adding a minimum stationary duration.",
+              "Stop-sign governance and qualifying two-way intersection geometry."
+            ]
+          }
+        },
+        "commanded_halt": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which of the three halting references applies is a map question (is there a crosswalk, is there a marked stop line); the third is the first point from which approaching traffic is in the subject's line of sight (rel.visible), and only as good as the source's line-of-sight test"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.stop_sign",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.stop_line",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "drv.crossing_line",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "raw",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+            "time_window": "entire original run",
+            "reference_frame": "CARLA world",
+            "uncertainty": "not yet characterized; no legal tolerance"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_context",
+            "unit": "object",
+            "method": "config.json exact assumptions and source witness"
+          }
+        ],
+        "limitations": [
+          "Raw graphs are not finalized per-atom JSONL channels; first-run readiness is partial."
+        ]
+      },
+      "paired_probe_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "commanded_halt"
+      ],
+      "probe": {
+        "primary_variable": "commanded_halt",
+        "comparison_or_standard": "exact target law clause; no judgment cutoff",
+        "target_value_or_branch": false
+      }
+    }
+  ],
+  "sweep_specs": []
+}

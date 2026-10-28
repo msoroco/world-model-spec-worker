@@ -1,0 +1,67 @@
+{
+  "template_id": "NRS-484B-600-1c@motor_vehicle_driver",
+  "law_id": "NRS-484B-600-1c",
+  "actor": "motor_vehicle_driver",
+  "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than that posted by a public authority for the particular portion of highway being traversed.",
+  "structure": {
+    "law_id": "NRS-484B-600-1c",
+    "activation": {
+      "condition": "a public authority has posted a speed limit for the portion of highway; the subject drives on that portion",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than that posted by a public authority for the particular portion of highway being traversed.",
+      "type": "must_not",
+      "numeric_conditions": [
+        {
+          "variable": "ego_speed",
+          "operator": "<=",
+          "value": "posted_speed_limit",
+          "unit": "mph"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": [
+        {
+          "kind": "continuous",
+          "requirement": "the limit binds at every instant on the posted portion"
+        },
+        {
+          "kind": "point_event",
+          "requirement": "the violation is any instant above the posted value, subject to a declared measurement tolerance"
+        }
+      ],
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "exact draft case assignments"
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": "exact draft case assignments"
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "recorded only"
+    },
+    {
+      "name": "authored_context",
+      "kind": "world_setup",
+      "range_or_domain": "exact draft case assignments"
+    },
+    {
+      "name": "posted_speed_limit",
+      "kind": "world_setup",
+      "range_or_domain": "exact draft case assignments"
+    }
+  ]
+}

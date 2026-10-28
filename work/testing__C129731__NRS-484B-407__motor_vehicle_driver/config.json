@@ -1,0 +1,793 @@
+{
+  "law_id": "NRS-484B-407",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C129731",
+  "supported_case_ids": [
+    "testing__C129731__NRS-484B-407__motor_vehicle_driver__baseline",
+    "testing__C129731__NRS-484B-407__motor_vehicle_driver__sight_below",
+    "testing__C129731__NRS-484B-407__motor_vehicle_driver__sight_at",
+    "testing__C129731__NRS-484B-407__motor_vehicle_driver__sight_above"
+  ],
+  "selected_case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__sight_below",
+  "simulate_baseline_by_default": false,
+  "cases": [
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral definition retained and not selected by default.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "u_turn"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 350
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "maneuver_station_m": {
+          "kind": "controller",
+          "value": 430.0
+        },
+        "requested_sight_distance": {
+          "kind": "controller",
+          "value": 152.4
+        },
+        "sight_distance": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "crest_elevation_profile": {
+          "kind": "world_setup",
+          "value": "road.xodr: crest at station 500m, radius from vertical polynomial"
+        },
+        "curve_at_turn": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "500-foot sight-line construction",
+          "note": "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.u_turn",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.grade",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "No CARLA execution: spawn inventory, road import, collision/departure, controller tracking and camera visibility unverified.",
+          "Mandatory raw atom streams are implemented only for direct telemetry; remaining atom projections require completion against retained original-frame PipelineCapture evidence.",
+          "Primary encoded review videos are not implemented; runner saves four synchronized original RGB PNG sequences and exact frame map.",
+          "The crest exists in authored elevation profile but paired sight targets need a calibrated inverse station-to-nine-point-horizon mapping before first-run readiness.",
+          "U-turn footprint containment and incoming native route search coverage for every frame need stronger static certification; route endpoints alone do not prove sight coverage."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__sight_below",
+      "target_law_id": "NRS-484B-407",
+      "target_type": "boundary_probe",
+      "rationale": "500-foot two-approach visibility probe; desired horizon must be measured. Station-to-horizon calibration is outstanding, never infer achieved distance.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "u_turn"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 350
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "maneuver_station_m": {
+          "kind": "controller",
+          "value": 425.0
+        },
+        "requested_sight_distance": {
+          "kind": "controller",
+          "value": 147.4
+        },
+        "sight_distance": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "crest_elevation_profile": {
+          "kind": "world_setup",
+          "value": "road.xodr: crest at station 500m, radius from vertical polynomial"
+        },
+        "curve_at_turn": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "500-foot sight-line construction",
+          "note": "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.u_turn",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.grade",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "No CARLA execution: spawn inventory, road import, collision/departure, controller tracking and camera visibility unverified.",
+          "Mandatory raw atom streams are implemented only for direct telemetry; remaining atom projections require completion against retained original-frame PipelineCapture evidence.",
+          "Primary encoded review videos are not implemented; runner saves four synchronized original RGB PNG sequences and exact frame map.",
+          "The crest exists in authored elevation profile but paired sight targets need a calibrated inverse station-to-nine-point-horizon mapping before first-run readiness.",
+          "U-turn footprint containment and incoming native route search coverage for every frame need stronger static certification; route endpoints alone do not prove sight coverage."
+        ]
+      },
+      "paired_probe_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "requested_sight_distance",
+        "maneuver_station_m"
+      ],
+      "probe": {
+        "primary_variable": "maneuver_station_m",
+        "comparison_or_standard": "500-foot statutory sight distance",
+        "target_value_or_branch": 147.4,
+        "threshold_ref": "NRS-484B-407.visibility_500_feet",
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 147.4,
+        "epsilon_used": 5.0
+      }
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__sight_at",
+      "target_law_id": "NRS-484B-407",
+      "target_type": "boundary_probe",
+      "rationale": "500-foot two-approach visibility probe; desired horizon must be measured. Station-to-horizon calibration is outstanding, never infer achieved distance.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "u_turn"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 350
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "maneuver_station_m": {
+          "kind": "controller",
+          "value": 430.0
+        },
+        "requested_sight_distance": {
+          "kind": "controller",
+          "value": 152.4
+        },
+        "sight_distance": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "crest_elevation_profile": {
+          "kind": "world_setup",
+          "value": "road.xodr: crest at station 500m, radius from vertical polynomial"
+        },
+        "curve_at_turn": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "500-foot sight-line construction",
+          "note": "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.u_turn",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.grade",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "No CARLA execution: spawn inventory, road import, collision/departure, controller tracking and camera visibility unverified.",
+          "Mandatory raw atom streams are implemented only for direct telemetry; remaining atom projections require completion against retained original-frame PipelineCapture evidence.",
+          "Primary encoded review videos are not implemented; runner saves four synchronized original RGB PNG sequences and exact frame map.",
+          "The crest exists in authored elevation profile but paired sight targets need a calibrated inverse station-to-nine-point-horizon mapping before first-run readiness.",
+          "U-turn footprint containment and incoming native route search coverage for every frame need stronger static certification; route endpoints alone do not prove sight coverage."
+        ]
+      },
+      "paired_probe_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "requested_sight_distance",
+        "maneuver_station_m"
+      ],
+      "probe": {
+        "primary_variable": "maneuver_station_m",
+        "comparison_or_standard": "500-foot statutory sight distance",
+        "target_value_or_branch": 152.4,
+        "threshold_ref": "NRS-484B-407.visibility_500_feet",
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 152.4,
+        "epsilon_used": 5.0
+      }
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__sight_above",
+      "target_law_id": "NRS-484B-407",
+      "target_type": "boundary_probe",
+      "rationale": "500-foot two-approach visibility probe; desired horizon must be measured. Station-to-horizon calibration is outstanding, never infer achieved distance.",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "u_turn"
+        },
+        "route_start_s": {
+          "kind": "world_setup",
+          "value": 350
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "maneuver_station_m": {
+          "kind": "controller",
+          "value": 435.0
+        },
+        "requested_sight_distance": {
+          "kind": "controller",
+          "value": 157.4
+        },
+        "sight_distance": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "crest_elevation_profile": {
+          "kind": "world_setup",
+          "value": "road.xodr: crest at station 500m, radius from vertical polynomial"
+        },
+        "curve_at_turn": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "500-foot sight-line construction",
+          "note": "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.u_turn",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.grade",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "raw_structured_evidence",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "direct actor telemetry where supported; otherwise retained original PipelineCapture evidence pending explicit projection",
+            "time_window": "entire original execution",
+            "reference_frame": "CARLA world coordinates, metres; yaw degrees",
+            "uncertainty": "native geometry and sampling uncertainty unverified; unavailable projections are null"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_test_context",
+            "unit": "structured",
+            "method": "config snapshot with draft provenance"
+          }
+        ],
+        "limitations": [
+          "No CARLA execution: spawn inventory, road import, collision/departure, controller tracking and camera visibility unverified.",
+          "Mandatory raw atom streams are implemented only for direct telemetry; remaining atom projections require completion against retained original-frame PipelineCapture evidence.",
+          "Primary encoded review videos are not implemented; runner saves four synchronized original RGB PNG sequences and exact frame map.",
+          "The crest exists in authored elevation profile but paired sight targets need a calibrated inverse station-to-nine-point-horizon mapping before first-run readiness.",
+          "U-turn footprint containment and incoming native route search coverage for every frame need stronger static certification; route endpoints alone do not prove sight coverage."
+        ]
+      },
+      "paired_probe_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "requested_sight_distance",
+        "maneuver_station_m"
+      ],
+      "probe": {
+        "primary_variable": "maneuver_station_m",
+        "comparison_or_standard": "500-foot statutory sight distance",
+        "target_value_or_branch": 157.4,
+        "threshold_ref": "NRS-484B-407.visibility_500_feet",
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 157.4,
+        "epsilon_used": 5.0
+      }
+    }
+  ],
+  "mechanism": "uturn",
+  "vehicle_blueprint": "vehicle.lincoln.mkz_2020",
+  "hz": 20,
+  "duration_s": 45,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "location": [
+        -12,
+        0,
+        12
+      ],
+      "pitch": -35,
+      "fov": 90
+    },
+    {
+      "name": "chase",
+      "width": 1280,
+      "height": 720,
+      "location": [
+        -7,
+        0,
+        3
+      ],
+      "pitch": -12,
+      "fov": 80
+    },
+    {
+      "name": "driver",
+      "width": 1280,
+      "height": 720,
+      "location": [
+        0,
+        0,
+        1.6
+      ],
+      "pitch": 0,
+      "fov": 80
+    },
+    {
+      "name": "oblique",
+      "width": 1280,
+      "height": 720,
+      "location": [
+        -4,
+        5,
+        5
+      ],
+      "pitch": -25,
+      "fov": 80
+    }
+  ],
+  "observations": [
+    {
+      "name": "drv.u_turn",
+      "mandatory": true,
+      "note": "turning to proceed in the opposite direction"
+    },
+    {
+      "name": "st.curvature",
+      "mandatory": true,
+      "note": "a curve"
+    },
+    {
+      "name": "st.grade",
+      "mandatory": true,
+      "note": "the approach to or near the crest of a grade"
+    },
+    {
+      "name": "st.sight_distance",
+      "mandatory": true,
+      "note": "the distance within which the vehicle can be seen, against the 500-foot requirement"
+    },
+    {
+      "name": "rel.oncoming",
+      "mandatory": true,
+      "note": "a vehicle approaching from either direction"
+    },
+    {
+      "name": "drv.approaching",
+      "mandatory": true,
+      "note": "the same, from behind"
+    },
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "note": "where the manoeuvre is made"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "note": "original kinematic trace"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "note": "original kinematic trace"
+    }
+  ],
+  "route_extents": [
+    {
+      "road_id": 1,
+      "length": 1800,
+      "search_distance_m": 230
+    }
+  ],
+  "delivery_gaps": [
+    "No CARLA execution: spawn inventory, road import, collision/departure, controller tracking and camera visibility unverified.",
+    "Mandatory raw atom streams are implemented only for direct telemetry; remaining atom projections require completion against retained original-frame PipelineCapture evidence.",
+    "Primary encoded review videos are not implemented; runner saves four synchronized original RGB PNG sequences and exact frame map.",
+    "The crest exists in authored elevation profile but paired sight targets need a calibrated inverse station-to-nine-point-horizon mapping before first-run readiness.",
+    "U-turn footprint containment and incoming native route search coverage for every frame need stronger static certification; route endpoints alone do not prove sight coverage."
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      "public highway is synthetic authored fact; not jurisdictional evidence"
+    ],
+    "proper_sign_and_rendering_confirmed": false
+  }
+}

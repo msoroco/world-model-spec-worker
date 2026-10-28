@@ -1,0 +1,81 @@
+{
+  "template_id": "NRS-484A-450-2@motor_vehicle_driver",
+  "law_id": "NRS-484A-450-2",
+  "actor": "motor_vehicle_driver",
+  "quote": "Every driver of a vehicle approaching a stop intersection indicated by a stop sign shall stop before entering the crosswalk on the near side of the intersection or, if there is no crosswalk, shall stop at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway before entering the intersection.",
+  "structure": {
+    "law_id": "NRS-484A-450-2",
+    "activation": {
+      "condition": "the subject is the driver of a vehicle; the subject is approaching an intersection whose approach is indicated by a stop sign",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Every driver of a vehicle approaching a stop intersection indicated by a stop sign shall stop before entering the crosswalk on the near side of the intersection or, if there is no crosswalk, shall stop at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway before entering the intersection.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": [
+        {
+          "kind": "ordering",
+          "requirement": "the halt occurs before the footprint crosses the halting reference \u2014 the near-side crosswalk, or the stop line if there is no crosswalk, or the point where the view of the intersecting highway opens if there is neither"
+        },
+        {
+          "kind": "duration",
+          "requirement": "a full stop, not a rolling minimum: speed at or below the drv.stopped epsilon for at least its span parameter"
+        },
+        {
+          "kind": "ordering",
+          "requirement": "the halt precedes entering the intersection"
+        }
+      ],
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "which of the three halting references applies is a map question (is there a crosswalk, is there a marked stop line); the third is the first point from which approaching traffic is in the subject's line of sight (rel.visible), and only as good as the source's line-of-sight test",
+        "note": "Unresolved supplied summary residue; no standard adopted"
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": [
+        "5"
+      ]
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": [
+        "travel"
+      ]
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": [
+        "None"
+      ]
+    },
+    {
+      "name": "authored_context",
+      "kind": "world_setup",
+      "range_or_domain": [
+        "{'public_highway': 'explicit synthetic assumption', 'witness_contexts': ['An eligible motor vehicle and driver with actual physical control.', 'Complete approach and crossing trace; distinguish unrelated pedestrian and delivery-device routes.', 'Establish eligible vehicle classification and driver attribution.', 'Establish intersection boundaries and opposing sidewalk connections defining the near-side crosswalk.', 'Establish sign orientation and governance of the subject approach.', 'Keep unrelated pedestrian and delivery-device routes distinct.', 'Near-side crosswalk boundaries established by opposing sidewalk lateral-line connections.', 'Observe approach, cessation, and subsequent crossing without adding a minimum stationary duration.', 'Stop-sign governance and qualifying two-way intersection geometry.']}"
+      ]
+    },
+    {
+      "name": "commanded_halt",
+      "kind": "controller",
+      "range_or_domain": [
+        "False",
+        "None",
+        "True"
+      ]
+    }
+  ]
+}

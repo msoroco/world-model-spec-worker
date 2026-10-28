@@ -1,0 +1,88 @@
+{
+  "template_id": "NRS-484B-253@motor_vehicle_driver",
+  "law_id": "NRS-484B-253",
+  "actor": "motor_vehicle_driver",
+  "quote": "The driver of a vehicle within an intersection intending to turn to the left shall yield the right-of-way to any vehicle approaching from the opposite direction which is within the intersection or so close thereto as to constitute an immediate hazard, but such driver, having so yielded and having given a signal when and as required, may make such left turn and the drivers of all other vehicles approaching the intersection from the opposite direction shall yield the right-of-way to the vehicle making the left turn.",
+  "structure": {
+    "law_id": "NRS-484B-253",
+    "activation": {
+      "condition": "the subject is within an intersection intending to turn left; a vehicle approaches from the opposite direction, within the intersection or so close as to be an immediate hazard",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "The driver of a vehicle within an intersection intending to turn to the left shall yield the right-of-way to any vehicle approaching from the opposite direction which is within the intersection or so close thereto as to constitute an immediate hazard, but such driver, having so yielded and having given a signal when and as required, may make such left turn and the drivers of all other vehicles approaching the intersection from the opposite direction shall yield the right-of-way to the vehicle making the left turn.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "once the subject has yielded and signalled as required, the turn may be made and the oncoming drivers then owe the yield",
+        "effect": "once the subject has yielded and signalled as required, the turn may be made and the oncoming drivers then owe the yield",
+        "replacement_obligation": "once the subject has yielded and signalled as required, the turn may be made and the oncoming drivers then owe the yield",
+        "source_clause": "but such driver, having so yielded and having given a signal when and as required, may make such left turn and the drivers of all other vehicles approaching the intersection from the opposite direction shall yield the right-of-way to the vehicle making the left turn."
+      }
+    ],
+    "timing": {
+      "description": [
+        {
+          "kind": "ordering",
+          "requirement": "yield first, then turn; the duty ends when the hazard has passed"
+        },
+        {
+          "kind": "advance",
+          "requirement": "the signal must have been given 'when and as required' \u2014 the advance distance comes from the turn-signal rule"
+        },
+        {
+          "kind": "continuous",
+          "requirement": "the hazard test is re-evaluated while the subject waits"
+        }
+      ],
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "'immediate hazard' is a judgement element: the time-to-conflict bound must be declared",
+        "note": "Unresolved supplied summary residue; no standard adopted"
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": [
+        "5"
+      ]
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": [
+        "left_turn"
+      ]
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": [
+        "None"
+      ]
+    },
+    {
+      "name": "authored_context",
+      "kind": "world_setup",
+      "range_or_domain": [
+        "{'public_highway': 'explicit synthetic assumption', 'witness_contexts': ['Establish statutory intersection boundaries, subject position within them and intended left-turn connectivity.', \"Establish the other vehicle's opposite-direction approach and intersection occupancy.\", 'Keep the subsequent permission and reciprocal duty conditional on prior yielding and signaling when and as required.', 'Place the subject within the legally identified intersection intending to turn left.', 'Provide an opposite-direction vehicle within the intersection and establish route connectivity.', 'Retain synchronized motion and precedence evidence and establish ordinary vehicle classification and actual driver control.', 'Use an ordinary motor vehicle and its driver in actual physical control.']}"
+      ]
+    },
+    {
+      "name": "commanded_yield",
+      "kind": "controller",
+      "range_or_domain": [
+        "False",
+        "None",
+        "True"
+      ]
+    }
+  ]
+}

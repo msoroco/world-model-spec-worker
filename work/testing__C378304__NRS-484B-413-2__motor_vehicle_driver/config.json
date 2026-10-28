@@ -1,0 +1,663 @@
+{
+  "assignment_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver",
+  "cell_id": "C378304",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-413-2",
+  "supported_case_ids": [
+    "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__baseline",
+    "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__below",
+    "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__at",
+    "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__above"
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Business-district right-turn signaling; baseline is an attempted physical construction, not an observation.",
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "right_turn"
+        },
+        "test_branch": {
+          "kind": "controller",
+          "value": "neutral"
+        },
+        "highway_context": {
+          "kind": "world_setup",
+          "value": {
+            "layout": "business_district",
+            "control": "freight_loading_zone",
+            "administrative_status": "unconfirmed"
+          }
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "business or residential district",
+          "note": "'business or residential district' is a legal region class: a reading assumption that selects which of the two distances applies"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.turn_indicator",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "witness_context",
+            "unit": "structured",
+            "method": "exact authored witness requirements; public/administrative facts are assumptions requiring separate evidence"
+          }
+        ],
+        "limitations": [
+          "CARLA unavailable: no simulator connection, version readback, blueprint inventory, physics execution, RGB visibility, or measured observations were produced.",
+          "All geometric dimensions and controller gains are engineering draft choices, not statutory standards.",
+          "No downstream legal label or physical acceptance is claimed.",
+          "Business-district frontage/building-use and freight loading-zone construction is not implemented.",
+          "Turn surface, physical lamp flashing RGB verification, and signal-onset/course-change finalizer are not implemented."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__below",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "rationale": "Business-district right-turn signaling; below is an attempted physical construction, not an observation.",
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "right_turn"
+        },
+        "test_branch": {
+          "kind": "controller",
+          "value": "signal_distance_probe"
+        },
+        "highway_context": {
+          "kind": "world_setup",
+          "value": {
+            "layout": "business_district",
+            "control": "freight_loading_zone",
+            "administrative_status": "unconfirmed"
+          }
+        },
+        "commanded_signal_distance": {
+          "kind": "controller",
+          "value": 28.956000000000003,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "business or residential district",
+          "note": "'business or residential district' is a legal region class: a reading assumption that selects which of the two distances applies"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.turn_indicator",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "witness_context",
+            "unit": "structured",
+            "method": "exact authored witness requirements; public/administrative facts are assumptions requiring separate evidence"
+          }
+        ],
+        "limitations": [
+          "CARLA unavailable: no simulator connection, version readback, blueprint inventory, physics execution, RGB visibility, or measured observations were produced.",
+          "All geometric dimensions and controller gains are engineering draft choices, not statutory standards.",
+          "No downstream legal label or physical acceptance is claimed.",
+          "Business-district frontage/building-use and freight loading-zone construction is not implemented.",
+          "Turn surface, physical lamp flashing RGB verification, and signal-onset/course-change finalizer are not implemented."
+        ]
+      },
+      "paired_probe_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__signal_triple",
+      "deliberate_differences": [
+        "commanded_signal_distance"
+      ],
+      "probe": {
+        "primary_variable": "commanded_signal_distance",
+        "comparison_or_standard": "business district exact law minimum",
+        "target_value_or_branch": 95.0,
+        "threshold_ref": "NRS-484B-413-2.100ft",
+        "operator": ">=",
+        "unit": "feet",
+        "test_value": 95.0,
+        "epsilon_used": 5.0
+      }
+    },
+    {
+      "case_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__at",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "rationale": "Business-district right-turn signaling; at is an attempted physical construction, not an observation.",
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "right_turn"
+        },
+        "test_branch": {
+          "kind": "controller",
+          "value": "signal_distance_probe"
+        },
+        "highway_context": {
+          "kind": "world_setup",
+          "value": {
+            "layout": "business_district",
+            "control": "freight_loading_zone",
+            "administrative_status": "unconfirmed"
+          }
+        },
+        "commanded_signal_distance": {
+          "kind": "controller",
+          "value": 30.48,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "business or residential district",
+          "note": "'business or residential district' is a legal region class: a reading assumption that selects which of the two distances applies"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.turn_indicator",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "witness_context",
+            "unit": "structured",
+            "method": "exact authored witness requirements; public/administrative facts are assumptions requiring separate evidence"
+          }
+        ],
+        "limitations": [
+          "CARLA unavailable: no simulator connection, version readback, blueprint inventory, physics execution, RGB visibility, or measured observations were produced.",
+          "All geometric dimensions and controller gains are engineering draft choices, not statutory standards.",
+          "No downstream legal label or physical acceptance is claimed.",
+          "Business-district frontage/building-use and freight loading-zone construction is not implemented.",
+          "Turn surface, physical lamp flashing RGB verification, and signal-onset/course-change finalizer are not implemented."
+        ]
+      },
+      "paired_probe_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__signal_triple",
+      "deliberate_differences": [
+        "commanded_signal_distance"
+      ],
+      "probe": {
+        "primary_variable": "commanded_signal_distance",
+        "comparison_or_standard": "business district exact law minimum",
+        "target_value_or_branch": 100.0,
+        "threshold_ref": "NRS-484B-413-2.100ft",
+        "operator": ">=",
+        "unit": "feet",
+        "test_value": 100.0,
+        "epsilon_used": 5.0
+      }
+    },
+    {
+      "case_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__above",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "rationale": "Business-district right-turn signaling; above is an attempted physical construction, not an observation.",
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "right_turn"
+        },
+        "test_branch": {
+          "kind": "controller",
+          "value": "signal_distance_probe"
+        },
+        "highway_context": {
+          "kind": "world_setup",
+          "value": {
+            "layout": "business_district",
+            "control": "freight_loading_zone",
+            "administrative_status": "unconfirmed"
+          }
+        },
+        "commanded_signal_distance": {
+          "kind": "controller",
+          "value": 32.004000000000005,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "business or residential district",
+          "note": "'business or residential district' is a legal region class: a reading assumption that selects which of the two distances applies"
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.turn_indicator",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "raw_atom",
+            "sampling_rate_hz": 20,
+            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "time_window": "entire original run",
+            "reference_frame": "native world and actor frame",
+            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "witness_context",
+            "unit": "structured",
+            "method": "exact authored witness requirements; public/administrative facts are assumptions requiring separate evidence"
+          }
+        ],
+        "limitations": [
+          "CARLA unavailable: no simulator connection, version readback, blueprint inventory, physics execution, RGB visibility, or measured observations were produced.",
+          "All geometric dimensions and controller gains are engineering draft choices, not statutory standards.",
+          "No downstream legal label or physical acceptance is claimed.",
+          "Business-district frontage/building-use and freight loading-zone construction is not implemented.",
+          "Turn surface, physical lamp flashing RGB verification, and signal-onset/course-change finalizer are not implemented."
+        ]
+      },
+      "paired_probe_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__signal_triple",
+      "deliberate_differences": [
+        "commanded_signal_distance"
+      ],
+      "probe": {
+        "primary_variable": "commanded_signal_distance",
+        "comparison_or_standard": "business district exact law minimum",
+        "target_value_or_branch": 105.0,
+        "threshold_ref": "NRS-484B-413-2.100ft",
+        "operator": ">=",
+        "unit": "feet",
+        "test_value": 105.0,
+        "epsilon_used": 5.0
+      }
+    }
+  ],
+  "baseline_selected": false,
+  "maneuver": "right_turn",
+  "required_atoms": [
+    "sig.turn_indicator",
+    "sig.hand_signal",
+    "drv.distance_while",
+    "kin.path_length",
+    "drv.turning",
+    "drv.lane_change",
+    "env.precipitation",
+    "kin.speed"
+  ],
+  "implementation_gaps": [
+    "Physical paved right-turn, indicator controller and observed continuous-distance finalizer execute; full business frontage/loading-zone realization remains incomplete.",
+    "Course-change uses 5-degree engineering onset and retains original samples; optical lamp ROI/visible flashing acceptance and mandatory atom streams remain incomplete."
+  ],
+  "timeout_s": 45.0,
+  "live_binding": null,
+  "cameras": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "location": {
+        "x": -8,
+        "y": 0,
+        "z": 5
+      },
+      "rotation": {
+        "pitch": -15,
+        "yaw": 0,
+        "roll": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "location": {
+        "x": -5,
+        "y": -4,
+        "z": 2
+      },
+      "rotation": {
+        "pitch": -5,
+        "yaw": 15,
+        "roll": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "location": {
+        "x": 2,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "pitch": -5,
+        "yaw": 180,
+        "roll": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "location": {
+        "x": -2,
+        "y": 4,
+        "z": 2
+      },
+      "rotation": {
+        "pitch": -5,
+        "yaw": -15,
+        "roll": 0
+      }
+    }
+  ]
+}

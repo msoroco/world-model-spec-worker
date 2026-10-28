@@ -1,0 +1,155 @@
+{
+  "exact_law": {
+    "id": "NRS-484B-413-2",
+    "title": "Requirements for turning on highway (2)",
+    "text": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather.",
+    "source": "NRS 484B.413(2)"
+  },
+  "cell": {
+    "cell_id": "C378304",
+    "layout": "business_district",
+    "maneuver": "right_turn",
+    "control": "freight_loading_zone",
+    "grounding": "plausible_ungrounded",
+    "source_laws": [],
+    "formation_basis": [
+      "shared_domain"
+    ],
+    "candidate_ego_parties": [
+      "motor_vehicle_driver",
+      "taxi_driver"
+    ],
+    "actor_status": "compatible",
+    "shared_domains": [
+      "transit"
+    ],
+    "provenance": {
+      "annotation_refs": [
+        "LVMC-11-30-070-B",
+        "LVMC-11-40-080",
+        "LVMC-11-43-010-C2",
+        "LVMC-11-60-090",
+        "NRS-484B-223-4a",
+        "NRS-484B-307-2a",
+        "NRS-484B-307-3a",
+        "NRS-484B-307-8a",
+        "NRS-484B-307-8c",
+        "NRS-484B-307-8d",
+        "NRS-484B-400-1",
+        "NRS-484B-403-3",
+        "NRS-484B-413-2",
+        "NRS-484B-507-1",
+        "NRS-484B-769"
+      ]
+    }
+  },
+  "actor": "motor_vehicle_driver",
+  "witness": {
+    "actor": "motor_vehicle_driver",
+    "branch": "Business-district right-turn signaling",
+    "cell": "C378304",
+    "confidence": "low",
+    "covers": [
+      "NRS-484B-413-2"
+    ],
+    "decision": "conditional",
+    "quote": "prior to changing the course of a vehicle",
+    "reason": "A right-turn approach in the fixed business district can be constructed beside the designated freight loading zone without making loading the ego task.",
+    "relevance_type": "specific_match",
+    "required_context": [
+      "Construct a direct approach covering the final 100 feet before the right-turn course change.",
+      "Construct a direct approach exceeding 100 feet and the ensuing right turn.",
+      "Document highway status and statutory business-district building-use and frontage facts.",
+      "Establish ordinary vehicle classification and driver physical control.",
+      "Establish the designated freight loading zone's location and scope relative to the route.",
+      "Retain intention-signal display, continuity and traveled distance.",
+      "Retain intention-signal meaning, actual continuity and traveled distance; establish qualifying vehicle and driver physical control.",
+      "Specify loading-zone designation, location and scope relative to the route.",
+      "Support business-district status with statutory frontage, building-use and highway facts."
+    ],
+    "subject_reason": "The selected ordinary motor-vehicle driver controls the turning vehicle; the loading-zone control does not require a freight-vehicle ego.",
+    "targeted_requirements": [],
+    "audit_status": "accepted",
+    "audit_receipt": "d37d312b563af191617918e8e25849de68ca21c544bbae70717614472b91867c",
+    "source_assignment_hash": "4e2c866c8ae3f9262dd0f8a8b2a11aff03b7b29e7cc001258b9a6bdcd882a693",
+    "law": "NRS-484B-413-2",
+    "splits": [
+      "training",
+      "testing",
+      "heldout"
+    ],
+    "readiness_score": 0,
+    "receipt": "e872cf0570264b16487414636d8daf543bcb68e98d0ad5ee632f42caa09a56d3",
+    "evidence_readiness": "unverified_proposal",
+    "split": "testing",
+    "requirement": "NRS-484B-413-2"
+  },
+  "summary": {
+    "activation_conditions": [
+      "the subject is about to turn right or left, or otherwise change course"
+    ],
+    "exceptions": [
+      "none \u2014 the rule states expressly that it is observed regardless of the weather"
+    ],
+    "id": "NRS-484B-413-2",
+    "required_observations": [
+      {
+        "atom": "sig.turn_indicator",
+        "note": "the signal, left or right"
+      },
+      {
+        "atom": "sig.hand_signal",
+        "note": "or the arm signal with its meaning"
+      },
+      {
+        "atom": "drv.distance_while",
+        "note": "the path length over which the signal has been shown continuously"
+      },
+      {
+        "atom": "kin.path_length",
+        "note": "the 100-foot and 300-foot thresholds"
+      },
+      {
+        "atom": "drv.turning",
+        "note": "the turn or course change that follows"
+      },
+      {
+        "atom": "drv.lane_change",
+        "note": "'otherwise turn from a direct course'"
+      },
+      {
+        "atom": "env.precipitation",
+        "note": "'regardless of the weather' \u2014 no weather excuse"
+      },
+      {
+        "atom": "kin.speed",
+        "note": "the speed that converts the distance into a time"
+      }
+    ],
+    "residue": [
+      "'business or residential district' is a legal region class: a reading assumption that selects which of the two distances applies"
+    ],
+    "source": "NRS 484B.413(2)",
+    "subject": "driver",
+    "theme": "turns_and_signals",
+    "tier": "C",
+    "timing_requirements": [
+      {
+        "kind": "advance",
+        "requirement": "the signal must run continuously over the last 100 feet before the change in a business or residential district, and over the last 300 feet elsewhere"
+      },
+      {
+        "kind": "continuous",
+        "requirement": "'continuously' \u2014 a signal switched on and off inside the distance does not satisfy the rule"
+      },
+      {
+        "kind": "span",
+        "requirement": "the trace must cover at least the last 300 feet of approach for the longer case to be decidable"
+      }
+    ],
+    "title": "Requirements for turning on highway (2)"
+  },
+  "existing_evidence": [],
+  "text_summary_conflicts": [],
+  "review_status": "draft; no human review claimed"
+}

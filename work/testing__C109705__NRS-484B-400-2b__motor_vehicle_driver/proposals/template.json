@@ -1,0 +1,72 @@
+{
+  "template_id": "NRS-484B-400-2b@motor_vehicle_driver",
+  "law_id": "NRS-484B-400-2b",
+  "actor": "motor_vehicle_driver",
+  "quote": "If the driver of a vehicle intends to turn at an intersection and: Both intersecting highways are two-directional: After entering the intersection, the left turn must be made so as to leave the intersection to the right of the centerline of the highway being entered.",
+  "structure": {
+    "law_id": "NRS-484B-400-2b",
+    "activation": {
+      "condition": "the subject has entered the intersection to turn left; both intersecting highways are two-directional",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "If the driver of a vehicle intends to turn at an intersection and: Both intersecting highways are two-directional: After entering the intersection, the left turn must be made so as to leave the intersection to the right of the centerline of the highway being entered.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": [
+        {
+          "kind": "point_event",
+          "requirement": "judged at the exit from the intersection: the footprint must leave right of the centreline"
+        },
+        {
+          "kind": "ordering",
+          "requirement": "entry, then the turn, then the exit \u2014 the exit position is the test"
+        }
+      ],
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": [
+        "5"
+      ]
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": [
+        "left_turn"
+      ]
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": [
+        "None"
+      ]
+    },
+    {
+      "name": "authored_context",
+      "kind": "world_setup",
+      "range_or_domain": [
+        "{'public_highway': 'explicit synthetic assumption', 'witness_contexts': ['An identified driver physically controls a conventional motor vehicle and intends the left turn.', 'Construct both highways as undivided with permitted opposite-direction travel; establish public-highway status and qualifying non-alley intersection boundaries.', 'Construct both intersecting highways as undivided and permitting opposite-direction travel.', 'Establish actual physical control of an included vehicle and intended left turn.', 'Establish highway status, non-alley intersection geometry, destination centerline, edges and connected destination lane.', 'Retain approach connection, destination direction, centerline and vehicle geometry through entry, turn and departure without choosing a legal reference-point or footprint rule.']}"
+      ]
+    },
+    {
+      "name": "commanded_exit_lateral_m",
+      "kind": "controller",
+      "range_or_domain": [
+        "-1.75",
+        "1.75",
+        "None"
+      ]
+    }
+  ]
+}

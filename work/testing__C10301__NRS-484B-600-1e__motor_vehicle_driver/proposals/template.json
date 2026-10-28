@@ -1,0 +1,62 @@
+{
+  "template_id": "NRS-484B-600-1e@motor_vehicle_driver",
+  "law_id": "NRS-484B-600-1e",
+  "actor": "motor_vehicle_driver",
+  "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: In any event, a rate of speed greater than 80 miles per hour.",
+  "structure": {
+    "law_id": "NRS-484B-600-1e",
+    "activation": {
+      "condition": "the subject drives or operates a vehicle of any kind on any highway",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: In any event, a rate of speed greater than 80 miles per hour.",
+      "type": "must_not",
+      "numeric_conditions": [
+        {
+          "variable": "ego_speed",
+          "operator": "<=",
+          "value": 80,
+          "unit": "mph"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": [
+        {
+          "kind": "continuous",
+          "requirement": "'in any event' \u2014 the cap binds at every instant regardless of any posted limit"
+        },
+        {
+          "kind": "point_event",
+          "requirement": "a single frame above 80 mph is the violation, subject to a declared measurement tolerance"
+        }
+      ],
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "exact draft case assignments"
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": "exact draft case assignments"
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "recorded only"
+    },
+    {
+      "name": "authored_context",
+      "kind": "world_setup",
+      "range_or_domain": "exact draft case assignments"
+    }
+  ]
+}
