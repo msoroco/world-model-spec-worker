@@ -24,16 +24,16 @@ called them atoms, but some (for example `drv.turning`) have no Core ontology
 ID. Map every term in `case-plan.json.source_observation_mapping` to a named
 measurement or sourced context, with evidence, channels and source_refs. Only
 put IDs from the pinned `atomIds` list in `config.required_atoms`. Run the
-shipped atom preflight before constructing fixtures; an ontology ID whose
-adapter capability is absent (for example `st.one_way_roadway`) needs actual
-support or a precise partial disposition. Never remove the law requirement to
-make the converter pass.
+shipped atom preflight before constructing fixtures. Conditional adapter paths
+need the source packets in START_HERE.md and actual converter coverage;
+unsupported paths need a tested repair or precise CPU blocker. Never remove a
+law requirement to make the converter pass.
 
 The lead may delegate at most batch.max_workers independent assignment owners.
 Each subagent writes only work/<assignment-id>/; only the lead integrates shared
 changes and commits/pushes the return branch. Frozen runtime helpers cannot be
-edited: propose helper changes under an assignment's work directory for local
-review. A shared demo/full assignment is one task even if multiple partitions
+edited. Portable repairs go through the tested, source-hashed shared overlay
+described by `overlay.py`. A shared demo/full assignment is one task even if multiple partitions
 reference it. Process remaining partitions in waves; do not wait for conversation
 when independent work is available.
 
@@ -51,14 +51,14 @@ missing dependencies, commit a partial/blocked result and continue other work.
 
 Never run NERSC tools, use the main campaign database, drive a simulation,
 register a recording, relabel research, or modify set membership. Run
-python3 worker_check.py --complete before returning the batch. Follow the
+python3.11 worker_check.py --complete --require-capability-ready before returning the batch. Follow the
 exact result format in START_HERE.md.
 
 ## Shared runtime
 
 Read START_HERE.md and use the version/hash bound in batch.runtime. Reuse supplied
 capture, conversion, rendering and validation; never recreate those components.
-Every ready package needs a validated
+Every executable package, including partial packages, needs a validated
 execution-manifest.json listing every expanded nonbaseline case and an exact
 construction SHA. Capability packages need executable measurement/finalization
 code, not just a note that a GPU is needed. Distinguish readiness_kind capability

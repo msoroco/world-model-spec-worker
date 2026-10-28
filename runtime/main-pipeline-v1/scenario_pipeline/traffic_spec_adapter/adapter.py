@@ -658,6 +658,8 @@ def convert(capture, original, library, output):
         atom='st.'+kind
         if atom in capability['atoms'] and capability['atoms'][atom]=='absent' and scenario_geometry:
             capability['atoms'][atom]='estimate:verified_authored_region_role'
+    if scenario_geometry and scenario_geometry['declaration'].get('direction_sign_objects'):
+        capability['atoms']['dev.regulatory_sign']='estimate:original_frame_verified_authored_direction_sign'
     if source_manifest.get('observation_contract_version'):
         from .atom_contract import inventory, required_coverage
         contract=inventory(library,capability['atoms'])

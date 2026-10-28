@@ -1,3 +1,3 @@
-# Fresh batch
+# Fresh v4 batch
 
-Read `START_HERE.md` and the single `updates/001.json` notice. Earlier trial notices do not apply.
+Read `START_HERE.md` and `updates/001.json`. Earlier trials do not apply.

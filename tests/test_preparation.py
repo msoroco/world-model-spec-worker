@@ -20,6 +20,21 @@ class PreparationTests(unittest.TestCase):
   check(self.r,True)
   self.plan.pop('observations');write(self.d/'case-plan.json',self.plan)
   with self.assertRaisesRegex(ValueError,'observations'):check(self.r,True)
+ def test_selected_branch_dispositions_required(self):
+  original=read(self.r/'inputs'/self.aid/'assignment.json');original['branch']='selected witness';write(self.r/'inputs'/self.aid/'assignment.json',original)
+  self.batch['assignments'][self.aid]['input_sha256']=sha(self.r/'inputs'/self.aid/'assignment.json')
+  self.batch['frozen_files']={k:v for k,v in tree(self.r).items() if k!='batch.json' and not k.startswith('work/')}
+  self.batch['selected_branch_dispositions_required']=True;write(self.r/'batch.json',self.batch)
+  self.result['input_sha256']=self.batch['assignments'][self.aid]['input_sha256'];write(self.d/'result.json',self.result)
+  self.plan['sources'][0]['sha256']=self.result['input_sha256'];write(self.d/'case-plan.json',self.plan)
+  with self.assertRaisesRegex(ValueError,'Selected witness'):check(self.r,True)
+  self.plan['selected_branch']='selected witness'
+  self.plan['requirement_dispositions']=[{'requirement':'selected','source':'assignment.json','status':'selected_required','evidence_or_gap':'native check pending'}]
+  write(self.d/'case-plan.json',self.plan)
+  check(self.r,True)
+ def test_partial_executable_gate(self):
+  self.batch['all_executable_required']=True;write(self.r/'batch.json',self.batch)
+  with self.assertRaisesRegex(ValueError,'executable artifact'):check(self.r,True)
  def test_bad_actor(self):
   self.plan['actor']='wrong';write(self.d/'case-plan.json',self.plan)
   with self.assertRaisesRegex(ValueError,'scope'):check(self.r,True)

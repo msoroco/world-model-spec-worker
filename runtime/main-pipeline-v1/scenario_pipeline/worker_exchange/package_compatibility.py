@@ -5,6 +5,21 @@ from .common import read,write,sha,within,tree,digest
 from .runtime_cli import materialize,execution_env,process,render
 from .native_output import validate_result
 
+PACKET_FILES = {
+    'scenario_geometry': 'scenario_geometry.json',
+    'scenario_rule_evidence': 'scenario_rule_evidence.jsonl',
+    'environment_calibration': 'environment_calibration.json',
+    'surface_provenance': 'surface_provenance.json',
+}
+
+
+def check_source_packets(config, paths):
+    packets=config.get('source_packets',[])
+    if not isinstance(packets,list) or any(p not in PACKET_FILES for p in packets):
+        raise ValueError('Unknown source packet declaration')
+    missing={PACKET_FILES[p] for p in packets}-set(paths)
+    if missing:raise ValueError('Diagnostic fixture missing declared source packet: '+','.join(sorted(missing)))
+
 def run(manifest,case,fixture,output,library,validator):
     manifest=Path(manifest).resolve();output=Path(output).resolve();library=Path(library).resolve();validator=Path(validator).resolve()
     entries=[c for c in read(manifest)['cases'] if c['case_id']==case]
@@ -21,6 +36,7 @@ def run(manifest,case,fixture,output,library,validator):
         else:shutil.copyfile(p,output/p.name)
     proposal_case=next(c for c in read(manifest.parent/'proposals/cases.json')['cases'] if c['case_id']==case)
     config=read(output/'config.json')
+    check_source_packets(config, tree(fixture))
     request={'case':proposal_case,'cell':{'cell_id':config['cell_id']},'actor':config['actor']}
     analysis=within(output,analysis_path)
     before=digest(tree(output/'capture'))
@@ -67,6 +83,7 @@ def check_receipts(repo,folder,manifest):
         if analysis not in files or hashlib.sha256(files[analysis].encode()).hexdigest()!=proof.get('analysis_sha256'):raise ValueError('Compatibility analysis changed')
         acquisition=entry.get('acquisition',{})
         config=json.loads(files['config.json'])
+        check_source_packets(config, tree(fixture))
         required=set(config.get('required_atoms',[]))|{c['name'] for c in construction['recording_description']['channels']}
         if not required<=set(acquisition):raise ValueError('Mandatory observation lacks acquisition implementation')
         for atom in required:

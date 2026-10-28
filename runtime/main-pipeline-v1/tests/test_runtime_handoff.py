@@ -8,6 +8,12 @@ class HandoffTests(unittest.TestCase):
  def setUp(self):
   self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.root=pathlib.Path(self.tmp.name);self.aid='testing__C1__L1__driver';self.folder=self.root/'work'/self.aid;self.folder.mkdir(parents=True)
   runtime=self.root/'runtime';runtime.mkdir();(runtime/'source.py').write_text('pass\n');write(runtime/'SOURCE-MANIFEST.json',{'files':{'source.py':sha(runtime/'source.py')}})
+  # Manifest preflight needs the actual ontology even in this miniature runtime.
+  import shutil
+  ontology=pathlib.Path(__file__).resolve().parents[1]/'library/TrafficSpec/Core/Vocab/Ontology/Ids.lean'
+  target=runtime/'library/TrafficSpec/Core/Vocab/Ontology/Ids.lean';target.parent.mkdir(parents=True);shutil.copyfile(ontology,target)
+  decoder=ontology.parents[2]/'Runtime/Decode.lean'
+  target=runtime/'library/TrafficSpec/Core/Runtime/Decode.lean';target.parent.mkdir(parents=True);shutil.copyfile(decoder,target)
   write(self.root/'batch.json',{'runtime':{'root':'runtime'}})
   self.case=self.aid+'__probe';desc={'channels':[],'context_inputs':[],'limitations':[]}
   write(self.folder/'proposals/cases.json',{'cases':[{'case_id':self.case,'target_type':'boundary_probe','recording_description':desc}],'sweep_specs':[],'sweeps_expanded':True})

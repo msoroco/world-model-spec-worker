@@ -9,12 +9,32 @@ def require(condition, message):
         raise ValueError(message)
 
 
+def runtime_for(repo, batch):
+    """Use a verified worker overlay only in the actual worker checkout."""
+    from .common import sha
+    baseline = repo / batch['runtime']['root']
+    if not (repo / 'overlay.py').is_file():
+        return baseline
+    from overlay import ROOT, effective_runtime
+    if repo.resolve() != ROOT.resolve():
+        return baseline
+    effective = effective_runtime()
+    if sha(baseline/'SOURCE-MANIFEST.json') != batch['runtime']['source_manifest_sha256']:
+        raise ValueError('Batch pinned runtime mismatch')
+    return effective
+
+
 def check(repo, complete=False, require_ready=False):
     repo = Path(repo)
     batch = read(repo/'batch.json')
     require(batch['mode'] == 'six_step_preparation', 'Wrong batch mode')
     for rel, checksum in batch['frozen_files'].items():
         require(sha(within(repo, rel)) == checksum, 'Changed frozen file: '+rel)
+    if batch.get('reference_catalog'):
+        catalog = read(within(repo, batch['reference_catalog']))
+        require(catalog.get('format')=='worker-reference-catalog-v1', 'Invalid reference catalog')
+        for source in catalog['items']:
+            require(sha(within(repo, source['path']))==source['sha256'], 'Changed source reference')
     allocated = []
     for path in sorted((repo/'partitions').glob('*.json')):
         allocated.extend(read(path)['assignment_ids'])
@@ -46,6 +66,15 @@ def check(repo, complete=False, require_ready=False):
         for key in ('cases','comparisons','observations','sources','existing_evidence','runtime_uncertainties'):
             require(isinstance(plan.get(key),list), 'Missing/malformed plan '+key)
         require(plan['sources'] and plan['runtime_uncertainties'], 'Missing sources or explicit runtime limits')
+        if batch.get('selected_branch_dispositions_required'):
+            require(plan.get('selected_branch') == original['branch'], 'Selected witness branch changed')
+            dispositions = plan.get('requirement_dispositions')
+            require(isinstance(dispositions,list) and dispositions, 'Missing requirement dispositions')
+            require(any(d.get('status')=='selected_required' for d in dispositions), 'No selected branch requirement')
+            for disposition in dispositions:
+                require(disposition.get('requirement') and disposition.get('source') and
+                        disposition.get('status') in ('selected_required','alternative_pending','exception_pending') and
+                        disposition.get('evidence_or_gap'), 'Incomplete requirement disposition')
         for ref in plan['sources']:
             require(isinstance(ref,dict) and ref.get('path') and ref.get('sha256'), 'Unversioned source reference')
             require(sha(within(repo,ref['path']))==ref['sha256'], 'Stale cited source')
@@ -58,9 +87,10 @@ def check(repo, complete=False, require_ready=False):
         for comparison in plan['comparisons']:
             require(set(comparison.get('case_ids',[])) <= ids and len(comparison.get('case_ids',[]))>=2, 'Broken comparison members')
             require(comparison.get('deliberate_differences') and 'fixed_conditions' in comparison, 'Unspecified comparison isolation')
-        if result['status']=='ready':
+        executable_required = batch.get('all_executable_required') and result['status']!='blocked'
+        if result['status']=='ready' or executable_required:
             if batch.get('runtime'):
-                if result.get('readiness_kind') not in ('capability','delivery_prepared'):
+                if result['status']=='ready' and result.get('readiness_kind') not in ('capability','delivery_prepared'):
                     raise ValueError('Declare first-run capability versus delivery preparation')
                 from .execution_manifest import validate as validate_execution_manifest
                 executable=validate_execution_manifest(repo,aid)
@@ -88,7 +118,7 @@ def check(repo, complete=False, require_ready=False):
             config = read(folder/'config.json')
             if batch.get('runtime'):
                 from .atom_preflight import check_required_atoms
-                check_required_atoms(repo/batch['runtime']['root'], config.get('required_atoms', []))
+                check_required_atoms(runtime_for(repo,batch), config.get('required_atoms', []), config.get('source_packets', []))
             require(config.get('actor')==original['actor'] and config.get('law_id')==original['law_id'], 'Wrong config identity')
             require(set(config.get('supported_case_ids',[]))==ids, 'Configuration does not cover cases')
             channels = {c['name'] for c in construction['recording_description']['channels']}
@@ -115,5 +145,24 @@ def check(repo, complete=False, require_ready=False):
         results[aid]=result
     if require_ready:
         require(len(results)==len(batch['assignments']) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
+    if complete and batch.get('runtime_selftest_required'):
+        proof = read(repo/'work/_shared/runtime-proof.json')
+        runtime = runtime_for(repo,batch)
+        require(proof.get('format')=='worker-runtime-proof-v1' and
+                proof.get('runtime_manifest_sha256')==sha(runtime/'SOURCE-MANIFEST.json'),
+                'Runtime selftest proof binds another runtime')
+        require(proof.get('exit_code')==0 and proof.get('command') and
+                sha(within(repo,proof['log']))==proof.get('log_sha256'),
+                'Runtime selftest log missing/changed')
+        receipt_path=within(repo,proof['verification_receipt'])
+        require(sha(receipt_path)==proof.get('verification_sha256'),
+                'Runtime selftest receipt missing/changed')
+        receipt=read(receipt_path)
+        require(receipt.get('source_manifest_sha256')==proof['runtime_manifest_sha256'] and
+                receipt.get('passed') is True and receipt.get('decoder_validated') is True and
+                receipt.get('rendered_video_decoded') is True and
+                len(receipt.get('negative_fixtures',[]))>=3 and
+                all(n.get('rejected') is True for n in receipt['negative_fixtures']),
+                'Runtime selftest incomplete')
     return {'batch_id':batch['batch_id'],'results':results,'files':files,'package_sha256':digest(files),
             'verification':'Static contract only; explicitly run CPU tests before local adoption'}
