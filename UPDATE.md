@@ -1,2 +1,3 @@
-# Updates
-Process unseen numbered JSON notices in order through 005. Run python3 update_status.py.
+# Fresh batch
+
+Read `START_HERE.md` and the single `updates/001.json` notice. Earlier trial notices do not apply.

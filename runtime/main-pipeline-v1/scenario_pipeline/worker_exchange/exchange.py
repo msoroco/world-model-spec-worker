@@ -226,6 +226,21 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
                         dependency_review=cfg['dependency_review'], external_imports=cfg.get('external_imports', []),
                         local_snapshot=snapshot, cell=cells[task['cell_id']],
                         law_record=catalog['law_records'][task['law_id']])
+            task['observation_terms_contract'] = (
+                'Summary required_observations are law-planning terms, not Core IDs. '
+                'Map every term to measured evidence; put only supported pinned ontology IDs in config.required_atoms.'
+            )
+            # The upstream law summary calls these "atom" even when they are
+            # derived legal predicates. Do not export that misleading key as
+            # an executable Core field.
+            summary = task.get('summary')
+            if isinstance(summary, dict):
+                task['source_observation_terms'] = [
+                    {'term': item['atom'], 'note': item.get('note', '')}
+                    for item in summary.get('required_observations', [])
+                ]
+                task['summary'] = {key: value for key, value in summary.items()
+                                   if key != 'required_observations'}
             witnesses = []
             for row in task['branches']:
                 if not row.get('source') or 'source_index' not in row:

@@ -44,6 +44,23 @@ class PreparationTests(unittest.TestCase):
   self.ready();check(self.r,True)
   c=read(self.d/'construction.json');c['recording_description']['channels']=[];write(self.d/'construction.json',c)
   with self.assertRaisesRegex(ValueError,'capture'):check(self.r,True)
+ def test_source_term_requires_measured_evidence_mapping(self):
+  self.ready()
+  original=read(self.r/'inputs'/self.aid/'assignment.json')
+  original['source_observation_terms']=[{'term':'drv.turning','note':'left turn'}]
+  write(self.r/'inputs'/self.aid/'assignment.json',original)
+  self.batch['assignments'][self.aid]['input_sha256']=sha(self.r/'inputs'/self.aid/'assignment.json')
+  self.batch['frozen_files']={k:v for k,v in tree(self.r).items() if k!='batch.json' and not k.startswith('work/')}
+  self.batch['source_observation_mapping_required']=True
+  write(self.r/'batch.json',self.batch)
+  self.result['input_sha256']=self.batch['assignments'][self.aid]['input_sha256']
+  write(self.d/'result.json',self.result)
+  self.plan['sources'][0]['sha256']=self.result['input_sha256']
+  write(self.d/'case-plan.json',self.plan)
+  with self.assertRaisesRegex(ValueError,'evidence mapping'):check(self.r,True)
+  self.plan['source_observation_mapping']={'drv.turning':{'evidence':'Measured heading and route transition','channels':['pose'],'source_refs':[]}}
+  write(self.d/'case-plan.json',self.plan)
+  check(self.r,True)
  def test_changed_frozen_input(self):
   write(self.r/'inputs'/self.aid/'assignment.json',{})
   with self.assertRaisesRegex(ValueError,'frozen'):check(self.r,True)

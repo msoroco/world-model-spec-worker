@@ -9,6 +9,7 @@ def validate(repo,assignment_id):
     if manifest.get('format')!='worker-execution-manifest-v1' or manifest.get('assignment_id')!=assignment_id:
         raise ValueError('Execution manifest identity/format mismatch')
     runtime=repo/batch['runtime']['root']
+    from .atom_preflight import check_required_atoms
     if manifest.get('runtime_manifest_sha256')!=sha(runtime/'SOURCE-MANIFEST.json'):
         raise ValueError('Execution manifest binds another runtime')
     from .runtime_cli import verify
@@ -35,6 +36,7 @@ def validate(repo,assignment_id):
         if len(configs)!=1:raise ValueError('One config.json required')
         import json
         config=json.loads(configs[0]['content'])
+        check_required_atoms(runtime, config.get('required_atoms', []))
         selected=config.get('case',{}).get('case_id') or config.get('selected_case_id')
         if selected!=ident:raise ValueError('Selected case not frozen in bundle')
         for item in construction['files']:

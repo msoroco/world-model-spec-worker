@@ -86,9 +86,25 @@ def check(repo, complete=False, require_ready=False):
                 for key in ('target_law_id','target_type','rationale','variable_assignments','unresolved_judgment_calls','recording_description'):
                     require(key in case, 'Missing canonical case field '+key)
             config = read(folder/'config.json')
+            if batch.get('runtime'):
+                from .atom_preflight import check_required_atoms
+                check_required_atoms(repo/batch['runtime']['root'], config.get('required_atoms', []))
             require(config.get('actor')==original['actor'] and config.get('law_id')==original['law_id'], 'Wrong config identity')
             require(set(config.get('supported_case_ids',[]))==ids, 'Configuration does not cover cases')
             channels = {c['name'] for c in construction['recording_description']['channels']}
+            if batch.get('source_observation_mapping_required'):
+                terms = {item['term'] for item in original.get('source_observation_terms', [])}
+                mapping = plan.get('source_observation_mapping')
+                require(isinstance(mapping, dict) and set(mapping) == terms,
+                        'Every source observation term needs an evidence mapping')
+                for term, evidence in mapping.items():
+                    require(isinstance(evidence, dict) and evidence.get('evidence') and
+                            isinstance(evidence.get('channels'), list) and
+                            isinstance(evidence.get('source_refs'), list) and
+                            (evidence['channels'] or evidence['source_refs']),
+                            'Incomplete source observation mapping: '+term)
+                    require(set(evidence['channels']) <= channels,
+                            'Source observation mapping names uncaptured channel: '+term)
             required = {o['name'] for o in plan['observations'] if o.get('mandatory',True)}
             require(required <= channels, 'Missing mandatory capture channels')
             require(list((folder/'tests').glob('test*.py')), 'Missing CPU tests')

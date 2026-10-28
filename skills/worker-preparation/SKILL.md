@@ -19,6 +19,16 @@ branches and objective. Read the supplied witnesses, prior guidance and declared
 dependencies. Do not rebuild scope or repeat completed evidence. Missing source
 material or runtime capability remains an explicit limitation.
 
+`source_observation_terms` are legal planning prompts. The old source summary
+called them atoms, but some (for example `drv.turning`) have no Core ontology
+ID. Map every term in `case-plan.json.source_observation_mapping` to a named
+measurement or sourced context, with evidence, channels and source_refs. Only
+put IDs from the pinned `atomIds` list in `config.required_atoms`. Run the
+shipped atom preflight before constructing fixtures; an ontology ID whose
+adapter capability is absent (for example `st.one_way_roadway`) needs actual
+support or a precise partial disposition. Never remove the law requirement to
+make the converter pass.
+
 The lead may delegate at most batch.max_workers independent assignment owners.
 Each subagent writes only work/<assignment-id>/; only the lead integrates shared
 changes and commits/pushes the return branch. Frozen runtime helpers cannot be
@@ -57,7 +67,7 @@ from delivery_prepared; neither means physical acceptance. Run the shared actual
 fixture selftest and every case offline check. Push the configured return branch
 when finished. Operator launch is manual.
 
-## Update 005: output compatibility
+## Output compatibility
 
 Continue the current return branch; do not restart the scenario packages. Read
 MIGRATION.md's update-005 section. Write canonical frame identities during capture

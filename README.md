@@ -1,9 +1,10 @@
 # Portable scenario preparation
 
-Read START_HERE.md. This repository supplies the main pipeline runtime, law inputs, worked examples, and four demo-test partitions (22 assignments: 6/6/5/5). No upstream repository, database, GPU, NERSC tools or simulator is required for preparation. The operator manually starts the agent.
+This Git repository carries four demo-test partitions, 22 frozen law/cell
+assignments, the pinned main-pipeline runtime and Core library, examples, and
+the worker acceptance check. Read [START_HERE.md](START_HERE.md) to start a
+fresh preparation trial. The operator launches the agent manually.
 
-Implementation goes in work/<assignment-id>/. inputs/ and runtime/ are frozen sources. Existing migration-candidates are untrusted references, not accepted packages. Physical motion, visibility, adequate duration and recording acceptance require later local verification.
-
-Follow UPDATE.md and numbered notices at safe checkpoints. Only the lead merges main, commits and pushes the batch return branch; do not force-push. See MIGRATION.md for setup, shared interfaces, readiness and takeover.
-
-Update 005 continues the existing return branch and requires package-specific output compatibility; see START_HERE.md and the update-005 section of MIGRATION.md. No remote agent is launched automatically.
+Implementation belongs in `work/<assignment-id>/`. Inputs and runtime are
+frozen. The worker prepares and tests cases without CARLA, a campaign database,
+or NERSC. Local GPU execution and physical acceptance happen later.
