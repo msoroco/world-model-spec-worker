@@ -19,10 +19,11 @@ at least one of the latter two lists must be nonempty. A source term is never
 automatically a Core atom.
 
 Before building compatibility fixtures, run the pinned atom gate on every
-case's `config.required_atoms`:
+case's `config.required_atoms` (including each materialized case config):
 
 ```sh
-python3 -m unittest tests.test_atom_preflight
+PYTHONPATH=runtime/main-pipeline-v1/scenario_pipeline python3 -m worker_exchange.atom_preflight \
+  --runtime runtime/main-pipeline-v1 --config work/ASSIGNMENT/config.json
 python3 worker_check.py
 ```
 

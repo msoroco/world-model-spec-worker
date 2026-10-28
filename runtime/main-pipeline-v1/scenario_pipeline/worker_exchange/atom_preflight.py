@@ -26,3 +26,20 @@ def check_required_atoms(runtime, required):
         if capability[atom] == 'absent':
             raise ValueError('Core atom lacks a supported adapter path: ' + atom)
     return True
+
+
+def main():
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--runtime', required=True, type=Path)
+    parser.add_argument('--config', required=True, type=Path)
+    args = parser.parse_args()
+    config = json.loads(args.config.read_text())
+    check_required_atoms(args.runtime, config.get('required_atoms', []))
+    print(json.dumps({'config': str(args.config), 'core_atom_preflight': 'passed'}))
+
+
+if __name__ == '__main__':
+    main()
