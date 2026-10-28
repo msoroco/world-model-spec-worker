@@ -1,5 +1,6 @@
 """Measure actual continuous indicator travel and right-lamp image variation."""
 import argparse
+from native_finalize import finalize
 import json
 import math
 import statistics
@@ -65,4 +66,6 @@ def assess(attempt):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--attempt',required=True);p.add_argument('--output',required=True)
-    a=p.parse_args();Path(a.output).write_text(json.dumps(assess(a.attempt),indent=2)+'\n')
+    a=p.parse_args();report = assess(a.attempt)
+    Path(a.output).write_text(json.dumps(report, indent=2) + '\n')
+    finalize(a.attempt, report)

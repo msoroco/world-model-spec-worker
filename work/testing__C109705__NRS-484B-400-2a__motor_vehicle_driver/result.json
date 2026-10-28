@@ -1,22 +1,47 @@
 {
   "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
   "input_sha256": "e6b802cffd2a36675b4563449244a073480849ff5146e5b2cef31ca996ea0d49",
-  "status": "ready",
+  "status": "partial",
   "readiness_kind": "capability",
-  "applied_update": 4,
+  "applied_update": 5,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__attempt_0 --output .runtime-work/pilot-attempt-0l",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__attempt_0 --output .runtime-work/pilot005-offline-a2",
       "exit_code": 0,
-      "log": "tests/pilot-attempt-0l.log",
-      "sha256": "7d42f56d3ddc19d6e61770f2b3790c0710230d8ade22a6be9b11333cee7c2273"
+      "log": "tests/pilot005-offline-0.log",
+      "sha256": "31f7bd74492abb9085bbb3170c72cc810d238a86642ac3257ab75d1aee01d540"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__attempt_1 --output .runtime-work/pilot-attempt-1j",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__attempt_1 --output .runtime-work/pilot005-offline-b2",
       "exit_code": 0,
-      "log": "tests/pilot-attempt-1j.log",
-      "sha256": "672e7e4c6c8c550b798a7812627c90651a134c36da16732f2c9a63a1d9b57cff"
+      "log": "tests/pilot005-offline-1.log",
+      "sha256": "751c068b8fe45126f091cb1fb78766a09ce99a3f7b03ecc3cafa3512d1cd7880"
     }
   ],
-  "physical_acceptance": false
+  "physical_acceptance": false,
+  "reason": "Frozen runtime cannot convert mandatory drv.turning (unknown ontology atom); st.one_way_roadway is also absent, and st.lane_enters requires a closed signed execution receipt unavailable to compatibility diagnostics. No requirement was removed or renamed.",
+  "compatibility_attempts": [
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__attempt_0",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__attempt_0 --fixture work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/pilot005-final-compat-0 --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder005/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "tests/pilot005-compat-0.log",
+      "sha256": "1d9b777f4145ca6dbdd3bc4c0ee645f1816f1c29b3577d0a8a446fd8706f0033",
+      "failure": "Unknown required atom: drv.turning"
+    },
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__attempt_1",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__attempt_1 --fixture work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/pilot005-final-compat-1 --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder005/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "tests/pilot005-compat-1.log",
+      "sha256": "b3e1b8a0f5c015d1a6eebc90c1b87532242bfa548cd7bf7479df61677d966103",
+      "failure": "Unknown required atom: drv.turning"
+    }
+  ],
+  "unresolved_physical_checks": [
+    "actual approach footprint and route completion",
+    "camera visibility and duration",
+    "native junction connectivity",
+    "source actor/map geometry consistency"
+  ]
 }

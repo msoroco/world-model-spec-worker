@@ -11,6 +11,7 @@ for ancestor in pathlib.Path(__file__).resolve().parents:
         sys.path.insert(0, str(pipeline))
         break
 from worker_exchange.media import audit
+from worker_exchange.native_output import write_result
 
 
 def assess(attempt):
@@ -20,17 +21,28 @@ def assess(attempt):
     if not rows:
         raise ValueError('No original physical samples')
     mapping=[json.loads(line) for line in (attempt/'video_frames.jsonl').read_text().splitlines()]
-    if len(mapping)!=len(rows) or any(m['native_frame']!=r['frame'] or m['video_frame']!=i
+    if len(mapping)!=len(rows) or any(m['native_frame']!=r['frame'] or m.get('carla_frame')!=r['frame'] or m['video_frame']!=i
         for i,(m,r) in enumerate(zip(mapping,rows))):
         raise ValueError('Original physical/video frame mapping differs')
     if any(b['time_s']<=a['time_s'] for a,b in zip(rows,rows[1:])):
         raise ValueError('Original physical samples are not time ordered')
+    trace=[json.loads(line) for line in (attempt/'trace.jsonl').read_text().splitlines()]
+    evidence=[json.loads(line) for line in (attempt/'capture/evidence.jsonl').read_text().splitlines()]
+    if len(trace)!=len(rows) or len(evidence)!=len(rows) or any(t['frame']!=r['frame'] or e['original_frame']!=r['frame'] or abs(t['time_s']-r['time_s'])>1e-6 for t,e,r in zip(trace,evidence,rows)):
+        raise ValueError('Original trace/evidence/physical frame join differs')
     mapping_sha=hashlib.sha256((attempt/'video_frames.jsonl').read_bytes()).hexdigest()
+    videos=['view%d.webm'%i for i in range(4)]
+    if not all((attempt/video).is_file() for video in videos):
+        if not (attempt/'fixture-provenance.json').is_file() or not (attempt/'raw.mkv').is_file():
+            raise ValueError('Missing live camera recordings')
+        videos=['raw.mkv']
     video_receipts=[]
-    for i in range(4):
-        video=attempt/('view%d.webm'%i)
-        receipt=attempt/('view%d.source-decode.json'%i)
-        video_receipts.append(audit(video,len(rows),mapping_sha256=mapping_sha,receipt=receipt))
+    for i,video in enumerate(videos):
+        receipt=attempt/('source-%d.json'%i)
+        audited=audit(attempt/video,len(rows),mapping_sha256=mapping_sha,receipt=receipt)
+        if video.startswith('view') and audited['dimensions']!=([1920,1080] if i==0 else [1280,720]):
+            raise ValueError('Live camera dimensions differ')
+        video_receipts.append(audited)
     law=cfg['law_id']
     case=cfg['case']
     setup=json.loads((attempt/'native_setup.json').read_text())
@@ -74,11 +86,33 @@ def assess(attempt):
     follow['capability_follow_up']={'reason':'inspect original samples, native geometry and actual camera pixels',
                                    'same_frozen_case':case['case_id'],'preserve_requested_values':True,
                                    'adjustments_permitted_only_after_evidence_review':True}
-    return {'format':'partition-01-capability-report-v1','case_id':case['case_id'],
+    report={'format':'partition-01-capability-report-v1','case_id':case['case_id'],
             'measurements':measurements,'decision':'inspect_native_evidence' if complete else 'repair_controller_same_case',
-            'physical_acceptance':False,'legal_verdict':None,'follow_up_config':follow}
+            'physical_acceptance':False,'follow_up_config':follow}
+    variable=case.get('probe',{}).get('primary_variable') or next(k for k,v in case['variable_assignments'].items() if v.get('kind')=='controller')
+    requested=case['variable_assignments'][variable]['value']
+    if variable=='commanded_exit_lateral':measured=rows[-1]['position_m'][0]
+    elif variable=='commanded_yield':measured=bool(measurements.get('ego_min_speed_near_junction_mps') is not None and measurements['ego_min_speed_near_junction_mps']<1)
+    elif variable=='commanded_signal':measured=any(int(v)!=0 for v in measurements.get('indicator_bits_before_change',[]))
+    elif variable=='commanded_gap':measured=measurements.get('measured_mean_footprint_gap_m') or 0.0
+    elif variable=='commanded_halt':measured=bool(measurements.get('minimum_speed_before_crosswalk_mps') is not None and measurements['minimum_speed_before_crosswalk_mps']<.5)
+    else:measured=rows[-1]['speed_mps']
+    tolerance=.35 if variable=='commanded_exit_lateral' else (2.0 if variable=='commanded_gap' else 0.0)
+    matched=abs(measured-requested)<=tolerance if isinstance(requested,(int,float)) and not isinstance(requested,bool) else measured==requested
+    target_measured=measured
+    if (attempt/'fixture-provenance.json').exists():
+        target_measured='diagnostic_subset_inconclusive'
+        matched=False
+    recording_evidence=[{'name':c['name'],'unit':c['unit'],'reference':'channels/'+c['name']+'.jsonl'} for c in case['recording_description']['channels']]
+    recording_evidence += [{'name':c['name'],'unit':c['unit'],'reference':'context.json'} for c in case['recording_description']['context_inputs']]
+    for channel in case['recording_description']['channels']:
+        data=[json.loads(line) for line in (attempt/'channels'/(channel['name']+'.jsonl')).read_text().splitlines()]
+        if len(data)!=len(rows) or any(abs(a['time_s']-b['time_s'])>1e-6 or a.get('value') is None for a,b in zip(data,rows)):
+            raise ValueError('Mandatory channel missing original values: '+channel['name'])
+    native={'case_id':case['case_id'],'measured_values':{variable:measured},'target_checks':[{'target':variable,'requested':requested,'measured':target_measured,'method':'original actor state and sampled body geometry in physical_samples.jsonl; diagnostic subset is inconclusive','tolerance':tolerance,'matched':matched,'physical_cause_confirmed':False,'cause_evidence':'physical_samples.jsonl'}],'setup_confirmed':False,'behavior_attempted':bool(any(r.get('route_index',0)>0 for r in rows)),'maneuver_completed':bool(complete and not (attempt/'fixture-provenance.json').exists()),'termination_reason':'route end observed' if complete else 'incomplete original trajectory','physical_failure_flags':{'physical_cause_unverified':True,'camera_visibility_unverified':True},'trace_reference':'trace.jsonl','video_references':videos,'video_frame_map_reference':'video_frames.jsonl','recording_description':case['recording_description'],'recording_evidence':recording_evidence,'realized_observables':{}}
+    return report,native
 
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--attempt',required=True);p.add_argument('--output',required=True)
-    args=p.parse_args();pathlib.Path(args.output).write_text(json.dumps(assess(args.attempt),indent=2)+'\n')
+    args=p.parse_args();report,native=assess(args.attempt);write_result(args.attempt,native);pathlib.Path(args.output).write_text(json.dumps(report,indent=2)+'\n')

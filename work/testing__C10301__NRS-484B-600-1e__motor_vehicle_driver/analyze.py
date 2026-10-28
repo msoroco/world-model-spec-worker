@@ -36,16 +36,19 @@ def assess(attempt):
     case=cfg['case'];kind=cfg['mode'];samples=rows(attempt/'physical_samples.jsonl')
     mapping=rows(attempt/'video_frames.jsonl')
     if not samples or len(samples)!=len(mapping):raise ValueError('Missing or mismatched original frame map')
-    if any(m['native_frame']!=s['frame'] or m['video_frame']!=i or m['time_s']!=s['time_s']
+    if any(m['native_frame']!=s['frame'] or m['carla_frame']!=s['frame'] or m['video_frame']!=i or m['time_s']!=s['time_s']
            for i,(s,m) in enumerate(zip(samples,mapping))):raise ValueError('Original frame/time join mismatch')
     if any(b['time_s']<=a['time_s'] for a,b in zip(samples,samples[1:])):raise ValueError('Nonmonotone original times')
+    evidence=rows(attempt/'capture/evidence.jsonl')
+    if len(evidence)!=len(samples) or any(e['original_frame']!=s['frame'] for e,s in zip(evidence,samples)):
+        raise ValueError('Original evidence/source frame join mismatch')
     channel_counts={}
     for channel in case['recording_description']['channels']:
         name=channel['name'];data=rows(attempt/'channels'/(name+'.jsonl'))
         if len(data)!=len(samples) or any(row['value'] is None or row['time_s']!=s['time_s']
                                            for row,s in zip(data,samples)):
             raise ValueError('Missing or unjoined mandatory channel '+name)
-        if name not in ('kin.speed','kin.velocity','kin.position','rel.surface_gap') and \
+        if name not in ('kin.speed','kin.velocity','kin.position','rel.surface_gap','env.wet_road','env.ice_or_snow','kin.time') and \
                 any('original_observations' not in row['value'] for row in data):
             raise ValueError('Original source projection missing '+name)
         channel_counts[name]=len(data)
@@ -164,7 +167,43 @@ def assess(attempt):
                       'native motion and visibility beyond CPU proof','final encoded delivery video validation']}
 
 
+def native_result(attempt,report):
+    from worker_exchange.native_output import write_result
+    attempt=pathlib.Path(attempt)
+    cfg=json.loads((attempt/'config.json').read_text());case=cfg['case']
+    samples=rows(attempt/'physical_samples.jsonl')
+    target=case['variable_assignments']['commanded_approach_speed']['value']
+    measured=report['measurements'].get('measured_window_mean_mps')
+    if measured is None:
+        measured=report['measurements'].get('governed_full_trace_max_mps')
+    if measured is None:
+        measured=max(s['ego']['speed_mps'] for s in samples)
+    completed_episode=(len(samples)==cfg['max_ticks'] and
+        samples[-1]['time_s']-samples[0]['time_s']>=cfg['duration_s']-0.11 and
+        samples[-1]['ego_route_index']>samples[0]['ego_route_index'] and
+        samples[-1]['ego']['position_m'][0]>samples[0]['ego']['position_m'][0])
+    return {'case_id':case['case_id'],'measured_values':report['measurements'],
+        'target_checks':[{'target':'case_controller_target','requested':target,'measured':measured,
+            'method':'saved original physical_samples.jsonl; full-trace maximum when requested window absent',
+            'tolerance':1.0,'matched':measured is not None and isinstance(target,(int,float)) and abs(measured-target)<=1.0,
+            'physical_cause_confirmed':False,'cause_evidence':'physical_samples.jsonl; diagnostic subset cannot establish cause'}],
+        'setup_confirmed':False,'behavior_attempted':bool(samples),
+        'maneuver_completed':completed_episode,
+        'termination_reason':'diagnostic subset or unverified physical motion',
+        'physical_failure_flags':{'detection_validated':False},
+        'trace_reference':'trace.jsonl','video_references':['view%d.mkv'%i for i in range(4)],
+        'video_frame_map_reference':'video_frames.jsonl','recording_description':case['recording_description'],
+        'recording_evidence':[{'name':c['name'],'unit':c['unit'],'reference':'channels/'+c['name']+'.jsonl'}
+            for c in case['recording_description']['channels']]+[
+            {'name':c['name'],'unit':c['unit'],'reference':'context.json'}
+            for c in case['recording_description']['context_inputs']],
+        'realized_observables':{},'physical_acceptance':False}
+
+
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--attempt',required=True)
     p.add_argument('--output',required=True);a=p.parse_args()
-    pathlib.Path(a.output).write_text(json.dumps(assess(a.attempt),indent=2)+'\n')
+    report=assess(a.attempt)
+    pathlib.Path(a.output).write_text(json.dumps(report,indent=2)+'\n')
+    from worker_exchange.native_output import write_result
+    write_result(a.attempt,native_result(a.attempt,report))

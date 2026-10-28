@@ -1,5 +1,6 @@
 """Audit actual full-body median passage, surface rays, and reverse movement."""
 import argparse
+from native_finalize import finalize
 import hashlib
 import json
 import sys
@@ -21,7 +22,7 @@ def source_audits(attempt, cfg, rows):
     if not count or len(mapping)!=count or len(trace)!=count or len(evidence)!=count:
         raise ValueError('Original sample/trace/evidence/video frame counts differ')
     for i, (sample, frame, state, event) in enumerate(zip(rows,mapping,trace,evidence)):
-        if (frame['video_frame']!=i or frame['native_frame']!=sample['frame'] or
+        if (frame['video_frame']!=i or frame['native_frame']!=sample['frame'] or frame.get('carla_frame')!=sample['frame'] or
                 state['frame']!=sample['frame'] or event['original_frame']!=sample['frame'] or
                 abs(frame['time_s']-sample['time_s'])>1e-6):
             raise ValueError('Original source frame/time join differs')
@@ -32,11 +33,13 @@ def source_audits(attempt, cfg, rows):
             raise ValueError('Mandatory channel count/time join differs: '+channel['name'])
     mapping_sha=hashlib.sha256(mapping_path.read_bytes()).hexdigest()
     outputs=[]
-    for i,spec in enumerate(cfg['cameras']):
-        video=attempt/('view%d.mkv'%i)
+    diagnostic = (attempt/'fixture-provenance.json').is_file() and (attempt/'raw.mkv').is_file() and not (attempt/'view0.mkv').exists()
+    camera_specs = [(0, cfg['cameras'][0])] if diagnostic else list(enumerate(cfg['cameras']))
+    for i,spec in camera_specs:
+        video=attempt/'raw.mkv' if diagnostic else attempt/('view%d.mkv'%i)
         receipt=attempt/('view%d.source-audit.json'%i)
         result=audit_source_video(video,count,mapping_sha256=mapping_sha,receipt=receipt)
-        if result['dimensions']!=[spec['width'],spec['height']]:
+        if not diagnostic and result['dimensions']!=[spec['width'],spec['height']]:
             raise ValueError('Original camera dimensions differ')
         outputs.append({'video':video.name,'receipt':receipt.name,
                         'video_sha256':result['video_sha256'],'decoded_frames':result['frames']})
@@ -93,4 +96,6 @@ def assess(attempt):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--attempt',required=True);p.add_argument('--output',required=True)
-    a=p.parse_args();Path(a.output).write_text(json.dumps(assess(a.attempt),indent=2)+'\n')
+    a=p.parse_args();report = assess(a.attempt)
+    Path(a.output).write_text(json.dumps(report, indent=2) + '\n')
+    finalize(a.attempt, report)

@@ -12,6 +12,7 @@ for ancestor in pathlib.Path(__file__).resolve().parents:
         sys.path.insert(0, str(pipeline))
         break
 from worker_exchange.media import audit
+from worker_exchange.native_output import write_result
 
 
 def assess(attempt):
@@ -23,7 +24,7 @@ def assess(attempt):
     evidence = [json.loads(line) for line in (attempt / 'capture/evidence.jsonl').read_text().splitlines()]
     if not samples or len(samples) != len(mapping) or len(samples) != len(trace) or len(samples) != len(evidence):
         raise ValueError('Original sample/video/trace/evidence counts differ')
-    if any(s['frame'] != m['native_frame'] or s['frame'] != t['frame'] or
+    if any(s['frame'] != m['native_frame'] or m.get('carla_frame') != t['frame'] or s['frame'] != t['frame'] or
            s['frame'] != e['original_frame'] or m['video_frame'] != i or
            abs(s['time_s'] - m['time_s']) > 1e-6
            for i, (s, m, t, e) in enumerate(zip(samples, mapping, trace, evidence))):
@@ -51,13 +52,19 @@ def assess(attempt):
         channel_counts[name] = len(rows)
     video_counts = {}
     mapping_sha = hashlib.sha256((attempt / 'video_frames.jsonl').read_bytes()).hexdigest()
-    for i in range(4):
-        receipt = audit(attempt / ('view%d.webm' % i), len(samples), mapping_sha256=mapping_sha,
-                        receipt=attempt / ('view%d.source-decode.json' % i))
-        expected_dimensions = [1920, 1080] if i == 0 else [1280, 720]
-        if receipt['dimensions'] != expected_dimensions:
-            raise ValueError('Decoded camera dimensions differ')
-        video_counts['view%d' % i] = receipt['frames']
+    videos = ['view%d.webm' % i for i in range(4)]
+    if not all((attempt / video).is_file() for video in videos):
+        if not (attempt / 'fixture-provenance.json').is_file() or not (attempt / 'raw.mkv').is_file():
+            raise ValueError('Missing live camera recordings')
+        videos = ['raw.mkv']
+    for i, video in enumerate(videos):
+        receipt = audit(attempt / video, len(samples), mapping_sha256=mapping_sha,
+                        receipt=attempt / ('source-%d.json' % i))
+        if video.startswith('view'):
+            expected_dimensions = [1920, 1080] if i == 0 else [1280, 720]
+            if receipt['dimensions'] != expected_dimensions:
+                raise ValueError('Decoded camera dimensions differ')
+        video_counts[video] = receipt['frames']
     aligned = bool(samples and len(samples) == len(mapping) and
                    all(v == len(samples) for v in channel_counts.values()) and
                    all(v == len(samples) for v in video_counts.values()) and
@@ -74,7 +81,26 @@ def assess(attempt):
               'decision': 'inspect_native_evidence' if completed and footprint_inside and aligned and approach_target_met and connector_observed else 'repair_same_frozen_case',
               'follow_up': {'case_id': cfg['selected_case_id'], 'configuration': 'config.json',
                             'preserve_targets': True, 'requires_new_attempt': not (completed and footprint_inside and aligned and approach_target_met and connector_observed)}}
-    return report
+    measured = -statistics.mean(offsets) if offsets else -samples[0]['position_m'][1]
+    target_check = {'target': 'commanded_approach_lateral', 'requested': target,
+                    'measured': measured, 'method': 'negative mean original approach Y; first original Y for diagnostic subset without approach',
+                    'tolerance': 0.35, 'matched': abs(measured-target) <= 0.35,
+                    'physical_cause_confirmed': False, 'cause_evidence': 'physical_samples.jsonl'}
+    recording_evidence = [{'name': channel['name'], 'unit': channel['unit'],
+                           'reference': 'channels/' + channel['name'] + '.jsonl'}
+                          for channel in cfg['case']['recording_description']['channels']]
+    recording_evidence.append({'name': 'authored_context', 'unit': 'object', 'reference': 'context.json'})
+    native_result = {'case_id': cfg['selected_case_id'], 'measured_values': {'approach_lateral_m': measured},
+                     'target_checks': [target_check], 'setup_confirmed': False,
+                     'behavior_attempted': bool(any(s.get('route_index', 0) > 0 for s in samples)),
+                     'maneuver_completed': completed and not (attempt / 'fixture-provenance.json').exists(),
+                     'termination_reason': 'route end observed' if completed else 'incomplete original trajectory',
+                     'physical_failure_flags': {'visibility_unverified': True, 'physical_cause_unverified': True},
+                     'trace_reference': 'trace.jsonl', 'video_references': videos,
+                     'video_frame_map_reference': 'video_frames.jsonl',
+                     'recording_description': cfg['case']['recording_description'],
+                     'recording_evidence': recording_evidence, 'realized_observables': {}}
+    return report, native_result
 
 
 if __name__ == '__main__':
@@ -82,4 +108,6 @@ if __name__ == '__main__':
     parser.add_argument('--attempt', required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
-    pathlib.Path(args.output).write_text(json.dumps(assess(args.attempt), indent=2) + '\n')
+    report, native_result = assess(args.attempt)
+    write_result(args.attempt, native_result)
+    pathlib.Path(args.output).write_text(json.dumps(report, indent=2) + '\n')

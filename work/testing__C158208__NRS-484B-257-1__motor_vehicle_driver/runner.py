@@ -156,9 +156,22 @@ def command(carla, actor, path, index, desired_speed, reverse=False):
     return carla.VehicleControl(throttle=throttle,brake=brake,steer=steer,reverse=reverse),near
 
 
+def capture_frame_identity(frame_map, frame, time_s):
+    """Write original identity at the recorded tick through the supplied writer."""
+    return frame_map.append(frame, time_s)
+
+def cleanup_action(errors, label, action):
+    """Retain each failure and continue the remaining owned cleanup and restore."""
+    try:
+        action()
+    except Exception as exc:
+        errors.append({"action": label, "error": repr(exc)})
+
 def run(args):
     import carla  # lazy by design
     from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap
+    from worker_exchange.world_restore import snapshot, restore
     cfg, case = selected()
     out = Path(args.output_dir).resolve()
     out.mkdir(parents=True,exist_ok=True)
@@ -169,10 +182,7 @@ def run(args):
     (out/'context.json').write_text(json.dumps({'authored_test_context':cfg['authored_test_context']},indent=2)+'\n')
     client = carla.Client(args.host,args.port)
     client.set_timeout(120)
-    previous = client.get_world()
-    previous_map = previous.get_map().name
-    previous_settings = previous.get_settings()
-    previous_weather = previous.get_weather()
+    saved_world = snapshot(client)
     world = None
     actors = []
     capture = None
@@ -233,7 +243,7 @@ def run(args):
         start=world.get_snapshot().timestamp.elapsed_seconds
         index=0
         hold_start=None
-        with (out/'physical_samples.jsonl').open('x') as physical,(out/'video_frames.jsonl').open('x') as frame_map:
+        with (out/'physical_samples.jsonl').open('x') as physical, FrameMap(out/'video_frames.jsonl') as frame_map:
             for tick in range(cfg['max_ticks']):
                 ego_state=native_state(ego)
                 if mechanism=='yield':
@@ -317,7 +327,7 @@ def run(args):
                         image=q.get(timeout=20)
                     if image.frame!=frame:raise RuntimeError('Camera frame mismatch')
                     encoders[name].stdin.write(bytes(image.raw_data))
-                frame_map.write(json.dumps({'video_frame':tick,'native_frame':frame,'carla_frame':frame,'time_s':now})+'\n')
+                capture_frame_identity(frame_map, frame, now)
                 count+=1
                 pos=sample['ego']['position_m']
                 if index>=len(path)-2 and math.dist(pos[:2],path[-1])<=2.0 and sample['ego']['speed_mps']<2.0:break
@@ -326,19 +336,23 @@ def run(args):
             'physical_acceptance':False,
             'needs_analysis':'Run analyze.py on original physical_samples.jsonl and inspect source cameras'},indent=2)+'\n')
     finally:
-        if 'evidence' in locals():evidence.close()
-        for stream in channels.values():stream.close()
-        if capture:capture.close(confirmed=count>0)
+        cleanup_errors = []
+        def clean(label, action):
+            cleanup_action(cleanup_errors, label, action)
+        if 'evidence' in locals():clean('evidence_close', evidence.close)
+        for name,stream in channels.items():clean('channel_close:'+name, stream.close)
+        if capture:clean('capture_close', lambda: capture.close(confirmed=count>0))
         for name,encoder in encoders.items():
-            encoder.stdin.close()
-            encoder.wait(timeout=120)
-            logs[name].close()
-        for actor in reversed(actors):actor.destroy()
-        if world:
-            client.load_world(previous_map)
-            restored=client.get_world()
-            restored.apply_settings(previous_settings)
-            restored.set_weather(previous_weather)
+            clean('encoder_stdin_close:'+name, encoder.stdin.close)
+            clean('encoder_wait:'+name, lambda encoder=encoder: encoder.wait(timeout=120))
+            clean('encoder_log_close:'+name, logs[name].close)
+        for actor in reversed(actors):clean('actor_destroy:'+str(actor.id), actor.destroy)
+        receipt_holder = []
+        clean('world_restore', lambda: receipt_holder.append(restore(client,saved_world)))
+        receipt = receipt_holder[0] if receipt_holder else None
+        (out/'restoration-receipt.json').write_text(json.dumps({'world':receipt,'cleanup_errors':cleanup_errors},indent=2)+'\n')
+        if cleanup_errors:
+            raise RuntimeError('Owned cleanup or world restoration failed: '+json.dumps(cleanup_errors))
 
 
 if __name__=='__main__':

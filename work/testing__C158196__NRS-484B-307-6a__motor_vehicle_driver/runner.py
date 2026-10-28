@@ -86,17 +86,27 @@ def image_for_frame(q,frame):
     return image
 
 
+def capture_frame_identity(mapping, frame, time_s, **extra):
+    return mapping.append(frame,time_s,**extra)
+
+def cleanup_action(errors,label,action):
+    try: action()
+    except Exception as exc: errors.append({'action':label,'error':repr(exc)})
+
 def run(args):
     import carla  # lazy: --check never imports or connects
     import numpy as np
     from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap
+    from worker_exchange.world_restore import snapshot, restore
     cfg=read_config();case=cfg['case'];kind=cfg['mode']
     out=Path(args.output_dir).resolve();out.mkdir(parents=True,exist_ok=True)
     if (out/'physical_samples.jsonl').exists():raise ValueError('Retain prior attempt in a fresh directory')
     if not (out/'config.json').exists():(out/'config.json').write_text(json.dumps(cfg,indent=2)+'\n')
     client=carla.Client(args.host,args.port);client.set_timeout(120)
     if client.get_client_version()!=client.get_server_version():raise RuntimeError('CARLA client/server version mismatch')
-    previous=client.get_world();prior_map=previous.get_map().name;prior_settings=previous.get_settings();prior_weather=previous.get_weather()
+    saved_world=snapshot(client)
+    previous=client.get_world();prior_settings=previous.get_settings()
     if prior_settings.synchronous_mode:raise RuntimeError('Endpoint already in synchronous mode; exclusive ownership not established')
     if any(a.type_id.startswith(('vehicle.','walker.','sensor.')) for a in previous.get_actors()):
         raise RuntimeError('Endpoint has active dynamic actors; exclusive ownership not established')
@@ -157,13 +167,13 @@ def run(args):
                 [[v.x,v.y,v.z] for v in a.bounding_box.get_world_vertices(a.get_transform())]} for a in occluders],
             'synthetic_context':cfg['authored_test_context'],'vehicle_blueprints':[a.type_id for a in actors if a.type_id.startswith('vehicle.')]},indent=2)+'\n')
         capture=PipelineCapture(client,ego,out,case['case_id'],required_observations=cfg['required_atoms'])
-        (out/'context.json').write_text(json.dumps(cfg['authored_test_context'],indent=2)+'\n')
+        (out/'context.json').write_text(json.dumps({'authored_context':cfg['authored_test_context']},indent=2)+'\n')
         (out/'channels').mkdir()
         streams={c['name']:(out/'channels'/(c['name']+'.jsonl')).open('x') for c in case['recording_description']['channels']}
         start=world.get_snapshot().timestamp.elapsed_seconds;halted_samples=0;stop_release=False
         other_halted_samples=0;other_release=False
         with (out/'capture/evidence.jsonl').open() as evidence, (out/'physical_samples.jsonl').open('x') as physical, \
-                (out/'video_frames.jsonl').open('x') as mapping:
+                FrameMap(out/'video_frames.jsonl') as mapping:
             for i in range(cfg['max_ticks']):
                 now=i*.05
                 if kind=='yellow_red':
@@ -224,8 +234,7 @@ def run(args):
                     source_frames['view%d'%j]={'width':image.width,'height':image.height,
                         'source_bgra_sha256':hashlib.sha256(raw).hexdigest(),
                         'source_rgb_sha256':hashlib.sha256(rgb.tobytes()).hexdigest()}
-                mapping.write(json.dumps({'video_frame':i,'native_frame':frame,'time_s':elapsed,
-                    'source_frames':source_frames})+'\n')
+                capture_frame_identity(mapping,frame,elapsed,source_frames=source_frames)
                 count+=1
         (out/'capability-run.json').write_text(json.dumps({'case_id':case['case_id'],'frames':count,
             'expected_frames':cfg['max_ticks'],'native_actors':len(actors),'physical_acceptance':False,
@@ -236,14 +245,19 @@ def run(args):
             'frames':count,'partial_evidence_retained':True},indent=2)+'\n')
         raise
     finally:
-        for stream in streams.values():stream.close()
-        if capture:capture.close(confirmed=error is None and count==cfg['max_ticks'])
-        for encoder,log in encoders:
-            encoder.stdin.close();encoder.wait(timeout=180);log.close()
-        for actor in reversed(actors):actor.destroy()
-        if world is not None:
-            client.load_world(prior_map)
-            restored=client.get_world();restored.apply_settings(prior_settings);restored.set_weather(prior_weather)
+        cleanup_errors=[]
+        for name,stream in streams.items():cleanup_action(cleanup_errors,'channel_close:'+name,stream.close)
+        if capture:cleanup_action(cleanup_errors,'capture_close',lambda:capture.close(confirmed=error is None and count==cfg['max_ticks']))
+        for i,(encoder,log) in enumerate(encoders):
+            cleanup_action(cleanup_errors,'encoder_stdin_close:'+str(i),encoder.stdin.close)
+            cleanup_action(cleanup_errors,'encoder_wait:'+str(i),lambda encoder=encoder:encoder.wait(timeout=180))
+            cleanup_action(cleanup_errors,'encoder_log_close:'+str(i),log.close)
+        for actor in reversed(actors):cleanup_action(cleanup_errors,'actor_destroy:'+str(actor.id),actor.destroy)
+        receipt=[]
+        cleanup_action(cleanup_errors,'world_restore',lambda:receipt.append(restore(client,saved_world)))
+        (out/'restoration-receipt.json').write_text(json.dumps({'world':receipt[0] if receipt else None,
+            'cleanup_errors':cleanup_errors},indent=2)+'\n')
+        if cleanup_errors:raise RuntimeError('Owned cleanup or world restoration failed: '+json.dumps(cleanup_errors))
 
 
 if __name__=='__main__':

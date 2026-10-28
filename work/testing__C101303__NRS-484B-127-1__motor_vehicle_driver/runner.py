@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 import math
+import os
 import queue
 import subprocess
 from pathlib import Path
@@ -86,17 +87,63 @@ def image_for_frame(q,frame):
     return image
 
 
+def capture_frame_identity(mapping, frame, time_s, **extra):
+    return mapping.append(frame,time_s,**extra)
+
+def cleanup_action(errors,label,action):
+    try: action()
+    except Exception as exc: errors.append({'action':label,'error':repr(exc)})
+
+
+def adapted_surface_receipt(world, out, scene, manifest_path):
+    """Bind this four-lane scene to operator supplied, native matched material assets.
+
+    The shipped surface helper describes a 10 m / 7 m original road and cannot
+    truthfully describe this 14 m four-lane construction.
+    """
+    from worker_exchange.environment_acquisition import sha, write
+    import xml.etree.ElementTree as ET
+    if manifest_path is None:
+        raise RuntimeError('Missing native material provenance manifest: pass --surface-manifest with actual asset paths, explicit surface authorship and ice_or_snow state')
+    packet=json.loads(Path(manifest_path).read_text())
+    if not packet.get('authorship') or type(packet.get('ice_or_snow')) is not bool or not packet.get('assets'):
+        raise ValueError('Surface manifest needs authored condition, explicit ice_or_snow and asset paths')
+    names=list(world.get_names_of_all_objects())
+    assets=[]
+    for item in packet['assets']:
+        path=Path(item['path']).resolve()
+        if not path.is_file() or not item.get('native_name') or item['native_name'] not in names:
+            raise ValueError('Native material asset path/name unavailable: '+str(item))
+        assets.append({'path':str(path),'sha256':sha(path),'native_name':item['native_name']})
+    root=ET.fromstring(scene.read_text());widths=[]
+    for lane in root.findall('road/lanes/laneSection/left/lane')+root.findall('road/lanes/laneSection/right/lane'):
+        if lane.get('type')=='driving':widths.append(float(lane.find('width').get('a')))
+    if len(widths)!=4 or any(abs(w-3.5)>1e-6 for w in widths):
+        raise ValueError('Authored surface dimensions differ from reviewed four-lane scene')
+    receipt={'schema':'authored-native-road-surface-v1','authorship':packet['authorship'],
+        'ice_or_snow':packet['ice_or_snow'],'map_sha256':sha(Path(out)/'road.xodr'),
+        'authored_map_sha256':sha(scene),'source_assets':assets,'native_map_name':world.get_map().name,
+        'native_object_names':names,'lane_count':4,'lane_widths_m':widths,'roadway_width_m':sum(widths),
+        'boundary_reference':'Native OpenDRIVE road1 four 3.5 m driving lanes; no copied shoulder assumption',
+        'limitations':['Material files and native inventory must be verified by the operator; no real-road friction or appearance claim']}
+    write(Path(out)/'surface_provenance.json',receipt)
+    return receipt
+
 def run(args):
     import carla  # lazy: --check never imports or connects
     import numpy as np
     from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap
+    from worker_exchange.world_restore import snapshot, restore
+    from worker_exchange.environment_acquisition import calibrate, fields, sha
     cfg=read_config();case=cfg['case'];kind=cfg['mode']
     out=Path(args.output_dir).resolve();out.mkdir(parents=True,exist_ok=True)
     if (out/'physical_samples.jsonl').exists():raise ValueError('Retain prior attempt in a fresh directory')
     if not (out/'config.json').exists():(out/'config.json').write_text(json.dumps(cfg,indent=2)+'\n')
     client=carla.Client(args.host,args.port);client.set_timeout(120)
     if client.get_client_version()!=client.get_server_version():raise RuntimeError('CARLA client/server version mismatch')
-    previous=client.get_world();prior_map=previous.get_map().name;prior_settings=previous.get_settings();prior_weather=previous.get_weather()
+    saved_world=snapshot(client)
+    previous=client.get_world();prior_settings=previous.get_settings()
     if prior_settings.synchronous_mode:raise RuntimeError('Endpoint already in synchronous mode; exclusive ownership not established')
     if any(a.type_id.startswith(('vehicle.','walker.','sensor.')) for a in previous.get_actors()):
         raise RuntimeError('Endpoint has active dynamic actors; exclusive ownership not established')
@@ -148,6 +195,14 @@ def run(args):
                 stdin=subprocess.PIPE,stderr=log)
             encoders.append((encoder,log))
         for _ in range(5):world.tick()
+        environment=None
+        if kind=='following':
+            (out/'road.xodr').write_text((ROOT/'scene.xodr').read_text())
+            adapted_surface_receipt(world,out,ROOT/'scene.xodr',args.surface_manifest or os.environ.get('WORKER_NATIVE_SURFACE_MANIFEST'))
+            calibration=calibrate(world,other,out,actors)
+            environment={'calibration':calibration,'calibration_sha256':sha(out/'environment_calibration.json'),
+                'surface':json.loads((out/'surface_provenance.json').read_text()),
+                'surface_sha256':sha(out/'surface_provenance.json')}
         (out/'native-setup.json').write_text(json.dumps({'map':world.get_map().name,
             'native_road_ids':sorted({a.road_id for edge in world.get_map().get_topology() for a in edge}),
             'signals':signal_inventory(world)[1],
@@ -157,13 +212,13 @@ def run(args):
                 [[v.x,v.y,v.z] for v in a.bounding_box.get_world_vertices(a.get_transform())]} for a in occluders],
             'synthetic_context':cfg['authored_test_context'],'vehicle_blueprints':[a.type_id for a in actors if a.type_id.startswith('vehicle.')]},indent=2)+'\n')
         capture=PipelineCapture(client,ego,out,case['case_id'],required_observations=cfg['required_atoms'])
-        (out/'context.json').write_text(json.dumps(cfg['authored_test_context'],indent=2)+'\n')
+        (out/'context.json').write_text(json.dumps({'authored_context':cfg['authored_test_context']},indent=2)+'\n')
         (out/'channels').mkdir()
         streams={c['name']:(out/'channels'/(c['name']+'.jsonl')).open('x') for c in case['recording_description']['channels']}
         start=world.get_snapshot().timestamp.elapsed_seconds;halted_samples=0;stop_release=False
         other_halted_samples=0;other_release=False
         with (out/'capture/evidence.jsonl').open() as evidence, (out/'physical_samples.jsonl').open('x') as physical, \
-                (out/'video_frames.jsonl').open('x') as mapping:
+                FrameMap(out/'video_frames.jsonl') as mapping:
             for i in range(cfg['max_ticks']):
                 now=i*.05
                 if kind=='yellow_red':
@@ -196,7 +251,17 @@ def run(args):
                     other_cmd,other_index=command(carla,other,other_path(cfg),other_target,cfg['controller'])
                     other.apply_control(other_cmd)
                 frame=world.tick();elapsed=world.get_snapshot().timestamp.elapsed_seconds-start
-                captured=capture.capture(frame,elapsed)
+                env=None
+                if environment is not None:
+                    weather=fields(world.get_weather())
+                    if weather!=environment['calibration']['weather']:
+                        raise RuntimeError('Native weather changed after calibrated environment acquisition')
+                    env={'frame':frame,'time_s':elapsed,'weather':weather,
+                        'visibility_m':environment['calibration']['visibility_m'],
+                        'ice_or_snow':environment['surface']['ice_or_snow'],
+                        'calibration_sha256':environment['calibration_sha256'],
+                        'surface_sha256':environment['surface_sha256']}
+                captured=capture.capture(frame,elapsed,extra={'environment_measurements':env} if env else None)
                 original=json.loads(evidence.readline())
                 if original['original_frame']!=frame:raise RuntimeError('Original observation/source frame mismatch')
                 ego_state=state(ego);other_state=state(other) if other else None
@@ -206,13 +271,16 @@ def run(args):
                     'signal_devices':devices,'controller_halt_released':stop_release,
                     'other_stop_released':other_release,
                     'surface_gap_m':surface_gap(ego_state,other_state) if other_state and kind=='following' else None,
-                    'native_road_projection':original['world'].get('road_projection')}
+                    'native_road_projection':original['world'].get('road_projection'),
+                    'environment_measurements':env}
                 physical.write(json.dumps(sample)+'\n')
                 for name,stream in streams.items():
                     if name=='kin.speed':value=ego_state['speed_mps']
                     elif name=='kin.velocity':value=ego_state['velocity_mps']
                     elif name=='kin.position':value=ego_state['position_m']
                     elif name=='rel.surface_gap':value=sample['surface_gap_m']
+                    elif name=='env.wet_road':value=env['weather']['wetness']>0 if env else None
+                    elif name=='env.ice_or_snow':value=env['ice_or_snow'] if env else None
                     else:value={'frame':frame,'physical':sample,'original_observations':original['original_observations'],
                         'native_world':original['world'],'legal_predicate_resolved':False}
                     stream.write(json.dumps({'time_s':elapsed,'value':value})+'\n')
@@ -224,8 +292,7 @@ def run(args):
                     source_frames['view%d'%j]={'width':image.width,'height':image.height,
                         'source_bgra_sha256':hashlib.sha256(raw).hexdigest(),
                         'source_rgb_sha256':hashlib.sha256(rgb.tobytes()).hexdigest()}
-                mapping.write(json.dumps({'video_frame':i,'native_frame':frame,'time_s':elapsed,
-                    'source_frames':source_frames})+'\n')
+                capture_frame_identity(mapping,frame,elapsed,source_frames=source_frames)
                 count+=1
         (out/'capability-run.json').write_text(json.dumps({'case_id':case['case_id'],'frames':count,
             'expected_frames':cfg['max_ticks'],'native_actors':len(actors),'physical_acceptance':False,
@@ -236,19 +303,25 @@ def run(args):
             'frames':count,'partial_evidence_retained':True},indent=2)+'\n')
         raise
     finally:
-        for stream in streams.values():stream.close()
-        if capture:capture.close(confirmed=error is None and count==cfg['max_ticks'])
-        for encoder,log in encoders:
-            encoder.stdin.close();encoder.wait(timeout=180);log.close()
-        for actor in reversed(actors):actor.destroy()
-        if world is not None:
-            client.load_world(prior_map)
-            restored=client.get_world();restored.apply_settings(prior_settings);restored.set_weather(prior_weather)
+        cleanup_errors=[]
+        for name,stream in streams.items():cleanup_action(cleanup_errors,'channel_close:'+name,stream.close)
+        if capture:cleanup_action(cleanup_errors,'capture_close',lambda:capture.close(confirmed=error is None and count==cfg['max_ticks']))
+        for i,(encoder,log) in enumerate(encoders):
+            cleanup_action(cleanup_errors,'encoder_stdin_close:'+str(i),encoder.stdin.close)
+            cleanup_action(cleanup_errors,'encoder_wait:'+str(i),lambda encoder=encoder:encoder.wait(timeout=180))
+            cleanup_action(cleanup_errors,'encoder_log_close:'+str(i),log.close)
+        for actor in reversed(actors):cleanup_action(cleanup_errors,'actor_destroy:'+str(actor.id),actor.destroy)
+        receipt=[]
+        cleanup_action(cleanup_errors,'world_restore',lambda:receipt.append(restore(client,saved_world)))
+        (out/'restoration-receipt.json').write_text(json.dumps({'world':receipt[0] if receipt else None,
+            'cleanup_errors':cleanup_errors},indent=2)+'\n')
+        if cleanup_errors:raise RuntimeError('Owned cleanup or world restoration failed: '+json.dumps(cleanup_errors))
 
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--check',action='store_true')
     p.add_argument('--output-dir');p.add_argument('--host');p.add_argument('--port',type=int)
+    p.add_argument('--surface-manifest',help='operator verified native material inventory and asset paths')
     a=p.parse_args()
     if a.check:check()
     else:

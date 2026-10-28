@@ -1,5 +1,6 @@
 """Saved full-footprint entry timing, yield response, and follow-up decision."""
 import argparse
+from native_finalize import finalize
 import json
 from pathlib import Path
 from source_audit import audit_sources
@@ -42,4 +43,6 @@ if __name__ == '__main__':
     p.add_argument('--attempt', required=True)
     p.add_argument('--output', required=True)
     a = p.parse_args()
-    Path(a.output).write_text(json.dumps(assess(a.attempt), indent=2) + '\n')
+    report = assess(a.attempt)
+    Path(a.output).write_text(json.dumps(report, indent=2) + '\n')
+    finalize(a.attempt, report)

@@ -80,10 +80,17 @@ def control(carla, ego, points, target_speed):
     return carla.VehicleControl(throttle=throttle, brake=brake, steer=steer), nearest
 
 
+def append_original_frame(frame_map, frame, time_s, source_frames):
+    """Capture-side call; original identities are written before finalization."""
+    return frame_map.append(frame, time_s, source_frames=source_frames)
+
+
 def run(args):
     import carla  # lazy: offline checks never connect to a simulator
     import queue
     from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap
+    from worker_exchange.world_restore import snapshot, restore
     cfg = json.loads((ROOT / 'config.json').read_text())
     case = cfg['case']
     out = Path(args.output_dir).resolve()
@@ -94,10 +101,7 @@ def run(args):
         (out / 'config.json').write_text(json.dumps(cfg, indent=2) + '\n')
     client = carla.Client(args.host, args.port)
     client.set_timeout(120)
-    original_world = client.get_world()
-    original_map = original_world.get_map().name
-    original_settings = original_world.get_settings()
-    original_weather = original_world.get_weather()
+    saved_world = snapshot(client)
     world = None
     actors = []
     capture = None
@@ -105,6 +109,7 @@ def run(args):
     logs = {}
     frames = 0
     success = False
+    capture_complete = False
     try:
         world = client.generate_opendrive_world((ROOT / 'intersection.xodr').read_text())
         settings = world.get_settings()
@@ -145,14 +150,14 @@ def run(args):
         for _ in range(5):
             world.tick()
         capture = PipelineCapture(client, ego, out, case['case_id'], required_observations=cfg['required_atoms'])
-        (out / 'context.json').write_text(json.dumps(cfg['authored_test_context'], indent=2) + '\n')
+        (out / 'context.json').write_text(json.dumps({'authored_context': cfg['authored_test_context']}, indent=2) + '\n')
         (out / 'channels').mkdir()
         channels = {c['name']: (out / 'channels' / (c['name'] + '.jsonl')).open('x')
                     for c in case['recording_description']['channels']}
         start = world.get_snapshot().timestamp.elapsed_seconds
         try:
             with (out / 'capture/evidence.jsonl').open() as evidence, \
-                    (out / 'video_frames.jsonl').open('x') as mapping, \
+                    FrameMap(out / 'video_frames.jsonl') as mapping, \
                     (out / 'physical_samples.jsonl').open('x') as physical:
                 for i in range(cfg['max_ticks']):
                     command, index = control(carla, ego, points, 5.0)
@@ -186,12 +191,12 @@ def run(args):
                         encoders[name].stdin.write(raw)
                         source_frames[name] = {'width': image.width, 'height': image.height,
                             'source_bgra_sha256': hashlib.sha256(raw).hexdigest()}
-                    mapping.write(json.dumps({'video_frame': i, 'native_frame': frame,
-                        'time_s': now, 'source_frames': source_frames}) + '\n')
+                    append_original_frame(mapping, frame, now, source_frames)
                     frames += 1
                     if index == len(points)-1 and row['speed_mps'] < 2:
                         success = True
                         break
+                capture_complete = True
         finally:
             for stream in channels.values():
                 stream.close()
@@ -199,21 +204,37 @@ def run(args):
             'recorded_frames': frames, 'route_completed': success, 'physical_acceptance': False,
             'unverified': ['native route continuity', 'approach footprint', 'camera visibility', 'duration']}, indent=2) + '\n')
     finally:
+        failures = []
         if capture:
-            capture.close(confirmed=success)
+            try:
+                capture.close(confirmed=capture_complete)
+            except Exception as exc:
+                failures.append('capture close: ' + repr(exc))
         for name, encoder in encoders.items():
-            encoder.stdin.close()
-            encoder.wait(timeout=120)
-            logs[name].close()
+            for action, operation in [('stdin close', encoder.stdin.close),
+                                      ('encoder wait', lambda encoder=encoder: encoder.wait(timeout=120)),
+                                      ('log close', logs[name].close)]:
+                try:
+                    operation()
+                except Exception as exc:
+                    failures.append(name + ' ' + action + ': ' + repr(exc))
         for actor in reversed(actors):
-            actor.destroy()
-        if world:
-            client.load_world(original_map)
-            restored = client.get_world()
-            restored.apply_settings(original_settings)
-            restored.set_weather(original_weather)
-    if not success:
-        raise RuntimeError('Native maneuver incomplete; inspect retained capability report')
+            try:
+                if hasattr(actor, 'stop') and actor.type_id.startswith('sensor.'):
+                    actor.stop()
+                actor.destroy()
+            except Exception as exc:
+                failures.append('actor cleanup: ' + repr(exc))
+        try:
+            receipt = restore(client, saved_world)
+            (out / 'world-restore.json').write_text(json.dumps(receipt, indent=2) + '\n')
+        except Exception as exc:
+            failures.append('world restoration: ' + repr(exc))
+        if failures:
+            (out / 'cleanup-failures.json').write_text(json.dumps(failures, indent=2) + '\n')
+            raise RuntimeError('Cleanup/restoration failed: ' + '; '.join(failures))
+    # An incomplete recorded maneuver remains an analyzable attempt. The
+    # finalizer will retain maneuver_completed=False and physical limitations.
 
 
 if __name__ == '__main__':

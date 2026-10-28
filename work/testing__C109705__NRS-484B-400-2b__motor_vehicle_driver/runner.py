@@ -58,6 +58,8 @@ def check():
     assert cfg['actor'] == 'motor_vehicle_driver'
     root = ET.parse(ROOT / 'intersection.xodr').getroot()
     assert root.tag == 'OpenDRIVE'
+    from traffic_spec_adapter.geometry import static_map
+    static_map(ROOT/'intersection.xodr',junctions=True,include_non_driving=True,public_way_roads=cfg['public_way_road_ids'])
     roads = root.findall('road')
     assert len(roads) >= 4
     assert all(r.find('lanes/laneSection/left/lane[@id="1"]') is not None and
@@ -124,10 +126,16 @@ def channel_value(name, sample, original):
             'native_world_projection':original['world']}
 
 
+def append_original_frame(frame_map, frame, time_s):
+    return frame_map.append(frame,time_s)
+
+
 def run(args):
     import carla  # lazy: offline checks never connect to a simulator
     import queue
     from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap
+    from worker_exchange.world_restore import snapshot, restore
     cfg = json.loads((ROOT / 'config.json').read_text())
     case = cfg['case']
     out = Path(args.output_dir).resolve()
@@ -138,13 +146,7 @@ def run(args):
         (out / 'config.json').write_text(json.dumps(cfg, indent=2) + '\n')
     client = carla.Client(args.host, args.port)
     client.set_timeout(120)
-    original_world = client.get_world()
-    original_map = original_world.get_map().name
-    original_xodr = original_world.get_map().to_opendrive()
-    available_map = next((m for m in client.get_available_maps()
-        if m.rsplit('/',1)[-1] == original_map.rsplit('/',1)[-1]), None)
-    original_settings = original_world.get_settings()
-    original_weather = original_world.get_weather()
+    saved_world = snapshot(client)
     world = None
     actors = []
     capture = None
@@ -152,6 +154,7 @@ def run(args):
     logs = {}
     frames = 0
     success = False
+    capture_complete = False
     try:
         world = client.generate_opendrive_world((ROOT / 'intersection.xodr').read_text())
         settings = world.get_settings()
@@ -213,13 +216,14 @@ def run(args):
             world.tick()
         capture = PipelineCapture(client, ego, out, case['case_id'], required_observations=cfg['required_atoms'])
         evidence_reader=(out/'capture/evidence.jsonl').open('r')
+        (out/'context.json').write_text(json.dumps({'authored_context':cfg['authored_test_context']},indent=2)+'\n')
         (out / 'channels').mkdir()
         channels = {c['name']: (out / 'channels' / (c['name'] + '.jsonl')).open('x')
                     for c in case['recording_description']['channels']}
         start = world.get_snapshot().timestamp.elapsed_seconds
         halt_started = None
         try:
-            with (out / 'video_frames.jsonl').open('x') as mapping, (out / 'physical_samples.jsonl').open('x') as physical:
+            with FrameMap(out / 'video_frames.jsonl') as mapping, (out / 'physical_samples.jsonl').open('x') as physical:
                 for i in range(cfg['max_ticks']):
                     command, index = control(carla, ego, points, 5.0)
                     if cfg['law_id'] == 'NRS-484A-450-2':
@@ -273,11 +277,12 @@ def run(args):
                         if image.frame != frame:
                             raise RuntimeError('Camera/source frame mismatch')
                         encoders[name].stdin.write(bytes(image.raw_data))
-                    mapping.write(json.dumps({'video_frame': i, 'native_frame': frame, 'time_s': now}) + '\n')
+                    append_original_frame(mapping,frame,now)
                     frames += 1
                     if index >= len(points)-2 and row['speed_mps'] < 2:
                         success = True
                         break
+                capture_complete = True
         finally:
             for stream in channels.values():
                 stream.close()
@@ -286,24 +291,27 @@ def run(args):
             'recorded_frames': frames, 'route_completed': success, 'physical_acceptance': False,
             'unverified': ['native route continuity', 'approach footprint', 'camera visibility', 'duration']}, indent=2) + '\n')
     finally:
+        failures=[]
         if capture:
-            capture.close(confirmed=success)
-        for name, encoder in encoders.items():
-            encoder.stdin.close()
-            encoder.wait(timeout=120)
-            logs[name].close()
+            try:capture.close(confirmed=capture_complete)
+            except Exception as exc:failures.append('capture close: '+repr(exc))
+        for name,encoder in encoders.items():
+            for label,action in [('stdin close',encoder.stdin.close),('encoder wait',lambda encoder=encoder:encoder.wait(timeout=120)),('log close',logs[name].close)]:
+                try:action()
+                except Exception as exc:failures.append(name+' '+label+': '+repr(exc))
         for actor in reversed(actors):
-            actor.destroy()
-        if world:
-            if available_map:
-                client.load_world(available_map)
-            else:
-                client.generate_opendrive_world(original_xodr)
-            restored = client.get_world()
-            restored.apply_settings(original_settings)
-            restored.set_weather(original_weather)
-    if not success:
-        raise RuntimeError('Native maneuver incomplete; inspect retained capability report')
+            try:
+                if hasattr(actor,'stop') and actor.type_id.startswith('sensor.'):actor.stop()
+                actor.destroy()
+            except Exception as exc:failures.append('actor cleanup: '+repr(exc))
+        try:
+            receipt=restore(client,saved_world)
+            (out/'world-restore.json').write_text(json.dumps(receipt,indent=2)+'\n')
+        except Exception as exc:failures.append('world restoration: '+repr(exc))
+        if failures:
+            (out/'cleanup-failures.json').write_text(json.dumps(failures,indent=2)+'\n')
+            raise RuntimeError('Cleanup/restoration failed: '+'; '.join(failures))
+    # A complete acquisition with an incomplete maneuver is still analyzable.
 
 
 if __name__ == '__main__':

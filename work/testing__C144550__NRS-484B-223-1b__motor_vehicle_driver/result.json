@@ -1,22 +1,54 @@
 {
   "assignment_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver",
   "input_sha256": "a973f99e419086654c96af503b0a511b38da9c45946c57071dedba88ac14604f",
-  "status": "ready",
+  "status": "partial",
   "readiness_kind": "capability",
-  "applied_update": 4,
+  "applied_update": 5,
   "tests": [
     {
-      "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__attempt_0 --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/.runtime-work/part01-v5-C144550-0",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__attempt_0 --output .runtime-work/p01-005c-offline-NRS-484B-223-1b-0",
       "exit_code": 0,
-      "log": "tests/offline-0.log",
-      "sha256": "69f30920cb4c86824176fa1880cab5e737bbcaf7969ebc25c083c34776e38971"
+      "log": "tests/update005-offline-0.log",
+      "sha256": "49621bc8ee9ab4d25b3d2d747c19c5e39d92a250c65da87e7f4666f39f638747"
     },
     {
-      "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__attempt_1 --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/.runtime-work/part01-v5-C144550-1",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__attempt_1 --output .runtime-work/p01-005c-offline-NRS-484B-223-1b-1",
       "exit_code": 0,
-      "log": "tests/offline-1.log",
-      "sha256": "8dace96235e4bb49576acb9677be5c07f05de8ac5f8912ebeaa2ca529fb797fe"
+      "log": "tests/update005-offline-1.log",
+      "sha256": "6b71ae587bbaa79959ec96b330486b24cccc10981810c322176aa19c310c3ea7"
     }
   ],
-  "physical_acceptance": false
+  "physical_acceptance": false,
+  "reason": "Frozen main runtime has no canonical ontology/converter support for mandatory drv.distance_while, drv.lane_change, drv.lane_change_feasible, drv.laned_roadway, drv.time_to_conflict. No atom/channel was deleted or renamed; package compatibility stops at required_coverage after real bundled analysis/native validation. Operator-owned physical checks remain unresolved.",
+  "compatibility_attempts": [
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__attempt_0",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__attempt_0 --fixture work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p01-005c-compatibility-NRS-484B-223-1b-0 --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder005/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "tests/update005-compat-0.log",
+      "sha256": "d90cfeab24f33463bd3d8b90a4c74ec997c65aa44c29409b044fe374bab2f963",
+      "failure": "ValueError: Unknown required atom: drv.distance_while"
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__attempt_1",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__attempt_1 --fixture work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p01-005c-compatibility-NRS-484B-223-1b-1 --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder005/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "tests/update005-compat-1.log",
+      "sha256": "ec707d5022892df1c838e46a7f7a9d289c2e1b9f726846740dcbfe672c7c8bf0",
+      "failure": "ValueError: Unknown required atom: drv.distance_while"
+    }
+  ],
+  "unsupported_mandatory_atoms": [
+    "drv.distance_while",
+    "drv.lane_change",
+    "drv.lane_change_feasible",
+    "drv.laned_roadway",
+    "drv.time_to_conflict"
+  ],
+  "unresolved_physical_checks": [
+    "actual target motion and duration",
+    "camera visibility and frame quality",
+    "native device/map geometry under simulation",
+    "physical cause and statutory/qualitative interpretation"
+  ]
 }

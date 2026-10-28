@@ -13,6 +13,7 @@ for parent in pathlib.Path(__file__).resolve().parents:
         sys.path.insert(0,str(supplied))
         break
 from worker_exchange.media import audit as audit_source_video
+from worker_exchange.native_output import write_result
 
 
 def native_result(attempt,report):
@@ -192,4 +193,4 @@ if __name__=='__main__':
     attempt=pathlib.Path(a.attempt)
     report=analyze(attempt)
     pathlib.Path(a.output).write_text(json.dumps(report,indent=2)+'\n')
-    (attempt/'result.json').write_text(json.dumps(native_result(attempt,report),indent=2)+'\n')
+    write_result(attempt,native_result(attempt,report))

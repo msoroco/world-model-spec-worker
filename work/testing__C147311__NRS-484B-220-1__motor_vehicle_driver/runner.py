@@ -57,9 +57,16 @@ def control(carla, ego, points, target_speed):
                                 steer=max(-1, min(1, 1.5*error))), index
 
 
+def append_frame_map(writer, frame, time_s, source_frames):
+    """Write the original sensor/source identity at the same recorded tick."""
+    return writer.append(frame, time_s, source_frames=source_frames)
+
+
 def run(args):
     import carla  # live path only
     from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap
+    from worker_exchange.world_restore import snapshot, restore
     cfg = config()
     case = cfg['case']
     path = route(case)
@@ -73,10 +80,7 @@ def run(args):
     client.set_timeout(90)
     if client.get_client_version() != client.get_server_version():
         raise RuntimeError('CARLA client/server version mismatch')
-    old_world = client.get_world()
-    old_map = old_world.get_map().name
-    old_settings = old_world.get_settings()
-    old_weather = old_world.get_weather()
+    saved_world = snapshot(client)
     world = None
     actors, cameras, encoders = [], [], []
     channels = {}
@@ -128,7 +132,7 @@ def run(args):
                     for c in case['recording_description']['channels']}
         (output / 'context.json').write_text(json.dumps(cfg['authored_test_context'], indent=2) + '\n')
         start = world.get_snapshot().timestamp.elapsed_seconds
-        with (output / 'physical_samples.jsonl').open('x') as raw, (output / 'video_frames.jsonl').open('x') as mapping:
+        with (output / 'physical_samples.jsonl').open('x') as raw, FrameMap(output / 'video_frames.jsonl') as mapping:
             for i in range(cfg['max_ticks']):
                 request, index = control(carla, ego, path, 8)
                 ego.apply_control(request)
@@ -155,8 +159,7 @@ def run(args):
                     source_frames[str(sensor.id)] = {'native_frame': image.frame,
                         'source_bgra_sha256': hashlib.sha256(pixels).hexdigest(),
                         'width': image.width, 'height': image.height}
-                mapping.write(json.dumps({'video_frame': i, 'native_frame': frame, 'time_s': now,
-                                          'source_frames': source_frames}) + '\n')
+                append_frame_map(mapping, frame, now, source_frames)
                 count += 1
                 if index >= len(path)-2 and row['speed_mps'] < 2:
                     completed = True
@@ -164,23 +167,32 @@ def run(args):
     except BaseException as exc:
         error = repr(exc)
     finally:
-        for stream in channels.values():
-            stream.close()
+        cleanup_errors = []
+        def finish(name, action):
+            try:
+                action()
+            except BaseException as exc:
+                cleanup_errors.append({'action': name, 'error': repr(exc)})
+        for name, stream in channels.items():
+            finish('channel:' + name, stream.close)
         if 'evidence_reader' in locals():
-            evidence_reader.close()
+            finish('evidence_reader', evidence_reader.close)
         if capture:
-            capture.close(confirmed=completed and error is None)
-        for encoder, log in encoders:
-            encoder.stdin.close()
-            encoder.wait(timeout=120)
-            log.close()
+            finish('capture', lambda: capture.close(confirmed=completed and error is None))
+        for index, (encoder, log) in enumerate(encoders):
+            finish('encoder_stdin:%d' % index, encoder.stdin.close)
+            finish('encoder_wait:%d' % index, lambda encoder=encoder: encoder.wait(timeout=120))
+            finish('encoder_log:%d' % index, log.close)
         for actor in reversed(actors):
-            actor.destroy()
+            finish('actor:%s' % actor.id, actor.destroy)
         if world is not None:
-            client.load_world(old_map)
-            restored = client.get_world()
-            restored.apply_settings(old_settings)
-            restored.set_weather(old_weather)
+            def restore_world():
+                receipt = restore(client, saved_world)
+                (output / 'world-restoration.json').write_text(json.dumps(receipt, indent=2) + '\n')
+            finish('world_restore', restore_world)
+        if cleanup_errors:
+            (output / 'cleanup-errors.json').write_text(json.dumps(cleanup_errors, indent=2) + '\n')
+            error = (error + '; ' if error else '') + 'cleanup/restoration failed: ' + repr(cleanup_errors)
     (output / 'capability-run.json').write_text(json.dumps({'case_id': case['case_id'],
         'recorded_frames': count, 'route_completed': completed, 'error': error,
         'physical_acceptance': False, 'unverified': ['native sign rendering and governance',

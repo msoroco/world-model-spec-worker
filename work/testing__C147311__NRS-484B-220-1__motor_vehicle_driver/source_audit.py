@@ -26,15 +26,16 @@ def audit_sources(attempt,cfg,rows,right_lamp_roi=None):
     count=len(rows)
     if not count or any(len(series)!=count for series in (mapping,trace,evidence)):
         raise ValueError('Original sample, trace, evidence and frame-map counts differ')
+    diagnostic = (attempt/'fixture-provenance.json').is_file() and (attempt/'raw.mkv').is_file() and not (attempt/'view0.mkv').exists()
     for i,(sample,mapped,state,event) in enumerate(zip(rows,mapping,trace,evidence)):
         frame=sample['frame']
-        if (mapped['video_frame']!=i or mapped['native_frame']!=frame or state['frame']!=frame or
+        if (mapped['video_frame']!=i or mapped['native_frame']!=frame or mapped.get('carla_frame')!=frame or state['frame']!=frame or
                 event['original_frame']!=frame or abs(mapped['time_s']-sample['time_s'])>1e-6 or
                 abs(state['time_s']-sample['time_s'])>1e-6 or
                 abs(event['recording_time_s']-sample['time_s'])>1e-6):
             raise ValueError('Original frame/time join differs at index %d'%i)
         source_frames=mapped.get('source_frames',{})
-        if len(source_frames)!=4:
+        if not diagnostic and len(source_frames)!=4:
             raise ValueError('Four original camera frame hashes required')
         for metadata in source_frames.values():
             if metadata.get('native_frame')!=frame or len(metadata.get('source_bgra_sha256',''))!=64:
@@ -51,13 +52,14 @@ def audit_sources(attempt,cfg,rows,right_lamp_roi=None):
                 raise ValueError('Mandatory channel original-evidence join differs: '+name)
     mapping_sha=sha(mapping_path)
     audits=[];roi_levels=None
-    for i,spec in enumerate(cfg['cameras']):
-        video=attempt/('view%d.mkv'%i)
+    camera_specs = [(0, cfg['cameras'][0])] if diagnostic else list(enumerate(cfg['cameras']))
+    for i,spec in camera_specs:
+        video=attempt/'raw.mkv' if diagnostic else attempt/('view%d.mkv'%i)
         receipt=attempt/('view%d.source-audit.json'%i)
         checkers={}
         levels=[]
         roi_path=attempt/'right-lamp-roi-measurements.json'
-        if i==0 and right_lamp_roi is not None:
+        if i==0 and right_lamp_roi is not None and not diagnostic:
             x,y,w,h=right_lamp_roi
             checker_version=hashlib.sha256(json.dumps({'source_audit_sha256':sha(Path(__file__)),
                 'roi_px':right_lamp_roi},sort_keys=True).encode()).hexdigest()
@@ -74,9 +76,9 @@ def audit_sources(attempt,cfg,rows,right_lamp_roi=None):
                 levels.append(total/(w*h*3))
             checkers={'right_lamp_roi_brightness':(checker_version,check_roi)}
         result=media_audit(video,count,checkers=checkers,mapping_sha256=mapping_sha,receipt=receipt)
-        if result['dimensions']!=[spec['width'],spec['height']]:
+        if not diagnostic and result['dimensions']!=[spec['width'],spec['height']]:
             raise ValueError('Original source camera dimensions differ')
-        if i==0 and right_lamp_roi is not None:
+        if i==0 and right_lamp_roi is not None and not diagnostic:
             if levels:
                 if len(levels)!=count:raise ValueError('Right-lamp pixel checker count differs')
                 roi_path.write_text(json.dumps({'video_sha256':result['video_sha256'],
@@ -90,5 +92,7 @@ def audit_sources(attempt,cfg,rows,right_lamp_roi=None):
         audits.append({'video':video.name,'receipt':receipt.name,
             'video_sha256':result['video_sha256'],'decoded_frames':result['frames'],
             'rgb_sequence_sha256':result['rgb_sequence_sha256']})
+    if diagnostic and right_lamp_roi is not None:
+        roi_levels = []  # Diagnostic source has no matching live-camera ROI.
     return {'source_audits':audits,'right_lamp_roi_levels':roi_levels,
             'joined_original_frames':count,'mapping_sha256':mapping_sha}

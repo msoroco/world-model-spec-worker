@@ -1,22 +1,53 @@
 {
   "assignment_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver",
   "input_sha256": "1cd262e8813355e7cf2fdec83b720010d29f6460001f8701400661b34166b1f7",
-  "status": "ready",
+  "status": "partial",
   "readiness_kind": "capability",
-  "applied_update": 4,
+  "applied_update": 5,
   "tests": [
     {
-      "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__attempt_0 --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/.runtime-work/part01-v5-C331230-0",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__attempt_0 --output .runtime-work/p01-005c-offline-NRS-484A-450-2-0",
       "exit_code": 0,
-      "log": "tests/offline-0.log",
-      "sha256": "126c9bcb7f4f57a12e8cb44b976d687b3db1a34e4ffcf87c88a923ac3308a809"
+      "log": "tests/update005-offline-0.log",
+      "sha256": "7020eb1fc3be758b88b215f647285116f63f9c2be53bc36612e7f93288bafc7d"
     },
     {
-      "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__attempt_1 --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/.runtime-work/part01-v5-C331230-1",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__attempt_1 --output .runtime-work/p01-005c-offline-NRS-484A-450-2-1",
       "exit_code": 0,
-      "log": "tests/offline-1.log",
-      "sha256": "d7ede2125dd84dd480eefe18a688db32ff88013d03a141b0cc1d41783a33d623"
+      "log": "tests/update005-offline-1.log",
+      "sha256": "5197127fa01bc2e5804dce225486a57fdfee3108349582f00eb11bc38150035e"
     }
   ],
-  "physical_acceptance": false
+  "physical_acceptance": false,
+  "reason": "Frozen main runtime has no canonical ontology/converter support for mandatory drv.approaching, drv.crossing_line, drv.entering_intersection, drv.stopped. No atom/channel was deleted or renamed; package compatibility stops at required_coverage after real bundled analysis/native validation. Operator-owned physical checks remain unresolved.",
+  "compatibility_attempts": [
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__attempt_0",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__attempt_0 --fixture work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p01-005c-compatibility-NRS-484A-450-2-0 --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder005/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "tests/update005-compat-0.log",
+      "sha256": "5e7caac77db34b32e1714ea9c0e46071f2cc8b43b3b11b9a9582b3b00ffc0c58",
+      "failure": "ValueError: Unknown required atom: drv.approaching"
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__attempt_1",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__attempt_1 --fixture work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p01-005c-compatibility-NRS-484A-450-2-1 --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder005/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "tests/update005-compat-1.log",
+      "sha256": "f40065cbce0849f15c189e92590d57a727a56147d44592cc9f523d87296e8c8a",
+      "failure": "ValueError: Unknown required atom: drv.approaching"
+    }
+  ],
+  "unsupported_mandatory_atoms": [
+    "drv.approaching",
+    "drv.crossing_line",
+    "drv.entering_intersection",
+    "drv.stopped"
+  ],
+  "unresolved_physical_checks": [
+    "actual target motion and duration",
+    "camera visibility and frame quality",
+    "native device/map geometry under simulation",
+    "physical cause and statutory/qualitative interpretation"
+  ]
 }

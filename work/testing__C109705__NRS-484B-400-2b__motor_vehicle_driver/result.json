@@ -1,22 +1,51 @@
 {
   "assignment_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver",
   "input_sha256": "12a55e947736273fa21ef291ff82e69742d89547c2d39bc745aa8ef83582dfbc",
-  "status": "ready",
+  "status": "partial",
   "readiness_kind": "capability",
-  "applied_update": 4,
+  "applied_update": 5,
   "tests": [
     {
-      "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__attempt_0 --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/.runtime-work/part01-v5-C109705-0",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__attempt_0 --output .runtime-work/p01-005c-offline-NRS-484B-400-2b-0",
       "exit_code": 0,
-      "log": "tests/offline-0.log",
-      "sha256": "aef88151c87ed98f6520ef9cbb6aaeb8862250c49c178a75dd202608de04205f"
+      "log": "tests/update005-offline-0.log",
+      "sha256": "b0bf4484cac77a1006b9f35bcaac183ae4879c098186b9ab5523670bab2f2434"
     },
     {
-      "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__attempt_1 --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial3/.runtime-work/part01-v5-C109705-1",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__attempt_1 --output .runtime-work/p01-005c-offline-NRS-484B-400-2b-1",
       "exit_code": 0,
-      "log": "tests/offline-1.log",
-      "sha256": "1be0ef78afcaa7633605f82cf1bdddadd1eadf1cc2a883fab40a4f72ca5d235b"
+      "log": "tests/update005-offline-1.log",
+      "sha256": "04f93f5bbc81aced54ad284b6b5d503036d65227ac989592a37d8c09dd2b1b89"
     }
   ],
-  "physical_acceptance": false
+  "physical_acceptance": false,
+  "reason": "Frozen main runtime has no canonical ontology/converter support for mandatory drv.in_intersection, drv.turning. No atom/channel was deleted or renamed; package compatibility stops at required_coverage after real bundled analysis/native validation. Operator-owned physical checks remain unresolved.",
+  "compatibility_attempts": [
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__attempt_0",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__attempt_0 --fixture work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p01-005c-compatibility-NRS-484B-400-2b-0 --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder005/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "tests/update005-compat-0.log",
+      "sha256": "4a177d80f3739d9de870c4bca97a58bd0f69fff533d603dc49dce25c01e3ecb1",
+      "failure": "ValueError: Unknown required atom: drv.in_intersection"
+    },
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__attempt_1",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__attempt_1 --fixture work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p01-005c-compatibility-NRS-484B-400-2b-1 --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder005/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "tests/update005-compat-1.log",
+      "sha256": "f3f5e0c92c8b7b1e9041af45c07ce80cb5e7ecd85a0d916641f263f6550fd332",
+      "failure": "ValueError: Unknown required atom: drv.in_intersection"
+    }
+  ],
+  "unsupported_mandatory_atoms": [
+    "drv.in_intersection",
+    "drv.turning"
+  ],
+  "unresolved_physical_checks": [
+    "actual target motion and duration",
+    "camera visibility and frame quality",
+    "native device/map geometry under simulation",
+    "physical cause and statutory/qualitative interpretation"
+  ]
 }
