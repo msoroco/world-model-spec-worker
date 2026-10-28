@@ -1,0 +1,67 @@
+{
+  "assignment_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver",
+  "input_sha256": "93593c6f937c9502428ea054593f9b0973ed0ab66e30caadc2dab51201a27038",
+  "status": "ready",
+  "readiness_kind": "capability",
+  "applied_update": 1,
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m worker_exchange.atom_preflight --runtime runtime/main-pipeline-v1 --config .runtime-work/p2-final-preflight/testing__C125714__NRS-484B-250-1__motor_vehicle_driver__prior_entry_yield.json",
+      "exit_code": 0,
+      "log": "tests/prior_entry_yield.preflight.log",
+      "sha256": "1e6ca628286936aeb99cad78a4c9caa613a59a35c852ec9beb92fa4771c1ab1b"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__prior_entry_yield --output .runtime-work/p2-final-v2/prior_entry_yield-testing__C125714__NRS-484B-250-1__motor_vehicle_driver-offline",
+      "exit_code": 0,
+      "log": "tests/prior_entry_yield.offline.log",
+      "sha256": "cbe0a41c1a504c370aa857990fcf0dc4c1ef7a8a486424fcfacf09a03cf92674"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m worker_exchange.atom_preflight --runtime runtime/main-pipeline-v1 --config .runtime-work/p2-final-preflight/testing__C125714__NRS-484B-250-1__motor_vehicle_driver__prior_entry_no_yield.json",
+      "exit_code": 0,
+      "log": "tests/prior_entry_no_yield.preflight.log",
+      "sha256": "53779eab083a93541c41f50a0125b7f69421762930d1d920303971a33fe6c24b"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__prior_entry_no_yield --output .runtime-work/p2-final-v2/prior_entry_no_yield-testing__C125714__NRS-484B-250-1__motor_vehicle_driver-offline",
+      "exit_code": 0,
+      "log": "tests/prior_entry_no_yield.offline.log",
+      "sha256": "b51398b7bb4f7c4d519b09695a439166fe54dd66de9e0979e48ab2dffd0e9d08"
+    },
+    {
+      "command": "PYTHONPATH=runtime/main-pipeline-v1/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/tests -p test_package.py -v",
+      "exit_code": 0,
+      "log": "tests/package-unit.log",
+      "sha256": "26c6ebf4a6c7aa21296f26d7a796220b990a0ca8b6b76c864ce09fc5af79e3de"
+    }
+  ],
+  "compatibility_attempts": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__prior_entry_yield --fixture work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p2-final-v2/prior_entry_yield-testing__C125714__NRS-484B-250-1__motor_vehicle_driver-compat --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-v3/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "tests/prior_entry_yield.compatibility.log",
+      "sha256": "297d8e1ef25e3eecffbc1ee45f6f5483cc63852281e02eed98225abf6d02a350",
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__prior_entry_yield",
+      "receipt": "compatibility/prior_entry_yield.json",
+      "receipt_sha256": "297d8e1ef25e3eecffbc1ee45f6f5483cc63852281e02eed98225abf6d02a350"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__prior_entry_no_yield --fixture work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p2-final-v2/prior_entry_no_yield-testing__C125714__NRS-484B-250-1__motor_vehicle_driver-compat --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-v3/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "tests/prior_entry_no_yield.compatibility.log",
+      "sha256": "e888989e4d0dbf726ac35225c44e2d598561d1b3a3984fcd26c933c7a1956fab",
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__prior_entry_no_yield",
+      "receipt": "compatibility/prior_entry_no_yield.json",
+      "receipt_sha256": "e888989e4d0dbf726ac35225c44e2d598561d1b3a3984fcd26c933c7a1956fab"
+    }
+  ],
+  "physical_acceptance": false,
+  "reason": "All exact cases pass pinned preflight, offline and full compatibility. Native incoming-lane and device-governance inventory needs closed original execution; legal precedence and subsection-4 qualification remain unjudged. Physical measurements and legal judgment remain open.",
+  "unresolved_physical_checks": [
+    "Native incoming-lane and device-governance inventory needs closed original execution; legal precedence and subsection-4 qualification remain unjudged.",
+    "Original CARLA route and full vehicle-body geometry",
+    "Four-view source pixels, framing and full event duration",
+    "Synthetic public-way or device authority status; no administrative confirmation"
+  ]
+}

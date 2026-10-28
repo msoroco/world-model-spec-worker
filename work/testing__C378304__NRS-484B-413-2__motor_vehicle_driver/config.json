@@ -1,0 +1,226 @@
+{
+  "law_id": "NRS-484B-413-2",
+  "cell_id": "C378304",
+  "actor": "motor_vehicle_driver",
+  "mode": "signal",
+  "supported_case_ids": [
+    "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__onset_090ft",
+    "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__onset_100ft",
+    "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__onset_110ft"
+  ],
+  "source_terms": [
+    "sig.turn_indicator",
+    "sig.hand_signal",
+    "drv.distance_while",
+    "kin.path_length",
+    "drv.turning",
+    "drv.lane_change",
+    "env.precipitation",
+    "kin.speed"
+  ],
+  "required_atoms": [
+    "kin.position",
+    "kin.heading",
+    "kin.speed"
+  ],
+  "authored_test_context": {
+    "public_highway_provenance": "Synthetic authored assumption, no administrative record",
+    "public_way_road_ids": [
+      1,
+      2,
+      3,
+      4,
+      13
+    ],
+    "source_law": "NRS-484B-413-2",
+    "exception_and_authority_status": "unverified"
+  },
+  "public_way_road_ids": [],
+  "max_ticks": 1600,
+  "target_speed_mps": 5.0,
+  "other_speed_mps": 5.0,
+  "cameras": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "x": -8,
+      "y": 0,
+      "z": 35,
+      "pitch": -80,
+      "yaw": 0
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": 2,
+      "y": 0,
+      "z": 4,
+      "pitch": -10,
+      "yaw": 0
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": -4,
+      "y": -8,
+      "z": 5,
+      "pitch": -12,
+      "yaw": 25
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": 7,
+      "y": -3,
+      "z": 8,
+      "pitch": -35,
+      "yaw": 90
+    }
+  ],
+  "divider": {
+    "opening_x_m": [
+      -12,
+      12
+    ],
+    "barrier_ranges_x_m": [
+      [
+        -80,
+        -12
+      ],
+      [
+        12,
+        80
+      ]
+    ],
+    "roadway_centers_y_m": [
+      -8,
+      8
+    ]
+  },
+  "crossing": {
+    "highway_road_ids": [
+      1,
+      5
+    ],
+    "junction_id": 101,
+    "separate_intersection_distance_rule_m": 9.144
+  },
+  "case": {
+    "case_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__onset_090ft",
+    "target_law_id": "NRS-484B-413-2",
+    "target_type": "boundary_probe",
+    "rationale": "right indicator command begins 90, 100, or 110 ft before course change; measure original path and rendered lamp phases",
+    "variable_assignments": {
+      "signal_onset_ft": {
+        "value": 90.0,
+        "unit": "ft",
+        "kind": "controller"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Pinned Core sig.hand_signal path is absent; this package tests the right-indicator alternative and must measure actual lamp phase and district frontage in a native run.",
+      "No legal compliance label is assigned."
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.position",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original actor world XYZ each recorded tick",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native map",
+          "uncertainty": "finite original samples; physical and legal status unverified"
+        },
+        {
+          "name": "kin.heading",
+          "unit": "deg",
+          "sampling_rate_hz": 20,
+          "method": "original actor world yaw each recorded tick",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native map",
+          "uncertainty": "finite original samples; physical and legal status unverified"
+        },
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "original actor velocity norm each recorded tick",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native map",
+          "uncertainty": "finite original samples; physical and legal status unverified"
+        },
+        {
+          "name": "sig.turn_indicator",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original actor.get_light_state bitmask plus separately decoded RGB lamp phase",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native map",
+          "uncertainty": "finite original samples; physical and legal status unverified"
+        },
+        {
+          "name": "sig.hand_signal",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native map",
+          "uncertainty": "finite original samples; physical and legal status unverified"
+        },
+        {
+          "name": "drv.distance_while",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native map",
+          "uncertainty": "finite original samples; physical and legal status unverified"
+        },
+        {
+          "name": "kin.path_length",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "cumulative distance from original actor positions",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native map",
+          "uncertainty": "finite original samples; physical and legal status unverified"
+        },
+        {
+          "name": "drv.turning",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native map",
+          "uncertainty": "finite original samples; physical and legal status unverified"
+        },
+        {
+          "name": "drv.lane_change",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native map",
+          "uncertainty": "finite original samples; physical and legal status unverified"
+        },
+        {
+          "name": "env.precipitation",
+          "unit": "%",
+          "sampling_rate_hz": 20,
+          "method": "same-frame native world weather precipitation",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native map",
+          "uncertainty": "finite original samples; physical and legal status unverified"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Synthetic public-way/device authority needs external confirmation.",
+        "Diagnostic fixtures do not prove motion, duration, visibility, signal rendering or legal standards."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__onset_090ft",
+  "route_points": 321
+}

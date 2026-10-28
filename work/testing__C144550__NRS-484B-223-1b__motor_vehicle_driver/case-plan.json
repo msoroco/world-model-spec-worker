@@ -1,0 +1,276 @@
+{
+  "assignment_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C144550",
+  "law_id": "NRS-484B-223-1b",
+  "cases": [
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal_before",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Freeze one physical control setting and measure original source contrasts; no legal cutoff or label is selected.",
+      "variable_assignments": {
+        "signal_lead_m": {
+          "value": 15.0,
+          "unit": "m",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "If a highway has two or more clearly marked lanes for traffic traveling in one direction, vehicles must: Not be moved from that lane until the driver has given the appropriate turn signal and ascertained that such movement can be made with safety.",
+        "Public-way/device authority remains synthetic context."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original actor world XYZ",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original actor world yaw",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original actor velocity norm",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "source_observations",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original actors, body vertices, map and controls",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Three-frame software fixture does not demonstrate the assigned maneuver or device."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal_at_move",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Freeze one physical control setting and measure original source contrasts; no legal cutoff or label is selected.",
+      "variable_assignments": {
+        "signal_lead_m": {
+          "value": 0.0,
+          "unit": "m",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "If a highway has two or more clearly marked lanes for traffic traveling in one direction, vehicles must: Not be moved from that lane until the driver has given the appropriate turn signal and ascertained that such movement can be made with safety.",
+        "Public-way/device authority remains synthetic context."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original actor world XYZ",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original actor world yaw",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original actor velocity norm",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "source_observations",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original actors, body vertices, map and controls",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Three-frame software fixture does not demonstrate the assigned maneuver or device."
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal_before",
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal_at_move"
+      ],
+      "deliberate_differences": [
+        "signal_lead_m: 15.0 vs 0.0 m"
+      ],
+      "fixed_conditions": [
+        "same authored geometry",
+        "same actor blueprints",
+        "same cameras and speed controller"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "description": "original world position"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "description": "original yaw"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "description": "original velocity norm"
+    },
+    {
+      "name": "source_observations",
+      "mandatory": true,
+      "description": "same-frame native actor/map evidence"
+    }
+  ],
+  "source_observation_mapping": {
+    "drv.laned_roadway": {
+      "evidence": "native two-lane same-direction map inventory",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.lane": {
+      "evidence": "native lane IDs, widths, markings and projections",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "drv.lane_change": {
+      "evidence": "original lateral body trajectory across native lane divider",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "sig.turn_indicator": {
+      "evidence": "original VehicleLightState sampled before lateral movement",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "drv.distance_while": {
+      "evidence": "integrated original path distance during signal interval",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "drv.lane_change_feasible": {
+      "evidence": "original target-lane actor body gap and time to conflict",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "same-frame original actor body vertices and nearest separation",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "original subject/opposing position and velocity projection",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/assignment.json",
+      "sha256": "0ad60d3dbe4843161af6e7a4a5ef405bb61eab1d6acea68b369d8ae6d8b8e8c9"
+    },
+    {
+      "path": "runtime/main-pipeline-v1/SOURCE-MANIFEST.json",
+      "sha256": "29394143389568b6504810da51764c002cb8036d935d85c62e14ff891f14e04c"
+    },
+    {
+      "path": "skills/worker-preparation/SKILL.md",
+      "sha256": "739943ac54dd9a0ad1ab1395e9ee825b28838b63bec379f3a2e231326f07c990"
+    },
+    {
+      "path": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/scene.xodr",
+      "sha256": "f6dcd85cf932ac1b16708392555906020ad58d1d1b5896e99f18c678c89da371"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "actual scene/device existence and authority",
+    "physical controller outcome",
+    "source actor/body geometry",
+    "camera visibility/duration",
+    "synthetic public-way context"
+  ]
+}

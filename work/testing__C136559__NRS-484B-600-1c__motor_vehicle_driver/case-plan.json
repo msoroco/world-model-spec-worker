@@ -1,0 +1,259 @@
+{
+  "assignment_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C136559",
+  "law_id": "NRS-484B-600-1c",
+  "cases": [
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__below_sign",
+      "target_law_id": "NRS-484B-600-1c",
+      "target_type": "boundary_probe",
+      "rationale": "Freeze one control/context contrast and measure original source response; no legal cutoff is inferred.",
+      "variable_assignments": {
+        "target_speed_mps": {
+          "value": 12.0,
+          "unit": "m/s",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than that posted by a public authority for the particular portion of highway being traversed.",
+        "public-way/device/weather authority is synthetic or unverified"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original world XYZ",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original yaw",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original velocity norm",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "source_observations",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original actors, full body, native map, control/weather inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Three-frame straight-road diagnostic does not prove assigned phenomenon."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above_sign",
+      "target_law_id": "NRS-484B-600-1c",
+      "target_type": "boundary_probe",
+      "rationale": "Freeze one control/context contrast and measure original source response; no legal cutoff is inferred.",
+      "variable_assignments": {
+        "target_speed_mps": {
+          "value": 16.0,
+          "unit": "m/s",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than that posted by a public authority for the particular portion of highway being traversed.",
+        "public-way/device/weather authority is synthetic or unverified"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original world XYZ",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original yaw",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original velocity norm",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "source_observations",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original actors, full body, native map, control/weather inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Three-frame straight-road diagnostic does not prove assigned phenomenon."
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__below_sign",
+        "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above_sign"
+      ],
+      "deliberate_differences": [
+        "[{'target_speed_mps': {'value': 12.0, 'unit': 'm/s', 'kind': 'controller'}}, {'target_speed_mps': {'value': 16.0, 'unit': 'm/s', 'kind': 'controller'}}]"
+      ],
+      "fixed_conditions": [
+        "same authored road, actor blueprint, cameras and base controller"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "description": "original world XYZ"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "description": "original yaw"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "description": "original velocity norm"
+    },
+    {
+      "name": "source_observations",
+      "mandatory": true,
+      "description": "same-frame original actors, full body, native map, control/weather inventory"
+    }
+  ],
+  "source_observation_mapping": {
+    "dev.speed_limit_sign": {
+      "evidence": "authored OpenDRIVE sign and native landmark/render inventory",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "native speed sign type, road ID, signed-side orientation and s joined to original subject approach projection",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "drv.within_signed_zone": {
+      "evidence": "original same-frame subject road/s projection after governing sign road/s, with original speed history",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "original native actor speed at 20 Hz",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "original full body relative to signed road lane polygon",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "dev.position": {
+      "evidence": "native landmark s/t and original actor distance",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json",
+      "sha256": "4b9d9592d65c77b65f953f848301f383848ee7652f4d1d9aada7511f4776f3f2"
+    },
+    {
+      "path": "runtime/main-pipeline-v1/SOURCE-MANIFEST.json",
+      "sha256": "29394143389568b6504810da51764c002cb8036d935d85c62e14ff891f14e04c"
+    },
+    {
+      "path": "skills/worker-preparation/SKILL.md",
+      "sha256": "739943ac54dd9a0ad1ab1395e9ee825b28838b63bec379f3a2e231326f07c990"
+    },
+    {
+      "path": "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/scene.xodr",
+      "sha256": "85069b07d2d45b5eec8aeeca8ce075813abb7fdf336199d120da826a60da16e2"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "native sign/signal authority and phase",
+    "weather/ice or snow physical state",
+    "full actor/body physical motion and visibility",
+    "synthetic public-way context"
+  ]
+}

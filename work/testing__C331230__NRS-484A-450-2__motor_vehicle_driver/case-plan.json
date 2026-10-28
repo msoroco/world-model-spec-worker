@@ -1,0 +1,316 @@
+{
+  "assignment_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C331230",
+  "law_id": "NRS-484A-450-2",
+  "cases": [
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__one_second_stop",
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "rationale": "Freeze one physical control setting and measure original source contrasts; no legal cutoff or label is selected.",
+      "variable_assignments": {
+        "stop_duration_s": {
+          "value": 1.0,
+          "unit": "s",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Every driver of a vehicle approaching a stop intersection indicated by a stop sign shall stop before entering the crosswalk on the near side of the intersection or, if there is no crosswalk, shall stop at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway before entering the intersection.",
+        "Public-way/device authority remains synthetic context."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original actor world XYZ",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original actor world yaw",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original actor velocity norm",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "source_observations",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original actors, body vertices, map and controls",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Three-frame software fixture does not demonstrate the assigned maneuver or device."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_stop",
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "rationale": "Freeze one physical control setting and measure original source contrasts; no legal cutoff or label is selected.",
+      "variable_assignments": {
+        "stop_duration_s": {
+          "value": 0.0,
+          "unit": "s",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Every driver of a vehicle approaching a stop intersection indicated by a stop sign shall stop before entering the crosswalk on the near side of the intersection or, if there is no crosswalk, shall stop at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway before entering the intersection.",
+        "Public-way/device authority remains synthetic context."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original actor world XYZ",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original actor world yaw",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original actor velocity norm",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "source_observations",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original actors, body vertices, map and controls",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Three-frame software fixture does not demonstrate the assigned maneuver or device."
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__one_second_stop",
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_stop"
+      ],
+      "deliberate_differences": [
+        "stop_duration_s: 1.0 vs 0.0 s"
+      ],
+      "fixed_conditions": [
+        "same authored geometry",
+        "same actor blueprints",
+        "same cameras and speed controller"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "description": "original world position"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "description": "original yaw"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "description": "original velocity norm"
+    },
+    {
+      "name": "source_observations",
+      "mandatory": true,
+      "description": "same-frame native actor/map evidence"
+    }
+  ],
+  "source_observation_mapping": {
+    "dev.stop_sign": {
+      "evidence": "native sign landmark identity, authored asset and original rendered view",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "native stop landmark road ID, orientation, signed-side placement and s joined to original ego approach projection; authority still unverified",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "native incoming road links and lane projection",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "drv.approaching": {
+      "evidence": "original actor position and speed toward junction",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "native Map.get_crosswalks vertices joined to near-side approach corridor and full ego body stop boundary; visible marking still unverified",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.stop_line": {
+      "evidence": "native line inventory and original rendered view",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "native junction geometry and actor body overlap",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.sight_distance": {
+      "evidence": "original any-body ray/obstruction samples, not a named weather setting",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "rel.visible": {
+      "evidence": "same-frame target body rays and retained obstruction status",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "original speed history while full vehicle body lies before measured near-side native crosswalk boundary",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "drv.crossing_line": {
+      "evidence": "full original body front crossing native line geometry",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "original body/junction boundary entry bracket",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/assignment.json",
+      "sha256": "c4eecd2165ae377ce5b2beda322fa9a9b3f50fd957b0731e28d2e7b68a44453a"
+    },
+    {
+      "path": "runtime/main-pipeline-v1/SOURCE-MANIFEST.json",
+      "sha256": "29394143389568b6504810da51764c002cb8036d935d85c62e14ff891f14e04c"
+    },
+    {
+      "path": "skills/worker-preparation/SKILL.md",
+      "sha256": "739943ac54dd9a0ad1ab1395e9ee825b28838b63bec379f3a2e231326f07c990"
+    },
+    {
+      "path": "work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/scene.xodr",
+      "sha256": "264a948c7cbcada2a27d4e13c128287c1787b08f6d6e863ea07268e1a125f118"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "actual scene/device existence and authority",
+    "physical controller outcome",
+    "source actor/body geometry",
+    "camera visibility/duration",
+    "synthetic public-way context"
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "law_id": "NRS-484B-400-2a",
+  "cell_id": "C109705",
+  "actor": "motor_vehicle_driver",
+  "supported_case_ids": [
+    "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_center",
+    "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__far_from_center"
+  ],
+  "required_atoms": [
+    "kin.position",
+    "kin.heading",
+    "kin.speed"
+  ],
+  "authored_test_context": {
+    "public_way_road_ids": [
+      1,
+      2,
+      3,
+      4,
+      13
+    ],
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "public_highway_provenance": "Synthetic authoring only; no administrative dedication record in this worker",
+    "two_directional_authoring": "Each intersecting highway has signed left and right driving lanes; verify native direction and physical geometry."
+  },
+  "public_way_road_ids": [],
+  "target_speed_mps": 5.0,
+  "max_ticks": 500,
+  "cameras": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "x": -8,
+      "y": 0,
+      "z": 35,
+      "pitch": -80,
+      "yaw": 0
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": 2,
+      "y": 0,
+      "z": 4,
+      "pitch": -10,
+      "yaw": 0
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": -4,
+      "y": -8,
+      "z": 5,
+      "pitch": -12,
+      "yaw": 25
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": 7,
+      "y": -3,
+      "z": 8,
+      "pitch": -35,
+      "yaw": 90
+    }
+  ],
+  "case": {
+    "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_center",
+    "target_law_id": "NRS-484B-400-2a",
+    "target_type": "boundary_probe",
+    "rationale": "Freeze one approach lateral placement; measure original pose and compare with paired placement without declaring legal cutoff.",
+    "variable_assignments": {
+      "approach_lateral_m": {
+        "value": 1.75,
+        "unit": "m",
+        "kind": "controller"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "nearest the centerline has no selected statutory lateral threshold",
+      "public-highway status is synthetic context"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.position",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original actor world XYZ",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world / native OpenDRIVE",
+          "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+        },
+        {
+          "name": "kin.heading",
+          "unit": "deg",
+          "sampling_rate_hz": 20,
+          "method": "original actor world yaw",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world / native OpenDRIVE",
+          "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+        },
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "original actor velocity norm",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world / native OpenDRIVE",
+          "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+        },
+        {
+          "name": "road_geometry",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "native map projection, topology and map context",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world / native OpenDRIVE",
+          "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+        },
+        {
+          "name": "turn_history",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original pose, heading and route progress",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world / native OpenDRIVE",
+          "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "A diagnostic fixture cannot prove left-turn motion, physical right-half position, or camera legibility."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_center"
+}

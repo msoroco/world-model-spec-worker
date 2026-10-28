@@ -1,0 +1,129 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-307-6a",
+  "cell_id": "C158196",
+  "mode": "signal_amber",
+  "supported_case_ids": [
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__brake_before",
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__continue_through"
+  ],
+  "required_atoms": [
+    "kin.position",
+    "kin.heading",
+    "kin.speed"
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "public_highway_provenance": "synthetic authored setup, not jurisdictional proof",
+    "scenario": "Warning sequence on a compatible one-way-to-two-way approach"
+  },
+  "public_way_road_ids": [],
+  "target_speed_mps": 5.0,
+  "max_ticks": 500,
+  "route_last_index": 200,
+  "cameras": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "x": -8,
+      "y": 0,
+      "z": 35,
+      "pitch": -80,
+      "yaw": 0
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": 2,
+      "y": 0,
+      "z": 4,
+      "pitch": -10,
+      "yaw": 0
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": -4,
+      "y": -8,
+      "z": 5,
+      "pitch": -12,
+      "yaw": 25
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": 7,
+      "y": -3,
+      "z": 8,
+      "pitch": -35,
+      "yaw": 90
+    }
+  ],
+  "case": {
+    "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__brake_before",
+    "target_law_id": "NRS-484B-307-6a",
+    "target_type": "boundary_probe",
+    "rationale": "Freeze one control/context contrast and measure original source response; no legal cutoff is inferred.",
+    "variable_assignments": {
+      "stop_duration_s": {
+        "value": 1.0,
+        "unit": "s",
+        "kind": "controller"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Where the signal is a steady yellow signal alone: Vehicular traffic facing the signal is thereby warned that the related green movement is being terminated or that a steady red indication will be exhibited immediately thereafter, and such vehicular traffic must not enter the intersection when the red signal is exhibited.",
+      "public-way/device/weather authority is synthetic or unverified"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.position",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original world XYZ",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native OpenDRIVE",
+          "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+        },
+        {
+          "name": "kin.heading",
+          "unit": "deg",
+          "sampling_rate_hz": 20,
+          "method": "original yaw",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native OpenDRIVE",
+          "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+        },
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "original velocity norm",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native OpenDRIVE",
+          "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+        },
+        {
+          "name": "source_observations",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "same-frame original actors, full body, native map, control/weather inventory",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native OpenDRIVE",
+          "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Three-frame straight-road diagnostic does not prove assigned phenomenon."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__brake_before"
+}

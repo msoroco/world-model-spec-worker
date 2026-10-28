@@ -1,0 +1,575 @@
+{
+  "assignment_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C125714",
+  "law_id": "NRS-484B-250-1",
+  "cases": [
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__prior_entry_yield",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
+      "rationale": "same other-first entry with ego yield command versus no yield command",
+      "variable_assignments": {
+        "yield_command": {
+          "value": true,
+          "unit": "categorical",
+          "kind": "controller"
+        },
+        "ego_delay_s": {
+          "value": 1.2,
+          "unit": "s",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Native incoming-lane and device-governance inventory needs closed original execution; legal precedence and subsection-4 qualification remain unjudged.",
+        "No legal compliance label is assigned."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original actor world XYZ each recorded tick",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original actor world yaw each recorded tick",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original actor velocity norm each recorded tick",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame native map projection, topology and source actor/device inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame native map projection, topology and source actor/device inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame native map projection, topology and source actor/device inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "dev.stop_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame native map projection, topology and source actor/device inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "dev.yield_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame native map projection, topology and source actor/device inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-frame actor bodies, positions and source geometry",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic public-way/device authority needs external confirmation.",
+          "Diagnostic fixtures do not prove motion, duration, visibility, signal rendering or legal standards."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__prior_entry_no_yield",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
+      "rationale": "same other-first entry with ego yield command versus no yield command",
+      "variable_assignments": {
+        "yield_command": {
+          "value": false,
+          "unit": "categorical",
+          "kind": "controller"
+        },
+        "ego_delay_s": {
+          "value": 1.2,
+          "unit": "s",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Native incoming-lane and device-governance inventory needs closed original execution; legal precedence and subsection-4 qualification remain unjudged.",
+        "No legal compliance label is assigned."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original actor world XYZ each recorded tick",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original actor world yaw each recorded tick",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original actor velocity norm each recorded tick",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame native map projection, topology and source actor/device inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame native map projection, topology and source actor/device inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame native map projection, topology and source actor/device inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "dev.stop_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame native map projection, topology and source actor/device inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "dev.yield_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame native map projection, topology and source actor/device inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-frame actor bodies, positions and source geometry",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native map",
+            "uncertainty": "finite original samples; physical and legal status unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic public-way/device authority needs external confirmation.",
+          "Diagnostic fixtures do not prove motion, duration, visibility, signal rendering or legal standards."
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__prior_entry_yield",
+        "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__prior_entry_no_yield"
+      ],
+      "deliberate_differences": [
+        "same other-first entry with ego yield command versus no yield command"
+      ],
+      "fixed_conditions": [
+        "same authored geometry and public-way assumption",
+        "same vehicle blueprint and four cameras",
+        "same weather and source acquisition method"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "description": "original actor world XYZ each recorded tick"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "description": "original actor world yaw each recorded tick"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "description": "original actor velocity norm each recorded tick"
+    },
+    {
+      "name": "st.intersection",
+      "mandatory": true,
+      "description": "same-frame native map projection, topology and source actor/device inventory"
+    },
+    {
+      "name": "st.lane_enters",
+      "mandatory": true,
+      "description": "same-frame native map projection, topology and source actor/device inventory"
+    },
+    {
+      "name": "drv.approaching",
+      "mandatory": true,
+      "description": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved"
+    },
+    {
+      "name": "drv.entering_intersection",
+      "mandatory": true,
+      "description": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved"
+    },
+    {
+      "name": "drv.arrival_order",
+      "mandatory": true,
+      "description": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved"
+    },
+    {
+      "name": "drv.yields_to",
+      "mandatory": true,
+      "description": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved"
+    },
+    {
+      "name": "drv.in_intersection",
+      "mandatory": true,
+      "description": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved"
+    },
+    {
+      "name": "dev.traffic_signal",
+      "mandatory": true,
+      "description": "same-frame native map projection, topology and source actor/device inventory"
+    },
+    {
+      "name": "dev.stop_sign",
+      "mandatory": true,
+      "description": "same-frame native map projection, topology and source actor/device inventory"
+    },
+    {
+      "name": "dev.yield_sign",
+      "mandatory": true,
+      "description": "same-frame native map projection, topology and source actor/device inventory"
+    },
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "description": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved"
+    },
+    {
+      "name": "rel.oncoming",
+      "mandatory": true,
+      "description": "original same-frame actor bodies, positions and source geometry"
+    }
+  ],
+  "source_observation_mapping": {
+    "st.intersection": {
+      "evidence": "same-frame native map projection, topology and source actor/device inventory",
+      "channels": [
+        "st.intersection"
+      ],
+      "source_refs": [
+        "capture/evidence.jsonl",
+        "road.xodr"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "same-frame native map projection, topology and source actor/device inventory",
+      "channels": [
+        "st.lane_enters"
+      ],
+      "source_refs": [
+        "capture/evidence.jsonl",
+        "road.xodr"
+      ]
+    },
+    "drv.approaching": {
+      "evidence": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+      "channels": [
+        "drv.approaching"
+      ],
+      "source_refs": [
+        "capture/evidence.jsonl",
+        "road.xodr"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+      "channels": [
+        "drv.entering_intersection"
+      ],
+      "source_refs": [
+        "capture/evidence.jsonl",
+        "road.xodr"
+      ]
+    },
+    "drv.arrival_order": {
+      "evidence": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+      "channels": [
+        "drv.arrival_order"
+      ],
+      "source_refs": [
+        "capture/evidence.jsonl",
+        "road.xodr"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+      "channels": [
+        "drv.yields_to"
+      ],
+      "source_refs": [
+        "capture/evidence.jsonl",
+        "road.xodr"
+      ]
+    },
+    "drv.in_intersection": {
+      "evidence": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+      "channels": [
+        "drv.in_intersection"
+      ],
+      "source_refs": [
+        "capture/evidence.jsonl",
+        "road.xodr"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "same-frame native map projection, topology and source actor/device inventory",
+      "channels": [
+        "dev.traffic_signal"
+      ],
+      "source_refs": [
+        "capture/evidence.jsonl",
+        "road.xodr"
+      ]
+    },
+    "dev.stop_sign": {
+      "evidence": "same-frame native map projection, topology and source actor/device inventory",
+      "channels": [
+        "dev.stop_sign"
+      ],
+      "source_refs": [
+        "capture/evidence.jsonl",
+        "road.xodr"
+      ]
+    },
+    "dev.yield_sign": {
+      "evidence": "same-frame native map projection, topology and source actor/device inventory",
+      "channels": [
+        "dev.yield_sign"
+      ],
+      "source_refs": [
+        "capture/evidence.jsonl",
+        "road.xodr"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "original same-frame actor pose, control, path and counterpart state; legal decision unresolved",
+      "channels": [
+        "drv.turning"
+      ],
+      "source_refs": [
+        "capture/evidence.jsonl",
+        "road.xodr"
+      ]
+    },
+    "rel.oncoming": {
+      "evidence": "original same-frame actor bodies, positions and source geometry",
+      "channels": [
+        "rel.oncoming"
+      ],
+      "source_refs": [
+        "capture/evidence.jsonl",
+        "road.xodr"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+      "sha256": "93593c6f937c9502428ea054593f9b0973ed0ab66e30caadc2dab51201a27038"
+    },
+    {
+      "path": "runtime/main-pipeline-v1/SOURCE-MANIFEST.json",
+      "sha256": "29394143389568b6504810da51764c002cb8036d935d85c62e14ff891f14e04c"
+    },
+    {
+      "path": "skills/worker-preparation/SKILL.md",
+      "sha256": "739943ac54dd9a0ad1ab1395e9ee825b28838b63bec379f3a2e231326f07c990"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native incoming-lane and device-governance inventory needs closed original execution; legal precedence and subsection-4 qualification remain unjudged.",
+    "Native route, full-body position and four-view pixel visibility unverified",
+    "No CARLA execution or physical acceptance in this worker"
+  ]
+}

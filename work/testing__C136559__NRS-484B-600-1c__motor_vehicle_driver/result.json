@@ -1,0 +1,50 @@
+{
+  "assignment_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver",
+  "input_sha256": "4b9d9592d65c77b65f953f848301f383848ee7652f4d1d9aada7511f4776f3f2",
+  "status": "partial",
+  "readiness_kind": "capability",
+  "applied_update": 1,
+  "reason": "Original-frame speed is now joined to a native speed-limit sign on the subject approach by road, orientation, signed side and sign s. Rendered sign presence, jurisdictional authority and exact signed-zone extent remain unverified without a native run.",
+  "tests": [
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__below_sign",
+      "command": ".venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__below_sign --output .runtime-work/p04fix-testing__C136559__NRS-484B-600-1c__motor_vehicle_driver-below_sign-offline --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "tests/fix-below_sign.offline.log",
+      "sha256": "7d68c33bdd9cc64afd14df977986ab3d0716283a6d012a7cea0e534f9a6649e6"
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above_sign",
+      "command": ".venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above_sign --output .runtime-work/p04fix-testing__C136559__NRS-484B-600-1c__motor_vehicle_driver-above_sign-offline --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "tests/fix-above_sign.offline.log",
+      "sha256": "63e0dd85d6ba54c108006fbc5493999a27e3874968455cd379592a12ef0ad631"
+    }
+  ],
+  "compatibility_attempts": [
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__below_sign",
+      "command": ".venv-cpu/bin/python -m worker_exchange.runtime_cli compatibility --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__below_sign --fixture work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p04fix-testing__C136559__NRS-484B-600-1c__motor_vehicle_driver-below_sign-compat --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-v3/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "tests/fix-below_sign.compatibility-command.log",
+      "sha256": "b554295e29753a21ab06fd41f480a1e64c9652ef5b893877335c74506cd9a3e2",
+      "receipt": "compatibility/below_sign.json",
+      "receipt_sha256": "b554295e29753a21ab06fd41f480a1e64c9652ef5b893877335c74506cd9a3e2"
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above_sign",
+      "command": ".venv-cpu/bin/python -m worker_exchange.runtime_cli compatibility --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above_sign --fixture work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p04fix-testing__C136559__NRS-484B-600-1c__motor_vehicle_driver-above_sign-compat --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-v3/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "tests/fix-above_sign.compatibility-command.log",
+      "sha256": "c37cbe2e023a28b16755c4da1d6e32c693e81e32506867171af45cfdc58741ae",
+      "receipt": "compatibility/above_sign.json",
+      "receipt_sha256": "c37cbe2e023a28b16755c4da1d6e32c693e81e32506867171af45cfdc58741ae"
+    }
+  ],
+  "physical_acceptance": false,
+  "unresolved_physical_checks": [
+    "native speed-limit landmark and rendered sign identity",
+    "governing lane and signed-zone entry/exit along the original route",
+    "actual achieved speed inside the signed zone"
+  ]
+}

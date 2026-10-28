@@ -1,0 +1,276 @@
+{
+  "assignment_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C109705",
+  "law_id": "NRS-484B-400-2b",
+  "cases": [
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__right_exit",
+      "target_law_id": "NRS-484B-400-2b",
+      "target_type": "boundary_probe",
+      "rationale": "Freeze one physical control setting and measure original source contrasts; no legal cutoff or label is selected.",
+      "variable_assignments": {
+        "exit_right_offset_m": {
+          "value": 1.75,
+          "unit": "m",
+          "kind": "controller"
+        },
+        "approach_lateral_m": {
+          "value": 1.75,
+          "unit": "m",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "If the driver of a vehicle intends to turn at an intersection and: Both intersecting highways are two-directional: After entering the intersection, the left turn must be made so as to leave the intersection to the right of the centerline of the highway being entered.",
+        "Public-way/device authority remains synthetic context."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original actor world XYZ",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original actor world yaw",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original actor velocity norm",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "source_observations",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original actors, body vertices, map and controls",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Three-frame software fixture does not demonstrate the assigned maneuver or device."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__left_exit",
+      "target_law_id": "NRS-484B-400-2b",
+      "target_type": "boundary_probe",
+      "rationale": "Freeze one physical control setting and measure original source contrasts; no legal cutoff or label is selected.",
+      "variable_assignments": {
+        "exit_right_offset_m": {
+          "value": -1.75,
+          "unit": "m",
+          "kind": "controller"
+        },
+        "approach_lateral_m": {
+          "value": 1.75,
+          "unit": "m",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "If the driver of a vehicle intends to turn at an intersection and: Both intersecting highways are two-directional: After entering the intersection, the left turn must be made so as to leave the intersection to the right of the centerline of the highway being entered.",
+        "Public-way/device authority remains synthetic context."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original actor world XYZ",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original actor world yaw",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original actor velocity norm",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          },
+          {
+            "name": "source_observations",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original actors, body vertices, map and controls",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate remains for native measurement"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Three-frame software fixture does not demonstrate the assigned maneuver or device."
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__right_exit",
+        "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__left_exit"
+      ],
+      "deliberate_differences": [
+        "exit_right_offset_m: 1.75 vs -1.75 m"
+      ],
+      "fixed_conditions": [
+        "same authored geometry",
+        "same actor blueprints",
+        "same cameras and speed controller"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "description": "original world position"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "description": "original yaw"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "description": "original velocity norm"
+    },
+    {
+      "name": "source_observations",
+      "mandatory": true,
+      "description": "same-frame native actor/map evidence"
+    }
+  ],
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "original world pose and heading bracket the actual turn",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "drv.in_intersection": {
+      "evidence": "native junction box joined to full original actor body",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "authored center road mark and native lane geometry",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "full original actor body versus native roadway polygon",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "kin.position": {
+      "evidence": "original actor world XYZ each tick",
+      "channels": [
+        "kin.position"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "native map lane signed ID and topology",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "native incoming road links and lane projection",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json",
+      "sha256": "5f34824f9cf503308e0f7b14a9e3b07964f8dbd377b7e051bfb5ecd6998c5ea8"
+    },
+    {
+      "path": "runtime/main-pipeline-v1/SOURCE-MANIFEST.json",
+      "sha256": "29394143389568b6504810da51764c002cb8036d935d85c62e14ff891f14e04c"
+    },
+    {
+      "path": "skills/worker-preparation/SKILL.md",
+      "sha256": "739943ac54dd9a0ad1ab1395e9ee825b28838b63bec379f3a2e231326f07c990"
+    },
+    {
+      "path": "work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/scene.xodr",
+      "sha256": "5290e9c0c785f711fcf41e90dda8518a11545b551a0745dc3e87ee5ee77a252f"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "actual scene/device existence and authority",
+    "physical controller outcome",
+    "source actor/body geometry",
+    "camera visibility/duration",
+    "synthetic public-way context"
+  ]
+}

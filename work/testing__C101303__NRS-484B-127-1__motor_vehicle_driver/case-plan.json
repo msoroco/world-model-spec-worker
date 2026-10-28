@@ -1,0 +1,302 @@
+{
+  "assignment_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C101303",
+  "law_id": "NRS-484B-127-1",
+  "cases": [
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_gap_15",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "rationale": "Freeze one control/context contrast and measure original source response; no legal cutoff is inferred.",
+      "variable_assignments": {
+        "weather_surface": {
+          "value": "wet",
+          "unit": "label",
+          "kind": "context"
+        },
+        "commanded_gap_m": {
+          "value": 15.0,
+          "unit": "m",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "The driver of a vehicle shall not follow another vehicle more closely than is reasonable and prudent, having due regard for the speed of such vehicles and the traffic upon and the condition of the highway.",
+        "public-way/device/weather authority is synthetic or unverified"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original world XYZ",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original yaw",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original velocity norm",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "source_observations",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original actors, full body, native map, control/weather inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Three-frame straight-road diagnostic does not prove assigned phenomenon."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__ice_gap_30",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "rationale": "Freeze one control/context contrast and measure original source response; no legal cutoff is inferred.",
+      "variable_assignments": {
+        "weather_surface": {
+          "value": "ice_or_snow",
+          "unit": "label",
+          "kind": "context"
+        },
+        "commanded_gap_m": {
+          "value": 30.0,
+          "unit": "m",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "The driver of a vehicle shall not follow another vehicle more closely than is reasonable and prudent, having due regard for the speed of such vehicles and the traffic upon and the condition of the highway.",
+        "public-way/device/weather authority is synthetic or unverified"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original world XYZ",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original yaw",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original velocity norm",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "source_observations",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original actors, full body, native map, control/weather inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Three-frame straight-road diagnostic does not prove assigned phenomenon."
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_gap_15",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__ice_gap_30"
+      ],
+      "deliberate_differences": [
+        "[{'weather_surface': {'value': 'wet', 'unit': 'label', 'kind': 'context'}, 'commanded_gap_m': {'value': 15.0, 'unit': 'm', 'kind': 'controller'}}, {'weather_surface': {'value': 'ice_or_snow', 'unit': 'label', 'kind': 'context'}, 'commanded_gap_m': {'value': 30.0, 'unit': 'm', 'kind': 'controller'}}]"
+      ],
+      "fixed_conditions": [
+        "same authored road, actor blueprint, cameras and base controller"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "description": "original world XYZ"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "description": "original yaw"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "description": "original velocity norm"
+    },
+    {
+      "name": "source_observations",
+      "mandatory": true,
+      "description": "same-frame original actors, full body, native map, control/weather inventory"
+    }
+  ],
+  "source_observation_mapping": {
+    "drv.following": {
+      "evidence": "same-frame subject/leader pose, heading and full-body gap history",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "drv.time_gap": {
+      "evidence": "original body gap divided by observed relative motion, with censoring at zero closure",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "same-frame nearest original body separation",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "rel.ahead_behind_in_lane": {
+      "evidence": "native lane projection and same-direction actor order",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "original native actor speed at 20 Hz",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "env.wet_road": {
+      "evidence": "commanded weather plus original camera and native map surface evidence; physical wetness unverified",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "env.ice_or_snow": {
+      "evidence": "ice/snow capability explicitly absent from pinned Core and native fixture; retained unknown",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "drv.queue_behind": {
+      "evidence": "same-frame ordered actor and lane inventory",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "drv.hard_deceleration": {
+      "evidence": "original speed derivative with time sampling and controller brake input",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json",
+      "sha256": "8bb0e76a57f3fc333af027f9fecfda0c4cadc986ca0f5520dbd13553a3481b1d"
+    },
+    {
+      "path": "runtime/main-pipeline-v1/SOURCE-MANIFEST.json",
+      "sha256": "29394143389568b6504810da51764c002cb8036d935d85c62e14ff891f14e04c"
+    },
+    {
+      "path": "skills/worker-preparation/SKILL.md",
+      "sha256": "739943ac54dd9a0ad1ab1395e9ee825b28838b63bec379f3a2e231326f07c990"
+    },
+    {
+      "path": "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/scene.xodr",
+      "sha256": "f6dcd85cf932ac1b16708392555906020ad58d1d1b5896e99f18c678c89da371"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "native sign/signal authority and phase",
+    "weather/ice or snow physical state",
+    "full actor/body physical motion and visibility",
+    "synthetic public-way context"
+  ]
+}

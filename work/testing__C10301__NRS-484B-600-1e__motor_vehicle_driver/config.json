@@ -1,0 +1,128 @@
+{
+  "law_id": "NRS-484B-600-1e",
+  "cell_id": "C10301",
+  "actor": "motor_vehicle_driver",
+  "supported_case_ids": [
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below_80",
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__at_80",
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above_80"
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity",
+    "kin.position",
+    "ru.subject"
+  ],
+  "authored_test_context": {
+    "public_way_road_ids": [
+      1
+    ],
+    "public_vehicular_access": "synthetic authored assumption, not observed jurisdictional fact",
+    "layout": "650 m undivided two-way access corridor"
+  },
+  "controller": {
+    "speed_kp": 0.2
+  },
+  "max_ticks": 600,
+  "cameras": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "x": -8,
+      "y": 0,
+      "z": 30,
+      "pitch": -78,
+      "yaw": 0
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": 2,
+      "y": 0,
+      "z": 4,
+      "pitch": -10,
+      "yaw": 0
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": -4,
+      "y": -6,
+      "z": 5,
+      "pitch": -15,
+      "yaw": 25
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": 7,
+      "y": -2,
+      "z": 7,
+      "pitch": -32,
+      "yaw": 90
+    }
+  ],
+  "case": {
+    "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below_80",
+    "target_law_id": "NRS-484B-600-1e",
+    "target_type": "boundary_probe",
+    "rationale": "Freeze an exact commanded speed near the stated absolute 80 mph number; measure original maximum without assigning a legal verdict.",
+    "variable_assignments": {
+      "commanded_speed_mps": {
+        "value": 35.316159999999996,
+        "unit": "m/s",
+        "kind": "controller"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "synthetic public highway status",
+      "actual achievable speed and transient response"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "original actor velocity norm each recorded tick",
+          "time_window": "entire original run",
+          "reference_frame": "CARLA world",
+          "uncertainty": "20 Hz source sample and CARLA velocity telemetry"
+        },
+        {
+          "name": "kin.velocity",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "original actor native XYZ velocity vector each recorded tick",
+          "time_window": "entire original run",
+          "reference_frame": "CARLA world",
+          "uncertainty": "20 Hz source sample and CARLA velocity telemetry"
+        },
+        {
+          "name": "kin.position",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "original actor native XYZ position each recorded tick",
+          "time_window": "entire original run",
+          "reference_frame": "CARLA world",
+          "uncertainty": "20 Hz source sample and CARLA transform telemetry"
+        },
+        {
+          "name": "ru.subject",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "original actor ID, blueprint, and subject role at each recorded tick",
+          "time_window": "entire original run",
+          "reference_frame": "native actor inventory",
+          "uncertainty": "synthetic subject attribution must be checked at live capture"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Synthetic public vehicular access is an authored setup assumption.",
+        "Diagnostic fixtures are incomplete motion and cannot prove an 80 mph crossing."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below_80"
+}

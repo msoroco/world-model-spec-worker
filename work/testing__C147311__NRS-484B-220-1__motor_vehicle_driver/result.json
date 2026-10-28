@@ -1,0 +1,67 @@
+{
+  "assignment_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver",
+  "input_sha256": "eed6518b288ef23506f32073312666dd14de6e0857ee24a172c84dffd5ef6766",
+  "status": "partial",
+  "readiness_kind": "capability",
+  "applied_update": 1,
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m worker_exchange.atom_preflight --runtime runtime/main-pipeline-v1 --config .runtime-work/p2-final-preflight/testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated_direction.json",
+      "exit_code": 0,
+      "log": "tests/designated_direction.preflight.log",
+      "sha256": "8cfc0aa8cdcec634baaae1a49e8baab3bccd9ae12815e536046a2ded2b3aa353"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/execution-manifest.json --case testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated_direction --output .runtime-work/p2-final-v2/designated_direction-testing__C147311__NRS-484B-220-1__motor_vehicle_driver-offline",
+      "exit_code": 0,
+      "log": "tests/designated_direction.offline.log",
+      "sha256": "4c3c214324c231e275f9ef16791a28fe0f16d3a19ef325e7820ad58c07533cc9"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m worker_exchange.atom_preflight --runtime runtime/main-pipeline-v1 --config .runtime-work/p2-final-preflight/testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposite_direction.json",
+      "exit_code": 0,
+      "log": "tests/opposite_direction.preflight.log",
+      "sha256": "c14ba5dd33e55c3a1f4dc68d99c9e880b3a31c945618f7020180f6dbab354fda"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/execution-manifest.json --case testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposite_direction --output .runtime-work/p2-final-v2/opposite_direction-testing__C147311__NRS-484B-220-1__motor_vehicle_driver-offline",
+      "exit_code": 0,
+      "log": "tests/opposite_direction.offline.log",
+      "sha256": "768b648b885eb99bc85bf66f6f088be9ddd21b12294dbd5bbc4c440a6e71d359"
+    },
+    {
+      "command": "PYTHONPATH=runtime/main-pipeline-v1/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/tests -p test_package.py -v",
+      "exit_code": 0,
+      "log": "tests/package-unit.log",
+      "sha256": "f03bfcceff203671909be6ba8959c378d3ac1a0edffb4362a1e407f8c0cd65b2"
+    }
+  ],
+  "compatibility_attempts": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/execution-manifest.json --case testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated_direction --fixture work/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p2-final-v2/designated_direction-testing__C147311__NRS-484B-220-1__motor_vehicle_driver-compat --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-v3/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "tests/designated_direction.compatibility.log",
+      "sha256": "bdf62965346b52cf1a35a092ade97fd28fc69551ee5dbc606b9294b39959690b",
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated_direction",
+      "receipt": "compatibility/designated_direction.json",
+      "receipt_sha256": "bdf62965346b52cf1a35a092ade97fd28fc69551ee5dbc606b9294b39959690b"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/execution-manifest.json --case testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposite_direction --fixture work/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p2-final-v2/opposite_direction-testing__C147311__NRS-484B-220-1__motor_vehicle_driver-compat --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-v3/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "tests/opposite_direction.compatibility.log",
+      "sha256": "4478153f6f325e11338ab710aa5a6eda358240187bcced72900489ef2959a87b",
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposite_direction",
+      "receipt": "compatibility/opposite_direction.json",
+      "receipt_sha256": "4478153f6f325e11338ab710aa5a6eda358240187bcced72900489ef2959a87b"
+    }
+  ],
+  "physical_acceptance": false,
+  "reason": "All exact cases pass pinned preflight, offline and full compatibility. Pinned Core st.one_way_roadway and dev.regulatory_sign adapter paths are absent; sign authority and placement need native evidence. Physical measurements and legal judgment remain open.",
+  "unresolved_physical_checks": [
+    "Pinned Core st.one_way_roadway and dev.regulatory_sign adapter paths are absent; sign authority and placement need native evidence.",
+    "Original CARLA route and full vehicle-body geometry",
+    "Four-view source pixels, framing and full event duration",
+    "Synthetic public-way or device authority status; no administrative confirmation"
+  ]
+}

@@ -1,0 +1,5 @@
+# Pinned runtime selftest fixture repair proposal
+
+`runtime.py selftest --output .runtime-work/selftest-v3 --lake ...` completed retained capture conversion, Lean decoding, video rendering/decoding, and negative corrupt-fixture checks. Its final regression suite had 82 passes and two errors in `test_runtime_handoff.py`: `test_valid_manifest` and `test_local_manifest_bridge_uses_exact_stage`. Their temporary fake runtime supplies a `SOURCE-MANIFEST.json` but no `library/TrafficSpec/Core/Runtime/Decode.lean`; the newly pinned `execution_manifest.validate` calls `atom_preflight.check_required_atoms`, which requires a full Core library and raises `ValueError: Full TrafficSpec Core unavailable`.
+
+Upstream fixture repair: give those two temporary-runtime tests the pinned full Core library or replace only the atom-preflight dependency with a controlled fixture in the test. Keep production preflight and exact package checks unchanged. The frozen runtime in this return remains untouched. See `runtime-selftest.log` and `.runtime-work/selftest-v3/existing-regressions.log` in the local attempt directory.

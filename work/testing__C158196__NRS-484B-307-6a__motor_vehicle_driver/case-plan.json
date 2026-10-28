@@ -1,0 +1,292 @@
+{
+  "assignment_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C158196",
+  "law_id": "NRS-484B-307-6a",
+  "cases": [
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__brake_before",
+      "target_law_id": "NRS-484B-307-6a",
+      "target_type": "boundary_probe",
+      "rationale": "Freeze one control/context contrast and measure original source response; no legal cutoff is inferred.",
+      "variable_assignments": {
+        "stop_duration_s": {
+          "value": 1.0,
+          "unit": "s",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Where the signal is a steady yellow signal alone: Vehicular traffic facing the signal is thereby warned that the related green movement is being terminated or that a steady red indication will be exhibited immediately thereafter, and such vehicular traffic must not enter the intersection when the red signal is exhibited.",
+        "public-way/device/weather authority is synthetic or unverified"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original world XYZ",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original yaw",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original velocity norm",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "source_observations",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original actors, full body, native map, control/weather inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Three-frame straight-road diagnostic does not prove assigned phenomenon."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__continue_through",
+      "target_law_id": "NRS-484B-307-6a",
+      "target_type": "boundary_probe",
+      "rationale": "Freeze one control/context contrast and measure original source response; no legal cutoff is inferred.",
+      "variable_assignments": {
+        "stop_duration_s": {
+          "value": 0.0,
+          "unit": "s",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Where the signal is a steady yellow signal alone: Vehicular traffic facing the signal is thereby warned that the related green movement is being terminated or that a steady red indication will be exhibited immediately thereafter, and such vehicular traffic must not enter the intersection when the red signal is exhibited.",
+        "public-way/device/weather authority is synthetic or unverified"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original world XYZ",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original yaw",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original velocity norm",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          },
+          {
+            "name": "source_observations",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original actors, full body, native map, control/weather inventory",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world/native OpenDRIVE",
+            "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Three-frame straight-road diagnostic does not prove assigned phenomenon."
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__brake_before",
+        "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__continue_through"
+      ],
+      "deliberate_differences": [
+        "[{'stop_duration_s': {'value': 1.0, 'unit': 's', 'kind': 'controller'}}, {'stop_duration_s': {'value': 0.0, 'unit': 's', 'kind': 'controller'}}]"
+      ],
+      "fixed_conditions": [
+        "same authored road, actor blueprint, cameras and base controller"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "description": "original world XYZ"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "description": "original yaw"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "description": "original velocity norm"
+    },
+    {
+      "name": "source_observations",
+      "mandatory": true,
+      "description": "same-frame original actors, full body, native map, control/weather inventory"
+    }
+  ],
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "evidence": "authored signal, native signal actor state and original camera view",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "native signal landmark road/orientation and traffic-light affected lane road joined to original subject approach",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "native incoming road links and original lane projection",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "kin.time": {
+      "evidence": "original source timestamp and CARLA frame",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "original body/junction boundary entry time",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "native junction polygon and original full body",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "drv.crossing_line": {
+      "evidence": "original body front crossing native stop-line/crosswalk geometry",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "original native actor speed at 20 Hz",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    },
+    "drv.stopping_distance": {
+      "evidence": "original speed at observed green-to-yellow transition and native near-side crosswalk distance; engineering braking proxy only, legal sufficiency unresolved",
+      "channels": [
+        "source_observations"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "capture/evidence.jsonl",
+        "native-controls.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/assignment.json",
+      "sha256": "c1603963b382259f51ba0576f5c69afebbfa10214323c7ba72570eb7d76b15cb"
+    },
+    {
+      "path": "runtime/main-pipeline-v1/SOURCE-MANIFEST.json",
+      "sha256": "29394143389568b6504810da51764c002cb8036d935d85c62e14ff891f14e04c"
+    },
+    {
+      "path": "skills/worker-preparation/SKILL.md",
+      "sha256": "739943ac54dd9a0ad1ab1395e9ee825b28838b63bec379f3a2e231326f07c990"
+    },
+    {
+      "path": "work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/scene.xodr",
+      "sha256": "a27363610f6c506eb98bc088b59f1cbc063536f9fd6d27ee5b30c9971ddb51ba"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "native sign/signal authority and phase",
+    "weather/ice or snow physical state",
+    "full actor/body physical motion and visibility",
+    "synthetic public-way context"
+  ]
+}

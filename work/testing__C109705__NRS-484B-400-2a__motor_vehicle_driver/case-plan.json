@@ -1,0 +1,299 @@
+{
+  "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C109705",
+  "law_id": "NRS-484B-400-2a",
+  "cases": [
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_center",
+      "target_law_id": "NRS-484B-400-2a",
+      "target_type": "boundary_probe",
+      "rationale": "Freeze one approach lateral placement; measure original pose and compare with paired placement without declaring legal cutoff.",
+      "variable_assignments": {
+        "approach_lateral_m": {
+          "value": 1.75,
+          "unit": "m",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "nearest the centerline has no selected statutory lateral threshold",
+        "public-highway status is synthetic context"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original actor world XYZ",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original actor world yaw",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original actor velocity norm",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+          },
+          {
+            "name": "road_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "native map projection, topology and map context",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+          },
+          {
+            "name": "turn_history",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original pose, heading and route progress",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "A diagnostic fixture cannot prove left-turn motion, physical right-half position, or camera legibility."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__far_from_center",
+      "target_law_id": "NRS-484B-400-2a",
+      "target_type": "boundary_probe",
+      "rationale": "Freeze one approach lateral placement; measure original pose and compare with paired placement without declaring legal cutoff.",
+      "variable_assignments": {
+        "approach_lateral_m": {
+          "value": 5.25,
+          "unit": "m",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "nearest the centerline has no selected statutory lateral threshold",
+        "public-highway status is synthetic context"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original actor world XYZ",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original actor world yaw",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original actor velocity norm",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+          },
+          {
+            "name": "road_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "native map projection, topology and map context",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+          },
+          {
+            "name": "turn_history",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original pose, heading and route progress",
+            "time_window": "all original recorded ticks",
+            "reference_frame": "CARLA world / native OpenDRIVE",
+            "uncertainty": "native finite sampling; legal nearest-centerline boundary unresolved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "A diagnostic fixture cannot prove left-turn motion, physical right-half position, or camera legibility."
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_center",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__far_from_center"
+      ],
+      "deliberate_differences": [
+        "approach_lateral_m: 1.75 m versus 5.25 m"
+      ],
+      "fixed_conditions": [
+        "same two-directional authored junction",
+        "same vehicle blueprint",
+        "same commanded speed and cameras"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "description": "original actor world XYZ"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "description": "original actor world yaw"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "description": "original actor velocity norm"
+    },
+    {
+      "name": "road_geometry",
+      "mandatory": true,
+      "description": "native map projection, topology and map context"
+    },
+    {
+      "name": "turn_history",
+      "mandatory": true,
+      "description": "original pose, heading and route progress"
+    }
+  ],
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "Original heading and pose bracket the commanded left turn.",
+      "channels": [
+        "turn_history",
+        "kin.heading",
+        "kin.position"
+      ],
+      "source_refs": [
+        "intersection.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Original native map projection and junction topology identify the crossed junction.",
+      "channels": [
+        "road_geometry"
+      ],
+      "source_refs": [
+        "intersection.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Original lane projection and native road-connection graph establish incoming approach.",
+      "channels": [
+        "road_geometry"
+      ],
+      "source_refs": [
+        "intersection.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "Authored two-way center road mark plus original lateral pose locate the centerline.",
+      "channels": [
+        "road_geometry",
+        "kin.position"
+      ],
+      "source_refs": [
+        "intersection.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original full body and lane geometry determine the right-half footprint.",
+      "channels": [
+        "road_geometry",
+        "kin.position"
+      ],
+      "source_refs": [
+        "intersection.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "kin.position": {
+      "evidence": "Original actor world XYZ history is sampled at every tick.",
+      "channels": [
+        "kin.position"
+      ],
+      "source_refs": [
+        "intersection.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.one_way_roadway": {
+      "evidence": "Native two-directional lane inventory and road markings are acquired, not inferred from a weather label.",
+      "channels": [
+        "road_geometry"
+      ],
+      "source_refs": [
+        "intersection.xodr",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "Original lane-sign direction is acquired from native map projection and topology.",
+      "channels": [
+        "road_geometry"
+      ],
+      "source_refs": [
+        "intersection.xodr",
+        "capture/evidence.jsonl"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/assignment.json",
+      "sha256": "55f6e764c7fd97f26b171e2789e44c4c50f7bc5ecfd8f7143705ac0252e2bd57"
+    },
+    {
+      "path": "runtime/main-pipeline-v1/SOURCE-MANIFEST.json",
+      "sha256": "29394143389568b6504810da51764c002cb8036d935d85c62e14ff891f14e04c"
+    },
+    {
+      "path": "skills/worker-preparation/SKILL.md",
+      "sha256": "739943ac54dd9a0ad1ab1395e9ee825b28838b63bec379f3a2e231326f07c990"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "native connector continuity",
+    "actual body footprint",
+    "achieved target approach placement",
+    "four-camera visibility",
+    "public vehicular access is a synthetic authored assumption"
+  ]
+}

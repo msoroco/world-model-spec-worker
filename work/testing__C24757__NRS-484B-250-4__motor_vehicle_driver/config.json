@@ -1,0 +1,129 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-250-4",
+  "cell_id": "C24757",
+  "mode": "signal_dark",
+  "supported_case_ids": [
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__full_stop",
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__no_stop"
+  ],
+  "required_atoms": [
+    "kin.position",
+    "kin.heading",
+    "kin.speed"
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "public_highway_provenance": "synthetic authored setup, not jurisdictional proof",
+    "scenario": "Blind-intersection post-stop interactions under complete signal inoperability."
+  },
+  "public_way_road_ids": [],
+  "target_speed_mps": 5.0,
+  "max_ticks": 500,
+  "route_last_index": 200,
+  "cameras": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "x": -8,
+      "y": 0,
+      "z": 35,
+      "pitch": -80,
+      "yaw": 0
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": 2,
+      "y": 0,
+      "z": 4,
+      "pitch": -10,
+      "yaw": 0
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": -4,
+      "y": -8,
+      "z": 5,
+      "pitch": -12,
+      "yaw": 25
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "x": 7,
+      "y": -3,
+      "z": 8,
+      "pitch": -35,
+      "yaw": 90
+    }
+  ],
+  "case": {
+    "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__full_stop",
+    "target_law_id": "NRS-484B-250-4",
+    "target_type": "boundary_probe",
+    "rationale": "Freeze one control/context contrast and measure original source response; no legal cutoff is inferred.",
+    "variable_assignments": {
+      "stop_duration_s": {
+        "value": 1.0,
+        "unit": "s",
+        "kind": "controller"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
+      "public-way/device/weather authority is synthetic or unverified"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.position",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original world XYZ",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native OpenDRIVE",
+          "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+        },
+        {
+          "name": "kin.heading",
+          "unit": "deg",
+          "sampling_rate_hz": 20,
+          "method": "original yaw",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native OpenDRIVE",
+          "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+        },
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "original velocity norm",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native OpenDRIVE",
+          "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+        },
+        {
+          "name": "source_observations",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "same-frame original actors, full body, native map, control/weather inventory",
+          "time_window": "all original recorded ticks",
+          "reference_frame": "CARLA world/native OpenDRIVE",
+          "uncertainty": "finite source sampling; legal/physical predicate requires native measurement"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Three-frame straight-road diagnostic does not prove assigned phenomenon."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__full_stop"
+}

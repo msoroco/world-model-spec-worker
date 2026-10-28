@@ -1,0 +1,50 @@
+{
+  "assignment_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver",
+  "input_sha256": "c1603963b382259f51ba0576f5c69afebbfa10214323c7ba72570eb7d76b15cb",
+  "status": "partial",
+  "readiness_kind": "capability",
+  "applied_update": 1,
+  "reason": "A live green-to-yellow command and same-actor native transition measurement now exist, and the route can enter the intersection. The generated map may not instantiate a governing native traffic-light actor; yellow-phase physical stopping distance and device authority remain unverified.",
+  "tests": [
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__brake_before",
+      "command": ".venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__brake_before --output .runtime-work/p04fix-testing__C158196__NRS-484B-307-6a__motor_vehicle_driver-brake_before-offline --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "tests/fix-brake_before.offline.log",
+      "sha256": "6982f916446e70a1dbb690c98b5004868b2686a971af4165cf90691ac5f1e2ed"
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__continue_through",
+      "command": ".venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__continue_through --output .runtime-work/p04fix-testing__C158196__NRS-484B-307-6a__motor_vehicle_driver-continue_through-offline --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "tests/fix-continue_through.offline.log",
+      "sha256": "d8d0b4e92be228c59fcbe48d29e0e006ed383abfdcf325ca6d893bff05668185"
+    }
+  ],
+  "compatibility_attempts": [
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__brake_before",
+      "command": ".venv-cpu/bin/python -m worker_exchange.runtime_cli compatibility --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__brake_before --fixture work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p04fix-testing__C158196__NRS-484B-307-6a__motor_vehicle_driver-brake_before-compat --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-v3/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "tests/fix-brake_before.compatibility-command.log",
+      "sha256": "6d6455c771e04d323759b6f5e7c39d91070d21386ea66ffbe05fcedd2d0713d2",
+      "receipt": "compatibility/brake_before.json",
+      "receipt_sha256": "6d6455c771e04d323759b6f5e7c39d91070d21386ea66ffbe05fcedd2d0713d2"
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__continue_through",
+      "command": ".venv-cpu/bin/python -m worker_exchange.runtime_cli compatibility --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__continue_through --fixture work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p04fix-testing__C158196__NRS-484B-307-6a__motor_vehicle_driver-continue_through-compat --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-v3/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "tests/fix-continue_through.compatibility-command.log",
+      "sha256": "b150f26c415e4416612045cae6d6682002f3884a0cdbeb3321f717893a4a517f",
+      "receipt": "compatibility/continue_through.json",
+      "receipt_sha256": "b150f26c415e4416612045cae6d6682002f3884a0cdbeb3321f717893a4a517f"
+    }
+  ],
+  "physical_acceptance": false,
+  "unresolved_physical_checks": [
+    "native governing traffic light and actual yellow onset/duration",
+    "full body position, stopping distance and braking response at yellow onset",
+    "crossing line/intersection entry time and signal rendering"
+  ]
+}

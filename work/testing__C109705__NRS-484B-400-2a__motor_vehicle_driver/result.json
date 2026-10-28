@@ -1,0 +1,50 @@
+{
+  "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
+  "input_sha256": "55f6e764c7fd97f26b171e2789e44c4c50f7bc5ecfd8f7143705ac0252e2bd57",
+  "status": "partial",
+  "readiness_kind": "capability",
+  "applied_update": 1,
+  "reason": "Law-specific two-directional roadway, centerline and approach-lane entry are not validated by the diagnostic source. The pinned adapter has no st.one_way_roadway acquisition path; a same-frame native two-way junction and full vehicle-footprint experiment is still required. A three-frame straight-road fixture proves software compatibility only.",
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_center --output .runtime-work/pilot-v3-offline-0",
+      "exit_code": 0,
+      "log": "tests/pilot-near_center.offline.log",
+      "sha256": "96adb81262627a212450e2e616f22436a26326c36279631db159ddd153a20667"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__far_from_center --output .runtime-work/pilot-v3-offline-1",
+      "exit_code": 0,
+      "log": "tests/pilot-far_from_center.offline.log",
+      "sha256": "93bba32a94a60ead0e770bdb0bf7816cbfda07c8e8e061021a0005e5dd9d914d"
+    }
+  ],
+  "compatibility_attempts": [
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_center",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_center --fixture work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/pilot-v3-compat-3 --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-v3/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "tests/pilot-near_center.compatibility.log",
+      "sha256": "e1a4f9d973b46370d4e5af5e6736050128b4dfe02f8d3611450d8d2b8e196337",
+      "receipt": "compatibility/near_center.json",
+      "receipt_sha256": "e1a4f9d973b46370d4e5af5e6736050128b4dfe02f8d3611450d8d2b8e196337"
+    },
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__far_from_center",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__far_from_center --fixture work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/pilot-v3-compat-2 --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-v3/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "tests/pilot-far_from_center.compatibility.log",
+      "sha256": "420279461f2834576e6bb2c47c9311b9233bd476e6d2ae667b172b535d4ea12c",
+      "receipt": "compatibility/far_from_center.json",
+      "receipt_sha256": "420279461f2834576e6bb2c47c9311b9233bd476e6d2ae667b172b535d4ea12c"
+    }
+  ],
+  "physical_acceptance": false,
+  "unresolved_physical_checks": [
+    "native connector continuity and two-directional road inventory",
+    "original body footprint relative to the right-half centerline",
+    "actual left-turn completion and achieved lateral target",
+    "four-camera framing and duration",
+    "synthetic public-highway status"
+  ]
+}

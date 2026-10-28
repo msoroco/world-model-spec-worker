@@ -1,0 +1,50 @@
+{
+  "assignment_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver",
+  "input_sha256": "e51fff9dfabec4dcd710754a5c199119e03f2cdfc78614b7f5121647c0788ed6",
+  "status": "partial",
+  "readiness_kind": "capability",
+  "applied_update": 1,
+  "reason": "A native Off-state command/readback and original opposing/subject arrival and yield-interval measurements now exist, and the route can enter the intersection. The generated map may not instantiate a governing native signal; actual inoperability, yielding safety and authority remain unverified.",
+  "tests": [
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__full_stop",
+      "command": ".venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/execution-manifest.json --case testing__C24757__NRS-484B-250-4__motor_vehicle_driver__full_stop --output .runtime-work/p04fix-testing__C24757__NRS-484B-250-4__motor_vehicle_driver-full_stop-offline --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "tests/fix-full_stop.offline.log",
+      "sha256": "fbe92eff55319fd8738bc83ce64ff681a17fb84272ea930f619e52238594319d"
+    },
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__no_stop",
+      "command": ".venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/execution-manifest.json --case testing__C24757__NRS-484B-250-4__motor_vehicle_driver__no_stop --output .runtime-work/p04fix-testing__C24757__NRS-484B-250-4__motor_vehicle_driver-no_stop-offline --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "tests/fix-no_stop.offline.log",
+      "sha256": "b2d4ed87a7c30fa6453034f773158818be6c06c76045df41b384fd3f2043c3c4"
+    }
+  ],
+  "compatibility_attempts": [
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__full_stop",
+      "command": ".venv-cpu/bin/python -m worker_exchange.runtime_cli compatibility --manifest work/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/execution-manifest.json --case testing__C24757__NRS-484B-250-4__motor_vehicle_driver__full_stop --fixture work/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p04fix-testing__C24757__NRS-484B-250-4__motor_vehicle_driver-full_stop-compat --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-v3/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "tests/fix-full_stop.compatibility-command.log",
+      "sha256": "13663112bda8e18a760af8cfd444d85f13ce046b5a5241ca447e815da83038b6",
+      "receipt": "compatibility/full_stop.json",
+      "receipt_sha256": "13663112bda8e18a760af8cfd444d85f13ce046b5a5241ca447e815da83038b6"
+    },
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__no_stop",
+      "command": ".venv-cpu/bin/python -m worker_exchange.runtime_cli compatibility --manifest work/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/execution-manifest.json --case testing__C24757__NRS-484B-250-4__motor_vehicle_driver__no_stop --fixture work/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/fixture-diagnostic --output .runtime-work/p04fix-testing__C24757__NRS-484B-250-4__motor_vehicle_driver-no_stop-compat --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-v3/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "tests/fix-no_stop.compatibility-command.log",
+      "sha256": "c054ee9358e5c231207c18e1846d39fe6cfcda1af802040a9dc531f85c573f90",
+      "receipt": "compatibility/no_stop.json",
+      "receipt_sha256": "c054ee9358e5c231207c18e1846d39fe6cfcda1af802040a9dc531f85c573f90"
+    }
+  ],
+  "physical_acceptance": false,
+  "unresolved_physical_checks": [
+    "native signal inoperative state and governing lane",
+    "near-side stop line/crosswalk and full-body stop before entry",
+    "same-frame opposing arrival, sight distance, visibility and yielding order"
+  ]
+}
