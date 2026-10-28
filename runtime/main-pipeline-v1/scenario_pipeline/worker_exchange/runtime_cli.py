@@ -55,7 +55,23 @@ def offline(manifest,case_id,destination,python):
         subprocess.run([python,'-m','unittest','discover','-s','tests'],cwd=destination,env=execution_env(),stdout=log,stderr=subprocess.STDOUT,check=True,timeout=300)
     return {'case_id':case_id,'offline_passed':True,'log':str(destination/'offline.log'),'simulation_started':False}
 
+def native_preflight(python):
+    """Check a locally supplied Native interpreter before creating an attempt."""
+    if not python:
+        raise ValueError('Supply a CARLA-capable Native Python with --python')
+    env=execution_env()
+    check='import carla,numpy,shapely,networkx,PIL,carla_sgg; print(getattr(carla,"__version__","version-unreported"))'
+    result=subprocess.run([python,'-c',check],env=env,stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE,universal_newlines=True,timeout=30)
+    if result.returncode:
+        raise ValueError('Native Python import preflight failed: '+result.stderr[-1000:])
+    return {'python':str(Path(python).resolve()),'carla_client_version':result.stdout.strip(),
+            'imports_checked':['carla','numpy','shapely','networkx','PIL','carla_sgg'],
+            'server_contacted':False}
+
+
 def capture(manifest,case_id,destination,host,port,python):
+    preflight=native_preflight(python)
     proposal=materialize(manifest,case_id,destination)
     destination=Path(destination).resolve()
     entry=within(destination,proposal['entrypoint'])
@@ -63,7 +79,7 @@ def capture(manifest,case_id,destination,host,port,python):
     subprocess.run([python,str(entry),'--check'],cwd=destination,env=env,check=True)
     # Caller must own the dedicated server. This wrapper never owns its lifecycle.
     subprocess.run([python,str(entry),'--output-dir',str(destination),'--host',host,'--port',str(port)],cwd=destination,env=env,check=True)
-    return {'case_id':case_id,'attempt':str(destination),'capture_executed':True,'acceptance_claimed':False}
+    return {'case_id':case_id,'attempt':str(destination),'native_preflight':preflight,'capture_executed':True,'acceptance_claimed':False}
 
 
 def process(attempt,output,library,validator=None):
@@ -102,11 +118,13 @@ def main():
     a=sub.add_parser('selftest');a.add_argument('--runtime',default=str(Path(__file__).resolve().parents[2]));a.add_argument('--output',required=True);a.add_argument('--lake');a.add_argument('--validator');a.add_argument('--compare-to')
     a=sub.add_parser('compatibility-example');a.add_argument('--output',required=True)
     a=sub.add_parser('compatibility');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--fixture',required=True);a.add_argument('--output',required=True);a.add_argument('--library',required=True);a.add_argument('--validator',required=True)
+    a=sub.add_parser('compatibility-recipe');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--output',required=True);a.add_argument('--library',required=True);a.add_argument('--validator',required=True)
     a=sub.add_parser('verify');a.add_argument('--runtime',type=Path,required=True)
     a=sub.add_parser('materialize');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--output',required=True)
     a=sub.add_parser('offline');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--output',required=True);a.add_argument('--python',default=sys.executable)
     a=sub.add_parser('validate-native');a.add_argument('--attempt',required=True);a.add_argument('--request',required=True);a.add_argument('--construction',required=True);a.add_argument('--exit-code',type=int,required=True)
-    a=sub.add_parser('capture');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--output',required=True);a.add_argument('--host',required=True);a.add_argument('--port',required=True,type=int);a.add_argument('--python',default=sys.executable)
+    a=sub.add_parser('preflight-native');a.add_argument('--python',required=True)
+    a=sub.add_parser('capture');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--output',required=True);a.add_argument('--host',required=True);a.add_argument('--port',required=True,type=int);a.add_argument('--python',required=True)
     a=sub.add_parser('process');a.add_argument('--attempt',required=True);a.add_argument('--output',required=True);a.add_argument('--library',required=True);a.add_argument('--validator')
     a=sub.add_parser('render');a.add_argument('--attempt',required=True);a.add_argument('--converted',required=True);a.add_argument('--case-json',required=True)
     a=sub.add_parser('validate-stage');a.add_argument('--stage',required=True);a.add_argument('--inputs',required=True);a.add_argument('--result',required=True);a.add_argument('--normalized')
@@ -123,9 +141,13 @@ def main():
     elif args.command=='compatibility':
         from .package_compatibility import run
         result=run(args.manifest,args.case,args.fixture,args.output,args.library,args.validator)
+    elif args.command=='compatibility-recipe':
+        from .package_compatibility import run_recipe
+        result=run_recipe(args.manifest,args.case,args.output,args.library,args.validator)
     elif args.command=='verify':result=verify(args.runtime)
     elif args.command=='materialize':result=materialize(args.manifest,args.case,args.output);result={'case_id':result['case_id'],'materialized':True}
     elif args.command=='offline':result=offline(args.manifest,args.case,args.output,args.python)
+    elif args.command=='preflight-native':result=native_preflight(args.python)
     elif args.command=='validate-native':
         from batch_pipeline.carla import validate_attempt
         result=validate_attempt(Path(args.attempt),read(args.request),read(args.construction),{'recorded_exit_code':args.exit_code},{})

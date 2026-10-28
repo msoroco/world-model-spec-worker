@@ -1,5 +1,6 @@
 """Standalone six-step return contract; no database, simulator or code execution."""
 import ast
+import shlex
 from pathlib import Path
 from .common import read, sha, tree, digest, within
 
@@ -40,6 +41,14 @@ def check(repo, complete=False, require_ready=False):
         allocated.extend(read(path)['assignment_ids'])
     require(len(allocated) == len(set(allocated)) and set(allocated) == set(batch['assignments']), 'Partition coverage/overlap')
     files = tree(repo)
+    if batch.get('lean_return_required'):
+        returned=[rel for rel in files if rel.startswith('work/')]
+        require(len(returned)<=1000, 'Return contains too many generated files')
+        forbidden={'.png','.jpg','.jpeg','.pkl','.mkv','.webm','.mp4','.ass','.lock','.uasset','.uexp'}
+        for rel in returned:
+            require(Path(rel).suffix.lower() not in forbidden, 'Generated binary/media belongs in ignored runtime work: '+rel)
+            require(not any(part.startswith(('compatibility-','offline-')) for part in Path(rel).parts),
+                    'Generated diagnostic directory belongs in ignored runtime work: '+rel)
     for rel in files:
         if rel in batch['frozen_files'] or rel == 'batch.json':
             continue
@@ -89,6 +98,19 @@ def check(repo, complete=False, require_ready=False):
             require(comparison.get('deliberate_differences') and 'fixed_conditions' in comparison, 'Unspecified comparison isolation')
         executable_required = batch.get('all_executable_required') and result['status']!='blocked'
         if result['status']=='ready' or executable_required:
+            if batch.get('measurement_contract_required') and result['status']=='ready':
+                command=result.get('first_gpu_capability_command','')
+                try:tokens=shlex.split(command)
+                except ValueError:tokens=[]
+                def argument(option):
+                    return tokens[tokens.index(option)+1] if option in tokens and tokens.index(option)+1<len(tokens) else None
+                require('runtime.py' in tokens and 'capture' in tokens and
+                        argument('--python')=='$CARLA_PYTHON' and
+                        argument('--host')=='$CARLA_HOST' and
+                        argument('--port')=='$CARLA_PORT' and
+                        argument('--case') in ids and
+                        str(argument('--output') or '').startswith('.runtime-work/'),
+                        'First GPU command does not use portable local runtime variables')
             if batch.get('runtime'):
                 if result['status']=='ready' and result.get('readiness_kind') not in ('capability','delivery_prepared'):
                     raise ValueError('Declare first-run capability versus delivery preparation')

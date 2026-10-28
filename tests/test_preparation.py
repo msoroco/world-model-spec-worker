@@ -35,6 +35,10 @@ class PreparationTests(unittest.TestCase):
  def test_partial_executable_gate(self):
   self.batch['all_executable_required']=True;write(self.r/'batch.json',self.batch)
   with self.assertRaisesRegex(ValueError,'executable artifact'):check(self.r,True)
+ def test_lean_return_rejects_generated_media(self):
+  self.batch['lean_return_required']=True;write(self.r/'batch.json',self.batch)
+  (self.d/'diagnostic.webm').write_bytes(b'not for git')
+  with self.assertRaisesRegex(ValueError,'Generated binary/media'):check(self.r,True)
  def test_bad_actor(self):
   self.plan['actor']='wrong';write(self.d/'case-plan.json',self.plan)
   with self.assertRaisesRegex(ValueError,'scope'):check(self.r,True)

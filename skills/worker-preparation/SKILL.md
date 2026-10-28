@@ -76,6 +76,12 @@ local. Reuse environmental acquisition methods; a named channel is not a source.
 Every exact case needs acquisition mappings and a source-bound compatibility
 receipt from its actual bundled analysis, existing validator, converter and video
 processing. The generic runtime selftest alone cannot qualify a new package.
+The v5 batch also requires a selected-requirement measurement contract and a
+case-specific positive/negative fixture recipe. Each selected requirement has
+a concrete saved finalizer output and exact source hashes. Keep generated
+fixture trees and rendered media in ignored `.runtime-work/`, committing only
+small source inputs, logs and receipts. The first GPU command supplies a local
+CARLA Python via `--python "$CARLA_PYTHON"`.
 Fixtures establish software compatibility only; unknown physical outcomes remain
 unconfirmed. Do not drop mandatory observations or fabricate physical success to
 pass tests. Validate one exact case end to end before expanding all partitions.

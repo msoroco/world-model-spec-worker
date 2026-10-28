@@ -55,5 +55,19 @@ def validate(repo,assignment_id):
                 raise ValueError('Capability needs executable measured-results finalization procedure')
             if not within(folder,procedure['entrypoint']).is_file():
                 raise ValueError('Capability analysis implementation missing')
+        if batch.get('measurement_contract_required'):
+            from .measurement_contract import validate as validate_measurements
+            contract_path=within(folder,entry.get('measurement_contract',''))
+            if not contract_path.is_file():raise ValueError('Missing exact-case measurement contract')
+            analysis=next((f['content'] for f in construction['files'] if f['path']==entry['measurement_procedure']['entrypoint']),None)
+            if analysis is None:raise ValueError('Finalizer absent from exact construction')
+            plan=read(folder/'case-plan.json')
+            validate_measurements(read(contract_path),plan['requirement_dispositions'],analysis)
+            recipe=within(repo,entry.get('fixture_recipe',''))
+            from .fixture_recipe import inspect as inspect_fixture
+            inspect_fixture(repo,recipe)
+            handoff=entry.get('native_handoff',{})
+            if handoff.get('python_env_var')!='CARLA_PYTHON' or handoff.get('host_env_var')!='CARLA_HOST' or handoff.get('port_env_var')!='CARLA_PORT':
+                raise ValueError('Native handoff must use local runtime variables')
     if not expected<=seen:raise ValueError('Nonbaseline case missing from execution manifest')
     return manifest
