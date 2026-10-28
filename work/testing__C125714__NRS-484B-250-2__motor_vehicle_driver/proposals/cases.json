@@ -33,6 +33,11 @@
             "control": "other_vehicle",
             "administrative_status": "unconfirmed"
           }
+        },
+        "commanded_release_offset_s": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "s"
         }
       },
       "unresolved_judgment_calls": [
@@ -47,73 +52,73 @@
             "name": "st.intersection",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           },
           {
             "name": "st.lane_enters",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           },
           {
             "name": "drv.entering_intersection",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           },
           {
             "name": "drv.arrival_order",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           },
           {
             "name": "rel.bearing",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           },
           {
             "name": "drv.yields_to",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           },
           {
             "name": "dev.traffic_signal",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           },
           {
             "name": "drv.turning",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           }
         ],
         "context_inputs": [
@@ -124,11 +129,9 @@
           }
         ],
         "limitations": [
-          "CARLA unavailable: no simulator connection, version readback, blueprint inventory, physics execution, RGB visibility, or measured observations were produced.",
-          "All geometric dimensions and controller gains are engineering draft choices, not statutory standards.",
-          "No downstream legal label or physical acceptance is claimed.",
-          "Median-opening connected crossing and right-side participant controllers are not implemented.",
-          "No faithful arrival-time sweep realization or physical yielding finalizer; approximate simultaneity remains unresolved."
+          "No CARLA execution occurred. Native map meshing, blueprint spawn availability, server/client versions, physical tracking, frame capture and camera visibility require first-run readback.",
+          "All route/controller completion tolerances are engineering criteria; no statutory or subjective meaning is assigned.",
+          "Original raw histories and output validation are implemented; synthetic fixtures validate contracts and do not establish physical feasibility."
         ]
       }
     }
@@ -143,15 +146,28 @@
           "note": "Exact law contains qualitative entry simultaneity although supplied summary residue is empty; no tolerance is adopted."
         }
       ],
-      "status": "incomplete",
+      "status": "complete",
       "mode": "one_dimensional",
-      "missing_inputs": [
-        "Median-opening connected crossing and right-side participant controllers are not implemented.",
-        "No faithful arrival-time sweep realization or physical yielding finalizer; approximate simultaneity remains unresolved."
+      "axes": [
+        {
+          "variable": "commanded_release_offset_s",
+          "observable": "actual_entry_offset",
+          "unit": "s",
+          "min": -2.0,
+          "max": 2.0,
+          "spacing": 1.0,
+          "measurement": {
+            "method": "ego minus other full-footprint entry bracket midpoint difference, one original event scalar with uncertainty retained",
+            "time_window": "retained original complete maneuver; approach summary excludes separately retained braking episode",
+            "statistic": "mean"
+          },
+          "range_rationale": "Fixed engineering physical targets on native connected routes; no judgment bound. 120s timeout and >200m approach/escape extents provide room; actual tracking may fail and is retained.",
+          "spacing_rationale": "Fixed physical resolution independent of labels or execution budget.",
+          "feasibility_evidence": "Native station-derived continuous route, offline XML/path tests, feedback controller and first-run target checks; no physics observation is claimed."
+        }
       ],
-      "axes": [],
       "landmarks": [],
-      "rationale": "Do not freeze unverified physical ranges or infer a judgment standard; same-setting realization must be completed before materialization.",
+      "rationale": "Deterministic runtime materializer expands only frozen scalar settings. Actual judgment remains unlabeled; same-setting realization failures retained.",
       "variable_assignments": {
         "ego_speed": {
           "kind": "subject_behavior",
@@ -177,6 +193,11 @@
             "control": "other_vehicle",
             "administrative_status": "unconfirmed"
           }
+        },
+        "commanded_release_offset_s": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "s"
         }
       },
       "recording_description": {
@@ -185,73 +206,73 @@
             "name": "st.intersection",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           },
           {
             "name": "st.lane_enters",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           },
           {
             "name": "drv.entering_intersection",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           },
           {
             "name": "drv.arrival_order",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           },
           {
             "name": "rel.bearing",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           },
           {
             "name": "drv.yields_to",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           },
           {
             "name": "dev.traffic_signal",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           },
           {
             "name": "drv.turning",
             "unit": "raw_atom",
             "sampling_rate_hz": 20,
-            "method": "original-frame PipelineCapture evidence; unsupported atoms explicitly missing, no requested-value substitution",
+            "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
             "time_window": "entire original run",
             "reference_frame": "native world and actor frame",
-            "uncertainty": "unvalidated atom coverage; see implementation gaps"
+            "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
           }
         ],
         "context_inputs": [
@@ -262,13 +283,133 @@
           }
         ],
         "limitations": [
-          "CARLA unavailable: no simulator connection, version readback, blueprint inventory, physics execution, RGB visibility, or measured observations were produced.",
-          "All geometric dimensions and controller gains are engineering draft choices, not statutory standards.",
-          "No downstream legal label or physical acceptance is claimed.",
-          "Median-opening connected crossing and right-side participant controllers are not implemented.",
-          "No faithful arrival-time sweep realization or physical yielding finalizer; approximate simultaneity remains unresolved."
+          "No CARLA execution occurred. Native map meshing, blueprint spawn availability, server/client versions, physical tracking, frame capture and camera visibility require first-run readback.",
+          "All route/controller completion tolerances are engineering criteria; no statutory or subjective meaning is assigned.",
+          "Original raw histories and output validation are implemented; synthetic fixtures validate contracts and do not establish physical feasibility."
         ]
       }
     }
-  ]
+  ],
+  "case_defaults": {
+    "variable_assignments": {
+      "ego_speed": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "commanded_approach_speed": {
+        "kind": "controller",
+        "value": 8.0,
+        "unit": "m/s"
+      },
+      "commanded_turn_path": {
+        "kind": "controller",
+        "value": "travel"
+      },
+      "test_branch": {
+        "kind": "controller",
+        "value": "neutral"
+      },
+      "highway_context": {
+        "kind": "world_setup",
+        "value": {
+          "layout": "median_opening",
+          "control": "other_vehicle",
+          "administrative_status": "unconfirmed"
+        }
+      },
+      "commanded_release_offset_s": {
+        "kind": "controller",
+        "value": 0.0,
+        "unit": "s"
+      }
+    },
+    "recording_description": {
+      "channels": [
+        {
+          "name": "st.intersection",
+          "unit": "raw_atom",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+          "time_window": "entire original run",
+          "reference_frame": "native world and actor frame",
+          "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+        },
+        {
+          "name": "st.lane_enters",
+          "unit": "raw_atom",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+          "time_window": "entire original run",
+          "reference_frame": "native world and actor frame",
+          "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+        },
+        {
+          "name": "drv.entering_intersection",
+          "unit": "raw_atom",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+          "time_window": "entire original run",
+          "reference_frame": "native world and actor frame",
+          "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+        },
+        {
+          "name": "drv.arrival_order",
+          "unit": "raw_atom",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+          "time_window": "entire original run",
+          "reference_frame": "native world and actor frame",
+          "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+        },
+        {
+          "name": "rel.bearing",
+          "unit": "raw_atom",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+          "time_window": "entire original run",
+          "reference_frame": "native world and actor frame",
+          "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+        },
+        {
+          "name": "drv.yields_to",
+          "unit": "raw_atom",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+          "time_window": "entire original run",
+          "reference_frame": "native world and actor frame",
+          "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+        },
+        {
+          "name": "dev.traffic_signal",
+          "unit": "raw_atom",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+          "time_window": "entire original run",
+          "reference_frame": "native world and actor frame",
+          "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+        },
+        {
+          "name": "drv.turning",
+          "unit": "raw_atom",
+          "sampling_rate_hz": 20,
+          "method": "same-original-frame native actor/device/weather/geometry projection with original RGB and retained evidence; qualitative atoms retain raw arguments without a judgment cutoff",
+          "time_window": "entire original run",
+          "reference_frame": "native world and actor frame",
+          "uncertainty": "20Hz sampled physical evidence; event brackets one original tick; RGB view/mesh/physics require first-run validation"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "witness_context",
+          "unit": "structured",
+          "method": "exact authored witness requirements; public/administrative facts are assumptions requiring separate evidence"
+        }
+      ],
+      "limitations": [
+        "No CARLA execution occurred. Native map meshing, blueprint spawn availability, server/client versions, physical tracking, frame capture and camera visibility require first-run readback.",
+        "All route/controller completion tolerances are engineering criteria; no statutory or subjective meaning is assigned.",
+        "Original raw histories and output validation are implemented; synthetic fixtures validate contracts and do not establish physical feasibility."
+      ]
+    }
+  }
 }

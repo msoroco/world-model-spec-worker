@@ -1,18 +1,14 @@
-# Partition 2 executable preparation return
+# Executable preparation return, update003
 
-Status: **partial**. Implemented executable controller, OpenDRIVE/path draft builder, event geometry, lazy capture runner and CPU tests. The runner fails closed before connecting because target-critical mechanisms remain incomplete:
+Status: blocked. Runtime uncertainties and structured external requirements are in result.json; previous checkpoint implementation gaps are superseded. No CARLA run or measured physical evidence is claimed. Exact sources, cell/actor/law, witness, summary conflict and existing evidence remain in source-review.json.
 
-- Divided-road physical barrier/opening builder and reverse/multiple-movement U-turn path tracking not implemented; current road draft cannot host the U-turn.
-- No full vehicle-footprint/median intersection finalizer. Public-authority establishment remains an explicit administrative unknown.
+Use the root construction.json as first-case baseline anchor; baseline remains unselected. Every nonbaseline proposal is constructions/<case-id>.json with its own selected config.json and identical implementation files. Materialize the chosen canonical bundle before checks. `runner.py --check` stays offline. Later `runner.py --output-dir PATH --host HOST --port PORT` uses the selected case; `--case-id ID` selects another ordinary case. `--sweep-index 0..4` deterministically expands the frozen physical grid for 250-1/250-2/600-1a, without judgment labels.
 
-Exact source law, actor, cell, witnesses, summaries, existing evidence and text conflicts are retained in source-review.json. Proposals include fresh template, relevance, binding, judgment-observable and cases drafts. Templates are not held for human approval. Baseline is not selected. All nonbaseline case-specific canonical proposals are in constructions/<case-id>.json; adopt each with its own inline config.json and identical runner.py/geometry.py. Root construction.json is baseline anchor and matches materialized files.
+Full execution records PipelineCapture original map/recorder/graphs, actual trajectory, raw mandatory channels, context JSON, participants, footprint, measured targets and four real WebM videos. Successful return 0 requires complete strict output validation; runtime failures return 2 with retained result. Camera/lamp/mesh/physics acceptance requires original first-run evidence. The optical tap retains original encoded bytes and projected body crop; API lamp bits do not establish visible light.
 
-Offline: `/usr/bin/python3.11 work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/runner.py --check`; `/usr/bin/python3.11 -m unittest discover -s work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/tests`. Hashed logs are in result.json. No mocked physics or observations are offered as acceptance.
+Finalization recomputes measured quantities from original streams using the retained original sample windows and entry-event brackets, validates target physical causes and body containment, inspects original RGB for the relevant distinction, and preserves unresolved judgments. Same-setting repairs change the diagnosed implementation cause and preserve failed evidence. No new sweep points, legal thresholds, hidden retries, or fabricated observations.
 
-Later CLI: `runner.py --output-dir PATH --host HOST --port PORT --case-id ID`. Existing empty output dirs allowed. This currently writes explicit failed preflight result with missing capabilities and exits 2. Complete the named mechanisms and live binding before clearing implementation_gaps. No simulation is authorized here.
+External requirements:
+- Traversable physical dividing-section surface for through-divider comparison, with matching intact section/opening geometry (external_asset): Supply a verified native traversable dividing-section surface and unchanged comparison geometry, then bind the existing route/occupancy/capture controller to its actual surface. Do not relabel a barrier collision or empty space as a successful crossing.
 
-For measured-results finalization, retain the original entire run, check actual setup/geometry/participants and all channel coverage, recompute declared summaries with original sample windows and entry-event brackets, inspect RGB for visible lamps/signs and maneuver completion, then freeze physics-supported sweep ranges/durations. Preserve failed settings and observations; any same-setting repair must change the diagnosed cause. Do not infer public authority from a physical opening, legal district status from props, or legal compliance from controller requests.
-
-Additional implemented module: maneuvers.py supplies a connected 3-road U-turn arc and exact convex footprint intersection. It is not integrated into the runtime controller yet.
-
-Integration update: runner now executes the authored physical maneuver and original measurement helpers. Earlier references to unintegrated helpers are superseded. Remaining exact gaps are result.reason/config.implementation_gaps. Still partial; no simulator run occurred.
+CPU fixtures use synthetic schema data and real encoded tiny videos; they do not establish simulator physics. Materialized command records are materialized-tests.json; hashed logs and exact commands are copied into result.tests after running them.

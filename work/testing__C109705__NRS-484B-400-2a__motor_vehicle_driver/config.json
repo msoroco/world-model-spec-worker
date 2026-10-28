@@ -5,10 +5,10 @@
   "law_id": "NRS-484B-400-2a",
   "supported_case_ids": [
     "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__baseline",
-    "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__inner_approach",
-    "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__outer_approach"
+    "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__attempt_0",
+    "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__attempt_1"
   ],
-  "default_case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__inner_approach",
+  "default_case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__attempt_0",
   "mechanism": "turn",
   "path": [
     [
@@ -576,7 +576,7 @@
       -60
     ]
   ],
-  "max_ticks": 600,
+  "max_ticks": 2200,
   "required_atoms": [
     "drv.turning",
     "st.intersection",
@@ -591,75 +591,75 @@
     "channels": [
       {
         "name": "drv.turning",
-        "unit": "raw",
+        "unit": "structured physical evidence",
         "sampling_rate_hz": 20,
-        "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+        "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
         "time_window": "entire original run",
         "reference_frame": "CARLA world",
-        "uncertainty": "not yet characterized; no legal tolerance"
+        "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
       },
       {
         "name": "st.intersection",
-        "unit": "raw",
+        "unit": "structured physical evidence",
         "sampling_rate_hz": 20,
-        "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+        "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
         "time_window": "entire original run",
         "reference_frame": "CARLA world",
-        "uncertainty": "not yet characterized; no legal tolerance"
+        "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
       },
       {
         "name": "st.lane_enters",
-        "unit": "raw",
+        "unit": "structured physical evidence",
         "sampling_rate_hz": 20,
-        "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+        "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
         "time_window": "entire original run",
         "reference_frame": "CARLA world",
-        "uncertainty": "not yet characterized; no legal tolerance"
+        "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
       },
       {
         "name": "st.centre_line",
-        "unit": "raw",
+        "unit": "structured physical evidence",
         "sampling_rate_hz": 20,
-        "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+        "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
         "time_window": "entire original run",
         "reference_frame": "CARLA world",
-        "uncertainty": "not yet characterized; no legal tolerance"
+        "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
       },
       {
         "name": "rel.occupies",
-        "unit": "raw",
+        "unit": "structured physical evidence",
         "sampling_rate_hz": 20,
-        "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+        "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
         "time_window": "entire original run",
         "reference_frame": "CARLA world",
-        "uncertainty": "not yet characterized; no legal tolerance"
+        "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
       },
       {
         "name": "kin.position",
-        "unit": "raw",
+        "unit": "m",
         "sampling_rate_hz": 20,
-        "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+        "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
         "time_window": "entire original run",
         "reference_frame": "CARLA world",
-        "uncertainty": "not yet characterized; no legal tolerance"
+        "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
       },
       {
         "name": "st.one_way_roadway",
-        "unit": "raw",
+        "unit": "structured physical evidence",
         "sampling_rate_hz": 20,
-        "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+        "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
         "time_window": "entire original run",
         "reference_frame": "CARLA world",
-        "uncertainty": "not yet characterized; no legal tolerance"
+        "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
       },
       {
         "name": "st.lane_direction",
-        "unit": "raw",
+        "unit": "structured physical evidence",
         "sampling_rate_hz": 20,
-        "method": "original-frame PipelineCapture raw evidence; atom projection pending",
+        "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
         "time_window": "entire original run",
         "reference_frame": "CARLA world",
-        "uncertainty": "not yet characterized; no legal tolerance"
+        "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
       }
     ],
     "context_inputs": [
@@ -670,7 +670,8 @@
       }
     ],
     "limitations": [
-      "Raw graphs are not finalized per-atom JSONL channels; first-run readiness is partial."
+      "Channels store measured physical evidence with explicit methods. Structured raw evidence does not assert legal meaning, intent, safety or hazard.",
+      "Native map geometry and authored legal-region assumptions remain distinguished."
     ]
   },
   "cameras": [
@@ -703,10 +704,147 @@
       "height": 720
     }
   ],
-  "runtime_gaps": [
-    "Per-atom JSONL projection, exact law-specific setup validation and physical-cause target checks remain unimplemented; raw capture alone is insufficient.",
-    "Left-turn connectivity/footprint containment requires authored curved junction connectors; reference map contains straight connectors only.",
-    "Law-specific controller branches and raw geometry are implemented; map/device governance, full mandatory atom projections and physical feasibility remain unconfirmed."
-  ],
-  "baseline_selected": false
+  "runtime_gaps": [],
+  "baseline_selected": false,
+  "external_barriers": [],
+  "case": {
+    "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__attempt_0",
+    "target_law_id": "NRS-484B-400-2a",
+    "target_type": "compliant_attempt",
+    "rationale": "Approach in inner of two same-direction lanes adjacent to centreline",
+    "variable_assignments": {
+      "commanded_approach_speed": {
+        "kind": "controller",
+        "value": 5.0,
+        "unit": "m/s"
+      },
+      "commanded_turn_path": {
+        "kind": "controller",
+        "value": "left_turn"
+      },
+      "ego_speed": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "authored_context": {
+        "kind": "world_setup",
+        "value": {
+          "public_highway": "explicit synthetic assumption",
+          "two_directional_highways": true,
+          "witness_contexts": [
+            "An identified driver physically controls a conventional motor vehicle and intends the left turn.",
+            "Construct both highways as undivided and permitting opposite-direction travel; establish public dedication, public vehicular access and a non-alley intersection.",
+            "Construct both intersecting highways as undivided with permitted opposite-direction travel.",
+            "Establish actual physical control of an included vehicle and intended left turn.",
+            "Establish public-highway status, non-alley junction geometry, approach edges, right half and centerline.",
+            "Identify approach edges, right half and centerline; retain approach positions without assigning a legal approach boundary or lateral cutoff."
+          ]
+        }
+      },
+      "commanded_approach_lateral": {
+        "kind": "controller",
+        "value": 1.75,
+        "unit": "m"
+      }
+    },
+    "unresolved_judgment_calls": [],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "drv.turning",
+          "unit": "structured physical evidence",
+          "sampling_rate_hz": 20,
+          "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+          "time_window": "entire original run",
+          "reference_frame": "CARLA world",
+          "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+        },
+        {
+          "name": "st.intersection",
+          "unit": "structured physical evidence",
+          "sampling_rate_hz": 20,
+          "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+          "time_window": "entire original run",
+          "reference_frame": "CARLA world",
+          "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+        },
+        {
+          "name": "st.lane_enters",
+          "unit": "structured physical evidence",
+          "sampling_rate_hz": 20,
+          "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+          "time_window": "entire original run",
+          "reference_frame": "CARLA world",
+          "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+        },
+        {
+          "name": "st.centre_line",
+          "unit": "structured physical evidence",
+          "sampling_rate_hz": 20,
+          "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+          "time_window": "entire original run",
+          "reference_frame": "CARLA world",
+          "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+        },
+        {
+          "name": "rel.occupies",
+          "unit": "structured physical evidence",
+          "sampling_rate_hz": 20,
+          "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+          "time_window": "entire original run",
+          "reference_frame": "CARLA world",
+          "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+        },
+        {
+          "name": "kin.position",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+          "time_window": "entire original run",
+          "reference_frame": "CARLA world",
+          "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+        },
+        {
+          "name": "st.one_way_roadway",
+          "unit": "structured physical evidence",
+          "sampling_rate_hz": 20,
+          "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+          "time_window": "entire original run",
+          "reference_frame": "CARLA world",
+          "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+        },
+        {
+          "name": "st.lane_direction",
+          "unit": "structured physical evidence",
+          "sampling_rate_hz": 20,
+          "method": "Original native actor telemetry/bounding boxes and authored road geometry, synchronized per original tick; value-free structured evidence for qualitative atoms",
+          "time_window": "entire original run",
+          "reference_frame": "CARLA world",
+          "uncertainty": "20 Hz temporal sampling; native mesh/body bounding-box approximation; unresolved legal interpretation"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "authored_context",
+          "unit": "object",
+          "method": "config.json exact assumptions and source witness"
+        }
+      ],
+      "limitations": [
+        "Channels store measured physical evidence with explicit methods. Structured raw evidence does not assert legal meaning, intent, safety or hazard.",
+        "Native map geometry and authored legal-region assumptions remain distinguished."
+      ]
+    },
+    "paired_probe_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__comparison",
+    "deliberate_differences": [
+      "commanded_approach_lateral"
+    ],
+    "probe": {
+      "primary_variable": "commanded_approach_lateral",
+      "comparison_or_standard": "physical geometry or explicit deterministic branch; no legal judgment cutoff",
+      "target_value_or_branch": 1.75
+    }
+  },
+  "judgment_sweep_grid": [],
+  "one_way": false
 }

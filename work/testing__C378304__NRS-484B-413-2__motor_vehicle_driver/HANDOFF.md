@@ -1,18 +1,15 @@
-# Partition 2 executable preparation return
+# Executable preparation return, update003
 
-Status: **partial**. Implemented executable controller, OpenDRIVE/path draft builder, event geometry, lazy capture runner and CPU tests. The runner fails closed before connecting because target-critical mechanisms remain incomplete:
+Status: blocked. Runtime uncertainties and structured external requirements are in result.json; previous checkpoint implementation gaps are superseded. No CARLA run or measured physical evidence is claimed. Exact sources, cell/actor/law, witness, summary conflict and existing evidence remain in source-review.json.
 
-- Business-district frontage/building-use and freight loading-zone construction is not implemented.
-- Turn surface, physical lamp flashing RGB verification, and signal-onset/course-change finalizer are not implemented.
+Use the root construction.json as first-case baseline anchor; baseline remains unselected. Every nonbaseline proposal is constructions/<case-id>.json with its own selected config.json and identical implementation files. Materialize the chosen canonical bundle before checks. `runner.py --check` stays offline. Later `runner.py --output-dir PATH --host HOST --port PORT` uses the selected case; `--case-id ID` selects another ordinary case. `--sweep-index 0..4` deterministically expands the frozen physical grid for 250-1/250-2/600-1a, without judgment labels.
 
-Exact source law, actor, cell, witnesses, summaries, existing evidence and text conflicts are retained in source-review.json. Proposals include fresh template, relevance, binding, judgment-observable and cases drafts. Templates are not held for human approval. Baseline is not selected. All nonbaseline case-specific canonical proposals are in constructions/<case-id>.json; adopt each with its own inline config.json and identical runner.py/geometry.py. Root construction.json is baseline anchor and matches materialized files.
+Full execution records PipelineCapture original map/recorder/graphs, actual trajectory, raw mandatory channels, context JSON, participants, footprint, measured targets and four real WebM videos. Successful return 0 requires complete strict output validation; runtime failures return 2 with retained result. Camera/lamp/mesh/physics acceptance requires original first-run evidence. The optical tap retains original encoded bytes and projected body crop; API lamp bits do not establish visible light.
 
-Offline: `/usr/bin/python3.11 work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/runner.py --check`; `/usr/bin/python3.11 -m unittest discover -s work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/tests`. Hashed logs are in result.json. No mocked physics or observations are offered as acceptance.
+Finalization recomputes measured quantities from original streams using the retained original sample windows and entry-event brackets, validates target physical causes and body containment, inspects original RGB for the relevant distinction, and preserves unresolved judgments. Same-setting repairs change the diagnosed implementation cause and preserve failed evidence. No new sweep points, legal thresholds, hidden retries, or fabricated observations.
 
-Later CLI: `runner.py --output-dir PATH --host HOST --port PORT --case-id ID`. Existing empty output dirs allowed. This currently writes explicit failed preflight result with missing capabilities and exits 2. Complete the named mechanisms and live binding before clearing implementation_gaps. No simulation is authorized here.
+External requirements:
+- Source-supported business-district frontage/building use and designated freight-loading-zone native map binding (external_asset): Provide native_business_binding with matching map, actual turn route/spawn, frontage_evidence and loading_zone_evidence from authoritative available scene sources; existing execution engine consumes the binding and records optical signal bytes.
+- Visible emitted right-indicator flashing in original close RGB (live_measurement): Execute once with supplied native binding, inspect synchronized rear-body ROI across original flash cycles, and retain review evidence.
 
-For measured-results finalization, retain the original entire run, check actual setup/geometry/participants and all channel coverage, recompute declared summaries with original sample windows and entry-event brackets, inspect RGB for visible lamps/signs and maneuver completion, then freeze physics-supported sweep ranges/durations. Preserve failed settings and observations; any same-setting repair must change the diagnosed cause. Do not infer public authority from a physical opening, legal district status from props, or legal compliance from controller requests.
-
-Additional implemented module: signaling.py recomputes observed continuous-signal distance and preserves original RGB ROI luminance histories separately from lamp API bits. Optical variation is not itself visible-flashing acceptance.
-
-Integration update: runner now executes the authored physical maneuver and original measurement helpers. Earlier references to unintegrated helpers are superseded. Remaining exact gaps are result.reason/config.implementation_gaps. Still partial; no simulator run occurred.
+CPU fixtures use synthetic schema data and real encoded tiny videos; they do not establish simulator physics. Materialized command records are materialized-tests.json; hashed logs and exact commands are copied into result.tests after running them.

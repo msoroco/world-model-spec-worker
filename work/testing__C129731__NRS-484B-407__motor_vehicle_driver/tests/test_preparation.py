@@ -20,7 +20,7 @@ class Preparation(unittest.TestCase):
  def test_contact_geometry_preserved(self):
   m=module('geometry');a=m.rectangle((0,0),0,2,1);b=m.rectangle((4,0),0,2,1);self.assertTrue(m.overlaps(a,b));self.assertFalse(m.overlaps(a,m.rectangle((4.01,0),0,2,1)))
  def test_reverse_footprint_crossing(self):
-  m=module('geometry');cross=[[148,-3.5],[152,-3.5],[152,3.5],[148,3.5]];self.assertTrue(m.overlaps(m.rectangle((151,0),0,2,1),cross));self.assertFalse(m.overlaps(m.rectangle((160,0),0,2,1),cross))
+  m=module('geometry');cross=[[148,0],[152,0],[152,3.5],[148,3.5]];self.assertTrue(m.overlaps(m.rectangle((151,1.75),0,2,1),cross));self.assertFalse(m.overlaps(m.rectangle((160,0),0,2,1),cross))
  def test_authored_route_geometry(self):
   c=json.loads((R/'config.json').read_text());self.assertTrue(module('geometry').validate_map(R/'road.xodr',c['mechanism'])['authored_geometry_validated'])
  def test_cleanup_survives_capture_error(self):
@@ -44,3 +44,35 @@ class Preparation(unittest.TestCase):
   original=(R/'runner.py').read_text()
   for f in (R/'constructions').glob('*.json'):
    d=json.loads(f.read_text());self.assertEqual(next(x['content'] for x in d['files'] if x['path']=='runner.py'),original)
+
+class ProjectionSource(unittest.TestCase):
+ def test_no_null_placeholder_channels(self):
+  text=(R/'measurements.py').read_text();self.assertNotIn('missing_capability',text);self.assertIn('actor_visibility',text);self.assertIn('visible_relation',text)
+ def test_actual_native_feature_authoring(self):
+  config=json.loads((R/'config.json').read_text());root=ET.parse(R/'road.xodr').getroot()
+  if config['mechanism']=='yield':self.assertEqual(root.find('.//signal').attrib['type'],'205')
+  if config['mechanism']=='reverse':self.assertEqual(root.find('.//object').attrib['type'],'crosswalk')
+ def test_possible_success_and_measured_checks(self):
+  source=(R/'runner.py').read_text();self.assertIn('return 0 if success else 2',source);self.assertIn('validate_output(out,result',source);self.assertIn('measured_target(',source);self.assertIn('recording.tick(frame,time_s,measure)',source)
+
+class FinalCorrections(unittest.TestCase):
+ def test_participant_join_order(self):
+  m=module('measurements')
+  class P:
+   def __init__(self,ident):self.id=ident
+  self.assertEqual([r['actor_id'] for r in m.ordered_states([P(8),P(4)],[{'actor_id':4},{'actor_id':8}])],[8,4])
+  with self.assertRaises(ValueError):m.ordered_states([P(9)],[{'actor_id':4}])
+ def test_whole_uturn_footprint(self):
+  m=module('geometry');proof=m.validate_uturn_footprint(430);self.assertEqual(proof['sampled_whole_semicircle_poses'],721)
+  with self.assertRaises(ValueError):m.validate_uturn_footprint(430,10,8)
+ def test_visibility_requires_all_routes_and_nine_body_rays(self):
+  m=module('measurements');value={'required_lane_ids':[-1,1],'approaches':[{'lane_id':i,'body_rays_at_probe':[{'clear':True}]*9,'any_body_sight_horizon':{'bound':'at_least','distance_m':230}} for i in [-1,1]]};self.assertTrue(m.validate_visibility(value,[-1,1]));value['approaches'][0]['any_body_sight_horizon']={'bound':'route_limit','unknown':True,'distance_m':220}
+  with self.assertRaises(ValueError):m.validate_visibility(value,[-1,1])
+ def test_full_scalar_summary_contract_declared(self):
+  c=json.loads((R/'config.json').read_text());self.assertEqual(c['measurement_definitions']['sight_distance.minimum_from_either_approach']['statistic'],'min');self.assertEqual(c['measurement_definitions']['backing_intersection_overlap']['statistic'],'max')
+
+class YieldReferenceServo(unittest.TestCase):
+ def test_stop_front_reference_and_completed_hold(self):
+  m=module('runner');target,hold=m.yield_reference_target(487.1,0,2.4,8,7.99,.05,4);self.assertEqual(target,0);self.assertEqual(hold,8);target,hold=m.yield_reference_target(487.1,0,2.4,8,8,.05,4);self.assertEqual(target,4);self.assertEqual(hold,8)
+ def test_nonselected_halt_never_stops(self):
+  m=module('runner');target,hold=m.yield_reference_target(488,4,2.4,0,0,.05,4);self.assertEqual(target,4);self.assertEqual(hold,0)

@@ -17,7 +17,7 @@ class Offline(unittest.TestCase):
   self.assertEqual(len(ET.fromstring(geometry.build_road()).findall('road')),1)
   with self.assertRaises(ValueError):geometry.build_road(-1)
  def test_sources_cases_and_no_guaranteed_behavior(self):
-  cfg=json.loads((ROOT/'config.json').read_text());self.assertTrue(cfg['implementation_gaps'])
+  cfg=json.loads((ROOT/'config.json').read_text());self.assertTrue(cfg['runtime_uncertainties'])
   for c in cfg['cases']:self.assertIsNone(c['variable_assignments']['ego_speed']['value'])
   self.assertFalse(cfg['baseline_selected'])
 if __name__=='__main__':unittest.main()

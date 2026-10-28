@@ -18,8 +18,11 @@ def main():
    d=json.loads(con.read_text())
    for f in d['files']:
     p=ROOT/f['source'] if f.get('source') else folder/f['path']
-    if p.read_text()!=f['content']:report['implementation_gaps'].append(dict(assignment=aid,requirement='Inline/source equality',evidence=str(con.relative_to(ROOT))+':'+f['path']))
-  requirements=r.get('requirements',r.get('externally_blocked_requirements',r.get('gaps',[])))
+    if f['path']=='config.json' and con.name!='construction.json' and not f.get('source'):
+     cfg=json.loads(f['content']);selected=cfg.get('selected_case_id',cfg.get('default_case_id'));
+     if selected!=d['case_id']:report['implementation_gaps'].append(dict(assignment=aid,requirement='Per-case selected config',evidence=str(con.relative_to(ROOT))))
+    elif p.read_text()!=f['content']:report['implementation_gaps'].append(dict(assignment=aid,requirement='Inline/source equality',evidence=str(con.relative_to(ROOT))+':'+f['path']))
+  requirements=r.get('requirements',r.get('externally_blocked_requirements',r.get('external_requirements',r.get('gaps',[]))))
   if r['status']=='blocked' and not requirements:report['implementation_gaps'].append(dict(assignment=aid,requirement='Blocked package lacks structured external requirement',evidence=r.get('reason')))
   if isinstance(requirements,list):
    for req in requirements:

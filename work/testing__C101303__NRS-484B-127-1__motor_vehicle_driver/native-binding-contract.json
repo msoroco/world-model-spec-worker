@@ -1,0 +1,28 @@
+{
+  "description": "External verified native-scene asset/proof binding. It is not a source of observations; the runner verifies map/assets/lanes and captures actual behavior. Native proofs must exist with exact SHA256.",
+  "status": "verified",
+  "required_fields": [
+    "map_sha256",
+    "physical_feature_proofs:[{path,sha256,feature}]",
+    "route:[[x,y,z],...] with<=4m gaps",
+    "driving_polygons:[[[x,y],...],...]",
+    "incoming_topology:all native lane links and intersection IDs",
+    "intersection_polygon:[[x,y],...]",
+    "stop_line:{reference_position_m:[x,y,z],vertices_m,source} physically rendered, not an overlay",
+    "crosswalks:native Map.get_crosswalks vertices",
+    "device_governance:explicit native actor/lane/region IDs and physical proof",
+    "signal_actor_ids:[native integer IDs]",
+    "signal_proof:{installed,uncovered,proof_references}",
+    "authored_lane_width_m for narrow-road sign probe",
+    "speed_sign:{actor_id,blueprint,value_mph:25,position_m},governed_polygon for posted speed",
+    "obstruction_props:[{blueprint,position_m,yaw_deg}] for blind intersection",
+    "peer_routes:[{role:earlier_stopped|intersection_occupying,route:[[x,y,z],...],speed_mps,stop_position_m,release_time_s}] for blind intersection",
+    "incoming_lane_extent_m:[at least230m per incoming route] for sight capture"
+  ],
+  "forbidden": [
+    "Map overlays as physical features",
+    "Changing frozen comparison variables to fit available map",
+    "Empty or guessed physical proof records",
+    "Using a public-authority assumption to substitute for an absent physical sign"
+  ]
+}

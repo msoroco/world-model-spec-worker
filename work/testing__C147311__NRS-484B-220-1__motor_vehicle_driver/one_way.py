@@ -12,11 +12,14 @@ def native_binding(world,branch):
     for sign in signs:
         waypoint=mapping.get_waypoint(sign.get_location())
         if waypoint is None:continue
-        neighbor=waypoint.get_left_lane() or waypoint.get_right_lane()
-        if neighbor is None or neighbor.road_id!=waypoint.road_id or neighbor.lane_id*waypoint.lane_id<=0:continue
+        neighbors=[p for p in (waypoint.get_left_lane(),waypoint.get_right_lane()) if p is not None and p.road_id==waypoint.road_id and p.lane_id*waypoint.lane_id>0]
+        if not neighbors:continue
+        ahead=waypoint.next(80.)
+        if len(ahead)!=1:continue
+        waypoint=ahead[0]
         points=[waypoint];current=waypoint
         for _ in range(80):
-            next_points=current.next(2.)
+            next_points=current.previous(2.) if branch=='opposite_direction' else current.next(2.)
             if len(next_points)!=1:break
             current=next_points[0]
             if current.is_junction:break
@@ -25,7 +28,6 @@ def native_binding(world,branch):
         route=[(p.transform.location.x,p.transform.location.y) for p in points]
         transform=points[0].transform
         if branch=='opposite_direction':
-            route.reverse();transform=points[-1].transform
             yaw=(transform.rotation.yaw+180)%360
         else:yaw=transform.rotation.yaw
         return {'map':mapping.name,'blueprint':'vehicle.tesla.model3','spawn':{'location':{'x':transform.location.x,'y':transform.location.y,'z':transform.location.z+.5},'rotation':{'yaw':yaw}},'route':route,'sign_actor_id':sign.id,'sign_transform':str(sign.get_transform()),'authority_status':'unconfirmed','governed_scope_status':'requires independent sign-orientation/native-lane review'}

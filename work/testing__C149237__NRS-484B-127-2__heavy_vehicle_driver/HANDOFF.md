@@ -1,33 +1,33 @@
 # testing__C149237__NRS-484B-127-2__heavy_vehicle_driver
 
-Status: **partial**. All six preparation responsibilities have authored artifacts and executable CPU-checked components; this is not first-run readiness.
+Status: **blocked by the specific external requirement below**. Implementable preparation code is complete; no simulator was launched and no physical or legal acceptance is claimed. Update003 is acknowledged; no pause is active.
 
-Exact law, cell, actor, witness, summary and existing evidence are preserved in the hashed input and case plan. Relevance, law template, bindings, value-free judgment requirements, canonical cases and constructions are under proposals/ and constructions/. No historical observation is claimed as current evidence.
+Exact law/cell/actor/witness/summary and existing evidence are preserved by the input hash in result.json and sources in case-plan.json. Heavy actors remain heavy_vehicle_driver. Draft template, relevance, bindings, judgment requirements and canonical cases are under proposals/. Subject outcomes remain measured hypotheses and judgment phrases have no adopted thresholds. Baselines are retained but not selected by default.
 
-Cases and comparisons: testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__baseline: Neutral definition retained and not selected by default.; testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below: 500-foot statutory gap probe. All physical setup is fixed; servo requests measured footprint gap.; testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at: 500-foot statutory gap probe. All physical setup is fixed; servo requests measured footprint gap.; testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_above: 500-foot statutory gap probe. All physical setup is fixed; servo requests measured footprint gap.
+Implemented: authored OpenDRIVE roads/junctions/crest, native yield205 signals with lane validity or native crosswalk objects where needed; pure-pursuit path and bounded speed/reverse/gap controllers for all participants; exact original-frame PipelineCapture; four real VP9 WebM encoders; mandatory measured native actor/map/device/raycast projections; participant/body histories, collision checks, full route containment, observed target checks and recomputable raw scalar summaries. Resource cleanup attempts capture, encoders, every actor/sensor, signal handlers and world settings independently, and never stops the simulator server. The runner has genuine success and retained diagnostic failure paths through strict validate_output.
 
-The root construction is the first non-baseline case anchor. Additional canonical case proposals (each contains its own config.json and identical implementation/map/camera files):
+Visibility requires every declared native incoming lane to extend230m on every original frame, exact any-of-nine body-ray horizons, no route-limit censorship, and both through-road approaches for yield cases. The whole U-turn swept footprint is bounded analytically and checked at721 intermediate poses, then checked against actual actor extents. Scalar methods/windows are frozen in config.measurement_definitions; original raw streams and actual sample_window_s are retained.
+
+Use `/usr/bin/python3.11 work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/runner.py --check` offline. Later native Python3.8+ invocation is `runner.py --output-dir PATH --host HOST --port PORT --case-id ID` with supplied runtime/python on PYTHONPATH. An existing executor-created output directory is allowed; attempt/capture files are exclusive. Native assets/dependencies are queried before evidence acceptance.
+
+Cases and isolated comparisons:
+
+- testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__baseline: Neutral definition retained and not selected by default.
+- testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below: 500-foot statutory gap probe. All physical setup is fixed; servo requests measured footprint gap.
+- testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at: 500-foot statutory gap probe. All physical setup is fixed; servo requests measured footprint gap.
+- testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_above: 500-foot statutory gap probe. All physical setup is fixed; servo requests measured footprint gap.
+
+The root construction.json anchors testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below. Each additional canonical proposal below includes its own config and the same implementation/map/cameras; shared files carry work/_shared source provenance:
 
 - constructions/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__baseline.json
 - constructions/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below.json
 - constructions/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at.json
 - constructions/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_above.json
 
-Runner: `/usr/bin/python3.11 work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/runner.py --check`. Later native Python 3.8+ launch accepts `--output-dir PATH --host HOST --port PORT --case-id ID`; its runtime imports remain lazy. It owns the generated world settings and spawned actors, never the simulator server. Baselines require explicit --include-baselines. The already-created executor output directory is allowed; attempt/capture files are exclusive.
+Validation: all 10 materialized-bundle commands and the two owner commands passed. The40-test assignment suite includes successful and failing full output fixtures with real encoded video, every mandatory-channel/null rejection, timestamps, target/physical-cause mismatch, contexts, participant history, route/footprint departure and independent cleanup failures. Synthetic fixtures prove software contracts, never physical feasibility. Exact commands, exits, logs and source hashes are in result.tests; materialized-tests.json records each proposal hash and confirms materialization preceded tests.
 
-Original capture uses runtime/python/PipelineCapture immediately after each tick, with camera queues joined by exact CARLA frame. Saves native graph/evidence, recorder additional data, road, full trace, four RGB sequences and frame map. Missing mandatory projections emit null and a missing-capability reason, never targets as observations. The runner deliberately returns failure until all required setup/capture/video checks are implemented and measured.
+External requirement (missing implementation is not classified as an external barrier):
 
-Measured finalization: retain failed attempt and hashes; implement missing atom/cause projections, then execute each frozen setting once. Recompute summaries with `finalize.py OUTPUT --channel NAME --start T0 --end T1 --statistic mean` using actual saved sample times; match the frozen method/window/statistic, keep raw streams, validate both approach horizons/footprints and all original frames, encode and inspect full-trace camera review videos with frame map, and compare requested versus measured quantities. A diagnostic summary does not authorize endpoint changes, extra sweep points, legal thresholds, or acceptance. Repair the implementation at the same setting under a new retained attempt if realization fails. Physics-dependent ranges remain explicitly incomplete and need feasibility evidence before freezing.
+- {"category": "external_asset", "evidence": "CARLA blueprint inventory unavailable; existing exact-width class sweep is explicitly incomplete and default native truck dimensions are gated at runtime.", "next_action": "Query actual truck blueprints and measured bounding-box widths; supply matched assets for statutory width boundary coverage, retaining gap triple and heavy_vehicle_driver.", "requirement": "Supply physically matched inventory for explicit sub/at/above80-inch width-class probes and validate goods-transport truck assets.", "requires_live_execution": true}
 
-Runtime/implementation uncertainties and remaining work:
-
-- No CARLA execution: spawn inventory, road import, collision/departure, controller tracking and camera visibility unverified.
-- Mandatory raw atom streams are implemented only for direct telemetry; remaining atom projections require completion against retained original-frame PipelineCapture evidence.
-- Primary encoded review videos are not implemented; runner saves four synchronized original RGB PNG sequences and exact frame map.
-- Truck blueprint dimensions and goods-transport classification require queried inventory; width-gating code refuses sub-80-inch actors.
-- 80-inch width boundary probes cannot yet select physically matched blueprints without altering other dimensions.
-- Conditions permit and entering without danger remain unresolved; no timing bound for overtaking is inferred from summary.
-
-Summary/text conflict: The supplied following summary mentions a bound on overtaking duration not numerically specified in the exact law; no numeric bound is invented.
-
-No CARLA run, statutory judgment, physical acceptance or human-review blocker is claimed. Update 002 applied; continue does not release any future pause.
+Measured finalization: supply the listed native asset or retained static native calibration evidence, then freeze any approved physical binding changes with exact source provenance. Execute each frozen non-baseline setting once, retain original graphs/road/recorder/trace/videos and failed attempts, inspect native feature rendering and physical cause, recompute declared summaries from saved scalar samples, and run validate_output. For requested physical target failure, diagnose and change the cause at the same setting under a new retained internal attempt. Do not add sweep points, shift endpoints, silently alter comparison conditions or infer legal standards. Source-summary conflicts remain in case-plan.json; notably the truck summary supplies no lawful numeric overtaking-duration bound. Previous preparation checkpoint notes are retained separately in HANDOFF-checkpoints.md.

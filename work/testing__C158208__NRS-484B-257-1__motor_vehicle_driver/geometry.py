@@ -42,3 +42,16 @@ def validate_map(path,mechanism,search_distance=230.):
   z=roads[1].findall('./elevationProfile/elevation')
   assert elevation(z,500)>elevation(z,300) and elevation(z,500)>elevation(z,700)
  return {'authored_geometry_validated':True,'native_import_and_ray_coverage_confirmed':False}
+
+def validate_uturn_footprint(station,half_length=2.8,half_width=1.25):
+ # With centre (station+6sin(t),6cos(t)), heading -t, every corner has
+ # y=(6+corner_y)cos(t)-corner_x sin(t). The analytic amplitude bounds all t.
+ lateral_bound=math.hypot(6+half_width,half_length)
+ if lateral_bound>=12:raise ValueError('Full U-turn swept body exceeds native 24m operating surface')
+ longitudinal_bound=lateral_bound
+ if station-longitudinal_bound<=0 or station+longitudinal_bound>=1800:raise ValueError('Full U-turn body exceeds authored road ends')
+ for i in range(721):
+  t=i*math.pi/720;p=(station+6*math.sin(t),6*math.cos(t))
+  for corner in rectangle(p,-t,half_length,half_width):
+   if not 0<corner[0]<1800 or not -12<corner[1]<12:raise ValueError('Intermediate U-turn footprint outside native road')
+ return {'continuous_lateral_amplitude_bound_m':lateral_bound,'half_length_limit_m':half_length,'half_width_limit_m':half_width,'sampled_whole_semicircle_poses':721,'native_physics_clearance_confirmed':False}

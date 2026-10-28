@@ -36,6 +36,9 @@ def static_check():
     for f in ('runner.py','finalize.py','geometry.py'):ast.parse((ROOT/f).read_text())
     from geometry import validate_map
     validate_map(ROOT/'road.xodr',c['mechanism'])
+    if c['mechanism']=='uturn':
+        from geometry import validate_uturn_footprint
+        for case in c['cases']:validate_uturn_footprint(case['variable_assignments']['maneuver_station_m']['value'])
     construction=json.loads((ROOT/'construction.json').read_text())
     for f in construction['files']:assert (ROOT/f['path']).read_text()==f['content'],f['path']
     assert {o['name'] for o in plan['observations']} <= {i['name'] for i in construction['recording_description']['channels']}
@@ -79,99 +82,147 @@ def cleanup_resources(capture,streams,sensors,actors,world,old,handlers,result,o
     (out/'result.json').write_text(json.dumps(result,indent=2))
     return errors
 
+def yield_reference_target(x,velocity,half_length,requested_hold,observed_hold,dt,nominal):
+    # Engineering front-bumper stop margin from native junction approach endpoint.
+    if observed_hold>=requested_hold:return nominal,observed_hold
+    if x>475 and velocity<.05:observed_hold=min(requested_hold,observed_hold+dt)
+    remaining=max(0.,490.-half_length-.5-x)
+    return min(nominal,.8*remaining),observed_hold
+
 def execute(args):
+    from contracts import validate_output,measured_target,summarize
+    from recording import Recording,Resources
+    from measurements import project,setup
+    import shutil
     c=load();case=next(i for i in c['cases'] if i['case_id']==(args.case_id or c['selected_case_id']))
-    if case['target_type']=='baseline' and not args.include_baselines:raise ValueError('Baseline is not selected by default; explicit --include-baselines required')
+    if case['target_type']=='baseline' and not args.include_baselines:raise ValueError('Baseline is not selected by default; --include-baselines required')
     out=pathlib.Path(args.output_dir);out.mkdir(parents=True,exist_ok=True)
-    # Exclusive outputs; an existing executor-created directory is supported.
-    reservation=(out/'attempt.json').open('x');reservation.write(json.dumps({'case_id':case['case_id']}));reservation.close()
-    import carla
-    sys.path.insert(0,str(ROOT.parents[1]/'runtime/python'))
-    from pipeline_capture import PipelineCapture
-    client=carla.Client(args.host,args.port);client.set_timeout(30)
-    if client.get_client_version()!=client.get_server_version(): raise RuntimeError('CARLA client/server version mismatch')
-    world=client.generate_opendrive_world((ROOT/'road.xodr').read_text(),carla.OpendriveGenerationParameters(vertex_distance=1.,max_road_length=50.,wall_height=0.,additional_width=.2,smooth_junctions=True,enable_mesh_visibility=True))
-    old=world.get_settings();actors=[];sensors=[];capture=None;streams={};flag={'stop':False};old_handlers={};result=None;frame_map=None;lead_path=None;lead_index=0
-    result={'case_id':case['case_id'],'status':'draft','requested_variable_assignments':case['variable_assignments'],'measured_values':{},'target_checks':[],'setup_confirmed':False,'behavior_attempted':False,'maneuver_completed':False,'termination_reason':'initialization','physical_failure_flags':[],'trace_reference':'trace.jsonl','video_references':[],'video_frame_map_reference':'video-frame-map.jsonl','recording_description':case['recording_description'],'recording_evidence':[],'realized_observables':{},'runtime_uncertainties':c['delivery_gaps']}
-    def stop(signum,frame):flag['stop']=True
+    with (out/'attempt.json').open('x') as f:json.dump({'case_id':case['case_id']},f)
+    result={'case_id':case['case_id'],'status':'draft','requested_variable_assignments':case['variable_assignments'],'measured_values':{},'target_checks':[],'setup_confirmed':False,'behavior_attempted':False,'maneuver_completed':False,'termination_reason':'initialization','physical_failure_flags':[],'trace_reference':'trace.jsonl','video_references':[],'video_frame_map_reference':'video_frame_map.jsonl','recording_description':case['recording_description'],'recording_evidence':[],'realized_observables':{},'external_requirements':[]}
+    resources=Resources();recording=None;world=None;old=None;actors=[];handlers={};stopping={'requested':False};history=[];values=[];measurements=[];success=False
+    def terminate(sig,frame):stopping['requested']=True
     try:
-        for sig in (signal.SIGINT,signal.SIGTERM):old_handlers[sig]=signal.signal(sig,stop)
-        settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=1/c['hz'];world.apply_settings(settings)
-        path=route(world,c,case);a=case['variable_assignments'];reverse=c['mechanism']=='reverse'
-        bp=world.get_blueprint_library().find(c['vehicle_blueprint']);bp.set_attribute('role_name','subject')
-        ego=world.spawn_actor(bp,carla.Transform(carla.Location(*path[0]),carla.Rotation(yaw=0.)));actors.append(ego)
-        lead=None
+        if not shutil.which('ffmpeg') or not shutil.which('ffprobe'):raise RuntimeError('external_asset: ffmpeg/ffprobe with VP9 encoder required')
+        import carla
+        # Local execution uses supplied runtime; materialized execution consumes declared PYTHONPATH.
+        runtime=ROOT.parents[1]/'runtime/python'
+        if runtime.is_dir():sys.path.insert(0,str(runtime))
+        client=carla.Client(args.host,args.port);client.set_timeout(30.)
+        if client.get_client_version()!=client.get_server_version():raise RuntimeError('external_asset: CARLA client/server version mismatch')
+        world=client.generate_opendrive_world((ROOT/'road.xodr').read_text(),carla.OpendriveGenerationParameters(vertex_distance=1.,max_road_length=50.,wall_height=0.,additional_width=.2,smooth_junctions=True,enable_mesh_visibility=True));old=world.get_settings();resources.own(lambda:world.apply_settings(old))
+        for sig in (signal.SIGINT,signal.SIGTERM):
+            previous_handler=signal.signal(sig,terminate);resources.own(lambda sig=sig,handler=previous_handler:signal.signal(sig,handler))
+        settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=1/c['hz'];settings.no_rendering_mode=False;world.apply_settings(settings)
+        a=case['variable_assignments'];path=route(world,c,case);reverse=c['mechanism']=='reverse';bp=world.get_blueprint_library().find(c['vehicle_blueprint']);bp.set_attribute('role_name','subject')
+        ego=world.spawn_actor(bp,carla.Transform(carla.Location(*path[0]),carla.Rotation(yaw=0.)));actors.append(ego);resources.own(ego.destroy)
+        if c['mechanism']=='uturn':
+            from geometry import validate_uturn_footprint
+            validate_uturn_footprint(a['maneuver_station_m']['value'],ego.bounding_box.extent.x,ego.bounding_box.extent.y)
+        lead=None;lead_path=[];lead_index=0
         if c['mechanism']=='following':
-            width=ego.bounding_box.extent.y*2
-            if width<2.032:raise RuntimeError('Subject truck width below statutory 80-inch qualifying class')
-            gap=a['commanded_surface_gap']['value'];p=path[0]
-            lead=world.spawn_actor(bp,carla.Transform(carla.Location(p[0]+gap+ego.bounding_box.extent.x*2,p[1],p[2]),carla.Rotation()));actors.append(lead)
-            if lead.bounding_box.extent.y*2<2.032:raise RuntimeError('Lead truck width below statutory qualifying class')
-        if c['mechanism']=='yield':
-            # Cross participant uses actual native cross-road lane; no officer/signal invented.
-            w=world.get_map().get_waypoint_xodr(3,-1,480.)
-            if w is None:raise RuntimeError('Cross road unavailable')
-            t=w.transform;t.location.z+=.35;lead=world.spawn_actor(world.get_blueprint_library().find('vehicle.lincoln.mkz_2020'),t);actors.append(lead)
-            lead_path=[]
-            for road,stations in ((3,range(480,490,2)),(21,range(0,20,2)),(4,range(0,200,2))):
+            if 2*ego.bounding_box.extent.y<2.032:raise RuntimeError('external_asset: selected goods truck blueprint width does not meet 80-inch class')
+            lead=world.spawn_actor(bp,carla.Transform(carla.Location(path[0][0]+a['commanded_surface_gap']['value']+2*ego.bounding_box.extent.x,path[0][1],path[0][2]),carla.Rotation()));actors.append(lead);resources.own(lead.destroy)
+            if 2*lead.bounding_box.extent.y<2.032:raise RuntimeError('external_asset: selected lead truck blueprint width does not meet 80-inch class')
+            for s in range(400,1200,2):
+                w=world.get_map().get_waypoint_xodr(1,-1,float(s));p=w.transform.location;lead_path.append([p.x,p.y,p.z+.35])
+            lead_index=min(range(len(lead_path)),key=lambda i:math.hypot(lead_path[i][0]-lead.get_location().x,lead_path[i][1]-lead.get_location().y))
+        elif c['mechanism']=='yield':
+            for road,stations in ((21,range(2,20,2)),(4,range(0,200,2))):
                 for station in stations:
-                    waypoint=world.get_map().get_waypoint_xodr(road,-1,float(station))
-                    if waypoint is None:raise RuntimeError('Native cross-participant route missing')
-                    location=waypoint.transform.location;lead_path.append([location.x,location.y,location.z+.35])
-        # No rendered-sign/crosswalk claim is made from OpenDRIVE metadata alone.
-        result['setup_confirmed']=False
-        image_queues=[]
-        for idx,cam in enumerate(c['cameras']):
-            cb=world.get_blueprint_library().find('sensor.camera.rgb');cb.set_attribute('image_size_x',str(cam['width']));cb.set_attribute('image_size_y',str(cam['height']));cb.set_attribute('fov',str(cam['fov']));cb.set_attribute('sensor_tick','0')
-            sensor=world.spawn_actor(cb,carla.Transform(carla.Location(*cam['location']),carla.Rotation(pitch=cam['pitch'])),attach_to=ego);actors.append(sensor);sensors.append(sensor);q=queue.Queue();sensor.listen(q.put);image_queues.append(q);(out/('camera-'+str(idx))).mkdir(exist_ok=False)
-        put_config=dict(c,selected_case_id=case['case_id']);(out/'config.json').write_text(json.dumps(put_config,indent=2))
-        capture=PipelineCapture(client,ego,out,case['case_id'],required_observations=[o['name'] for o in c['observations']])
-        for channel in case['recording_description']['channels']:
-            name=channel['name'];streams[name]=(out/('channel-'+name.replace('.','_')+'.jsonl')).open('x')
-            result['recording_evidence'].append({'name':name,'unit':channel['unit'],'reference':'channel-'+name.replace('.','_')+'.jsonl'})
-        frame_map=(out/'video-frame-map.jsonl').open('x');context={'authored_test_context':a,'provenance':'draft authored facts; native physical realization unverified'};(out/'context.json').write_text(json.dumps(context,indent=2))
-        i=0;rows=[];gap_values=[];yield_hold_started=None
+                    w=world.get_map().get_waypoint_xodr(road,-1,float(station))
+                    if w is None:raise RuntimeError('live_measurement: native cross-participant route missing')
+                    p=w.transform.location;lead_path.append([p.x,p.y,p.z+.35])
+            w=world.get_map().get_waypoint_xodr(21,-1,2.);t=w.transform;t.location.z+=.35;lead=world.spawn_actor(world.get_blueprint_library().find('vehicle.lincoln.mkz_2020'),t);actors.append(lead);resources.own(lead.destroy)
+        # Let the native geometry/sensors settle only through recorded frames, without hidden driving.
+        receipt=setup(world,c,a);(out/'setup.json').write_text(json.dumps(receipt,indent=2));result['setup_confirmed']=True
+        (out/'config.json').write_text(json.dumps(c,indent=2));(out/'context.json').write_text(json.dumps({'authored_test_context':a},indent=2))
+        recording=Recording(client,ego,out,case['case_id'],case['recording_description'],c['cameras'],required_atoms=[o['name'] for o in c['observations']]);resources.own(recording.close)
+        histories=(out/'participants.jsonl').open('x');resources.own(histories.close);footprints=(out/'footprints.jsonl').open('x');resources.own(footprints.close)
+        result.update(required_participant_ids=[p.id for p in actors],participant_history_reference='participants.jsonl',footprint_reference='footprints.jsonl',driving_polygons=c['driving_polygons'])
+        collisions=[]
+        sensor=world.spawn_actor(world.get_blueprint_library().find('sensor.other.collision'),carla.Transform(),attach_to=ego);resources.own(sensor.destroy);resources.own(sensor.stop);sensor.listen(lambda event:collisions.append({'frame':event.frame,'other_actor_id':event.other_actor.id,'impulse':[event.normal_impulse.x,event.normal_impulse.y,event.normal_impulse.z]}))
+        i=0;previous={};stationary_hold=0.;entered_gate=False
+        auxiliary={}
+        names=['sight_distance.minimum_from_either_approach'] if c['mechanism']=='uturn' else ['subject_truck_width','lead_truck_width'] if c['mechanism']=='following' else ['backing_intersection_overlap','backing_crosswalk_overlap'] if c['mechanism']=='reverse' else []
+        for name in names:
+            stream=(out/(name+'.jsonl')).open('x');resources.own(stream.close);auxiliary[name]={'stream':stream,'samples':[]}
+        def save_scalar(name,time_s,value):
+            row={'time_s':time_s,'value':value};auxiliary[name]['samples'].append(row);auxiliary[name]['stream'].write(json.dumps(row)+'\n')
         for tick in range(int(c['duration_s']*c['hz'])):
-            if flag['stop']:result['termination_reason']='signal';break
+            if stopping['requested']:result['termination_reason']='signal';break
             t=ego.get_transform();v=speed(ego.get_velocity());target=a['commanded_approach_speed']['value']
             if c['mechanism']=='yield' and t.location.x>475:
-                if yield_hold_started is None:yield_hold_started=tick/c['hz']
-                if tick/c['hz']-yield_hold_started<a['yield_hold_s']['value']:target=0.
-            if c['mechanism']=='following' and lead is not None:
-                gap=surface_gap(ego,lead);gap_values.append(gap);target=max(0.,min(12.,target+.15*(gap-a['commanded_surface_gap']['value'])))
-                lead.apply_control(carla.VehicleControl(throttle=max(0.,min(.7,.3*(a['commanded_approach_speed']['value']-speed(lead.get_velocity()))))))
-            ctl,i=command((t.location.x,t.location.y),math.radians(t.rotation.yaw),v,path,i,target,reverse)
-            ego.apply_control(carla.VehicleControl(**ctl));result['behavior_attempted']=True
-            if c['mechanism']=='yield' and lead is not None:
-                lt=lead.get_transform();lv=speed(lead.get_velocity())
-                lead_target=4. if lead_index<len(lead_path)-1 else 0.
-                lead_control,lead_index=command((lt.location.x,lt.location.y),math.radians(lt.rotation.yaw),lv,lead_path,lead_index,lead_target)
-                lead.apply_control(carla.VehicleControl(**lead_control))
-            frame=world.tick();time_s=world.get_snapshot().timestamp.elapsed_seconds;row=capture.capture(frame,time_s);rows.append(row)
-            frame_map.write(json.dumps({'video_frame':tick,'carla_frame':frame,'time_s':time_s})+'\n')
-            for ci,q in enumerate(image_queues):
-                image=q.get(timeout=20.)
-                while image.frame<frame:image=q.get(timeout=20.)
-                if image.frame!=frame:raise RuntimeError('Camera/trace frame mismatch')
-                image.save_to_disk(str(out/('camera-'+str(ci))/('%06d.png'%tick)))
-            # Directly measured channels only. All unsupported atoms remain null with explicit missing capability.
-            measured={'kin.position':row['position'],'kin.heading':row['heading_deg'],'kin.speed':row['speed_mps'],'kin.extent':{'subject_width_m':2*ego.bounding_box.extent.y},'rel.surface_gap':surface_gap(ego,lead) if c['mechanism']=='following' else None,'drv.backing':bool(ego.get_control().reverse and row['speed_mps']>.01)}
-            for name,stream in streams.items():stream.write(json.dumps({'time_s':time_s,'value':measured.get(name),'missing_capability':None if name in measured else 'Requires original graph/geometry evidence projection; not substituted from target'})+'\n')
-            if i==len(path)-1 and math.hypot(t.location.x-path[-1][0],t.location.y-path[-1][1])<2:result['maneuver_completed']=True;result['termination_reason']='route_complete';break
+                entered_gate=True
+                target,stationary_hold=yield_reference_target(t.location.x,v,ego.bounding_box.extent.x,a['yield_hold_s']['value'],stationary_hold,1/c['hz'],target)
+            if c['mechanism']=='following':target=max(0.,min(12.,target+.15*(surface_gap(ego,lead)-a['commanded_surface_gap']['value'])))
+            ctl,i=command((t.location.x,t.location.y),math.radians(t.rotation.yaw),v,path,i,target,reverse);ego.apply_control(carla.VehicleControl(**ctl));result['behavior_attempted']=True
+            if lead:
+                lt=lead.get_transform();lead_target=a['commanded_approach_speed']['value'] if c['mechanism']=='following' else (3. if entered_gate else 0.)
+                if lead_index==len(lead_path)-1:lead_target=0.
+                control,lead_index=command((lt.location.x,lt.location.y),math.radians(lt.rotation.yaw),speed(lead.get_velocity()),lead_path,lead_index,lead_target);lead.apply_control(carla.VehicleControl(**control))
+            frame=world.tick();time_s=world.get_snapshot().timestamp.elapsed_seconds
+            captured={}
+            def measure(row,event):
+                observation,participants,body=project(world,ego,actors,c,a,previous,event)
+                captured.update(observation=observation,participants=participants,body=body)
+                return observation
+            row=recording.tick(frame,time_s,measure)
+            observation=captured['observation'];participants=captured['participants'];body=captured['body']
+            values.append(row);measurements.append(observation);history.append({'time_s':time_s,'participants':participants})
+            if c['mechanism']=='uturn':save_scalar('sight_distance.minimum_from_either_approach',time_s,min(entry['any_body_sight_horizon']['distance_m'] for entry in observation['st.sight_distance']['approaches']))
+            if c['mechanism']=='following':
+                save_scalar('subject_truck_width',time_s,2*ego.bounding_box.extent.y);save_scalar('lead_truck_width',time_s,2*lead.bounding_box.extent.y)
+            if c['mechanism']=='reverse':
+                save_scalar('backing_intersection_overlap',time_s,bool(observation['rel.occupies']['authored_intersection_overlap'] and observation['drv.backing']));save_scalar('backing_crosswalk_overlap',time_s,bool(any(observation['rel.occupies']['native_crosswalk_overlap']) and observation['drv.backing']))
+            histories.write(json.dumps(history[-1])+'\n');footprints.write(json.dumps({'time_s':time_s,'vertices':body})+'\n')
+            if collisions:result['physical_failure_flags'].append('collision');result['termination_reason']='collision';break
+            if i==len(path)-1 and math.hypot(ego.get_location().x-path[-1][0],ego.get_location().y-path[-1][1])<2:result['maneuver_completed']=True;result['termination_reason']='route_complete';break
         else:result['termination_reason']='timeout'
-        frame_map.close();result['measured_values']={'last_speed_mps':rows[-1]['speed_mps'] if rows else None,'surface_gap_samples':gap_values,'frames':len(rows)}
-        result['physical_failure_flags']=['mandatory_observation_projection_incomplete','native_setup_not_confirmed','review_video_not_encoded']
-        for target in ('commanded_approach_speed','commanded_surface_gap','requested_sight_distance'):
-            if target not in a:continue
-            values=[r['speed_mps'] for r in rows] if target=='commanded_approach_speed' else gap_values if target=='commanded_surface_gap' else []
-            result['target_checks'].append({'target':target,'requested':a[target]['value'],'measured':sum(values)/len(values) if values else None,'method':'mean of original samples; full trace retained','tolerance':.22352 if target=='commanded_approach_speed' else 1.,'matched':False,'physical_cause_confirmed':False,'cause_evidence':'capture/evidence.jsonl; requires measured finalization'})
-        result['video_references']=[{'path':'camera-'+str(j),'format':'original RGB PNG sequence','encoded_review_video':False} for j in range(4)]
+        result['measured_values']={'frames':len(values),'observed_stationary_hold_s':stationary_hold,'collision_events':collisions}
+        if not values:raise RuntimeError('live_measurement: no original recorded frames')
+        result.update(recording.result_fields());result['recording_evidence'].append({'name':'authored_test_context','unit':'structured','reference':'context.json'})
+        # Actual original-window summaries use a frozen engineering interval (5..10 seconds after recording starts).
+        first,last=values[0]['time_s'],values[-1]['time_s'];start,end=first+5.,min(last,first+10.)
+        if end<start:raise RuntimeError('live_measurement: maneuver did not supply frozen five-second approach evaluation window')
+        scalar=[{'time_s':row['time_s'],'value':row['speed_mps']} for row in values];actual,window=summarize(scalar,start,end)
+        if c['mechanism'] not in ('yield','uturn'):
+            result['target_checks'].append(measured_target('commanded_approach_speed',a['commanded_approach_speed']['value'],actual,.22352,'mean original speed within frozen engineering approach window, not a legal tolerance','channels/kin.speed.jsonl'))
+        result['realized_observables']['kin.speed']={'value':actual,'unit':'m/s','method':'original actor.get_velocity norm','time_window':'frozen recording-relative 5..10s','sample_window_s':window,'statistic':'mean','reference':'channels/kin.speed.jsonl'}
+        if c['mechanism']=='following':
+            samples=[{'time_s':row['time_s'],'value':obs['rel.surface_gap']} for row,obs in zip(values,measurements)];actual,window=summarize(samples,start,end);result['target_checks'].append(measured_target('commanded_surface_gap',a['commanded_surface_gap']['value'],actual,1.,'mean original world-body longitudinal gap','channels/rel.surface_gap.jsonl'))
+            result['realized_observables']['rel.surface_gap']={'value':actual,'unit':'m','method':'world-space measured bounding box projections','time_window':'frozen recording-relative 5..10s','sample_window_s':window,'statistic':'mean','reference':'channels/rel.surface_gap.jsonl'}
+        elif c['mechanism']=='yield':result['target_checks'].append(measured_target('yield_hold_s',a['yield_hold_s']['value'],stationary_hold,.15,'sum original frames below 0.05m/s at declared approach gate; engineering only',['channels/kin.speed.jsonl','setup.json']))
+        elif c['mechanism']=='reverse':
+            intersection=any(o['rel.occupies']['authored_intersection_overlap'] and o['drv.backing'] for o in measurements);crosswalk=any(any(o['rel.occupies']['native_crosswalk_overlap']) and o['drv.backing'] for o in measurements)
+            desired_intersection='into_intersection_reverse' in case['case_id'];desired_crosswalk='over_crosswalk_reverse' in case['case_id']
+            result['target_checks'].append(measured_target('intersection_overlap_while_backing',desired_intersection,intersection,0,'same-frame footprint polygon intersection and signed actual reverse velocity','channels/rel.occupies.jsonl'))
+            result['target_checks'].append(measured_target('crosswalk_overlap_while_backing',desired_crosswalk,crosswalk,0,'same-frame native crosswalk polygon intersection and signed actual reverse velocity','channels/rel.occupies.jsonl'))
+        elif c['mechanism']=='uturn':
+            distances=[]
+            for obs in measurements:
+                vis=obs['st.sight_distance'];distances.append(min(x['any_body_sight_horizon']['distance_m'] for x in vis['approaches']))
+            actual=min(distances);result['target_checks'].append(measured_target('requested_sight_distance',a['requested_sight_distance']['value'],actual,1.,'minimum original any-of-nine incoming body horizons over entire maneuver; preserve bounds/brackets','channels/st.sight_distance.jsonl'))
+        for name,data in auxiliary.items():
+            statistic='max' if name.startswith('backing_') else 'min'
+            value,window=summarize(data['samples'],first,last,statistic)
+            result['realized_observables'][name]={'value':value,'unit':'bool' if name.startswith('backing_') else 'm','method':c['measurement_definitions'][name]['method'],'time_window':'entire original execution','sample_window_s':window,'statistic':statistic,'reference':name+'.jsonl'}
+        if any(not check['matched'] for check in result['target_checks']):result['physical_failure_flags'].append('target_mismatch')
     except BaseException as exc:
         result['termination_reason']='runtime_error:'+str(exc);result['physical_failure_flags'].append(type(exc).__name__)
-        raise
+        text=str(exc);category='external_asset' if text.startswith('external_asset:') or isinstance(exc,ImportError) else 'live_measurement'
+        result['external_requirements'].append({'requirement':text,'category':category,'evidence':'retained attempt/result and original artifacts before failure','next_action':'Provide verified dependency/native asset or inspect retained physical measurements, repair cause at same frozen setting and rerun once','requires_live_execution':category=='live_measurement'})
     finally:
-        cleanup_resources(capture,streams,sensors,actors,world,old,old_handlers,result,out,frame_map)
-    return 0 if result['setup_confirmed'] and result['maneuver_completed'] and not result['physical_failure_flags'] else 2
+        errors=resources.close();result['cleanup_errors']=errors
+        if errors:result['physical_failure_flags'].append('cleanup_failure')
+        if recording:
+            result.update(recording.result_fields())
+            if not any(x.get('name')=='authored_test_context' for x in result['recording_evidence']):result['recording_evidence'].append({'name':'authored_test_context','unit':'structured','reference':'context.json'})
+            if recording.close_errors:result['physical_failure_flags'].append('recording_close_failed')
+        if not result['physical_failure_flags']:
+            try:validate_output(out,result,case['recording_description']);success=True
+            except BaseException as exc:result['physical_failure_flags'].append('output_contract:'+str(exc))
+        result['status']='recorded' if success else 'diagnostic';(out/'result.json').write_text(json.dumps(result,indent=2))
+    return 0 if success else 2
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');p.add_argument('--output-dir');p.add_argument('--host');p.add_argument('--port',type=int);p.add_argument('--case-id');p.add_argument('--include-baselines',action='store_true');args=p.parse_args()
