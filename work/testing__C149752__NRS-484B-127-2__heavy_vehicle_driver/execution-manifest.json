@@ -1,23 +1,28 @@
 {
   "format": "worker-execution-manifest-v1",
   "assignment_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver",
-  "runtime_manifest_sha256": "6b671083947557a258b6fbd579221cabed669dd5feea917c0e9f0b756347762f",
+  "runtime_manifest_sha256": "49c0e36baf755de7fb099a7b9dc952b5a299706f5137a19a1748693ef01416de",
   "cases": [
     {
       "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
       "kind": "capability",
       "construction": "construction.json",
-      "construction_sha256": "f69ea99e81a9c6b37ec3bf8d2847fce9a4f1a973a35206d8091863dd52ec599e",
+      "construction_sha256": "80d846b90e2fac7f3e5c3f5b3d41270959afbf6d42435ab3a444d9f63970b8c0",
       "measurement_procedure": {
         "entrypoint": "analyze.py",
-        "output_schema": "worker-analysis-report-v1"
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "37c06c74bb73843235c60082736289f2f8181114363c5e23aac50819e0eb0225",
+        "saved_only": true
       },
       "measurement_contract": "measurement-contract.json",
       "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
       },
       "acquisition": {
         "kin.speed": {
@@ -31,54 +36,66 @@
           "evidence": "Original subject/actor/road/control/weather observations in capture/evidence.jsonl; declared geometry/rule/environment packets: scenario_geometry"
         }
       },
+      "gpu_command": "python3.11 work/_shared/runtime002.py runtime.py capture --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/native002-0",
+      "owner_release_command": "python3.11 work/_shared/runtime002.py runtime.py owner-released --attempt .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/native002-0 --receipt .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/owner002-0.json --acknowledge-owner-released",
       "offline": {
-        "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/proof-26adddb520/offline-0",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference --output .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/update002-b8c5c97a39/offline-0",
         "exit_code": 0,
-        "log": "receipts/offcheck-0.log",
-        "log_sha256": "17f7b98e93c3db299106dbf6cc9d658f3b617cbee482b157a7ab114313a22fd4",
-        "construction_sha256": "f69ea99e81a9c6b37ec3bf8d2847fce9a4f1a973a35206d8091863dd52ec599e"
+        "log": "receipts/offcheck002-follow_reference.log",
+        "log_sha256": "f2d09b31c4f1d5127d37df7a4cbf67bcb228fc382dba83bd8169d0d903cb34a1",
+        "construction_sha256": "80d846b90e2fac7f3e5c3f5b3d41270959afbf6d42435ab3a444d9f63970b8c0"
       },
       "compatibility": {
-        "receipt": "receipts/compatcheck-0.json",
-        "sha256": "638f22378a589283ca97902e4b741a4ee91352dc7526143ff117a2bec6427d0c",
-        "log": "receipts/analysis-0.log"
+        "receipt": "receipts/compatcheck002-follow_reference.json",
+        "sha256": "a8aaba287e4038472fe9575be60f61143512b92383418c2bc9d977262b6ab43f",
+        "log": "receipts/analysis002-follow_reference.log"
       },
       "negative": {
-        "log": "receipts/negative-0.log"
+        "log": "receipts/negative002-follow_reference.log"
       },
-      "gpu_command": "python3.11 runtime.py capture --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/native-0",
       "post_capture": {
         "recorded_only": true,
-        "command": "python3.11 runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference --attempt .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/native-0 --output .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/processed-0 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\"",
-        "feedback_command": "cat .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/processed-0/feedback.json",
-        "test_log": "receipts/saved-0.log",
-        "test_log_sha256": "a58fdba7b46418213f3cd273bb4fc2460f8f1f94044859c253874ea17b966bdc",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference --attempt .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/native002-0 --output .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/processed002-0 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/owner002-0.json",
+        "feedback_command": "cat .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/processed002-0/v*/feedback.json",
+        "test_log": "receipts/saved002-follow_reference.log",
+        "test_log_sha256": "b6f79f1cd53fda6d9e4fe39983cb80c0244ff84b131eb92825f2ad94b9697926",
         "test_exit_code": 0,
-        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference --attempt .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/native-0 --output .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/native-0/additional-source-audit.json",
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference --attempt .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/processed002-0/v0001/analysis --output .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/processed002-0/v0001/analysis/additional-source-audit.json",
         "source_join_fixture_proof": {
           "receipt": "receipts/source-frame-joins.json",
-          "receipt_sha256": "d7b1bb462b6c793b809c333e7dfe2b17bd2ce6e11815fee32e76282bc5fe5b5b",
+          "receipt_sha256": "9ed4236ebb4c1fb118754762b33e9895514dff38fc4aa535a0e5d99620772b80",
           "test_log": "receipts/source-frame-joins.log",
           "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
           "test_exit_code": 0
         }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-follow_reference.json",
+        "sha256": "7304c9e8d0f80b1e56aa302c9bab09f67ff89d18c7376e53fb93e9c6701529d8"
       }
     },
     {
       "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe",
       "kind": "capability",
       "construction": "cases/overtake_probe/construction.json",
-      "construction_sha256": "ee7daec6562052afaa243389cba80305c1632923416cca21164c4563e5217dac",
+      "construction_sha256": "fb265d1daa6102232ad789457febe5bb03f2ff1fe3785ce4fcf28a8a91f6bd84",
       "measurement_procedure": {
         "entrypoint": "analyze.py",
-        "output_schema": "worker-analysis-report-v1"
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "37c06c74bb73843235c60082736289f2f8181114363c5e23aac50819e0eb0225",
+        "saved_only": true
       },
       "measurement_contract": "cases/overtake_probe/measurement-contract.json",
       "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/cases/overtake_probe/fixture-recipe.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
       },
       "acquisition": {
         "kin.speed": {
@@ -92,38 +109,46 @@
           "evidence": "Original subject/actor/road/control/weather observations in capture/evidence.jsonl; declared geometry/rule/environment packets: scenario_geometry"
         }
       },
+      "gpu_command": "python3.11 work/_shared/runtime002.py runtime.py capture --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/native002-1",
+      "owner_release_command": "python3.11 work/_shared/runtime002.py runtime.py owner-released --attempt .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/native002-1 --receipt .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/owner002-1.json --acknowledge-owner-released",
       "offline": {
-        "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/proof-26adddb520/offline-1",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe --output .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/update002-b8c5c97a39/offline-1",
         "exit_code": 0,
-        "log": "receipts/offcheck-1.log",
-        "log_sha256": "3f447cde4bbe43fe6753a6bed930c054b09f404e161c032c9cf286c85db9e73a",
-        "construction_sha256": "ee7daec6562052afaa243389cba80305c1632923416cca21164c4563e5217dac"
+        "log": "receipts/offcheck002-overtake_probe.log",
+        "log_sha256": "ef6d4249a70f1767a740092d8128b7d0a31ef89a18ed2478acb3cab7b5c95f42",
+        "construction_sha256": "fb265d1daa6102232ad789457febe5bb03f2ff1fe3785ce4fcf28a8a91f6bd84"
       },
       "compatibility": {
-        "receipt": "receipts/compatcheck-1.json",
-        "sha256": "51b96fa3faef504d8ed8672f6dd5be365d15e34225afbd1a1f4b0a5983e4a711",
-        "log": "receipts/analysis-1.log"
+        "receipt": "receipts/compatcheck002-overtake_probe.json",
+        "sha256": "ea45a074bdcfaba96a74f7c3a8d0e02f8e3169453544066e02b42358d11bdf20",
+        "log": "receipts/analysis002-overtake_probe.log"
       },
       "negative": {
-        "log": "receipts/negative-1.log"
+        "log": "receipts/negative002-overtake_probe.log"
       },
-      "gpu_command": "python3.11 runtime.py capture --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/native-1",
       "post_capture": {
         "recorded_only": true,
-        "command": "python3.11 runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe --attempt .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/native-1 --output .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/processed-1 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\"",
-        "feedback_command": "cat .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/processed-1/feedback.json",
-        "test_log": "receipts/saved-1.log",
-        "test_log_sha256": "fc73dec4a5f78325c38f0582cddd18a0208b549b831f227f2fc2b0ba80277d25",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe --attempt .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/native002-1 --output .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/processed002-1 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/owner002-1.json",
+        "feedback_command": "cat .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/processed002-1/v*/feedback.json",
+        "test_log": "receipts/saved002-overtake_probe.log",
+        "test_log_sha256": "fff9835d3c2c8d837761488db1a90a2d9638a92871819581d01b87b4b9ad819b",
         "test_exit_code": 0,
-        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe --attempt .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/native-1 --output .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/native-1/additional-source-audit.json",
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe --attempt .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/processed002-1/v0001/analysis --output .runtime-work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/processed002-1/v0001/analysis/additional-source-audit.json",
         "source_join_fixture_proof": {
           "receipt": "receipts/source-frame-joins.json",
-          "receipt_sha256": "d7b1bb462b6c793b809c333e7dfe2b17bd2ce6e11815fee32e76282bc5fe5b5b",
+          "receipt_sha256": "9ed4236ebb4c1fb118754762b33e9895514dff38fc4aa535a0e5d99620772b80",
           "test_log": "receipts/source-frame-joins.log",
           "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
           "test_exit_code": 0
         }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-overtake_probe.json",
+        "sha256": "4c2b33a98c5167aaa051e2579357871c44efac09ca213e79dfeb08896ff2b360"
       }
     }
-  ]
+  ],
+  "processing_contract_version": 2
 }

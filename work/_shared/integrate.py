@@ -31,15 +31,15 @@ def main():
   m=read(p);plan=read(p.parent/'case-plan.json')
   native_index={}
   for c in m['cases']:
-   queue.append({'order':len(queue)+1,'assignment_id':m['assignment_id'],'case_id':c['case_id'],'capture_command':c.get('gpu_command'),'postprocessing_command':c.get('post_capture',{}).get('command')})
+   queue.append({'order':len(queue)+1,'assignment_id':m['assignment_id'],'case_id':c['case_id'],'capture_command':c.get('gpu_command'),'postprocessing_command':c.get('post_capture',{}).get('command'),'owner_release_command':c.get('owner_release_command'),'owner_release_requirement':'Local operator must actually release resources before attesting; portable code performs no release'})
    post=c.get('post_capture',{}).get('command','')
    tokens=shlex.split(post)
    if '--attempt' in tokens:
-    attempt=tokens[tokens.index('--attempt')+1];native_index[c['case_id']]={'analysis_report':attempt+'/analysis-report.json','config':attempt+'/config.json'}
-    queue[-1]['additional_source_audit_command']='python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case '+c['case_id']+' --attempt '+attempt+' --output '+attempt+'/additional-source-audit.json'
+    attempt=tokens[tokens.index('--attempt')+1];processed=tokens[tokens.index('--output')+1];derived=processed+'/v0001/analysis';native_index[c['case_id']]={'analysis_report':derived+'/analysis-report.json','config':derived+'/config.json'}
+    queue[-1]['additional_source_audit_command']='python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case '+c['case_id']+' --attempt '+derived+' --output '+processed+'/v0001/additional-source-audit.json'
   write(p.parent/'native-comparison-index.json',native_index)
   comparisons.extend({'assignment_id':m['assignment_id'],**c} for c in plan['comparisons'])
- write(ROOT/'work/_shared/gpu-queue.json',{'format':'worker-ordered-gpu-queue-v1','native_executed':0,'video_core_accepted':0,'comparison_complete':0,'cases':queue,'comparison_audit_commands':[{'assignment_id':c['assignment_id'],'comparison_id':c['comparison_id'],'command':'python3.11 work/_shared/comparison_audit.py --spec work/'+c['assignment_id']+'/comparison-audit-specs.json --comparison '+c['comparison_id']+' --index work/'+c['assignment_id']+'/native-comparison-index.json --output .runtime-work/'+c['assignment_id']+'/comparison-'+c['comparison_id']+'.json'} for c in comparisons]})
+ write(ROOT/'work/_shared/gpu-queue.json',{'format':'worker-ordered-gpu-queue-v1','native_executed':0,'video_core_accepted':0,'comparison_complete':0,'cases':queue,'saved_index_refresh_command':'python3.11 work/_shared/update002_saved_index.py','processing_order':['capture-only Native command','actual resource owner release by local operator','owner-release acknowledgement','selected saved processing into vNNNN','refresh saved analysis indexes','source and comparison audits'],'comparison_audit_commands':[{'assignment_id':c['assignment_id'],'comparison_id':c['comparison_id'],'command':'python3.11 work/_shared/comparison_audit.py --spec work/'+c['assignment_id']+'/comparison-audit-specs.json --comparison '+c['comparison_id']+' --index work/'+c['assignment_id']+'/native-comparison-index.json --output .runtime-work/'+c['assignment_id']+'/comparison-'+c['comparison_id']+'.json'} for c in comparisons]})
  first={}
  for case in queue:first.setdefault(case['assignment_id'],case['capture_command'])
  write(ROOT/'work/_shared/first-gpu-commands.json',first)

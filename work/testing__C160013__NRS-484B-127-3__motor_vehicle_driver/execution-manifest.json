@@ -1,23 +1,28 @@
 {
   "format": "worker-execution-manifest-v1",
   "assignment_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver",
-  "runtime_manifest_sha256": "6b671083947557a258b6fbd579221cabed669dd5feea917c0e9f0b756347762f",
+  "runtime_manifest_sha256": "49c0e36baf755de7fb099a7b9dc952b5a299706f5137a19a1748693ef01416de",
   "cases": [
     {
       "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_wide",
       "kind": "capability",
       "construction": "construction.json",
-      "construction_sha256": "00151a617190237fad843c061fdf1a803a8282b085a8920768d380dc0c05b842",
+      "construction_sha256": "41052e34624e64475582534189d610af90f7f94528dee45c51e6df6186b6c784",
       "measurement_procedure": {
         "entrypoint": "analyze.py",
-        "output_schema": "worker-analysis-report-v1"
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "60a9a17c7eb8d11c1adfc901ca8851c8c3521f4157b8da6ce1095058fa48dc12",
+        "saved_only": true
       },
       "measurement_contract": "measurement-contract.json",
       "fixture_recipe": "work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/fixture-recipe.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
       },
       "acquisition": {
         "kin.speed": {
@@ -36,54 +41,66 @@
           "evidence": "Original Native acquisition and source finalizer"
         }
       },
+      "gpu_command": "python3.11 work/_shared/runtime002.py runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_wide --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-0",
+      "owner_release_command": "python3.11 work/_shared/runtime002.py runtime.py owner-released --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-0 --receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-0.json --acknowledge-owner-released",
       "offline": {
-        "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_wide --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/proof-205f314699/offline-0",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_wide --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/update002-1376a79646/offline-0",
         "exit_code": 0,
-        "log": "receipts/offcheck-0.log",
-        "log_sha256": "3491ef2c5e9ae4687e863a4f0916b02e038121fc5599596992924604297dbdb2",
-        "construction_sha256": "00151a617190237fad843c061fdf1a803a8282b085a8920768d380dc0c05b842"
+        "log": "receipts/offcheck002-caravan_none_wide.log",
+        "log_sha256": "f067551972eb7936d3f3ce150a21acb1423979e9974eba0c89ee7773af848e3f",
+        "construction_sha256": "41052e34624e64475582534189d610af90f7f94528dee45c51e6df6186b6c784"
       },
       "compatibility": {
-        "receipt": "receipts/compatcheck-0.json",
-        "sha256": "b66a505b8d850e4ffea42334fe9783390bd9c8d70beae22ba0ef82d5f88d7e85",
-        "log": "receipts/analysis-0.log"
+        "receipt": "receipts/compatcheck002-caravan_none_wide.json",
+        "sha256": "984958b1cfe51bc48025242c87c00ceb5e64a217b66d29f0f9aae9b9961094bc",
+        "log": "receipts/analysis002-caravan_none_wide.log"
       },
       "negative": {
-        "log": "receipts/negative-0.log"
+        "log": "receipts/negative002-caravan_none_wide.log"
       },
-      "gpu_command": "python3.11 runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_wide --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-0",
       "post_capture": {
         "recorded_only": true,
-        "command": "python3.11 runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-0 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-0 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\"",
-        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-0/feedback.json",
-        "test_log": "receipts/saved-0.log",
-        "test_log_sha256": "f3f4118376c1f4863eb91c3d15022b4e647841b01f3ccb97b35aa0987bb26ac0",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-0 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-0 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-0.json",
+        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-0/v*/feedback.json",
+        "test_log": "receipts/saved002-caravan_none_wide.log",
+        "test_log_sha256": "1c702f7a7886ebd002ce40e8896bdb26e1b32d5ce9be2808f99be5139e037e31",
         "test_exit_code": 0,
-        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-0 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-0/additional-source-audit.json",
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-0/v0001/analysis --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-0/v0001/analysis/additional-source-audit.json",
         "source_join_fixture_proof": {
           "receipt": "receipts/source-frame-joins.json",
-          "receipt_sha256": "30bd6614b51813ab8ea6611076e5aa3e9d505f118c25d74ad98a2c5b7370f8ec",
+          "receipt_sha256": "81c5274728c51a3d7bd81720fcfeeb66277d05e6b56882d2594abfec72a2184e",
           "test_log": "receipts/source-frame-joins.log",
           "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
           "test_exit_code": 0
         }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-caravan_none_wide.json",
+        "sha256": "414c204e0b9795f4e859f88b28a969c67edd0ba59339a3d1ccd54d9fb78ac81b"
       }
     },
     {
       "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_narrow",
       "kind": "capability",
       "construction": "cases/caravan_none_narrow/construction.json",
-      "construction_sha256": "37b9632043058b97bb3d3b5eb3dbb4ba88d9ccbd839922be0ab4f9fcbf507d54",
+      "construction_sha256": "b75eeb9aaedac96e455332605f8969692f966ecef8332c001ebb447e63ef3475",
       "measurement_procedure": {
         "entrypoint": "analyze.py",
-        "output_schema": "worker-analysis-report-v1"
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "60a9a17c7eb8d11c1adfc901ca8851c8c3521f4157b8da6ce1095058fa48dc12",
+        "saved_only": true
       },
       "measurement_contract": "cases/caravan_none_narrow/measurement-contract.json",
       "fixture_recipe": "work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/caravan_none_narrow/fixture-recipe.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
       },
       "acquisition": {
         "kin.speed": {
@@ -102,54 +119,66 @@
           "evidence": "Original Native acquisition and source finalizer"
         }
       },
+      "gpu_command": "python3.11 work/_shared/runtime002.py runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_narrow --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-1",
+      "owner_release_command": "python3.11 work/_shared/runtime002.py runtime.py owner-released --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-1 --receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-1.json --acknowledge-owner-released",
       "offline": {
-        "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_narrow --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/proof-205f314699/offline-1",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_narrow --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/update002-1376a79646/offline-1",
         "exit_code": 0,
-        "log": "receipts/offcheck-1.log",
-        "log_sha256": "216a2007250b688f39b8af5e54687002068ff71319d67d2af6db3a2448dff250",
-        "construction_sha256": "37b9632043058b97bb3d3b5eb3dbb4ba88d9ccbd839922be0ab4f9fcbf507d54"
+        "log": "receipts/offcheck002-caravan_none_narrow.log",
+        "log_sha256": "590412a1ab8dadcc6c6d1b9426998d80256db3fc4e60cdbe0e5b4c43e2c784d7",
+        "construction_sha256": "b75eeb9aaedac96e455332605f8969692f966ecef8332c001ebb447e63ef3475"
       },
       "compatibility": {
-        "receipt": "receipts/compatcheck-1.json",
-        "sha256": "a7ef05d68f16fc30b0c3107872ce4873488e3918adf98df6ba4e29dc5ea389b2",
-        "log": "receipts/analysis-1.log"
+        "receipt": "receipts/compatcheck002-caravan_none_narrow.json",
+        "sha256": "543361317cffa10578e6c002bb15fb85444eb33e777a4e0e4092e53da88edc58",
+        "log": "receipts/analysis002-caravan_none_narrow.log"
       },
       "negative": {
-        "log": "receipts/negative-1.log"
+        "log": "receipts/negative002-caravan_none_narrow.log"
       },
-      "gpu_command": "python3.11 runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_narrow --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-1",
       "post_capture": {
         "recorded_only": true,
-        "command": "python3.11 runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-1 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-1 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\"",
-        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-1/feedback.json",
-        "test_log": "receipts/saved-1.log",
-        "test_log_sha256": "48c38b665bd7ee5dd6978155afd3675084fdcaceb927bbdc6ee242ab464390ee",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-1 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-1 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-1.json",
+        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-1/v*/feedback.json",
+        "test_log": "receipts/saved002-caravan_none_narrow.log",
+        "test_log_sha256": "13f870d7ed940fb53b84fafd2f05450f663478c9b99a022072fa4185eb410480",
         "test_exit_code": 0,
-        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-1 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-1/additional-source-audit.json",
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-1/v0001/analysis --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-1/v0001/analysis/additional-source-audit.json",
         "source_join_fixture_proof": {
           "receipt": "receipts/source-frame-joins.json",
-          "receipt_sha256": "30bd6614b51813ab8ea6611076e5aa3e9d505f118c25d74ad98a2c5b7370f8ec",
+          "receipt_sha256": "81c5274728c51a3d7bd81720fcfeeb66277d05e6b56882d2594abfec72a2184e",
           "test_log": "receipts/source-frame-joins.log",
           "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
           "test_exit_code": 0
         }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-caravan_none_narrow.json",
+        "sha256": "2de608e3052d19ba8b522e9485abd7f67fae21e10d7c9ddb05c926eaf4da4837"
       }
     },
     {
       "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_wide",
       "kind": "capability",
       "construction": "cases/caravan_group_and_entrant_combination_wide/construction.json",
-      "construction_sha256": "3d1584f1e45ae4fc3424bdee59d36043079821844e8ffb017593a108da5014c6",
+      "construction_sha256": "ae3573f427f3c6fabb7fc4821b74a37c6625b8a911d27404ebd3dae7a35b2650",
       "measurement_procedure": {
         "entrypoint": "analyze.py",
-        "output_schema": "worker-analysis-report-v1"
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "60a9a17c7eb8d11c1adfc901ca8851c8c3521f4157b8da6ce1095058fa48dc12",
+        "saved_only": true
       },
       "measurement_contract": "cases/caravan_group_and_entrant_combination_wide/measurement-contract.json",
       "fixture_recipe": "work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/caravan_group_and_entrant_combination_wide/fixture-recipe.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
       },
       "acquisition": {
         "kin.speed": {
@@ -168,54 +197,66 @@
           "evidence": "Original Native acquisition and source finalizer"
         }
       },
+      "gpu_command": "python3.11 work/_shared/runtime002.py runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_wide --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-2",
+      "owner_release_command": "python3.11 work/_shared/runtime002.py runtime.py owner-released --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-2 --receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-2.json --acknowledge-owner-released",
       "offline": {
-        "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_wide --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/proof-205f314699/offline-2",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_wide --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/update002-1376a79646/offline-2",
         "exit_code": 0,
-        "log": "receipts/offcheck-2.log",
-        "log_sha256": "0eac8ba6c34b5630e18e39b248dbb69415d438f8865be4e2c694c04dd192e135",
-        "construction_sha256": "3d1584f1e45ae4fc3424bdee59d36043079821844e8ffb017593a108da5014c6"
+        "log": "receipts/offcheck002-caravan_group_and_entrant_combination_wide.log",
+        "log_sha256": "2578ba1aa5f0e61a5a1e635ce86dbc42eb8529960f49fb1588d039e05c68b403",
+        "construction_sha256": "ae3573f427f3c6fabb7fc4821b74a37c6625b8a911d27404ebd3dae7a35b2650"
       },
       "compatibility": {
-        "receipt": "receipts/compatcheck-2.json",
-        "sha256": "1f84034c1b80d381a3d101990eb75c73b1dc9ead0012013bb8f132df0c25108d",
-        "log": "receipts/analysis-2.log"
+        "receipt": "receipts/compatcheck002-caravan_group_and_entrant_combination_wide.json",
+        "sha256": "bc67157dd24f41ca4ed247022e87dbef1893dcf00dc29adca09d75ff9bd47b29",
+        "log": "receipts/analysis002-caravan_group_and_entrant_combination_wide.log"
       },
       "negative": {
-        "log": "receipts/negative-2.log"
+        "log": "receipts/negative002-caravan_group_and_entrant_combination_wide.log"
       },
-      "gpu_command": "python3.11 runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_wide --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-2",
       "post_capture": {
         "recorded_only": true,
-        "command": "python3.11 runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-2 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-2 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\"",
-        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-2/feedback.json",
-        "test_log": "receipts/saved-2.log",
-        "test_log_sha256": "fc4ea950a7340a22c405d738f2f9207409eae1a9b2039c4532912a52dba73409",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-2 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-2 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-2.json",
+        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-2/v*/feedback.json",
+        "test_log": "receipts/saved002-caravan_group_and_entrant_combination_wide.log",
+        "test_log_sha256": "3977d7317c3368d7dbb7961ff75f795e79ac11dfc915b92104eed08e4e14aeb4",
         "test_exit_code": 0,
-        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-2 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-2/additional-source-audit.json",
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-2/v0001/analysis --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-2/v0001/analysis/additional-source-audit.json",
         "source_join_fixture_proof": {
           "receipt": "receipts/source-frame-joins.json",
-          "receipt_sha256": "30bd6614b51813ab8ea6611076e5aa3e9d505f118c25d74ad98a2c5b7370f8ec",
+          "receipt_sha256": "81c5274728c51a3d7bd81720fcfeeb66277d05e6b56882d2594abfec72a2184e",
           "test_log": "receipts/source-frame-joins.log",
           "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
           "test_exit_code": 0
         }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-caravan_group_and_entrant_combination_wide.json",
+        "sha256": "2b6d66b1858d4f6a6ee70b0d52b150d4dbabcf59d129787ff38049a845a008cc"
       }
     },
     {
       "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_narrow",
       "kind": "capability",
       "construction": "cases/caravan_group_and_entrant_combination_narrow/construction.json",
-      "construction_sha256": "3f695bd54d075b5ce63937dac67e1a461ab7185297d274d45a683ee2293203fa",
+      "construction_sha256": "cda74dce403f2da541fa69693de6c299e0ba737498dbd412a597f8cf13994dbd",
       "measurement_procedure": {
         "entrypoint": "analyze.py",
-        "output_schema": "worker-analysis-report-v1"
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "60a9a17c7eb8d11c1adfc901ca8851c8c3521f4157b8da6ce1095058fa48dc12",
+        "saved_only": true
       },
       "measurement_contract": "cases/caravan_group_and_entrant_combination_narrow/measurement-contract.json",
       "fixture_recipe": "work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/caravan_group_and_entrant_combination_narrow/fixture-recipe.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
       },
       "acquisition": {
         "kin.speed": {
@@ -234,54 +275,66 @@
           "evidence": "Original Native acquisition and source finalizer"
         }
       },
+      "gpu_command": "python3.11 work/_shared/runtime002.py runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_narrow --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-3",
+      "owner_release_command": "python3.11 work/_shared/runtime002.py runtime.py owner-released --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-3 --receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-3.json --acknowledge-owner-released",
       "offline": {
-        "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_narrow --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/proof-205f314699/offline-3",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_narrow --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/update002-1376a79646/offline-3",
         "exit_code": 0,
-        "log": "receipts/offcheck-3.log",
-        "log_sha256": "bb72773742c421577431a2eac09d1b1449958fa859b831be1f1db5accf17fb1d",
-        "construction_sha256": "3f695bd54d075b5ce63937dac67e1a461ab7185297d274d45a683ee2293203fa"
+        "log": "receipts/offcheck002-caravan_group_and_entrant_combination_narrow.log",
+        "log_sha256": "738ab53e573acdaa1bbf547c964d6e21a0c982e77d035a227408394830382226",
+        "construction_sha256": "cda74dce403f2da541fa69693de6c299e0ba737498dbd412a597f8cf13994dbd"
       },
       "compatibility": {
-        "receipt": "receipts/compatcheck-3.json",
-        "sha256": "94eee5fb9afd77521311a3b3a0d942ac2dff5e0da1022e00ac66a613cf10c560",
-        "log": "receipts/analysis-3.log"
+        "receipt": "receipts/compatcheck002-caravan_group_and_entrant_combination_narrow.json",
+        "sha256": "fa99e909e0306504d634f4d3b69129e1692dca46ef702ae9a6b55568f43aecf6",
+        "log": "receipts/analysis002-caravan_group_and_entrant_combination_narrow.log"
       },
       "negative": {
-        "log": "receipts/negative-3.log"
+        "log": "receipts/negative002-caravan_group_and_entrant_combination_narrow.log"
       },
-      "gpu_command": "python3.11 runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_narrow --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-3",
       "post_capture": {
         "recorded_only": true,
-        "command": "python3.11 runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-3 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-3 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\"",
-        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-3/feedback.json",
-        "test_log": "receipts/saved-3.log",
-        "test_log_sha256": "d0aed28799f739b6bbe6d4460049108fece25a4541f0dcf0a9535e5523a53251",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-3 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-3 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-3.json",
+        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-3/v*/feedback.json",
+        "test_log": "receipts/saved002-caravan_group_and_entrant_combination_narrow.log",
+        "test_log_sha256": "bb276c4ed69658212a51b40f6cb9d70c80e3aa58ca25d85cdfaa4700cd8fccd8",
         "test_exit_code": 0,
-        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-3 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-3/additional-source-audit.json",
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-3/v0001/analysis --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-3/v0001/analysis/additional-source-audit.json",
         "source_join_fixture_proof": {
           "receipt": "receipts/source-frame-joins.json",
-          "receipt_sha256": "30bd6614b51813ab8ea6611076e5aa3e9d505f118c25d74ad98a2c5b7370f8ec",
+          "receipt_sha256": "81c5274728c51a3d7bd81720fcfeeb66277d05e6b56882d2594abfec72a2184e",
           "test_log": "receipts/source-frame-joins.log",
           "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
           "test_exit_code": 0
         }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-caravan_group_and_entrant_combination_narrow.json",
+        "sha256": "ef5318d9a0e469f268202de4014322cf3e47e96bd6ab871061d0030b5c9758e3"
       }
     },
     {
       "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_wide",
       "kind": "capability",
       "construction": "cases/motorcade_none_wide/construction.json",
-      "construction_sha256": "8df8374e767a146c37b50fcae81944e3e44dc88287e98e004a8f214ffd8a517b",
+      "construction_sha256": "4ce71921451c8e20203c038cb8c9d069e74039c5400675d063615627fa2ba764",
       "measurement_procedure": {
         "entrypoint": "analyze.py",
-        "output_schema": "worker-analysis-report-v1"
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "60a9a17c7eb8d11c1adfc901ca8851c8c3521f4157b8da6ce1095058fa48dc12",
+        "saved_only": true
       },
       "measurement_contract": "cases/motorcade_none_wide/measurement-contract.json",
       "fixture_recipe": "work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/motorcade_none_wide/fixture-recipe.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
       },
       "acquisition": {
         "kin.speed": {
@@ -300,54 +353,66 @@
           "evidence": "Original Native acquisition and source finalizer"
         }
       },
+      "gpu_command": "python3.11 work/_shared/runtime002.py runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_wide --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-4",
+      "owner_release_command": "python3.11 work/_shared/runtime002.py runtime.py owner-released --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-4 --receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-4.json --acknowledge-owner-released",
       "offline": {
-        "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_wide --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/proof-205f314699/offline-4",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_wide --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/update002-1376a79646/offline-4",
         "exit_code": 0,
-        "log": "receipts/offcheck-4.log",
-        "log_sha256": "ab1bbc4f51afe2d039fe7ade57ce4847db56605a9eeb9c1bacee594b2ff55ab5",
-        "construction_sha256": "8df8374e767a146c37b50fcae81944e3e44dc88287e98e004a8f214ffd8a517b"
+        "log": "receipts/offcheck002-motorcade_none_wide.log",
+        "log_sha256": "4f99a0d62f687279f1f3d99837a0c426a87479939ec0fe1a5d7afc366dd36f59",
+        "construction_sha256": "4ce71921451c8e20203c038cb8c9d069e74039c5400675d063615627fa2ba764"
       },
       "compatibility": {
-        "receipt": "receipts/compatcheck-4.json",
-        "sha256": "1da026db26f4a1151c7a74ce7d92f9ca74933a46d620ba0213e80d1dee131c9e",
-        "log": "receipts/analysis-4.log"
+        "receipt": "receipts/compatcheck002-motorcade_none_wide.json",
+        "sha256": "595c6868ecf26eb98abed5d64557859a6dbff231166b5f6e9000dec9833e3072",
+        "log": "receipts/analysis002-motorcade_none_wide.log"
       },
       "negative": {
-        "log": "receipts/negative-4.log"
+        "log": "receipts/negative002-motorcade_none_wide.log"
       },
-      "gpu_command": "python3.11 runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_wide --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-4",
       "post_capture": {
         "recorded_only": true,
-        "command": "python3.11 runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-4 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-4 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\"",
-        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-4/feedback.json",
-        "test_log": "receipts/saved-4.log",
-        "test_log_sha256": "ab1a8dee5d47ad243450640ac5cc4663e7ddc92e74fd588aeb9578d4a1f8a221",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-4 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-4 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-4.json",
+        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-4/v*/feedback.json",
+        "test_log": "receipts/saved002-motorcade_none_wide.log",
+        "test_log_sha256": "270f38ea62222099c4ca3ac7d178f00d2048106c379ad4dde3bdcff5f9edeac4",
         "test_exit_code": 0,
-        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-4 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-4/additional-source-audit.json",
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-4/v0001/analysis --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-4/v0001/analysis/additional-source-audit.json",
         "source_join_fixture_proof": {
           "receipt": "receipts/source-frame-joins.json",
-          "receipt_sha256": "30bd6614b51813ab8ea6611076e5aa3e9d505f118c25d74ad98a2c5b7370f8ec",
+          "receipt_sha256": "81c5274728c51a3d7bd81720fcfeeb66277d05e6b56882d2594abfec72a2184e",
           "test_log": "receipts/source-frame-joins.log",
           "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
           "test_exit_code": 0
         }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-motorcade_none_wide.json",
+        "sha256": "38b1762d639f37e12125da07e8dc22a46663eefa8bac1c2f4ce7ced96d948acb"
       }
     },
     {
       "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_narrow",
       "kind": "capability",
       "construction": "cases/motorcade_none_narrow/construction.json",
-      "construction_sha256": "69ee6179ce801f6ca1dcb27a5ab9bb3ec58bfd9ae91b32fd2f821a90b7d09d4c",
+      "construction_sha256": "967ec873294dcda559df9a1ba69784369ffcf2fb4530bddf59839f40841fee8f",
       "measurement_procedure": {
         "entrypoint": "analyze.py",
-        "output_schema": "worker-analysis-report-v1"
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "60a9a17c7eb8d11c1adfc901ca8851c8c3521f4157b8da6ce1095058fa48dc12",
+        "saved_only": true
       },
       "measurement_contract": "cases/motorcade_none_narrow/measurement-contract.json",
       "fixture_recipe": "work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/motorcade_none_narrow/fixture-recipe.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
       },
       "acquisition": {
         "kin.speed": {
@@ -366,54 +431,66 @@
           "evidence": "Original Native acquisition and source finalizer"
         }
       },
+      "gpu_command": "python3.11 work/_shared/runtime002.py runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_narrow --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-5",
+      "owner_release_command": "python3.11 work/_shared/runtime002.py runtime.py owner-released --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-5 --receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-5.json --acknowledge-owner-released",
       "offline": {
-        "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_narrow --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/proof-205f314699/offline-5",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_narrow --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/update002-1376a79646/offline-5",
         "exit_code": 0,
-        "log": "receipts/offcheck-5.log",
-        "log_sha256": "92bda9c0370f0ac8a495f0fc7a3b56b8a47ef738f9e9359146772b50b10ad1c1",
-        "construction_sha256": "69ee6179ce801f6ca1dcb27a5ab9bb3ec58bfd9ae91b32fd2f821a90b7d09d4c"
+        "log": "receipts/offcheck002-motorcade_none_narrow.log",
+        "log_sha256": "77147be8adb51174625447b6dcb2c7b342a7bc0f27a5eea3c47a987d85273465",
+        "construction_sha256": "967ec873294dcda559df9a1ba69784369ffcf2fb4530bddf59839f40841fee8f"
       },
       "compatibility": {
-        "receipt": "receipts/compatcheck-5.json",
-        "sha256": "89b2a668bca91d449112839fa38e49c3be1cfdb11bfefbcf8f4f2de28a6d35c2",
-        "log": "receipts/analysis-5.log"
+        "receipt": "receipts/compatcheck002-motorcade_none_narrow.json",
+        "sha256": "e351e312a33aa93e1e8bd15ba8cdee0451e5c1ae31e604be867e99ae568187e2",
+        "log": "receipts/analysis002-motorcade_none_narrow.log"
       },
       "negative": {
-        "log": "receipts/negative-5.log"
+        "log": "receipts/negative002-motorcade_none_narrow.log"
       },
-      "gpu_command": "python3.11 runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_narrow --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-5",
       "post_capture": {
         "recorded_only": true,
-        "command": "python3.11 runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-5 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-5 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\"",
-        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-5/feedback.json",
-        "test_log": "receipts/saved-5.log",
-        "test_log_sha256": "7fa3d8d4bc45a5be714adcf775b4001740031cdac67855601c7416651555b1e5",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-5 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-5 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-5.json",
+        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-5/v*/feedback.json",
+        "test_log": "receipts/saved002-motorcade_none_narrow.log",
+        "test_log_sha256": "bae133243ec487359f4b75bc6abf94c12c0e0827b78b187f8c480c86792bb4e7",
         "test_exit_code": 0,
-        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-5 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-5/additional-source-audit.json",
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-5/v0001/analysis --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-5/v0001/analysis/additional-source-audit.json",
         "source_join_fixture_proof": {
           "receipt": "receipts/source-frame-joins.json",
-          "receipt_sha256": "30bd6614b51813ab8ea6611076e5aa3e9d505f118c25d74ad98a2c5b7370f8ec",
+          "receipt_sha256": "81c5274728c51a3d7bd81720fcfeeb66277d05e6b56882d2594abfec72a2184e",
           "test_log": "receipts/source-frame-joins.log",
           "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
           "test_exit_code": 0
         }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-motorcade_none_narrow.json",
+        "sha256": "47e6bc1a7cb1945cde4cb8504728aa9f0d83443ce36fb35b9b1d07020db66105"
       }
     },
     {
       "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_wide",
       "kind": "capability",
       "construction": "cases/motorcade_group_and_entrant_combination_wide/construction.json",
-      "construction_sha256": "1f041f94493f987038ddeb25992aa47c3fc53d1ee27c1685f5ea89d7fd3933ab",
+      "construction_sha256": "73878b461be721cd077c7996b9c4f9c4ab7bedca21e325407e8ae3b62bb0aa7e",
       "measurement_procedure": {
         "entrypoint": "analyze.py",
-        "output_schema": "worker-analysis-report-v1"
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "60a9a17c7eb8d11c1adfc901ca8851c8c3521f4157b8da6ce1095058fa48dc12",
+        "saved_only": true
       },
       "measurement_contract": "cases/motorcade_group_and_entrant_combination_wide/measurement-contract.json",
       "fixture_recipe": "work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/motorcade_group_and_entrant_combination_wide/fixture-recipe.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
       },
       "acquisition": {
         "kin.speed": {
@@ -432,54 +509,66 @@
           "evidence": "Original Native acquisition and source finalizer"
         }
       },
+      "gpu_command": "python3.11 work/_shared/runtime002.py runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_wide --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-6",
+      "owner_release_command": "python3.11 work/_shared/runtime002.py runtime.py owner-released --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-6 --receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-6.json --acknowledge-owner-released",
       "offline": {
-        "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_wide --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/proof-205f314699/offline-6",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_wide --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/update002-1376a79646/offline-6",
         "exit_code": 0,
-        "log": "receipts/offcheck-6.log",
-        "log_sha256": "883d0068cad405bd011bb790c35458c44376ebbb17982b61372e7d011babaef4",
-        "construction_sha256": "1f041f94493f987038ddeb25992aa47c3fc53d1ee27c1685f5ea89d7fd3933ab"
+        "log": "receipts/offcheck002-motorcade_group_and_entrant_combination_wide.log",
+        "log_sha256": "816b52df750bd9b14e734a5649a2b9848f876d21358d5dbd6231e1cc6aca3925",
+        "construction_sha256": "73878b461be721cd077c7996b9c4f9c4ab7bedca21e325407e8ae3b62bb0aa7e"
       },
       "compatibility": {
-        "receipt": "receipts/compatcheck-6.json",
-        "sha256": "382a9d72763d9dabe729b8112dd5c34ff4fe45d15fde36f6d0ae4665dab0e9a9",
-        "log": "receipts/analysis-6.log"
+        "receipt": "receipts/compatcheck002-motorcade_group_and_entrant_combination_wide.json",
+        "sha256": "eb343559694df88fb35cf40eb24f9cfebc31f68501a9b7def2e9fefa74e39dc9",
+        "log": "receipts/analysis002-motorcade_group_and_entrant_combination_wide.log"
       },
       "negative": {
-        "log": "receipts/negative-6.log"
+        "log": "receipts/negative002-motorcade_group_and_entrant_combination_wide.log"
       },
-      "gpu_command": "python3.11 runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_wide --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-6",
       "post_capture": {
         "recorded_only": true,
-        "command": "python3.11 runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-6 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-6 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\"",
-        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-6/feedback.json",
-        "test_log": "receipts/saved-6.log",
-        "test_log_sha256": "49f5832eddd54f88a713d1246f83afbef5778ce5064ae2afbb3aea6311275fd1",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-6 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-6 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-6.json",
+        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-6/v*/feedback.json",
+        "test_log": "receipts/saved002-motorcade_group_and_entrant_combination_wide.log",
+        "test_log_sha256": "b0bd65a7feaca55c886ae49a770d186c9cd283f061132fba3e24452ffe8be615",
         "test_exit_code": 0,
-        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-6 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-6/additional-source-audit.json",
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_wide --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-6/v0001/analysis --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-6/v0001/analysis/additional-source-audit.json",
         "source_join_fixture_proof": {
           "receipt": "receipts/source-frame-joins.json",
-          "receipt_sha256": "30bd6614b51813ab8ea6611076e5aa3e9d505f118c25d74ad98a2c5b7370f8ec",
+          "receipt_sha256": "81c5274728c51a3d7bd81720fcfeeb66277d05e6b56882d2594abfec72a2184e",
           "test_log": "receipts/source-frame-joins.log",
           "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
           "test_exit_code": 0
         }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-motorcade_group_and_entrant_combination_wide.json",
+        "sha256": "98d4fd11467caca8eef4fa041af589e514af0fc4b55657f650c8edd6fa47a9a9"
       }
     },
     {
       "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_narrow",
       "kind": "capability",
       "construction": "cases/motorcade_group_and_entrant_combination_narrow/construction.json",
-      "construction_sha256": "a10cffa54c0a4579c68c350dc7a521097de51ba5adefb3fa089223f4d5e21586",
+      "construction_sha256": "1da64c6a0ec2c292f9819b52377864ebcab84f2f755167b5e3172a3a30289479",
       "measurement_procedure": {
         "entrypoint": "analyze.py",
-        "output_schema": "worker-analysis-report-v1"
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "60a9a17c7eb8d11c1adfc901ca8851c8c3521f4157b8da6ce1095058fa48dc12",
+        "saved_only": true
       },
       "measurement_contract": "cases/motorcade_group_and_entrant_combination_narrow/measurement-contract.json",
       "fixture_recipe": "work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/motorcade_group_and_entrant_combination_narrow/fixture-recipe.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
       },
       "acquisition": {
         "kin.speed": {
@@ -498,38 +587,46 @@
           "evidence": "Original Native acquisition and source finalizer"
         }
       },
+      "gpu_command": "python3.11 work/_shared/runtime002.py runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_narrow --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-7",
+      "owner_release_command": "python3.11 work/_shared/runtime002.py runtime.py owner-released --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-7 --receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-7.json --acknowledge-owner-released",
       "offline": {
-        "command": "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.venv-cpu/bin/python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/runtime.py offline --manifest /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_narrow --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial8/.runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/proof-205f314699/offline-7",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_narrow --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/update002-1376a79646/offline-7",
         "exit_code": 0,
-        "log": "receipts/offcheck-7.log",
-        "log_sha256": "4d4cdd2a33f29822e4ee59cd33574ad006e7e1787e7ee224be7901403a2c0597",
-        "construction_sha256": "a10cffa54c0a4579c68c350dc7a521097de51ba5adefb3fa089223f4d5e21586"
+        "log": "receipts/offcheck002-motorcade_group_and_entrant_combination_narrow.log",
+        "log_sha256": "126d832991e1256fca28df405cb98ad87fcdb64a08880c735613de99c59ce3ba",
+        "construction_sha256": "1da64c6a0ec2c292f9819b52377864ebcab84f2f755167b5e3172a3a30289479"
       },
       "compatibility": {
-        "receipt": "receipts/compatcheck-7.json",
-        "sha256": "56621e99f424fb968d822e19220cd44eed31ee9452b4c050b96d571b346a7d7d",
-        "log": "receipts/analysis-7.log"
+        "receipt": "receipts/compatcheck002-motorcade_group_and_entrant_combination_narrow.json",
+        "sha256": "52ce3e30103c514ed0313f8a330bf55556fe574ce6219fac95fe6405ea508a10",
+        "log": "receipts/analysis002-motorcade_group_and_entrant_combination_narrow.log"
       },
       "negative": {
-        "log": "receipts/negative-7.log"
+        "log": "receipts/negative002-motorcade_group_and_entrant_combination_narrow.log"
       },
-      "gpu_command": "python3.11 runtime.py capture --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_narrow --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-7",
       "post_capture": {
         "recorded_only": true,
-        "command": "python3.11 runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-7 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-7 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\"",
-        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed-7/feedback.json",
-        "test_log": "receipts/saved-7.log",
-        "test_log_sha256": "3d67cb514cfca20a925ed6f802c3067ab2c7412e9d5ee20be2e06b2a63e69a8d",
+        "command": "python3.11 work/_shared/runtime002.py runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native002-7 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-7 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/owner002-7.json",
+        "feedback_command": "cat .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-7/v*/feedback.json",
+        "test_log": "receipts/saved002-motorcade_group_and_entrant_combination_narrow.log",
+        "test_log_sha256": "0ec0886b5b6425c1be0df50eeb0016388d8bb942aaff9f88498f7bebf0d8f0fd",
         "test_exit_code": 0,
-        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-7 --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/native-7/additional-source-audit.json",
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_narrow --attempt .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-7/v0001/analysis --output .runtime-work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/processed002-7/v0001/analysis/additional-source-audit.json",
         "source_join_fixture_proof": {
           "receipt": "receipts/source-frame-joins.json",
-          "receipt_sha256": "30bd6614b51813ab8ea6611076e5aa3e9d505f118c25d74ad98a2c5b7370f8ec",
+          "receipt_sha256": "81c5274728c51a3d7bd81720fcfeeb66277d05e6b56882d2594abfec72a2184e",
           "test_log": "receipts/source-frame-joins.log",
           "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
           "test_exit_code": 0
         }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-motorcade_group_and_entrant_combination_narrow.json",
+        "sha256": "97d7f6fd1c73efd1ea1dd0c1497912c1b244d754791583f8b9c5f369a7d6e73b"
       }
     }
-  ]
+  ],
+  "processing_contract_version": 2
 }
