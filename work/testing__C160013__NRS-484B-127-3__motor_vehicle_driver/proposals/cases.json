@@ -1,0 +1,70 @@
+{
+  "cell_id": "C160013",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [],
+  "cases": [
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__selected_caravan_spacing",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "boundary_probe",
+      "rationale": "Exact selected caravan branch; follow and lead motor vehicles retain a full-body space while another vehicle enters it.",
+      "variable_assignments": {
+        "approach_speed_mps": {
+          "value": 5.0,
+          "unit": "m/s",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Sufficient space without danger is not reduced to a gap cutoff.",
+        "Actual caravan purpose, entrant movement and camera pixels require GPU review."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "native following actor velocity",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          },
+          {
+            "name": "caravan_roles",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "authored caravan purpose and outside-business-district context with actor roles",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          },
+          {
+            "name": "surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original full-body lead/follow surface gaps",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          },
+          {
+            "name": "entrant_trajectory",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "native entrant body trajectory and gap occupation",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Caravan shared purpose and outside-business-district premise are authored context.",
+          "Gap occupation alone does not resolve the without-danger legal standard."
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,240 @@
+{
+  "case": {
+    "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__selected_absolute_80_mph_alley",
+    "target_law_id": "NRS-484B-600-1e",
+    "target_type": "boundary_probe",
+    "rationale": "Exact selected witness branch with law-specific saved measurements and original-frame acquisition.",
+    "variable_assignments": {
+      "target_speed_mps": {
+        "value": 36,
+        "unit": "m/s",
+        "kind": "controller"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Native physical realization, jurisdiction and legal outcome remain unverified."
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "native original-frame kin.speed acquisition",
+          "time_window": "entire selected approach and maneuver",
+          "reference_frame": "original CARLA frame/time and world XY",
+          "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+        },
+        {
+          "name": "speed_observations",
+          "unit": "structured original-frame source",
+          "sampling_rate_hz": 20,
+          "method": "native original-frame speed_observations acquisition",
+          "time_window": "entire selected approach and maneuver",
+          "reference_frame": "original CARLA frame/time and world XY",
+          "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+        },
+        {
+          "name": "access_aisle_geometry",
+          "unit": "structured original-frame source",
+          "sampling_rate_hz": 20,
+          "method": "native original-frame access_aisle_geometry acquisition",
+          "time_window": "entire selected approach and maneuver",
+          "reference_frame": "original CARLA frame/time and world XY",
+          "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+        },
+        {
+          "name": "driver_control",
+          "unit": "structured original-frame source",
+          "sampling_rate_hz": 20,
+          "method": "native original-frame driver_control acquisition",
+          "time_window": "entire selected approach and maneuver",
+          "reference_frame": "original CARLA frame/time and world XY",
+          "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Diagnostic fixtures are not physical or legal findings.",
+        "Native controller motion, road topology, signal/sign/marking pixels and complete timing need GPU checks."
+      ]
+    }
+  },
+  "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__selected_absolute_80_mph_alley",
+  "selected_case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__selected_absolute_80_mph_alley",
+  "supported_case_ids": [
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__selected_absolute_80_mph_alley"
+  ],
+  "cell_id": "C10301",
+  "law_id": "NRS-484B-600-1e",
+  "actor": "motor_vehicle_driver",
+  "scene_kind": "alley_speed",
+  "required_atoms": [
+    "kin.speed"
+  ],
+  "source_packets": [],
+  "duration_s": 55,
+  "camera": {
+    "width": 960,
+    "height": 540,
+    "fov_deg": 90
+  },
+  "recording_description": {
+    "channels": [
+      {
+        "name": "kin.speed",
+        "unit": "m/s",
+        "sampling_rate_hz": 20,
+        "method": "native original-frame kin.speed acquisition",
+        "time_window": "entire selected approach and maneuver",
+        "reference_frame": "original CARLA frame/time and world XY",
+        "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+      },
+      {
+        "name": "speed_observations",
+        "unit": "structured original-frame source",
+        "sampling_rate_hz": 20,
+        "method": "native original-frame speed_observations acquisition",
+        "time_window": "entire selected approach and maneuver",
+        "reference_frame": "original CARLA frame/time and world XY",
+        "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+      },
+      {
+        "name": "access_aisle_geometry",
+        "unit": "structured original-frame source",
+        "sampling_rate_hz": 20,
+        "method": "native original-frame access_aisle_geometry acquisition",
+        "time_window": "entire selected approach and maneuver",
+        "reference_frame": "original CARLA frame/time and world XY",
+        "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+      },
+      {
+        "name": "driver_control",
+        "unit": "structured original-frame source",
+        "sampling_rate_hz": 20,
+        "method": "native original-frame driver_control acquisition",
+        "time_window": "entire selected approach and maneuver",
+        "reference_frame": "original CARLA frame/time and world XY",
+        "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Diagnostic fixtures are not physical or legal findings.",
+      "Native controller motion, road topology, signal/sign/marking pixels and complete timing need GPU checks."
+    ]
+  },
+  "measurement_contract": {
+    "format": "worker-measurement-contract-v1",
+    "requirements": [
+      {
+        "disposition_index": 0,
+        "requirement": "Qualifying operation of a conventional vehicle on the selected alley route with an actual marked access aisle retained",
+        "source": "NRS 484B.600(1)(e)",
+        "output_key": "alley_access_scope",
+        "method": "access_aisle_scope",
+        "kind": "sourced_context",
+        "value_type": "object",
+        "inputs": [
+          "law_context.json",
+          "road_geometry.json"
+        ]
+      },
+      {
+        "disposition_index": 1,
+        "requirement": "Measure speed in mph at every original frame and compare samples to the unconditional 80 mph cap",
+        "source": "NRS 484B.600(1)(e)",
+        "output_key": "absolute_speed_samples",
+        "method": "absolute_speed_cap",
+        "kind": "measured",
+        "value_type": "object",
+        "inputs": [
+          "case_observations.jsonl"
+        ]
+      }
+    ],
+    "negative": {
+      "remove": [
+        "case_observations.jsonl"
+      ],
+      "error_contains": "Missing required source: case_observations.jsonl"
+    }
+  },
+  "target_speed_mps": 36,
+  "ego_start": [
+    20,
+    -1.75,
+    0
+  ],
+  "ego_route": [
+    [
+      200,
+      -1.75
+    ],
+    [
+      800,
+      -1.75
+    ],
+    [
+      1400,
+      -1.75
+    ]
+  ],
+  "static_sources": {
+    "law_context.json": {
+      "subject_actor": "motor_vehicle_driver",
+      "vehicle_class": "conventional motor vehicle",
+      "physical_control": "planned native VehicleControl subject",
+      "public_access": "authored accessible alley route"
+    },
+    "road_geometry.json": {
+      "alley_length_m": 1500,
+      "alley_width_m": 7.0,
+      "access_aisle_polygon_xy_m": [
+        [
+          600,
+          -10
+        ],
+        [
+          620,
+          -10
+        ],
+        [
+          620,
+          -6
+        ],
+        [
+          600,
+          -6
+        ]
+      ],
+      "route_centerline_xy_m": [
+        [
+          20,
+          -1.75
+        ],
+        [
+          1400,
+          -1.75
+        ]
+      ],
+      "public_highway_road_ids": [
+        1
+      ]
+    }
+  },
+  "dynamic_sources": [
+    "case_observations.jsonl"
+  ],
+  "public_way_road_ids": [
+    1
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ]
+  }
+}

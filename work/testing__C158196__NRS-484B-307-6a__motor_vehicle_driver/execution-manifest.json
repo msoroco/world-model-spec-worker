@@ -1,0 +1,72 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver",
+  "runtime_manifest_sha256": "d57d974ba163b20b63052ca2c68b917b16e876401aa54ee90f3384af8a30893f",
+  "cases": [
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__selected_yellow_to_red_entry",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "65e8f24f1b86c96392b7c2d714859ea7fa8431e3a429532329b273b73f304f86",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "analysis-report.json"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "native original-frame acquisition",
+          "evidence": "PipelineCapture or saved packet; actual GPU realization pending"
+        },
+        "entry_timing": {
+          "entrypoint": "runner.py",
+          "method": "native original-frame acquisition",
+          "evidence": "PipelineCapture or saved packet; actual GPU realization pending"
+        },
+        "roadway_geometry": {
+          "entrypoint": "runner.py",
+          "method": "native original-frame acquisition",
+          "evidence": "PipelineCapture or saved packet; actual GPU realization pending"
+        },
+        "driver_control": {
+          "entrypoint": "runner.py",
+          "method": "native original-frame acquisition",
+          "evidence": "PipelineCapture or saved packet; actual GPU realization pending"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "native original-frame acquisition",
+          "evidence": "PipelineCapture or saved packet; actual GPU realization pending"
+        },
+        "signal_heads": {
+          "entrypoint": "runner.py",
+          "method": "native original-frame acquisition",
+          "evidence": "PipelineCapture or saved packet; actual GPU realization pending"
+        }
+      },
+      "offline": {
+        "command": "TMPDIR=.runtime-work/tmp flock .runtime-work/runtime.lock .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__selected_yellow_to_red_entry --output .runtime-work/p4-offline-3076a-final --python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial6/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "receipts/offline.log",
+        "log_sha256": "39babb83c6239aec86f2664144bab0bf35895dd299ac72c819b9f221f7978676",
+        "construction_sha256": "65e8f24f1b86c96392b7c2d714859ea7fa8431e3a429532329b273b73f304f86"
+      },
+      "compatibility": {
+        "command": "TMPDIR=.runtime-work/tmp flock .runtime-work/runtime.lock .venv-cpu/bin/python runtime.py compatibility-recipe --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__selected_yellow_to_red_entry --output .runtime-work/p4-compat-3076a-final --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-build/.lake/build/bin/adapterCheck",
+        "receipt": "receipts/compatibility.json",
+        "sha256": "cc427ce8fbba04c5dd9ef110fa2349df7ac73bbebf9f4bf4f7a33f430eb6df8b",
+        "log": "receipts/analysis.log"
+      },
+      "negative": {
+        "log": "receipts/negative-analysis.log"
+      }
+    }
+  ]
+}

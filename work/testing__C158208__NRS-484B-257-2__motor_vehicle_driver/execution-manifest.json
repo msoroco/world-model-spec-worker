@@ -1,0 +1,64 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "d57d974ba163b20b63052ca2c68b917b16e876401aa54ee90f3384af8a30893f",
+  "cases": [
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__selected",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "35651155526841f11d11ee4d24972c883958c8e1200db787bd71ea41e29b9f54",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "analysis-report.json"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "kin.speed",
+          "evidence": "original map/actor/frame acquisition and saved finalizer"
+        },
+        "case_observations": {
+          "entrypoint": "runner.py",
+          "method": "case_observations",
+          "evidence": "original map/actor/frame acquisition and saved finalizer"
+        },
+        "scene_geometry": {
+          "entrypoint": "runner.py",
+          "method": "scene_geometry",
+          "evidence": "original map/actor/frame acquisition and saved finalizer"
+        },
+        "control_inventory": {
+          "entrypoint": "runner.py",
+          "method": "control_inventory",
+          "evidence": "original map/actor/frame acquisition and saved finalizer"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__selected --output .runtime-work/partition3/offline-testing__C158208__NRS-484B-257-2__motor_vehicle_driver-1793231326433809416",
+        "exit_code": 0,
+        "log": "receipts/offline.log",
+        "log_sha256": "ae994ffafc85c528498579a0ef50178aa80801dcbaee17d342bf3fd72cf5d47a",
+        "construction_sha256": "35651155526841f11d11ee4d24972c883958c8e1200db787bd71ea41e29b9f54"
+      },
+      "compatibility": {
+        "receipt": "receipts/compatibility.json",
+        "sha256": "e630a58d8fd84a64b150ce59fe046284bce9e1a7f030d80a62616ad380c4b44b",
+        "log": "receipts/analysis.log",
+        "command": ".venv-cpu/bin/python runtime.py compatibility-recipe --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__selected --output .runtime-work/partition3/compat-testing__C158208__NRS-484B-257-2__motor_vehicle_driver-1793231327698237228 --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-build/.lake/build/bin/adapterCheck",
+        "exit_code": 0
+      },
+      "negative": {
+        "log": "receipts/negative-analysis.log",
+        "sha256": "c3c6dffada120a8f52ea7766e3f0fcdb7d548a79f09327767c64dc1cf3641321"
+      }
+    }
+  ]
+}

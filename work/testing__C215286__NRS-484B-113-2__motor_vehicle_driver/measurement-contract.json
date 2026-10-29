@@ -1,0 +1,36 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Distinctly marked crosswalk on a public highway in residence district",
+      "source": "NRS 484B.113(2); selected witness",
+      "output_key": "crosswalk_geometry",
+      "method": "crosswalk_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Backing and vehicle-body overlap with crosswalk occur in the same original frames",
+      "source": "NRS 484B.113(2); supplied timing summary",
+      "output_key": "backing_crosswalk_overlap",
+      "method": "simultaneous_backing_overlap",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json",
+        "case_observations.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "case_observations.jsonl"
+    ],
+    "error_contains": "Missing required source: case_observations.jsonl"
+  }
+}

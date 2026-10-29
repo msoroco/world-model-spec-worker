@@ -1,0 +1,49 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Both following trucks have overall width at least 80 inches",
+      "source": "NRS 484B.127(2); selected witness",
+      "output_key": "qualifying_trucks",
+      "method": "truck_class_context",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json",
+        "case_observations.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "One available same-direction lane on a public one-way highway; no overtaking segment",
+      "source": "NRS 484B.127(2); exception text",
+      "output_key": "lane_availability",
+      "method": "lane_availability",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Continuous body-to-body space relative to 500 feet while following",
+      "source": "NRS 484B.127(2); supplied timing summary",
+      "output_key": "following_space",
+      "method": "following_gap",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json",
+        "case_observations.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "case_observations.jsonl"
+    ],
+    "error_contains": "Missing required source: case_observations.jsonl"
+  }
+}

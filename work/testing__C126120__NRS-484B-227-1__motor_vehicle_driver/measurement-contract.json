@@ -1,0 +1,48 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Divided public highway has opposing right-hand roadways, barrier extents and an opening wide enough for the selected U-turn",
+      "source": "NRS 484B.227(1)",
+      "output_key": "opening_and_barriers",
+      "method": "median_opening",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "median_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Retain every movement, complete vehicle body footprint and initial and final direction through the opening",
+      "source": "NRS 484B.227(1)",
+      "output_key": "uturn_body_path",
+      "method": "median_footprints",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "median_geometry.json",
+        "body_vertices.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Qualifying driver, vehicle and public-highway scope",
+      "source": "NRS 484B.227(1)",
+      "output_key": "divided_highway_driver_scope",
+      "method": "actor_scope",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "law_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "median_geometry.json"
+    ],
+    "error_contains": "Missing required source: median_geometry.json"
+  }
+}

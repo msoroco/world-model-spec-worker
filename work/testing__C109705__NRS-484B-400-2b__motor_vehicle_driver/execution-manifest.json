@@ -1,0 +1,63 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "d57d974ba163b20b63052ca2c68b917b16e876401aa54ee90f3384af8a30893f",
+  "cases": [
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__selected_left_turn",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "d737f10b10da771f2ede6ab4f26691f02c721c9870168c6fd09aee184c543b3b",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "analysis-report.json"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "native actor velocity",
+          "evidence": "original frame capture and saved finalizer"
+        },
+        "roadway_geometry": {
+          "entrypoint": "runner.py",
+          "method": "original map/topology plus road-direction survey",
+          "evidence": "original frame capture and saved finalizer"
+        },
+        "driver_control": {
+          "entrypoint": "runner.py",
+          "method": "native VehicleControl and actor route history",
+          "evidence": "original frame capture and saved finalizer"
+        },
+        "exit_position": {
+          "entrypoint": "runner.py",
+          "method": "first original full-body intersection exit relative to entered-road centerline",
+          "evidence": "original frame capture and saved finalizer"
+        }
+      },
+      "offline": {
+        "command": "flock .runtime-work/runtime.lock .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__selected_left_turn --output .runtime-work/partition1/4002b-offline --python /global/homes/m/msoroco/scratch/scenario-worker-demo-test-trial6/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "receipts/offline.log",
+        "log_sha256": "1586c59e5b103fefa0ea9bd71436c1bd4834416218133cf845b90e82a81199da",
+        "construction_sha256": "d737f10b10da771f2ede6ab4f26691f02c721c9870168c6fd09aee184c543b3b"
+      },
+      "compatibility": {
+        "command": "flock .runtime-work/runtime.lock .venv-cpu/bin/python runtime.py compatibility-recipe --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__selected_left_turn --output .runtime-work/partition1/4002b-compat --library .runtime-work/overlay/library --validator .runtime-work/decoder-build/.lake/build/bin/adapterCheck",
+        "receipt": "receipts/compatibility.json",
+        "sha256": "6f3fa5d4c74908388b0255aa748c021b2f21abf432599085b3d49a56ac8d6786",
+        "log": "receipts/analysis.log"
+      },
+      "negative": {
+        "log": "receipts/negative.log",
+        "sha256": "82c03291b3d640219d9c01dc8d7ac9e70df1de9d5996478db7b6acd7e64fcbf0"
+      }
+    }
+  ]
+}

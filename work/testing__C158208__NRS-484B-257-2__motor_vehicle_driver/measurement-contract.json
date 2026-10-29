@@ -1,0 +1,73 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Yield sign at one or more non-through-highway entrances and other entrance obligations",
+      "source": "NRS 484B.257(2); selected witness",
+      "output_key": "entrance_obligations",
+      "method": "entrance_obligations",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Incorporated subsection 1 stopping-reference hierarchy",
+      "source": "NRS 484B.257(2); NRS 484B.257(1)",
+      "output_key": "incorporated_reference_hierarchy",
+      "method": "reference_hierarchy",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Initial yield response before entry",
+      "source": "NRS 484B.257(2); supplied timing summary",
+      "output_key": "initial_yield_samples",
+      "method": "initial_yield_response",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json",
+        "case_observations.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Yield to vehicle already within intersection and not obligated to yield throughout crossing",
+      "source": "NRS 484B.257(2); selected witness",
+      "output_key": "occupied_intersection_interaction",
+      "method": "occupied_intersection_yield",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json",
+        "case_observations.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "No actual officer or signal control",
+      "source": "NRS 484B.257(2); exception text",
+      "output_key": "governing_control_inventory",
+      "method": "control_exception_inventory",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "case_observations.jsonl"
+    ],
+    "error_contains": "Missing required source: case_observations.jsonl"
+  }
+}

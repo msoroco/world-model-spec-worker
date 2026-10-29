@@ -1,0 +1,63 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
+  "runtime_manifest_sha256": "d57d974ba163b20b63052ca2c68b917b16e876401aa54ee90f3384af8a30893f",
+  "cases": [
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__selected_initial_yield",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "4bfc15c96aac08e3af681dd5fa4009c6da332b16b2cf5ba246841c137d931285",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "analysis-report.json"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C109749__NRS-484B-253__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "native subject actor velocity",
+          "evidence": "original frame capture and saved finalizer"
+        },
+        "intersection_occupancy": {
+          "entrypoint": "runner.py",
+          "method": "original full-body polygon overlap",
+          "evidence": "original frame capture and saved finalizer"
+        },
+        "oncoming_geometry": {
+          "entrypoint": "runner.py",
+          "method": "opposing full-body intersection occupancy and speed",
+          "evidence": "original frame capture and saved finalizer"
+        },
+        "yield_timing": {
+          "entrypoint": "runner.py",
+          "method": "original subject and opposing motion, control and indicator sequence",
+          "evidence": "original frame capture and saved finalizer"
+        }
+      },
+      "offline": {
+        "command": "flock .runtime-work/runtime.lock .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__selected_initial_yield --output .runtime-work/partition1/253-offline-v2 --python /global/homes/m/msoroco/scratch/scenario-worker-demo-test-trial6/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "receipts/offline.log",
+        "log_sha256": "2dc206eedeaee63525b196dc35ff9a92264615358e44f3592c123e0f9e0bd1ba",
+        "construction_sha256": "4bfc15c96aac08e3af681dd5fa4009c6da332b16b2cf5ba246841c137d931285"
+      },
+      "compatibility": {
+        "command": "flock .runtime-work/runtime.lock .venv-cpu/bin/python runtime.py compatibility-recipe --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__selected_initial_yield --output .runtime-work/partition1/253-compat --library .runtime-work/overlay/library --validator .runtime-work/decoder-build/.lake/build/bin/adapterCheck",
+        "receipt": "receipts/compatibility.json",
+        "sha256": "ee76e633eb0c4e8af97e369be30650b0841f5b16506447eab7329a5692f7924a",
+        "log": "receipts/analysis.log"
+      },
+      "negative": {
+        "log": "receipts/negative.log",
+        "sha256": "dbcd77f80616e260cd4cbf08d1be1b1625aefff748560cd6dd7f6f28598faacc"
+      }
+    }
+  ]
+}

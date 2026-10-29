@@ -1,0 +1,86 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Proper yield sign erected and governing the subject approach",
+      "source": "NRS 484B.257(1); selected witness",
+      "output_key": "yield_sign_governance",
+      "method": "sign_governance",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Neither a stop line nor near-side crosswalk, including sidewalk-derived crossing, exists",
+      "source": "NRS 484B.257(1); selected witness",
+      "output_key": "reference_hierarchy",
+      "method": "reference_hierarchy",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Nearest point with view of approaching through-highway traffic",
+      "source": "NRS 484B.257(1); selected witness",
+      "output_key": "nearest_view_sample",
+      "method": "nearest_visible_point",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json",
+        "case_observations.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Initial slowing or stopping before intersection entry",
+      "source": "NRS 484B.257(1); supplied timing summary",
+      "output_key": "initial_yield_samples",
+      "method": "initial_yield_response",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json",
+        "case_observations.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "Yield interaction with through-highway vehicles throughout crossing",
+      "source": "NRS 484B.257(1); supplied timing summary",
+      "output_key": "through_vehicle_interaction",
+      "method": "crossing_interaction",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json",
+        "case_observations.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 5,
+      "requirement": "No actual officer or signal control at the approach",
+      "source": "NRS 484B.257(1); exception text",
+      "output_key": "governing_control_inventory",
+      "method": "control_exception_inventory",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "case_observations.jsonl"
+    ],
+    "error_contains": "Missing required source: case_observations.jsonl"
+  }
+}

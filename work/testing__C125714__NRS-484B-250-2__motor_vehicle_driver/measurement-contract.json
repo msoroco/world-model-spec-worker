@@ -1,0 +1,73 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Two vehicles enter the same median-opening roadway crossing from different highways",
+      "source": "NRS 484B.250(2); with 484B.250(5)",
+      "output_key": "same_crossing_identity",
+      "method": "crossing_geometry",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Measure both entry times and retain an explicit nonlegal approximate-simultaneity window",
+      "source": "NRS 484B.250(2); with 484B.250(5)",
+      "output_key": "entry_time_comparison",
+      "method": "simultaneous_entry",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "participant_motion.jsonl",
+        "road_geometry.json",
+        "law_context.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Establish ego approaches from the left relative to the other vehicle",
+      "source": "NRS 484B.250(2); with 484B.250(5)",
+      "output_key": "relative_right_bearing",
+      "method": "right_hand_bearing",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "participant_motion.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Establish absence of actual governing official control and preserve stated exclusions",
+      "source": "NRS 484B.250(2); with 484B.250(5)",
+      "output_key": "device_governance_inventory",
+      "method": "device_control_absence",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "device_inventory.json"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "Measure yielding interaction and complete motion through the crossing",
+      "source": "NRS 484B.250(2); with 484B.250(5)",
+      "output_key": "yield_motion_samples",
+      "method": "yield_clearance",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "participant_motion.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "device_inventory.json"
+    ],
+    "error_contains": "Missing required source: device_inventory.json"
+  }
+}

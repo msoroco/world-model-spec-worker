@@ -1,0 +1,271 @@
+{
+  "case": {
+    "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__selected_following_before_lane_change",
+    "target_law_id": "NRS-484B-127-1",
+    "target_type": "boundary_probe",
+    "rationale": "Exact selected witness branch with law-specific saved measurements and original-frame acquisition.",
+    "variable_assignments": {
+      "target_speed_mps": {
+        "value": 8,
+        "unit": "m/s",
+        "kind": "controller"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Native physical realization, jurisdiction and legal outcome remain unverified."
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "native original-frame kin.speed acquisition",
+          "time_window": "entire selected approach and maneuver",
+          "reference_frame": "original CARLA frame/time and world XY",
+          "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+        },
+        {
+          "name": "following_gap",
+          "unit": "structured original-frame source",
+          "sampling_rate_hz": 20,
+          "method": "native original-frame following_gap acquisition",
+          "time_window": "entire selected approach and maneuver",
+          "reference_frame": "original CARLA frame/time and world XY",
+          "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+        },
+        {
+          "name": "traffic_conditions",
+          "unit": "structured original-frame source",
+          "sampling_rate_hz": 20,
+          "method": "native original-frame traffic_conditions acquisition",
+          "time_window": "entire selected approach and maneuver",
+          "reference_frame": "original CARLA frame/time and world XY",
+          "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+        },
+        {
+          "name": "lane_change_route",
+          "unit": "structured original-frame source",
+          "sampling_rate_hz": 20,
+          "method": "native original-frame lane_change_route acquisition",
+          "time_window": "entire selected approach and maneuver",
+          "reference_frame": "original CARLA frame/time and world XY",
+          "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+        },
+        {
+          "name": "driver_control",
+          "unit": "structured original-frame source",
+          "sampling_rate_hz": 20,
+          "method": "native original-frame driver_control acquisition",
+          "time_window": "entire selected approach and maneuver",
+          "reference_frame": "original CARLA frame/time and world XY",
+          "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Diagnostic fixtures are not physical or legal findings.",
+        "Native controller motion, road topology, signal/sign/marking pixels and complete timing need GPU checks."
+      ]
+    }
+  },
+  "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__selected_following_before_lane_change",
+  "selected_case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__selected_following_before_lane_change",
+  "supported_case_ids": [
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__selected_following_before_lane_change"
+  ],
+  "cell_id": "C101303",
+  "law_id": "NRS-484B-127-1",
+  "actor": "motor_vehicle_driver",
+  "scene_kind": "following",
+  "required_atoms": [
+    "kin.speed"
+  ],
+  "source_packets": [],
+  "duration_s": 32,
+  "camera": {
+    "width": 960,
+    "height": 540,
+    "fov_deg": 90
+  },
+  "recording_description": {
+    "channels": [
+      {
+        "name": "kin.speed",
+        "unit": "m/s",
+        "sampling_rate_hz": 20,
+        "method": "native original-frame kin.speed acquisition",
+        "time_window": "entire selected approach and maneuver",
+        "reference_frame": "original CARLA frame/time and world XY",
+        "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+      },
+      {
+        "name": "following_gap",
+        "unit": "structured original-frame source",
+        "sampling_rate_hz": 20,
+        "method": "native original-frame following_gap acquisition",
+        "time_window": "entire selected approach and maneuver",
+        "reference_frame": "original CARLA frame/time and world XY",
+        "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+      },
+      {
+        "name": "traffic_conditions",
+        "unit": "structured original-frame source",
+        "sampling_rate_hz": 20,
+        "method": "native original-frame traffic_conditions acquisition",
+        "time_window": "entire selected approach and maneuver",
+        "reference_frame": "original CARLA frame/time and world XY",
+        "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+      },
+      {
+        "name": "lane_change_route",
+        "unit": "structured original-frame source",
+        "sampling_rate_hz": 20,
+        "method": "native original-frame lane_change_route acquisition",
+        "time_window": "entire selected approach and maneuver",
+        "reference_frame": "original CARLA frame/time and world XY",
+        "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+      },
+      {
+        "name": "driver_control",
+        "unit": "structured original-frame source",
+        "sampling_rate_hz": 20,
+        "method": "native original-frame driver_control acquisition",
+        "time_window": "entire selected approach and maneuver",
+        "reference_frame": "original CARLA frame/time and world XY",
+        "uncertainty": "20 Hz sampling; native pixels and physical realization pending"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Diagnostic fixtures are not physical or legal findings.",
+      "Native controller motion, road topology, signal/sign/marking pixels and complete timing need GPU checks."
+    ]
+  },
+  "measurement_contract": {
+    "format": "worker-measurement-contract-v1",
+    "requirements": [
+      {
+        "disposition_index": 0,
+        "requirement": "Identify qualifying driver, public highway, two moving vehicles and actual following interval before lane change",
+        "source": "NRS 484B.127(1)",
+        "output_key": "following_activation",
+        "method": "following_scope",
+        "kind": "sourced_context",
+        "value_type": "object",
+        "inputs": [
+          "law_context.json",
+          "road_geometry.json"
+        ]
+      },
+      {
+        "disposition_index": 1,
+        "requirement": "Measure full-body longitudinal separation, both speeds and time gap for every following sample without a legal cutoff",
+        "source": "NRS 484B.127(1)",
+        "output_key": "original_following_gaps",
+        "method": "following_gap",
+        "kind": "measured",
+        "value_type": "object",
+        "inputs": [
+          "case_observations.jsonl"
+        ]
+      },
+      {
+        "disposition_index": 2,
+        "requirement": "Retain surrounding traffic and highway surface/weather conditions through the following interval",
+        "source": "NRS 484B.127(1)",
+        "output_key": "following_conditions",
+        "method": "following_conditions",
+        "kind": "measured",
+        "value_type": "object",
+        "inputs": [
+          "case_observations.jsonl",
+          "law_context.json"
+        ]
+      }
+    ],
+    "negative": {
+      "remove": [
+        "case_observations.jsonl"
+      ],
+      "error_contains": "Missing required source: case_observations.jsonl"
+    }
+  },
+  "target_speed_mps": 8,
+  "ego_start": [
+    120,
+    -1.75,
+    0
+  ],
+  "ego_route": [
+    [
+      200,
+      -1.75
+    ],
+    [
+      700,
+      -1.75
+    ],
+    [
+      800,
+      -5.25
+    ],
+    [
+      1100,
+      -5.25
+    ]
+  ],
+  "static_sources": {
+    "law_context.json": {
+      "subject_actor": "motor_vehicle_driver",
+      "vehicle_class": "conventional motor vehicle",
+      "physical_control": "planned native VehicleControl subject",
+      "public_access": "authored public highway",
+      "lead_vehicle": "separate moving conventional vehicle in initial lane",
+      "surface_provenance": "authored dry pavement; original conditions sampled"
+    },
+    "road_geometry.json": {
+      "initial_lane": "road 1 lane -1 eastbound",
+      "route_and_crest": "connected same-direction lane -2 change beyond physical hill crest",
+      "crest_s_m": 750,
+      "lane_width_m": 3.5,
+      "public_highway_road_ids": [
+        1
+      ]
+    }
+  },
+  "dynamic_sources": [
+    "case_observations.jsonl"
+  ],
+  "public_way_road_ids": [
+    1
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ]
+  },
+  "other_start": [
+    145,
+    -1.75,
+    0
+  ],
+  "other_route": [
+    [
+      230,
+      -1.75
+    ],
+    [
+      800,
+      -1.75
+    ],
+    [
+      1100,
+      -1.75
+    ]
+  ],
+  "other_speed_mps": 5
+}

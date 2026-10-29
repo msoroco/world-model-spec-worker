@@ -1,0 +1,47 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Driver is within the intersection intending a left turn",
+      "source": "NRS 484B.253; selected witness branch",
+      "output_key": "subject_inside_left_turn",
+      "method": "subject_interval",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "left253_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "An opposing vehicle is within the intersection",
+      "source": "NRS 484B.253; selected witness branch",
+      "output_key": "opposing_vehicle_inside",
+      "method": "opposing_interval",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "left253_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Subject yields before making the left turn while opposing vehicle occupies the intersection",
+      "source": "NRS 484B.253; initial yield duty",
+      "output_key": "yield_and_turn_sequence",
+      "method": "yield_sequence",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "left253_history.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "left253_history.jsonl"
+    ],
+    "error_contains": "Missing required source: left253_history.jsonl"
+  }
+}

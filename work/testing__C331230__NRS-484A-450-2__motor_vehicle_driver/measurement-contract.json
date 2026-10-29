@@ -1,0 +1,48 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Identified driver approaches an intersection indicated by a governing stop sign",
+      "source": "NRS 484A.450(2); activation",
+      "output_key": "governing_stop_sign",
+      "method": "stop_sign_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "stop_control.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "A near-side crosswalk exists and is the selected first stopping reference",
+      "source": "NRS 484A.450(2); selected branch",
+      "output_key": "near_side_crosswalk_reference",
+      "method": "crosswalk_reference",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "stop_control.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Stop before entering the near-side crosswalk and before entering the intersection",
+      "source": "NRS 484A.450(2); duty and ordering",
+      "output_key": "observed_stop_before_crosswalk",
+      "method": "stopping_sequence",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "stop_control.json",
+        "stop_history.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "stop_history.jsonl"
+    ],
+    "error_contains": "Missing required source: stop_history.jsonl"
+  }
+}

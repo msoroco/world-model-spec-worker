@@ -1,0 +1,60 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Establish public-highway status and a non-alley intersection",
+      "source": "NRS 484B.400(2)(a); accepted witness required_context",
+      "output_key": "public_highway_context",
+      "method": "public_highway_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "law_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Both intersecting highways permit opposite-direction travel",
+      "source": "NRS 484B.400(2)(a); selected witness branch",
+      "output_key": "two_directional_intersection",
+      "method": "bidirectional_intersection",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "An identified driver controls a vehicle and intends a left turn",
+      "source": "NRS 484B.400(2)(a); accepted witness required_context",
+      "output_key": "driver_left_turn_control",
+      "method": "left_turn_control",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "route_control.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Approach within the right half nearest its centerline before intersection entry",
+      "source": "NRS 484B.400(2)(a); law text and supplied summary timing",
+      "output_key": "approach_centerline_geometry",
+      "method": "centerline_offset",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "road_geometry.json",
+        "body_vertices.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "road_geometry.json"
+    ],
+    "error_contains": "Missing required source: road_geometry.json"
+  }
+}

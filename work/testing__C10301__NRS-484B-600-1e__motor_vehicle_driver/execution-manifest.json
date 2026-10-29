@@ -1,0 +1,62 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver",
+  "runtime_manifest_sha256": "d57d974ba163b20b63052ca2c68b917b16e876401aa54ee90f3384af8a30893f",
+  "cases": [
+    {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__selected_absolute_80_mph_alley",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "88f1015a8c95896bb0a7dd8f4a8f516a8120d9840e8a968f678a873cf0b10a55",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "analysis-report.json"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "native original-frame acquisition",
+          "evidence": "PipelineCapture or saved packet; actual GPU realization pending"
+        },
+        "speed_observations": {
+          "entrypoint": "runner.py",
+          "method": "native original-frame acquisition",
+          "evidence": "PipelineCapture or saved packet; actual GPU realization pending"
+        },
+        "driver_control": {
+          "entrypoint": "runner.py",
+          "method": "native original-frame acquisition",
+          "evidence": "PipelineCapture or saved packet; actual GPU realization pending"
+        },
+        "access_aisle_geometry": {
+          "entrypoint": "runner.py",
+          "method": "native original-frame acquisition",
+          "evidence": "PipelineCapture or saved packet; actual GPU realization pending"
+        }
+      },
+      "offline": {
+        "command": "TMPDIR=.runtime-work/tmp flock .runtime-work/runtime.lock .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__selected_absolute_80_mph_alley --output .runtime-work/p4-offline-6001e-final --python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial6/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "receipts/offline.log",
+        "log_sha256": "7abf9cfe5e3f04d00bff2eb9fb46c0052748875a99d4597db7daa2984f7dee75",
+        "construction_sha256": "88f1015a8c95896bb0a7dd8f4a8f516a8120d9840e8a968f678a873cf0b10a55"
+      },
+      "compatibility": {
+        "command": "TMPDIR=.runtime-work/tmp flock .runtime-work/runtime.lock .venv-cpu/bin/python runtime.py compatibility-recipe --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__selected_absolute_80_mph_alley --output .runtime-work/p4-compat-6001e-final --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-build/.lake/build/bin/adapterCheck",
+        "receipt": "receipts/compatibility.json",
+        "sha256": "e4c7b4a67342f26b1de46e7530e1a639c840a3070cc684f7c0baf59f86ef2fac",
+        "log": "receipts/analysis.log"
+      },
+      "negative": {
+        "log": "receipts/negative-analysis.log"
+      }
+    }
+  ]
+}

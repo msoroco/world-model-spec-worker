@@ -1,0 +1,70 @@
+{
+  "cell_id": "C331230",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [],
+  "cases": [
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__selected_near_side_crosswalk",
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "rationale": "Exact near-side crosswalk branch; physical crosswalk tiles and governing West stop sign precede intersection entry.",
+      "variable_assignments": {
+        "approach_speed_mps": {
+          "value": 5.0,
+          "unit": "m/s",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Native sign governance and crosswalk pixels require original-frame review.",
+        "No invented stop epsilon or duration defines a legal full stop."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "native subject velocity",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          },
+          {
+            "name": "governing_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "native approach stop-sign inventory and original camera source",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "physical near-side crosswalk tile vertices and original pixels",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          },
+          {
+            "name": "stopping_motion",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original full-body front, speed, brake and reference ordering",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original sign/crosswalk pixels and exact Native geometry require GPU review.",
+          "Minimum sampled speed is not a statutory full-stop verdict."
+        ]
+      }
+    }
+  ]
+}

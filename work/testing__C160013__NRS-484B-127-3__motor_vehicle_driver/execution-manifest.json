@@ -1,0 +1,63 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver",
+  "runtime_manifest_sha256": "d57d974ba163b20b63052ca2c68b917b16e876401aa54ee90f3384af8a30893f",
+  "cases": [
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__selected_caravan_spacing",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "8da0d715744d17cd5ab5771615c914bf009b4c18ab0a78ec7f0dceb40cc9aefe",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "analysis-report.json"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "native following actor velocity",
+          "evidence": "original frame capture and saved finalizer"
+        },
+        "caravan_roles": {
+          "entrypoint": "runner.py",
+          "method": "authored caravan purpose and outside-business-district context with actor roles",
+          "evidence": "original frame capture and saved finalizer"
+        },
+        "surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "original full-body lead/follow surface gaps",
+          "evidence": "original frame capture and saved finalizer"
+        },
+        "entrant_trajectory": {
+          "entrypoint": "runner.py",
+          "method": "native entrant body trajectory and gap occupation",
+          "evidence": "original frame capture and saved finalizer"
+        }
+      },
+      "offline": {
+        "command": "flock .runtime-work/runtime.lock .venv-cpu/bin/python runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__selected_caravan_spacing --output .runtime-work/partition1/1273-offline-v2 --python /global/homes/m/msoroco/scratch/scenario-worker-demo-test-trial6/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "receipts/offline.log",
+        "log_sha256": "fca1ce3216b1fa05a7a13ff93918dc8077fd3eaae11c96699268922d6f54ef21",
+        "construction_sha256": "8da0d715744d17cd5ab5771615c914bf009b4c18ab0a78ec7f0dceb40cc9aefe"
+      },
+      "compatibility": {
+        "command": "flock .runtime-work/runtime.lock .venv-cpu/bin/python runtime.py compatibility-recipe --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__selected_caravan_spacing --output .runtime-work/partition1/1273-compat-v2 --library .runtime-work/overlay/library --validator .runtime-work/decoder-build/.lake/build/bin/adapterCheck",
+        "receipt": "receipts/compatibility.json",
+        "sha256": "ecdf351b6ee11079d06ac06dc999ea01d5329689babeca07e8af5fea24ea4b51",
+        "log": "receipts/analysis.log"
+      },
+      "negative": {
+        "log": "receipts/negative.log",
+        "sha256": "ed90a8159a0e892c137c46ef1903ca619f732ae42252185a75d5c27aa4ee6515"
+      }
+    }
+  ]
+}

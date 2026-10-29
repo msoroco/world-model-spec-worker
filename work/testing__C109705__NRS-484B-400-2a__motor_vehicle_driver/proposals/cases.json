@@ -1,0 +1,70 @@
+{
+  "cell_id": "C109705",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [],
+  "cases": [
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__selected_left_turn",
+      "target_law_id": "NRS-484B-400-2a",
+      "target_type": "boundary_probe",
+      "rationale": "Exact selected two-directional left-turn approach; observe full body relative to centerline without a legal lateral cutoff.",
+      "variable_assignments": {
+        "approach_speed_mps": {
+          "value": 5.0,
+          "unit": "m/s",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Which portion of the right half is nearest the centerline remains legal review; no threshold imposed.",
+        "Native intended and realized turn, public way and camera pixels need verification."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "native actor velocity",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          },
+          {
+            "name": "roadway_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map/topology plus road-direction survey",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          },
+          {
+            "name": "driver_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "native VehicleControl and actor route history",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          },
+          {
+            "name": "approach_position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original full body vertices relative to directed centerline",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Native map topology, actual full body route and camera visibility remain GPU checks.",
+          "Synthetic public dedication is an authored condition, not a finding about a real highway."
+        ]
+      }
+    }
+  ]
+}

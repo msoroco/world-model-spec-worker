@@ -1,0 +1,142 @@
+{
+  "assignment_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C109705",
+  "law_id": "NRS-484B-400-2b",
+  "selected_branch": "Two-directional intersection within the general intersection layout.",
+  "requirement_dispositions": [
+    {
+      "requirement": "Establish public-highway status and a non-alley intersection",
+      "source": "NRS 484B.400(2)(b); accepted witness required_context",
+      "status": "selected_required",
+      "evidence_or_gap": "Authored public dedication/access and junction geometry; actual native map and public-way facts require local review."
+    },
+    {
+      "requirement": "Both intersecting highways permit opposite-direction travel",
+      "source": "NRS 484B.400(2)(b); selected witness branch",
+      "status": "selected_required",
+      "evidence_or_gap": "Four undivided approach roads with opposing lanes and a connected curved left-turn junction; native topology is a GPU check."
+    },
+    {
+      "requirement": "An identified driver controls a vehicle and intends a left turn",
+      "source": "NRS 484B.400(2)(b); accepted witness required_context",
+      "status": "selected_required",
+      "evidence_or_gap": "Native VehicleControl route from west approach to north exit; actor identity and realized motion require local check."
+    },
+    {
+      "requirement": "After intersection entry, leave to the right of the entered highway centerline",
+      "source": "NRS 484B.400(2)(b); law text and supplied summary timing",
+      "status": "selected_required",
+      "evidence_or_gap": "Saved first full-body exit event and all body vertex distances from the entered highway centerline."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__selected_left_turn",
+      "target_law_id": "NRS-484B-400-2b"
+    }
+  ],
+  "comparisons": [],
+  "observations": [
+    {
+      "name": "kin.speed",
+      "mandatory": true
+    },
+    {
+      "name": "roadway_geometry",
+      "mandatory": true
+    },
+    {
+      "name": "driver_control",
+      "mandatory": true
+    },
+    {
+      "name": "exit_position",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json",
+      "sha256": "5f34824f9cf503308e0f7b14a9e3b07964f8dbd377b7e051bfb5ecd6998c5ea8"
+    },
+    {
+      "path": "references/accepted-sources/C111325/scene-stop257-v1.xodr",
+      "sha256": "0ea7dbd4166c121da257829664f36893c30e7e0dfc2b92183d29a6c22e15e46c"
+    },
+    {
+      "path": "references/accepted-sources/C111325/stop257_controller_v2.py",
+      "sha256": "bd9cfda0679f8c1113927e4d829a852fa5cca7bad12c574f1482b83c2e818b1e"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "No CARLA run performed; native route, full body motion, camera visibility and physical public-way context unverified."
+  ],
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "Saved driver_control from original frame and map; legal interpretation remains open",
+      "channels": [
+        "driver_control"
+      ],
+      "source_refs": [
+        "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.in_intersection": {
+      "evidence": "Saved exit_position from original frame and map; legal interpretation remains open",
+      "channels": [
+        "exit_position"
+      ],
+      "source_refs": [
+        "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "Saved roadway_geometry, exit_position from original frame and map; legal interpretation remains open",
+      "channels": [
+        "roadway_geometry",
+        "exit_position"
+      ],
+      "source_refs": [
+        "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Saved exit_position from original frame and map; legal interpretation remains open",
+      "channels": [
+        "exit_position"
+      ],
+      "source_refs": [
+        "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.position": {
+      "evidence": "Saved exit_position from original frame and map; legal interpretation remains open",
+      "channels": [
+        "exit_position"
+      ],
+      "source_refs": [
+        "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "Saved roadway_geometry from original frame and map; legal interpretation remains open",
+      "channels": [
+        "roadway_geometry"
+      ],
+      "source_refs": [
+        "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Saved roadway_geometry from original frame and map; legal interpretation remains open",
+      "channels": [
+        "roadway_geometry"
+      ],
+      "source_refs": [
+        "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  }
+}

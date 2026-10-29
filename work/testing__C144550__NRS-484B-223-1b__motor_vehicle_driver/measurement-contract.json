@@ -1,0 +1,48 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Highway has two or more clearly marked lanes for traffic in one direction",
+      "source": "NRS 484B.223(1)(b); activation",
+      "output_key": "marked_same_direction_lanes",
+      "method": "marked_lane_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "lane_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Appropriate turn signal is given before the vehicle moves from its lane",
+      "source": "NRS 484B.223(1)(b); first conjunct",
+      "output_key": "indicator_precedes_lane_departure",
+      "method": "signal_before_departure",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "lane_geometry.json",
+        "lane_change_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Driver ascertains lane movement can be made with safety",
+      "source": "NRS 484B.223(1)(b); second conjunct",
+      "output_key": "target_lane_safety_observations",
+      "method": "target_lane_gap",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "lane_change_history.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "lane_change_history.jsonl"
+    ],
+    "error_contains": "Missing required source: lane_change_history.jsonl"
+  }
+}

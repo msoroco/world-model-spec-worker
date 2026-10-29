@@ -1,0 +1,201 @@
+{
+  "case": {
+    "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__selected",
+    "target_law_id": "NRS-484B-127-2",
+    "target_type": "boundary_probe",
+    "rationale": "Qualifying truck following",
+    "variable_assignments": {
+      "target_speed_mps": {
+        "value": 8.0,
+        "unit": "m/s",
+        "kind": "controller"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "No diagnostic fixture or sampled geometry establishes physical/legal acceptance."
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "original actor velocity",
+          "time_window": "entire original 25-second attempt",
+          "reference_frame": "original CARLA frame/time and map",
+          "uncertainty": "native physical and pixel visibility unverified"
+        },
+        {
+          "name": "case_observations",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original per-tick actor, footprint and ray samples",
+          "time_window": "entire original 25-second attempt",
+          "reference_frame": "original CARLA frame/time and map",
+          "uncertainty": "native physical and pixel visibility unverified"
+        },
+        {
+          "name": "scene_geometry",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "native map and authored public-way/crosswalk role",
+          "time_window": "entire original 25-second attempt",
+          "reference_frame": "original CARLA frame/time and map",
+          "uncertainty": "native physical and pixel visibility unverified"
+        },
+        {
+          "name": "control_inventory",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original sign, signal and actor inventory",
+          "time_window": "entire original 25-second attempt",
+          "reference_frame": "original CARLA frame/time and map",
+          "uncertainty": "native physical and pixel visibility unverified"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "No CARLA run in worker; actual motion, sign/crosswalk rendering and visibility require GPU verification."
+      ]
+    }
+  },
+  "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__selected",
+  "selected_case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__selected",
+  "supported_case_ids": [
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__selected"
+  ],
+  "cell_id": "C149237",
+  "law_id": "NRS-484B-127-2",
+  "actor": "heavy_vehicle_driver",
+  "mode": "trucks_127_2",
+  "required_atoms": [
+    "kin.speed"
+  ],
+  "source_packets": [
+    "scenario_geometry"
+  ],
+  "duration_s": 25,
+  "camera": {
+    "width": 960,
+    "height": 540,
+    "fov_deg": 90
+  },
+  "recording_description": {
+    "channels": [
+      {
+        "name": "kin.speed",
+        "unit": "m/s",
+        "sampling_rate_hz": 20,
+        "method": "original actor velocity",
+        "time_window": "entire original 25-second attempt",
+        "reference_frame": "original CARLA frame/time and map",
+        "uncertainty": "native physical and pixel visibility unverified"
+      },
+      {
+        "name": "case_observations",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original per-tick actor, footprint and ray samples",
+        "time_window": "entire original 25-second attempt",
+        "reference_frame": "original CARLA frame/time and map",
+        "uncertainty": "native physical and pixel visibility unverified"
+      },
+      {
+        "name": "scene_geometry",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "native map and authored public-way/crosswalk role",
+        "time_window": "entire original 25-second attempt",
+        "reference_frame": "original CARLA frame/time and map",
+        "uncertainty": "native physical and pixel visibility unverified"
+      },
+      {
+        "name": "control_inventory",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original sign, signal and actor inventory",
+        "time_window": "entire original 25-second attempt",
+        "reference_frame": "original CARLA frame/time and map",
+        "uncertainty": "native physical and pixel visibility unverified"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "No CARLA run in worker; actual motion, sign/crosswalk rendering and visibility require GPU verification."
+    ]
+  },
+  "measurement_specs": [
+    {
+      "output_key": "qualifying_trucks",
+      "method": "truck_class_context",
+      "inputs": [
+        "case_context.json",
+        "case_observations.jsonl"
+      ]
+    },
+    {
+      "output_key": "lane_availability",
+      "method": "lane_availability",
+      "inputs": [
+        "case_context.json"
+      ]
+    },
+    {
+      "output_key": "following_space",
+      "method": "following_gap",
+      "inputs": [
+        "case_context.json",
+        "case_observations.jsonl"
+      ]
+    }
+  ],
+  "authored_context": {
+    "ego_blueprint": "vehicle.carlamotors.european_hgv",
+    "leader_blueprint": "vehicle.carlamotors.european_hgv",
+    "one_way": true,
+    "same_direction_available_lanes": 1,
+    "road_ids": [
+      1
+    ],
+    "overtake_segment": null,
+    "native_inventory": {
+      "officers": [],
+      "traffic_signals": [],
+      "survey_scope": "complete diagnostic world actor and environment-object survey"
+    }
+  },
+  "ego_blueprint": "vehicle.carlamotors.european_hgv",
+  "other_blueprint": "vehicle.carlamotors.european_hgv",
+  "ego_pose": [
+    25,
+    -1.75,
+    0.5,
+    0
+  ],
+  "other_pose": [
+    185,
+    -1.75,
+    0.5,
+    0
+  ],
+  "ego_target_xy": [
+    430,
+    -1.75
+  ],
+  "other_target_xy": [
+    440,
+    -1.75
+  ],
+  "target_speed_mps": 8.0,
+  "public_way_road_ids": [
+    1
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ]
+  }
+}

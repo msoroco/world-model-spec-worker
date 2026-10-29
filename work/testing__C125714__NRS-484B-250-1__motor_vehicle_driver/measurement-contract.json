@@ -1,0 +1,72 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Same identified roadway crossing at a median opening, with separate-intersection treatment where required",
+      "source": "NRS 484B.250(1); with 484B.250(5)",
+      "output_key": "median_crossing_identity",
+      "method": "crossing_geometry",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Other vehicle enters the intersection from a different highway before ego approaches",
+      "source": "NRS 484B.250(1); with 484B.250(5)",
+      "output_key": "earlier_other_entry",
+      "method": "earlier_entry",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "participant_motion.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Establish absence of actual governing official control and preserve subsection-4 and opposite-direction exclusions",
+      "source": "NRS 484B.250(1); with 484B.250(5)",
+      "output_key": "uncontrolled_crossing_inventory",
+      "method": "device_control_absence",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "device_inventory.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Retain both complete trajectories and the ego yield interaction while the other vehicle occupies the crossing",
+      "source": "NRS 484B.250(1); with 484B.250(5)",
+      "output_key": "yield_separation_samples",
+      "method": "yield_clearance",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "participant_motion.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "Qualifying public highways, conventional driver and vehicle scope",
+      "source": "NRS 484B.250(1); with 484B.250(5)",
+      "output_key": "driver_highway_scope",
+      "method": "actor_scope",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "law_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "device_inventory.json"
+    ],
+    "error_contains": "Missing required source: device_inventory.json"
+  }
+}

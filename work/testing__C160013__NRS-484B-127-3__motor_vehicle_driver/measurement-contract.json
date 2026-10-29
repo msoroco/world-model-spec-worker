@@ -1,0 +1,47 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Motor vehicles are driven in a caravan or motorcade on a highway outside a business district",
+      "source": "NRS 484B.127(3); selected branch and activation",
+      "output_key": "caravan_outside_district_context",
+      "method": "caravan_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "caravan_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Allow space between successive caravan vehicles throughout travel",
+      "source": "NRS 484B.127(3); spacing duty",
+      "output_key": "caravan_full_body_spacing",
+      "method": "intervehicle_gap",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "caravan_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Space enables another vehicle to enter and occupy it without danger",
+      "source": "NRS 484B.127(3); statutory consequence",
+      "output_key": "entrant_gap_occupation",
+      "method": "entrant_occupancy",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "caravan_history.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "caravan_history.jsonl"
+    ],
+    "error_contains": "Missing required source: caravan_history.jsonl"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Qualifying curved mountain highway and supported reversal envelope",
+      "source": "NRS 484B.407; selected witness",
+      "output_key": "curve_context",
+      "method": "curved_turn_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Vehicle turns to proceed opposite direction at the curve",
+      "source": "NRS 484B.407; law text",
+      "output_key": "reversal_motion",
+      "method": "reversal_motion",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json",
+        "case_observations.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Original sightlines from both approach directions within 500 feet",
+      "source": "NRS 484B.407; law text",
+      "output_key": "both_direction_visibility",
+      "method": "bidirectional_visibility",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_context.json",
+        "case_observations.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "case_observations.jsonl"
+    ],
+    "error_contains": "Missing required source: case_observations.jsonl"
+  }
+}

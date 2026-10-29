@@ -1,0 +1,70 @@
+{
+  "cell_id": "C144550",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [],
+  "cases": [
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__selected_marked_lane_change",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Exact marked two-lane selected branch; indicator precedes a full-body lane departure and target-lane gap is retained without a legal safety threshold.",
+      "variable_assignments": {
+        "approach_speed_mps": {
+          "value": 5.0,
+          "unit": "m/s",
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Whether the driver ascertained safety is not resolved by a gap proxy.",
+        "Original pixels, lane marks, body movement and nearby traffic need GPU review."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "native actor velocity",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          },
+          {
+            "name": "lane_markings",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "native two same-direction lane boundaries and painted markings",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          },
+          {
+            "name": "signal_timing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original indicator and full-body boundary crossing frames",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          },
+          {
+            "name": "target_lane_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original target-lane actor body gap, closing speed and check telemetry",
+            "time_window": "entire original 25-second approach and turn",
+            "reference_frame": "original CARLA world XY and frame/time",
+            "uncertainty": "20 Hz sampling; native geometry and physical visibility require local review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Driver ascertainment is not inferred from a numerical gap.",
+          "Indicator pixels and target-lane safety need local review."
+        ]
+      }
+    }
+  ]
+}

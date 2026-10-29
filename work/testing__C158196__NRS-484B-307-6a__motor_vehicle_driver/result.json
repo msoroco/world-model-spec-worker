@@ -1,0 +1,33 @@
+{
+  "assignment_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver",
+  "input_sha256": "c1603963b382259f51ba0576f5c69afebbfa10214323c7ba72570eb7d76b15cb",
+  "applied_update": 1,
+  "status": "ready",
+  "readiness_kind": "capability",
+  "first_gpu_capability_command": "python3.11 runtime.py capture --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__selected_yellow_to_red_entry --output .runtime-work/attempts/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__selected_yellow_to_red_entry --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+  "tests": [
+    {
+      "command": "TMPDIR=.runtime-work/tmp flock .runtime-work/runtime.lock .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__selected_yellow_to_red_entry --output .runtime-work/p4-offline-3076a-final --python /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial6/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "receipts/offline.log",
+      "sha256": "39babb83c6239aec86f2664144bab0bf35895dd299ac72c819b9f221f7978676"
+    },
+    {
+      "command": "TMPDIR=.runtime-work/tmp flock .runtime-work/runtime.lock .venv-cpu/bin/python runtime.py compatibility-recipe --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__selected_yellow_to_red_entry --output .runtime-work/p4-compat-3076a-final --library runtime/main-pipeline-v1/library --validator .runtime-work/decoder-build/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "receipts/analysis.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "PYTHONPATH=<effective runtime> .venv-cpu/bin/python -m unittest discover -s tests -v",
+      "exit_code": 0,
+      "log": "receipts/test.log",
+      "sha256": "1bf6eb91330f79981e39e1f6a047ef61e71f2255d4c4799e31a04a1a4ee082f2"
+    }
+  ],
+  "limitations": [
+    "No CARLA run or physical acceptance; diagnostic fixtures prove software compatibility only.",
+    "Native motion, route topology, sign/signal/marking pixels, complete acquisition and legal outcomes require local review.",
+    "For 307-6a the native pedestrian-head inventory is an explicit GPU prerequisite; the runner raises if distinct heads are unavailable."
+  ]
+}
