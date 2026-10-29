@@ -34,6 +34,9 @@ def validate(repo,assignment_id):
                 raise ValueError('Exact-case offline check missing: '+ident)
             if sha(within(folder,offline['log']))!=offline.get('log_sha256'):
                 raise ValueError('Exact-case offline log changed: '+ident)
+        if batch.get('update_version',0)>=2 and batch.get('full_branch_coverage_required'):
+            from .physical_preparation import validate as validate_physical
+            validate_physical(repo,folder,entry)
         construction=read(source)
         if construction['case_id']!=ident:raise ValueError('Wrong selected construction')
         case=next(c for c in proposal['cases'] if c['case_id']==ident)
