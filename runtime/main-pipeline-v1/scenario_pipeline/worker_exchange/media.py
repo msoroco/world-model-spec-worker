@@ -9,6 +9,52 @@ from pathlib import Path
 from .common import digest, read, sha, write
 
 
+def compose_four_views(sources, frame_map, output):
+    """Compose four synchronized original sources into one lossless primary video."""
+    from .capture import PROFILE, layout
+    names = ('overview', 'approach', 'reference_corner', 'driver_reference')
+    if set(sources) != set(names):
+        raise ValueError('Four named original camera sources are required')
+    videos = [Path(sources[name]).resolve() for name in names]
+    mapping = [json.loads(line) for line in Path(frame_map).read_text().splitlines() if line.strip()]
+    if not mapping or any(row.get('video_frame') != index for index, row in enumerate(mapping)):
+        raise ValueError('Original frame map is incomplete')
+    output = Path(output).resolve()
+    if output.exists():
+        raise ValueError('Retain the prior composed source; choose a fresh attempt')
+    dimensions = [PROFILE['overview'], *PROFILE['detail_views']]
+    for name, video, size in zip(names, videos, dimensions):
+        if not video.is_file():
+            raise ValueError('Missing original camera source: ' + name)
+        probe = json.loads(subprocess.check_output(['ffprobe', '-v', 'error', '-count_frames',
+            '-select_streams', 'v:0', '-show_entries', 'stream=width,height,nb_read_frames,r_frame_rate',
+            '-of', 'json', str(video)], text=True))['streams'][0]
+        if [probe['width'], probe['height']] != size or int(probe['nb_read_frames']) != len(mapping) or probe['r_frame_rate'] != '20/1':
+            raise ValueError('Camera source dimensions, rate or frame count differ: ' + name)
+    geometry = layout(PROFILE['overview'], PROFILE['detail_views'])
+    width = geometry['width']; detail_height = max(size[1] for size in dimensions[1:])
+    filters = f'[0:v]format=yuv444p,pad={width}:1080:{(width-1920)//2}:0[overview];'
+    for index, size in enumerate(dimensions[1:], 1):
+        filters += f'[{index}:v]format=yuv444p,pad={size[0]}:{detail_height}:0:0[detail{index}];'
+    filters += f'[detail1][detail2][detail3]hstack=inputs=3,pad={width}:{detail_height}:0:0[details];[overview][details]vstack=inputs=2[primary]'
+    command = ['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-n']
+    for video in videos:
+        command += ['-threads', '4', '-i', str(video)]
+    command += ['-filter_complex_threads', '1', '-filter_complex', filters, '-map', '[primary]',
+                '-frames:v', str(len(mapping)), '-vsync', '0', '-an', '-c:v', 'ffv1',
+                '-pix_fmt', 'yuv444p', str(output)]
+    subprocess.run(command, check=True, timeout=3600)
+    final = json.loads(subprocess.check_output(['ffprobe', '-v', 'error', '-count_frames',
+        '-select_streams', 'v:0', '-show_entries', 'stream=width,height,nb_read_frames',
+        '-of', 'json', str(output)], text=True))['streams'][0]
+    if [final['width'], final['height']] != [geometry['width'], geometry['height']] or int(final['nb_read_frames']) != len(mapping):
+        raise ValueError('Composed primary changed frame count or dimensions')
+    return {'format': 'synchronized-four-view-v1', 'sources': {name: sha(video) for name, video in zip(names, videos)},
+            'frame_map_sha256': sha(frame_map), 'primary': str(output), 'primary_sha256': sha(output),
+            'frames': len(mapping), 'dimensions': [geometry['width'], geometry['height']],
+            'pixel_visibility_verified': False}
+
+
 @dataclass(frozen=True)
 class Frame:
     index: int

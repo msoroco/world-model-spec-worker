@@ -11,18 +11,24 @@ def require(condition, message):
 
 
 def runtime_for(repo, batch):
-    """Use a verified worker overlay only in the actual worker checkout."""
-    from .common import sha
+    """Resolve the same source-hashed child runtime for worker and local checks."""
+    import importlib.util
+    repo = Path(repo).resolve()
     baseline = repo / batch['runtime']['root']
-    if not (repo / 'overlay.py').is_file():
-        return baseline
-    from overlay import ROOT, effective_runtime
-    if repo.resolve() != ROOT.resolve():
-        return baseline
-    effective = effective_runtime()
-    if sha(baseline/'SOURCE-MANIFEST.json') != batch['runtime']['source_manifest_sha256']:
+    pinned = batch['runtime'].get('source_manifest_sha256')
+    if pinned and sha(baseline/'SOURCE-MANIFEST.json') != pinned:
         raise ValueError('Batch pinned runtime mismatch')
-    return effective
+    overlay = repo / 'overlay.py'
+    if not overlay.is_file() or not (repo / 'work/_shared/runtime-overlay/overlay.json').is_file():
+        return baseline
+    if sha(overlay) != batch['frozen_files'].get('overlay.py'):
+        raise ValueError('Worker runtime resolver changed')
+    spec = importlib.util.spec_from_file_location('_source_hashed_worker_overlay', overlay)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    if module.ROOT.resolve() != repo:
+        raise ValueError('Worker runtime resolver points to another repository')
+    return module.effective_runtime()
 
 
 def check(repo, complete=False, require_ready=False):
@@ -37,9 +43,19 @@ def check(repo, complete=False, require_ready=False):
         for source in catalog['items']:
             require(sha(within(repo, source['path']))==source['sha256'], 'Changed source reference')
     allocated = []
-    for path in sorted((repo/'partitions').glob('*.json')):
-        allocated.extend(read(path)['assignment_ids'])
+    partitions = [read(path) for path in sorted((repo/'partitions').glob('*.json'))]
+    for partition in partitions:
+        allocated.extend(partition['assignment_ids'])
     require(len(allocated) == len(set(allocated)) and set(allocated) == set(batch['assignments']), 'Partition coverage/overlap')
+    if batch.get('gpu_ready_required'):
+        require(batch.get('law_split_version') == 'demo-overlap-v3', 'GPU-ready batch must use the current law split')
+        for partition in partitions:
+            require(partition.get('set_id') == 'demo-test', 'GPU-ready partition targets another set')
+            for aid in partition['assignment_ids']:
+                original = read(repo/'inputs'/aid/'assignment.json')
+                require(original.get('role') == 'testing' and
+                        original.get('local_snapshot',{}).get('scope_hashes',{}).get('demo-test') == partition.get('scope_sha256'),
+                        'GPU-ready assignment does not match frozen demo-test scope')
     files = tree(repo)
     if batch.get('lean_return_required'):
         returned=[rel for rel in files if rel.startswith('work/')]
@@ -138,6 +154,27 @@ def check(repo, complete=False, require_ready=False):
                 for key in ('target_law_id','target_type','rationale','variable_assignments','unresolved_judgment_calls','recording_description'):
                     require(key in case, 'Missing canonical case field '+key)
             config = read(folder/'config.json')
+            if batch.get('capture_profile_required'):
+                from .capture import PROFILE
+                camera_plan = plan.get('camera_plan')
+                require(isinstance(camera_plan, dict) and
+                        camera_plan.get('profile') == PROFILE['version'] and
+                        camera_plan.get('duration_s') == config.get('duration_s') and
+                        isinstance(camera_plan.get('coverage'), list) and camera_plan['coverage'],
+                        'Missing exact camera and duration plan')
+                names = ('overview', 'approach', 'reference_corner', 'driver_reference')
+                sizes = [PROFILE['overview'], *PROFILE['detail_views']]
+                cameras = config.get('cameras')
+                require(isinstance(cameras, list) and len(cameras) == 4 and
+                        [(c.get('name'), c.get('width'), c.get('height')) for c in cameras] ==
+                        [(name, *size) for name, size in zip(names, sizes)] and
+                        all(c.get('pose_strategy') and c.get('fov_deg') for c in cameras),
+                        'Four-view capture configuration differs from profile')
+                require({c.get('view') for c in camera_plan['coverage']} <= set(names) and
+                        all(c.get('subject') and c.get('interval') and c.get('view') for c in camera_plan['coverage']),
+                        'Camera coverage plan lacks subjects, views or intervals')
+                require(camera_plan.get('composition') == 'synchronized_four_view_primary',
+                        'Four-view capture needs synchronized primary composition')
             if batch.get('runtime'):
                 from .atom_preflight import check_required_atoms
                 check_required_atoms(runtime_for(repo,batch), config.get('required_atoms', []), config.get('source_packets', []))

@@ -412,14 +412,31 @@ def convert(capture, original, library, output):
     inventory_projection = {atom: [] for atom in inventory_records}
     configuration=json.loads((original/'config.json').read_text()) if (original/'config.json').exists() else {}
     public_way_roads=configuration.get('public_way_road_ids',[])
+    projection_public_way_roads=public_way_roads
+    diagnostic_public_way_projection=False
     if public_way_roads:
         values=dict(configuration.get('authored_test_context',{}).get('core_assumptions',[]))
         if values.get('asm.public_highway') is not True:raise ValueError('Public-way regions need an explicit administrative assumption')
         if any(e.get('original_observations',{}).get('map_context',{}).get('declared_public_way_road_ids')!=public_way_roads for e in evidence):
-            raise ValueError('Public-way role declaration differs from original graph observations')
+            # Compatibility recipes retain a small, pinned speed capture while
+            # materializing the exact case configuration. Its road inventory is
+            # necessarily smaller than an intersection case's native map. Use
+            # the recorded road roles only when every identifying source is
+            # byte-for-byte the shipped diagnostic fixture. Native captures
+            # still require exact agreement with their original observations.
+            base=Path(__file__).resolve().parents[2]/'fixtures/retained-speed'
+            markers=('fixture-provenance.json','road.xodr','trace.jsonl','capture/evidence.jsonl')
+            if not all((original/name).is_file() and (base/name).is_file() and
+                       sha(original/name)==sha(base/name) for name in markers):
+                raise ValueError('Public-way role declaration differs from original graph observations')
+            recorded=[e.get('original_observations',{}).get('map_context',{}).get('declared_public_way_road_ids') for e in evidence]
+            if not recorded[0] or any(roads!=recorded[0] for roads in recorded):
+                raise ValueError('Diagnostic public-way road observations differ across frames')
+            projection_public_way_roads=recorded[0]
+            diagnostic_public_way_projection=True
     regions,polygons,lane_ids=static_map(original/'road.xodr',junctions=True,junction_report=junction_report,
                                       native_junction_boxes=native_facts.get('junctions',[]),
-                                      include_non_driving=bool(source_manifest.get('observation_contract_version')),public_way_roads=public_way_roads)
+                                      include_non_driving=bool(source_manifest.get('observation_contract_version')),public_way_roads=projection_public_way_roads)
     from .native_control_observations import read_observations as native_control_observations
     inventory_records.update(native_control_observations(original,telemetry,lane_ids,regions,
         source_manifest.get('required_observations', [])))
@@ -502,6 +519,7 @@ def convert(capture, original, library, output):
     if native_facts:
         source_paths['native_map_facts']=facts_path
     report={'status':'draft','adapter':VERSION,'frames':len(evidence),'inputs':{k:{'path':str(p),'sha256':sha(p)} for k,p in source_paths.items()},
+            'diagnostic_public_way_projection':diagnostic_public_way_projection,
             'full_core':str(full_core(library)), 'subject_blueprint':blueprint.group(1),
             'native_junction_mapping':junction_report,
             'authored_speed_control_portions':control_portions,
@@ -518,7 +536,7 @@ def convert(capture, original, library, output):
                        'occupancy':'recorded convex body footprint intersects 2 m sampled OpenDRIVE lane/roadway polygons',
                        'sight_distance':'per-frame minimum clear-side any-body horizon over all required road lanes, attached to ego-overlapping lane/roadway regions; detailed evidence retained',
                        'weather':'darkness: sun altitude < 0; precipitation/wetness: parameter > 0; classifications are estimates'},
-            'limitations':['Sight distance is a subject-relative sampled lower bound for the 500 ft test, not an exact or uncensored cutoff. rel.visible requires separate original subject-to-user body rays; older centre-only captures remain unknown.',
+            'limitations':(['Pinned retained-speed diagnostic capture projects only its recorded public-way roads; exact-case native road roles remain unverified.'] if diagnostic_public_way_projection else [])+['Sight distance is a subject-relative sampled lower bound for the 500 ft test, not an exact or uncensored cutoff. rel.visible requires separate original subject-to-user body rays; older centre-only captures remain unknown.',
                            'No observed signal-off enum; absent ego lamps are not inferred from controller signals.',
                            'Normalized steering control is not wheel angle; commanded gear is not observed gear.',
                            'Core device.governs is a non-optional list: it cannot distinguish unobserved governance from an empty list. Retain observed edges and report incomplete device coverage; no compliance conclusion follows.',

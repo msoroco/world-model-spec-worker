@@ -89,7 +89,7 @@ def process(attempt,output,library,validator=None):
     report=convert(attempt/'capture',attempt,Path(library),output)
     if validator:validate_output(output,validator)
     if report.get('required_measurements_complete') is not True:
-        raise ValueError('Mandatory observation coverage incomplete: '+str(report.get('atom_coverage',{}).get('missing'))) 
+        raise ValueError('Mandatory observation coverage incomplete: '+str(report.get('atom_coverage',{}).get('missing')))
     return {'converted':True,'output':str(output),'decoder_checked':bool(validator),'acceptance_claimed':False}
 
 

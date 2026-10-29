@@ -1,4 +1,4 @@
-# Fresh demo-test preparation: v5
+# Fresh demo-test GPU preparation: v6
 
 The operator starts this agent manually. Use Python 3.11 or newer; create an
 ignored `.venv-cpu` and install `runtime/main-pipeline-v1/requirements-cpu.txt`.
@@ -11,7 +11,8 @@ assignment owners, one per partition. Complete one representative exact case
 through the new gate before expanding the remaining partitions.
 Run `python3.11 reference_select.py ASSIGNMENT_ID` to find matching
 accepted source examples; read their hashes and limitations before adaptation.
-The lead alone integrates shared changes, validates, commits and pushes the
+The batch uses the current `demo-overlap-v3` law split as its only authority.
+Do not read or reconcile older split versions. The lead alone integrates shared changes, validates, commits and pushes the
 configured return branch. Do not inspect earlier trial branches or copy their
 packages. Do not run CARLA, NERSC tools or the main campaign database.
 
@@ -30,6 +31,20 @@ as test evidence. Check topology, routes, signs/markings, participants, camera
 configuration and duration offline. Record unverified native motion and pixel
 visibility as GPU checks. A law-specific measurement cannot be replaced by a
 generic speed or source-presence check.
+
+Use `worker_exchange.capture.PROFILE` for every exact case: one 1920×1080
+overview and three 1280×720 detail cameras at 20 Hz. Put the four named
+camera configurations in `config.json.cameras` in profile order. Each needs
+`name`, `width`, `height`, `fov_deg` and a concrete `pose_strategy`. Put
+`camera_plan` in `case-plan.json` with the profile version, exact `duration_s`,
+`composition: synchronized_four_view_primary`, and `coverage` rows naming
+`subject`, `interval` and `view`. The runner must capture all four views on
+the same original ticks, retain individual sources and compose a synchronized
+primary `raw.mkv` with the supplied `worker_exchange.media.compose_four_views`
+helper and the original `video_frames.jsonl` map. Store its source-hashed
+receipt with the capture. Keep full startup, approach,
+interaction, clearance and final observation. Offline plans establish intended
+coverage; actual pixels and adequate duration remain GPU checks.
 
 For **each exact case**, write a `worker-measurement-contract-v1` JSON file.
 Its `requirements` list has one row for every `selected_required` disposition
@@ -70,6 +85,8 @@ place source-hashed replacement Python files and `overlay.json` under
 `python3.11 overlay.py` and test the effective runtime. Keep the
 pinned baseline and Core ontology unchanged. The local operator verifies any
 overlay before adopting it into a new local runtime revision.
+The v6 baseline already contains the reviewed v5 adapter repair. Do not copy
+the v5 overlay or any returned v5 package into this fresh batch.
 
 For every exact nonbaseline case, run `runtime.py offline` and store a hashed
 log in its execution-manifest `offline` entry: `command`, `exit_code: 0`,
@@ -109,4 +126,6 @@ python3.11 worker_check.py --complete --require-capability-ready
 
 If that gate fails, report exact test-backed CPU blockers. Commit and push the
 return branch. Report commit, counts, hashed logs and the first GPU capability
-command per assignment. No physical acceptance is claimed.
+command per assignment. The local operator then runs `check-return` and
+`preflight-return --python <actual Native Python>` against the committed branch;
+neither contacts CARLA. No physical acceptance is claimed.
