@@ -1,0 +1,36 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Original vehicle stopping and body-front position before the selected near-side crosswalk",
+      "source": "NRS 484A.450(2); Every driver of a vehicle approaching a stop intersection indicated by a stop sign shall stop before entering the crosswalk on the near side of the intersection or, if there is no crosswalk, shall stop at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway before entering the intersection.",
+      "output_key": "pre_crosswalk_body_front_and_speed",
+      "method": "stop_before_crosswalk",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "crosswalk_geometry.json",
+        "stop_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Stop-sign governed approach and physically present near-side crosswalk before the intersection",
+      "source": "Near-side crosswalk; Every driver of a vehicle approaching a stop intersection indicated by a stop sign",
+      "output_key": "selected_crosswalk_and_stop_control",
+      "method": "crosswalk_stop_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "crosswalk_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "crosswalk_geometry.json"
+    ],
+    "error_contains": "Missing required source: crosswalk_geometry.json"
+  }
+}

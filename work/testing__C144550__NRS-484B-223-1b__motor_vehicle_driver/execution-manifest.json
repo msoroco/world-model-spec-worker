@@ -1,0 +1,61 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "eb729128ea5d442fd9baf87ef575757ff26f4a5e916ecf69d730be24e601e22a",
+  "cases": [
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__selected_signaled_change",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "003cc43f6d1a345ab5c6394ced6c4f82d1eeeb2cc14c9a853edc0bf2fdce20b1",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native lane and velocity samples with scenario geometry packet",
+          "evidence": "lane_history.jsonl and scenario_geometry.json"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Original Native lane and velocity samples with scenario geometry packet",
+          "evidence": "lane_history.jsonl and scenario_geometry.json"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "Original Native lane and velocity samples with scenario geometry packet",
+          "evidence": "lane_history.jsonl and scenario_geometry.json"
+        },
+        "lane_history": {
+          "entrypoint": "runner.py",
+          "method": "Original Native lane and velocity samples with scenario geometry packet",
+          "evidence": "lane_history.jsonl and scenario_geometry.json"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__selected_signaled_change --output .runtime-work/offline-223-2 --python <absolute .venv-cpu/bin/python>",
+        "exit_code": 0,
+        "log": "receipts/cpu.log",
+        "log_sha256": "b0b927170a837d3f085f495850f4a299e6604ce01495ea8fe470dae15d5f235d",
+        "construction_sha256": "003cc43f6d1a345ab5c6394ced6c4f82d1eeeb2cc14c9a853edc0bf2fdce20b1"
+      },
+      "compatibility": {
+        "receipt": "receipts/package.json",
+        "sha256": "aa481adbcb582c292d5902889a837b5c05619c14e5c2109350593662c103b52c",
+        "log": "receipts/analysis.log"
+      },
+      "negative": {
+        "log": "receipts/negative.log"
+      }
+    }
+  ]
+}

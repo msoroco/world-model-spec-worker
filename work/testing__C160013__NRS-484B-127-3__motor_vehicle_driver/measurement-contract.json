@@ -1,0 +1,47 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Full-body spacing between each adjacent caravan vehicle pair",
+      "source": "NRS 484B.127(3); Motor vehicles being driven upon any highway outside of a business district in a caravan or motorcade",
+      "output_key": "caravan_full_body_gaps",
+      "method": "caravan_spacing",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "caravan_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Independent other vehicle can enter and occupy the gap without danger",
+      "source": "Motor vehicles being driven upon any highway outside of a business district in a caravan or motorcade, whether or not towing other vehicles, shall be operated to allow sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger.",
+      "output_key": "outsider_entry_clearances",
+      "method": "entrant_occupancy",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "caravan_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Motorcade or caravan on highway outside business district",
+      "source": "Caravan or motorcade spacing",
+      "output_key": "outside_district_caravan_context",
+      "method": "outside_district_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "caravan_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "caravan_history.jsonl"
+    ],
+    "error_contains": "Missing required source: caravan_history.jsonl"
+  }
+}

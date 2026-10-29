@@ -1,0 +1,55 @@
+"""Original body/crosswalk overlap during measured backing; no legal verdict."""
+import argparse,hashlib,json,math
+from pathlib import Path
+from shapely.geometry import MultiPoint,box
+from worker_exchange.native_output import write_result
+
+def required(root,name):
+ p=root/name
+ if not p.is_file():raise ValueError('Missing required source: '+name)
+ return p
+
+def reverse_crosswalk_overlap(root):
+ rows=[json.loads(s) for s in required(root,'reverse_history.jsonl').read_text().splitlines() if s]
+ if not rows:raise ValueError('Missing original reverse samples')
+ context=json.loads(required(root,'crosswalk_context.json').read_text());west,east,south,north=context['band_xy_m']
+ stripe=box(west,south,east,north);samples=[]
+ for row in rows:
+  vertices=row['body_vertices_m']
+  if len(vertices)!=8:raise ValueError('Require eight original body vertices')
+  body=MultiPoint([(v[0],v[1]) for v in vertices]).convex_hull
+  signed=row['velocity_mps'][0]*math.cos(math.radians(row['heading_deg']))+row['velocity_mps'][1]*math.sin(math.radians(row['heading_deg']))
+  samples.append({'frame':row['frame'],'time_s':row['time_s'],'body_overlap_area_m2':body.intersection(stripe).area,
+   'signed_forward_velocity_mps':signed,'reverse_control':bool(row['reverse_control'])})
+ return {'samples':samples,'backing_overlap_original_frames':[r['frame'] for r in samples if r['reverse_control'] and r['signed_forward_velocity_mps']<0 and r['body_overlap_area_m2']>0],
+  'maximum_body_overlap_area_m2':max(r['body_overlap_area_m2'] for r in samples),'sampling_limit':'Original 20 Hz body polygon; physical stripe pixel visibility unverified'}
+
+def crosswalk_context(root):
+ value=json.loads(required(root,'crosswalk_context.json').read_text())
+ if not value.get('physical_marking_source') or not value.get('band_xy_m'):raise ValueError('Incomplete crosswalk context')
+ return value
+
+def finalize(root,output):
+ cfg=json.loads(required(root,'config.json').read_text());overlap=reverse_crosswalk_overlap(root);context=crosswalk_context(root)
+ values={}
+ for key,method,val,name,extra in [('backing_crosswalk_body_overlap','reverse_crosswalk_overlap',overlap,'reverse_history.jsonl',['crosswalk_context.json']),
+                                    ('physical_crosswalk_context','crosswalk_context',context,'crosswalk_context.json',[])]:
+  values[key]={'method':method,'value':val,'sources':{n:hashlib.sha256(required(root,n).read_bytes()).hexdigest() for n in [name,*extra]}}
+ output.write_text(json.dumps({'format':'worker-analysis-report-v1','case_id':cfg['selected_case_id'],'measurements':values,
+  'limitations':['Diagnostic fixture is not a physical demonstration.','Native reverse motion, full-body stripe contact and four camera pixels remain local checks.']},indent=2)+'\n')
+ rows=[json.loads(s) for s in required(root,'trace.jsonl').read_text().splitlines() if s]
+ channels=root/'channels';channels.mkdir(exist_ok=True)
+ (channels/'kin.speed.jsonl').write_text(''.join(json.dumps({'time_s':r['time_s'],'value':r['speed_mps']})+'\n' for r in rows))
+ result={'case_id':cfg['selected_case_id'],'measured_values':{'maximum_crosswalk_overlap_m2':overlap['maximum_body_overlap_area_m2']},
+  'target_checks':[{'target':'backing_crosswalk_body_overlap','requested':True,'measured':bool(overlap['backing_overlap_original_frames']),
+    'method':'original full-body polygon and signed reverse velocity','tolerance':0,'matched':bool(overlap['backing_overlap_original_frames']),
+    'physical_cause_confirmed':False,'cause_evidence':'reverse_history.jsonl'}],
+  'setup_confirmed':False,'behavior_attempted':True,'maneuver_completed':False,'termination_reason':'saved diagnostic only',
+  'physical_failure_flags':{'detection_validated':False},'trace_reference':'trace.jsonl','video_references':['raw.mkv'],
+  'video_frame_map_reference':'video_frames.jsonl','recording_description':cfg['case']['recording_description'],
+  'recording_evidence':[{'name':'kin.speed','unit':'m/s','reference':'channels/kin.speed.jsonl'}],'realized_observables':{}}
+ write_result(root,result)
+
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('--attempt',required=True);p.add_argument('--output',required=True)
+ a=p.parse_args();finalize(Path(a.attempt),Path(a.output))

@@ -1,0 +1,47 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Selected mountain-road curve and crest geometry at the proposed turn",
+      "source": "Mountain-road curve with documented visibility circumstances.",
+      "output_key": "curved_mountain_road",
+      "method": "curve_grade_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "curve_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Original visibility of subject to drivers approaching from either direction within 500 feet",
+      "source": "NRS 484B.407; A vehicle shall not be turned so as to proceed in the opposite direction upon any curve, or upon the approach to or near the crest of a grade, where such vehicle cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet.",
+      "output_key": "bidirectional_500ft_visibility",
+      "method": "visibility_500ft",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "visibility_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Subject turn so as to proceed in the opposite direction on curve",
+      "source": "NRS 484B.407; U-turn motion",
+      "output_key": "u_turn_motion",
+      "method": "turn_motion",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "turn_history.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "visibility_samples.jsonl"
+    ],
+    "error_contains": "Missing required source: visibility_samples.jsonl"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "cell_id": "C144550",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [],
+  "cases": [
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__selected_signaled_change",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Original signal timing, lane boundary crossing and target-lane vehicle gap under selected conjunctive prerequisites.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": 5.0,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "signal_onset_tick": {
+          "value": 80,
+          "kind": "controller"
+        },
+        "lane_change_request_tick": {
+          "value": 160,
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Appropriate signal",
+        "ascertained safety"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          },
+          {
+            "name": "lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body target-lane actor and signal-bit history",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Safety ascertainment is not inferred from a geometric gap or lamp bit."
+        ]
+      }
+    }
+  ]
+}

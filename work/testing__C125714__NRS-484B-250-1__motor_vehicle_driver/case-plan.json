@@ -1,0 +1,211 @@
+{
+  "assignment_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C125714",
+  "law_id": "NRS-484B-250-1",
+  "selected_branch": "Other vehicle enters the same statutory roadway crossing at a median opening before ego.",
+  "requirement_dispositions": [
+    {
+      "requirement": "Same identified statutory crossing at the median opening, with both highways, connected approaches and physical conflict boundary",
+      "source": "NRS 484B.250(1); with 484B.250(5); approaching an intersection shall yield the right-of-way",
+      "status": "selected_required",
+      "evidence_or_gap": "Crossing OpenDRIVE topology, original map junction/road survey and separate public highway source needed"
+    },
+    {
+      "requirement": "Other vehicle entered that crossing from a different highway before the ego approached; preserve full body and motion histories",
+      "source": "NRS 484B.250(1); with 484B.250(5); approaching an intersection shall yield the right-of-way",
+      "status": "selected_required",
+      "evidence_or_gap": "Original synchronized entry brackets, footprints and both trajectories needed"
+    },
+    {
+      "requirement": "Ego yielding motion and actual precedence relative to the earlier entrant",
+      "source": "NRS 484B.250(1); with 484B.250(5); approaching an intersection shall yield the right-of-way",
+      "status": "selected_required",
+      "evidence_or_gap": "Original velocity, controls, body occupancy and clearance needed; right-of-way judgment remains separate"
+    },
+    {
+      "requirement": "Official traffic-control governance, opposing-direction left-turn exclusion, and subsection 4 qualification",
+      "source": "NRS 484B.250(1); with 484B.250(5); The driver of a vehicle approaching an intersection shall yield the right-of-way to a vehicle which has entered the intersection from a different highway. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+      "status": "exception_pending",
+      "evidence_or_gap": "Complete Native inventory and maneuver data needed; subsection 4 remains unresolved"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__median_opening_crossing",
+      "target_law_id": "NRS-484B-250-1",
+      "purpose": "median_opening_crossing"
+    }
+  ],
+  "comparisons": [],
+  "observations": [
+    {
+      "name": "original_motion",
+      "mandatory": true
+    },
+    {
+      "name": "native_geometry",
+      "mandatory": true
+    },
+    {
+      "name": "device_inventory",
+      "mandatory": true
+    },
+    {
+      "name": "view_provenance",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+      "sha256": "7d9db330d4362a277335a70267c5d326de9b84837e901b32d3470fefeb872dfa"
+    },
+    {
+      "path": "examples/judgment/README.md",
+      "sha256": "f26a5750234fd483502263a3d0ed75decf38838c3116d0acd6d3d070089871c9"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native topology, motion, signs, source packets, actual pixels and complete duration unverified until local GPU run.",
+    "Diagnostic fixtures are software evidence only; no physical or legal acceptance."
+  ],
+  "source_observation_mapping": {
+    "st.intersection": {
+      "evidence": "the intersection region and its boundary; exact original source and uncertainty to be acquired",
+      "channels": [
+        "native_geometry"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "the lanes on which the two vehicles approach enter the same intersection; the exception reads which intersection a device controls through the lanes it governs; exact original source and uncertainty to be acquired",
+      "channels": [
+        "native_geometry"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.approaching": {
+      "evidence": "the subject approaching it; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "the other vehicle has entered from a different highway; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.arrival_order": {
+      "evidence": "who entered first; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "the subject gives way; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.in_intersection": {
+      "evidence": "the other vehicle inside the region; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "the exception: an intersection controlled by a device; exact original source and uncertainty to be acquired",
+      "channels": [
+        "device_inventory"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.stop_sign": {
+      "evidence": "the same; exact original source and uncertainty to be acquired",
+      "channels": [
+        "device_inventory"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.yield_sign": {
+      "evidence": "the same; exact original source and uncertainty to be acquired",
+      "channels": [
+        "device_inventory"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "the exception for a left-turning vehicle from the opposite direction; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.oncoming": {
+      "evidence": "that vehicle approaches from the opposite direction; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability-v1",
+    "duration_s": 55,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "crossing geometry and all participants",
+        "interval": "startup through final observation",
+        "view": "overview"
+      },
+      {
+        "subject": "other vehicle first entry",
+        "interval": "approach through interaction and clearance",
+        "view": "approach"
+      },
+      {
+        "subject": "ego approach and yielding",
+        "interval": "approach through interaction and clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver crossing view",
+        "interval": "entire original episode",
+        "view": "driver_reference"
+      }
+    ]
+  }
+}

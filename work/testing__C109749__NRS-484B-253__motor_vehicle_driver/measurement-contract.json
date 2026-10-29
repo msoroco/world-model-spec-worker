@@ -1,0 +1,36 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Subject yield-window relative to opposing vehicle within or near intersection",
+      "source": "NRS 484B.253; The driver of a vehicle within an intersection intending to turn to the left shall yield the right-of-way",
+      "output_key": "opposing_yield_window",
+      "method": "opposing_yield_window",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "road_geometry.json",
+        "interaction_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Selected initial opposing-vehicle and two-way intersection context",
+      "source": "Initial yield duty; opposing vehicle within intersection.",
+      "output_key": "two_way_opposing_context",
+      "method": "two_way_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "road_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "road_geometry.json"
+    ],
+    "error_contains": "Missing required source: road_geometry.json"
+  }
+}

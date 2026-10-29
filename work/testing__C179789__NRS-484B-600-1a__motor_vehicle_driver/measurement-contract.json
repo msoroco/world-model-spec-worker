@@ -1,0 +1,47 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Original speed and vehicle operation across the full episode, with another vehicle traffic history",
+      "source": "NRS 484B.600(1)(a); A rate of speed greater than is reasonable or proper",
+      "output_key": "contemporaneous_speed_and_traffic",
+      "method": "traffic_speed",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Full highway width, roadway versus shoulder, curvature and surface conditions",
+      "source": "NRS 484B.600(1)(a); A rate of speed greater than is reasonable or proper",
+      "output_key": "width_curvature_and_surface",
+      "method": "road_conditions",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Contemporaneous weather, calibrated target-specific visibility, sight distance, queue and actual stopping event if any",
+      "source": "NRS 484B.600(1)(a); A rate of speed greater than is reasonable or proper",
+      "output_key": "weather_visibility_sight_and_stopping_context",
+      "method": "environment_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "case_observation.json"
+    ],
+    "error_contains": "Missing required source: case_observation.json"
+  }
+}

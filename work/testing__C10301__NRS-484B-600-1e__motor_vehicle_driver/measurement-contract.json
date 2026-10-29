@@ -1,0 +1,35 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Original sampled speed throughout qualifying operation against the 80 mph absolute ceiling",
+      "source": "NRS 484B.600(1)(e); It is unlawful for any person to drive or operate a vehicle of any kind or character at: In any event, a rate of speed greater than 80 miles per hour.",
+      "output_key": "original_speed_history",
+      "method": "speed_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Qualifying driver, vehicle and highway context",
+      "source": "the subject drives or operates a vehicle of any kind on any highway",
+      "output_key": "highway_context",
+      "method": "highway_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "alley_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "alley_context.json"
+    ],
+    "error_contains": "Missing required source: alley_context.json"
+  }
+}

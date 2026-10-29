@@ -1,0 +1,48 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Appropriate turn-signal onset before lateral movement from marked lane",
+      "source": "NRS 484B.223(1)(b); Not be moved from that lane until the driver has given the appropriate turn signal and ascertained that such movement can be made with safety.",
+      "output_key": "signal_onset_relative_to_lateral_movement",
+      "method": "movement_event",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "scenario_geometry.json",
+        "lane_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Target-lane surrounding vehicle gap and motion for safety assessment",
+      "source": "If a highway has two or more clearly marked lanes for traffic traveling in one direction, vehicles must: Not be moved from that lane until the driver has given the appropriate turn signal and ascertained that such movement can be made with safety.",
+      "output_key": "target_lane_full_body_gap",
+      "method": "target_lane_gap",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "lane_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Two clearly marked same-direction lanes and selected one-way layout",
+      "source": "Both conjunctive prerequisites before lane movement.",
+      "output_key": "one_way_marked_lane_context",
+      "method": "one_way_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "scenario_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "lane_history.jsonl"
+    ],
+    "error_contains": "Missing required source: lane_history.jsonl"
+  }
+}

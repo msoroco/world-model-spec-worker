@@ -1,0 +1,223 @@
+{
+  "assignment_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C179789",
+  "law_id": "NRS-484B-600-1a",
+  "selected_branch": "Paved-road speed and conditions",
+  "requirement_dispositions": [
+    {
+      "requirement": "Original speed and vehicle operation across the full episode, with another vehicle traffic history",
+      "source": "NRS 484B.600(1)(a); A rate of speed greater than is reasonable or proper",
+      "status": "selected_required",
+      "evidence_or_gap": "Native velocity and actor identity per original frame plus other-vehicle trajectory needed"
+    },
+    {
+      "requirement": "Full highway width, roadway versus shoulder, curvature and surface conditions",
+      "source": "NRS 484B.600(1)(a); A rate of speed greater than is reasonable or proper",
+      "status": "selected_required",
+      "evidence_or_gap": "OpenDRIVE and Native lane/surface surveys with explicit authorship and source hashes needed"
+    },
+    {
+      "requirement": "Contemporaneous weather, calibrated target-specific visibility, sight distance, queue and actual stopping event if any",
+      "source": "NRS 484B.600(1)(a); A rate of speed greater than is reasonable or proper",
+      "status": "selected_required",
+      "evidence_or_gap": "Same-frame weather, RGB/instance calibration, traffic and sight rays needed; stopping distance only if actual stop occurs"
+    },
+    {
+      "requirement": "Reasonable or proper, due regard, sight adequacy and motorcycle-equipment caveat",
+      "source": "NRS 484B.600(1)(a); It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than is reasonable or proper, having due regard for the traffic, surface and width of the highway, the weather and other highway conditions.",
+      "status": "alternative_pending",
+      "evidence_or_gap": "No legal threshold or adequacy classification selected"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__paved_speed_conditions",
+      "target_law_id": "NRS-484B-600-1a",
+      "purpose": "paved_speed_conditions"
+    }
+  ],
+  "comparisons": [],
+  "observations": [
+    {
+      "name": "original_motion",
+      "mandatory": true
+    },
+    {
+      "name": "native_geometry",
+      "mandatory": true
+    },
+    {
+      "name": "device_inventory",
+      "mandatory": true
+    },
+    {
+      "name": "view_provenance",
+      "mandatory": true
+    },
+    {
+      "name": "environment_history",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment.json",
+      "sha256": "1079d3a6db6b6afd932536689ae6e4a0ab439a02899becdd76f135199cf61c7d"
+    },
+    {
+      "path": "examples/numeric/README.md",
+      "sha256": "fbef9c6d3d6feebae4b10cae728c887e626e5be14fea2450ba5bfcd99b8fd98b"
+    },
+    {
+      "path": "references/accepted-sources/C230259/native_condition_probe_v21_low.py",
+      "sha256": "3965168fbeb22ea0717530d83d00d81746fc0413075dd833dce080e397ffb868"
+    },
+    {
+      "path": "references/accepted-sources/C230259/environment-measurement-verification-v2.json",
+      "sha256": "5af10f2d7f51f4e37abf1fb07919911bf96574673f180724679e2bc2070f3f24"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native topology, motion, signs, source packets, actual pixels and complete duration unverified until local GPU run.",
+    "Diagnostic fixtures are software evidence only; no physical or legal acceptance."
+  ],
+  "source_observation_mapping": {
+    "kin.speed": {
+      "evidence": "the speed driven; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.queue_behind": {
+      "evidence": "the traffic the speed is judged against; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "the surrounding traffic's speeds; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_width": {
+      "evidence": "the width of the highway; exact original source and uncertainty to be acquired",
+      "channels": [
+        "native_geometry"
+      ],
+      "source_refs": [
+        "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.roadway": {
+      "evidence": "its surface; exact original source and uncertainty to be acquired",
+      "channels": [
+        "native_geometry"
+      ],
+      "source_refs": [
+        "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "env.wet_road": {
+      "evidence": "a surface condition; exact original source and uncertainty to be acquired",
+      "channels": [
+        "environment_history"
+      ],
+      "source_refs": [
+        "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "env.ice_or_snow": {
+      "evidence": "another; exact original source and uncertainty to be acquired",
+      "channels": [
+        "environment_history"
+      ],
+      "source_refs": [
+        "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "env.precipitation": {
+      "evidence": "the weather; exact original source and uncertainty to be acquired",
+      "channels": [
+        "environment_history"
+      ],
+      "source_refs": [
+        "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "env.visibility": {
+      "evidence": "another highway condition; exact original source and uncertainty to be acquired",
+      "channels": [
+        "environment_history"
+      ],
+      "source_refs": [
+        "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.curvature": {
+      "evidence": "the geometry the speed must suit; exact original source and uncertainty to be acquired",
+      "channels": [
+        "native_geometry"
+      ],
+      "source_refs": [
+        "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.sight_distance_adequate": {
+      "evidence": "the surrogate for a reasonable and proper speed; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.stopping_distance": {
+      "evidence": "the same; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability-v1",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "full traffic scene",
+        "interval": "startup through final observation",
+        "view": "overview"
+      },
+      {
+        "subject": "ego speed approach",
+        "interval": "approach through interaction and clearance",
+        "view": "approach"
+      },
+      {
+        "subject": "road and surface context",
+        "interval": "approach through interaction and clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver and visibility target",
+        "interval": "entire original episode",
+        "view": "driver_reference"
+      }
+    ]
+  }
+}

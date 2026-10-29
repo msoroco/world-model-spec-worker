@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial7/.runtime-work/fixture-cipmnh7u/negative/analyze.py", line 65, in <module>
+    p=argparse.ArgumentParser();p.add_argument('--attempt',required=True);p.add_argument('--output',required=True);a=p.parse_args();finalize(Path(a.attempt),Path(a.output))
+                                                                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial7/.runtime-work/fixture-cipmnh7u/negative/analyze.py", line 43, in finalize
+    cfg=json.loads(required(root,'config.json').read_text());event=movement_event(root);gap=target_lane_gap(root);context=one_way_context(root)
+                                                                   ^^^^^^^^^^^^^^^^^^^^
+  File "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial7/.runtime-work/fixture-cipmnh7u/negative/analyze.py", line 17, in movement_event
+    geometry=json.loads(required(root,'scenario_geometry.json').read_text());rows=lane_samples(root)
+                                                                                  ^^^^^^^^^^^^^^^^^^
+  File "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial7/.runtime-work/fixture-cipmnh7u/negative/analyze.py", line 12, in lane_samples
+    rows=[json.loads(s) for s in required(root,'lane_history.jsonl').read_text().splitlines() if s]
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/pscratch/sd/m/msoroco/scenario-worker-demo-test-trial7/.runtime-work/fixture-cipmnh7u/negative/analyze.py", line 8, in required
+    if not path.is_file():raise ValueError('Missing required source: '+name)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Missing required source: lane_history.jsonl

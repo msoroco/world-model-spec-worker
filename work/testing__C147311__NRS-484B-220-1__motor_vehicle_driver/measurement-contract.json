@@ -1,0 +1,35 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "One-way designated highway with at least two same-direction lanes and governing direction sign",
+      "source": "NRS 484B.220(1); a vehicle shall be driven only in the direction designated.",
+      "output_key": "governing_direction_sign",
+      "method": "sign_scope",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Actual vehicle travel direction along the governed roadway",
+      "source": "NRS 484B.220(1); a vehicle shall be driven only in the direction designated.",
+      "output_key": "actual_travel_direction",
+      "method": "direction_projection",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "case_observation.json"
+    ],
+    "error_contains": "Missing required source: case_observation.json"
+  }
+}

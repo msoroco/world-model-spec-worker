@@ -1,0 +1,36 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Original sampled speed while traversing the posted 30 mph road zone",
+      "source": "NRS 484B.600(1)(c); It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than that posted by a public authority for the particular portion of highway being traversed.",
+      "output_key": "posted_zone_speed_history",
+      "method": "speed_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Qualifying driver, narrow highway, public authority sign and governed zone context",
+      "source": "a public authority has posted a speed limit for the portion of highway",
+      "output_key": "posted_sign_context",
+      "method": "posted_sign_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "posted_speed_context.json",
+        "capture/evidence.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "posted_speed_context.json"
+    ],
+    "error_contains": "Missing required source: posted_speed_context.json"
+  }
+}

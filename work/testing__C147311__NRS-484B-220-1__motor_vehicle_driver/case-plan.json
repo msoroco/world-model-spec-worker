@@ -1,0 +1,151 @@
+{
+  "assignment_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C147311",
+  "law_id": "NRS-484B-220-1",
+  "selected_branch": "multilane designated and signposted one-way highway",
+  "requirement_dispositions": [
+    {
+      "requirement": "One-way designated highway with at least two same-direction lanes and governing direction sign",
+      "source": "NRS 484B.220(1); a vehicle shall be driven only in the direction designated.",
+      "status": "selected_required",
+      "evidence_or_gap": "Original sign object, instruction, orientation, placement, governance, pixels and roadway source needed"
+    },
+    {
+      "requirement": "Actual vehicle travel direction along the governed roadway",
+      "source": "NRS 484B.220(1); a vehicle shall be driven only in the direction designated.",
+      "status": "selected_required",
+      "evidence_or_gap": "Original projected velocity and route stations, not heading alone, needed"
+    },
+    {
+      "requirement": "Incorporated traffic-control-device authority provisions",
+      "source": "NRS 484B.220(1); Upon a highway designated and signposted for one-way traffic a vehicle shall be driven only in the direction designated.",
+      "status": "alternative_pending",
+      "evidence_or_gap": "Authoritative sign designation and incorporated provisions require separate source review"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__one_way_designated_direction",
+      "target_law_id": "NRS-484B-220-1",
+      "purpose": "one_way_designated_direction"
+    }
+  ],
+  "comparisons": [],
+  "observations": [
+    {
+      "name": "original_motion",
+      "mandatory": true
+    },
+    {
+      "name": "native_geometry",
+      "mandatory": true
+    },
+    {
+      "name": "device_inventory",
+      "mandatory": true
+    },
+    {
+      "name": "view_provenance",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json",
+      "sha256": "7416c12629862d60b4a46b2fa691a60e7c2467ed7c035b3295aae5197a14c2e5"
+    },
+    {
+      "path": "references/accepted-sources/C150916/accepted-review-readme.md",
+      "sha256": "70bc83e913f9cd6457a8bcd07de2618227c091c83fb33740025674230476d91c"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native topology, motion, signs, source packets, actual pixels and complete duration unverified until local GPU run.",
+    "Diagnostic fixtures are software evidence only; no physical or legal acceptance."
+  ],
+  "source_observation_mapping": {
+    "st.one_way_roadway": {
+      "evidence": "the highway is designated one-way; exact original source and uncertainty to be acquired",
+      "channels": [
+        "native_geometry"
+      ],
+      "source_refs": [
+        "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "code one_way — the signposting the rule requires; exact original source and uncertainty to be acquired",
+      "channels": [
+        "device_inventory"
+      ],
+      "source_refs": [
+        "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "the designated direction; exact original source and uncertainty to be acquired",
+      "channels": [
+        "native_geometry"
+      ],
+      "source_refs": [
+        "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.heading": {
+      "evidence": "the subject's direction of travel; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.wrong_way": {
+      "evidence": "heading opposed to the designated direction; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "the subject is on that highway; exact original source and uncertainty to be acquired",
+      "channels": [
+        "native_geometry"
+      ],
+      "source_refs": [
+        "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability-v1",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "governed multilane roadway",
+        "interval": "startup through final observation",
+        "view": "overview"
+      },
+      {
+        "subject": "directional approach",
+        "interval": "approach through interaction and clearance",
+        "view": "approach"
+      },
+      {
+        "subject": "sign and governed region",
+        "interval": "approach through interaction and clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver sign and motion view",
+        "interval": "entire original episode",
+        "view": "driver_reference"
+      }
+    ]
+  }
+}

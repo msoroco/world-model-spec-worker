@@ -1,0 +1,159 @@
+{
+  "assignment_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C109705",
+  "law_id": "NRS-484B-400-2b",
+  "selected_branch": "Two-directional intersection within the general intersection layout.",
+  "requirement_dispositions": [
+    {
+      "requirement": "Departure full-body lateral position relative to entered highway centerline after turn",
+      "source": "NRS 484B.400(2)(b); After entering the intersection, the left turn must be made so as to leave the intersection to the right of the centerline of the highway being entered.",
+      "status": "selected_required",
+      "evidence_or_gap": "Original body vertices and directed centerline geometry at every relevant 20Hz frame; Native behavior/pixels unverified"
+    },
+    {
+      "requirement": "Both intersecting highways two-directional and public intersection context",
+      "source": "Construct both highways as undivided with permitted opposite-direction travel; establish public-highway status and qualifying non-alley intersection boundaries.",
+      "status": "selected_required",
+      "evidence_or_gap": "Connected OpenDRIVE lanes; public-way designation external authored context; Native readback needed"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__selected_left_turn",
+      "target_law_id": "NRS-484B-400-2b"
+    }
+  ],
+  "comparisons": [],
+  "observations": [
+    {
+      "name": "kin.speed",
+      "mandatory": true
+    },
+    {
+      "name": "kin.velocity",
+      "mandatory": true
+    },
+    {
+      "name": "body_vertices",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json",
+      "sha256": "392c865966285fabdee2a4dac6374ccd15d2b5b63c88b1a6c02275524b1113a2"
+    },
+    {
+      "path": "references/accepted-sources/C111325/scene-stop257-v1.xodr",
+      "sha256": "0ea7dbd4166c121da257829664f36893c30e7e0dfc2b92183d29a6c22e15e46c"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native connector traversal, right-side interpretation, actual camera pixels, complete clearance and public-way status require GPU/source review."
+  ],
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "Original full-body vertices and Native road projection",
+      "channels": [
+        "body_vertices",
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json",
+        "references/accepted-sources/C111325/scene-stop257-v1.xodr"
+      ]
+    },
+    "drv.in_intersection": {
+      "evidence": "Original full-body vertices and Native road projection",
+      "channels": [
+        "body_vertices",
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json",
+        "references/accepted-sources/C111325/scene-stop257-v1.xodr"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "Original full-body vertices and Native road projection",
+      "channels": [
+        "body_vertices",
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json",
+        "references/accepted-sources/C111325/scene-stop257-v1.xodr"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original full-body vertices and Native road projection",
+      "channels": [
+        "body_vertices",
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json",
+        "references/accepted-sources/C111325/scene-stop257-v1.xodr"
+      ]
+    },
+    "kin.position": {
+      "evidence": "Original full-body vertices and Native road projection",
+      "channels": [
+        "body_vertices",
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json",
+        "references/accepted-sources/C111325/scene-stop257-v1.xodr"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "Authored OpenDRIVE two-directional lane geometry and Native map readback",
+      "channels": [],
+      "source_refs": [
+        "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json",
+        "references/accepted-sources/C111325/scene-stop257-v1.xodr"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Original full-body vertices and Native road projection",
+      "channels": [
+        "body_vertices",
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json",
+        "references/accepted-sources/C111325/scene-stop257-v1.xodr"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability-v1",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "full left-turn body and roadway",
+        "interval": "startup through final observation",
+        "view": "overview"
+      },
+      {
+        "subject": "approach centerline",
+        "interval": "startup through junction entry",
+        "view": "approach"
+      },
+      {
+        "subject": "centerline transition at junction",
+        "interval": "approach through clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver modeled viewpoint",
+        "interval": "entire original episode",
+        "view": "driver_reference"
+      }
+    ]
+  }
+}

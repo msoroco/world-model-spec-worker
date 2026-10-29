@@ -1,0 +1,56 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
+  "runtime_manifest_sha256": "eb729128ea5d442fd9baf87ef575757ff26f4a5e916ecf69d730be24e601e22a",
+  "cases": [
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__selected_initial_yield",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "b46c1faac3f77d64cd1cd74c5bf6f3cbc17e9477e3c1ce9c9c3bd4a1580ce440",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C109749__NRS-484B-253__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native two-actor interaction and velocity samples",
+          "evidence": "interaction_history.jsonl and trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Original Native two-actor interaction and velocity samples",
+          "evidence": "interaction_history.jsonl and trace.jsonl"
+        },
+        "interaction_history": {
+          "entrypoint": "runner.py",
+          "method": "Original Native two-actor interaction and velocity samples",
+          "evidence": "interaction_history.jsonl and trace.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__selected_initial_yield --output .runtime-work/offline-253-endpoint --python <absolute .venv-cpu/bin/python>",
+        "exit_code": 0,
+        "log": "receipts/cpu.log",
+        "log_sha256": "6d09c1fe36ef9f85ba07506ee503c99199798d4ab38a3b60f3a63b734697b56b",
+        "construction_sha256": "b46c1faac3f77d64cd1cd74c5bf6f3cbc17e9477e3c1ce9c9c3bd4a1580ce440"
+      },
+      "compatibility": {
+        "receipt": "receipts/package.json",
+        "sha256": "f38bb9da1a3215f4755e37e135927ac83daa4e462908dd80862cfd6ae5408d2a",
+        "log": "receipts/analysis.log"
+      },
+      "negative": {
+        "log": "receipts/negative.log"
+      }
+    }
+  ]
+}

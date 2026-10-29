@@ -1,0 +1,46 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "eb729128ea5d442fd9baf87ef575757ff26f4a5e916ecf69d730be24e601e22a",
+  "cases": [
+    {
+      "case_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_selected",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "f78c65645e1d1611d6b98628e27f014bf18fda130eb15d52edde24a26a5e5512",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture Native ego velocity",
+          "evidence": "trace.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_selected --output .runtime-work/offline-p03-yield-1 --python <absolute .venv-cpu/bin/python>",
+        "exit_code": 0,
+        "log": "receipts/cpu.log",
+        "log_sha256": "e61f5ffa7aa1ee3ade076c856f0dfbc4a163537f2fee0c68ab05cd96cf658c29",
+        "construction_sha256": "f78c65645e1d1611d6b98628e27f014bf18fda130eb15d52edde24a26a5e5512"
+      },
+      "compatibility": {
+        "receipt": "receipts/package.json",
+        "sha256": "465eb7585980f759a456c6a8e92258cc9dc1c170dc409acccbaf71794dafae0f",
+        "log": "receipts/analysis.log"
+      },
+      "negative": {
+        "log": "receipts/negative.log"
+      }
+    }
+  ]
+}

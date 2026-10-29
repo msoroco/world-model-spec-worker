@@ -1,0 +1,46 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "eb729128ea5d442fd9baf87ef575757ff26f4a5e916ecf69d730be24e601e22a",
+  "cases": [
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__backing_over_physical_crosswalk",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "64a16135c3dae8a3b6efdb51fa0f4896eee22fc93b8c86d8a7a31aaf8b5420ed",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native actor velocity",
+          "evidence": "trace.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__backing_over_physical_crosswalk --output .runtime-work/offline-p03-reverse-1 --python <absolute .venv-cpu/bin/python>",
+        "exit_code": 0,
+        "log": "receipts/cpu.log",
+        "log_sha256": "5023c7edb9a5b00cd7fcbcd65a5f3c5ea32e21d3662222606d6cd7d60e352fe4",
+        "construction_sha256": "64a16135c3dae8a3b6efdb51fa0f4896eee22fc93b8c86d8a7a31aaf8b5420ed"
+      },
+      "compatibility": {
+        "receipt": "receipts/package.json",
+        "sha256": "9fcd1943e49809feb7561505386aacdbe7679da53d5742ec8ad41329aa008d4e",
+        "log": "receipts/analysis.log"
+      },
+      "negative": {
+        "log": "receipts/negative.log"
+      }
+    }
+  ]
+}

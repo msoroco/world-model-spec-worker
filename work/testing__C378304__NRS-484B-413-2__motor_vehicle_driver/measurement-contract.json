@@ -1,0 +1,59 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Statutory business-district frontage, building-use and highway context for the 100-foot branch",
+      "source": "NRS 484B.413(2); prior to changing the course of a vehicle",
+      "output_key": "business_district_context",
+      "method": "district_frontage",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Actual right-turn course-change point and final 100 feet of traveled path",
+      "source": "NRS 484B.413(2); prior to changing the course of a vehicle",
+      "output_key": "last_100ft_traveled_path",
+      "method": "approach_path",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Turn signal meaning and continuous emitted display over the measured final approach",
+      "source": "NRS 484B.413(2); prior to changing the course of a vehicle",
+      "output_key": "original_lamp_display_history",
+      "method": "indicator_continuity",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Freight loading zone designation and relative location",
+      "source": "NRS 484B.413(2); prior to changing the course of a vehicle",
+      "output_key": "designated_zone_location",
+      "method": "loading_zone",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "case_observation.json"
+    ],
+    "error_contains": "Missing required source: case_observation.json"
+  }
+}

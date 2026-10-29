@@ -1,0 +1,175 @@
+{
+  "assignment_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C125714",
+  "law_id": "NRS-484B-250-2",
+  "selected_branch": "Measured crossing-entry timing at a median-opening intersection.",
+  "requirement_dispositions": [
+    {
+      "requirement": "Same identified statutory roadway crossing with ego arriving from the left and other vehicle from the right",
+      "source": "NRS 484B.250(2); with 484B.250(5); enter an intersection from different highways at approximately the same time",
+      "status": "selected_required",
+      "evidence_or_gap": "Original crossing geometry, route bearings and public-highway source needed"
+    },
+    {
+      "requirement": "Both entry times, frame brackets and relative timing at 20 Hz",
+      "source": "NRS 484B.250(2); with 484B.250(5); enter an intersection from different highways at approximately the same time",
+      "status": "selected_required",
+      "evidence_or_gap": "Original full-body entry events with time resolution; approximately same time has no chosen legal threshold"
+    },
+    {
+      "requirement": "Ego yield and precedence motion through crossing and clearance",
+      "source": "NRS 484B.250(2); with 484B.250(5); enter an intersection from different highways at approximately the same time",
+      "status": "selected_required",
+      "evidence_or_gap": "Original two-vehicle trajectories, controls and footprint occupancy needed"
+    },
+    {
+      "requirement": "Official-device governance, opposite-direction left-turn exception, subsection 4 qualification",
+      "source": "NRS 484B.250(2); with 484B.250(5); When two vehicles enter an intersection from different highways at approximately the same time, the driver of the vehicle on the left shall yield the right-of-way to the vehicle on the right. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+      "status": "exception_pending",
+      "evidence_or_gap": "Native device inventory and legal exception review needed"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__median_opening_timing",
+      "target_law_id": "NRS-484B-250-2",
+      "purpose": "median_opening_timing"
+    }
+  ],
+  "comparisons": [],
+  "observations": [
+    {
+      "name": "original_motion",
+      "mandatory": true
+    },
+    {
+      "name": "native_geometry",
+      "mandatory": true
+    },
+    {
+      "name": "device_inventory",
+      "mandatory": true
+    },
+    {
+      "name": "view_provenance",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "sha256": "61f70438995a66f8c5ae39e68d5a7b58a5aa8aea24f39bb6abadfd90e7e84629"
+    },
+    {
+      "path": "examples/judgment/README.md",
+      "sha256": "f26a5750234fd483502263a3d0ed75decf38838c3116d0acd6d3d070089871c9"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native topology, motion, signs, source packets, actual pixels and complete duration unverified until local GPU run.",
+    "Diagnostic fixtures are software evidence only; no physical or legal acceptance."
+  ],
+  "source_observation_mapping": {
+    "st.intersection": {
+      "evidence": "the intersection; exact original source and uncertainty to be acquired",
+      "channels": [
+        "native_geometry"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "the lanes on which the two vehicles enter are approaches to the same intersection from different highways; the exception reads which intersection a device controls through the lanes it governs; exact original source and uncertainty to be acquired",
+      "channels": [
+        "native_geometry"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "both vehicles entering; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.arrival_order": {
+      "evidence": "'at approximately the same time' — the simultaneity tolerance is the parameter; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.bearing": {
+      "evidence": "which vehicle is on the other's right; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "the vehicle on the left gives way; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "the exception: a controlled intersection; exact original source and uncertainty to be acquired",
+      "channels": [
+        "device_inventory"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "the left-turn exception; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability-v1",
+    "duration_s": 55,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "crossing geometry and both participants",
+        "interval": "startup through final observation",
+        "view": "overview"
+      },
+      {
+        "subject": "left and right approach",
+        "interval": "approach through interaction and clearance",
+        "view": "approach"
+      },
+      {
+        "subject": "both entries and precedence",
+        "interval": "approach through interaction and clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver crossing view",
+        "interval": "entire original episode",
+        "view": "driver_reference"
+      }
+    ]
+  }
+}

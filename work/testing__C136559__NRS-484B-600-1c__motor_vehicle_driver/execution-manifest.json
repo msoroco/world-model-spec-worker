@@ -1,0 +1,61 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver",
+  "runtime_manifest_sha256": "eb729128ea5d442fd9baf87ef575757ff26f4a5e916ecf69d730be24e601e22a",
+  "cases": [
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_narrow_road_observation",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "006eea06b1f89e8f294d60a2c843509a6e25de852192d54a061c4bdc711e6e4a",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native actor velocity per tick",
+          "evidence": "trace.jsonl and original Native map landmark inventory"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native actor velocity per tick",
+          "evidence": "trace.jsonl and original Native map landmark inventory"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native actor velocity per tick",
+          "evidence": "trace.jsonl and original Native map landmark inventory"
+        },
+        "dev.speed_limit_sign": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native actor velocity per tick",
+          "evidence": "trace.jsonl and original Native map landmark inventory"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_narrow_road_observation --output .runtime-work/offline-posted-3 --python <absolute .venv-cpu/bin/python>",
+        "exit_code": 0,
+        "log": "receipts/cpu.log",
+        "log_sha256": "192db6da8c8444da636f90c78466720abcebd04cf62b176b209e2a0c7a3e5089",
+        "construction_sha256": "006eea06b1f89e8f294d60a2c843509a6e25de852192d54a061c4bdc711e6e4a"
+      },
+      "compatibility": {
+        "receipt": "receipts/package.json",
+        "sha256": "565860438192906e62f28cd26e158ed2303dc5f20705086cd6da503fc64af889",
+        "log": "receipts/analysis.log"
+      },
+      "negative": {
+        "log": "receipts/negative.log"
+      }
+    }
+  ]
+}

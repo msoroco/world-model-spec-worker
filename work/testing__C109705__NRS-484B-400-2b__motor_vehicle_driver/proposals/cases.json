@@ -1,0 +1,59 @@
+{
+  "cell_id": "C109705",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [],
+  "cases": [
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__selected_left_turn",
+      "target_law_id": "NRS-484B-400-2b",
+      "target_type": "boundary_probe",
+      "rationale": "Capture exact selected two-way left turn and all body vertices before or after the junction.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": 5.0,
+          "kind": "controller",
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Nearest portion of the right half and full legal highway status"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native actor velocity norm",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native world and original frame",
+            "uncertainty": "20Hz frame samples; between-frame motion and pixels unverified"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native actor 3D velocity",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native world and original frame",
+            "uncertainty": "20Hz frame samples; between-frame motion and pixels unverified"
+          },
+          {
+            "name": "body_vertices",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "All eight original Native full-body bounding-box vertices",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native world and original frame",
+            "uncertainty": "20Hz frame samples; between-frame motion and pixels unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road designation is authored; final legal position judgment unresolved."
+        ]
+      }
+    }
+  ]
+}

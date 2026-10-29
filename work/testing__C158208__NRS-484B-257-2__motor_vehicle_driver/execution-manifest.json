@@ -1,0 +1,46 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "eb729128ea5d442fd9baf87ef575757ff26f4a5e916ecf69d730be24e601e22a",
+  "cases": [
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__stop_within_selected",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "8d060fbdfb1e2e154312754c3e7d8232f2eb98ac81c1c38c9f8f753ceb23757f",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture Native ego velocity",
+          "evidence": "trace.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__stop_within_selected --output .runtime-work/offline-p03-stop-1 --python <absolute .venv-cpu/bin/python>",
+        "exit_code": 0,
+        "log": "receipts/cpu.log",
+        "log_sha256": "0d1d6b43e5ed41a3f00c68bc94ae80fd05ef07a2b34b211dbb5a9258d0fae19a",
+        "construction_sha256": "8d060fbdfb1e2e154312754c3e7d8232f2eb98ac81c1c38c9f8f753ceb23757f"
+      },
+      "compatibility": {
+        "receipt": "receipts/package.json",
+        "sha256": "6d15427d69b3645f65453dbddeb6e67fa560ddf94478f3a329896d3e0a2ffed0",
+        "log": "receipts/analysis.log"
+      },
+      "negative": {
+        "log": "receipts/negative.log"
+      }
+    }
+  ]
+}

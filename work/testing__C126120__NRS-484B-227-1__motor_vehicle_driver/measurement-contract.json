@@ -1,0 +1,35 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Divided highway, right-hand and opposing roadways, physical median extents and unobstructed opening",
+      "source": "NRS 484B.227(1); or make any left turn, semicircular turn or U-turn",
+      "output_key": "right_roadway_and_opening",
+      "method": "median_geometry",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Every movement of the U-turn, initial and final travel directions, and any median occupancy",
+      "source": "NRS 484B.227(1); or make any left turn, semicircular turn or U-turn",
+      "output_key": "complete_uturn_movement",
+      "method": "turn_trajectory",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "case_observation.json"
+    ],
+    "error_contains": "Missing required source: case_observation.json"
+  }
+}

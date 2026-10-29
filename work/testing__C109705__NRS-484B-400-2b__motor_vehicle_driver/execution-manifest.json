@@ -1,0 +1,56 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "eb729128ea5d442fd9baf87ef575757ff26f4a5e916ecf69d730be24e601e22a",
+  "cases": [
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__selected_left_turn",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "edee73591a0d59c71455a1489df63e470c9e62b6d77aaf0a298467010b5ccf6f",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native actor and body-vertex capture",
+          "evidence": "trace.jsonl and body_history.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Original Native actor and body-vertex capture",
+          "evidence": "trace.jsonl and body_history.jsonl"
+        },
+        "body_vertices": {
+          "entrypoint": "runner.py",
+          "method": "Original Native actor and body-vertex capture",
+          "evidence": "trace.jsonl and body_history.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__selected_left_turn --output .runtime-work/offline-400-2b-endpoint --python <absolute .venv-cpu/bin/python>",
+        "exit_code": 0,
+        "log": "receipts/cpu.log",
+        "log_sha256": "6d09c1fe36ef9f85ba07506ee503c99199798d4ab38a3b60f3a63b734697b56b",
+        "construction_sha256": "edee73591a0d59c71455a1489df63e470c9e62b6d77aaf0a298467010b5ccf6f"
+      },
+      "compatibility": {
+        "receipt": "receipts/package.json",
+        "sha256": "416a03277a1656dcef38cb0c8f53924ce082e49e3d3aca0f9f6be7c3f58a70a2",
+        "log": "receipts/analysis.log"
+      },
+      "negative": {
+        "log": "receipts/negative.log"
+      }
+    }
+  ]
+}

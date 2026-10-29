@@ -1,0 +1,62 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Installed uncovered governing vehicular heads wholly inoperative at the subject entry",
+      "source": "NRS 484B.250(4); When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
+      "output_key": "installed_dark_signal_heads",
+      "method": "inoperative_heads",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "signal_context.json",
+        "interaction_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Clearly marked west stop line and complete halt before subject entry",
+      "source": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
+      "output_key": "marked_line_stop_before_entry",
+      "method": "stop_before_entry",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "signal_context.json",
+        "interaction_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Other vehicle previously completed a stop or occupied intersection before subject proceeds",
+      "source": "After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
+      "output_key": "earlier_stop_and_intersection_occupancy",
+      "method": "priority_sequence",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "signal_context.json",
+        "interaction_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Blind approach sight and driver viewpoint context",
+      "source": "Blind-intersection post-stop interactions under complete signal inoperability.",
+      "output_key": "sampled_sight_obstruction",
+      "method": "sight_obstruction",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "interaction_history.jsonl"
+    ],
+    "error_contains": "Missing required source: interaction_history.jsonl"
+  }
+}

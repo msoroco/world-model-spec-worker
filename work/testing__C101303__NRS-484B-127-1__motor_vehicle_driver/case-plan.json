@@ -1,0 +1,194 @@
+{
+  "assignment_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C101303",
+  "law_id": "NRS-484B-127-1",
+  "selected_branch": "Following before a lane change",
+  "requirement_dispositions": [
+    {
+      "requirement": "Original full-body following separation, both speeds and actual following interval before lane change",
+      "source": "NRS 484B.127(1); The driver of a vehicle shall not follow another vehicle more closely than is reasonable and prudent, having due regard for the speed of such vehicles and the traffic upon and the condition of the highway.",
+      "status": "selected_required",
+      "evidence_or_gap": "Original 20Hz body and velocity packet; reasonable/prudent cutoff unresolved"
+    },
+    {
+      "requirement": "Highway surface, traffic and public-way context through the following interval",
+      "source": "the subject follows another vehicle on a highway",
+      "status": "selected_required",
+      "evidence_or_gap": "Authored surface/public-way context and Native road inventory; factual status and complete traffic scope remain GPU checks"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_before_lane_change",
+      "target_law_id": "NRS-484B-127-1"
+    }
+  ],
+  "comparisons": [],
+  "observations": [
+    {
+      "name": "kin.speed",
+      "mandatory": true
+    },
+    {
+      "name": "kin.velocity",
+      "mandatory": true
+    },
+    {
+      "name": "rel.surface_gap",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json",
+      "sha256": "a495054d1d9367361ffee22a008e7fe2bf72ffbac9bf8b1a22599fdf44388e58"
+    },
+    {
+      "path": "references/accepted-sources/C102372/following_controller.py",
+      "sha256": "52606a8cfba26ad6e26ee042bd9559eb2181c2ea19e4c0fd17debfcd96a13f22"
+    },
+    {
+      "path": "references/accepted-sources/C102372/scene.xodr",
+      "sha256": "1827fe921a70f808c35da09ff3ff0d6e9f19331cc70eb9f06f6cd6dae4c5c6d7"
+    },
+    {
+      "path": "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/scene.xodr",
+      "sha256": "2b4cded1748cf36ec1ecf0a0e5d02ee20174d256e0d77f397f669ac8205988f8"
+    },
+    {
+      "path": "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/runner.py",
+      "sha256": "f685885b6e53fa9316760bf081da101b3376ba151e647fc8e080fd0f0ec6e3ec"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native following, actual lane-change motion, full-body coverage, four-view pixels and public-way/surface facts remain GPU/source checks."
+  ],
+  "source_observation_mapping": {
+    "drv.following": {
+      "evidence": "Original pair body vertices and velocities, lane relation and native motion",
+      "channels": [
+        "rel.surface_gap",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/runner.py",
+        "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.time_gap": {
+      "evidence": "Original pair body vertices and velocities, lane relation and native motion",
+      "channels": [
+        "rel.surface_gap",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/runner.py",
+        "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Original pair body vertices and velocities, lane relation and native motion",
+      "channels": [
+        "rel.surface_gap",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/runner.py",
+        "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.ahead_behind_in_lane": {
+      "evidence": "Original pair body vertices and velocities, lane relation and native motion",
+      "channels": [
+        "rel.surface_gap",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/runner.py",
+        "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Original pair body vertices and velocities, lane relation and native motion",
+      "channels": [
+        "rel.surface_gap",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/runner.py",
+        "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "env.wet_road": {
+      "evidence": "Native weather plus separate authored surface context, physical condition unverified",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/runner.py",
+        "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "env.ice_or_snow": {
+      "evidence": "Native weather plus separate authored surface context, physical condition unverified",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/runner.py",
+        "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.queue_behind": {
+      "evidence": "Original pair body vertices and velocities, lane relation and native motion",
+      "channels": [
+        "rel.surface_gap",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/runner.py",
+        "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.hard_deceleration": {
+      "evidence": "Original pair body vertices and velocities, lane relation and native motion",
+      "channels": [
+        "rel.surface_gap",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/runner.py",
+        "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability-v1",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego and moving lead",
+        "interval": "startup through lane change",
+        "view": "overview"
+      },
+      {
+        "subject": "following separation",
+        "interval": "approach and interaction",
+        "view": "approach"
+      },
+      {
+        "subject": "crest and lane-change route",
+        "interval": "interaction through clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "modeled driver viewpoint",
+        "interval": "entire episode",
+        "view": "driver_reference"
+      }
+    ]
+  }
+}

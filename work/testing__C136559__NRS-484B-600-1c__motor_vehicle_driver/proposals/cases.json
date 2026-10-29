@@ -1,0 +1,59 @@
+{
+  "cell_id": "C136559",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [],
+  "cases": [
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_narrow_road_observation",
+      "target_law_id": "NRS-484B-600-1c",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original velocity samples inside the physical sign zone against the posted limit without a legal verdict.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 15.0,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Between-frame peak and public highway status"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original actor velocity norm in trace.jsonl",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native actor/world at original tick",
+            "uncertainty": "20 Hz samples; between-frame values unobserved"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original native 3D actor velocity in trace.jsonl",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native actor/world at original tick",
+            "uncertainty": "20 Hz samples; between-frame values unobserved"
+          },
+          {
+            "name": "dev.speed_limit_sign",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map landmark inventory joined to subject road station on original ticks",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 station",
+            "uncertainty": "Physical sign pixels and authority unresolved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Physical road status and actual four-view visibility remain Native checks."
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Actual governing stop sign, prior stop line and no officer/signal control",
+      "source": "NRS 484B.257(2); Except when traffic is being controlled by a police officer or a traffic-control signal: The driver of a vehicle shall stop in obedience to a stop sign or yield in compliance with a yield sign, in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1], prior to entering an intersection if a stop sign or a yield sign is erected at one or more entrances thereto although not a part of a through highway and shall proceed cautiously, yielding to vehicles not so obligated to stop or yield and which are within the intersection or approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
+      "output_key": "governing_control",
+      "method": "governing_control",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Subject stop before entry and cautious progression relative to vehicle within intersection",
+      "source": "NRS 484B.257(2); within-intersection selected instance",
+      "output_key": "intersection_motion",
+      "method": "interaction_timing",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "interaction_history.jsonl"
+    ],
+    "error_contains": "Missing required source: interaction_history.jsonl"
+  }
+}

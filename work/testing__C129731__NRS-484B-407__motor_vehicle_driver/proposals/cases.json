@@ -1,0 +1,47 @@
+{
+  "cell_id": "C129731",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [],
+  "cases": [
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__mountain_curve_turn",
+      "target_law_id": "NRS-484B-407",
+      "target_type": "boundary_probe",
+      "rationale": "Measure curved/crest road context, original turn heading and modeled-eye sight rays for vehicles approaching from both directions within 500ft.",
+      "variable_assignments": {
+        "turn_station_m": {
+          "kind": "controller",
+          "value": 685,
+          "unit": "m"
+        },
+        "curve_per_m": {
+          "kind": "world_setup",
+          "value": 0.004,
+          "unit": "1/m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "continuous visibility within 500 feet",
+        "driver eye and rendered pixel visibility"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego velocity norm during curve traversal and turn attempt",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Original Native frame, road station and world XYZ",
+            "uncertainty": "20Hz samples; visibility between samples unobserved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Physical occlusion, body pixels and actual turn completion need Native review."
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Original physical reverse movement and full-body occupancy on or over the crosswalk",
+      "source": "NRS 484B.113(2); The driver of a vehicle: Shall not back into an intersection, on or over a crosswalk, or around a street corner.",
+      "output_key": "backing_crosswalk_body_overlap",
+      "method": "reverse_crosswalk_overlap",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "reverse_history.jsonl",
+        "crosswalk_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "A physically established crosswalk at the selected connected intersection",
+      "source": "on or over a crosswalk",
+      "output_key": "physical_crosswalk_context",
+      "method": "crosswalk_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "crosswalk_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "reverse_history.jsonl"
+    ],
+    "error_contains": "Missing required source: reverse_history.jsonl"
+  }
+}

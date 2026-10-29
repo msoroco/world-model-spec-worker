@@ -1,0 +1,115 @@
+{
+  "assignment_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C10301",
+  "law_id": "NRS-484B-600-1e",
+  "selected_branch": "Unconditional restriction during qualifying operation.",
+  "requirement_dispositions": [
+    {
+      "requirement": "Original sampled speed throughout qualifying operation against the 80 mph absolute ceiling",
+      "source": "NRS 484B.600(1)(e); It is unlawful for any person to drive or operate a vehicle of any kind or character at: In any event, a rate of speed greater than 80 miles per hour.",
+      "status": "selected_required",
+      "evidence_or_gap": "Native 20Hz trace and saved maximum; between-frame peak remains unverified"
+    },
+    {
+      "requirement": "Qualifying driver, vehicle and highway context",
+      "source": "the subject drives or operates a vehicle of any kind on any highway",
+      "status": "selected_required",
+      "evidence_or_gap": "Native vehicle identity and generated road geometry plus separately authored public-way designation; factual status unresolved"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__selected_speed_observation",
+      "target_law_id": "NRS-484B-600-1e"
+    }
+  ],
+  "comparisons": [],
+  "observations": [
+    {
+      "name": "kin.speed",
+      "mandatory": true
+    },
+    {
+      "name": "kin.velocity",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/assignment.json",
+      "sha256": "9862f5a4bb95487eb1bdbacc8d2c2049fc5e508fc915ce6c8fd1e5d9329fe718"
+    },
+    {
+      "path": "examples/numeric/native/scene.xodr",
+      "sha256": "efb6d8e5fd0c5f8aaf628c6d9ea762682ceff11b365ff2822d782ae3ccada111"
+    },
+    {
+      "path": "work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/runner.py",
+      "sha256": "1eed1df774c56211efca28d62d5605ebc8dfad639e937eb3ac5a324db99cd243"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native route, maximum speed, complete duration, four camera pixels and public-way designation need local GPU/source review."
+  ],
+  "source_observation_mapping": {
+    "kin.speed": {
+      "evidence": "original 20 Hz trace",
+      "channels": [
+        "kin.speed",
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "inputs/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "original 20 Hz trace",
+      "channels": [
+        "kin.speed",
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "inputs/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.subject": {
+      "evidence": "PipelineCapture binds the native ego actor id to the subject role at each original tick",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/runner.py",
+        "inputs/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability-v1",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "subject full-road travel",
+        "interval": "startup through final observation",
+        "view": "overview"
+      },
+      {
+        "subject": "speed approach",
+        "interval": "startup through interaction",
+        "view": "approach"
+      },
+      {
+        "subject": "roadway reference",
+        "interval": "interaction through clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver viewpoint",
+        "interval": "entire original episode",
+        "view": "driver_reference"
+      }
+    ]
+  }
+}

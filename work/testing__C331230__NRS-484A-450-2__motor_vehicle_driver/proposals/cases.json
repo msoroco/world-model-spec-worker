@@ -1,0 +1,64 @@
+{
+  "cell_id": "C331230",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [],
+  "cases": [
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__selected_near_side_crosswalk",
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "rationale": "Measure a physical STOP approach relative to the selected near-side crosswalk before entry.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": 5.0,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "crosswalk": {
+          "value": "physical near-side stripes",
+          "kind": "world_setup"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "continuous statutory stop",
+        "actual sign governance and public-way status"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "stop_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body front, speed, control and near-side crosswalk relation",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No statutory stop epsilon; actual sign governance and crosswalk pixels require Native review."
+        ]
+      }
+    }
+  ]
+}

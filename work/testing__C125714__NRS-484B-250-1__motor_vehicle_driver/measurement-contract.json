@@ -1,0 +1,47 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Same identified statutory crossing at the median opening, with both highways, connected approaches and physical conflict boundary",
+      "source": "NRS 484B.250(1); with 484B.250(5); approaching an intersection shall yield the right-of-way",
+      "output_key": "same_crossing_geometry",
+      "method": "crossing_geometry",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Other vehicle entered that crossing from a different highway before the ego approached; preserve full body and motion histories",
+      "source": "NRS 484B.250(1); with 484B.250(5); approaching an intersection shall yield the right-of-way",
+      "output_key": "other_entered_first",
+      "method": "earlier_entry",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Ego yielding motion and actual precedence relative to the earlier entrant",
+      "source": "NRS 484B.250(1); with 484B.250(5); approaching an intersection shall yield the right-of-way",
+      "output_key": "ego_yield_motion",
+      "method": "precedence_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "case_observation.json"
+    ],
+    "error_contains": "Missing required source: case_observation.json"
+  }
+}

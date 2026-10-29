@@ -1,0 +1,48 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Actual governing vehicular signal with steady yellow followed by red on the selected approach",
+      "source": "NRS 484B.307(6)(a); Vehicular traffic facing the signal is thereby warned that the related green movement is being terminated or that a steady red indication will be exhibited immediately thereafter",
+      "output_key": "governing_yellow_red_sequence",
+      "method": "control_sequence",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "signal_context.json",
+        "signal_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Original red exhibition versus first complete body entry ordering",
+      "source": "Where the signal is a steady yellow signal alone: Vehicular traffic facing the signal is thereby warned that the related green movement is being terminated or that a steady red indication will be exhibited immediately thereafter, and such vehicular traffic must not enter the intersection when the red signal is exhibited.",
+      "output_key": "red_exhibition_vs_body_entry",
+      "method": "entry_order",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "signal_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "One-way west and two-way crossroad connected selected branch",
+      "source": "Warning sequence on a compatible one-way-to-two-way approach",
+      "output_key": "one_way_to_two_way_route",
+      "method": "roadway_direction",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "scenario_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "signal_history.jsonl"
+    ],
+    "error_contains": "Missing required source: signal_history.jsonl"
+  }
+}

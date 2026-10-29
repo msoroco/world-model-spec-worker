@@ -1,0 +1,161 @@
+{
+  "assignment_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C136559",
+  "law_id": "NRS-484B-600-1c",
+  "selected_branch": "Posted-speed obligation on a narrow road.",
+  "requirement_dispositions": [
+    {
+      "requirement": "Original sampled speed while traversing the posted 30 mph road zone",
+      "source": "NRS 484B.600(1)(c); It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than that posted by a public authority for the particular portion of highway being traversed.",
+      "status": "selected_required",
+      "evidence_or_gap": "Native 20Hz position and speed trace in the sign zone; actual sign pixels and between-frame speed remain unverified"
+    },
+    {
+      "requirement": "Qualifying driver, narrow highway, public authority sign and governed zone context",
+      "source": "a public authority has posted a speed limit for the portion of highway",
+      "status": "selected_required",
+      "evidence_or_gap": "Native speed-limit landmark inventory, generated narrow road geometry and separate authored authority context; physical sign and authorization remain unresolved"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_narrow_road_observation",
+      "target_law_id": "NRS-484B-600-1c"
+    }
+  ],
+  "comparisons": [],
+  "observations": [
+    {
+      "name": "kin.speed",
+      "mandatory": true
+    },
+    {
+      "name": "kin.velocity",
+      "mandatory": true
+    },
+    {
+      "name": "dev.speed_limit_sign",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json",
+      "sha256": "4d3a27102587892c4269ae4f65344fc0517b7badc07f2c3203992e77b27b753c"
+    },
+    {
+      "path": "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/scene.xodr",
+      "sha256": "ecb5d70ef7ef2eb518688d92869d94cb43369acb32128f29488704ab1df974ed"
+    },
+    {
+      "path": "examples/numeric/native/scene.xodr",
+      "sha256": "efb6d8e5fd0c5f8aaf628c6d9ea762682ceff11b365ff2822d782ae3ccada111"
+    },
+    {
+      "path": "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/runner.py",
+      "sha256": "8feed86cc9197999b46cfa29404b579f27269be96e3ba6844b880671647378d6"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native route, maximum speed, complete duration, four camera pixels and public-way designation need local GPU/source review."
+  ],
+  "source_observation_mapping": {
+    "dev.speed_limit_sign": {
+      "evidence": "Native OpenDRIVE landmark inventory, original-tick device packet and subject road station; sign pixels and authority require GPU/source review",
+      "channels": [
+        "dev.speed_limit_sign",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/runner.py",
+        "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/scene.xodr",
+        "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Native OpenDRIVE landmark inventory, original-tick device packet and subject road station; sign pixels and authority require GPU/source review",
+      "channels": [
+        "dev.speed_limit_sign",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/runner.py",
+        "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/scene.xodr",
+        "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.within_signed_zone": {
+      "evidence": "Native OpenDRIVE landmark inventory, original-tick device packet and subject road station; sign pixels and authority require GPU/source review",
+      "channels": [
+        "dev.speed_limit_sign",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/runner.py",
+        "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/scene.xodr",
+        "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "original 20 Hz trace",
+      "channels": [
+        "kin.speed",
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "original 20 Hz trace",
+      "channels": [
+        "kin.speed",
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.position": {
+      "evidence": "Native OpenDRIVE landmark inventory, original-tick device packet and subject road station; sign pixels and authority require GPU/source review",
+      "channels": [
+        "dev.speed_limit_sign",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/runner.py",
+        "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/scene.xodr",
+        "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability-v1",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "subject full-road travel",
+        "interval": "startup through final observation",
+        "view": "overview"
+      },
+      {
+        "subject": "speed approach",
+        "interval": "startup through interaction",
+        "view": "approach"
+      },
+      {
+        "subject": "posted sign and zone entry",
+        "interval": "approach through zone clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver viewpoint",
+        "interval": "entire original episode",
+        "view": "driver_reference"
+      }
+    ]
+  }
+}

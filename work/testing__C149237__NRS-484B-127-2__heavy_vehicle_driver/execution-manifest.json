@@ -1,0 +1,46 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver",
+  "runtime_manifest_sha256": "eb729128ea5d442fd9baf87ef575757ff26f4a5e916ecf69d730be24e601e22a",
+  "cases": [
+    {
+      "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__qualifying_following_gap",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "192e9e1da0b2dcbc8de6a85124949d1f54dae0ba7bc888562e15a2493300c2b1",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture Native actor velocity",
+          "evidence": "trace.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__qualifying_following_gap --output .runtime-work/offline-p03-truck-final --python <absolute .venv-cpu/bin/python>",
+        "exit_code": 0,
+        "log": "receipts/cpu.log",
+        "log_sha256": "da19baa94ab21875073bde49a31c336c6f10c2aace29bd70245d434c8a36da74",
+        "construction_sha256": "192e9e1da0b2dcbc8de6a85124949d1f54dae0ba7bc888562e15a2493300c2b1"
+      },
+      "compatibility": {
+        "receipt": "receipts/package.json",
+        "sha256": "8adb3c531e11662bff1e1f56568ced29a628724ee2ddd07bca059ad2a5883d5e",
+        "log": "receipts/analysis.log"
+      },
+      "negative": {
+        "log": "receipts/negative.log"
+      }
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "assignment_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C160013",
+  "law_id": "NRS-484B-127-3",
+  "selected_branch": "Caravan or motorcade spacing",
+  "requirement_dispositions": [
+    {
+      "requirement": "Full-body spacing between each adjacent caravan vehicle pair",
+      "source": "NRS 484B.127(3); Motor vehicles being driven upon any highway outside of a business district in a caravan or motorcade",
+      "status": "selected_required",
+      "evidence_or_gap": "Original 20Hz full-body gaps, speeds and lane identities; legal sufficiency unresolved"
+    },
+    {
+      "requirement": "Independent other vehicle can enter and occupy the gap without danger",
+      "source": "Motor vehicles being driven upon any highway outside of a business district in a caravan or motorcade, whether or not towing other vehicles, shall be operated to allow sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger.",
+      "status": "selected_required",
+      "evidence_or_gap": "Original entrant body clearances and lane progression; without-danger conclusion unresolved"
+    },
+    {
+      "requirement": "Motorcade or caravan on highway outside business district",
+      "source": "Caravan or motorcade spacing",
+      "status": "selected_required",
+      "evidence_or_gap": "Three distinct Native group participants and sourced synthetic district context; factual public-way/district status unresolved"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__selected_caravan_entry",
+      "target_law_id": "NRS-484B-127-3"
+    }
+  ],
+  "comparisons": [],
+  "observations": [
+    {
+      "name": "kin.speed",
+      "mandatory": true
+    },
+    {
+      "name": "kin.velocity",
+      "mandatory": true
+    },
+    {
+      "name": "caravan_history",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/assignment.json",
+      "sha256": "06b4a48d057cfde9b980669c52c0addc32bfa1c06a6ebf2d1dce8b80774d584f"
+    },
+    {
+      "path": "references/accepted-sources/C228508/scene-caravan-v1.xodr",
+      "sha256": "debb73963ff99d098daba7995ba9a2fff9509038cb918752a29bf65f2140aef8"
+    },
+    {
+      "path": "references/accepted-sources/C228508/caravan_controller_v3.py",
+      "sha256": "54035fb8d5afe2cfbc9b4f0c0987c3f7960fa30d730cc2ba510b2f9fd55b9235"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native group and entrant motion, entry occupancy, complete gap duration, four-view pixels and district/public-way facts require GPU/source review."
+  ],
+  "source_observation_mapping": {
+    "drv.following": {
+      "evidence": "Original four-participant body history plus sourced outside-district context",
+      "channels": [
+        "caravan_history",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Original four-participant body history plus sourced outside-district context",
+      "channels": [
+        "caravan_history",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.queue_behind": {
+      "evidence": "Original four-participant body history plus sourced outside-district context",
+      "channels": [
+        "caravan_history",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.same_direction": {
+      "evidence": "Original four-participant body history plus sourced outside-district context",
+      "channels": [
+        "caravan_history",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.trailer_or_combination": {
+      "evidence": "Original four-participant body history plus sourced outside-district context",
+      "channels": [
+        "caravan_history",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.lane_change_feasible": {
+      "evidence": "Original four-participant body history plus sourced outside-district context",
+      "channels": [
+        "caravan_history",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Original four-participant body history plus sourced outside-district context",
+      "channels": [
+        "caravan_history",
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability-v1",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "all caravan and outsider full bodies",
+        "interval": "startup through final observation",
+        "view": "overview"
+      },
+      {
+        "subject": "rear gap and outsider approach",
+        "interval": "approach through entry",
+        "view": "approach"
+      },
+      {
+        "subject": "lateral gap occupancy",
+        "interval": "entry through clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "subject viewpoint",
+        "interval": "entire original episode",
+        "view": "driver_reference"
+      }
+    ]
+  }
+}

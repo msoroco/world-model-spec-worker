@@ -1,0 +1,145 @@
+{
+  "assignment_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C215286",
+  "law_id": "NRS-484B-113-2",
+  "selected_branch": "on or over a crosswalk",
+  "requirement_dispositions": [
+    {
+      "requirement": "Original physical reverse movement and full-body occupancy on or over the crosswalk",
+      "source": "NRS 484B.113(2); The driver of a vehicle: Shall not back into an intersection, on or over a crosswalk, or around a street corner.",
+      "status": "selected_required",
+      "evidence_or_gap": "Native reverse control, signed velocity, all body vertices and crosswalk band per original frame; actual stripe pixels pending"
+    },
+    {
+      "requirement": "A physically established crosswalk at the selected connected intersection",
+      "source": "on or over a crosswalk",
+      "status": "selected_required",
+      "evidence_or_gap": "Physical mesh stripe inventory plus authored geometry; Native asset and pixel verification pending"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__backing_over_physical_crosswalk",
+      "target_law_id": "NRS-484B-113-2"
+    }
+  ],
+  "comparisons": [],
+  "observations": [
+    {
+      "name": "kin.speed",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+      "sha256": "b97351b6f855c93d9820ceba2d2bc149ac917e6b612273966cb225f0feb6925a"
+    },
+    {
+      "path": "references/accepted-sources/C111325/scene-stop257-v1.xodr",
+      "sha256": "0ea7dbd4166c121da257829664f36893c30e7e0dfc2b92183d29a6c22e15e46c"
+    },
+    {
+      "path": "examples/intersection/native/stop257_reference_markings_geometry_v2.py",
+      "sha256": "5eb7433a2c9f46179659d3b5ccbe77dbfed8fdfe0bc02917e90b2cd5377c36a8"
+    },
+    {
+      "path": "examples/intersection/README.md",
+      "sha256": "f0a5ddabfa1bb0e2a0b540ad82c596aa03b5936aa6b69f17c080922ae59be048"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native reverse vehicle path, physical stripe mesh bounds, full-body overlap and actual four-view pixels require local checks."
+  ],
+  "source_observation_mapping": {
+    "drv.backing": {
+      "evidence": "Original reverse_history.jsonl measured body, velocity and control; crosswalk_context.json native marking inventory; reverse_crosswalk_overlap finalizer",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+        "examples/intersection/native/stop257_reference_markings_geometry_v2.py"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Original reverse_history.jsonl measured body, velocity and control; crosswalk_context.json native marking inventory; reverse_crosswalk_overlap finalizer",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+        "examples/intersection/native/stop257_reference_markings_geometry_v2.py"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Original reverse_history.jsonl measured body, velocity and control; crosswalk_context.json native marking inventory; reverse_crosswalk_overlap finalizer",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+        "examples/intersection/native/stop257_reference_markings_geometry_v2.py"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original reverse_history.jsonl measured body, velocity and control; crosswalk_context.json native marking inventory; reverse_crosswalk_overlap finalizer",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+        "examples/intersection/native/stop257_reference_markings_geometry_v2.py"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Original reverse_history.jsonl measured body, velocity and control; crosswalk_context.json native marking inventory; reverse_crosswalk_overlap finalizer",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+        "examples/intersection/native/stop257_reference_markings_geometry_v2.py"
+      ]
+    },
+    "kin.heading": {
+      "evidence": "Original reverse_history.jsonl measured body, velocity and control; crosswalk_context.json native marking inventory; reverse_crosswalk_overlap finalizer",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+        "examples/intersection/native/stop257_reference_markings_geometry_v2.py"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability-v1",
+    "duration_s": 35,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "vehicle and crosswalk",
+        "interval": "startup through final observation",
+        "view": "overview"
+      },
+      {
+        "subject": "backing path",
+        "interval": "approach through interaction",
+        "view": "approach"
+      },
+      {
+        "subject": "physical stripe body contact",
+        "interval": "interaction through clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "modeled driver rear view",
+        "interval": "entire original episode",
+        "view": "driver_reference"
+      }
+    ]
+  }
+}

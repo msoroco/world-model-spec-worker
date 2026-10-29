@@ -1,0 +1,56 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "eb729128ea5d442fd9baf87ef575757ff26f4a5e916ecf69d730be24e601e22a",
+  "cases": [
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__selected_near_side_crosswalk",
+      "kind": "capability",
+      "construction": "construction.json",
+      "construction_sha256": "bac8935d31aeb13de8a02435304bf7bf1b23507f6503b9eaaf7507c59c24631b",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native STOP and physical crosswalk source with body/velocity samples",
+          "evidence": "stop_history.jsonl and crosswalk_geometry.json"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Original Native STOP and physical crosswalk source with body/velocity samples",
+          "evidence": "stop_history.jsonl and crosswalk_geometry.json"
+        },
+        "stop_history": {
+          "entrypoint": "runner.py",
+          "method": "Original Native STOP and physical crosswalk source with body/velocity samples",
+          "evidence": "stop_history.jsonl and crosswalk_geometry.json"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__selected_near_side_crosswalk --output .runtime-work/offline-4502 --python <absolute .venv-cpu/bin/python>",
+        "exit_code": 0,
+        "log": "receipts/cpu.log",
+        "log_sha256": "30f27136fea09cc54abd7067701bc9b42381ab73c408600b4df4f428133e6066",
+        "construction_sha256": "bac8935d31aeb13de8a02435304bf7bf1b23507f6503b9eaaf7507c59c24631b"
+      },
+      "compatibility": {
+        "receipt": "receipts/package.json",
+        "sha256": "3c8e7a390b5043ac4637a3df6aef2e4dcd235bef6eb0d4177c5ec7157e5a0c17",
+        "log": "receipts/analysis.log"
+      },
+      "negative": {
+        "log": "receipts/negative.log"
+      }
+    }
+  ]
+}

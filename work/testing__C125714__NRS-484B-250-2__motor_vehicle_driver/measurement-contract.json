@@ -1,0 +1,47 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Same identified statutory roadway crossing with ego arriving from the left and other vehicle from the right",
+      "source": "NRS 484B.250(2); with 484B.250(5); enter an intersection from different highways at approximately the same time",
+      "output_key": "left_right_approach_geometry",
+      "method": "crossing_side",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Both entry times, frame brackets and relative timing at 20 Hz",
+      "source": "NRS 484B.250(2); with 484B.250(5); enter an intersection from different highways at approximately the same time",
+      "output_key": "two_entry_timing",
+      "method": "entry_time_difference",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Ego yield and precedence motion through crossing and clearance",
+      "source": "NRS 484B.250(2); with 484B.250(5); enter an intersection from different highways at approximately the same time",
+      "output_key": "crossing_precedence_motion",
+      "method": "precedence_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "case_observation.json"
+    ],
+    "error_contains": "Missing required source: case_observation.json"
+  }
+}

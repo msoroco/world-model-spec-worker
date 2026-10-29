@@ -1,0 +1,47 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Actual governing yield sign and absence of stop line, crosswalk, officer or signal for selected entrance",
+      "source": "NRS 484B.257(1); Except when traffic is being controlled by a police officer or a traffic-control signal: When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
+      "output_key": "governing_control",
+      "method": "governing_control",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Nearest sampled approach point with a clear view of approaching through traffic",
+      "source": "NRS 484B.257(1); nearest-view fallback after absent line and crosswalk",
+      "output_key": "sampled_nearest_clear_view",
+      "method": "nearest_visible_point",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Subject slowed or stopped before entry and through-vehicle occupancy/progression recorded",
+      "source": "NRS 484B.257(1); after having stopped or, for a yield sign, slowed or stopped",
+      "output_key": "intersection_motion",
+      "method": "interaction_timing",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "interaction_history.jsonl"
+    ],
+    "error_contains": "Missing required source: interaction_history.jsonl"
+  }
+}

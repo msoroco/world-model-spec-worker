@@ -1,0 +1,171 @@
+{
+  "assignment_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C378304",
+  "law_id": "NRS-484B-413-2",
+  "selected_branch": "Business-district right-turn signaling",
+  "requirement_dispositions": [
+    {
+      "requirement": "Statutory business-district frontage, building-use and highway context for the 100-foot branch",
+      "source": "NRS 484B.413(2); prior to changing the course of a vehicle",
+      "status": "selected_required",
+      "evidence_or_gap": "Separate authored district and frontage source with Native road placement needed"
+    },
+    {
+      "requirement": "Actual right-turn course-change point and final 100 feet of traveled path",
+      "source": "NRS 484B.413(2); prior to changing the course of a vehicle",
+      "status": "selected_required",
+      "evidence_or_gap": "Original center/footprint path integration, curve onset and distance brackets needed"
+    },
+    {
+      "requirement": "Turn signal meaning and continuous emitted display over the measured final approach",
+      "source": "NRS 484B.413(2); prior to changing the course of a vehicle",
+      "status": "selected_required",
+      "evidence_or_gap": "Original lamp state plus original camera pixels/photometry and temporal gaps needed"
+    },
+    {
+      "requirement": "Freight loading zone designation and relative location",
+      "source": "NRS 484B.413(2); prior to changing the course of a vehicle",
+      "status": "selected_required",
+      "evidence_or_gap": "Physical loading-zone geometry and administrative designation source needed"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__business_district_right_signal",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "business_district_right_signal"
+    }
+  ],
+  "comparisons": [],
+  "observations": [
+    {
+      "name": "original_motion",
+      "mandatory": true
+    },
+    {
+      "name": "native_geometry",
+      "mandatory": true
+    },
+    {
+      "name": "device_inventory",
+      "mandatory": true
+    },
+    {
+      "name": "view_provenance",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+      "sha256": "aa632742576aba3c8d972d254074051f2930ebe9d60e48bdecca8031755e50d4"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native topology, motion, signs, source packets, actual pixels and complete duration unverified until local GPU run.",
+    "Diagnostic fixtures are software evidence only; no physical or legal acceptance."
+  ],
+  "source_observation_mapping": {
+    "sig.turn_indicator": {
+      "evidence": "the signal, left or right; exact original source and uncertainty to be acquired",
+      "channels": [
+        "device_inventory"
+      ],
+      "source_refs": [
+        "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "sig.hand_signal": {
+      "evidence": "or the arm signal with its meaning; exact original source and uncertainty to be acquired",
+      "channels": [
+        "device_inventory"
+      ],
+      "source_refs": [
+        "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.distance_while": {
+      "evidence": "the path length over which the signal has been shown continuously; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.path_length": {
+      "evidence": "the 100-foot and 300-foot thresholds; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "the turn or course change that follows; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.lane_change": {
+      "evidence": "'otherwise turn from a direct course'; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "env.precipitation": {
+      "evidence": "'regardless of the weather' — no weather excuse; exact original source and uncertainty to be acquired",
+      "channels": [
+        "view_provenance"
+      ],
+      "source_refs": [
+        "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "the speed that converts the distance into a time; exact original source and uncertainty to be acquired",
+      "channels": [
+        "original_motion"
+      ],
+      "source_refs": [
+        "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability-v1",
+    "duration_s": 50,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "business street and turn",
+        "interval": "startup through final observation",
+        "view": "overview"
+      },
+      {
+        "subject": "final 100-foot approach",
+        "interval": "approach through interaction and clearance",
+        "view": "approach"
+      },
+      {
+        "subject": "loading zone and turn corner",
+        "interval": "approach through interaction and clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver signal view",
+        "interval": "entire original episode",
+        "view": "driver_reference"
+      }
+    ]
+  }
+}
