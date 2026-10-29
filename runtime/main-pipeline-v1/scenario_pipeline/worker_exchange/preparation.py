@@ -56,10 +56,12 @@ def check(repo, complete=False, require_ready=False):
                 require(original.get('role') == 'testing' and
                         original.get('local_snapshot',{}).get('scope_hashes',{}).get('demo-test') == partition.get('scope_sha256'),
                         'GPU-ready assignment does not match frozen demo-test scope')
+    from .branch_coverage import assignments, assignment_path
+    items = assignments(repo, batch) if batch.get('full_branch_coverage_required') else batch['assignments']
     files = tree(repo)
     if batch.get('lean_return_required'):
         returned=[rel for rel in files if rel.startswith('work/')]
-        require(len(returned)<=1000, 'Return contains too many generated files')
+        require(len(returned)<=batch.get('max_return_files',1000), 'Return contains too many generated files')
         forbidden={'.png','.jpg','.jpeg','.pkl','.mkv','.webm','.mp4','.ass','.lock','.uasset','.uexp'}
         for rel in returned:
             require(Path(rel).suffix.lower() not in forbidden, 'Generated binary/media belongs in ignored runtime work: '+rel)
@@ -69,18 +71,18 @@ def check(repo, complete=False, require_ready=False):
         if rel in batch['frozen_files'] or rel == 'batch.json':
             continue
         parts = Path(rel).parts
-        require(len(parts)>2 and parts[0]=='work' and parts[1] in (*batch['assignments'], '_shared'), 'Unapproved output: '+rel)
+        require(len(parts)>2 and parts[0]=='work' and parts[1] in (*items, '_shared'), 'Unapproved output: '+rel)
         path = within(repo, rel)
         require(path.stat().st_size <= 2*1024*1024, 'Oversized return')
         if path.suffix == '.py':
             ast.parse(path.read_text())
     results, all_ids = {}, set()
-    for aid, item in batch['assignments'].items():
+    for aid, item in items.items():
         folder = repo/'work'/aid
         if not (folder/'result.json').exists():
             require(not complete, 'Missing result: '+aid)
             continue
-        result, original = read(folder/'result.json'), read(repo/'inputs'/aid/'assignment.json')
+        result, original = read(folder/'result.json'), read(assignment_path(repo,aid,item))
         require(result['assignment_id']==aid and result['input_sha256']==item['input_sha256'], 'Return identity/input mismatch')
         require(result['status'] in ('ready','partial','blocked'), 'Invalid return status')
         require(result.get('applied_update')==batch['update_version'], 'Unacknowledged current update')
@@ -109,6 +111,8 @@ def check(repo, complete=False, require_ready=False):
             require(isinstance(cid,str) and cid.startswith(aid+'__') and cid not in all_ids, 'Duplicate/unqualified case ID')
             all_ids.add(cid);ids.add(cid)
             require(case.get('target_law_id') in (None,original['law_id']), 'Wrong case law')
+        if batch.get('full_branch_coverage_required') and result['status']=='ready':
+            require(all(d['status']=='selected_required' and d.get('case_ids') and set(d['case_ids']) <= ids for d in plan.get('requirement_dispositions',[])), 'Full branch ready plans cannot leave requirements pending or unassigned to cases')
         for comparison in plan['comparisons']:
             require(set(comparison.get('case_ids',[])) <= ids and len(comparison.get('case_ids',[]))>=2, 'Broken comparison members')
             require(comparison.get('deliberate_differences') and 'fixed_conditions' in comparison, 'Unspecified comparison isolation')
@@ -202,8 +206,11 @@ def check(repo, complete=False, require_ready=False):
                 require(test.get('exit_code')==0 and test.get('command'), 'CPU test did not pass')
                 require(sha(within(folder,test['log']))==test['sha256'], 'Missing/changed test log')
         results[aid]=result
+    if complete and batch.get('full_branch_coverage_required'):
+        from .branch_coverage import validate as validate_branches
+        validate_branches(repo,batch,items,require_ready)
     if require_ready:
-        require(len(results)==len(batch['assignments']) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
+        require(len(results)==len(items) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
     if complete and batch.get('runtime_selftest_required'):
         proof = read(repo/'work/_shared/runtime-proof.json')
         runtime = runtime_for(repo,batch)

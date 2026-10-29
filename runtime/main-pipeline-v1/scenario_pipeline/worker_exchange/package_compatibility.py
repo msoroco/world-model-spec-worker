@@ -76,7 +76,7 @@ def run_recipe(manifest,case,output,library,validator):
     construction=read(within(folder,entry['construction']))
     analysis_code=next(f['content'] for f in construction['files'] if f['path']==entry['measurement_procedure']['entrypoint'])
     plan=read(folder/'case-plan.json')
-    validate(contract,plan['requirement_dispositions'],analysis_code)
+    validate(contract,plan['requirement_dispositions'],analysis_code,case)
     output.parent.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(dir=output.parent,prefix='fixture-') as temporary:
         fixture=Path(temporary)/'positive';source=materialize(repo,recipe_path,fixture)
@@ -147,7 +147,7 @@ def check_receipts(repo,folder,manifest):
                 contract_path=within(folder,entry['measurement_contract']);contract=read(contract_path)
                 plan=read(folder/'case-plan.json')
                 analysis_code=next(f['content'] for f in config_source['files'] if f['path']==entry['measurement_procedure']['entrypoint'])
-                validate(contract,plan['requirement_dispositions'],analysis_code)
+                validate(contract,plan['requirement_dispositions'],analysis_code,entry['case_id'])
                 verify_report(contract,{'measurements':proof.get('measurement_examples')},fixture)
         else:
             fixture=within(repo,spec['fixture'])

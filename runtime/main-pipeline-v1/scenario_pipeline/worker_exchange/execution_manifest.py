@@ -62,7 +62,7 @@ def validate(repo,assignment_id):
             analysis=next((f['content'] for f in construction['files'] if f['path']==entry['measurement_procedure']['entrypoint']),None)
             if analysis is None:raise ValueError('Finalizer absent from exact construction')
             plan=read(folder/'case-plan.json')
-            validate_measurements(read(contract_path),plan['requirement_dispositions'],analysis)
+            validate_measurements(read(contract_path),plan['requirement_dispositions'],analysis,ident)
             recipe=within(repo,entry.get('fixture_recipe',''))
             from .fixture_recipe import inspect as inspect_fixture
             inspect_fixture(repo,recipe)

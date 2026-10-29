@@ -90,3 +90,7 @@ preflight and the first CARLA run check execution and physical visibility.
 Fixtures establish software compatibility only; unknown physical outcomes remain
 unconfirmed. Do not drop mandatory observations or fabricate physical success to
 pass tests. Validate one exact case end to end before expanding all partitions.
+
+## Full statutory coverage
+
+For v7 read FULL_BRANCH_CONTRACT.md. Same-cell branch reuse is the default. Account for every source topic and independently identify all alternatives and exceptions. Return executable controlled comparisons and saved-only automation for all runnable branches. A single capability case and empty comparisons fail the full coverage gate.

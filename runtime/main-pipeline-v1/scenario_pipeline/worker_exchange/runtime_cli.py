@@ -123,6 +123,7 @@ def main():
     a=sub.add_parser('materialize');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--output',required=True)
     a=sub.add_parser('offline');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--output',required=True);a.add_argument('--python',default=sys.executable)
     a=sub.add_parser('validate-native');a.add_argument('--attempt',required=True);a.add_argument('--request',required=True);a.add_argument('--construction',required=True);a.add_argument('--exit-code',type=int,required=True)
+    a=sub.add_parser('process-saved');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--attempt',required=True);a.add_argument('--output',required=True);a.add_argument('--library',required=True);a.add_argument('--validator',required=True)
     a=sub.add_parser('preflight-native');a.add_argument('--python',required=True)
     a=sub.add_parser('capture');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--output',required=True);a.add_argument('--host',required=True);a.add_argument('--port',required=True,type=int);a.add_argument('--python',required=True)
     a=sub.add_parser('process');a.add_argument('--attempt',required=True);a.add_argument('--output',required=True);a.add_argument('--library',required=True);a.add_argument('--validator')
@@ -147,6 +148,9 @@ def main():
     elif args.command=='verify':result=verify(args.runtime)
     elif args.command=='materialize':result=materialize(args.manifest,args.case,args.output);result={'case_id':result['case_id'],'materialized':True}
     elif args.command=='offline':result=offline(args.manifest,args.case,args.output,args.python)
+    elif args.command=='process-saved':
+        from .saved_processing import run
+        result=run(args.manifest,args.case,args.attempt,args.output,args.library,args.validator)
     elif args.command=='preflight-native':result=native_preflight(args.python)
     elif args.command=='validate-native':
         from batch_pipeline.carla import validate_attempt

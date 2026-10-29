@@ -1,4 +1,4 @@
-# Fresh demo-test GPU preparation: v6
+# Full demo-test branch preparation: v7
 
 The operator starts this agent manually. Use Python 3.11 or newer; create an
 ignored `.venv-cpu` and install `runtime/main-pipeline-v1/requirements-cpu.txt`.
@@ -13,8 +13,9 @@ Run `python3.11 reference_select.py ASSIGNMENT_ID` to find matching
 accepted source examples; read their hashes and limitations before adaptation.
 The batch uses the current `demo-overlap-v3` law split as its only authority.
 Do not read or reconcile older split versions. The lead alone integrates shared changes, validates, commits and pushes the
-configured return branch. Do not inspect earlier trial branches or copy their
-packages. Do not run CARLA, NERSC tools or the main campaign database.
+configured return branch. Use existing accepted implementation references; do not infer coverage from earlier trial status. Do not run CARLA, NERSC tools or the main campaign database.
+
+Read FULL_BRANCH_CONTRACT.md and references/v6-capability/index.json before building cases. The v6 files are source-hashed CPU implementation seeds; adapt them and rerun every proof. Complete all statutory branches and comparisons for every law; a first capability case does not finish the assignment.
 
 For every assignment, read the law, selected witness, cell, actor and prior
 evidence. Complete the selected branch first. In `case-plan.json`, set
