@@ -1,0 +1,35 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather.",
+      "source": "NRS 484B.413(2)",
+      "output_key": "complete_statutory_observations",
+      "method": "statutory_observations",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Highway dedication and public-access source context, conventional vehicle/controller classification and exact fixed cell identity; factual legal scope conclusions remain separate.",
+      "source": "assignment.witness.required_context; DEF-NRS-484A-080; DEF-NRS-484A-095; DEF-NRS-484A-320",
+      "output_key": "selected_scope_context",
+      "method": "selected_scope_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "case_observation.json"
+    ],
+    "error_contains": "Missing required source: case_observation.json"
+  }
+}

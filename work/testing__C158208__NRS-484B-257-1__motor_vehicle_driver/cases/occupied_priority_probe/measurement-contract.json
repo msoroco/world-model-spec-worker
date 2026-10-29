@@ -1,0 +1,274 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Except when traffic is being controlled by a police officer or a traffic-control signal:",
+      "source": "NRS 484B.257(1):text-0",
+      "output_key": "requirement_0",
+      "method": "control_and_response_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway.",
+      "source": "NRS 484B.257(1):text-1",
+      "output_key": "requirement_1",
+      "method": "governing_control",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
+      "source": "NRS 484B.257(1):text-2",
+      "output_key": "requirement_2",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "proper stop or yield signs have been erected at the subject's approach",
+      "source": "assignment.summary:activation_conditions-0",
+      "output_key": "requirement_3",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "the subject approaches that intersection",
+      "source": "assignment.summary:activation_conditions-1",
+      "output_key": "requirement_4",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 5,
+      "requirement": "traffic is not being controlled by a police officer or a traffic-control signal",
+      "source": "assignment.summary:activation_conditions-2",
+      "output_key": "requirement_5",
+      "method": "control_and_response_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "Establish absence of actual officer traffic control for this sign-governed comparison; the statutory exception remains explicit.",
+      "source": "NRS 484B.257(1); governing-control exception absence",
+      "output_key": "requirement_6",
+      "method": "control_and_response_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 7,
+      "requirement": "Establish absence of actual signal traffic control for this sign-governed comparison; the statutory exception remains explicit.",
+      "source": "NRS 484B.257(1); governing-control exception absence",
+      "output_key": "requirement_7",
+      "method": "control_and_response_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 8,
+      "requirement": "stop or yield at the reference point first, then enter",
+      "source": "assignment.summary:timing_requirements-0",
+      "output_key": "requirement_8",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 9,
+      "requirement": "the yield duty runs for the whole time the subject is moving across or within the intersection, not only at entry",
+      "source": "assignment.summary:timing_requirements-1",
+      "output_key": "requirement_9",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 10,
+      "requirement": "Establish absence of a clearly marked stop line and near-side crosswalk, including any sidewalk-derived crosswalk.",
+      "source": "assignment.witness.required_context:review-context-0",
+      "output_key": "requirement_10",
+      "method": "governing_control",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 11,
+      "requirement": "Establish governed approach, stopping-reference geometry, sightlines and participant routes required by scene_requirements.",
+      "source": "assignment.witness.required_context:review-context-1",
+      "output_key": "requirement_11",
+      "method": "nearest_visible_point",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "view_samples.jsonl",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 12,
+      "requirement": "Establish proper yield-sign erection, approach governance, statutory intersection boundaries and connected routes.",
+      "source": "assignment.witness.required_context:review-context-2",
+      "output_key": "requirement_12",
+      "method": "governing_control",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 13,
+      "requirement": "Establish through-highway status and the nearest point where the driver has a view of approaching traffic.",
+      "source": "assignment.witness.required_context:review-context-3",
+      "output_key": "requirement_13",
+      "method": "nearest_visible_point",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "view_samples.jsonl",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 14,
+      "requirement": "Establish through-highway status, driver viewpoint and the nearest point where the driver has a view of approaching traffic.",
+      "source": "assignment.witness.required_context:review-context-4",
+      "output_key": "requirement_14",
+      "method": "nearest_visible_point",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "view_samples.jsonl",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 15,
+      "requirement": "Exclude actual officer or signal control; preserve immediate hazard and visibility standards without numerical cutoffs.",
+      "source": "assignment.witness.required_context:review-context-5",
+      "output_key": "requirement_15",
+      "method": "control_and_response_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 16,
+      "requirement": "Neither a clearly marked stop line nor a near-side crosswalk exists.",
+      "source": "assignment.witness.required_context:review-context-6",
+      "output_key": "requirement_16",
+      "method": "governing_control",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 17,
+      "requirement": "Provide proper-sign evidence and exclude actual officer or signal control.",
+      "source": "assignment.witness.required_context:review-context-7",
+      "output_key": "requirement_17",
+      "method": "control_and_response_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 18,
+      "requirement": "Retain approaching traffic throughout movement across or within the intersection.",
+      "source": "assignment.witness.required_context:review-context-8",
+      "output_key": "requirement_18",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 19,
+      "requirement": "Retain initial slowing or stopping and subsequent through-highway vehicle interactions throughout movement across or within the intersection.",
+      "source": "assignment.witness.required_context:review-context-9",
+      "output_key": "requirement_19",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "interaction_history.jsonl"
+    ],
+    "error_contains": "Missing required source: interaction_history.jsonl"
+  }
+}

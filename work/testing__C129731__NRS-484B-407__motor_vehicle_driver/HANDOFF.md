@@ -1,0 +1,41 @@
+CPU software compatibility only. Native motion, original pixels, legal status and legal judgments remain unverified. No CARLA executed.
+
+python3.11 runtime.py capture --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve_clear --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-0
+
+python3.11 runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve_clear --attempt .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-0 --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/processed-0 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve_ahead_blocked --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-1
+
+python3.11 runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve_ahead_blocked --attempt .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-1 --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/processed-1 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve_behind_blocked --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-2
+
+python3.11 runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve_behind_blocked --attempt .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-2 --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/processed-2 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__approach_to_crest_clear --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-3
+
+python3.11 runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__approach_to_crest_clear --attempt .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-3 --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/processed-3 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__approach_to_crest_ahead_blocked --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-4
+
+python3.11 runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__approach_to_crest_ahead_blocked --attempt .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-4 --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/processed-4 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__approach_to_crest_behind_blocked --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-5
+
+python3.11 runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__approach_to_crest_behind_blocked --attempt .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-5 --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/processed-5 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__near_crest_clear --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-6
+
+python3.11 runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__near_crest_clear --attempt .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-6 --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/processed-6 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__near_crest_ahead_blocked --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-7
+
+python3.11 runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__near_crest_ahead_blocked --attempt .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-7 --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/processed-7 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__near_crest_behind_blocked --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-8
+
+python3.11 runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__near_crest_behind_blocked --attempt .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-8 --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/processed-8 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve_multipoint --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-9
+
+python3.11 runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve_multipoint --attempt .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/native-9 --output .runtime-work/testing__C129731__NRS-484B-407__motor_vehicle_driver/processed-9 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"

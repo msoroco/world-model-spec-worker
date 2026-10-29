@@ -1,0 +1,158 @@
+{
+  "assignment_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver",
+  "law_id": "NRS-484B-250-2",
+  "cell_id": "C125697",
+  "actor": "motor_vehicle_driver",
+  "role": "testing",
+  "branch": "Measured crossing-entry timing at a median-opening intersection.",
+  "witness": {
+    "actor": "motor_vehicle_driver",
+    "branch": "Measured crossing-entry timing at a median-opening intersection.",
+    "cell": "C125714",
+    "confidence": "low",
+    "covers": [
+      "NRS-484B-250-2"
+    ],
+    "decision": "conditional",
+    "quote": "enter an intersection from different highways at approximately the same time",
+    "reason": "A constructed crossing at the median opening can support both entries into one identified statutory intersection.",
+    "relevance_type": "specific_match",
+    "required_context": [
+      "Establish highway dedication and access, device governance, maneuver intentions and the unresolved subsection-4 qualification.",
+      "Identify separate roadway intersections where the statutory 30-foot separation rule applies.",
+      "Identify the same roadway crossing for both entries and apply separate-intersection treatment where required.",
+      "Inventory official devices, authority and maneuver intentions; preserve the exceptions and unresolved subsection-4 qualification.",
+      "Preserve lawful-manner, danger and yielding standards without numerical interpretations.",
+      "Provide an actual intersecting highway, public dedication and access, and conventional human-driven vehicles.",
+      "Realize an actual intersecting highway through the retained opening; an opening alone is insufficient.",
+      "Retain relative left/right approach geometry, actual entry times and complete trajectories.",
+      "Route both conventional human-driven vehicles into the same identified intersection with ego on the left."
+    ],
+    "subject_reason": "The available motor_vehicle_driver controls the left-hand conventional vehicle.",
+    "targeted_requirements": [],
+    "audit_status": "accepted",
+    "audit_receipt": "85e4d2e4a73c3696d286f73355766288603fdd05ee4522e4fa9907f4a8918906",
+    "source_assignment_hash": "a544e79a7e21fb0f526ceea73464c0b72c442a8c52f6004df263c2818203adc0",
+    "law": "NRS-484B-250-2",
+    "splits": [
+      "training",
+      "testing",
+      "heldout"
+    ],
+    "readiness_score": 0,
+    "receipt": "b366fb163ef873d6796fb24d106b8fbc8347372a79ef54c1ff0e3e1806f35cd3",
+    "evidence_readiness": "unverified_proposal",
+    "split": "testing",
+    "requirement": "NRS-484B-250-2"
+  },
+  "law": {
+    "id": "NRS-484B-250-2",
+    "title": "Vehicle approaching or entering intersection (2)",
+    "text": "When two vehicles enter an intersection from different highways at approximately the same time, the driver of the vehicle on the left shall yield the right-of-way to the vehicle on the right. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+    "source": "NRS 484B.250(2); with 484B.250(5)"
+  },
+  "cell": {
+    "cell_id": "C125697",
+    "layout": "median_opening",
+    "maneuver": "travel",
+    "control": "inoperative_signal",
+    "candidate_ego_parties": [
+      "bus_driver",
+      "cycle_or_scooter_operator",
+      "heavy_vehicle_driver",
+      "motor_vehicle_driver",
+      "motorcycle_or_moped_operator"
+    ],
+    "allocated_sets": []
+  },
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "two vehicles enter the intersection from different highways at approximately the same time",
+      "the intersection is uncontrolled",
+      "the subject is the one on the left"
+    ],
+    "exceptions": [
+      "intersections controlled by official traffic-control devices, unless the signal is inoperative",
+      "vehicles approaching from opposite directions where one is making or intending a left turn"
+    ],
+    "id": "NRS-484B-250-2",
+    "residue": [],
+    "source": "NRS 484B.250(2); with 484B.250(5)",
+    "subject": "driver",
+    "theme": "intersections_and_right_of_way",
+    "tier": "C",
+    "timing_requirements": [
+      {
+        "kind": "ordering",
+        "requirement": "'approximately the same time' is a simultaneity window: the tolerance on arrival order must be declared"
+      },
+      {
+        "kind": "point_event",
+        "requirement": "the test is at the entries; a later overtake in the intersection is a different matter"
+      }
+    ],
+    "title": "Vehicle approaching or entering intersection (2)"
+  },
+  "template_provenance": "derive_fresh_from_exact_law_and_summary_using_supplied_contract",
+  "templates": [],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "st.intersection",
+      "note": "the intersection"
+    },
+    {
+      "term": "st.lane_enters",
+      "note": "the lanes on which the two vehicles enter are approaches to the same intersection from different highways; the exception reads which intersection a device controls through the lanes it governs"
+    },
+    {
+      "term": "drv.entering_intersection",
+      "note": "both vehicles entering"
+    },
+    {
+      "term": "drv.arrival_order",
+      "note": "'at approximately the same time' \u2014 the simultaneity tolerance is the parameter"
+    },
+    {
+      "term": "rel.bearing",
+      "note": "which vehicle is on the other's right"
+    },
+    {
+      "term": "drv.yields_to",
+      "note": "the vehicle on the left gives way"
+    },
+    {
+      "term": "dev.traffic_signal",
+      "note": "the exception: a controlled intersection"
+    },
+    {
+      "term": "drv.turning",
+      "note": "the left-turn exception"
+    }
+  ],
+  "observation_terms_contract": "Source observation terms are law-planning requirements, not Core IDs. Map each to evidence and use only supported pinned ontology IDs in config.required_atoms.",
+  "local_snapshot": {
+    "scope_hashes": {
+      "demo-test": "c48496f07e3aa8d4ebde1c178712e9dca917bc5e3b9e45b076432cbe30a80ec6",
+      "full-test": "28ca803371eafe309465a39c13b162d0a3fa0a15773c8d23e1d2f7d132c3c52a"
+    },
+    "memberships": {
+      "demo-test": [],
+      "full-test": []
+    },
+    "guidance": {},
+    "law_sha256": "b5114aa5610ff5937307df44ded663268d579e41e402e1b41ee2ee08771832b9",
+    "cell_sha256": "968a827b02755160259325dee1e8b7bbbfb0badd0ebc6d056281ec144a6f09dd",
+    "law_policy_sha256": "77d7da97a21300aff4fc6560b6ea06defe41b5c9d4c4f5567f77571c94d9e5f6"
+  }
+}

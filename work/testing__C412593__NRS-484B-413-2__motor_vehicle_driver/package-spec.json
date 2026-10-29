@@ -1,0 +1,519 @@
+{
+  "assignment_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver",
+  "runner": "\"\"\"One original Native left-turn episode on a connected two-way junction.\"\"\"\nimport argparse, hashlib, json, math, queue, subprocess, traceback, xml.etree.ElementTree as ET\nfrom pathlib import Path\nfrom worker_exchange.native_output import FrameMap\nfrom worker_exchange.media import compose_four_views\nfrom worker_exchange.world_restore import snapshot,restore\nROOT=Path(__file__).resolve().parent\n\ndef check():\n cfg=json.loads((ROOT/'config.json').read_text());root=ET.parse(ROOT/'scene.xodr').getroot()\n roads={r.get('id'):r for r in root.findall('road')}\n assert {'1','2','3','4','14'}<=set(roads)\n arc=roads['14'].find('planView/geometry/arc')\n assert arc is not None and abs(float(arc.get('curvature'))+1/7)<1e-6\n links=roads['14'].find('link');assert links.find('predecessor').get('elementId')=='1' and links.find('successor').get('elementId')=='3'\n assert root.find('.//object[@id=\"4132001\"]') is not None\n assert cfg['duration_s']==50 and cfg['rate_hz']==20\n assert [(c['name'],c['width'],c['height']) for c in cfg['cameras']]==[('overview',1920,1080),('approach',1280,720),('reference_corner',1280,720),('driver_reference',1280,720)]\n return {'passed':True,'right_turn_connector':True,'loading_zone_boundary_authored':True,'native_motion_verified':False}\n\ndef route_points(mapping):\n route=[]\n for road,stations,lane in [(1,range(280,393,2),-1),(14,[i*10.995574287564276/20 for i in range(21)],-1),(3,range(393,339,-2),1)]:\n  for station in stations:\n   wp=mapping.get_waypoint_xodr(road,lane,float(station))\n   if wp is None:raise ValueError('Native right-turn lane connection missing')\n   loc=wp.transform.location;route.append((loc.x,loc.y))\n return route\n\ndef command(actor,route,requested_mps):\n pose=actor.get_transform();x,y=pose.location.x,pose.location.y\n nearest=min(range(len(route)),key=lambda i:(route[i][0]-x)**2+(route[i][1]-y)**2)\n look=route[min(len(route)-1,nearest+4)];angle=math.atan2(look[1]-y,look[0]-x)\n error=(angle-math.radians(pose.rotation.yaw)+math.pi)%(2*math.pi)-math.pi\n speed=actor.get_velocity().length();remaining=math.hypot(route[-1][0]-x,route[-1][1]-y)\n target=min(requested_mps,math.sqrt(max(0,2*1.5*(remaining-2))))\n effort=target-speed\n return {'control':{'throttle':max(0,min(.55,.22*effort)),'brake':max(0,min(.8,-.20*effort)),'steer':max(-.7,min(.7,1.4*error))},'nearest_route_index':nearest,'requested_mps':target}\n\ndef run(args):\n import carla\n from pipeline_capture import PipelineCapture\n from analyze import finalize\n from worker_exchange.optical_measurements import project_body,photometry\n client=carla.Client(args.host,args.port);client.set_timeout(60);saved=snapshot(client)\n out=Path(args.output_dir);cfg=json.loads((ROOT/'config.json').read_text());owned=[];encoders={};streams={};queues={};cameras={};capture=None;errors=[];frames=0\n try:\n  world=client.generate_opendrive_world((ROOT/'scene.xodr').read_text());settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=.05;world.apply_settings(settings)\n  world.set_weather(carla.WeatherParameters(precipitation=cfg.get(\"precipitation\",0),sun_altitude_angle=45));mapping=world.get_map();route=route_points(mapping)\n  bp=world.get_blueprint_library().find('vehicle.lincoln.mkz_2020');bp.set_attribute('role_name','business_district_right_turn_subject')\n  wp=mapping.get_waypoint_xodr(1,-1,280);ego=world.spawn_actor(bp,wp.transform);owned.append(ego)\n  ego.apply_control(carla.VehicleControl(brake=1,hand_brake=True))\n  ego.set_light_state(carla.VehicleLightState.NONE)\n  for _ in range(20):world.tick()\n  geometry={'source':'Native OpenDRIVE map and authored district/loading context','approach_road_id':1,'departure_road_id':3,\n   'connector_road_id':14,'right_turn_arc_curvature_per_m':-1/7,'route_waypoints_native_xy':route,\n   'business_district_frontage_m':120,'business_use_frontage_m':cfg.get('business_use_frontage_m',90),\n   'loading_zone_polygon':[[-50,-10],[-25,-10],[-25,-7],[-50,-7]],\n   'district_source':'synthetic authored business frontage; actual statutory status remains external',\n   'loading_zone_designation_source':'synthetic freight loading designation and OpenDRIVE object 4132001'}\n  (out/'road_geometry.json').write_text(json.dumps(geometry,indent=2)+'\\n')\n  for spec in cfg['cameras']:\n   name,w,h=spec['name'],spec['width'],spec['height'];camera_bp=world.get_blueprint_library().find('sensor.camera.rgb')\n   for key,value in [('image_size_x',w),('image_size_y',h),('fov',spec['fov_deg']),('sensor_tick',0)]:camera_bp.set_attribute(key,str(value))\n   if name=='overview':pose=carla.Transform(carla.Location(x=0,y=0,z=60),carla.Rotation(pitch=-90));attached=ego\n   elif name=='approach':pose=carla.Transform(carla.Location(x=-8,y=0,z=5),carla.Rotation(pitch=-15));attached=ego\n   elif name=='reference_corner':pose=carla.Transform(carla.Location(x=-18,y=18,z=28),carla.Rotation(pitch=-40,yaw=-120));attached=None\n   else:pose=carla.Transform(carla.Location(x=0,y=0,z=1.5),carla.Rotation());attached=ego\n   camera=world.spawn_actor(camera_bp,pose,attach_to=attached);owned.append(camera);cameras[name]=camera;queues[name]=queue.Queue();camera.listen(queues[name].put)\n   streams[name]=(out/(name+'.encoder.log')).open('x');encoders[name]=subprocess.Popen(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-n','-f','rawvideo','-pix_fmt','bgra','-s',f'{w}x{h}','-r','20','-i','pipe:0','-an','-c:v','ffv1','-pix_fmt','bgr0',str(out/(name+'.mkv'))],stdin=subprocess.PIPE,stderr=streams[name])\n  capture=PipelineCapture(client,ego,out,cfg['selected_case_id'],required_observations=cfg['required_atoms'])\n  started=world.get_snapshot().timestamp.elapsed_seconds\n  with FrameMap(out/'video_frames.jsonl') as fmap,(out/'body_history.jsonl').open('x') as body,(out/'signal_history.jsonl').open('x') as signals:\n   for i in range(cfg['duration_s']*cfg['rate_hz']):\n    remaining_approach=max(0,-7-ego.get_transform().location.x)\n    display=remaining_approach<=cfg.get('signal_on_distance_ft',100)*.3048\n    if cfg.get('interrupt_signal',False) and 10<remaining_approach<15:display=False\n    ego.set_light_state(carla.VehicleLightState.RightBlinker if display else carla.VehicleLightState.NONE)\n    requested=command(ego,route,cfg['requested_speed_mps']);ego.apply_control(carla.VehicleControl(**requested['control']))\n    frame=world.tick();now=world.get_snapshot().timestamp.elapsed_seconds-started;originals={};optical=None\n    for spec in cfg['cameras']:\n     name=spec['name'];image=queues[name].get(timeout=30)\n     while image.frame<frame:image=queues[name].get(timeout=30)\n     if image.frame!=frame:raise ValueError('Unsynchronized original camera '+name)\n     encoders[name].stdin.write(image.raw_data);originals[name]={'frame':frame,'sha256':hashlib.sha256(image.raw_data).hexdigest()}\n     if name=='reference_corner':\n      try:\n       t=ego.get_transform();verts=[[v.x,v.y,v.z] for v in ego.bounding_box.get_world_vertices(t)]\n       roi=project_body(verts,cameras[name].get_transform().get_inverse_matrix(),w,h,spec['fov_deg'])\n       optical={'body_roi':roi,'photometry':photometry(image.raw_data,w,h,roi),'camera_frame':image.frame}\n      except ValueError:optical={'body_roi_available':False,'camera_frame':image.frame}\n    transform=ego.get_transform();vertices=[[v.x,v.y,v.z] for v in ego.bounding_box.get_world_vertices(transform)];wp=mapping.get_waypoint(transform.location)\n    body.write(json.dumps({'frame':frame,'time_s':now,'body_vertices_m':vertices,'road_id':None if wp is None else wp.road_id,\n     'lane_id':None if wp is None else wp.lane_id,'control':requested,'camera_originals':originals})+'\\n')\n    signals.write(json.dumps({'frame':frame,'time_s':now,'right_indicator_api_bit':bool(ego.get_light_state() & carla.VehicleLightState.RightBlinker),\n     'body_roi_photometry':optical,'road_id':None if wp is None else wp.road_id,'position_m':[transform.location.x,transform.location.y,transform.location.z]})+'\\n')\n    capture.capture(frame,now);fmap.append(frame,now);frames+=1\n  if frames!=cfg['duration_s']*cfg['rate_hz']:raise ValueError('Incomplete original duration')\n except BaseException as error:errors.append({'message':str(error),'traceback':traceback.format_exc()})\n finally:\n  if capture:\n   try:capture.close(confirmed=not errors and frames==cfg['duration_s']*cfg['rate_hz'])\n   except BaseException as error:errors.append({'capture_close':str(error)})\n  for process in encoders.values():\n   try:process.stdin.close();code=process.wait(timeout=180);assert code==0\n   except BaseException as error:errors.append({'encoder':str(error)})\n  for stream in streams.values():stream.close()\n  for actor in reversed(owned):\n   try:actor.destroy()\n   except BaseException as error:errors.append({'destroy':str(error)})\n  try:restoration=restore(client,saved)\n  except BaseException as error:errors.append({'restore':str(error)});restoration={'restored':False}\n  (out/'native-run-status.json').write_text(json.dumps({'frames':frames,'errors':errors,'restoration':restoration},indent=2)+'\\n')\n if errors:raise RuntimeError('Native capture failed: '+str(errors))\n receipt=compose_four_views({name:out/(name+'.mkv') for name in queues},out/'video_frames.jsonl',out/'raw.mkv')\n (out/'four-view-receipt.json').write_text(json.dumps(receipt,indent=2)+'\\n')\n rows=[json.loads(line) for line in (out/'signal_history.jsonl').read_text().splitlines() if line]\n onset=next((i for i,r in enumerate(rows) if r['road_id']==14),None)\n if onset is None or onset<2:raise ValueError('Native right-turn onset not observed')\n approach=rows[:onset+1]\n packet={'law_id':cfg['law_id'],'diagnostic_fixture_only':False,'road_id':1,\n   'frontage_m':geometry['business_district_frontage_m'],'business_use_frontage_m':geometry['business_use_frontage_m'],\n   'district_source':cfg.get('district_source',geometry['district_source']),'turn_onset_frame':rows[onset]['frame'],\n   'path_rows':[{'x_m':r['position_m'][0],'y_m':r['position_m'][1]} for r in approach],\n   'indicator_rows':[{'frame':r['frame'],'lamp_bits':int(r['right_indicator_api_bit']),\n      'pixel_luminance':None if not r['body_roi_photometry'] or not r['body_roi_photometry'].get('photometry')\n        else r['body_roi_photometry']['photometry']['mean_luminance']} for r in approach],\n   'zone_polygon':geometry['loading_zone_polygon'],'zone_route_distance_m':6,\n   'zone_designation_source':geometry['loading_zone_designation_source'],'residence_use_frontage_m':cfg.get('residence_use_frontage_m',0),'threshold_ft':cfg.get('signal_reference_ft',100),'district_class':cfg.get('district_class','business'),'weather_context':{'precipitation':cfg.get('precipitation',0)}}\n packet['scope_context']={'highway_designation': 'Authored synthetic public highway; independent factual/legal jurisdiction review required', 'vehicle_blueprint': 'vehicle.lincoln.mkz_2020', 'controller_scope': 'Physical throttle/brake/steering commands on conventional vehicle; no automated-driving-system legal inference', 'cell_identity': 'C412593', 'fixed_layout': 'paved_road', 'fixed_maneuver': 'right_turn', 'fixed_control': 'freight_loading_zone', 'source': 'Exact case config plus authored OpenDRIVE; actual public dedication/driver identity is not established by CPU fixture'}\n (out/'case_observation.json').write_text(json.dumps(packet,indent=2)+'\\n')\n finalize(out,out/'analysis-report.json')\n\nif __name__=='__main__':\n p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');p.add_argument('--output-dir',default='.')\n p.add_argument('--host',default='127.0.0.1');p.add_argument('--port',type=int,default=2000);a=p.parse_args()\n if a.check:print(json.dumps(check()))\n else:run(a)\n",
+  "analysis": "\"\"\"Case-specific saved diagnostic measurements; physical sources require Native capture.\"\"\"\nimport argparse,hashlib,json\nfrom pathlib import Path\nfrom worker_exchange.native_output import write_result\n\ndef required(root,name):\n    path=root/name\n    if not path.is_file():raise ValueError(\"Missing required source: \"+name)\n    return path\n\ndef district_frontage(p):\n    return {'frontage_m':p['frontage_m'],'business_use_frontage_m':p['business_use_frontage_m'],'residence_use_frontage_m':p.get('residence_use_frontage_m',0),'road_id':p['road_id'],'source':p['district_source'],'district_class':p.get('district_class','business'),'weather_context':p.get('weather_context',{})}\n\ndef approach_path(p):\n    rows=p['path_rows'];segments=[((b['x_m']-a['x_m'])**2+(b['y_m']-a['y_m'])**2)**.5 for a,b in zip(rows,rows[1:])];distance=sum(segments);remaining=0;start=len(rows)-1\n    for i in range(len(segments)-1,-1,-1):\n        remaining+=segments[i];start=i\n        if remaining>=p.get('threshold_ft',100)*.3048:\n            if remaining>p.get('threshold_ft',100)*.3048:start=min(start+1,len(rows)-1)\n            break\n    return {'path_distance_m':distance,'last_100ft_start_index':start,'last_100ft_sampled_distance_m':remaining,'reference_is_engineering_onset':True,'distance_window_bracket_m':[max(0,remaining-(segments[start-1] if start else 0)),remaining],'turn_onset_frame':p['turn_onset_frame'],'sample_count':len(rows),'threshold_ft':p.get('threshold_ft',100),'threshold_m':p.get('threshold_ft',100)*.3048}\n\ndef indicator_continuity(p):\n    start=approach_path(p)['last_100ft_start_index'];rows=p['indicator_rows'][start:];return {'original_frames':[r['frame'] for r in rows],'lamp_bits':[r['lamp_bits'] for r in rows],'body_roi_luminance_samples':[r['pixel_luminance'] for r in rows if isinstance(r['pixel_luminance'],(int,float))],'continuous_api_on':all(r['lamp_bits'] for r in rows),'pixel_visibility_verified':False,'body_roi_is_not_lamp_mask':True}\n\ndef loading_zone(p):\n    return {'zone_polygon':p['zone_polygon'],'route_distance_m':p['zone_route_distance_m'],'designation_source':p['zone_designation_source']}\n\ndef statutory_observations(p):\n    return {'approach_path':approach_path(p),'indicator_continuity':indicator_continuity(p),'district_frontage':district_frontage(p)}\n\ndef selected_scope_context(p):\n    return {'authored_scope':p['scope_context'],'recorded_context':{k:v for k,v in p.items() if k not in ('motion_rows','trajectory','path_rows','indicator_rows','velocity_rows','scope_context')},'no_legal_scope_acceptance':True}\n\ndef finalize(root,output):\n    source=required(root,\"case_observation.json\")\n    p=json.loads(source.read_text())\n    if p.get(\"law_id\")!='NRS-484B-413-2':raise ValueError(\"Case observation law mismatch\")\n    h=hashlib.sha256(source.read_bytes()).hexdigest()\n    measurements={}\n    measurements['business_district_context']={\"method\":'district_frontage',\"value\":district_frontage(p),\"sources\":{\"case_observation.json\":h}}\n    measurements['last_100ft_traveled_path']={\"method\":'approach_path',\"value\":approach_path(p),\"sources\":{\"case_observation.json\":h}}\n    measurements['original_lamp_display_history']={\"method\":'indicator_continuity',\"value\":indicator_continuity(p),\"sources\":{\"case_observation.json\":h}}\n    measurements['designated_zone_location']={\"method\":'loading_zone',\"value\":loading_zone(p),\"sources\":{\"case_observation.json\":h}}\n    measurements['complete_statutory_observations']={'method':'statutory_observations','value':statutory_observations(p),'sources':{'case_observation.json':h}}\n    measurements['selected_scope_context']={'method':'selected_scope_context','value':selected_scope_context(p),'sources':{'case_observation.json':h}}\n    report={\"case_id\":json.loads(required(root,\"config.json\").read_text())[\"selected_case_id\"],\"format\":\"worker-analysis-report-v1\",\"measurements\":measurements,\"limitations\":[\"Diagnostic fixture only; Native motion, source packets, four-view pixels and legal acceptance remain unverified.\"]}\n    output.write_text(json.dumps(report,indent=2)+\"\\n\")\n    cfg=json.loads(required(root,\"config.json\").read_text())\n    rows=[json.loads(line) for line in required(root,\"trace.jsonl\").read_text().splitlines() if line]\n    (root/\"channels\").mkdir(exist_ok=True)\n    channel_values={\n      \"original_motion\":lambda row:{\"position_m\":row[\"position_m\"],\"velocity_mps\":row[\"velocity_mps\"],\"speed_mps\":row[\"speed_mps\"]},\n      \"native_geometry\":lambda row:{\"road_id\":p[\"road_id\"],\"turn_onset_frame\":p[\"turn_onset_frame\"],\"frontage_m\":p[\"frontage_m\"],\"zone_polygon\":p[\"zone_polygon\"]},\n      \"device_inventory\":lambda row:{\"indicator_rows\":p[\"indicator_rows\"],\"zone_designation_source\":p[\"zone_designation_source\"]},\n      \"view_provenance\":lambda row:{\"four_view_receipt\":\"four-view-receipt.json\",\"pixel_visibility_verified\":False}}\n    for name,fn in channel_values.items():\n      (root/\"channels\"/(name+\".jsonl\")).write_text(''.join(json.dumps({\"time_s\":row[\"time_s\"],\"value\":fn(row)})+\"\\n\" for row in rows))\n    measured=max(row[\"speed_mps\"] for row in rows)\n    target=cfg[\"case\"][\"variable_assignments\"][\"requested_speed_mps\"][\"value\"]\n    result={\"case_id\":cfg[\"selected_case_id\"],\"measured_values\":{\"max_sampled_speed_mps\":measured},\n      \"target_checks\":[{\"target\":\"requested_speed_mps\",\"requested\":target,\"measured\":measured,\n       \"method\":\"maximum original Native speed sample\",\"tolerance\":6,\"matched\":abs(measured-target)<=6,\n       \"physical_cause_confirmed\":False,\"cause_evidence\":\"trace.jsonl;case_observation.json\"}],\n      \"setup_confirmed\":False,\"behavior_attempted\":True,\"maneuver_completed\":False,\n      \"termination_reason\":\"saved capability analysis; emitted signal pixels and district status need local review\",\n      \"physical_failure_flags\":{\"detection_validated\":False},\"trace_reference\":\"trace.jsonl\",\n      \"video_references\":[\"raw.mkv\"],\"video_frame_map_reference\":\"video_frames.jsonl\",\n      \"recording_description\":cfg[\"case\"][\"recording_description\"],\n      \"recording_evidence\":[{\"name\":name,\"unit\":\"structured record\",\"reference\":\"channels/\"+name+\".jsonl\"} for name in channel_values],\n      \"realized_observables\":{}}\n    write_result(root,result)\n    return report\n\nif __name__==\"__main__\":\n    a=argparse.ArgumentParser();a.add_argument(\"--attempt\",required=True);a.add_argument(\"--output\",required=True);v=a.parse_args();finalize(Path(v.attempt),Path(v.output))\n",
+  "test": "import unittest,tempfile\nfrom pathlib import Path\nfrom runner import check\nfrom analyze import finalize\nclass T(unittest.TestCase):\n def test_structure(self):self.assertTrue(check()['passed'])\n def test_missing(self):\n  with tempfile.TemporaryDirectory() as t:\n   with self.assertRaisesRegex(ValueError,'Missing required source: case_observation.json'):finalize(Path(t),Path(t)/'analysis-report.json')\n",
+  "cases": [
+    {
+      "name": "residence_continuous",
+      "rationale": "residence right_turn statutory signal-distance contrast; original signal display and complete path retained.",
+      "config": {
+        "signal_on_distance_ft": 100,
+        "signal_reference_ft": 100,
+        "district_class": "residence",
+        "district_source": "Authored synthetic residence highway frontage/use context; actual statutory district classification requires source review",
+        "course": "right_turn",
+        "business_use_frontage_m": 0,
+        "residence_use_frontage_m": 90
+      },
+      "fixture": {
+        "case_observation.json": {
+          "law_id": "NRS-484B-413-2",
+          "diagnostic_fixture_only": true,
+          "road_id": 1,
+          "frontage_m": 120,
+          "business_use_frontage_m": 0,
+          "district_source": "Authored synthetic residence highway frontage/use context; actual statutory district classification requires source review",
+          "turn_onset_frame": 21716,
+          "path_rows": [
+            {
+              "x_m": -40.480000000000004,
+              "y_m": -1.75
+            },
+            {
+              "x_m": -30.48,
+              "y_m": -1.75
+            },
+            {
+              "x_m": 0,
+              "y_m": -1.75
+            }
+          ],
+          "indicator_rows": [
+            {
+              "frame": 21714,
+              "lamp_bits": 0,
+              "pixel_luminance": 20
+            },
+            {
+              "frame": 21715,
+              "lamp_bits": 1,
+              "pixel_luminance": 80
+            },
+            {
+              "frame": 21716,
+              "lamp_bits": 1,
+              "pixel_luminance": 80
+            }
+          ],
+          "zone_polygon": [
+            [
+              -50,
+              -10
+            ],
+            [
+              -25,
+              -10
+            ],
+            [
+              -25,
+              -7
+            ],
+            [
+              -50,
+              -7
+            ]
+          ],
+          "zone_route_distance_m": 6,
+          "zone_designation_source": "authored loading-zone object",
+          "district_class": "residence",
+          "weather_context": {
+            "precipitation": 0
+          },
+          "threshold_ft": 100,
+          "scope_context": {
+            "highway_designation": "Authored synthetic public highway; independent factual/legal jurisdiction review required",
+            "vehicle_blueprint": "vehicle.lincoln.mkz_2020",
+            "controller_scope": "Physical throttle/brake/steering commands on conventional vehicle; no automated-driving-system legal inference",
+            "cell_identity": "C412593",
+            "fixed_layout": "paved_road",
+            "fixed_maneuver": "right_turn",
+            "fixed_control": "freight_loading_zone",
+            "source": "Exact case config plus authored OpenDRIVE; actual public dedication/driver identity is not established by CPU fixture"
+          },
+          "residence_use_frontage_m": 90
+        }
+      },
+      "scene": "<OpenDRIVE><header revMajor=\"1\" revMinor=\"4\" name=\"C378304 business district right turn\" version=\"1\" date=\"2026-10-21\" north=\"400\" south=\"-400\" east=\"400\" west=\"-400\" vendor=\"scenario_pipeline\" /><road name=\"stop257_1\" id=\"1\" length=\"393\" junction=\"-1\"><link><successor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"-400\" y=\"0\" hdg=\"0\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes><objects><object id=\"4132001\" name=\"FreightLoadingZoneBoundary\" type=\"roadMark\" s=\"350\" t=\"-7.2\" zOffset=\".01\" hdg=\"0\" length=\"25\" width=\".25\" height=\"0\" orientation=\"none\" /></objects></road><road name=\"stop257_2\" id=\"2\" length=\"393\" junction=\"-1\"><link><predecessor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"7\" y=\"0\" hdg=\"0\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_3\" id=\"3\" length=\"393\" junction=\"-1\"><link><successor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"0\" y=\"-400\" hdg=\"1.5707963267948966\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_4\" id=\"4\" length=\"393\" junction=\"-1\"><link><predecessor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"0\" y=\"7\" hdg=\"1.5707963267948966\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_11\" id=\"11\" length=\"14\" junction=\"100\"><link><predecessor elementType=\"road\" elementId=\"1\" contactPoint=\"end\" /><successor elementType=\"road\" elementId=\"2\" contactPoint=\"start\" /></link><planView><geometry s=\"0\" x=\"-7\" y=\"0\" hdg=\"0\" length=\"14\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link><predecessor id=\"1\" /><successor id=\"1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link><predecessor id=\"2\" /><successor id=\"2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link><predecessor id=\"-1\" /><successor id=\"-1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link><predecessor id=\"-2\" /><successor id=\"-2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_12\" id=\"12\" length=\"14\" junction=\"100\"><link><predecessor elementType=\"road\" elementId=\"3\" contactPoint=\"end\" /><successor elementType=\"road\" elementId=\"4\" contactPoint=\"start\" /></link><planView><geometry s=\"0\" x=\"0\" y=\"-7\" hdg=\"1.5707963267948966\" length=\"14\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link><predecessor id=\"1\" /><successor id=\"1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link><predecessor id=\"2\" /><successor id=\"2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link><predecessor id=\"-1\" /><successor id=\"-1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link><predecessor id=\"-2\" /><successor id=\"-2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"right_turn_west_to_south\" id=\"14\" length=\"10.995574287564276\" junction=\"100\"><link><predecessor elementType=\"road\" elementId=\"1\" contactPoint=\"end\" /><successor elementType=\"road\" elementId=\"3\" contactPoint=\"end\" /></link><planView><geometry s=\"0\" x=\"-7\" y=\"0\" hdg=\"0\" length=\"10.995574287564276\"><arc curvature=\"-0.14285714285714285\" /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left /><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link><predecessor id=\"-1\" /><successor id=\"1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><junction id=\"100\" name=\"stop_controlled_cross_approaches_through_north_south\"><connection id=\"0\" incomingRoad=\"1\" connectingRoad=\"11\" contactPoint=\"start\"><laneLink from=\"-1\" to=\"-1\" /><laneLink from=\"-2\" to=\"-2\" /></connection><connection id=\"1\" incomingRoad=\"2\" connectingRoad=\"11\" contactPoint=\"end\"><laneLink from=\"1\" to=\"1\" /><laneLink from=\"2\" to=\"2\" /></connection><connection id=\"2\" incomingRoad=\"3\" connectingRoad=\"12\" contactPoint=\"start\"><laneLink from=\"-1\" to=\"-1\" /><laneLink from=\"-2\" to=\"-2\" /></connection><connection id=\"3\" incomingRoad=\"4\" connectingRoad=\"12\" contactPoint=\"end\"><laneLink from=\"1\" to=\"1\" /><laneLink from=\"2\" to=\"2\" /></connection><connection id=\"4\" incomingRoad=\"1\" connectingRoad=\"14\" contactPoint=\"start\"><laneLink from=\"-1\" to=\"-1\" /></connection></junction></OpenDRIVE>\n"
+    },
+    {
+      "name": "residence_short",
+      "rationale": "residence right_turn statutory signal-distance contrast; original signal display and complete path retained.",
+      "config": {
+        "signal_on_distance_ft": 80,
+        "signal_reference_ft": 100,
+        "district_class": "residence",
+        "district_source": "Authored synthetic residence highway frontage/use context; actual statutory district classification requires source review",
+        "course": "right_turn",
+        "business_use_frontage_m": 0,
+        "residence_use_frontage_m": 90
+      },
+      "fixture": {
+        "case_observation.json": {
+          "law_id": "NRS-484B-413-2",
+          "diagnostic_fixture_only": true,
+          "road_id": 1,
+          "frontage_m": 120,
+          "business_use_frontage_m": 0,
+          "district_source": "Authored synthetic residence highway frontage/use context; actual statutory district classification requires source review",
+          "turn_onset_frame": 21716,
+          "path_rows": [
+            {
+              "x_m": -40.480000000000004,
+              "y_m": -1.75
+            },
+            {
+              "x_m": -30.48,
+              "y_m": -1.75
+            },
+            {
+              "x_m": 0,
+              "y_m": -1.75
+            }
+          ],
+          "indicator_rows": [
+            {
+              "frame": 21714,
+              "lamp_bits": 0,
+              "pixel_luminance": 20
+            },
+            {
+              "frame": 21715,
+              "lamp_bits": 0,
+              "pixel_luminance": 20
+            },
+            {
+              "frame": 21716,
+              "lamp_bits": 1,
+              "pixel_luminance": 80
+            }
+          ],
+          "zone_polygon": [
+            [
+              -50,
+              -10
+            ],
+            [
+              -25,
+              -10
+            ],
+            [
+              -25,
+              -7
+            ],
+            [
+              -50,
+              -7
+            ]
+          ],
+          "zone_route_distance_m": 6,
+          "zone_designation_source": "authored loading-zone object",
+          "district_class": "residence",
+          "weather_context": {
+            "precipitation": 0
+          },
+          "threshold_ft": 100,
+          "scope_context": {
+            "highway_designation": "Authored synthetic public highway; independent factual/legal jurisdiction review required",
+            "vehicle_blueprint": "vehicle.lincoln.mkz_2020",
+            "controller_scope": "Physical throttle/brake/steering commands on conventional vehicle; no automated-driving-system legal inference",
+            "cell_identity": "C412593",
+            "fixed_layout": "paved_road",
+            "fixed_maneuver": "right_turn",
+            "fixed_control": "freight_loading_zone",
+            "source": "Exact case config plus authored OpenDRIVE; actual public dedication/driver identity is not established by CPU fixture"
+          },
+          "residence_use_frontage_m": 90
+        }
+      },
+      "scene": "<OpenDRIVE><header revMajor=\"1\" revMinor=\"4\" name=\"C378304 business district right turn\" version=\"1\" date=\"2026-10-21\" north=\"400\" south=\"-400\" east=\"400\" west=\"-400\" vendor=\"scenario_pipeline\" /><road name=\"stop257_1\" id=\"1\" length=\"393\" junction=\"-1\"><link><successor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"-400\" y=\"0\" hdg=\"0\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes><objects><object id=\"4132001\" name=\"FreightLoadingZoneBoundary\" type=\"roadMark\" s=\"350\" t=\"-7.2\" zOffset=\".01\" hdg=\"0\" length=\"25\" width=\".25\" height=\"0\" orientation=\"none\" /></objects></road><road name=\"stop257_2\" id=\"2\" length=\"393\" junction=\"-1\"><link><predecessor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"7\" y=\"0\" hdg=\"0\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_3\" id=\"3\" length=\"393\" junction=\"-1\"><link><successor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"0\" y=\"-400\" hdg=\"1.5707963267948966\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_4\" id=\"4\" length=\"393\" junction=\"-1\"><link><predecessor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"0\" y=\"7\" hdg=\"1.5707963267948966\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_11\" id=\"11\" length=\"14\" junction=\"100\"><link><predecessor elementType=\"road\" elementId=\"1\" contactPoint=\"end\" /><successor elementType=\"road\" elementId=\"2\" contactPoint=\"start\" /></link><planView><geometry s=\"0\" x=\"-7\" y=\"0\" hdg=\"0\" length=\"14\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link><predecessor id=\"1\" /><successor id=\"1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link><predecessor id=\"2\" /><successor id=\"2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link><predecessor id=\"-1\" /><successor id=\"-1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link><predecessor id=\"-2\" /><successor id=\"-2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_12\" id=\"12\" length=\"14\" junction=\"100\"><link><predecessor elementType=\"road\" elementId=\"3\" contactPoint=\"end\" /><successor elementType=\"road\" elementId=\"4\" contactPoint=\"start\" /></link><planView><geometry s=\"0\" x=\"0\" y=\"-7\" hdg=\"1.5707963267948966\" length=\"14\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link><predecessor id=\"1\" /><successor id=\"1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link><predecessor id=\"2\" /><successor id=\"2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link><predecessor id=\"-1\" /><successor id=\"-1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link><predecessor id=\"-2\" /><successor id=\"-2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"right_turn_west_to_south\" id=\"14\" length=\"10.995574287564276\" junction=\"100\"><link><predecessor elementType=\"road\" elementId=\"1\" contactPoint=\"end\" /><successor elementType=\"road\" elementId=\"3\" contactPoint=\"end\" /></link><planView><geometry s=\"0\" x=\"-7\" y=\"0\" hdg=\"0\" length=\"10.995574287564276\"><arc curvature=\"-0.14285714285714285\" /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left /><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link><predecessor id=\"-1\" /><successor id=\"1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><junction id=\"100\" name=\"stop_controlled_cross_approaches_through_north_south\"><connection id=\"0\" incomingRoad=\"1\" connectingRoad=\"11\" contactPoint=\"start\"><laneLink from=\"-1\" to=\"-1\" /><laneLink from=\"-2\" to=\"-2\" /></connection><connection id=\"1\" incomingRoad=\"2\" connectingRoad=\"11\" contactPoint=\"end\"><laneLink from=\"1\" to=\"1\" /><laneLink from=\"2\" to=\"2\" /></connection><connection id=\"2\" incomingRoad=\"3\" connectingRoad=\"12\" contactPoint=\"start\"><laneLink from=\"-1\" to=\"-1\" /><laneLink from=\"-2\" to=\"-2\" /></connection><connection id=\"3\" incomingRoad=\"4\" connectingRoad=\"12\" contactPoint=\"end\"><laneLink from=\"1\" to=\"1\" /><laneLink from=\"2\" to=\"2\" /></connection><connection id=\"4\" incomingRoad=\"1\" connectingRoad=\"14\" contactPoint=\"start\"><laneLink from=\"-1\" to=\"-1\" /></connection></junction></OpenDRIVE>\n"
+    },
+    {
+      "name": "other_area_continuous",
+      "rationale": "other_area right_turn statutory signal-distance contrast; original signal display and complete path retained.",
+      "config": {
+        "signal_on_distance_ft": 300,
+        "signal_reference_ft": 300,
+        "district_class": "other_area",
+        "district_source": "Authored synthetic other_area highway frontage/use context; actual statutory district classification requires source review",
+        "course": "right_turn",
+        "business_use_frontage_m": 0,
+        "residence_use_frontage_m": 0
+      },
+      "fixture": {
+        "case_observation.json": {
+          "law_id": "NRS-484B-413-2",
+          "diagnostic_fixture_only": true,
+          "road_id": 1,
+          "frontage_m": 120,
+          "business_use_frontage_m": 0,
+          "district_source": "Authored synthetic other_area highway frontage/use context; actual statutory district classification requires source review",
+          "turn_onset_frame": 21716,
+          "path_rows": [
+            {
+              "x_m": -101.44,
+              "y_m": -1.75
+            },
+            {
+              "x_m": -91.44,
+              "y_m": -1.75
+            },
+            {
+              "x_m": 0,
+              "y_m": -1.75
+            }
+          ],
+          "indicator_rows": [
+            {
+              "frame": 21714,
+              "lamp_bits": 0,
+              "pixel_luminance": 20
+            },
+            {
+              "frame": 21715,
+              "lamp_bits": 1,
+              "pixel_luminance": 80
+            },
+            {
+              "frame": 21716,
+              "lamp_bits": 1,
+              "pixel_luminance": 80
+            }
+          ],
+          "zone_polygon": [
+            [
+              -50,
+              -10
+            ],
+            [
+              -25,
+              -10
+            ],
+            [
+              -25,
+              -7
+            ],
+            [
+              -50,
+              -7
+            ]
+          ],
+          "zone_route_distance_m": 6,
+          "zone_designation_source": "authored loading-zone object",
+          "district_class": "other_area",
+          "weather_context": {
+            "precipitation": 0
+          },
+          "threshold_ft": 300,
+          "scope_context": {
+            "highway_designation": "Authored synthetic public highway; independent factual/legal jurisdiction review required",
+            "vehicle_blueprint": "vehicle.lincoln.mkz_2020",
+            "controller_scope": "Physical throttle/brake/steering commands on conventional vehicle; no automated-driving-system legal inference",
+            "cell_identity": "C412593",
+            "fixed_layout": "paved_road",
+            "fixed_maneuver": "right_turn",
+            "fixed_control": "freight_loading_zone",
+            "source": "Exact case config plus authored OpenDRIVE; actual public dedication/driver identity is not established by CPU fixture"
+          },
+          "residence_use_frontage_m": 0
+        }
+      },
+      "scene": "<OpenDRIVE><header revMajor=\"1\" revMinor=\"4\" name=\"C378304 business district right turn\" version=\"1\" date=\"2026-10-21\" north=\"400\" south=\"-400\" east=\"400\" west=\"-400\" vendor=\"scenario_pipeline\" /><road name=\"stop257_1\" id=\"1\" length=\"393\" junction=\"-1\"><link><successor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"-400\" y=\"0\" hdg=\"0\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes><objects><object id=\"4132001\" name=\"FreightLoadingZoneBoundary\" type=\"roadMark\" s=\"350\" t=\"-7.2\" zOffset=\".01\" hdg=\"0\" length=\"25\" width=\".25\" height=\"0\" orientation=\"none\" /></objects></road><road name=\"stop257_2\" id=\"2\" length=\"393\" junction=\"-1\"><link><predecessor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"7\" y=\"0\" hdg=\"0\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_3\" id=\"3\" length=\"393\" junction=\"-1\"><link><successor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"0\" y=\"-400\" hdg=\"1.5707963267948966\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_4\" id=\"4\" length=\"393\" junction=\"-1\"><link><predecessor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"0\" y=\"7\" hdg=\"1.5707963267948966\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_11\" id=\"11\" length=\"14\" junction=\"100\"><link><predecessor elementType=\"road\" elementId=\"1\" contactPoint=\"end\" /><successor elementType=\"road\" elementId=\"2\" contactPoint=\"start\" /></link><planView><geometry s=\"0\" x=\"-7\" y=\"0\" hdg=\"0\" length=\"14\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link><predecessor id=\"1\" /><successor id=\"1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link><predecessor id=\"2\" /><successor id=\"2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link><predecessor id=\"-1\" /><successor id=\"-1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link><predecessor id=\"-2\" /><successor id=\"-2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_12\" id=\"12\" length=\"14\" junction=\"100\"><link><predecessor elementType=\"road\" elementId=\"3\" contactPoint=\"end\" /><successor elementType=\"road\" elementId=\"4\" contactPoint=\"start\" /></link><planView><geometry s=\"0\" x=\"0\" y=\"-7\" hdg=\"1.5707963267948966\" length=\"14\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link><predecessor id=\"1\" /><successor id=\"1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link><predecessor id=\"2\" /><successor id=\"2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link><predecessor id=\"-1\" /><successor id=\"-1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link><predecessor id=\"-2\" /><successor id=\"-2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"right_turn_west_to_south\" id=\"14\" length=\"10.995574287564276\" junction=\"100\"><link><predecessor elementType=\"road\" elementId=\"1\" contactPoint=\"end\" /><successor elementType=\"road\" elementId=\"3\" contactPoint=\"end\" /></link><planView><geometry s=\"0\" x=\"-7\" y=\"0\" hdg=\"0\" length=\"10.995574287564276\"><arc curvature=\"-0.14285714285714285\" /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left /><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link><predecessor id=\"-1\" /><successor id=\"1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><junction id=\"100\" name=\"stop_controlled_cross_approaches_through_north_south\"><connection id=\"0\" incomingRoad=\"1\" connectingRoad=\"11\" contactPoint=\"start\"><laneLink from=\"-1\" to=\"-1\" /><laneLink from=\"-2\" to=\"-2\" /></connection><connection id=\"1\" incomingRoad=\"2\" connectingRoad=\"11\" contactPoint=\"end\"><laneLink from=\"1\" to=\"1\" /><laneLink from=\"2\" to=\"2\" /></connection><connection id=\"2\" incomingRoad=\"3\" connectingRoad=\"12\" contactPoint=\"start\"><laneLink from=\"-1\" to=\"-1\" /><laneLink from=\"-2\" to=\"-2\" /></connection><connection id=\"3\" incomingRoad=\"4\" connectingRoad=\"12\" contactPoint=\"end\"><laneLink from=\"1\" to=\"1\" /><laneLink from=\"2\" to=\"2\" /></connection><connection id=\"4\" incomingRoad=\"1\" connectingRoad=\"14\" contactPoint=\"start\"><laneLink from=\"-1\" to=\"-1\" /></connection></junction></OpenDRIVE>\n"
+    },
+    {
+      "name": "other_area_short",
+      "rationale": "other_area right_turn statutory signal-distance contrast; original signal display and complete path retained.",
+      "config": {
+        "signal_on_distance_ft": 280,
+        "signal_reference_ft": 300,
+        "district_class": "other_area",
+        "district_source": "Authored synthetic other_area highway frontage/use context; actual statutory district classification requires source review",
+        "course": "right_turn",
+        "business_use_frontage_m": 0,
+        "residence_use_frontage_m": 0
+      },
+      "fixture": {
+        "case_observation.json": {
+          "law_id": "NRS-484B-413-2",
+          "diagnostic_fixture_only": true,
+          "road_id": 1,
+          "frontage_m": 120,
+          "business_use_frontage_m": 0,
+          "district_source": "Authored synthetic other_area highway frontage/use context; actual statutory district classification requires source review",
+          "turn_onset_frame": 21716,
+          "path_rows": [
+            {
+              "x_m": -101.44,
+              "y_m": -1.75
+            },
+            {
+              "x_m": -91.44,
+              "y_m": -1.75
+            },
+            {
+              "x_m": 0,
+              "y_m": -1.75
+            }
+          ],
+          "indicator_rows": [
+            {
+              "frame": 21714,
+              "lamp_bits": 0,
+              "pixel_luminance": 20
+            },
+            {
+              "frame": 21715,
+              "lamp_bits": 0,
+              "pixel_luminance": 20
+            },
+            {
+              "frame": 21716,
+              "lamp_bits": 1,
+              "pixel_luminance": 80
+            }
+          ],
+          "zone_polygon": [
+            [
+              -50,
+              -10
+            ],
+            [
+              -25,
+              -10
+            ],
+            [
+              -25,
+              -7
+            ],
+            [
+              -50,
+              -7
+            ]
+          ],
+          "zone_route_distance_m": 6,
+          "zone_designation_source": "authored loading-zone object",
+          "district_class": "other_area",
+          "weather_context": {
+            "precipitation": 0
+          },
+          "threshold_ft": 300,
+          "scope_context": {
+            "highway_designation": "Authored synthetic public highway; independent factual/legal jurisdiction review required",
+            "vehicle_blueprint": "vehicle.lincoln.mkz_2020",
+            "controller_scope": "Physical throttle/brake/steering commands on conventional vehicle; no automated-driving-system legal inference",
+            "cell_identity": "C412593",
+            "fixed_layout": "paved_road",
+            "fixed_maneuver": "right_turn",
+            "fixed_control": "freight_loading_zone",
+            "source": "Exact case config plus authored OpenDRIVE; actual public dedication/driver identity is not established by CPU fixture"
+          },
+          "residence_use_frontage_m": 0
+        }
+      },
+      "scene": "<OpenDRIVE><header revMajor=\"1\" revMinor=\"4\" name=\"C378304 business district right turn\" version=\"1\" date=\"2026-10-21\" north=\"400\" south=\"-400\" east=\"400\" west=\"-400\" vendor=\"scenario_pipeline\" /><road name=\"stop257_1\" id=\"1\" length=\"393\" junction=\"-1\"><link><successor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"-400\" y=\"0\" hdg=\"0\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes><objects><object id=\"4132001\" name=\"FreightLoadingZoneBoundary\" type=\"roadMark\" s=\"350\" t=\"-7.2\" zOffset=\".01\" hdg=\"0\" length=\"25\" width=\".25\" height=\"0\" orientation=\"none\" /></objects></road><road name=\"stop257_2\" id=\"2\" length=\"393\" junction=\"-1\"><link><predecessor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"7\" y=\"0\" hdg=\"0\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_3\" id=\"3\" length=\"393\" junction=\"-1\"><link><successor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"0\" y=\"-400\" hdg=\"1.5707963267948966\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_4\" id=\"4\" length=\"393\" junction=\"-1\"><link><predecessor elementType=\"junction\" elementId=\"100\" /></link><planView><geometry s=\"0\" x=\"0\" y=\"7\" hdg=\"1.5707963267948966\" length=\"393\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link /><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_11\" id=\"11\" length=\"14\" junction=\"100\"><link><predecessor elementType=\"road\" elementId=\"1\" contactPoint=\"end\" /><successor elementType=\"road\" elementId=\"2\" contactPoint=\"start\" /></link><planView><geometry s=\"0\" x=\"-7\" y=\"0\" hdg=\"0\" length=\"14\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link><predecessor id=\"1\" /><successor id=\"1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link><predecessor id=\"2\" /><successor id=\"2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link><predecessor id=\"-1\" /><successor id=\"-1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link><predecessor id=\"-2\" /><successor id=\"-2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"stop257_12\" id=\"12\" length=\"14\" junction=\"100\"><link><predecessor elementType=\"road\" elementId=\"3\" contactPoint=\"end\" /><successor elementType=\"road\" elementId=\"4\" contactPoint=\"start\" /></link><planView><geometry s=\"0\" x=\"0\" y=\"-7\" hdg=\"1.5707963267948966\" length=\"14\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><link><predecessor id=\"1\" /><successor id=\"1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"2\" type=\"driving\" level=\"false\"><link><predecessor id=\"2\" /><successor id=\"2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link><predecessor id=\"-1\" /><successor id=\"-1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><link><predecessor id=\"-2\" /><successor id=\"-2\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><road name=\"right_turn_west_to_south\" id=\"14\" length=\"10.995574287564276\" junction=\"100\"><link><predecessor elementType=\"road\" elementId=\"1\" contactPoint=\"end\" /><successor elementType=\"road\" elementId=\"3\" contactPoint=\"end\" /></link><planView><geometry s=\"0\" x=\"-7\" y=\"0\" hdg=\"0\" length=\"10.995574287564276\"><arc curvature=\"-0.14285714285714285\" /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lateralProfile /><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left /><center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" weight=\"standard\" color=\"yellow\" width=\".12\" laneChange=\"none\" /></lane></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><link><predecessor id=\"-1\" /><successor id=\"1\" /></link><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /><roadMark sOffset=\"0\" type=\"broken\" weight=\"standard\" color=\"white\" width=\".12\" laneChange=\"both\" /></lane></right></laneSection></lanes></road><junction id=\"100\" name=\"stop_controlled_cross_approaches_through_north_south\"><connection id=\"0\" incomingRoad=\"1\" connectingRoad=\"11\" contactPoint=\"start\"><laneLink from=\"-1\" to=\"-1\" /><laneLink from=\"-2\" to=\"-2\" /></connection><connection id=\"1\" incomingRoad=\"2\" connectingRoad=\"11\" contactPoint=\"end\"><laneLink from=\"1\" to=\"1\" /><laneLink from=\"2\" to=\"2\" /></connection><connection id=\"2\" incomingRoad=\"3\" connectingRoad=\"12\" contactPoint=\"start\"><laneLink from=\"-1\" to=\"-1\" /><laneLink from=\"-2\" to=\"-2\" /></connection><connection id=\"3\" incomingRoad=\"4\" connectingRoad=\"12\" contactPoint=\"end\"><laneLink from=\"1\" to=\"1\" /><laneLink from=\"2\" to=\"2\" /></connection><connection id=\"4\" incomingRoad=\"1\" connectingRoad=\"14\" contactPoint=\"start\"><laneLink from=\"-1\" to=\"-1\" /></connection></junction></OpenDRIVE>\n"
+    }
+  ],
+  "dispositions": [
+    {
+      "requirement": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather.",
+      "source": "NRS 484B.413(2)",
+      "evidence_or_gap": "Complete original law-specific geometry, trajectories, control and signal/environment measurements are returned together. Factual scope and legal judgments remain separate limitations.",
+      "measurement": {
+        "output_key": "complete_statutory_observations",
+        "method": "statutory_observations",
+        "kind": "measured",
+        "value_type": "object",
+        "inputs": [
+          "case_observation.json"
+        ]
+      }
+    },
+    {
+      "requirement": "Highway dedication and public-access source context, conventional vehicle/controller classification and exact fixed cell identity; factual legal scope conclusions remain separate.",
+      "source": "assignment.witness.required_context; DEF-NRS-484A-080; DEF-NRS-484A-095; DEF-NRS-484A-320",
+      "evidence_or_gap": "Saved scope_context contains exact authored highway, vehicle blueprint, physical-control mechanism and fixed cell facts; actual public dedication, driver identity and legal vehicle qualification require independent factual review.",
+      "measurement": {
+        "output_key": "selected_scope_context",
+        "method": "selected_scope_context",
+        "kind": "sourced_context",
+        "value_type": "object",
+        "inputs": [
+          "case_observation.json"
+        ]
+      }
+    }
+  ],
+  "negative": {
+    "remove": [
+      "case_observation.json"
+    ],
+    "error_contains": "Missing required source: case_observation.json"
+  },
+  "measurement_plan": "Original-frame law-specific geometry/motion/signal/environment measurements; no invented legal numerical threshold.",
+  "static_checks": [
+    "Exact connected OpenDRIVE route and participant support",
+    "Four synchronized cameras and complete capture duration"
+  ],
+  "mechanisms": [
+    "Configuration-driven physical vehicle controller and original source capture",
+    "No scene replay in saved-only finalization"
+  ],
+  "limitations": [
+    "CPU fixtures demonstrate software compatibility only. Native motion, pixels, district/public-authority facts and legal judgments remain unverified."
+  ],
+  "observation_mapping": {},
+  "audits": [
+    "Audit every source packet and original frame identity",
+    "Review actual four-view subject visibility throughout approach, interaction and clearance",
+    "Inspect all stated branch-specific measurements without converting engineering uncertainty into legal standards"
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "residence_right_turn_distance",
+      "cases": [
+        "residence_continuous",
+        "residence_short"
+      ],
+      "fixed_conditions": [
+        "Same fixed catalog cell, actor classification, route, four-camera profile and full duration",
+        "Only declared parameter changes; source factual/legal judgments retained separately"
+      ],
+      "deliberate_differences": [
+        "Signal onset distance only; exact 100ft statutory reference, district and course fixed"
+      ]
+    },
+    {
+      "comparison_id": "other_area_right_turn_distance",
+      "cases": [
+        "other_area_continuous",
+        "other_area_short"
+      ],
+      "fixed_conditions": [
+        "Same fixed catalog cell, actor classification, route, four-camera profile and full duration",
+        "Only declared parameter changes; source factual/legal judgments retained separately"
+      ],
+      "deliberate_differences": [
+        "Signal onset distance only; exact 300ft statutory reference, district and course fixed"
+      ]
+    }
+  ],
+  "branches": [
+    {
+      "name": "residence_right_turn_distance",
+      "topic_ids": [
+        "text-0",
+        "text-1",
+        "activation_conditions-0",
+        "exceptions-0",
+        "timing_requirements-0",
+        "timing_requirements-1",
+        "timing_requirements-2",
+        "review-context-0",
+        "review-context-1",
+        "review-context-2",
+        "review-context-3",
+        "review-context-4",
+        "review-context-5",
+        "review-context-6",
+        "review-context-7",
+        "review-context-8"
+      ],
+      "cases": [
+        "residence_continuous",
+        "residence_short"
+      ],
+      "comparison_ids": [
+        "residence_right_turn_distance"
+      ]
+    },
+    {
+      "name": "other_area_right_turn_distance",
+      "topic_ids": [
+        "text-0",
+        "text-1",
+        "activation_conditions-0",
+        "exceptions-0",
+        "timing_requirements-0",
+        "timing_requirements-1",
+        "timing_requirements-2",
+        "review-context-0",
+        "review-context-1",
+        "review-context-2",
+        "review-context-3",
+        "review-context-4",
+        "review-context-5",
+        "review-context-6",
+        "review-context-7",
+        "review-context-8"
+      ],
+      "cases": [
+        "other_area_continuous",
+        "other_area_short"
+      ],
+      "comparison_ids": [
+        "other_area_right_turn_distance"
+      ]
+    }
+  ],
+  "seed_assignment_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver"
+}

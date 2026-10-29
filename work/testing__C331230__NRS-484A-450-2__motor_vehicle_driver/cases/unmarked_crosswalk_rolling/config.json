@@ -1,0 +1,132 @@
+{
+  "case": {
+    "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_rolling",
+    "target_law_id": "NRS-484A-450-2",
+    "target_type": "boundary_probe",
+    "rationale": "Crosswalk-first statutory stopping hierarchy; compare complete halt and rolling movement with same reference geometry.",
+    "variable_assignments": {
+      "requested_speed_mps": {
+        "value": 5.0,
+        "kind": "controller",
+        "unit": "m/s"
+      },
+      "crosswalk": {
+        "value": "physical near-side stripes",
+        "kind": "world_setup"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "continuous statutory stop",
+      "actual sign governance and public-way status"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Original Native actor speed",
+          "time_window": "entire original 45-second episode",
+          "reference_frame": "Native original frame/world",
+          "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+        },
+        {
+          "name": "kin.velocity",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Original Native actor velocity",
+          "time_window": "entire original 45-second episode",
+          "reference_frame": "Native original frame/world",
+          "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+        },
+        {
+          "name": "stop_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original full-body front, speed, control and near-side crosswalk relation",
+          "time_window": "entire original 45-second episode",
+          "reference_frame": "Native original frame/world",
+          "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "No statutory stop epsilon; actual sign governance and crosswalk pixels require Native review."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_rolling",
+  "supported_case_ids": [
+    "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_halt",
+    "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_rolling",
+    "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_halt",
+    "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_rolling",
+    "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__stop_line_halt",
+    "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__stop_line_rolling",
+    "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__nearest_sight_halt",
+    "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__nearest_sight_rolling"
+  ],
+  "cell_id": "C331230",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484A-450-2",
+  "duration_s": 45,
+  "rate_hz": 20,
+  "requested_speed_mps": 5.0,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached overhead stop/intersection"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached view to crosswalk"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed near-side crosswalk corner"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego-attached modeled driver eye"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity"
+  ],
+  "source_packets": [],
+  "public_way_road_ids": [
+    1,
+    2,
+    3,
+    4,
+    11,
+    12
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "selected_reference": "physical near-side crosswalk",
+      "public_way": "synthetic assumption; factual status unverified"
+    }
+  },
+  "stop_reference": "unmarked_crosswalk",
+  "rolling_probe": true
+}

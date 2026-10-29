@@ -1,0 +1,184 @@
+{
+  "assignment_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver",
+  "law_id": "NRS-484B-257-2",
+  "cell_id": "C158196",
+  "actor": "motor_vehicle_driver",
+  "role": "testing",
+  "branch": "Within-intersection instance plus unresolved approaching-hazard sweep.",
+  "witness": {
+    "actor": "motor_vehicle_driver",
+    "branch": "Within-intersection instance plus unresolved approaching-hazard sweep.",
+    "cell": "C158208",
+    "confidence": "medium",
+    "covers": [
+      "NRS-484B-257-2"
+    ],
+    "decision": "conditional",
+    "quote": "approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection",
+    "reason": "The yield-sign one-way to two-way intersection supports approach-timing sweeps and an independently active occupied-intersection instance.",
+    "relevance_type": "specific_match",
+    "required_context": [
+      "Establish non-through-highway status and all entrance stop/yield obligations.",
+      "Establish non-through-highway status, all entrance obligations, yield-sign governance and connected participant routes.",
+      "Establish the initial yield response and the stopping-reference hierarchy incorporated from the supplied subsection 1.",
+      "Exclude actual officer or signal control and preserve caution and immediate hazard without numerical interpretations.",
+      "Exclude actual officer or traffic-signal control.",
+      "Preserve scene_requirements for governed approach, stopping-reference geometry, sightlines and participant routes.",
+      "Provide an approaching vehicle not so obligated to stop or yield, including a separate within-intersection instance.",
+      "Provide an intersection-occupying vehicle not obligated to stop or yield and separately retain approaching-vehicle histories.",
+      "Retain sightlines and interactions throughout subject movement across or within the intersection.",
+      "Retain the initial yield action, incorporated subsection 1 manner and subsequent movement interval."
+    ],
+    "subject_reason": "The available motor_vehicle_driver drives the subject vehicle governed by the yield sign.",
+    "targeted_requirements": [],
+    "audit_status": "accepted",
+    "audit_receipt": "cf2c22397679a6fbbfd13ccbd4d4d076799ccb14285e8e2b8038b9420de917f9",
+    "source_assignment_hash": "323d2900f11e7a8ddc8c5752d353cbc9d3b4521e9a38e3c22b7049b48b933e11",
+    "law": "NRS-484B-257-2",
+    "splits": [
+      "training",
+      "testing",
+      "heldout"
+    ],
+    "readiness_score": 0,
+    "receipt": "8cc058701bc51ea184fe16adc85111098a7b57133bc13d8268841bc9eb7b9dcf",
+    "evidence_readiness": "unverified_proposal",
+    "split": "testing",
+    "requirement": "NRS-484B-257-2"
+  },
+  "law": {
+    "id": "NRS-484B-257-2",
+    "title": "Vehicle entering intersection marked stop or yield (2)",
+    "text": "Except when traffic is being controlled by a police officer or a traffic-control signal: The driver of a vehicle shall stop in obedience to a stop sign or yield in compliance with a yield sign, in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1], prior to entering an intersection if a stop sign or a yield sign is erected at one or more entrances thereto although not a part of a through highway and shall proceed cautiously, yielding to vehicles not so obligated to stop or yield and which are within the intersection or approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
+    "source": "NRS 484B.257(2)"
+  },
+  "cell": {
+    "cell_id": "C158196",
+    "layout": "one_way_to_two_way_intersection",
+    "maneuver": "travel",
+    "control": "traffic_light",
+    "candidate_ego_parties": [
+      "bus_driver",
+      "cycle_or_scooter_operator",
+      "heavy_vehicle_driver",
+      "motor_vehicle_driver",
+      "motorcycle_or_moped_operator"
+    ],
+    "allocated_sets": [
+      "full-test"
+    ]
+  },
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "a stop or yield sign is erected at one or more entrances to the intersection, although it is not part of a through highway",
+      "the subject approaches on a signed entrance",
+      "traffic is not controlled by a police officer or a signal"
+    ],
+    "exceptions": [
+      "when traffic is being controlled by a police officer",
+      "when traffic is being controlled by a traffic-control signal"
+    ],
+    "id": "NRS-484B-257-2",
+    "residue": [
+      "'proceed cautiously' and 'immediate hazard' are judgement elements",
+      "which other approaches carry signs decides who is 'not so obligated': every lane entering the intersection (st.lane_enters) and the devices governing each are read"
+    ],
+    "source": "NRS 484B.257(2)",
+    "subject": "driver",
+    "theme": "intersections_and_right_of_way",
+    "tier": "Q",
+    "timing_requirements": [
+      {
+        "kind": "ordering",
+        "requirement": "stop or yield before entering, then proceed"
+      },
+      {
+        "kind": "continuous",
+        "requirement": "the yield continues while the subject moves across or within the intersection"
+      }
+    ],
+    "title": "Vehicle entering intersection marked stop or yield (2)"
+  },
+  "template_provenance": "derive_fresh_from_exact_law_and_summary_using_supplied_contract",
+  "templates": [],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "dev.stop_sign",
+      "note": "a stop sign at one or more entrances, outside a through-highway setting"
+    },
+    {
+      "term": "dev.yield_sign",
+      "note": "or a yield sign"
+    },
+    {
+      "term": "dev.governs",
+      "note": "which approach the sign faces"
+    },
+    {
+      "term": "st.lane_enters",
+      "note": "which lanes enter the intersection, so that 'one or more entrances thereto' and the other drivers' obligations can be read"
+    },
+    {
+      "term": "drv.stopped",
+      "note": "the halt before entering"
+    },
+    {
+      "term": "st.stop_line",
+      "note": "the reference point, as in the preceding subsection"
+    },
+    {
+      "term": "st.crosswalk",
+      "note": "the same"
+    },
+    {
+      "term": "drv.entering_intersection",
+      "note": "the entry the stop precedes"
+    },
+    {
+      "term": "drv.in_intersection",
+      "note": "vehicles already within"
+    },
+    {
+      "term": "drv.time_to_conflict",
+      "note": "operationalizes 'so closely as to constitute an immediate hazard'"
+    },
+    {
+      "term": "drv.yields_to",
+      "note": "the yield to vehicles not obliged to stop"
+    },
+    {
+      "term": "dev.human_direction",
+      "note": "the officer exception"
+    },
+    {
+      "term": "dev.traffic_signal",
+      "note": "the signal exception"
+    }
+  ],
+  "observation_terms_contract": "Source observation terms are law-planning requirements, not Core IDs. Map each to evidence and use only supported pinned ontology IDs in config.required_atoms.",
+  "local_snapshot": {
+    "scope_hashes": {
+      "demo-test": "c48496f07e3aa8d4ebde1c178712e9dca917bc5e3b9e45b076432cbe30a80ec6",
+      "full-test": "28ca803371eafe309465a39c13b162d0a3fa0a15773c8d23e1d2f7d132c3c52a"
+    },
+    "memberships": {
+      "demo-test": [],
+      "full-test": []
+    },
+    "guidance": {},
+    "law_sha256": "8d98be469c85196d809e5456f5ea057ca364b6ae28d06d561c77e4f3b915d42d",
+    "cell_sha256": "c1631f7f91d7a20100a22acc264334c072afd58b0386fd21d77e1f6d4b9da1d2",
+    "law_policy_sha256": "77d7da97a21300aff4fc6560b6ea06defe41b5c9d4c4f5567f77571c94d9e5f6"
+  }
+}

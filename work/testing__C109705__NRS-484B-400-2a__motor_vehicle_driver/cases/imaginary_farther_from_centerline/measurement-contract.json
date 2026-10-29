@@ -1,0 +1,36 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "If the driver of a vehicle intends to turn at an intersection and: Both intersecting highways are two-directional: The approach for a left turn must be made in that portion of the right half of the highway nearest the centerline thereof.",
+      "source": "NRS 484B.400(2)(a)",
+      "output_key": "approach_full_body_centerline_offsets",
+      "method": "measured_approach",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "road_geometry.json",
+        "body_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Both intersecting highways are two-directional; ordinary vehicle and actual driver control; public non-alley intersection context.",
+      "source": "assignment.witness.required_context",
+      "output_key": "two_way_road_context",
+      "method": "two_way_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "road_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "road_geometry.json"
+    ],
+    "error_contains": "Missing required source: road_geometry.json"
+  }
+}

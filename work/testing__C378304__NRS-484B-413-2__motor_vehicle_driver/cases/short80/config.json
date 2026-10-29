@@ -1,0 +1,148 @@
+{
+  "case": {
+    "case_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__short80",
+    "target_law_id": "NRS-484B-413-2",
+    "target_type": "boundary_probe",
+    "rationale": "Last 100-foot traveled-path intention signal contrast with weather retained.",
+    "variable_assignments": {
+      "requested_speed_mps": {
+        "kind": "controller",
+        "value": 6.0,
+        "unit": "m/s"
+      },
+      "district_frontage_m": {
+        "kind": "world_setup",
+        "value": 120
+      },
+      "business_use_frontage_m": {
+        "kind": "world_setup",
+        "value": 90
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Statutory business-district status",
+      "Emitted indicator pixel visibility",
+      "Freight loading-zone designation"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "original_motion",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Native ego body/path and velocity through right turn",
+          "time_window": "entire original 50s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz path integration and body ROI photometry; emitted lamp pixels require local review"
+        },
+        {
+          "name": "native_geometry",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Native business frontage, loading zone and connected right-turn arc",
+          "time_window": "entire original 50s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz path integration and body ROI photometry; emitted lamp pixels require local review"
+        },
+        {
+          "name": "device_inventory",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Native right indicator API history and original body ROI photometry",
+          "time_window": "entire original 50s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz path integration and body ROI photometry; emitted lamp pixels require local review"
+        },
+        {
+          "name": "view_provenance",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Four synchronized original RGB source-camera identities",
+          "time_window": "entire original 50s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz path integration and body ROI photometry; emitted lamp pixels require local review"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Business-district legal status and loading-zone designation are authored synthetic context, not real-world proof.",
+        "Body ROI photometry is not an emitted signal mask or evidence of human perception."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__short80",
+  "supported_case_ids": [
+    "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__continuous100",
+    "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__short80",
+    "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__interrupted",
+    "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__rain"
+  ],
+  "cell_id": "C378304",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-413-2",
+  "duration_s": 50,
+  "rate_hz": 20,
+  "requested_speed_mps": 6.0,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached overhead full approach and turn"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached forward final 100 feet"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed diagonal corner toward approach and loading zone"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego attached modeled driver viewpoint"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity",
+    "kin.path_length",
+    "kin.heading",
+    "sig.turn_indicator"
+  ],
+  "source_packets": [],
+  "public_way_road_ids": [
+    1,
+    2,
+    3,
+    4,
+    11,
+    12,
+    14
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "business_district": "synthetic frontage 120m, 90m business use; legal status requires external review",
+      "loading_zone": "synthetic authored freight loading-zone boundary object 4132001"
+    }
+  },
+  "signal_on_distance_ft": 80,
+  "business_use_frontage_m": 90,
+  "residence_use_frontage_m": 0
+}

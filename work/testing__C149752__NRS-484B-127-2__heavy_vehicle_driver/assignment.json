@@ -1,0 +1,163 @@
+{
+  "assignment_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver",
+  "law_id": "NRS-484B-127-2",
+  "cell_id": "C149752",
+  "actor": "heavy_vehicle_driver",
+  "role": "testing",
+  "branch": "Qualifying truck following",
+  "witness": {
+    "actor": "heavy_vehicle_driver",
+    "branch": "Qualifying truck following",
+    "cell": "C149237",
+    "confidence": "low",
+    "covers": [
+      "NRS-484B-127-2"
+    ],
+    "decision": "conditional",
+    "quote": "so that an overtaking vehicle may enter and occupy such space without danger",
+    "reason": "A one-way road can have a single available lane and qualifying truck following.",
+    "relevance_type": "specific_match",
+    "required_context": [
+      "Document overtaking and passing activity and preserve the unresolved conditions-permit and without-danger qualifications.",
+      "Establish both qualifying goods-transport trucks, their widths of at least 80 inches, the driver and the following relationship.",
+      "Establish public-highway status and lane availability over time.",
+      "Establish public-highway status.",
+      "Establish qualifying subject and lead trucks, each at least 80 inches overall width, and their driver relationships.",
+      "Provide geometry and motion relevant to potential entering vehicles or combinations without declaring entry safe.",
+      "Retain spacing relative to the statutory 500 feet and physical circumstances relevant to entering vehicles or combinations.",
+      "Specify one available lane in the travel direction rather than inferring it from one-way status.",
+      "Specify one available travel lane; one-way status alone does not establish lane count."
+    ],
+    "subject_reason": "The heavy_vehicle_driver drives the subject goods-transport truck.",
+    "targeted_requirements": [],
+    "audit_status": "accepted",
+    "audit_receipt": "0e8769ad3c88a6712c1a48066e47104ab2fad8643ea036987289ad0b1d8346ff",
+    "source_assignment_hash": "fddb12a80df8b64c6fdf2ea625c5d05484aa934ff7dcddf47861765e7457f090",
+    "law": "NRS-484B-127-2",
+    "splits": [
+      "training",
+      "testing",
+      "heldout"
+    ],
+    "readiness_score": 0,
+    "receipt": "d9ffbdc6fae0a797070d8bf362931e75c689d5e7b8328dd7e4373b5f0baac7d7",
+    "evidence_readiness": "unverified_proposal",
+    "split": "testing",
+    "requirement": "NRS-484B-127-2"
+  },
+  "law": {
+    "id": "NRS-484B-127-2",
+    "title": "Following too closely (2)",
+    "text": "The driver of any truck or combination of vehicles 80 inches or more in overall width, which is following a truck, or combination of vehicles 80 inches or more in overall width, shall, whenever conditions permit, leave a space of 500 feet so that an overtaking vehicle may enter and occupy such space without danger, but this shall not prevent a truck or combination of vehicles from overtaking and passing any vehicle or combination of vehicles. This subsection does not apply to any vehicle or combination of vehicles while moving on a highway on which there are two or more lanes available for traffic moving in the same direction.",
+    "source": "NRS 484B.127(2)"
+  },
+  "cell": {
+    "cell_id": "C149752",
+    "layout": "one_way_road",
+    "maneuver": "overtake",
+    "control": "truck",
+    "candidate_ego_parties": [
+      "heavy_vehicle_driver"
+    ],
+    "allocated_sets": []
+  },
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "the subject is a truck or combination 80 inches or more in overall width",
+      "the vehicle ahead in the same lane is also a truck or combination 80 inches or more wide",
+      "the subject is following it",
+      "the highway has fewer than two lanes for traffic in the subject's direction"
+    ],
+    "exceptions": [
+      "while overtaking and passing another vehicle or combination",
+      "on a highway with two or more lanes available for traffic moving in the same direction",
+      "'whenever conditions permit' \u2014 the space need not be left where traffic or the road makes it impossible"
+    ],
+    "id": "NRS-484B-127-2",
+    "residue": [
+      "'whenever conditions permit' is a judgement element",
+      "overall width of a non-subject vehicle can only be estimated from kin.extent"
+    ],
+    "source": "NRS 484B.127(2)",
+    "subject": "truck_driver",
+    "theme": "following",
+    "tier": "Q",
+    "timing_requirements": [
+      {
+        "kind": "continuous",
+        "requirement": "the 500-foot space is a standing requirement while following, not a single-instant test"
+      },
+      {
+        "kind": "duration",
+        "requirement": "a momentary closure during and immediately after an overtake is excepted; a bound on how long the gap may be short must be declared"
+      }
+    ],
+    "title": "Following too closely (2)"
+  },
+  "template_provenance": "derive_fresh_from_exact_law_and_summary_using_supplied_contract",
+  "templates": [],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "ru.truck",
+      "note": "both the subject and the vehicle it follows"
+    },
+    {
+      "term": "ru.trailer_or_combination",
+      "note": "a combination counts as well"
+    },
+    {
+      "term": "kin.extent",
+      "note": "overall width, to apply the 80-inch class"
+    },
+    {
+      "term": "drv.following",
+      "note": "the subject is following the lead truck"
+    },
+    {
+      "term": "rel.surface_gap",
+      "note": "the longitudinal space, against the 500-foot requirement"
+    },
+    {
+      "term": "rel.ahead_behind_in_lane",
+      "note": "same lane, subject behind"
+    },
+    {
+      "term": "drv.laned_roadway",
+      "note": "the exemption: two or more lanes in the same direction"
+    },
+    {
+      "term": "st.lane_adjacency",
+      "note": "the count of lanes in the subject's direction"
+    },
+    {
+      "term": "drv.overtaking",
+      "note": "the carve-out while overtaking"
+    }
+  ],
+  "observation_terms_contract": "Source observation terms are law-planning requirements, not Core IDs. Map each to evidence and use only supported pinned ontology IDs in config.required_atoms.",
+  "local_snapshot": {
+    "scope_hashes": {
+      "demo-test": "c48496f07e3aa8d4ebde1c178712e9dca917bc5e3b9e45b076432cbe30a80ec6",
+      "full-test": "28ca803371eafe309465a39c13b162d0a3fa0a15773c8d23e1d2f7d132c3c52a"
+    },
+    "memberships": {
+      "demo-test": [],
+      "full-test": []
+    },
+    "guidance": {},
+    "law_sha256": "9b10c46abc64b14c56f33b93d51369cb749d69bb637e9517ba6e0c4e8f1c3a32",
+    "cell_sha256": "f3bf35fdec0b44e20f6a0d364fa15b25a5aacb5178fa79eff06ae5c122cb4d42",
+    "law_policy_sha256": "77d7da97a21300aff4fc6560b6ea06defe41b5c9d4c4f5567f77571c94d9e5f6"
+  }
+}

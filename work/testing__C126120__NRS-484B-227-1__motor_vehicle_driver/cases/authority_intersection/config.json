@@ -1,0 +1,144 @@
+{
+  "case": {
+    "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__authority_intersection",
+    "target_law_id": "NRS-484B-227-1",
+    "target_type": "boundary_probe",
+    "rationale": "Physical U-turn body geometry and explicit source context; no legal exception verdict.",
+    "variable_assignments": {
+      "requested_speed_mps": {
+        "kind": "controller",
+        "value": 4.0,
+        "unit": "m/s"
+      },
+      "median_opening_width_m": {
+        "kind": "world_setup",
+        "value": 40
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Public authority establishment and physical barrier realization"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "original_motion",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Native ego body and velocity through all U-turn movements",
+          "time_window": "entire original 60s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+        },
+        {
+          "name": "native_geometry",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Native right/opposing roadway and median/opening source geometry",
+          "time_window": "entire original 60s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+        },
+        {
+          "name": "device_inventory",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Native barrier and authority/traffic-control inventory",
+          "time_window": "entire original 60s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+        },
+        {
+          "name": "view_provenance",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Four synchronized original RGB source-camera identities",
+          "time_window": "entire original 60s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Public authority establishment is administrative context, not inferred from geometry.",
+        "Exact Native U-turn motion and barrier pixels remain GPU checks."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__authority_intersection",
+  "supported_case_ids": [
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening",
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__closed_divider",
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__wrong_roadway",
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__paused_uturn",
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__authority_crossover",
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__authority_intersection"
+  ],
+  "cell_id": "C126120",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-227-1",
+  "duration_s": 60,
+  "rate_hz": 20,
+  "requested_speed_mps": 4.0,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached overhead divided roadway and opening"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached right-hand-roadway approach"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed corner view of both median barrier ends"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego attached modeled eye toward opening"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity",
+    "st.median_or_divider"
+  ],
+  "source_packets": [
+    "scenario_geometry"
+  ],
+  "public_way_road_ids": [
+    1,
+    2,
+    3,
+    4,
+    11,
+    12
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "median_opening": "authored two barrier objects with 40m opening; Native realization and authority separate",
+      "vehicle": "synthetic ordinary motor vehicle driver in Native control"
+    }
+  },
+  "authority_context": {
+    "designation": "intersection",
+    "source": "authored hypothetical public-authority establishment; actual legal authority unverified"
+  }
+}

@@ -1,0 +1,169 @@
+[
+  {
+    "comparison_id": "strict_rate_boundary",
+    "case_ids": [
+      "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__below",
+      "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__equal",
+      "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above"
+    ],
+    "fixed_config_selectors": [
+      "cell_id",
+      "actor",
+      "law_id",
+      "duration_s",
+      "rate_hz",
+      "cameras"
+    ],
+    "checks": [
+      {
+        "name": "Measured deliberate contrast strict_rate_boundary",
+        "case_ids": [
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__below",
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__equal",
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above"
+        ],
+        "selector": "measurements.posted_zone_speed_history.value.max_sampled_mph",
+        "operator": "strictly_increasing"
+      }
+    ]
+  },
+  {
+    "comparison_id": "governed_portion",
+    "case_ids": [
+      "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above",
+      "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__outside_zone"
+    ],
+    "fixed_config_selectors": [
+      "cell_id",
+      "actor",
+      "law_id",
+      "duration_s",
+      "rate_hz",
+      "cameras"
+    ],
+    "checks": [
+      {
+        "name": "Measured deliberate contrast governed_portion",
+        "case_ids": [
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above",
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__outside_zone"
+        ],
+        "selector": "measurements.posted_zone_speed_history.value.zone_sample_count",
+        "operator": "distinct"
+      }
+    ]
+  },
+  {
+    "comparison_id": "governed_direction",
+    "case_ids": [
+      "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above",
+      "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__opposite_direction"
+    ],
+    "fixed_config_selectors": [
+      "cell_id",
+      "actor",
+      "law_id",
+      "duration_s",
+      "rate_hz",
+      "cameras"
+    ],
+    "checks": [
+      {
+        "name": "Measured deliberate contrast governed_direction",
+        "case_ids": [
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above",
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__opposite_direction"
+        ],
+        "selector": "measurements.posted_zone_speed_history.value.zone_sample_count",
+        "operator": "distinct"
+      }
+    ]
+  },
+  {
+    "comparison_id": "authority",
+    "case_ids": [
+      "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above",
+      "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__non_authority_sign"
+    ],
+    "fixed_config_selectors": [
+      "cell_id",
+      "actor",
+      "law_id",
+      "duration_s",
+      "rate_hz",
+      "cameras"
+    ],
+    "checks": [
+      {
+        "name": "Measured deliberate contrast authority",
+        "case_ids": [
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above",
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__non_authority_sign"
+        ],
+        "selector": "measurements.posted_zone_speed_history.value.authority_asserted",
+        "operator": "distinct"
+      }
+    ]
+  },
+  {
+    "comparison_id": "units",
+    "case_ids": [
+      "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above",
+      "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__metric_equivalent"
+    ],
+    "fixed_config_selectors": [
+      "cell_id",
+      "actor",
+      "law_id",
+      "duration_s",
+      "rate_hz",
+      "cameras"
+    ],
+    "checks": [
+      {
+        "name": "Measured deliberate contrast units",
+        "case_ids": [
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above",
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__metric_equivalent"
+        ],
+        "selector": "measurements.posted_sign_context.value.posted_unit",
+        "operator": "distinct"
+      },
+      {
+        "name": "Equivalent normalized statutory rate",
+        "case_ids": [
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above",
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__metric_equivalent"
+        ],
+        "selector": "measurements.posted_zone_speed_history.value.posted_limit_mps",
+        "operator": "equal"
+      }
+    ]
+  },
+  {
+    "comparison_id": "source_visibility",
+    "case_ids": [
+      "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above",
+      "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__sign_not_in_view"
+    ],
+    "fixed_config_selectors": [
+      "cell_id",
+      "actor",
+      "law_id",
+      "duration_s",
+      "rate_hz",
+      "cameras"
+    ],
+    "checks": [
+      {
+        "name": "Measured deliberate contrast source_visibility",
+        "case_ids": [
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__above",
+          "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__sign_not_in_view"
+        ],
+        "selector": "measurements.posted_sign_context.value.sign_station_m",
+        "operator": "distinct"
+      }
+    ]
+  }
+]

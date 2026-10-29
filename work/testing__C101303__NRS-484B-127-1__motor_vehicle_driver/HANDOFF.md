@@ -1,0 +1,33 @@
+CPU software compatibility only. Native motion, original pixels, legal status and legal judgments remain unverified. No CARLA executed.
+
+python3.11 runtime.py capture --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-0
+
+python3.11 runtime.py process-saved --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base --attempt .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-0 --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/processed-0 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-1
+
+python3.11 runtime.py process-saved --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer --attempt .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-1 --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/processed-1 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-2
+
+python3.11 runtime.py process-saved --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego --attempt .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-2 --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/processed-2 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-3
+
+python3.11 runtime.py process-saved --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead --attempt .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-3 --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/processed-3 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-4
+
+python3.11 runtime.py process-saved --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes --attempt .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-4 --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/processed-4 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-5
+
+python3.11 runtime.py process-saved --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface --attempt .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-5 --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/processed-5 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-6
+
+python3.11 runtime.py process-saved --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends --attempt .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-6 --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/processed-6 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-7
+
+python3.11 runtime.py process-saved --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic --attempt .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/native-7 --output .runtime-work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/processed-7 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"

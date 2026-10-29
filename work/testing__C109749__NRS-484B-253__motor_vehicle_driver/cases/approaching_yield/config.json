@@ -1,0 +1,131 @@
+{
+  "case": {
+    "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_yield",
+    "target_law_id": "NRS-484B-253",
+    "target_type": "boundary_probe",
+    "rationale": "Original approaching_yield history with identical intersection and vehicle geometry.",
+    "variable_assignments": {
+      "requested_speed_mps": {
+        "kind": "controller",
+        "value": 5.0,
+        "unit": "m/s"
+      },
+      "opposing_vehicle": {
+        "kind": "world_setup",
+        "value": "native vehicle from opposite approach"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Immediate hazard",
+      "right of way",
+      "signal when required"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Original subject native speed",
+          "time_window": "entire original 45-second episode",
+          "reference_frame": "Native world original frame",
+          "uncertainty": "20Hz samples; visual/legal interpretation unresolved"
+        },
+        {
+          "name": "kin.velocity",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Original subject native velocity",
+          "time_window": "entire original 45-second episode",
+          "reference_frame": "Native world original frame",
+          "uncertainty": "20Hz samples; visual/legal interpretation unresolved"
+        },
+        {
+          "name": "interaction_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original full-body subject and opposing vehicle positions, speeds, indicator bit and release state",
+          "time_window": "entire original 45-second episode",
+          "reference_frame": "Native world original frame",
+          "uncertainty": "20Hz samples; visual/legal interpretation unresolved"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Immediate hazard and right of way require legal interpretation; lamp bit is not emitted light evidence."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_yield",
+  "supported_case_ids": [
+    "testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_yield",
+    "testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_no_yield",
+    "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_yield",
+    "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_no_yield",
+    "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_omitted",
+    "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_no_yield"
+  ],
+  "cell_id": "C109749",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-253",
+  "duration_s": 45,
+  "rate_hz": 20,
+  "requested_speed_mps": 5.0,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached overhead full interaction"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached opposing approach view"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed conflict area corner"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego-attached modeled driver eye"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity"
+  ],
+  "source_packets": [],
+  "public_way_road_ids": [
+    1,
+    2,
+    3,
+    4,
+    11,
+    12,
+    13
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "public_way": "synthetic assumption only",
+      "opposing_right_of_way": "unresolved"
+    }
+  },
+  "opposing_initial": "approach"
+}

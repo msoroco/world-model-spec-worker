@@ -1,0 +1,113 @@
+{
+  "case": {
+    "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__near_crest_ahead_blocked",
+    "target_law_id": "NRS-484B-407",
+    "target_type": "boundary_probe",
+    "rationale": "Compare original sight samples for near_crest and ahead_blocked across statutory 500-foot range in both approach directions.",
+    "variable_assignments": {
+      "turn_station_m": {
+        "kind": "controller",
+        "value": 685,
+        "unit": "m"
+      },
+      "curve_per_m": {
+        "kind": "world_setup",
+        "value": 0.004,
+        "unit": "1/m"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "continuous visibility within 500 feet",
+      "driver eye and rendered pixel visibility"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Original Native ego velocity norm during curve traversal and turn attempt",
+          "time_window": "full original 45-second episode",
+          "reference_frame": "Original Native frame, road station and world XYZ",
+          "uncertainty": "20Hz samples; visibility between samples unobserved"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Physical occlusion, body pixels and actual turn completion need Native review."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__near_crest_ahead_blocked",
+  "supported_case_ids": [
+    "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve_clear",
+    "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve_ahead_blocked",
+    "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve_behind_blocked",
+    "testing__C129731__NRS-484B-407__motor_vehicle_driver__approach_to_crest_clear",
+    "testing__C129731__NRS-484B-407__motor_vehicle_driver__approach_to_crest_ahead_blocked",
+    "testing__C129731__NRS-484B-407__motor_vehicle_driver__approach_to_crest_behind_blocked",
+    "testing__C129731__NRS-484B-407__motor_vehicle_driver__near_crest_clear",
+    "testing__C129731__NRS-484B-407__motor_vehicle_driver__near_crest_ahead_blocked",
+    "testing__C129731__NRS-484B-407__motor_vehicle_driver__near_crest_behind_blocked",
+    "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve_multipoint"
+  ],
+  "cell_id": "C129731",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-407",
+  "duration_s": 45,
+  "rate_hz": 20,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed overhead curve and crest view"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached forward mountain curve view"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed inner curve visibility reference"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego-attached modeled driver eye"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed"
+  ],
+  "source_packets": [],
+  "public_way_road_ids": [
+    1
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "road": "synthetic curved mountain crest, Native visibility and participant pixels required"
+    }
+  },
+  "location_kind": "near_crest",
+  "turn_station_m": 748,
+  "occluded_directions": [
+    "ahead_opposing"
+  ],
+  "discontinuous": false
+}

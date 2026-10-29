@@ -1,0 +1,128 @@
+{
+  "case": {
+    "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_uninterrupted",
+    "target_law_id": "NRS-484B-257-1",
+    "target_type": "boundary_probe",
+    "rationale": "Measure stop marked_stop_line marked_stop_line_uninterrupted through startup, initial response and all across-or-within interaction history.",
+    "variable_assignments": {
+      "west_entrance_control": {
+        "kind": "world_setup",
+        "value": "yield_sign"
+      },
+      "through_vehicle": {
+        "kind": "world_setup",
+        "value": "north approach"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "immediate hazard",
+      "yielding and cautious proceeding",
+      "continuous nearest visible point"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Original Native ego velocity norm and full-body/through actor history",
+          "time_window": "entire original 45-second approach, interaction and final episode",
+          "reference_frame": "Original Native frame and world XYZ",
+          "uncertainty": "20Hz samples; between-frame state unobserved"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Actual entrance sign pixels, governing relation and motion require Native source review."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_uninterrupted",
+  "supported_case_ids": [
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response",
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_uninterrupted",
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_response",
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_uninterrupted",
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_response",
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_uninterrupted",
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response",
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted",
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__occupied_priority_probe",
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__approaching_phase_probe",
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__later_history_probe"
+  ],
+  "cell_id": "C158190",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-257-1",
+  "mode": "stop_within",
+  "duration_s": 45,
+  "rate_hz": 20,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed overhead covering west and north approaches plus junction"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached forward entrance approach view"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed west near-side reference view"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego-attached modeled driver eye"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "st.one_way_roadway"
+  ],
+  "source_packets": [
+    "scenario_geometry"
+  ],
+  "public_way_road_ids": [
+    1,
+    2,
+    3,
+    4,
+    11,
+    12
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "non_through_highway": "synthetic authored context; Native sign and lane inventory required",
+      "west_entrance_control": "yield"
+    }
+  },
+  "control_kind": "stop",
+  "reference_kind": "marked_stop_line",
+  "stopping_reference_x_m": -11,
+  "initial_response": "none",
+  "ignore_other_priority": false,
+  "through_start_tick": 0,
+  "minimum_release_tick": 0,
+  "governing_active": false,
+  "departure_speed_mps": 6,
+  "other_entrance_obligation": "none",
+  "non_through_highway": false
+}

@@ -1,0 +1,133 @@
+{
+  "case": {
+    "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+    "target_law_id": "NRS-484B-127-1",
+    "target_type": "boundary_probe",
+    "rationale": "Controlled following_ends following measurement before same lane-change maneuver.",
+    "variable_assignments": {
+      "requested_gap_m": {
+        "kind": "controller",
+        "value": 140,
+        "unit": "m"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "reasonable and prudent",
+      "actual highway status",
+      "actual lane-change success"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Native ego velocity norm",
+          "time_window": "full original 45-second episode",
+          "reference_frame": "Native road 1 world coordinates and original tick",
+          "uncertainty": "20Hz; no legal headway threshold"
+        },
+        {
+          "name": "kin.velocity",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Native ego 3D velocity",
+          "time_window": "full original 45-second episode",
+          "reference_frame": "Native road 1 world coordinates and original tick",
+          "uncertainty": "20Hz; no legal headway threshold"
+        },
+        {
+          "name": "rel.surface_gap",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "Front of ego to rear of leader from original full-body vertices",
+          "time_window": "full original 45-second episode",
+          "reference_frame": "Native road 1 world coordinates and original tick",
+          "uncertainty": "20Hz; no legal headway threshold"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Road condition is a separately sourced context; reasonable and prudent remains unresolved."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+  "supported_case_ids": [
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic"
+  ],
+  "cell_id": "C101303",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-127-1",
+  "duration_s": 45,
+  "rate_hz": 20,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 100,
+      "pose_strategy": "ego-attached overhead covering both bodies"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached forward quarter"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed crest at station 750m"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego-attached modeled driver eye"
+    }
+  ],
+  "requested_gap_m": 140,
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity",
+    "ru.subject",
+    "rel.surface_gap",
+    "env.wet_road"
+  ],
+  "source_packets": [],
+  "public_way_road_ids": [
+    1
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "public_highway": "synthetic context, not real-road status",
+      "surface": "authored dry; Native verification required"
+    }
+  },
+  "lead_speed_mps": 9,
+  "ego_speed_bias_mps": 0,
+  "lead_brake_tick": 900,
+  "braked_speed_mps": 9,
+  "wetness": 0,
+  "precipitation": 0.0,
+  "lane_change_tick": 300,
+  "surface_description": "authored asphalt; wetness readback 0; actual material requires original source verification"
+}

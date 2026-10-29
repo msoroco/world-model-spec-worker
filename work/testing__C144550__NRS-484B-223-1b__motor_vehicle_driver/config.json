@@ -1,0 +1,129 @@
+{
+  "case": {
+    "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal_and_open_gap",
+    "target_law_id": "NRS-484B-223-1b",
+    "target_type": "boundary_probe",
+    "rationale": "Original signal/movement ordering and target-lane clearances; safety ascertainment left as legal/driver evidence judgment.",
+    "variable_assignments": {
+      "requested_speed_mps": {
+        "value": 5.0,
+        "kind": "controller",
+        "unit": "m/s"
+      },
+      "signal_onset_tick": {
+        "value": 80,
+        "kind": "controller"
+      },
+      "lane_change_request_tick": {
+        "value": 160,
+        "kind": "controller"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Appropriate signal",
+      "ascertained safety"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Original Native speed",
+          "time_window": "entire original 45-second episode",
+          "reference_frame": "Native original world frame",
+          "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+        },
+        {
+          "name": "kin.velocity",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Original Native velocity",
+          "time_window": "entire original 45-second episode",
+          "reference_frame": "Native original world frame",
+          "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+        },
+        {
+          "name": "lane_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original full-body target-lane actor and signal-bit history",
+          "time_window": "entire original 45-second episode",
+          "reference_frame": "Native original world frame",
+          "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Safety ascertainment is not inferred from a geometric gap or lamp bit."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal_and_open_gap",
+  "supported_case_ids": [
+    "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal_and_open_gap",
+    "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__late_signal",
+    "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__close_target_gap"
+  ],
+  "cell_id": "C144550",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-223-1b",
+  "duration_s": 45,
+  "rate_hz": 20,
+  "requested_speed_mps": 5.0,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached overhead both lanes"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached target lane forward view"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed marked lane-change section"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego-attached modeled driver eye"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity",
+    "st.one_way_roadway"
+  ],
+  "source_packets": [
+    "scenario_geometry"
+  ],
+  "public_way_road_ids": [
+    1
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "one_way": "authored road with only same-direction lanes; Native readback required",
+      "safety": "unresolved"
+    }
+  },
+  "signal_tick": 80,
+  "target_station_m": 220
+}

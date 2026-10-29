@@ -1,0 +1,9 @@
+CPU software compatibility only. Native motion, original pixels, legal status and legal judgments remain unverified. No CARLA executed.
+
+python3.11 runtime.py capture --manifest work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-1__motor_vehicle_driver__precedence --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/native-0
+
+python3.11 runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-1__motor_vehicle_driver__precedence --attempt .runtime-work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/native-0 --output .runtime-work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/processed-0 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
+
+python3.11 runtime.py capture --manifest work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-1__motor_vehicle_driver__advance --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/native-1
+
+python3.11 runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-1__motor_vehicle_driver__advance --attempt .runtime-work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/native-1 --output .runtime-work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/processed-1 --library "$TRAFFIC_SPEC_LIBRARY" --validator "$TRAFFIC_SPEC_VALIDATOR"
