@@ -51,7 +51,7 @@ missing dependencies, commit a partial/blocked result and continue other work.
 
 Never run NERSC tools, use the main campaign database, drive a simulation,
 register a recording, relabel research, or modify set membership. Run
-python3.11 worker_check.py --complete --require-capability-ready before returning the batch. Follow the
+python3.11 worker_check.py --complete --require-delivery-ready before returning this batch. Follow the
 exact result format in START_HERE.md.
 
 ## Shared runtime
@@ -60,9 +60,9 @@ Read START_HERE.md and use the version/hash bound in batch.runtime. Reuse suppli
 capture, conversion, rendering and validation; never recreate those components.
 Every executable package, including partial packages, needs a validated
 execution-manifest.json listing every expanded nonbaseline case and an exact
-construction SHA. Capability packages need executable measurement/finalization
-code, not just a note that a GPU is needed. Distinguish readiness_kind capability
-from delivery_prepared; neither means physical acceptance. Run the shared actual
+construction SHA. Every selected case needs executable measurement/finalization
+code, not just a note that a GPU is needed. Use readiness_kind delivery_prepared
+and kind delivery for selected cases; neither means physical acceptance. Run the shared actual
 fixture selftest and every case offline check. Push the configured return branch
 when finished. Operator launch is manual.
 
@@ -94,6 +94,11 @@ pass tests. Validate one exact case end to end before expanding all partitions.
 ## Full statutory coverage
 
 For v7 read FULL_BRANCH_CONTRACT.md. Same-cell branch reuse is the default. Account for every source topic and independently identify all alternatives and exceptions. Return executable controlled comparisons and saved-only automation for all runnable branches. A single capability case and empty comparisons fail the full coverage gate.
+
+For update 007, also read DELIVERY_CONTRACT.md. Supply every canonical semantic
+stage proposal, exact delivery designation, and CPU-tested independent audit.
+The remote worker writes files only; local SQLite job adoption and NERSC GPU
+ownership remain entirely local. Do not relabel frozen v7 files in place.
 
 ## Risk-based candidate constructions
 

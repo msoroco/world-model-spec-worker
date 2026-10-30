@@ -41,3 +41,8 @@ After all four partition owners finish, a separate review pass reads the origina
 Report planned recording counts, explicit reuses, complete/pending branches and exact failures. Keep branch planned, Native executed, video/Core accepted and comparison complete distinct. Push the configured return branch. The local operator will validate and apply any scope extension, import/freeze the code, then run the exact GPU queue.
 
 Exact statutory text controls over summaries. Reject any summary that turns an engineering epsilon, duration, time-to-conflict or numeric spacing into an unsupported legal definition. Keep measurements and legal judgments separate.
+
+Update 007 adds DELIVERY_CONTRACT.md. Selected manifest cases are delivery
+intent, never research capability. Every assignment needs canonical semantic
+stage proposals and a tested independent saved-audit implementation. The
+strict delivery gate checks these before local GPU execution begins.

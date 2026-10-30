@@ -1,0 +1,809 @@
+{
+  "cell_id": "C104496",
+  "actor": "motor_vehicle_driver",
+  "case_id": "C104496-407-crest-placement-v1-0000",
+  "case": {
+    "case_id": "C104496-407-crest-placement-v1-0000",
+    "deliberate_differences": [
+      "maneuver_station"
+    ],
+    "paired_probe_id": "C104496-407-crest-placement-v1",
+    "probe": {
+      "comparison_or_standard": "physical coverage; legal judgment unresolved",
+      "primary_variable": "maneuver_station",
+      "target_value_or_branch": {
+        "maneuver_station": 700.0
+      }
+    },
+    "rationale": "Different physical reversal placements on the same crest; no interpretation of approach/near or legal seeing. Defaultthree selected.",
+    "recording_description": {
+      "channels": [
+        {
+          "method": "Synchronized timestamps, positions, orientations and velocity components before, during and after the maneuver, sufficient to inspect its location and progression relative to roadway and crest geometry.",
+          "name": "retained_ego_motion_history",
+          "reference_frame": "Native world XYZ, native map station and original simulator frame/time; sight-line distances along incoming lane arc",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original approach, forward-reverse-forward maneuver, opposite-direction exit and stopped outcome",
+          "uncertainty": "20Hz time sampling, .25m native mesh/horizon brackets; 10m sight-horizon coarse scan; retain all nine body rays, blockers and censoring; these are not total physical uncertainty",
+          "unit": "structured record"
+        },
+        {
+          "method": "Time-linked geometric sight distances in ft for both approach directions at observed maneuver positions, with observer placement, sight-line geometry, occluders and measurement uncertainty.",
+          "name": "retained_directional_visibility_history",
+          "reference_frame": "Native world XYZ, native map station and original simulator frame/time; sight-line distances along incoming lane arc",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original approach, forward-reverse-forward maneuver, opposite-direction exit and stopped outcome",
+          "uncertainty": "20Hz time sampling, .25m native mesh/horizon brackets; 10m sight-horizon coarse scan; retain all nine body rays, blockers and censoring; these are not total physical uncertainty",
+          "unit": "structured record"
+        },
+        {
+          "method": "Synchronized raw motion observations for any approaching vehicles, with identities and explicit roadway direction associations.",
+          "name": "retained_approaching_vehicle_history",
+          "reference_frame": "Native world XYZ, native map station and original simulator frame/time; sight-line distances along incoming lane arc",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original approach, forward-reverse-forward maneuver, opposite-direction exit and stopped outcome",
+          "uncertainty": "20Hz time sampling, .25m native mesh/horizon brackets; 10m sight-horizon coarse scan; retain all nine body rays, blockers and censoring; these are not total physical uncertainty",
+          "unit": "structured record"
+        },
+        {
+          "method": "Sampling cadence, coordinate associations, measurement method, spatial resolution, uncertainty and unavailable observations for the retained physical histories.",
+          "name": "retained_measurement_provenance",
+          "reference_frame": "Native world XYZ, native map station and original simulator frame/time; sight-line distances along incoming lane arc",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original approach, forward-reverse-forward maneuver, opposite-direction exit and stopped outcome",
+          "uncertainty": "20Hz time sampling, .25m native mesh/horizon brackets; 10m sight-horizon coarse scan; retain all nine body rays, blockers and censoring; these are not total physical uncertainty",
+          "unit": "structured record"
+        },
+        {
+          "method": "Original ego and approaching vehicle native body/pose/gear/control; reversal phase; full roadway support and contacts",
+          "name": "native_maneuver_state",
+          "reference_frame": "Native world XYZ, native map station and original simulator frame/time; sight-line distances along incoming lane arc",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original approach, forward-reverse-forward maneuver, opposite-direction exit and stopped outcome",
+          "uncertainty": "20Hz time sampling, .25m native mesh/horizon brackets; 10m sight-horizon coarse scan; retain all nine body rays, blockers and censoring; these are not total physical uncertainty",
+          "unit": "structured record"
+        },
+        {
+          "method": "Actual velocity norm",
+          "name": "ego_speed",
+          "reference_frame": "Native world XYZ, native map station and original simulator frame/time; sight-line distances along incoming lane arc",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original approach, forward-reverse-forward maneuver, opposite-direction exit and stopped outcome",
+          "uncertainty": "20Hz time sampling, .25m native mesh/horizon brackets; 10m sight-horizon coarse scan; retain all nine body rays, blockers and censoring; these are not total physical uncertainty",
+          "unit": "m/s"
+        },
+        {
+          "method": "Actual subject projected road station minus750m crest; every tick, not requested station",
+          "name": "maneuver_position_relative_to_crest",
+          "reference_frame": "Native world XYZ, native map station and original simulator frame/time; sight-line distances along incoming lane arc",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original approach, forward-reverse-forward maneuver, opposite-direction exit and stopped outcome",
+          "uncertainty": "20Hz time sampling, .25m native mesh/horizon brackets; 10m sight-horizon coarse scan; retain all nine body rays, blockers and censoring; these are not total physical uncertainty",
+          "unit": "m"
+        }
+      ],
+      "context_inputs": [
+        {
+          "method": "Spatially indexed longitudinal grade profile along the relevant roadway, including the roadway traversed before, during and after the maneuver.",
+          "name": "road_grade",
+          "unit": "ratio"
+        },
+        {
+          "method": "Spatial location and extent of the relevant grade crest in the coordinate frame used for vehicle positions, retaining any uncertainty in crest identification.",
+          "name": "road_crest_position",
+          "unit": "m"
+        },
+        {
+          "method": "Spatially indexed roadway curvature retained alongside the grade profile without combining the curve and crest circumstances.",
+          "name": "road_curvature",
+          "unit": "1/m"
+        },
+        {
+          "method": "Roadway paths and their direction conventions identifying both directions from which another vehicle could approach the maneuver location.",
+          "name": "road_approach_directions",
+          "unit": "native roadway geometry"
+        },
+        {
+          "method": "Roadway surface geometry, elevations, coordinate conventions and spatial indexing that connect motion samples, grade samples and crest geometry.",
+          "name": "road_geometry_reference",
+          "unit": "structured record"
+        },
+        {
+          "method": "Observer locations and eye geometry, subject vehicle geometry, occluding geometry, sight-distance measurement conventions and provenance needed to inspect directional geometric visibility observations.",
+          "name": "visibility_construction_context",
+          "unit": "structured record"
+        },
+        {
+          "method": "Sources and unresolved assumptions for factual roadway and jurisdictional setup inputs; factual lookups remain world_setup facts.",
+          "name": "world_setup_fact_provenance",
+          "unit": "structured record"
+        }
+      ],
+      "limitations": [
+        "The meanings of approach and near remain unresolved; these requirements supply no distance cutoff, legal interpretation or decision rule.",
+        "Motion and roadway geometry document actions and circumstances but do not establish a driver's intent or other interior mental states.",
+        "Geometric visibility depends on documented observer, target and occluder geometry; it does not establish actual perception by an approaching driver.",
+        "The supplied statutory visibility threshold and directional alternatives remain unchanged; neither supplies a definition of approach or near.",
+        "Crest identification, roadway indexing and measurement uncertainty must remain explicit rather than being resolved through an unstated legal assumption.",
+        "Finite temporal and spatial sampling may omit physical detail, and these requirements cannot support every imaginable later predicate.",
+        "No independently verified engineering landmark source was supplied or used.",
+        "All cases remain unlabeled; 500ft numeric boundary triples are retained separately and unselected.",
+        "Virtual1.4m eyes and any-of-nine body rays are engineering measurements, not a legal seeing standard.",
+        "Actual approaching vehicle travels from fixed500m station at2m/s; virtual observers cover both directions; actual traffic necessity unresolved."
+      ]
+    },
+    "scene_assumptions": {
+      "driver": "Explicit synthetic conventional driver in physical control; engineering controller does not establish mental state",
+      "intent": "Controller requests opposite-direction departure; interior purpose remains unobserved",
+      "jurisdiction": "Explicit synthetic Nevada publicly dedicated highway open to public traffic",
+      "qualitative_standards": "Approach, near and seeing meanings remain unresolved; no label or cutoff"
+    },
+    "selection_rank": 0,
+    "specification_revision": "0f25c78191113ad75a43a3bd217b6b1487ce2dca43bfea3eb721dd3fec40d826",
+    "sweep_id": "C104496-407-crest-placement-v1",
+    "sweep_measurements": [
+      {
+        "measurement": {
+          "method": "Actual native subject projected station minus750m crest at the first recorded reverse-control phase; retain all raw per-frame stations and phase boundaries",
+          "statistic": "first",
+          "time_window": "Original first reverse-control sample"
+        },
+        "observable": "maneuver_position_relative_to_crest",
+        "unit": "m"
+      }
+    ],
+    "sweep_point": {
+      "maneuver_station": 700.0
+    },
+    "sweep_spec_version": "0f25c78191113ad75a43a3bd217b6b1487ce2dca43bfea3eb721dd3fec40d826",
+    "target_law_id": "NRS-484B-407",
+    "target_type": "judgment_sweep",
+    "unresolved_judgment_calls": [
+      "upon the approach to or near the crest of a grade"
+    ],
+    "variable_assignments": {
+      "commanded_approach_speed": {
+        "kind": "controller",
+        "value": 2.0
+      },
+      "commanded_turn_path": {
+        "kind": "controller",
+        "value": {
+          "departure_length_m": 16,
+          "implementation": "scene_model.phases(maneuver_station)",
+          "maximum_episode_s": 45,
+          "phase_stop_hold_s": 1,
+          "radius_m": 6,
+          "reverse_speed_mps": 1.5,
+          "sequence": "approach; forward left110deg; reverse right35deg; forward left35deg; opposite-lane departure"
+        }
+      },
+      "ego_trajectory": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "ego_u_turn": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "ego_visibility_distance_forward_approach": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "ego_visibility_distance_reverse_approach": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "maneuver_position_relative_to_crest": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "maneuver_station": {
+        "kind": "controller",
+        "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+        "value": 700.0
+      },
+      "measurement_configuration": {
+        "kind": "world_setup",
+        "value": {
+          "Core_time": "round(original_time_s*1000)",
+          "body_samples": 9,
+          "coarse_scan_m": 10,
+          "dt_s": 0.05,
+          "eye_height_m": 1.4,
+          "frames": 900,
+          "probe_m": 152.4,
+          "refinement_m": 0.25,
+          "visibility_search_max_m": 230
+        }
+      },
+      "physical_fixture": {
+        "kind": "world_setup",
+        "value": {
+          "crest_station_m": 750,
+          "lane_width_m": 12,
+          "map_sha256": "1827fe921a70f808c35da09ff3ff0d6e9f19331cc70eb9f06f6cd6dae4c5c6d7",
+          "other_blueprint": "vehicle.lincoln.mkz_2020",
+          "other_initial_station_m": 500,
+          "other_lane_id": -1,
+          "other_speed_mps": 2,
+          "road_length_m": 1500,
+          "subject_blueprint": "vehicle.tesla.model3"
+        }
+      },
+      "road_approach_directions": {
+        "kind": "world_setup",
+        "value": {
+          "lane_ids": [
+            -1,
+            1
+          ],
+          "road_id": 1
+        }
+      },
+      "road_crest_position": {
+        "kind": "world_setup",
+        "value": {
+          "legal_near_classification": null,
+          "station_m": 750
+        }
+      },
+      "road_curvature": {
+        "kind": "world_setup",
+        "value": 0
+      },
+      "road_grade": {
+        "kind": "world_setup",
+        "value": "Exact executed elevation XML; native waypoint pitch and physical topmost surface survey retained"
+      }
+    }
+  },
+  "maneuver_station": 700.0,
+  "maximum_frames": 900,
+  "fixed_delta_seconds": 0.05,
+  "input_revision": "d31884463e8ed23fd14b3fd1bb667e9798f7039fd0a399c355ec7fd878cbc021",
+  "map_sha256": "1827fe921a70f808c35da09ff3ff0d6e9f19331cc70eb9f06f6cd6dae4c5c6d7",
+  "recording_description": {
+    "channels": [
+      {
+        "method": "Synchronized timestamps, positions, orientations and velocity components before, during and after the maneuver, sufficient to inspect its location and progression relative to roadway and crest geometry.",
+        "name": "retained_ego_motion_history",
+        "reference_frame": "Native world XYZ, native map station and original simulator frame/time; sight-line distances along incoming lane arc",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original approach, forward-reverse-forward maneuver, opposite-direction exit and stopped outcome",
+        "uncertainty": "20Hz time sampling, .25m native mesh/horizon brackets; 10m sight-horizon coarse scan; retain all nine body rays, blockers and censoring; these are not total physical uncertainty",
+        "unit": "structured record"
+      },
+      {
+        "method": "Time-linked geometric sight distances in ft for both approach directions at observed maneuver positions, with observer placement, sight-line geometry, occluders and measurement uncertainty.",
+        "name": "retained_directional_visibility_history",
+        "reference_frame": "Native world XYZ, native map station and original simulator frame/time; sight-line distances along incoming lane arc",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original approach, forward-reverse-forward maneuver, opposite-direction exit and stopped outcome",
+        "uncertainty": "20Hz time sampling, .25m native mesh/horizon brackets; 10m sight-horizon coarse scan; retain all nine body rays, blockers and censoring; these are not total physical uncertainty",
+        "unit": "structured record"
+      },
+      {
+        "method": "Synchronized raw motion observations for any approaching vehicles, with identities and explicit roadway direction associations.",
+        "name": "retained_approaching_vehicle_history",
+        "reference_frame": "Native world XYZ, native map station and original simulator frame/time; sight-line distances along incoming lane arc",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original approach, forward-reverse-forward maneuver, opposite-direction exit and stopped outcome",
+        "uncertainty": "20Hz time sampling, .25m native mesh/horizon brackets; 10m sight-horizon coarse scan; retain all nine body rays, blockers and censoring; these are not total physical uncertainty",
+        "unit": "structured record"
+      },
+      {
+        "method": "Sampling cadence, coordinate associations, measurement method, spatial resolution, uncertainty and unavailable observations for the retained physical histories.",
+        "name": "retained_measurement_provenance",
+        "reference_frame": "Native world XYZ, native map station and original simulator frame/time; sight-line distances along incoming lane arc",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original approach, forward-reverse-forward maneuver, opposite-direction exit and stopped outcome",
+        "uncertainty": "20Hz time sampling, .25m native mesh/horizon brackets; 10m sight-horizon coarse scan; retain all nine body rays, blockers and censoring; these are not total physical uncertainty",
+        "unit": "structured record"
+      },
+      {
+        "method": "Original ego and approaching vehicle native body/pose/gear/control; reversal phase; full roadway support and contacts",
+        "name": "native_maneuver_state",
+        "reference_frame": "Native world XYZ, native map station and original simulator frame/time; sight-line distances along incoming lane arc",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original approach, forward-reverse-forward maneuver, opposite-direction exit and stopped outcome",
+        "uncertainty": "20Hz time sampling, .25m native mesh/horizon brackets; 10m sight-horizon coarse scan; retain all nine body rays, blockers and censoring; these are not total physical uncertainty",
+        "unit": "structured record"
+      },
+      {
+        "method": "Actual velocity norm",
+        "name": "ego_speed",
+        "reference_frame": "Native world XYZ, native map station and original simulator frame/time; sight-line distances along incoming lane arc",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original approach, forward-reverse-forward maneuver, opposite-direction exit and stopped outcome",
+        "uncertainty": "20Hz time sampling, .25m native mesh/horizon brackets; 10m sight-horizon coarse scan; retain all nine body rays, blockers and censoring; these are not total physical uncertainty",
+        "unit": "m/s"
+      },
+      {
+        "method": "Actual subject projected road station minus750m crest; every tick, not requested station",
+        "name": "maneuver_position_relative_to_crest",
+        "reference_frame": "Native world XYZ, native map station and original simulator frame/time; sight-line distances along incoming lane arc",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original approach, forward-reverse-forward maneuver, opposite-direction exit and stopped outcome",
+        "uncertainty": "20Hz time sampling, .25m native mesh/horizon brackets; 10m sight-horizon coarse scan; retain all nine body rays, blockers and censoring; these are not total physical uncertainty",
+        "unit": "m"
+      }
+    ],
+    "context_inputs": [
+      {
+        "method": "Spatially indexed longitudinal grade profile along the relevant roadway, including the roadway traversed before, during and after the maneuver.",
+        "name": "road_grade",
+        "unit": "ratio"
+      },
+      {
+        "method": "Spatial location and extent of the relevant grade crest in the coordinate frame used for vehicle positions, retaining any uncertainty in crest identification.",
+        "name": "road_crest_position",
+        "unit": "m"
+      },
+      {
+        "method": "Spatially indexed roadway curvature retained alongside the grade profile without combining the curve and crest circumstances.",
+        "name": "road_curvature",
+        "unit": "1/m"
+      },
+      {
+        "method": "Roadway paths and their direction conventions identifying both directions from which another vehicle could approach the maneuver location.",
+        "name": "road_approach_directions",
+        "unit": "native roadway geometry"
+      },
+      {
+        "method": "Roadway surface geometry, elevations, coordinate conventions and spatial indexing that connect motion samples, grade samples and crest geometry.",
+        "name": "road_geometry_reference",
+        "unit": "structured record"
+      },
+      {
+        "method": "Observer locations and eye geometry, subject vehicle geometry, occluding geometry, sight-distance measurement conventions and provenance needed to inspect directional geometric visibility observations.",
+        "name": "visibility_construction_context",
+        "unit": "structured record"
+      },
+      {
+        "method": "Sources and unresolved assumptions for factual roadway and jurisdictional setup inputs; factual lookups remain world_setup facts.",
+        "name": "world_setup_fact_provenance",
+        "unit": "structured record"
+      }
+    ],
+    "limitations": [
+      "The meanings of approach and near remain unresolved; these requirements supply no distance cutoff, legal interpretation or decision rule.",
+      "Motion and roadway geometry document actions and circumstances but do not establish a driver's intent or other interior mental states.",
+      "Geometric visibility depends on documented observer, target and occluder geometry; it does not establish actual perception by an approaching driver.",
+      "The supplied statutory visibility threshold and directional alternatives remain unchanged; neither supplies a definition of approach or near.",
+      "Crest identification, roadway indexing and measurement uncertainty must remain explicit rather than being resolved through an unstated legal assumption.",
+      "Finite temporal and spatial sampling may omit physical detail, and these requirements cannot support every imaginable later predicate.",
+      "No independently verified engineering landmark source was supplied or used.",
+      "All cases remain unlabeled; 500ft numeric boundary triples are retained separately and unselected.",
+      "Virtual1.4m eyes and any-of-nine body rays are engineering measurements, not a legal seeing standard.",
+      "Actual approaching vehicle travels from fixed500m station at2m/s; virtual observers cover both directions; actual traffic necessity unresolved."
+    ]
+  },
+  "variable_assignments": {
+    "commanded_approach_speed": {
+      "kind": "controller",
+      "value": 2.0
+    },
+    "commanded_turn_path": {
+      "kind": "controller",
+      "value": {
+        "departure_length_m": 16,
+        "implementation": "scene_model.phases(maneuver_station)",
+        "maximum_episode_s": 45,
+        "phase_stop_hold_s": 1,
+        "radius_m": 6,
+        "reverse_speed_mps": 1.5,
+        "sequence": "approach; forward left110deg; reverse right35deg; forward left35deg; opposite-lane departure"
+      }
+    },
+    "ego_trajectory": {
+      "kind": "subject_behavior",
+      "value": null
+    },
+    "ego_u_turn": {
+      "kind": "subject_behavior",
+      "value": null
+    },
+    "ego_visibility_distance_forward_approach": {
+      "kind": "subject_behavior",
+      "value": null
+    },
+    "ego_visibility_distance_reverse_approach": {
+      "kind": "subject_behavior",
+      "value": null
+    },
+    "maneuver_position_relative_to_crest": {
+      "kind": "subject_behavior",
+      "value": null
+    },
+    "maneuver_station": {
+      "kind": "controller",
+      "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+      "value": 700.0
+    },
+    "measurement_configuration": {
+      "kind": "world_setup",
+      "value": {
+        "Core_time": "round(original_time_s*1000)",
+        "body_samples": 9,
+        "coarse_scan_m": 10,
+        "dt_s": 0.05,
+        "eye_height_m": 1.4,
+        "frames": 900,
+        "probe_m": 152.4,
+        "refinement_m": 0.25,
+        "visibility_search_max_m": 230
+      }
+    },
+    "physical_fixture": {
+      "kind": "world_setup",
+      "value": {
+        "crest_station_m": 750,
+        "lane_width_m": 12,
+        "map_sha256": "1827fe921a70f808c35da09ff3ff0d6e9f19331cc70eb9f06f6cd6dae4c5c6d7",
+        "other_blueprint": "vehicle.lincoln.mkz_2020",
+        "other_initial_station_m": 500,
+        "other_lane_id": -1,
+        "other_speed_mps": 2,
+        "road_length_m": 1500,
+        "subject_blueprint": "vehicle.tesla.model3"
+      }
+    },
+    "road_approach_directions": {
+      "kind": "world_setup",
+      "value": {
+        "lane_ids": [
+          -1,
+          1
+        ],
+        "road_id": 1
+      }
+    },
+    "road_crest_position": {
+      "kind": "world_setup",
+      "value": {
+        "legal_near_classification": null,
+        "station_m": 750
+      }
+    },
+    "road_curvature": {
+      "kind": "world_setup",
+      "value": 0
+    },
+    "road_grade": {
+      "kind": "world_setup",
+      "value": "Exact executed elevation XML; native waypoint pitch and physical topmost surface survey retained"
+    }
+  },
+  "required_atoms": [
+    "kin.position",
+    "rel.oncoming",
+    "st.crest",
+    "st.curvature",
+    "st.grade",
+    "st.sight_distance"
+  ],
+  "source_template": {
+    "actor": "motor_vehicle_driver",
+    "extraction_conflicts": [
+      "Recovered summary places opposite-direction turning in activation. The obligation is the prohibited action; it is retained in obligation, not made a prerequisite. Seeing/near legal interpretation remains unresolved."
+    ],
+    "law_id": "NRS-484B-407",
+    "parameter_refs": [
+      {
+        "kind": "subject_behavior",
+        "name": "ego_u_turn",
+        "range_or_domain": "Observed turning to proceed in the opposite direction, derived from the delivered trajectory."
+      },
+      {
+        "kind": "subject_behavior",
+        "name": "ego_trajectory",
+        "range_or_domain": "Time-indexed vehicle positions and travel directions, including the maneuver location."
+      },
+      {
+        "kind": "world_setup",
+        "name": "road_curvature",
+        "range_or_domain": "Road curvature along the relevant roadway, in 1/m."
+      },
+      {
+        "kind": "world_setup",
+        "name": "road_grade",
+        "range_or_domain": "Road longitudinal grade profile, expressed as a ratio."
+      },
+      {
+        "kind": "world_setup",
+        "name": "road_crest_position",
+        "range_or_domain": "Spatial location of the relevant grade crest."
+      },
+      {
+        "kind": "world_setup",
+        "name": "road_approach_directions",
+        "range_or_domain": "Native roadway geometry identifying both directions from which another vehicle could approach."
+      },
+      {
+        "kind": "subject_behavior",
+        "name": "ego_visibility_distance_forward_approach",
+        "range_or_domain": "Nonnegative geometric sight distance in ft over which an approaching driver in the forward approach direction can see the subject vehicle at its observed maneuver location."
+      },
+      {
+        "kind": "subject_behavior",
+        "name": "ego_visibility_distance_reverse_approach",
+        "range_or_domain": "Nonnegative geometric sight distance in ft over which an approaching driver in the reverse approach direction can see the subject vehicle at its observed maneuver location."
+      },
+      {
+        "kind": "controller",
+        "name": "commanded_approach_speed",
+        "range_or_domain": "Frozen engineering controller request; actual state must be observed"
+      },
+      {
+        "kind": "controller",
+        "name": "commanded_turn_path",
+        "range_or_domain": "Frozen engineering controller request; actual state must be observed"
+      },
+      {
+        "kind": "controller",
+        "name": "maneuver_station",
+        "range_or_domain": "Frozen engineering controller request; actual state must be observed"
+      },
+      {
+        "kind": "subject_behavior",
+        "name": "maneuver_position_relative_to_crest",
+        "range_or_domain": "Observed native subject road station minus recorded crest station, in metres; no near cutoff"
+      },
+      {
+        "kind": "world_setup",
+        "name": "physical_fixture",
+        "range_or_domain": "Frozen geometry and observation conventions; no legal threshold"
+      },
+      {
+        "kind": "world_setup",
+        "name": "measurement_configuration",
+        "range_or_domain": "Frozen geometry and observation conventions; no legal threshold"
+      }
+    ],
+    "quote": "A vehicle shall not be turned so as to proceed in the opposite direction upon any curve, or upon the approach to or near the crest of a grade, where such vehicle cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet.",
+    "source_required_observations": [
+      {
+        "atom": "drv.u_turn",
+        "note": "turning to proceed in the opposite direction"
+      },
+      {
+        "atom": "st.curvature",
+        "note": "a curve"
+      },
+      {
+        "atom": "st.grade",
+        "note": "the approach to or near the crest of a grade"
+      },
+      {
+        "atom": "st.sight_distance",
+        "note": "the distance within which the vehicle can be seen, against the 500-foot requirement"
+      },
+      {
+        "atom": "rel.oncoming",
+        "note": "a vehicle approaching from either direction"
+      },
+      {
+        "atom": "drv.approaching",
+        "note": "the same, from behind"
+      },
+      {
+        "atom": "kin.position",
+        "note": "where the manoeuvre is made"
+      },
+      {
+        "atom": "st.crest",
+        "note": "the crest the subject approaches or is near"
+      }
+    ],
+    "source_residue": [
+      "the 500-foot visibility is a sight-line construction: as good as st.sight_distance on the source, and it must be computed in both directions"
+    ],
+    "structure": {
+      "activation": {
+        "condition": "The vehicle is upon a curve, or upon the approach to or near the crest of a grade, and cannot be seen within 500 feet by an approaching driver from at least one of the two directions. Evaluate visibility geometrically in both directions at the maneuver location. The directional numeric conditions are alternatives, not cumulative prerequisites. Turning to proceed in the opposite direction is the prohibited behavior, not an activation prerequisite.",
+        "numeric_conditions": [
+          {
+            "operator": "<",
+            "unit": "ft",
+            "value": 500,
+            "variable": "ego_visibility_distance_forward_approach"
+          },
+          {
+            "operator": "<",
+            "unit": "ft",
+            "value": 500,
+            "variable": "ego_visibility_distance_reverse_approach"
+          }
+        ]
+      },
+      "exceptions": [],
+      "judgment_calls_needed": [
+        {
+          "note": "Preserve the meaning of approach and near as unresolved. Observe the vehicle's position and trajectory relative to the grade profile and crest; do not assign a distance cutoff.",
+          "observable_requirements": {
+            "context_inputs": [
+              {
+                "description": "Spatially indexed longitudinal grade profile along the relevant roadway, including the roadway traversed before, during and after the maneuver.",
+                "name": "road_grade",
+                "unit": "ratio"
+              },
+              {
+                "description": "Spatial location and extent of the relevant grade crest in the coordinate frame used for vehicle positions, retaining any uncertainty in crest identification.",
+                "name": "road_crest_position",
+                "unit": "m"
+              },
+              {
+                "description": "Spatially indexed roadway curvature retained alongside the grade profile without combining the curve and crest circumstances.",
+                "name": "road_curvature",
+                "unit": "1/m"
+              },
+              {
+                "description": "Roadway paths and their direction conventions identifying both directions from which another vehicle could approach the maneuver location.",
+                "name": "road_approach_directions",
+                "unit": "native roadway geometry"
+              },
+              {
+                "description": "Roadway surface geometry, elevations, coordinate conventions and spatial indexing that connect motion samples, grade samples and crest geometry.",
+                "name": "road_geometry_reference",
+                "unit": "structured record"
+              },
+              {
+                "description": "Observer locations and eye geometry, subject vehicle geometry, occluding geometry, sight-distance measurement conventions and provenance needed to inspect directional geometric visibility observations.",
+                "name": "visibility_construction_context",
+                "unit": "structured record"
+              },
+              {
+                "description": "Sources and unresolved assumptions for factual roadway and jurisdictional setup inputs; factual lookups remain world_setup facts.",
+                "name": "world_setup_fact_provenance",
+                "unit": "structured record"
+              }
+            ],
+            "landmarks": [],
+            "limitations": [
+              "The meanings of approach and near remain unresolved; these requirements supply no distance cutoff, legal interpretation or decision rule.",
+              "Motion and roadway geometry document actions and circumstances but do not establish a driver's intent or other interior mental states.",
+              "Geometric visibility depends on documented observer, target and occluder geometry; it does not establish actual perception by an approaching driver.",
+              "The supplied statutory visibility threshold and directional alternatives remain unchanged; neither supplies a definition of approach or near.",
+              "Crest identification, roadway indexing and measurement uncertainty must remain explicit rather than being resolved through an unstated legal assumption.",
+              "Finite temporal and spatial sampling may omit physical detail, and these requirements cannot support every imaginable later predicate.",
+              "No independently verified engineering landmark source was supplied or used."
+            ],
+            "observables": [
+              {
+                "description": "Time-indexed vehicle position in the roadway geometry coordinate frame, including elevation and positions throughout the turning maneuver.",
+                "name": "ego_position",
+                "unit": "m"
+              },
+              {
+                "description": "Time-indexed vehicle orientation throughout travel and the turning maneuver.",
+                "name": "ego_heading",
+                "unit": "rad"
+              },
+              {
+                "description": "Time-indexed velocity components identifying actual movement direction, including movement before, during and after the maneuver.",
+                "name": "ego_velocity",
+                "unit": "m/s"
+              },
+              {
+                "description": "Shared timestamps linking vehicle motion, roadway location and directional visibility observations.",
+                "name": "observation_time",
+                "unit": "s"
+              },
+              {
+                "description": "Geometric sight distance over which an approaching driver in the forward approach direction can see the subject vehicle at its observed maneuver location.",
+                "name": "ego_visibility_distance_forward_approach",
+                "unit": "ft"
+              },
+              {
+                "description": "Geometric sight distance over which an approaching driver in the reverse approach direction can see the subject vehicle at its observed maneuver location.",
+                "name": "ego_visibility_distance_reverse_approach",
+                "unit": "ft"
+              },
+              {
+                "description": "When other vehicles are present, their timestamps, identities, positions, orientations and velocity components, retaining observations from both roadway approach directions.",
+                "name": "approaching_vehicle_motion",
+                "unit": "structured record"
+              }
+            ],
+            "recording_needs": [
+              {
+                "description": "Synchronized timestamps, positions, orientations and velocity components before, during and after the maneuver, sufficient to inspect its location and progression relative to roadway and crest geometry.",
+                "name": "retained_ego_motion_history",
+                "unit": "structured record"
+              },
+              {
+                "description": "Time-linked geometric sight distances in ft for both approach directions at observed maneuver positions, with observer placement, sight-line geometry, occluders and measurement uncertainty.",
+                "name": "retained_directional_visibility_history",
+                "unit": "structured record"
+              },
+              {
+                "description": "Synchronized raw motion observations for any approaching vehicles, with identities and explicit roadway direction associations.",
+                "name": "retained_approaching_vehicle_history",
+                "unit": "structured record"
+              },
+              {
+                "description": "Sampling cadence, coordinate associations, measurement method, spatial resolution, uncertainty and unavailable observations for the retained physical histories.",
+                "name": "retained_measurement_provenance",
+                "unit": "structured record"
+              }
+            ],
+            "sweep_dimensions": [
+              {
+                "description": "Physical maneuver placement relative to the recorded crest geometry, retaining roadway direction and elevation without defining approach or near.",
+                "name": "maneuver_position_relative_to_crest",
+                "unit": "m"
+              },
+              {
+                "description": "Physical variation in the roadway grade profile surrounding the crest and maneuver location.",
+                "name": "longitudinal_grade_profile",
+                "unit": "ratio"
+              },
+              {
+                "description": "Physical variation in the spatial extent and shape of the crest region.",
+                "name": "crest_geometry_extent",
+                "unit": "m"
+              },
+              {
+                "description": "Physical variation in roadway curvature surrounding the maneuver location.",
+                "name": "roadway_curvature_profile",
+                "unit": "1/m"
+              },
+              {
+                "description": "Vehicle orientation and movement direction relative to roadway and crest geometry.",
+                "name": "vehicle_travel_direction",
+                "unit": "rad"
+              },
+              {
+                "description": "Physical variation in vehicle speed along the observed trajectory.",
+                "name": "vehicle_motion_speed",
+                "unit": "m/s"
+              },
+              {
+                "description": "Physical variation in geometric visibility from each roadway approach direction, retaining the two directional quantities separately.",
+                "name": "directional_sight_distance",
+                "unit": "ft"
+              },
+              {
+                "description": "Physical observer eye placement used in the documented sight-line construction.",
+                "name": "observer_eye_position",
+                "unit": "m"
+              }
+            ]
+          },
+          "phrase": "upon the approach to or near the crest of a grade"
+        }
+      ],
+      "law_id": "NRS-484B-407",
+      "obligation": {
+        "description": "The vehicle must not be turned so as to proceed in the opposite direction.",
+        "numeric_conditions": [],
+        "type": "must_not"
+      },
+      "timing": {
+        "description": "Evaluate the location and geometric visibility conditions where the maneuver is made, using visibility from both approach directions at that point.",
+        "numeric_conditions": []
+      }
+    },
+    "template_id": "NRS-484B-407@motor_vehicle_driver"
+  },
+  "public_way_road_ids": [
+    1
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "driver": "Explicit synthetic conventional driver in physical control; engineering controller does not establish mental state",
+      "intent": "Controller requests opposite-direction departure; interior purpose remains unobserved",
+      "jurisdiction": "Explicit synthetic Nevada publicly dedicated highway open to public traffic",
+      "qualitative_standards": "Approach, near and seeing meanings remain unresolved; no label or cutoff"
+    },
+    "near_crest_judgment": "unresolved",
+    "visibility": "Engineering nine-body-sample rays, not legal recognizability"
+  }
+}

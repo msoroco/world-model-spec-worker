@@ -1,11 +1,11 @@
-# Full demo-test branch preparation: v7
+# Full demo-test delivery preparation
 
-Update 004 uses the source-hashed `runtime/main-pipeline-v2` and a fresh return branch. Read `examples/candidates/README.md`. For every exact case, record a concrete physical-risk assessment; add up to two tested fallbacks only when that risk warrants them. The new CPU gate rejects actor role labels copied from another law. Keep the primary case ID and all statutory comparisons unchanged. Run the candidate offline and positive/negative compatibility commands before declaring readiness. No CARLA or NERSC work is part of this return.
+Update 007 uses `runtime/main-pipeline-v3` and a fresh return branch. Read `DELIVERY_CONTRACT.md` first. Every selected case is delivery prepared, never capability labelled. Supply the full source-hashed semantic stage chain and a tested independent acceptance script for every case. Preserve the case IDs, comparisons and candidate-risk proofs. No CARLA, NERSC or local campaign database work is part of this return.
 
-Start the new return branch from updated `main`. Fetch the prior return branch and restore only its `work/` subtree from pinned commit `513884b44a65aa60a377341685f166403700e5ce` as an editable CPU preparation baseline. Do not merge its old batch, runtime, notices or proofs as current authority. Re-run all exact offline, compatibility and candidate proofs under v2 before reporting readiness. The previous return is a source of implementation, not an accepted v2 result.
+Start the new return branch from updated `main`. Fetch the prior return branch and restore only its `work/` subtree from pinned commit `513884b44a65aa60a377341685f166403700e5ce` as an editable CPU preparation baseline. Do not merge its old batch, runtime, notices or proofs as current authority. Re-run all exact offline, compatibility, candidate, semantic and delivery-audit proofs under v3 before reporting readiness. The previous return is a source of implementation, not an accepted v3 result.
 
 The operator starts this agent manually. Use Python 3.11 or newer; create an
-ignored `.venv-cpu` and install `runtime/main-pipeline-v2/requirements-cpu.txt`.
+ignored `.venv-cpu` and install `runtime/main-pipeline-v3/requirements-cpu.txt`.
 Software compatibility also needs FFmpeg and the Lean `lake` toolchain pinned
 by the exported library. Record a precise dependency blocker if either cannot
 be installed. Read `batch.json`, its four partitions,
@@ -64,7 +64,7 @@ SHA-256. Put unresolved physical or legal conclusions in separate limitations;
 do not use `pending`, `unknown`, or an empty value as a measurement.
 
 Give each case a `worker-fixture-recipe-v1` JSON file with `base` set to
-`runtime/main-pipeline-v2/fixtures/retained-speed` and text `additions`
+`runtime/main-pipeline-v3/fixtures/retained-speed` and text `additions`
 (`path`, `source`, `sha256`) from that case's `work/` directory. The contract's
 recipe must set `remove` to `["case.json","config.json","result.json"]`
 to remove the retained example's outputs before the case's code runs. The contract's
@@ -126,11 +126,11 @@ every exact-case offline check and every compatibility check. Copy its
 Finish with:
 
 ```sh
-python3.11 worker_check.py --complete --require-capability-ready
+python3.11 worker_check.py --complete --require-delivery-ready
 ```
 
 If that gate fails, report exact test-backed CPU blockers. Commit and push the
-return branch. Report commit, counts, hashed logs and the first GPU capability
+return branch. Report commit, counts, hashed logs and the first GPU delivery
 command per assignment. The local operator then runs `check-return` and
 `preflight-return --python <actual Native Python>` against the committed branch;
 neither contacts CARLA. No physical acceptance is claimed.
