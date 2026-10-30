@@ -1,10 +1,14 @@
 """Materialize a source-hashed portable runtime repair without changing baseline."""
 import ast
+import json
 import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-BASELINE = ROOT / 'runtime/main-pipeline-v1'
+_batch = json.loads((ROOT / 'batch.json').read_text())
+BASELINE = (ROOT / _batch['runtime']['root']).resolve()
+if not BASELINE.is_relative_to((ROOT / 'runtime').resolve()):
+    raise ValueError('Runtime root escapes frozen runtime directory')
 SOURCE = ROOT / 'work/_shared/runtime-overlay'
 OUTPUT = ROOT / '.runtime-work/overlay'
 _CACHED = None
@@ -17,6 +21,8 @@ def effective_runtime():
     from worker_exchange.common import digest, read, sha, tree, within, write
 
     baseline_manifest = BASELINE / 'SOURCE-MANIFEST.json'
+    if sha(baseline_manifest) != _batch['runtime']['source_manifest_sha256']:
+        raise ValueError('Batch pinned runtime mismatch')
     declared = read(baseline_manifest)['files']
     for relative, checksum in declared.items():
         if sha(within(BASELINE, relative)) != checksum:

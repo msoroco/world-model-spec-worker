@@ -1,6 +1,8 @@
 import argparse,json,sys
 from pathlib import Path
 root=Path(__file__).resolve().parent
+if 'overlay' in sys.modules:
+    raise ValueError('Runtime bootstrap override is unsupported')
 from overlay import effective_runtime
 sys.path.insert(0,str(effective_runtime()/'scenario_pipeline'))
 from worker_exchange.preparation import check

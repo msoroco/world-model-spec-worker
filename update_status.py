@@ -1,5 +1,7 @@
 import sys,json
 from pathlib import Path
-sys.path.insert(0,str(Path(__file__).resolve().parent/'runtime/main-pipeline-v1/scenario_pipeline'))
+root=Path(__file__).resolve().parent
+batch=json.loads((root/'batch.json').read_text())
+sys.path.insert(0,str(root/batch['runtime']['root']/'scenario_pipeline'))
 from worker_exchange.updates import state
-print(json.dumps(state(Path(__file__).resolve().parent),indent=2))
+print(json.dumps(state(root),indent=2))

@@ -1,11 +1,11 @@
 # Full demo-test delivery preparation
 
-Update 007 uses `runtime/main-pipeline-v3` and a fresh return branch. Read `DELIVERY_CONTRACT.md` first. Every selected case is delivery prepared, never capability labelled. Supply the full source-hashed semantic stage chain and a tested independent acceptance script for every case. Preserve the case IDs, comparisons and candidate-risk proofs. No CARLA, NERSC or local campaign database work is part of this return.
+Update 008 uses `runtime/main-pipeline-v4` and return branch `worker/demo-test-full-delivery-v2`. Read `DELIVERY_CONTRACT.md` first. Every selected case needs a primary and at least one tested physical fallback. The canonical queue must prepare, execute and accept one exact case through the local pipeline. Preserve the existing case IDs and comparisons. No CARLA, NERSC or local campaign database work is part of this return.
 
-Start the new return branch from updated `main`. Fetch the prior return branch and restore only its `work/` subtree from pinned commit `513884b44a65aa60a377341685f166403700e5ce` as an editable CPU preparation baseline. Do not merge its old batch, runtime, notices or proofs as current authority. Re-run all exact offline, compatibility, candidate, semantic and delivery-audit proofs under v3 before reporting readiness. The previous return is a source of implementation, not an accepted v3 result.
+Start from updated `main`. Fetch `worker/demo-test-full-delivery-v1` at commit `43af39a1cd5d231d9c71d2d855e206fc2dd57043` and restore only its `work/` subtree as editable CPU preparation. Do not merge its old batch, runtime, notices or proofs as current authority. Replace the `runtime-v3.py` and `sitecustomize` workaround with ordinary root launchers. Re-run all exact proofs under v4.
 
 The operator starts this agent manually. Use Python 3.11 or newer; create an
-ignored `.venv-cpu` and install `runtime/main-pipeline-v3/requirements-cpu.txt`.
+ignored `.venv-cpu` and install `runtime/main-pipeline-v4/requirements-cpu.txt`.
 Software compatibility also needs FFmpeg and the Lean `lake` toolchain pinned
 by the exported library. Record a precise dependency blocker if either cannot
 be installed. Read `batch.json`, its four partitions,
@@ -64,7 +64,7 @@ SHA-256. Put unresolved physical or legal conclusions in separate limitations;
 do not use `pending`, `unknown`, or an empty value as a measurement.
 
 Give each case a `worker-fixture-recipe-v1` JSON file with `base` set to
-`runtime/main-pipeline-v3/fixtures/retained-speed` and text `additions`
+`runtime/main-pipeline-v4/fixtures/retained-speed` and text `additions`
 (`path`, `source`, `sha256`) from that case's `work/` directory. The contract's
 recipe must set `remove` to `["case.json","config.json","result.json"]`
 to remove the retained example's outputs before the case's code runs. The contract's
@@ -124,6 +124,10 @@ every exact-case offline check and every compatibility check. Copy its
 `runtime_manifest_sha256` (effective runtime), `command`, `exit_code: 0`,
 `log`, `log_sha256`, `verification_receipt` and `verification_sha256`.
 Finish with:
+
+Before the gate, run `python3.11 -m unittest discover -s tests -p test_v4_entrypoints.py`.
+The gate must run without a bootstrap `PYTHONPATH`. All-empty candidate lists
+and queues lacking canonical local job commands fail under update 008.
 
 ```sh
 python3.11 worker_check.py --complete --require-delivery-ready

@@ -82,6 +82,24 @@ the local execution order, not a record of completed GPU work. A successful
 case is referenced by the same canonical recording ID in both test sets;
 explicit reference reuse requires a hash-bound receipt.
 
+Update 008 requires each queue row to include `prepare_command`,
+`execute_command`, `accept_command`, and `candidate_commands` keyed by every
+declared fallback. Preparation selects one exact case and candidate, freezing
+a separate local run and input revision. Execution dispatches only its returned
+job ID to an operator-owned CARLA server. Acceptance uses the completed
+canonical attempt and independent saved audit; a portable `.runtime-work/`
+capture cannot be directly selected into sets. Commands use local variables
+for database, host, port, Native Python, job ID and attempt number. The worker
+must not assume NERSC paths or invent job IDs.
+
+Write `work/_shared/local-integration-proof.json` with format
+`worker-local-integration-proof-v1`, `passed: true`, a tested `command`,
+`exit_code: 0`, `log`, `log_sha256`, and `scenarios` containing `primary_job`,
+`fallback_job`, `saved_processing`, `rejected_audit`, and
+`accepted_both_sets`. Its synthetic local fixture must show one accepted
+recording ID in both test selections and no membership from a failed audit.
+This is a software integration proof, not a physical acceptance claim.
+
 ## Completion gate
 
 Run `python3.11 worker_check.py --complete --require-delivery-ready` after the
