@@ -1,0 +1,183 @@
+{
+  "format": "worker-legacy-capture-contract-v1",
+  "source_batch": "demo-test-first-run-v6",
+  "cell_id": "C109705",
+  "law_id": "NRS-484B-400-2a",
+  "actor": "motor_vehicle_driver",
+  "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__selected_left_turn",
+  "original_construction_sha256": "f1c4c4d8443a735a4800a7ca4cd7c88db18174ec75768f86ee4551079cfcca9b",
+  "original_config_sha256": "79b1b7096f54e95fc0e25bb386e5e314fbb0870fb79114f7a3564082fbc5954a",
+  "frames": 900,
+  "duration_s": 45,
+  "rate_hz": 20,
+  "source_files": {
+    "config.json": {
+      "sha256": "79b1b7096f54e95fc0e25bb386e5e314fbb0870fb79114f7a3564082fbc5954a",
+      "first_record_keys": [
+        "actor",
+        "authored_test_context",
+        "cameras",
+        "case",
+        "cell_id",
+        "duration_s",
+        "law_id",
+        "measurement_mode",
+        "public_way_road_ids",
+        "rate_hz",
+        "requested_speed_mps",
+        "required_atoms",
+        "selected_case_id",
+        "source_packets",
+        "supported_case_ids"
+      ]
+    },
+    "construction.json": {
+      "sha256": "f1c4c4d8443a735a4800a7ca4cd7c88db18174ec75768f86ee4551079cfcca9b",
+      "first_record_keys": [
+        "actor",
+        "case_id",
+        "cell_id",
+        "entrypoint",
+        "files",
+        "measurement_plan",
+        "mechanisms",
+        "recording_description",
+        "static_checks",
+        "termination_rules"
+      ]
+    },
+    "road_geometry.json": {
+      "sha256": "73d2feab46c84bb51adbbbbcadfe42156e1abd4d41594f5147ed7605aad67b2f",
+      "first_record_keys": [
+        "approach_centerline_point_xy",
+        "approach_direction_xy",
+        "approach_road_id",
+        "connector_road_id",
+        "departure_centerline_point_xy",
+        "departure_direction_xy",
+        "departure_road_id",
+        "intersection_xy_m",
+        "public_highway_designation",
+        "route_waypoints_native_xy",
+        "source",
+        "two_way"
+      ]
+    },
+    "body_history.jsonl": {
+      "sha256": "6e5170d738712807c3c964f28a13331c313e3b34ff26f8c1929f3856142ad071",
+      "first_record_keys": [
+        "body_vertices_m",
+        "camera_originals",
+        "control",
+        "frame",
+        "lane_id",
+        "road_id",
+        "time_s"
+      ]
+    },
+    "video_frames.jsonl": {
+      "sha256": "b47f683812ff6b343026a8bdc0a8b1a1c3a877fbab0a5d9eb0a83ef1d168c6cc",
+      "first_record_keys": [
+        "carla_frame",
+        "native_frame",
+        "time_s",
+        "video_frame"
+      ]
+    },
+    "trace.jsonl": {
+      "sha256": "3b7c1cadd0c398f4165789e4964c1e3215416ed7bd776698ffe5ae9da692177e",
+      "first_record_keys": [
+        "accel_longitudinal_mps2",
+        "control",
+        "frame",
+        "heading_deg",
+        "position",
+        "position_m",
+        "speed_mph",
+        "speed_mps",
+        "time_s",
+        "velocity_mps",
+        "wheel_steer_angle_deg"
+      ]
+    },
+    "capture/manifest.json": {
+      "sha256": "1b6bf0238c5cb036735421fdd87b6b749800c263ca4073bf3e5c26ea47647595",
+      "first_record_keys": [
+        "acquisition",
+        "case_id",
+        "complete_driving_lanes",
+        "extraction_confirmed",
+        "frame_join",
+        "frames",
+        "generator_source",
+        "map",
+        "native_map_facts",
+        "observation_contract_version",
+        "required_observations",
+        "road_user_visibility_observed",
+        "source_components",
+        "source_run",
+        "sources",
+        "speed_source",
+        "status",
+        "visibility_scope"
+      ]
+    }
+  },
+  "original_case_proposal": {
+    "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__selected_left_turn",
+    "target_law_id": "NRS-484B-400-2a",
+    "target_type": "boundary_probe",
+    "rationale": "Capture exact selected two-way left turn and all body vertices before or after the junction.",
+    "variable_assignments": {
+      "requested_speed_mps": {
+        "value": 5.0,
+        "kind": "controller",
+        "unit": "m/s"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Nearest portion of the right half and full legal highway status"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Native actor velocity norm",
+          "time_window": "full original 45-second episode",
+          "reference_frame": "Native world and original frame",
+          "uncertainty": "20Hz frame samples; between-frame motion and pixels unverified"
+        },
+        {
+          "name": "kin.velocity",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Native actor 3D velocity",
+          "time_window": "full original 45-second episode",
+          "reference_frame": "Native world and original frame",
+          "uncertainty": "20Hz frame samples; between-frame motion and pixels unverified"
+        },
+        {
+          "name": "body_vertices",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "All eight original Native full-body bounding-box vertices",
+          "time_window": "full original 45-second episode",
+          "reference_frame": "Native world and original frame",
+          "uncertainty": "20Hz frame samples; between-frame motion and pixels unverified"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Road designation is authored; final legal position judgment unresolved."
+      ]
+    }
+  },
+  "recording_available_to_worker": false,
+  "original_native_executed": true,
+  "actual_recording_audited": false,
+  "retained_capture_purpose": "Saved-only audit of a prior capability attempt; separate from the v7 236-case delivery queue",
+  "required_handoff": "Exact v6 case identity in an isolated saved-only manifest; new analysis revision with original file preservation and no Native replay"
+}
