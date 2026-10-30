@@ -3,7 +3,7 @@
 Update 004 uses the source-hashed `runtime/main-pipeline-v2` and a fresh return branch. Read `examples/candidates/README.md`. For every exact case, record a concrete physical-risk assessment; add up to two tested fallbacks only when that risk warrants them. The new CPU gate rejects actor role labels copied from another law. Keep the primary case ID and all statutory comparisons unchanged. Run the candidate offline and positive/negative compatibility commands before declaring readiness. No CARLA or NERSC work is part of this return.
 
 The operator starts this agent manually. Use Python 3.11 or newer; create an
-ignored `.venv-cpu` and install `runtime/main-pipeline-v1/requirements-cpu.txt`.
+ignored `.venv-cpu` and install `runtime/main-pipeline-v2/requirements-cpu.txt`.
 Software compatibility also needs FFmpeg and the Lean `lake` toolchain pinned
 by the exported library. Record a precise dependency blocker if either cannot
 be installed. Read `batch.json`, its four partitions,
@@ -62,7 +62,7 @@ SHA-256. Put unresolved physical or legal conclusions in separate limitations;
 do not use `pending`, `unknown`, or an empty value as a measurement.
 
 Give each case a `worker-fixture-recipe-v1` JSON file with `base` set to
-`runtime/main-pipeline-v1/fixtures/retained-speed` and text `additions`
+`runtime/main-pipeline-v2/fixtures/retained-speed` and text `additions`
 (`path`, `source`, `sha256`) from that case's `work/` directory. The contract's
 recipe must set `remove` to `["case.json","config.json","result.json"]`
 to remove the retained example's outputs before the case's code runs. The contract's
