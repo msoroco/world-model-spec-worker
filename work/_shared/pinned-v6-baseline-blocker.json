@@ -1,0 +1,31 @@
+{
+  "format": "worker-pinned-v6-cpu-blocker-v1",
+  "tested_limitation": "Frozen preparation.py line 228 compares all canonical proposal case IDs, including the neutral baseline required by semantic stage validation, against selected case-plan IDs. All 43 packages have exactly one required neutral baseline; the selected delivery inventory is 236 cases. The ordinary gate rejects this valid split.",
+  "frozen_source": "runtime/main-pipeline-v6/scenario_pipeline/worker_exchange/preparation.py",
+  "frozen_source_sha256": "329485f2b55476ae177148c66a2314a189cec748f191a78a8010b483b80e6f54",
+  "ordinary_entrypoints": {
+    "command": "python3.11 -m unittest discover -s tests -p test_entrypoints_current.py",
+    "exit_code": 1,
+    "log": "work/_shared/v6-entrypoints-update012.log",
+    "log_sha256": "33e24b228f2cf1cc59779ece182c66abe0611413762f984ca75152f656ea12d3"
+  },
+  "strict_gate": {
+    "command": "python3.11 worker_check.py --complete --require-delivery-ready",
+    "exit_code": 1,
+    "log": "work/_shared/v6-gate-update012.log",
+    "log_sha256": "a7035da8b2f4146f85b5f38ba9a16662b6baf6e228d1036827f0860b20583e71"
+  },
+  "diagnostic": {
+    "command": "python3.11 work/_shared/diagnose_v6_gate.py",
+    "exit_code": 0,
+    "log": "work/_shared/v6-diagnostic-gate.log",
+    "log_sha256": "a1b5764b84958404aa5db11f7bb3dce95ffe66b06f457b69132a7ca8ae50e427",
+    "scope": "In-memory diagnostic only; excludes target_type baseline from that one selected-case equality and reads partial results as ready. It does not change or pass the official gate.",
+    "script": "work/_shared/diagnose_v6_gate.py",
+    "script_sha256": "eb7137d8eeca3ae8c2bfd609b2cc19b5c332af2f716eeb2f94842dbf502e86b3"
+  },
+  "required_pinned_fix": "Exclude canonical target_type baseline from selected proposal versus case-plan ID equality in the pinned checker, and ensure any source-hashed overlay loads before the baseline package is cached by the ordinary frozen launcher.",
+  "worker_proof_index": "work/_shared/v6-proof-index.json",
+  "worker_proof_index_sha256": "de7bb64a5beb1f725106888da6ca3062e77565a5bee63c8279ec5aa15ff0f5ea",
+  "ready_claimed": false
+}

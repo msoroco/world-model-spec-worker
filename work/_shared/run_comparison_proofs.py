@@ -13,14 +13,16 @@ def main():
   folder=source.parent;m=read(folder/'execution-manifest.json');index={}
   for e in m['cases']:
    expected=read(folder/e['construction'])
-   candidates=[]
-   for report in (ROOT/'.runtime-work'/folder.name).rglob('analysis-report.json'):
-    try:
-     cfg=read(report.parent/'config.json');construction=read(report.parent/'construction.json')
-     if cfg.get('selected_case_id')==e['case_id'] and construction==expected and read(report).get('case_id')==e['case_id'] and hashlib.sha256((report.parent/'compatibility.json').read_bytes()).hexdigest()==e.get('compatibility',{}).get('sha256'):candidates.append(report)
-    except (OSError,ValueError):continue
-   if not candidates:raise ValueError('No proved exact diagnostic analysis for '+e['case_id'])
-   report=max(candidates,key=lambda p:p.stat().st_mtime_ns)
+   key=hashlib.sha256((e['case_id']+'|primary').encode()).hexdigest()[:16]
+   report=ROOT/'.runtime-work/v6-case-proofs'/key/'compat/analysis-report.json'
+   try:
+    cfg=read(report.parent/'config.json');construction=read(report.parent/'construction.json')
+    if not (cfg.get('selected_case_id')==e['case_id'] and construction==expected
+            and read(report).get('case_id')==e['case_id']
+            and hashlib.sha256((report.parent/'compatibility.json').read_bytes()).hexdigest()==e.get('compatibility',{}).get('sha256')):
+     raise ValueError('Current exact diagnostic provenance differs')
+   except (OSError,ValueError) as error:
+    raise ValueError('No proved exact v6 diagnostic analysis for '+e['case_id']) from error
    index[e['case_id']]={'analysis_report':str(report),'config':str(report.parent/'config.json')}
   write(folder/'comparison-diagnostic-index.json',index)
   declared={c['comparison_id'] for c in read(folder/'case-plan.json')['comparisons']}

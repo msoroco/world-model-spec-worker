@@ -1,3 +1,15 @@
+# Update 012 current CPU handoff
+
+The exact primary, fallback1, saved-processing, comparison, and synthetic integration CPU proofs are source-hashed in `work/_shared/v6-proof-index.json`. The frozen v6 checker rejects the required neutral baseline at `preparation.py:228`; this package remains partial. The commands below are planned and have not executed a Native recording.
+
+```sh
+python3.11 -m scenario_pipeline.worker_exchange --root "$PIPELINE_ROOT" prepare-delivery --repo "$LOCAL_CHECKOUT" --batch demo-test-full-branches-v7 --db "$DB" --assignment testing__C331230__NRS-484A-450-2__motor_vehicle_driver --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_halt --candidate primary
+python3.11 -m scenario_pipeline.worker_exchange --root "$PIPELINE_ROOT" execute-delivery --repo "$LOCAL_CHECKOUT" --batch demo-test-full-branches-v7 --db "$DB" --assignment testing__C331230__NRS-484A-450-2__motor_vehicle_driver --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_halt --run "$RUN" --job "$JOB_ID" --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT"
+```
+
+Fallback preparation requires the case-specific `fallback_trigger_command` in `work/_shared/gpu-queue.json` to report `triggered: true`. The queue supplies saved processing, independent audit, acceptance, and comparison commands.
+
+## Earlier handoff notes
 Delivery prepared CPU package. Native motion, actual pixels, physical completion and legal judgment remain unverified. No CARLA or local campaign database was used.
 
 python3.11 work/_shared/runtime-v3.py runtime.py capture --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_halt --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT" --output .runtime-work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/native002-0
