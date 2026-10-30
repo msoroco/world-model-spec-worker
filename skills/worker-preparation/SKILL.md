@@ -94,3 +94,7 @@ pass tests. Validate one exact case end to end before expanding all partitions.
 ## Full statutory coverage
 
 For v7 read FULL_BRANCH_CONTRACT.md. Same-cell branch reuse is the default. Account for every source topic and independently identify all alternatives and exceptions. Return executable controlled comparisons and saved-only automation for all runnable branches. A single capability case and empty comparisons fail the full coverage gate.
+
+## Risk-based candidate constructions
+
+For update 004, assess every exact case for a specific Native motion or camera risk. Keep one primary construction and add at most two named fallbacks only for a concrete physical risk. A fallback is an alternate implementation of the same planned case, not another recording or cell. Record a measurable failure trigger and exact engineering changes. Keep the case, law, actor, required observations, cameras, duration and comparison variable fixed. Run exact offline and positive/negative compatibility checks for each fallback using `runtime.py offline --candidate fallback1` and `runtime.py compatibility-recipe --candidate fallback1`. The saved processor verifies the selected candidate in the attempt. Never choose by desired legal outcome. The lead independently reviews risk assessments and comparison isolation before the strict gate.

@@ -1,5 +1,7 @@
 # Full demo-test branch preparation: v7
 
+Update 004 uses the source-hashed `runtime/main-pipeline-v2` and a fresh return branch. Read `examples/candidates/README.md`. For every exact case, record a concrete physical-risk assessment; add up to two tested fallbacks only when that risk warrants them. The new CPU gate rejects actor role labels copied from another law. Keep the primary case ID and all statutory comparisons unchanged. Run the candidate offline and positive/negative compatibility commands before declaring readiness. No CARLA or NERSC work is part of this return.
+
 The operator starts this agent manually. Use Python 3.11 or newer; create an
 ignored `.venv-cpu` and install `runtime/main-pipeline-v1/requirements-cpu.txt`.
 Software compatibility also needs FFmpeg and the Lean `lake` toolchain pinned
