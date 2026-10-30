@@ -1,0 +1,960 @@
+{
+  "cell_id": "C230259",
+  "actor": "motor_vehicle_driver",
+  "case_id": "C230259-600-1a-commanded-speed-v2-0000",
+  "case": {
+    "case_id": "C230259-600-1a-commanded-speed-v2-0000",
+    "deliberate_differences": [
+      "commanded_speed"
+    ],
+    "paired_probe_id": "C230259-600-1a-commanded-speed-v2",
+    "probe": {
+      "comparison_or_standard": "physical coverage; legal judgment unresolved",
+      "primary_variable": "commanded_speed",
+      "target_value_or_branch": {
+        "commanded_speed": 3.0
+      }
+    },
+    "rationale": "Unlabeled one-dimensional speed coverage with all contemporaneous physical conditions retained. No reasonable/proper, due-regard or sight-distance-adequacy interpretation. Broader traffic and other condition comparisons remain pending.",
+    "recording_description": {
+      "channels": [
+        {
+          "method": "Record actor-vehicle association, operation evidence, vehicle positions, speed and control history throughout operation on a shared time reference.",
+          "name": "synchronized_operation_history",
+          "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+          "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+          "unit": "s; Boolean; m; m/s; rad"
+        },
+        {
+          "method": "Record nearby participant identities, positions, speeds and trajectories, including traffic behind the actor vehicle and observation gaps.",
+          "name": "synchronized_traffic_history",
+          "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+          "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+          "unit": "s; identifier; m; m/s; rad"
+        },
+        {
+          "method": "Record contemporaneous highway and lane widths, curvature, surface material, wetness and ice or snow, linked to roadway locations and physical measurement boundaries.",
+          "name": "roadway_condition_history",
+          "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+          "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+          "unit": "s; m; 1/m; categorical; spatial record"
+        },
+        {
+          "method": "Record contemporaneous precipitation and physical visibility conditions, preserving authored facts separately from measured evidence.",
+          "name": "weather_visibility_history",
+          "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+          "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+          "unit": "s; m; categorical; source-declared physical intensity unit"
+        },
+        {
+          "method": "Record physical sight distance with observer, target and occluder geometry, roadway location, measurement method and uncertainty.",
+          "name": "sight_distance_evidence",
+          "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+          "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+          "unit": "s; m; rad; identifier"
+        },
+        {
+          "method": "When a stopping event occurs, record actual motion, braking history, distance measurement endpoints, endpoint selection provenance and contemporaneous vehicle and roadway conditions.",
+          "name": "observed_stopping_event",
+          "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+          "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+          "unit": "s; m; m/s; structured endpoint record"
+        },
+        {
+          "method": "If supplied, record modeled stopping distance separately from observed stopping distance, with model version, assumptions, inputs, units, provenance and uncertainty.",
+          "name": "modeled_stopping_distance",
+          "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+          "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+          "unit": "m; structured provenance record"
+        },
+        {
+          "method": "Record observation origin, authored or measured status, derivation method, temporal sampling metadata, spatial resolution, uncertainty, missing data and synchronization limitations.",
+          "name": "evidence_quality_provenance",
+          "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+          "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+          "unit": "structured provenance record"
+        },
+        {
+          "method": "Original native velocity norm",
+          "name": "ego_speed",
+          "reference_frame": "Actual native actor velocity",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire45second episode",
+          "uncertainty": "Original20Hz sampling; +/-0.5m/s target tolerance is engineering only",
+          "unit": "m/s"
+        },
+        {
+          "method": "Reviewed C353238 moving body centre plus eight vertices, both incoming driving-lane approaches; original rays and finite sampled/censored bounds",
+          "name": "st.sight_distance",
+          "reference_frame": "Incoming driving-lane arc distance to current actor projected station;1.4m virtual eye",
+          "sampling_rate_hz": 20,
+          "time_window": "Entire45second episode",
+          "uncertainty": "10m coarse search with0.25m refinement,230m censoring; finite body sample approximation",
+          "unit": "m; structured ray record"
+        }
+      ],
+      "context_inputs": [
+        {
+          "method": "Association of the motor_vehicle_driver actor with the operated vehicle and relevant operation interval.",
+          "name": "actor_vehicle_association",
+          "unit": "identifier"
+        },
+        {
+          "method": "Authored roadway, lane and highway boundaries, elevation profile and curvature, with location references and geometry provenance.",
+          "name": "roadway_geometry",
+          "unit": "m; rad; 1/m"
+        },
+        {
+          "method": "World_setup facts describing road material, physical condition, wetness and ice or snow, with authorship or factual source provenance.",
+          "name": "roadway_surface_setup",
+          "unit": "categorical; spatial record"
+        },
+        {
+          "method": "World_setup facts describing precipitation, environmental visibility and their spatial and temporal variation.",
+          "name": "weather_visibility_setup",
+          "unit": "categorical; m; source-declared physical intensity unit"
+        },
+        {
+          "method": "Observer position and orientation, viewing reference, target geometry and occluder geometry used to describe physical sight distance.",
+          "name": "sight_distance_geometry",
+          "unit": "m; rad; identifier"
+        },
+        {
+          "method": "Vehicle, tire, brake, loading and road-contact properties relevant to recorded stopping behavior, with configuration provenance and uncertainty.",
+          "name": "vehicle_physical_configuration",
+          "unit": "structured physical record with declared units"
+        },
+        {
+          "method": "If modeled stopping evidence is supplied, its model identity, version, source, assumptions, input provenance, declared units and applicability limitations.",
+          "name": "stopping_distance_model_provenance",
+          "unit": "structured provenance record"
+        },
+        {
+          "method": "Clock, coordinate frame, roadway-location reference and measurement conventions connecting actor, traffic and environmental evidence.",
+          "name": "measurement_reference",
+          "unit": "s; m; rad; identifier"
+        }
+      ],
+      "limitations": [
+        "The phrase 'reasonable or proper' remains unresolved; these requirements supply physical evidence without selecting a legal threshold, interpretation or compliance label.",
+        "The source atom drv.sight_distance_adequate and its surrogate description introduce a judgment classification. This extraction conflict is retained explicitly; only underlying physical sight distance is requested here, without silently changing the source.",
+        "The supplied residue is preserved in the exact note. Its reference to surrogate rules and model bounds does not authorize selecting an operationalization, model, bound or decision pattern.",
+        "Observed actions and circumstances do not establish interior mental states, intent or what the actor actually perceived.",
+        "Actual stopping distance is unavailable without a recorded stopping event and documented measurement endpoints. Missing stopping observations must remain missing.",
+        "Modeled stopping distance is derived evidence whose applicability depends on documented assumptions and inputs; it does not establish an observed stopping outcome.",
+        "Physical sight distance depends on viewing geometry, target characteristics, occlusion and measurement method; it does not establish adequacy or actual perception.",
+        "Traffic queue annotations depend on their extraction conventions. Underlying participant positions and motion must remain available without adopting an annotation as a legal rule.",
+        "Authored roadway and weather facts must remain distinguishable from measured physical observations, and factual lookups remain sourced world_setup inputs.",
+        "No simulator capabilities or external coverage landmarks were verified from the supplied inputs. The landmarks list is empty, and recording availability is not asserted.",
+        "Sampling, occlusion, synchronization and measurement uncertainty can limit reconstruction of contemporaneous conditions; these requirements do not support every imaginable later predicate.",
+        "No existing observable_requirements were supplied for this matched phrase and note.",
+        "Source capability limitation is prospectively addressed by native setup-probe-v4 and per-episode source-bound RGB contrast calibration; this remains finite target-specific sampled environmental range, never exact meteorological cutoff or geometric sight distance.",
+        "No modeled stopping distance is supplied; optional model channel explicitly records null. No legal speed/adequacy label."
+      ]
+    },
+    "selection_rank": 0,
+    "sweep_id": "C230259-600-1a-commanded-speed-v2",
+    "sweep_measurements": [
+      {
+        "measurement": {
+          "method": "Mean original native velocity norm over all recorded samples15..24s; every sample must also attain commanded speed within+/-0.5m/s for at least5s",
+          "statistic": "mean",
+          "time_window": "Original episode15..24s steady interval; full45s trace retained"
+        },
+        "observable": "ego_speed",
+        "unit": "m/s"
+      }
+    ],
+    "sweep_point": {
+      "commanded_speed": 3.0
+    },
+    "sweep_spec_version": "4dbc26c7ae5c320d5b702dd4a2be0b4a52d402d43d196594de23f9889c40ff77",
+    "target_law_id": "NRS-484B-600-1a",
+    "target_type": "judgment_sweep",
+    "unresolved_judgment_calls": [
+      "reasonable or proper"
+    ],
+    "variable_assignments": {
+      "available_sight_distance": {
+        "kind": "world_setup",
+        "value": {
+          "coarse_m": 10,
+          "method": "Reviewed C353238 body ray conventions",
+          "no_adequacy_classification": true,
+          "refinement_m": 0.25,
+          "search_m": 230
+        }
+      },
+      "commanded_speed": {
+        "kind": "controller",
+        "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+        "value": 3.0
+      },
+      "ego_is_driving_or_operating": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "ego_speed": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "ego_stopping_distance": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "highway_width": {
+        "kind": "world_setup",
+        "value": {
+          "boundary_source": "Native OpenDRIVE road1, +/-5m full boundary; distinct lane+/-2 shoulders",
+          "driving_lane_m": 3.5,
+          "full_highway_m": 10,
+          "roadway_m": 7,
+          "shoulder_each_m": 1.5
+        }
+      },
+      "ice_or_snow": {
+        "kind": "world_setup",
+        "value": false
+      },
+      "nearby_vehicle_speeds": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "nearby_vehicle_trajectories": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "precipitation": {
+        "kind": "world_setup",
+        "value": {
+          "native_parameter": 0,
+          "type": "none, authored",
+          "unit": "CARLA native parameter, not calibrated physical intensity"
+        }
+      },
+      "road_curvature": {
+        "kind": "world_setup",
+        "value": 0
+      },
+      "road_surface": {
+        "kind": "world_setup",
+        "value": {
+          "authored": "Standalone generated asphalt without snow/ice layers",
+          "native_assets_and_inventory_required": true
+        }
+      },
+      "traffic_queue_behind": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "visibility": {
+        "kind": "world_setup",
+        "value": {
+          "calibration_reference": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/runs/demo-thirteen-complete-20261010/continuation/20261017-C230259-v1/setup-probe-v4/environment_calibration.json",
+          "constant_weather_required": true,
+          "instrument": "Native RGB/instance target contrast range; sampled bounds retained"
+        }
+      },
+      "wet_road": {
+        "kind": "world_setup",
+        "value": false
+      }
+    }
+  },
+  "commanded_speed_mps": 3.0,
+  "maximum_frames": 900,
+  "fixed_delta_seconds": 0.05,
+  "input_revision": "c9ba10a53280223ee167ca78c185dc8818625a913b27798d85f836721e9d34d2",
+  "map_sha256": "efb6d8e5fd0c5f8aaf628c6d9ea762682ceff11b365ff2822d782ae3ccada111",
+  "recording_description": {
+    "channels": [
+      {
+        "method": "Record actor-vehicle association, operation evidence, vehicle positions, speed and control history throughout operation on a shared time reference.",
+        "name": "synchronized_operation_history",
+        "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+        "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+        "unit": "s; Boolean; m; m/s; rad"
+      },
+      {
+        "method": "Record nearby participant identities, positions, speeds and trajectories, including traffic behind the actor vehicle and observation gaps.",
+        "name": "synchronized_traffic_history",
+        "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+        "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+        "unit": "s; identifier; m; m/s; rad"
+      },
+      {
+        "method": "Record contemporaneous highway and lane widths, curvature, surface material, wetness and ice or snow, linked to roadway locations and physical measurement boundaries.",
+        "name": "roadway_condition_history",
+        "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+        "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+        "unit": "s; m; 1/m; categorical; spatial record"
+      },
+      {
+        "method": "Record contemporaneous precipitation and physical visibility conditions, preserving authored facts separately from measured evidence.",
+        "name": "weather_visibility_history",
+        "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+        "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+        "unit": "s; m; categorical; source-declared physical intensity unit"
+      },
+      {
+        "method": "Record physical sight distance with observer, target and occluder geometry, roadway location, measurement method and uncertainty.",
+        "name": "sight_distance_evidence",
+        "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+        "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+        "unit": "s; m; rad; identifier"
+      },
+      {
+        "method": "When a stopping event occurs, record actual motion, braking history, distance measurement endpoints, endpoint selection provenance and contemporaneous vehicle and roadway conditions.",
+        "name": "observed_stopping_event",
+        "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+        "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+        "unit": "s; m; m/s; structured endpoint record"
+      },
+      {
+        "method": "If supplied, record modeled stopping distance separately from observed stopping distance, with model version, assumptions, inputs, units, provenance and uncertainty.",
+        "name": "modeled_stopping_distance",
+        "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+        "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+        "unit": "m; structured provenance record"
+      },
+      {
+        "method": "Record observation origin, authored or measured status, derivation method, temporal sampling metadata, spatial resolution, uncertainty, missing data and synchronization limitations.",
+        "name": "evidence_quality_provenance",
+        "reference_frame": "Original native frame and time; source-declared world XYZ and road station",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire original 45-second episode, acceleration, steady travel, braking and stopped outcome",
+        "uncertainty": "20Hz original frame/time sampling; retain calibration grid bounds, RGB sensor contrast convention, native body footprints and actual endpoint uncertainty",
+        "unit": "structured provenance record"
+      },
+      {
+        "method": "Original native velocity norm",
+        "name": "ego_speed",
+        "reference_frame": "Actual native actor velocity",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire45second episode",
+        "uncertainty": "Original20Hz sampling; +/-0.5m/s target tolerance is engineering only",
+        "unit": "m/s"
+      },
+      {
+        "method": "Reviewed C353238 moving body centre plus eight vertices, both incoming driving-lane approaches; original rays and finite sampled/censored bounds",
+        "name": "st.sight_distance",
+        "reference_frame": "Incoming driving-lane arc distance to current actor projected station;1.4m virtual eye",
+        "sampling_rate_hz": 20,
+        "time_window": "Entire45second episode",
+        "uncertainty": "10m coarse search with0.25m refinement,230m censoring; finite body sample approximation",
+        "unit": "m; structured ray record"
+      }
+    ],
+    "context_inputs": [
+      {
+        "method": "Association of the motor_vehicle_driver actor with the operated vehicle and relevant operation interval.",
+        "name": "actor_vehicle_association",
+        "unit": "identifier"
+      },
+      {
+        "method": "Authored roadway, lane and highway boundaries, elevation profile and curvature, with location references and geometry provenance.",
+        "name": "roadway_geometry",
+        "unit": "m; rad; 1/m"
+      },
+      {
+        "method": "World_setup facts describing road material, physical condition, wetness and ice or snow, with authorship or factual source provenance.",
+        "name": "roadway_surface_setup",
+        "unit": "categorical; spatial record"
+      },
+      {
+        "method": "World_setup facts describing precipitation, environmental visibility and their spatial and temporal variation.",
+        "name": "weather_visibility_setup",
+        "unit": "categorical; m; source-declared physical intensity unit"
+      },
+      {
+        "method": "Observer position and orientation, viewing reference, target geometry and occluder geometry used to describe physical sight distance.",
+        "name": "sight_distance_geometry",
+        "unit": "m; rad; identifier"
+      },
+      {
+        "method": "Vehicle, tire, brake, loading and road-contact properties relevant to recorded stopping behavior, with configuration provenance and uncertainty.",
+        "name": "vehicle_physical_configuration",
+        "unit": "structured physical record with declared units"
+      },
+      {
+        "method": "If modeled stopping evidence is supplied, its model identity, version, source, assumptions, input provenance, declared units and applicability limitations.",
+        "name": "stopping_distance_model_provenance",
+        "unit": "structured provenance record"
+      },
+      {
+        "method": "Clock, coordinate frame, roadway-location reference and measurement conventions connecting actor, traffic and environmental evidence.",
+        "name": "measurement_reference",
+        "unit": "s; m; rad; identifier"
+      }
+    ],
+    "limitations": [
+      "The phrase 'reasonable or proper' remains unresolved; these requirements supply physical evidence without selecting a legal threshold, interpretation or compliance label.",
+      "The source atom drv.sight_distance_adequate and its surrogate description introduce a judgment classification. This extraction conflict is retained explicitly; only underlying physical sight distance is requested here, without silently changing the source.",
+      "The supplied residue is preserved in the exact note. Its reference to surrogate rules and model bounds does not authorize selecting an operationalization, model, bound or decision pattern.",
+      "Observed actions and circumstances do not establish interior mental states, intent or what the actor actually perceived.",
+      "Actual stopping distance is unavailable without a recorded stopping event and documented measurement endpoints. Missing stopping observations must remain missing.",
+      "Modeled stopping distance is derived evidence whose applicability depends on documented assumptions and inputs; it does not establish an observed stopping outcome.",
+      "Physical sight distance depends on viewing geometry, target characteristics, occlusion and measurement method; it does not establish adequacy or actual perception.",
+      "Traffic queue annotations depend on their extraction conventions. Underlying participant positions and motion must remain available without adopting an annotation as a legal rule.",
+      "Authored roadway and weather facts must remain distinguishable from measured physical observations, and factual lookups remain sourced world_setup inputs.",
+      "No simulator capabilities or external coverage landmarks were verified from the supplied inputs. The landmarks list is empty, and recording availability is not asserted.",
+      "Sampling, occlusion, synchronization and measurement uncertainty can limit reconstruction of contemporaneous conditions; these requirements do not support every imaginable later predicate.",
+      "No existing observable_requirements were supplied for this matched phrase and note.",
+      "Source capability limitation is prospectively addressed by native setup-probe-v4 and per-episode source-bound RGB contrast calibration; this remains finite target-specific sampled environmental range, never exact meteorological cutoff or geometric sight distance.",
+      "No modeled stopping distance is supplied; optional model channel explicitly records null. No legal speed/adequacy label."
+    ]
+  },
+  "variable_assignments": {
+    "available_sight_distance": {
+      "kind": "world_setup",
+      "value": {
+        "coarse_m": 10,
+        "method": "Reviewed C353238 body ray conventions",
+        "no_adequacy_classification": true,
+        "refinement_m": 0.25,
+        "search_m": 230
+      }
+    },
+    "commanded_speed": {
+      "kind": "controller",
+      "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+      "value": 3.0
+    },
+    "ego_is_driving_or_operating": {
+      "kind": "subject_behavior",
+      "value": null
+    },
+    "ego_speed": {
+      "kind": "subject_behavior",
+      "value": null
+    },
+    "ego_stopping_distance": {
+      "kind": "subject_behavior",
+      "value": null
+    },
+    "highway_width": {
+      "kind": "world_setup",
+      "value": {
+        "boundary_source": "Native OpenDRIVE road1, +/-5m full boundary; distinct lane+/-2 shoulders",
+        "driving_lane_m": 3.5,
+        "full_highway_m": 10,
+        "roadway_m": 7,
+        "shoulder_each_m": 1.5
+      }
+    },
+    "ice_or_snow": {
+      "kind": "world_setup",
+      "value": false
+    },
+    "nearby_vehicle_speeds": {
+      "kind": "subject_behavior",
+      "value": null
+    },
+    "nearby_vehicle_trajectories": {
+      "kind": "subject_behavior",
+      "value": null
+    },
+    "precipitation": {
+      "kind": "world_setup",
+      "value": {
+        "native_parameter": 0,
+        "type": "none, authored",
+        "unit": "CARLA native parameter, not calibrated physical intensity"
+      }
+    },
+    "road_curvature": {
+      "kind": "world_setup",
+      "value": 0
+    },
+    "road_surface": {
+      "kind": "world_setup",
+      "value": {
+        "authored": "Standalone generated asphalt without snow/ice layers",
+        "native_assets_and_inventory_required": true
+      }
+    },
+    "traffic_queue_behind": {
+      "kind": "subject_behavior",
+      "value": null
+    },
+    "visibility": {
+      "kind": "world_setup",
+      "value": {
+        "calibration_reference": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/runs/demo-thirteen-complete-20261010/continuation/20261017-C230259-v1/setup-probe-v4/environment_calibration.json",
+        "constant_weather_required": true,
+        "instrument": "Native RGB/instance target contrast range; sampled bounds retained"
+      }
+    },
+    "wet_road": {
+      "kind": "world_setup",
+      "value": false
+    }
+  },
+  "required_atoms": [
+    "env.ice_or_snow",
+    "env.precipitation",
+    "env.visibility",
+    "env.wet_road",
+    "kin.speed",
+    "kin.velocity",
+    "st.curvature",
+    "st.lane_width",
+    "st.roadway",
+    "st.sight_distance"
+  ],
+  "source_template": {
+    "actor": "motor_vehicle_driver",
+    "extraction_conflicts": [
+      "Source summary retains stopping/sight surrogate language. It supplies no adopted legal speed threshold; physical sight distance and observed stopping displacement remain separate. Highway width is not lane width."
+    ],
+    "law_id": "NRS-484B-600-1a",
+    "parameter_refs": [
+      {
+        "kind": "subject_behavior",
+        "name": "ego_is_driving_or_operating",
+        "range_or_domain": "Boolean established from recorded vehicle operation."
+      },
+      {
+        "kind": "subject_behavior",
+        "name": "ego_speed",
+        "range_or_domain": "Nonnegative measured scalar speed in m/s; canonical quantity for kin.speed and operating_speed."
+      },
+      {
+        "kind": "subject_behavior",
+        "name": "traffic_queue_behind",
+        "range_or_domain": "Recorded presence, participant identities and physical arrangement of traffic queued behind the ego vehicle; corresponds to drv.queue_behind."
+      },
+      {
+        "kind": "subject_behavior",
+        "name": "nearby_vehicle_speeds",
+        "range_or_domain": "Time-indexed nonnegative measured scalar speeds in m/s, keyed by nearby participant; scalar component of surrounding traffic kin.velocity."
+      },
+      {
+        "kind": "subject_behavior",
+        "name": "nearby_vehicle_trajectories",
+        "range_or_domain": "Time-indexed measured nearby participant positions and trajectory-derived directions; directional component of surrounding traffic kin.velocity."
+      },
+      {
+        "kind": "world_setup",
+        "name": "highway_width",
+        "range_or_domain": "Positive physical width in meters with explicit measurement boundaries; preserve lane-width observations from st.lane_width."
+      },
+      {
+        "kind": "world_setup",
+        "name": "road_surface",
+        "range_or_domain": "Authored roadway surface material and physical condition; corresponds to st.roadway."
+      },
+      {
+        "kind": "world_setup",
+        "name": "wet_road",
+        "range_or_domain": "Authored presence and extent of roadway wetness; corresponds to env.wet_road."
+      },
+      {
+        "kind": "world_setup",
+        "name": "ice_or_snow",
+        "range_or_domain": "Authored presence, type and extent of ice or snow; corresponds to env.ice_or_snow."
+      },
+      {
+        "kind": "world_setup",
+        "name": "precipitation",
+        "range_or_domain": "Authored precipitation type and physical intensity; corresponds to env.precipitation."
+      },
+      {
+        "kind": "world_setup",
+        "name": "visibility",
+        "range_or_domain": "Authored physical visibility conditions and visibility distance in meters; corresponds to env.visibility."
+      },
+      {
+        "kind": "world_setup",
+        "name": "road_curvature",
+        "range_or_domain": "Roadway curvature profile in inverse meters; corresponds to st.curvature."
+      },
+      {
+        "kind": "world_setup",
+        "name": "available_sight_distance",
+        "range_or_domain": "Physical sight-distance profile in meters tied to roadway location and viewing geometry; underlying observation for drv.sight_distance_adequate, without an adequacy classification."
+      },
+      {
+        "kind": "subject_behavior",
+        "name": "ego_stopping_distance",
+        "range_or_domain": "Nonnegative actual stopping distance in meters when established from a delivered trace, with measurement endpoints recorded; corresponds to drv.stopping_distance. A model estimate is separate derived evidence and does not guarantee an observed outcome."
+      },
+      {
+        "kind": "controller",
+        "name": "commanded_speed",
+        "range_or_domain": "Engineering commanded scalar speed in m/s; actual motion remains observed."
+      }
+    ],
+    "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than is reasonable or proper, having due regard for the traffic, surface and width of the highway, the weather and other highway conditions.",
+    "source_required_observations": [
+      {
+        "atom": "kin.speed",
+        "note": "the speed driven"
+      },
+      {
+        "atom": "drv.queue_behind",
+        "note": "the traffic the speed is judged against"
+      },
+      {
+        "atom": "kin.velocity",
+        "note": "the surrounding traffic's speeds"
+      },
+      {
+        "atom": "st.lane_width",
+        "note": "the width of the highway"
+      },
+      {
+        "atom": "st.roadway",
+        "note": "its surface"
+      },
+      {
+        "atom": "env.wet_road",
+        "note": "a surface condition"
+      },
+      {
+        "atom": "env.ice_or_snow",
+        "note": "another"
+      },
+      {
+        "atom": "env.precipitation",
+        "note": "the weather"
+      },
+      {
+        "atom": "env.visibility",
+        "note": "another highway condition"
+      },
+      {
+        "atom": "st.curvature",
+        "note": "the geometry the speed must suit"
+      },
+      {
+        "atom": "drv.sight_distance_adequate",
+        "note": "the surrogate for a reasonable and proper speed"
+      },
+      {
+        "atom": "drv.stopping_distance",
+        "note": "the same"
+      }
+    ],
+    "source_residue": [
+      "tier S: 'reasonable or proper' is the whole obligation. Any rule is a surrogate whose bounds come from a stopping- or sight-distance model, declared as an operationalization claim"
+    ],
+    "structure": {
+      "activation": {
+        "condition": "The actor drives or operates a vehicle of any kind or character.",
+        "numeric_conditions": []
+      },
+      "exceptions": [],
+      "judgment_calls_needed": [
+        {
+          "note": "Source clause: \"A rate of speed greater than is reasonable or proper, having due regard for the traffic, surface and width of the highway, the weather and other highway conditions.\" The legal standard remains unresolved. Required physical observations are ego_speed, traffic_queue_behind, nearby_vehicle_speeds, nearby_vehicle_trajectories, highway_width, road_surface, wet_road, ice_or_snow, precipitation, visibility, road_curvature, available_sight_distance and ego_stopping_distance. Preserve the summary residue: \"tier S: 'reasonable or proper' is the whole obligation. Any rule is a surrogate whose bounds come from a stopping- or sight-distance model, declared as an operationalization claim\". Record physical sight distance without asserting that it is adequate. Any modeled stopping distance requires explicit model provenance and must remain distinguishable from observed stopping behavior. These observations do not establish a legal speed threshold or resolve the judgment.",
+          "observable_requirements": {
+            "context_inputs": [
+              {
+                "description": "Association of the motor_vehicle_driver actor with the operated vehicle and relevant operation interval.",
+                "name": "actor_vehicle_association",
+                "unit": "identifier"
+              },
+              {
+                "description": "Authored roadway, lane and highway boundaries, elevation profile and curvature, with location references and geometry provenance.",
+                "name": "roadway_geometry",
+                "unit": "m; rad; 1/m"
+              },
+              {
+                "description": "World_setup facts describing road material, physical condition, wetness and ice or snow, with authorship or factual source provenance.",
+                "name": "roadway_surface_setup",
+                "unit": "categorical; spatial record"
+              },
+              {
+                "description": "World_setup facts describing precipitation, environmental visibility and their spatial and temporal variation.",
+                "name": "weather_visibility_setup",
+                "unit": "categorical; m; source-declared physical intensity unit"
+              },
+              {
+                "description": "Observer position and orientation, viewing reference, target geometry and occluder geometry used to describe physical sight distance.",
+                "name": "sight_distance_geometry",
+                "unit": "m; rad; identifier"
+              },
+              {
+                "description": "Vehicle, tire, brake, loading and road-contact properties relevant to recorded stopping behavior, with configuration provenance and uncertainty.",
+                "name": "vehicle_physical_configuration",
+                "unit": "structured physical record with declared units"
+              },
+              {
+                "description": "If modeled stopping evidence is supplied, its model identity, version, source, assumptions, input provenance, declared units and applicability limitations.",
+                "name": "stopping_distance_model_provenance",
+                "unit": "structured provenance record"
+              },
+              {
+                "description": "Clock, coordinate frame, roadway-location reference and measurement conventions connecting actor, traffic and environmental evidence.",
+                "name": "measurement_reference",
+                "unit": "s; m; rad; identifier"
+              }
+            ],
+            "landmarks": [],
+            "limitations": [
+              "The phrase 'reasonable or proper' remains unresolved; these requirements supply physical evidence without selecting a legal threshold, interpretation or compliance label.",
+              "The source atom drv.sight_distance_adequate and its surrogate description introduce a judgment classification. This extraction conflict is retained explicitly; only underlying physical sight distance is requested here, without silently changing the source.",
+              "The supplied residue is preserved in the exact note. Its reference to surrogate rules and model bounds does not authorize selecting an operationalization, model, bound or decision pattern.",
+              "Observed actions and circumstances do not establish interior mental states, intent or what the actor actually perceived.",
+              "Actual stopping distance is unavailable without a recorded stopping event and documented measurement endpoints. Missing stopping observations must remain missing.",
+              "Modeled stopping distance is derived evidence whose applicability depends on documented assumptions and inputs; it does not establish an observed stopping outcome.",
+              "Physical sight distance depends on viewing geometry, target characteristics, occlusion and measurement method; it does not establish adequacy or actual perception.",
+              "Traffic queue annotations depend on their extraction conventions. Underlying participant positions and motion must remain available without adopting an annotation as a legal rule.",
+              "Authored roadway and weather facts must remain distinguishable from measured physical observations, and factual lookups remain sourced world_setup inputs.",
+              "No simulator capabilities or external coverage landmarks were verified from the supplied inputs. The landmarks list is empty, and recording availability is not asserted.",
+              "Sampling, occlusion, synchronization and measurement uncertainty can limit reconstruction of contemporaneous conditions; these requirements do not support every imaginable later predicate.",
+              "No existing observable_requirements were supplied for this matched phrase and note."
+            ],
+            "observables": [
+              {
+                "description": "Recorded vehicle operation associated with the motor_vehicle_driver actor, with supporting vehicle motion and control records.",
+                "name": "ego_is_driving_or_operating",
+                "unit": "Boolean"
+              },
+              {
+                "description": "Time-indexed measured scalar speed of the actor's vehicle throughout operation.",
+                "name": "ego_speed",
+                "unit": "m/s"
+              },
+              {
+                "description": "Time-indexed presence, identities, positions and physical arrangement of traffic behind the actor's vehicle, retaining underlying observations and any queue annotation provenance.",
+                "name": "traffic_queue_behind",
+                "unit": "structured participant record; m"
+              },
+              {
+                "description": "Time-indexed measured scalar speeds keyed by nearby vehicle identity.",
+                "name": "nearby_vehicle_speeds",
+                "unit": "m/s"
+              },
+              {
+                "description": "Time-indexed nearby vehicle positions and trajectory-derived directions, with participant identity and coordinate frame.",
+                "name": "nearby_vehicle_trajectories",
+                "unit": "m; s; rad"
+              },
+              {
+                "description": "Physical highway width at recorded roadway locations, with measurement boundaries and separate lane-width observations.",
+                "name": "highway_width",
+                "unit": "m"
+              },
+              {
+                "description": "Roadway surface material and physical condition linked to the portion of roadway occupied or approached by the actor's vehicle.",
+                "name": "road_surface",
+                "unit": "categorical; spatial record"
+              },
+              {
+                "description": "Presence and spatial extent of roadway wetness, with temporal changes and evidence provenance.",
+                "name": "wet_road",
+                "unit": "Boolean; spatial record"
+              },
+              {
+                "description": "Presence, type and spatial extent of ice or snow on the roadway, with temporal changes and evidence provenance.",
+                "name": "ice_or_snow",
+                "unit": "categorical; spatial record"
+              },
+              {
+                "description": "Precipitation type and physical intensity over time, preserving the measurement method and its declared unit.",
+                "name": "precipitation",
+                "unit": "categorical; source-declared physical intensity unit"
+              },
+              {
+                "description": "Physical visibility distance and environmental visibility conditions over time, with the observation method and target characteristics.",
+                "name": "visibility",
+                "unit": "m; categorical"
+              },
+              {
+                "description": "Roadway curvature profile linked to roadway location and the vehicle's traveled path.",
+                "name": "road_curvature",
+                "unit": "1/m"
+              },
+              {
+                "description": "Physical sight-distance profile linked to roadway location, viewing geometry, target and occluders, without an adequacy classification.",
+                "name": "available_sight_distance",
+                "unit": "m"
+              },
+              {
+                "description": "Actual stopping distance when established by a recorded stopping event, retaining measurement endpoints, traveled path and the associated motion history.",
+                "name": "ego_stopping_distance",
+                "unit": "m"
+              }
+            ],
+            "recording_needs": [
+              {
+                "description": "Record actor-vehicle association, operation evidence, vehicle positions, speed and control history throughout operation on a shared time reference.",
+                "name": "synchronized_operation_history",
+                "unit": "s; Boolean; m; m/s; rad"
+              },
+              {
+                "description": "Record nearby participant identities, positions, speeds and trajectories, including traffic behind the actor vehicle and observation gaps.",
+                "name": "synchronized_traffic_history",
+                "unit": "s; identifier; m; m/s; rad"
+              },
+              {
+                "description": "Record contemporaneous highway and lane widths, curvature, surface material, wetness and ice or snow, linked to roadway locations and physical measurement boundaries.",
+                "name": "roadway_condition_history",
+                "unit": "s; m; 1/m; categorical; spatial record"
+              },
+              {
+                "description": "Record contemporaneous precipitation and physical visibility conditions, preserving authored facts separately from measured evidence.",
+                "name": "weather_visibility_history",
+                "unit": "s; m; categorical; source-declared physical intensity unit"
+              },
+              {
+                "description": "Record physical sight distance with observer, target and occluder geometry, roadway location, measurement method and uncertainty.",
+                "name": "sight_distance_evidence",
+                "unit": "s; m; rad; identifier"
+              },
+              {
+                "description": "When a stopping event occurs, record actual motion, braking history, distance measurement endpoints, endpoint selection provenance and contemporaneous vehicle and roadway conditions.",
+                "name": "observed_stopping_event",
+                "unit": "s; m; m/s; structured endpoint record"
+              },
+              {
+                "description": "If supplied, record modeled stopping distance separately from observed stopping distance, with model version, assumptions, inputs, units, provenance and uncertainty.",
+                "name": "modeled_stopping_distance",
+                "unit": "m; structured provenance record"
+              },
+              {
+                "description": "Record observation origin, authored or measured status, derivation method, temporal sampling metadata, spatial resolution, uncertainty, missing data and synchronization limitations.",
+                "name": "evidence_quality_provenance",
+                "unit": "structured provenance record"
+              }
+            ],
+            "sweep_dimensions": [
+              {
+                "description": "Physical variation in the actor vehicle's speed history during operation.",
+                "name": "ego_speed",
+                "unit": "m/s"
+              },
+              {
+                "description": "Physical variation in the presence, arrangement and motion histories of traffic behind the actor vehicle.",
+                "name": "traffic_queue_behind",
+                "unit": "structured participant record; m"
+              },
+              {
+                "description": "Physical variation in nearby participant speed histories.",
+                "name": "nearby_vehicle_speeds",
+                "unit": "m/s"
+              },
+              {
+                "description": "Physical variation in nearby participant paths, directions and relative spatial arrangements.",
+                "name": "nearby_vehicle_trajectories",
+                "unit": "m; s; rad"
+              },
+              {
+                "description": "Physical variation in highway and lane widths using documented measurement boundaries.",
+                "name": "highway_width",
+                "unit": "m"
+              },
+              {
+                "description": "Variation in authored surface materials and physical conditions along the traveled roadway.",
+                "name": "road_surface",
+                "unit": "categorical; spatial record"
+              },
+              {
+                "description": "Variation in authored roadway wetness presence, extent and temporal history.",
+                "name": "wet_road",
+                "unit": "Boolean; spatial record"
+              },
+              {
+                "description": "Variation in authored ice or snow presence, type, extent and temporal history.",
+                "name": "ice_or_snow",
+                "unit": "categorical; spatial record"
+              },
+              {
+                "description": "Physical variation in precipitation type, intensity and temporal history.",
+                "name": "precipitation",
+                "unit": "categorical; source-declared physical intensity unit"
+              },
+              {
+                "description": "Physical variation in environmental visibility conditions and measured visibility distance.",
+                "name": "visibility",
+                "unit": "m; categorical"
+              },
+              {
+                "description": "Physical variation in the roadway curvature profile.",
+                "name": "road_curvature",
+                "unit": "1/m"
+              },
+              {
+                "description": "Physical variation in sight-distance profiles through roadway, viewing, target and occluder geometry.",
+                "name": "available_sight_distance",
+                "unit": "m"
+              },
+              {
+                "description": "Physical variation in vehicle configuration, initial motion, braking history and road-contact conditions associated with observed stopping events; actual stopping distance remains a recorded outcome.",
+                "name": "stopping_event_conditions",
+                "unit": "structured physical record with declared units"
+              }
+            ]
+          },
+          "phrase": "reasonable or proper"
+        }
+      ],
+      "law_id": "NRS-484B-600-1a",
+      "obligation": {
+        "description": "Drive or operate without exceeding a rate of speed that is reasonable or proper, having due regard for the traffic, surface and width of the highway, the weather and other highway conditions.",
+        "numeric_conditions": [],
+        "type": "must_not"
+      },
+      "timing": {
+        "description": "Continuous while driving or operating the vehicle; record speed and contemporaneous traffic, roadway and weather conditions throughout operation.",
+        "numeric_conditions": []
+      }
+    },
+    "template_id": "NRS-484B-600-1a@motor_vehicle_driver"
+  },
+  "surface_asset_paths": [
+    "/pscratch/sd/m/msoroco/world-model-spec/carla/CarlaUE4/Content/Carla/Static/GenericMaterials/RoadPainterMaterials/MI_Road_Asphalt.uexp",
+    "/pscratch/sd/m/msoroco/world-model-spec/carla/CarlaUE4/Content/Carla/Static/GenericMaterials/RoadPainterMaterials/MI_Road_Asphalt.uasset"
+  ],
+  "public_way_road_ids": [
+    1
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "jurisdiction": "Explicit synthetic Nevada publicly dedicated highway open to public traffic; not a factual claim about a real road",
+      "driver": "Synthetic conventional motor_vehicle_driver in physical control of native Tesla; automation status authored",
+      "traffic": "Separate actual oncoming native Lincoln, fixed starting station1100m/opposite lane and7m/s controller",
+      "surface": "Native generated dry road without authored ice/snow layers; source assets and actual native inventory retained",
+      "standards": "Reasonable or proper, due regard and sight adequacy unresolved"
+    },
+    "environmental_visibility": "RGB target-specific sampled contrast range under exact recorded constant weather, distinct from geometric sight distance"
+  }
+}

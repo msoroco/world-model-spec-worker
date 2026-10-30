@@ -1,11 +1,11 @@
 # Full demo-test delivery preparation
 
-Update 009 uses `runtime/main-pipeline-v5` and return branch `worker/demo-test-full-delivery-v2`. Read `DELIVERY_CONTRACT.md` first. Every selected case needs a primary and at least one tested physical fallback. The canonical queue must prepare, execute and accept one exact case through the local pipeline. Preserve the existing case IDs and comparisons. No CARLA, NERSC or local campaign database work is part of this return.
+Update 010 uses `runtime/main-pipeline-v6` and return branch `worker/demo-test-full-delivery-v2`. Read `DELIVERY_CONTRACT.md` first. Every selected case needs a primary and at least one tested physical fallback. The canonical queue must prepare, execute and accept one exact case through the local pipeline. Preserve the existing case IDs and comparisons. No CARLA, NERSC or local campaign database work is part of this return.
 
-Start from updated `main`. Fetch `worker/demo-test-full-delivery-v1` at commit `43af39a1cd5d231d9c71d2d855e206fc2dd57043` and restore only its `work/` subtree as editable CPU preparation. Do not merge its old batch, runtime, notices or proofs as current authority. Replace the `runtime-v3.py` and `sitecustomize` workaround with ordinary root launchers. Re-run all exact proofs under v5.
+Start from updated `main`. Fetch `worker/demo-test-full-delivery-v1` at commit `43af39a1cd5d231d9c71d2d855e206fc2dd57043` and restore only its `work/` subtree as editable CPU preparation. Do not merge its old batch, runtime, notices or proofs as current authority. Replace the `runtime-v3.py` and `sitecustomize` workaround with ordinary root launchers. Re-run all exact proofs under v6.
 
 The operator starts this agent manually. Use Python 3.11 or newer; create an
-ignored `.venv-cpu` and install `runtime/main-pipeline-v5/requirements-cpu.txt`.
+ignored `.venv-cpu` and install `runtime/main-pipeline-v6/requirements-cpu.txt`.
 Software compatibility also needs FFmpeg and the Lean `lake` toolchain pinned
 by the exported library. Record a precise dependency blocker if either cannot
 be installed. Read `batch.json`, its four partitions,
@@ -64,7 +64,7 @@ SHA-256. Put unresolved physical or legal conclusions in separate limitations;
 do not use `pending`, `unknown`, or an empty value as a measurement.
 
 Give each case a `worker-fixture-recipe-v1` JSON file with `base` set to
-`runtime/main-pipeline-v5/fixtures/retained-speed` and text `additions`
+`runtime/main-pipeline-v6/fixtures/retained-speed` and text `additions`
 (`path`, `source`, `sha256`) from that case's `work/` directory. The contract's
 recipe must set `remove` to `["case.json","config.json","result.json"]`
 to remove the retained example's outputs before the case's code runs. The contract's

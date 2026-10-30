@@ -100,6 +100,13 @@ Write `work/_shared/local-integration-proof.json` with format
 recording ID in both test selections and no membership from a failed audit.
 This is a software integration proof, not a physical acceptance claim.
 
+The local operator imports the committed worker return once, then uses the
+`local_checkout` path in the import receipt for preparation, execution and
+acceptance. That checkout lives under the main scenario pipeline artifact root
+and does not need `.git` or subsequent access to the remote worker repository.
+The integration proof must exercise this path, including a repeat import from
+the local checkout.
+
 ## Completion gate
 
 Run `python3.11 worker_check.py --complete --require-delivery-ready` after the
