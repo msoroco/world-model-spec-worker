@@ -1,0 +1,53 @@
+{
+  "template_id": "NRS-484B-600-1c@motor_vehicle_driver",
+  "law_id": "NRS-484B-600-1c",
+  "actor": "motor_vehicle_driver",
+  "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than that posted by a public authority for the particular portion of highway being traversed.",
+  "structure": {
+    "law_id": "NRS-484B-600-1c",
+    "activation": {
+      "condition": "a public authority has posted a speed limit for the portion of highway; the subject drives on that portion",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than that posted by a public authority for the particular portion of highway being traversed.",
+      "type": "must",
+      "numeric_conditions": [
+        {
+          "variable": "ego_speed",
+          "operator": ">",
+          "value": "posted_speed_mps",
+          "unit": "m/s"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "the limit binds at every instant on the posted portion; the violation is any instant above the posted value, subject to a declared measurement tolerance",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "Between-frame peak and public highway status",
+        "note": "Original physical evidence required; legal interpretation deferred"
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "Exact authored branch values; physical realization unverified"
+    },
+    {
+      "name": "posted_speed_mps",
+      "kind": "world_setup",
+      "range_or_domain": "Exact authored branch values; physical realization unverified"
+    },
+    {
+      "name": "requested_speed_mps",
+      "kind": "controller",
+      "range_or_domain": "Exact authored branch values; physical realization unverified"
+    }
+  ]
+}

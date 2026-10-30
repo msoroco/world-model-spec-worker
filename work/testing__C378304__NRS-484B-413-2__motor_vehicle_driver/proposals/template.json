@@ -1,0 +1,93 @@
+{
+  "template_id": "NRS-484B-413-2@motor_vehicle_driver",
+  "law_id": "NRS-484B-413-2",
+  "actor": "motor_vehicle_driver",
+  "quote": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather.",
+  "structure": {
+    "law_id": "NRS-484B-413-2",
+    "activation": {
+      "condition": "the subject is about to turn right or left, or otherwise change course"
+    },
+    "obligation": {
+      "description": "Signal a turn or other course change continuously over the applicable approach distance.",
+      "type": "must"
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "the signal must run continuously over the last 100 feet before the change in a business or residential district, and over the last 300 feet elsewhere; 'continuously' — a signal switched on and off inside the distance does not satisfy the rule; the trace must cover at least the last 300 feet of approach for the longer case to be decidable",
+      "distance_rules": [
+        {
+          "area": "business or residential district",
+          "minimum_feet": 100,
+          "source_clause": "not less than the last 100 feet traveled in a business or residential district"
+        },
+        {
+          "area": "any other area",
+          "minimum_feet": 300,
+          "source_clause": "not less than the last 300 feet traveled in any other area"
+        }
+      ]
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "business or residential district",
+        "note": "'business or residential district' is a legal region class: a reading assumption that selects which of the two distances applies"
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_speed_mps",
+      "kind": "controller",
+      "unit": "m/s"
+    },
+    {
+      "name": "district_frontage_m",
+      "kind": "world_setup",
+      "unit": "categorical"
+    },
+    {
+      "name": "business_use_frontage_m",
+      "kind": "world_setup",
+      "unit": "categorical"
+    }
+  ],
+  "source_required_observations": [
+    {
+      "atom": "sig.turn_indicator",
+      "note": "the signal, left or right"
+    },
+    {
+      "atom": "sig.hand_signal",
+      "note": "or the arm signal with its meaning"
+    },
+    {
+      "atom": "drv.distance_while",
+      "note": "the path length over which the signal has been shown continuously"
+    },
+    {
+      "atom": "kin.path_length",
+      "note": "the 100-foot and 300-foot thresholds"
+    },
+    {
+      "atom": "drv.turning",
+      "note": "the turn or course change that follows"
+    },
+    {
+      "atom": "drv.lane_change",
+      "note": "'otherwise turn from a direct course'"
+    },
+    {
+      "atom": "env.precipitation",
+      "note": "'regardless of the weather' — no weather excuse"
+    },
+    {
+      "atom": "kin.speed",
+      "note": "the speed that converts the distance into a time"
+    }
+  ],
+  "source_residue": [
+    "'business or residential district' is a legal region class: a reading assumption that selects which of the two distances applies"
+  ],
+  "status": "draft"
+}

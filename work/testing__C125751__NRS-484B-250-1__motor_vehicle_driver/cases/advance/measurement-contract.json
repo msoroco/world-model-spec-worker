@@ -1,0 +1,35 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "The driver of a vehicle approaching an intersection shall yield the right-of-way to a vehicle which has entered the intersection from a different highway. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+      "source": "NRS 484B.250(1); with 484B.250(5)",
+      "output_key": "complete_statutory_observations",
+      "method": "statutory_observations",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Highway dedication and public-access source context, conventional vehicle/controller classification and exact fixed cell identity; factual legal scope conclusions remain separate.",
+      "source": "assignment.witness.required_context; DEF-NRS-484A-080; DEF-NRS-484A-095; DEF-NRS-484A-320",
+      "output_key": "selected_scope_context",
+      "method": "selected_scope_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "case_observation.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "case_observation.json"
+    ],
+    "error_contains": "Missing required source: case_observation.json"
+  }
+}

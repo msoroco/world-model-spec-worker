@@ -1,0 +1,48 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Retain actual governing yellow-alone, related green termination and subsequent red exhibition history.",
+      "source": "NRS 484B.307(6)(a)",
+      "method": "control_sequence",
+      "output_key": "governing_yellow_red_sequence",
+      "inputs": [
+        "signal_context.json",
+        "signal_history.jsonl"
+      ],
+      "kind": "measured",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Compare original full-body intersection entry with red exhibition without adding yellow stop duty or numerical immediacy definition.",
+      "source": "NRS 484B.307(6)(a)",
+      "method": "entry_order",
+      "output_key": "red_exhibition_vs_body_entry",
+      "inputs": [
+        "signal_history.jsonl"
+      ],
+      "kind": "measured",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Preserve actual one-way to two-way route and statutory intersection boundary context.",
+      "source": "NRS 484B.307(6)(a)",
+      "method": "roadway_direction",
+      "output_key": "one_way_to_two_way_route",
+      "inputs": [
+        "scenario_geometry.json"
+      ],
+      "kind": "measured",
+      "value_type": "object"
+    }
+  ],
+  "negative": {
+    "remove": [
+      "signal_history.jsonl"
+    ],
+    "error_contains": "Missing required source: signal_history.jsonl"
+  }
+}

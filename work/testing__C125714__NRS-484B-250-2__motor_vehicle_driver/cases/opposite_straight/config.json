@@ -1,0 +1,162 @@
+{
+  "case": {
+    "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__opposite_straight",
+    "target_law_id": "NRS-484B-250-2",
+    "target_type": "boundary_probe",
+    "rationale": "Other opposite driver fixed approach with distinct intention/controller action; actual driver intention requires independent evidence.",
+    "variable_assignments": {
+      "requested_speed_mps": {
+        "kind": "controller",
+        "value": 5.0,
+        "unit": "m/s"
+      },
+      "crossing_approach": {
+        "kind": "world_setup",
+        "value": "other from south crossing highway; ego from west divided highway"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Right-of-way and danger standard",
+      "Approximately same time"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "original_motion",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Native ego and crossing vehicle body/velocity history",
+          "time_window": "entire original 55s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz crossing entry brackets; legal approximately/yield standard unresolved"
+        },
+        {
+          "name": "native_geometry",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Native roadway crossing, median barrier segments and opening",
+          "time_window": "entire original 55s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz crossing entry brackets; legal approximately/yield standard unresolved"
+        },
+        {
+          "name": "device_inventory",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original official traffic control inventory per frame",
+          "time_window": "entire original 55s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz crossing entry brackets; legal approximately/yield standard unresolved"
+        },
+        {
+          "name": "view_provenance",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Four synchronized original source-camera identities",
+          "time_window": "entire original 55s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz crossing entry brackets; legal approximately/yield standard unresolved"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Exact intersection identity, median realization and public highway status require Native/local review.",
+        "Right-of-way and approximately same time remain legal judgments without chosen thresholds."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__opposite_straight",
+  "supported_case_ids": [
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__precedence",
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance",
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__other_later",
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__opposite_straight",
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__opposite_intends_left",
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__opposite_makes_left",
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__wide_same_crossing",
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__wide_separate_crossing"
+  ],
+  "cell_id": "C125714",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-250-2",
+  "duration_s": 55,
+  "rate_hz": 20,
+  "requested_speed_mps": 5.0,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached overhead crossing and median"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached forward approach"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed diagonal corner on both entry legs"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego attached modeled eye toward crossing"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity",
+    "st.median_or_divider"
+  ],
+  "source_packets": [
+    "scenario_geometry"
+  ],
+  "public_way_road_ids": [
+    1,
+    2,
+    3,
+    4,
+    11,
+    12
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "median_opening": "authored physical barrier objects with 40m gap; Native readback and pixel coverage required",
+      "other_highway": "road3/4 crossing at junction100"
+    }
+  },
+  "opposite_other": true,
+  "other_intends_left": false,
+  "other_makes_left": false,
+  "wait_for_other": true,
+  "ignore_precedence": false,
+  "physical_completion": {
+    "format": "worker-physical-completion-criteria-v002",
+    "criterion": "intersection_clearance",
+    "motion_source": "crossing_history.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 0.25,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true,
+    "context_sources": [],
+    "body_key": "ego_vertices_m",
+    "exit_axis": 0,
+    "exit_sign": 1
+  },
+  "processing_contract_version": 2
+}

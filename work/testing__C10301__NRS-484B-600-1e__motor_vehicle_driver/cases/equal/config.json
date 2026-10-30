@@ -1,0 +1,118 @@
+{
+  "case": {
+    "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal",
+    "target_law_id": "NRS-484B-600-1e",
+    "target_type": "boundary_probe",
+    "rationale": "Measure 80 mph relative to 80 mph with exact strict comparison; no physical result asserted.",
+    "variable_assignments": {
+      "requested_speed_mps": {
+        "kind": "controller",
+        "value": 35.7632,
+        "unit": "m/s"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Between-frame peak and public highway status"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Original actor velocity norm in trace.jsonl",
+          "time_window": "full original 45-second episode",
+          "reference_frame": "Native actor/world at original tick",
+          "uncertainty": "20 Hz samples; between-frame values unobserved"
+        },
+        {
+          "name": "kin.velocity",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Original native 3D actor velocity in trace.jsonl",
+          "time_window": "full original 45-second episode",
+          "reference_frame": "Native actor/world at original tick",
+          "uncertainty": "20 Hz samples; between-frame values unobserved"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Physical road status and actual four-view visibility remain Native checks."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal",
+  "supported_case_ids": [
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below",
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal",
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above"
+  ],
+  "cell_id": "C10301",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-600-1e",
+  "duration_s": 45,
+  "rate_hz": 20,
+  "requested_speed_mps": 35.7632,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed overhead along 1800m connected road"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached forward quarter"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed roadside reference at x=500m"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego attached modeled driver eye"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity",
+    "ru.subject"
+  ],
+  "source_packets": [],
+  "public_way_road_ids": [
+    1
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "public_highway": "synthetic authored context; not real-road proof"
+    }
+  },
+  "physical_completion": {
+    "format": "worker-physical-completion-criteria-v002",
+    "criterion": "travel_progress",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 804.6719999999999,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true,
+    "context_sources": [],
+    "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+  },
+  "processing_contract_version": 2
+}

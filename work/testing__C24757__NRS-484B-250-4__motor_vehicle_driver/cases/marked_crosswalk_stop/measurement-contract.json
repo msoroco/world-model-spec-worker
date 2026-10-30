@@ -1,0 +1,62 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Installed uncovered vehicular signals wholly inoperative at entry, with actual governance and original head histories.",
+      "source": "NRS 484B.250(4)",
+      "method": "inoperative_heads",
+      "output_key": "installed_dark_signal_heads",
+      "inputs": [
+        "signal_context.json",
+        "interaction_history.jsonl"
+      ],
+      "kind": "measured",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Stop at marked line; absent line before near-side marked or sidewalk-connection crosswalk; absent both nearest point with view.",
+      "source": "NRS 484B.250(4)",
+      "method": "stop_before_entry",
+      "output_key": "marked_line_stop_before_entry",
+      "inputs": [
+        "signal_context.json",
+        "interaction_history.jsonl"
+      ],
+      "kind": "measured",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "After stopping proceed cautiously, yielding to previously stopped vehicles and vehicles within intersection, keeping complete original histories.",
+      "source": "NRS 484B.250(4)",
+      "method": "priority_sequence",
+      "output_key": "earlier_stop_and_intersection_occupancy",
+      "inputs": [
+        "signal_context.json",
+        "interaction_history.jsonl"
+      ],
+      "kind": "measured",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Retain original driver viewpoint, real occluder rays and sight history without declaring continuous nearest point or legal visibility.",
+      "source": "NRS 484B.250(4)",
+      "method": "sight_obstruction",
+      "output_key": "sampled_sight_obstruction",
+      "inputs": [
+        "interaction_history.jsonl"
+      ],
+      "kind": "measured",
+      "value_type": "object"
+    }
+  ],
+  "negative": {
+    "remove": [
+      "interaction_history.jsonl"
+    ],
+    "error_contains": "Missing required source: interaction_history.jsonl"
+  }
+}

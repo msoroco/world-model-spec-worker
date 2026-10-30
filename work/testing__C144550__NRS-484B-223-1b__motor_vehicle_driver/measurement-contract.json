@@ -1,0 +1,48 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "If a highway has two or more clearly marked lanes for traffic traveling in one direction, vehicles must: Not be moved from that lane until the driver has given the appropriate turn signal and ascertained that such movement can be made with safety.",
+      "source": "NRS 484B.223(1)(b)",
+      "output_key": "signal_onset_relative_to_lateral_movement",
+      "method": "movement_event",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "scenario_geometry.json",
+        "lane_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Driver must ascertain movement safety; retain target-lane vehicle body gaps without inventing a safety threshold.",
+      "source": "assignment.witness.required_context",
+      "output_key": "target_lane_full_body_gap",
+      "method": "target_lane_gap",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "lane_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Highway has two or more clearly marked lanes in one direction.",
+      "source": "assignment.witness.required_context",
+      "output_key": "one_way_marked_lane_context",
+      "method": "one_way_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "scenario_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "scenario_geometry.json"
+    ],
+    "error_contains": "Missing required source: scenario_geometry.json"
+  }
+}

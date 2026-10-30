@@ -1,0 +1,245 @@
+{
+  "cell_id": "C147311",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "C147311-NRS-484B-220-1-judgment-0",
+      "target_law_id": "NRS-484B-220-1",
+      "judgment_refs": [
+        {
+          "phrase": "designated and signposted",
+          "note": "Actual one-way designation and sign governance require source and original pixel review."
+        }
+      ],
+      "rationale": "Preserve unresolved statutory judgment for physical coverage planning.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Native observed outcomes, sourced legal interpretation and a justified coverage axis are unavailable in CPU preparation."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": "NRS-484B-220-1",
+      "target_type": "baseline",
+      "rationale": "Neutral comparison definition; no selected capture.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "designated_direction_xy": {
+          "kind": "world_setup",
+          "value": [
+            1,
+            0
+          ]
+        }
+      },
+      "unresolved_judgment_calls": [
+        "designated and signposted"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native actor positions and velocity per tick",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "native_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map and authored one-way lane geometry per tick",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native one-way sign landmark and original tick identity",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "view_provenance",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four original synchronized camera source identities",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road designation and sign authority require sourced review; original sign pixels unverified."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+      "target_law_id": "NRS-484B-220-1",
+      "target_type": "boundary_probe",
+      "rationale": "Actual signed velocity direction with heading and sign fixed.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "designated_direction_xy": {
+          "kind": "world_setup",
+          "value": [
+            1,
+            0
+          ]
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Regulatory sign authority and realized pixel visibility"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native actor positions and velocity per tick",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "native_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map and authored one-way lane geometry per tick",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native one-way sign landmark and original tick identity",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "view_provenance",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four original synchronized camera source identities",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road designation and sign authority require sourced review; original sign pixels unverified."
+        ]
+      },
+      "paired_probe_id": "actual_direction",
+      "deliberate_differences": [
+        "requested_speed_mps",
+        "designated_direction_xy"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "source-grounded controlled comparison; legal judgment remains unresolved",
+        "target_value_or_branch": "designated"
+      }
+    },
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse",
+      "target_law_id": "NRS-484B-220-1",
+      "target_type": "boundary_probe",
+      "rationale": "Actual signed velocity direction with heading and sign fixed.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "designated_direction_xy": {
+          "kind": "world_setup",
+          "value": [
+            1,
+            0
+          ]
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Regulatory sign authority and realized pixel visibility"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native actor positions and velocity per tick",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "native_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map and authored one-way lane geometry per tick",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native one-way sign landmark and original tick identity",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "view_provenance",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four original synchronized camera source identities",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road designation and sign authority require sourced review; original sign pixels unverified."
+        ]
+      },
+      "paired_probe_id": "actual_direction",
+      "deliberate_differences": [
+        "requested_speed_mps",
+        "designated_direction_xy"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "source-grounded controlled comparison; legal judgment remains unresolved",
+        "target_value_or_branch": "opposed_reverse"
+      }
+    }
+  ]
+}

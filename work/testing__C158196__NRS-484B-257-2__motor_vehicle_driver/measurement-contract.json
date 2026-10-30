@@ -1,0 +1,230 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Except when traffic is being controlled by a police officer or a traffic-control signal:",
+      "source": "NRS 484B.257(2):text-0",
+      "output_key": "requirement_0",
+      "method": "control_and_response_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "The driver of a vehicle shall stop in obedience to a stop sign or yield in compliance with a yield sign, in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1], prior to entering an intersection if a stop sign or a yield sign is erected at one or more entrances thereto although not a part of a through highway and shall proceed cautiously, yielding to vehicles not so obligated to stop or yield and which are within the intersection or approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
+      "source": "NRS 484B.257(2):text-1",
+      "output_key": "requirement_1",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "a stop or yield sign is erected at one or more entrances to the intersection, although it is not part of a through highway",
+      "source": "assignment.summary:activation_conditions-0",
+      "output_key": "requirement_2",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "the subject approaches on a signed entrance",
+      "source": "assignment.summary:activation_conditions-1",
+      "output_key": "requirement_3",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 5,
+      "requirement": "Establish absence of actual officer traffic control for this sign-governed comparison; the statutory exception remains explicit.",
+      "source": "NRS 484B.257(2); governing-control exception absence",
+      "output_key": "requirement_5",
+      "method": "control_and_response_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "when traffic is being controlled by a traffic-control signal",
+      "source": "assignment.summary:exceptions-1",
+      "output_key": "requirement_6",
+      "method": "control_and_response_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 7,
+      "requirement": "stop or yield before entering, then proceed",
+      "source": "assignment.summary:timing_requirements-0",
+      "output_key": "requirement_7",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 8,
+      "requirement": "the yield continues while the subject moves across or within the intersection",
+      "source": "assignment.summary:timing_requirements-1",
+      "output_key": "requirement_8",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 9,
+      "requirement": "Establish non-through-highway status and all entrance stop/yield obligations.",
+      "source": "assignment.witness.required_context:review-context-0",
+      "output_key": "requirement_9",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 10,
+      "requirement": "Establish non-through-highway status, all entrance obligations, yield-sign governance and connected participant routes.",
+      "source": "assignment.witness.required_context:review-context-1",
+      "output_key": "requirement_10",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 11,
+      "requirement": "Establish the initial yield response and the stopping-reference hierarchy incorporated from the supplied subsection 1.",
+      "source": "assignment.witness.required_context:review-context-2",
+      "output_key": "requirement_11",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 14,
+      "requirement": "Preserve scene_requirements for governed approach, stopping-reference geometry, sightlines and participant routes.",
+      "source": "assignment.witness.required_context:review-context-5",
+      "output_key": "requirement_14",
+      "method": "nearest_visible_point",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "view_samples.jsonl",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 15,
+      "requirement": "Provide an approaching vehicle not so obligated to stop or yield, including a separate within-intersection instance.",
+      "source": "assignment.witness.required_context:review-context-6",
+      "output_key": "requirement_15",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 16,
+      "requirement": "Provide an intersection-occupying vehicle not obligated to stop or yield and separately retain approaching-vehicle histories.",
+      "source": "assignment.witness.required_context:review-context-7",
+      "output_key": "requirement_16",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 17,
+      "requirement": "Retain sightlines and interactions throughout subject movement across or within the intersection.",
+      "source": "assignment.witness.required_context:review-context-8",
+      "output_key": "requirement_17",
+      "method": "nearest_visible_point",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "view_samples.jsonl",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 18,
+      "requirement": "Retain the initial yield action, incorporated subsection 1 manner and subsequent movement interval.",
+      "source": "assignment.witness.required_context:review-context-9",
+      "output_key": "requirement_18",
+      "method": "stop_and_yield_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "view_samples.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "interaction_history.jsonl"
+    ],
+    "error_contains": "Missing required source: interaction_history.jsonl"
+  }
+}

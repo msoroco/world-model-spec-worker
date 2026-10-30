@@ -1,0 +1,303 @@
+{
+  "cell_id": "C144550",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral reference definition; not selected for capture",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": null,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "signal_onset_tick": {
+          "value": null,
+          "kind": "controller"
+        },
+        "lane_change_request_tick": {
+          "value": null,
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          },
+          {
+            "name": "lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body target-lane actor and signal-bit history",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Safety ascertainment is not inferred from a geometric gap or lamp bit."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal_and_open_gap",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Original signal/movement ordering and target-lane clearances; safety ascertainment left as legal/driver evidence judgment.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": 5.0,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "signal_onset_tick": {
+          "value": 80,
+          "kind": "controller"
+        },
+        "lane_change_request_tick": {
+          "value": 160,
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Appropriate signal",
+        "ascertained safety"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          },
+          {
+            "name": "lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body target-lane actor and signal-bit history",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Safety ascertainment is not inferred from a geometric gap or lamp bit."
+        ]
+      },
+      "paired_probe_id": "signal_before_movement",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "signal_and_open_gap"
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__late_signal",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Original signal/movement ordering and target-lane clearances; safety ascertainment left as legal/driver evidence judgment.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": 5.0,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "signal_onset_tick": {
+          "value": 80,
+          "kind": "controller"
+        },
+        "lane_change_request_tick": {
+          "value": 160,
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Appropriate signal",
+        "ascertained safety"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          },
+          {
+            "name": "lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body target-lane actor and signal-bit history",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Safety ascertainment is not inferred from a geometric gap or lamp bit."
+        ]
+      },
+      "paired_probe_id": "signal_before_movement",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "late_signal"
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__close_target_gap",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Original signal/movement ordering and target-lane clearances; safety ascertainment left as legal/driver evidence judgment.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": 5.0,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "signal_onset_tick": {
+          "value": 80,
+          "kind": "controller"
+        },
+        "lane_change_request_tick": {
+          "value": 160,
+          "kind": "controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Appropriate signal",
+        "ascertained safety"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          },
+          {
+            "name": "lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body target-lane actor and signal-bit history",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original world frame",
+            "uncertainty": "20Hz samples; lamp pixels and perception require GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Safety ascertainment is not inferred from a geometric gap or lamp bit."
+        ]
+      },
+      "paired_probe_id": "safety_ascertainment_context",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "close_target_gap"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "judgment-0",
+      "target_law_id": "NRS-484B-223-1b",
+      "judgment_refs": [
+        {
+          "phrase": "Appropriate signal",
+          "note": "Original physical evidence required; legal interpretation deferred"
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Existing v7 branch comparisons preserve exact identities; no legal cutoff is authored.",
+      "missing_inputs": [
+        "A source-backed scalar physical sweep design for this qualitative judgment is unavailable."
+      ]
+    },
+    {
+      "sweep_id": "judgment-1",
+      "target_law_id": "NRS-484B-223-1b",
+      "judgment_refs": [
+        {
+          "phrase": "ascertained safety",
+          "note": "Original physical evidence required; legal interpretation deferred"
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Existing v7 branch comparisons preserve exact identities; no legal cutoff is authored.",
+      "missing_inputs": [
+        "A source-backed scalar physical sweep design for this qualitative judgment is unavailable."
+      ]
+    }
+  ]
+}

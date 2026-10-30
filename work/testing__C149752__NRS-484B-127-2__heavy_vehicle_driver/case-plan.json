@@ -1,0 +1,491 @@
+{
+  "assignment_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver",
+  "actor": "heavy_vehicle_driver",
+  "cell_id": "C149752",
+  "law_id": "NRS-484B-127-2",
+  "selected_branch": "Qualifying truck following",
+  "cases": [
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "boundary_probe",
+      "rationale": "Measure full combination widths, actual all-unit gap, entrant occupancy, lane availability and prospective activity for follow_reference",
+      "variable_assignments": {
+        "requested_body_gap_m": {
+          "kind": "world_setup",
+          "value": 160
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit",
+        "overtaking vehicle may enter without danger"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native subject velocity norm from PipelineCapture",
+            "time_window": "full original 42-second following episode",
+            "reference_frame": "Original Native frame and road1 directed station",
+            "uncertainty": "20Hz samples; between-frame speed unobserved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Widths and body gap require full Native source review; fixture only exercises software."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "boundary_probe",
+      "rationale": "Measure full combination widths, actual all-unit gap, entrant occupancy, lane availability and prospective activity for overtake_probe",
+      "variable_assignments": {
+        "requested_body_gap_m": {
+          "kind": "world_setup",
+          "value": 160
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit",
+        "overtaking vehicle may enter without danger"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native subject velocity norm from PipelineCapture",
+            "time_window": "full original 42-second following episode",
+            "reference_frame": "Original Native frame and road1 directed station",
+            "uncertainty": "20Hz samples; between-frame speed unobserved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Widths and body gap require full Native source review; fixture only exercises software."
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "overtaking_passing",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ],
+      "fixed_conditions": [
+        "same truck widths, requested initial gap, lane count and source duration"
+      ],
+      "deliberate_differences": [
+        "actual following versus overtaking and passing controller and history"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "kin.speed",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+      "sha256": "866faa92f7dfc7b2512a2809f5e5644a10e63b888829472cacb9d1e7ab61e4ca"
+    },
+    {
+      "path": "inputs/definitions.jsonl",
+      "sha256": "824cd469115f586687c709bff2714968b4c9ab2ce22091c790887084480035c0"
+    },
+    {
+      "path": "references/v6-capability/index.json",
+      "sha256": "da62c780c03ff73f11f0e3a2d86001979ceb28532d22f9d21b7bc93ff3ec2d3a"
+    },
+    {
+      "path": "references/v6-capability/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/runner.py",
+      "sha256": "85bf4abcc383aa9f4b27539a31f2d03629ad2e0e25b70e2491cb76f3641e2b9e"
+    },
+    {
+      "path": "references/v6-capability/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/analyze.py",
+      "sha256": "3eb614d85066c8f2005f3027c78fbfea56654948199585c7fa2f934c4e317ab7"
+    },
+    {
+      "path": "references/v6-capability/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/scene.xodr",
+      "sha256": "1827fe921a70f808c35da09ff3ff0d6e9f19331cc70eb9f06f6cd6dae4c5c6d7"
+    },
+    {
+      "path": "examples/measurement/README.md",
+      "sha256": "a81c642db790611b4e0a6b533634564b19129ef9c0aa2b27856b95c26c97e7d7"
+    },
+    {
+      "path": "references/catalog.json",
+      "sha256": "87997ba7ceb64e0c98f56a269a561f5a2b5ab0266c9123ec3d60accf368bd26e"
+    },
+    {
+      "path": "runtime/main-pipeline-v1/capabilities/heavy_vehicle/following_controller.py",
+      "sha256": "a32fc115c6b50cb6a180adf6854de86741473365bac293d80914aff75ee13940"
+    },
+    {
+      "path": "references/accepted-sources/C102372/following_controller.py",
+      "sha256": "52606a8cfba26ad6e26ee042bd9559eb2181c2ea19e4c0fd17debfcd96a13f22"
+    },
+    {
+      "path": "references/accepted-sources/C102372/native_following_capture.py",
+      "sha256": "8391c541c78c510635a6af777346e1a830640dd634649f31abc6287507b6a59c"
+    },
+    {
+      "path": "references/accepted-sources/C102372/environment_capture.py",
+      "sha256": "16ab3eb8729f84859ba0e9ce35c82a25a4de9401704ad8c21446426828f92eea"
+    },
+    {
+      "path": "references/accepted-sources/C102372/scene.xodr",
+      "sha256": "1827fe921a70f808c35da09ff3ff0d6e9f19331cc70eb9f06f6cd6dae4c5c6d7"
+    },
+    {
+      "path": "examples/numeric/README.md",
+      "sha256": "fbef9c6d3d6feebae4b10cae728c887e626e5be14fea2450ba5bfcd99b8fd98b"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "CPU fixtures establish executable software compatibility only. No Native execution, pixels, Core/video acceptance or legal compliance.",
+    "Finite sampled body/ray measurements do not define statutory contact, danger, immediate hazard, cautious proceeding or visibility."
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "The driver of any truck or combination of vehicles 80 inches or more in overall width, which is following a truck, or combination of vehicles 80 inches or more in overall width, shall, whenever conditions permit, leave a space of 500 feet so that an overtaking vehicle may enter and occupy such space without danger, but this shall not prevent a truck or combination of vehicles from overtaking and passing any vehicle or combination of vehicles.",
+      "source": "NRS 484B.127(2):text-0",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved following_space_context preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "This subsection does not apply to any vehicle or combination of vehicles while moving on a highway on which there are two or more lanes available for traffic moving in the same direction.",
+      "source": "NRS 484B.127(2):text-1",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved truck_width_and_lanes preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "the subject is a truck or combination 80 inches or more in overall width",
+      "source": "assignment.summary:activation_conditions-0",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved truck_width_and_lanes preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "the vehicle ahead in the same lane is also a truck or combination 80 inches or more wide",
+      "source": "assignment.summary:activation_conditions-1",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved truck_width_and_lanes preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "the subject is following it",
+      "source": "assignment.summary:activation_conditions-2",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved following_space_context preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "the highway has fewer than two lanes for traffic in the subject's direction",
+      "source": "assignment.summary:activation_conditions-3",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved following_space_context preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "while overtaking and passing another vehicle or combination",
+      "source": "assignment.summary:exceptions-0",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved following_space_context preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "on a highway with two or more lanes available for traffic moving in the same direction",
+      "source": "assignment.summary:exceptions-1",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved truck_width_and_lanes preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "'whenever conditions permit' \u2014 the space need not be left where traffic or the road makes it impossible",
+      "source": "assignment.summary:exceptions-2",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved following_space_context preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "the 500-foot space is a standing requirement while following, not a single-instant test",
+      "source": "assignment.summary:timing_requirements-0",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved following_space_context preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "This shall not prevent a truck or combination of vehicles from overtaking and passing any vehicle or combination of vehicles; no post-overtake grace duration is supplied by this law.",
+      "source": "NRS 484B.127(2); original-law correction to unsupported summary post-overtake duration",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved following_space_context preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "Document overtaking and passing activity and preserve the unresolved conditions-permit and without-danger qualifications.",
+      "source": "assignment.witness.required_context:review-context-0",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved following_space_context preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "Establish both qualifying goods-transport trucks, their widths of at least 80 inches, the driver and the following relationship.",
+      "source": "assignment.witness.required_context:review-context-1",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved truck_width_and_lanes preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "Establish public-highway status and lane availability over time.",
+      "source": "assignment.witness.required_context:review-context-2",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved truck_width_and_lanes preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "Establish public-highway status.",
+      "source": "assignment.witness.required_context:review-context-3",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved following_space_context preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "Establish qualifying subject and lead trucks, each at least 80 inches overall width, and their driver relationships.",
+      "source": "assignment.witness.required_context:review-context-4",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved truck_width_and_lanes preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "Provide geometry and motion relevant to potential entering vehicles or combinations without declaring entry safe.",
+      "source": "assignment.witness.required_context:review-context-5",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved following_space_context preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "Retain spacing relative to the statutory 500 feet and physical circumstances relevant to entering vehicles or combinations.",
+      "source": "assignment.witness.required_context:review-context-6",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved following_space_context preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "Specify one available lane in the travel direction rather than inferring it from one-way status.",
+      "source": "assignment.witness.required_context:review-context-7",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved truck_width_and_lanes preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    },
+    {
+      "requirement": "Specify one available travel lane; one-way status alone does not establish lane count.",
+      "source": "assignment.witness.required_context:review-context-8",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved truck_width_and_lanes preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__follow_reference",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtake_probe"
+      ]
+    }
+  ],
+  "source_observation_mapping": {
+    "ru.truck": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.trailer_or_combination": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.extent": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.following": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.ahead_behind_in_lane": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.laned_roadway": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_adjacency": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.overtaking": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability-v1",
+    "duration_s": 42,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "All participant bodies and route context",
+        "interval": [
+          0,
+          42
+        ],
+        "view": "overview"
+      },
+      {
+        "subject": "Approach and lane body position",
+        "interval": [
+          0,
+          42
+        ],
+        "view": "approach"
+      },
+      {
+        "subject": "Junction boundaries and priority interaction",
+        "interval": [
+          0,
+          42
+        ],
+        "view": "reference_corner"
+      },
+      {
+        "subject": "Driver perspective and controls",
+        "interval": [
+          0,
+          42
+        ],
+        "view": "driver_reference"
+      }
+    ]
+  },
+  "physical_pixel_audits": [
+    "Review all original source ticks and four views for bodies, governance, markings and occlusion.",
+    "Review complete startup, approach, interaction, clearance and final observation.",
+    "Compare measured deliberate variable and all fixed conditions; retain uncertainty without legal verdict.",
+    "Verify actual goods-transport truck and drawn-unit classifications, overall widths against80inches, all-unit body envelopes and physical tow-hitch force/stability readback.",
+    "Verify measured surface space against statutory500feet, actual entrant geometry and full entry/occupancy histories without converting engineering clearance to without-danger judgment.",
+    "Verify available same-direction lane count over time, actual obstructing bodies and traffic constraints, and actual overtaking/passing history; no post-overtake grace duration."
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "case": {
+    "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__unmarked_crosswalk_stop",
+    "target_law_id": "NRS-484B-250-4",
+    "target_type": "boundary_probe",
+    "rationale": "Controlled unmarked_crosswalk_stop under four installed inoperative uncovered head candidates; physical qualification remains original pixel audit.",
+    "variable_assignments": {
+      "head_state": {
+        "kind": "controller",
+        "value": "Off"
+      },
+      "west_stopline_x_m": {
+        "kind": "world_setup",
+        "value": -11,
+        "unit": "m"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "uncovered rendered heads",
+      "continuous cessation",
+      "cautiously",
+      "yielding",
+      "nearest clear viewpoint"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Native original ego speed and same-tick all-actor, all-head, marking and sight-ray packet",
+          "time_window": "full original 45-second approaches, halts, occupancy, entry, clearance and final observation",
+          "reference_frame": "Original Native frame and world XYZ",
+          "uncertainty": "20Hz; between-frame cessation, pixels and continuous sight unverified"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Official uncovered status, actual signal realization, physical line/occluder pixels and legal cautiousness require GPU/source review."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__unmarked_crosswalk_stop",
+  "supported_case_ids": [
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_stop",
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_roll",
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__marked_crosswalk_stop",
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__marked_crosswalk_roll",
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__unmarked_crosswalk_stop",
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__unmarked_crosswalk_roll",
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__sight_stop",
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__sight_roll",
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__earlier_stop_ego_first",
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__occupied_ego_first",
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__fast_departure",
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__covered_heads"
+  ],
+  "cell_id": "C24757",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-250-4",
+  "duration_s": 45,
+  "rate_hz": 20,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed overhead all approaches and bodies"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached dark head/stopline approach"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed west corner showing line, heads and occluders"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego-attached modeled eye for original sight"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "dev.traffic_signal",
+    "dev.governs",
+    "st.stop_line",
+    "st.sight_distance",
+    "rel.visible"
+  ],
+  "source_packets": [],
+  "public_way_road_ids": [
+    1,
+    2,
+    3,
+    4,
+    11,
+    12
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "official_signal": "synthetic; actual authority unresolved",
+      "uncovered": "original rendered head pixels required",
+      "stopline": "Native physical tiles require verification"
+    }
+  },
+  "reference_kind": "unmarked_crosswalk",
+  "reference_x_m": -9,
+  "request_stop": true,
+  "ego_release_tick": 600,
+  "earlier_release_tick": 160,
+  "occupant_release_tick": 340,
+  "crosswalk_definition": "sidewalk lateral lines connected at curbs",
+  "installed_heads": true,
+  "cover_heads": false,
+  "operative_at_entry": false,
+  "physical_completion": {
+    "format": "worker-physical-completion-criteria-v002",
+    "criterion": "intersection_clearance",
+    "motion_source": "interaction_history.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 0.25,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true,
+    "context_sources": [
+      "signal_context.json"
+    ],
+    "body_key": "states.ego.body_vertices_m",
+    "exit_axis": 0,
+    "exit_sign": 1
+  },
+  "processing_contract_version": 2
+}

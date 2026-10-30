@@ -1,0 +1,150 @@
+{
+  "case": {
+    "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_narrow",
+    "target_law_id": "NRS-484B-127-3",
+    "target_type": "boundary_probe",
+    "rationale": "Same-cell caravan group_and_entrant_combination pair-spacing controlled contrast; no statutory danger distance.",
+    "variable_assignments": {
+      "requested_speed_mps": {
+        "value": 6.0,
+        "kind": "controller",
+        "unit": "m/s"
+      },
+      "entrant": {
+        "value": "adjacent-lane independent motor vehicle",
+        "kind": "world_setup"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Sufficient space",
+      "without danger",
+      "outside business district factual status"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Original Native subject speed",
+          "time_window": "entire original 45-second episode",
+          "reference_frame": "Native world original frame",
+          "uncertainty": "20Hz samples; danger assessment not supplied"
+        },
+        {
+          "name": "kin.velocity",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Original Native subject velocity",
+          "time_window": "entire original 45-second episode",
+          "reference_frame": "Native world original frame",
+          "uncertainty": "20Hz samples; danger assessment not supplied"
+        },
+        {
+          "name": "caravan_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original Native full bodies, lanes and speeds of caravan and outsider",
+          "time_window": "entire original 45-second episode",
+          "reference_frame": "Native world original frame",
+          "uncertainty": "20Hz samples; danger assessment not supplied"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Geometric gap is not a legal no-danger finding."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_narrow",
+  "supported_case_ids": [
+    "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_wide",
+    "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_narrow",
+    "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_wide",
+    "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_group_and_entrant_combination_narrow",
+    "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_wide",
+    "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_narrow",
+    "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_wide",
+    "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_group_and_entrant_combination_narrow"
+  ],
+  "cell_id": "C160013",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-127-3",
+  "duration_s": 45,
+  "rate_hz": 20,
+  "requested_speed_mps": 6.0,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached high overhead all four participants"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached rear gap and entrant"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed roadway entry section"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego-attached modeled driver eye"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity"
+  ],
+  "source_packets": [],
+  "public_way_road_ids": [
+    1
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "district": "outside business district synthetic assumption; factual status unverified",
+      "group": "three Native motor vehicles in caravan"
+    }
+  },
+  "formation": "caravan",
+  "tow_configuration": "group_and_entrant_combination",
+  "pair_spacing_m": 18,
+  "towed_roles": [
+    "front",
+    "subject",
+    "rear",
+    "entrant"
+  ],
+  "physical_completion": {
+    "format": "worker-physical-completion-criteria-v002",
+    "criterion": "caravan_entry",
+    "motion_source": "caravan_history.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 0.25,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true,
+    "context_sources": [
+      "caravan_context.json"
+    ],
+    "body_key": "participants.subject.body_vertices_m",
+    "destination_lane": -1
+  },
+  "processing_contract_version": 2
+}

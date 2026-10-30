@@ -1,0 +1,558 @@
+{
+  "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
+  "runner": "\"\"\"Original opposing-vehicle yielding and left-turn episode.\"\"\"\nimport argparse, hashlib, json, math, queue, subprocess, traceback, xml.etree.ElementTree as ET\nfrom pathlib import Path\nfrom worker_exchange.native_output import FrameMap\nfrom worker_exchange.media import compose_four_views\nfrom worker_exchange.world_restore import snapshot,restore\nROOT=Path(__file__).resolve().parent\n\ndef check():\n cfg=json.loads((ROOT/'config.json').read_text());tree=ET.parse(ROOT/'scene.xodr');root=tree.getroot()\n roads={r.get('id'):r for r in root.findall('road')};assert {'1','2','3','4','13'}<=set(roads)\n arc=roads['13'].find('planView/geometry/arc');assert arc is not None and abs(float(arc.get('curvature'))-1/7)<1e-6\n links=roads['13'].find('link');assert links.find('predecessor').get('elementId')=='1' and links.find('successor').get('elementId')=='4'\n junction=root.find('junction');assert any(c.get('incomingRoad')=='1' and c.get('connectingRoad')=='13' and c.find('laneLink').get('from')=='-1' for c in junction.findall('connection'))\n assert not any(r.find('signals') is not None for r in root.findall('road'))\n assert cfg['duration_s']==45 and cfg['rate_hz']==20\n assert [(c['name'],c['width'],c['height']) for c in cfg['cameras']]==[('overview',1920,1080),('approach',1280,720),('reference_corner',1280,720),('driver_reference',1280,720)]\n return {'passed':True,'left_turn_connected':True,'two_way_approaches':True,'physical_motion_verified':False}\n\ndef route_points(mapping):\n route=[]\n for road,stations in [(1,range(360,393,2)),(13,[i*10.995574287564276/20 for i in range(20)]),(4,range(2,102,2))]:\n  for station in stations:\n   wp=mapping.get_waypoint_xodr(road,-1,float(station))\n   if wp is None:raise ValueError('Native selected lane connection missing')\n   loc=wp.transform.location;route.append((loc.x,loc.y))\n return route\n\ndef command(actor,route,requested_mps):\n pose=actor.get_transform();x,y=pose.location.x,pose.location.y\n nearest=min(range(len(route)),key=lambda i:(route[i][0]-x)**2+(route[i][1]-y)**2)\n look=route[min(len(route)-1,nearest+4)];angle=math.atan2(look[1]-y,look[0]-x)\n error=(angle-math.radians(pose.rotation.yaw)+math.pi)%(2*math.pi)-math.pi\n speed=actor.get_velocity().length();remaining=math.hypot(route[-1][0]-x,route[-1][1]-y)\n target=min(requested_mps,math.sqrt(max(0,2*1.5*(remaining-2))))\n effort=target-speed\n return {'control':{'throttle':max(0,min(.55,.22*effort)),'brake':max(0,min(.8,-.20*effort)),'steer':max(-.7,min(.7,1.4*error))},'nearest_route_index':nearest,'requested_mps':target}\n\ndef run(args):\n import carla\n from pipeline_capture import PipelineCapture\n from analyze import finalize\n client=carla.Client(args.host,args.port);client.set_timeout(60);saved=snapshot(client)\n out=Path(args.output_dir);cfg=json.loads((ROOT/'config.json').read_text());owned=[];encoders={};streams={};queues={};capture=None;errors=[];frames=0\n try:\n  world=client.generate_opendrive_world((ROOT/'scene.xodr').read_text());settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=.05;world.apply_settings(settings)\n  world.set_weather(carla.WeatherParameters.ClearNoon);mapping=world.get_map();route=route_points(mapping)\n  bp=world.get_blueprint_library().find('vehicle.lincoln.mkz_2020');bp.set_attribute('role_name','left_turn_subject')\n  wp=mapping.get_waypoint_xodr(13,-1,1);ego=world.spawn_actor(bp,wp.transform);owned.append(ego)\n  ego.apply_control(carla.VehicleControl(brake=1,hand_brake=True))\n  opposing_bp=world.get_blueprint_library().find('vehicle.tesla.model3');opposing_bp.set_attribute('role_name','opposing_through_vehicle')\n  opposing_wp=mapping.get_waypoint_xodr(11,1,7) if cfg.get(\"opposing_initial\")==\"inside\" else mapping.get_waypoint_xodr(2,1,30);opposing=world.spawn_actor(opposing_bp,opposing_wp.transform);owned.append(opposing)\n  opposing.apply_control(carla.VehicleControl(brake=1,hand_brake=True))\n  follower=world.spawn_actor(opposing_bp,mapping.get_waypoint_xodr(2,1,110).transform);owned.append(follower)\n  follower.apply_control(carla.VehicleControl(brake=1,hand_brake=True))\n  ego.set_light_state(carla.VehicleLightState.LeftBlinker if cfg.get(\"signal_given\",True) else carla.VehicleLightState.NONE)\n  for _ in range(20):world.tick()\n  geometry={'source':'Native OpenDRIVE map; source-authored route plus actual waypoint readback','approach_road_id':1,'departure_road_id':4,\n   'connector_road_id':13,'approach_direction_xy':[1,0],'approach_centerline_point_xy':[-7,0],\n   'departure_direction_xy':[0,-1],'departure_centerline_point_xy':[0,-7],\n   'intersection_xy_m':[[-7,-7],[7,-7],[7,7],[-7,7]],'two_way':True,'public_highway_designation':'synthetic authored assumption; factual status unverified',\n   'route_waypoints_native_xy':route}\n  (out/'road_geometry.json').write_text(json.dumps(geometry,indent=2)+'\\n')\n  for spec in cfg['cameras']:\n   name,w,h=spec['name'],spec['width'],spec['height'];camera_bp=world.get_blueprint_library().find('sensor.camera.rgb')\n   for key,value in [('image_size_x',w),('image_size_y',h),('fov',spec['fov_deg']),('sensor_tick',0)]:camera_bp.set_attribute(key,str(value))\n   if name=='overview':pose=carla.Transform(carla.Location(x=0,y=0,z=60),carla.Rotation(pitch=-90));attached=ego\n   elif name=='approach':pose=carla.Transform(carla.Location(x=-8,y=0,z=5),carla.Rotation(pitch=-15));attached=ego\n   elif name=='reference_corner':pose=carla.Transform(carla.Location(x=-18,y=18,z=28),carla.Rotation(pitch=-55));attached=None\n   else:pose=carla.Transform(carla.Location(x=0,y=0,z=1.5),carla.Rotation());attached=ego\n   camera=world.spawn_actor(camera_bp,pose,attach_to=attached);owned.append(camera);queues[name]=queue.Queue();camera.listen(queues[name].put)\n   streams[name]=(out/(name+'.encoder.log')).open('x');encoders[name]=subprocess.Popen(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-n','-f','rawvideo','-pix_fmt','bgra','-s',f'{w}x{h}','-r','20','-i','pipe:0','-an','-c:v','ffv1','-pix_fmt','bgr0',str(out/(name+'.mkv'))],stdin=subprocess.PIPE,stderr=streams[name])\n  capture=PipelineCapture(client,ego,out,cfg['selected_case_id'],required_observations=cfg['required_atoms'])\n  started=world.get_snapshot().timestamp.elapsed_seconds\n  with FrameMap(out/'video_frames.jsonl') as fmap,(out/'body_history.jsonl').open('x') as body,(out/'interaction_history.jsonl').open('x') as interactions:\n   for i in range(cfg['duration_s']*cfg['rate_hz']):\n    opposing_speed=opposing.get_velocity().length();opposing.apply_control(carla.VehicleControl(throttle=max(0,min(.45,.22*(5-opposing_speed))),brake=max(0,min(.5,.2*(opposing_speed-5)))))\n    opponent_vertices=[[v.x,v.y,v.z] for v in opposing.bounding_box.get_world_vertices(opposing.get_transform())]\n    release=max(v[0] for v in opponent_vertices)<-10\n    follower_speed=follower.get_velocity().length()\n    reciprocal_stop=release and cfg.get('reciprocal_yield',True)\n    follower.apply_control(carla.VehicleControl(throttle=0 if reciprocal_stop else max(0,min(.45,.22*(5-follower_speed))),brake=1 if reciprocal_stop else 0))\n    requested=command(ego,route,cfg['requested_speed_mps'])\n    if cfg.get('ignore_yield',False):release=True\n    if not release:requested['control'].update(throttle=0,brake=1,steer=0)\n    ego.apply_control(carla.VehicleControl(**requested['control']))\n    frame=world.tick();now=world.get_snapshot().timestamp.elapsed_seconds-started;originals={}\n    for spec in cfg['cameras']:\n     name=spec['name'];image=queues[name].get(timeout=30)\n     while image.frame<frame:image=queues[name].get(timeout=30)\n     if image.frame!=frame:raise ValueError('Unsynchronized original camera '+name)\n     encoders[name].stdin.write(image.raw_data);originals[name]={'frame':frame,'sha256':hashlib.sha256(image.raw_data).hexdigest()}\n    transform=ego.get_transform();vertices=[[v.x,v.y,v.z] for v in ego.bounding_box.get_world_vertices(transform)];wp=mapping.get_waypoint(transform.location)\n    opponent_vertices=[[v.x,v.y,v.z] for v in opposing.bounding_box.get_world_vertices(opposing.get_transform())]\n    interactions.write(json.dumps({'frame':frame,'time_s':now,'subject_body_vertices_m':vertices,'opposing_body_vertices_m':opponent_vertices,\n     'reciprocal_body_vertices_m':[[v.x,v.y,v.z] for v in follower.bounding_box.get_world_vertices(follower.get_transform())],'reciprocal_speed_mps':follower.get_velocity().length(),'reciprocal_yield_command':reciprocal_stop,\n     'subject_speed_mps':ego.get_velocity().length(),'opposing_speed_mps':opposing.get_velocity().length(),\n     'subject_left_indicator_bit':bool(ego.get_light_state() & carla.VehicleLightState.LeftBlinker),\n     'opposing_road_id':mapping.get_waypoint(opposing.get_transform().location).road_id,'ego_release_observed':release})+'\\n')\n    body.write(json.dumps({'frame':frame,'time_s':now,'body_vertices_m':vertices,'road_id':None if wp is None else wp.road_id,\n     'lane_id':None if wp is None else wp.lane_id,'control':requested,'camera_originals':originals})+'\\n')\n    capture.capture(frame,now);fmap.append(frame,now);frames+=1\n  if frames!=cfg['duration_s']*cfg['rate_hz']:raise ValueError('Incomplete original duration')\n except BaseException as error:errors.append({'message':str(error),'traceback':traceback.format_exc()})\n finally:\n  if capture:\n   try:capture.close(confirmed=not errors and frames==cfg['duration_s']*cfg['rate_hz'])\n   except BaseException as error:errors.append({'capture_close':str(error)})\n  for process in encoders.values():\n   try:process.stdin.close();code=process.wait(timeout=180);assert code==0\n   except BaseException as error:errors.append({'encoder':str(error)})\n  for stream in streams.values():stream.close()\n  for actor in reversed(owned):\n   try:actor.destroy()\n   except BaseException as error:errors.append({'destroy':str(error)})\n  try:restoration=restore(client,saved)\n  except BaseException as error:errors.append({'restore':str(error)});restoration={'restored':False}\n  (out/'native-run-status.json').write_text(json.dumps({'frames':frames,'errors':errors,'restoration':restoration},indent=2)+'\\n')\n if errors:raise RuntimeError('Native capture failed: '+str(errors))\n receipt=compose_four_views({name:out/(name+'.mkv') for name in queues},out/'video_frames.jsonl',out/'raw.mkv')\n (out/'four-view-receipt.json').write_text(json.dumps(receipt,indent=2)+'\\n')\n finalize(out,out/'analysis-report.json')\n\nif __name__=='__main__':\n p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');p.add_argument('--output-dir',default='.')\n p.add_argument('--host',default='127.0.0.1');p.add_argument('--port',type=int,default=2000);a=p.parse_args()\n if a.check:print(json.dumps(check()))\n else:run(a)\n",
+  "analysis": "\"\"\"Original opposing movement and subject yield-window measurement; no hazard verdict.\"\"\"\nimport argparse,hashlib,json\nfrom pathlib import Path\nfrom worker_exchange.native_output import write_result\n\ndef required(root,name):\n path=root/name\n if not path.is_file():raise ValueError('Missing required source: '+name)\n return path\n\ndef inside(vertices,polygon):\n xs=[v[0] for v in polygon];ys=[v[1] for v in polygon];return max(v[0] for v in vertices)>=min(xs) and min(v[0] for v in vertices)<=max(xs) and max(v[1] for v in vertices)>=min(ys) and min(v[1] for v in vertices)<=max(ys)\n\ndef opposing_yield_window(root):\n road=json.loads(required(root,'road_geometry.json').read_text());rows=[json.loads(s) for s in required(root,'interaction_history.jsonl').read_text().splitlines() if s]\n if not rows:raise ValueError('No original opposing interaction samples')\n observations=[]\n for row in rows:\n  opposite=inside(row['opposing_body_vertices_m'],road['intersection_xy_m']);subject=inside(row['subject_body_vertices_m'],road['intersection_xy_m'])\n  observations.append({'frame':row['frame'],'time_s':row['time_s'],'opposing_body_intersects_junction':opposite,\n   'subject_body_intersects_junction':subject,'subject_speed_mps':row['subject_speed_mps'],'opposing_speed_mps':row['opposing_speed_mps'],\n   'left_indicator_bit':row['subject_left_indicator_bit'],'ego_release_observed':row['ego_release_observed']})\n return {'original_samples':observations,'opposing_inside_sample_count':sum(x['opposing_body_intersects_junction'] for x in observations),\n  'simultaneous_body_overlap_sample_count':sum(x['opposing_body_intersects_junction'] and x['subject_body_intersects_junction'] for x in observations),\n  'scope':'finite body and motion samples; immediate hazard and right of way are legal judgments left unresolved'}\n\ndef two_way_context(root):\n road=json.loads(required(root,'road_geometry.json').read_text())\n return {'two_way':bool(road['two_way']),'approach_road_id':road['approach_road_id'],'opposing_road_id':2,\n  'connector_road_id':road['connector_road_id'],'public_highway_designation':road['public_highway_designation']}\n\ndef reciprocal_history(root):\n return {\"samples\":[{\"frame\":r[\"frame\"],\"time_s\":r[\"time_s\"],\"body_vertices_m\":r[\"reciprocal_body_vertices_m\"],\"speed_mps\":r[\"reciprocal_speed_mps\"],\"yield_command\":r[\"reciprocal_yield_command\"]} for r in [json.loads(s) for s in required(root,\"interaction_history.jsonl\").read_text().splitlines() if s]],\"scope\":\"post-yield reciprocal-driver full-body history; no right-of-way verdict\"}\n\ndef finalize(root,output):\n cfg=json.loads(required(root,'config.json').read_text());measure=opposing_yield_window(root);context=two_way_context(root)\n sha=lambda name:hashlib.sha256(required(root,name).read_bytes()).hexdigest()\n report={'format':'worker-analysis-report-v1','case_id':cfg['selected_case_id'],'measurements':{\n  'opposing_yield_window':{'method':'opposing_yield_window','value':measure,'sources':{'road_geometry.json':sha('road_geometry.json'),'interaction_history.jsonl':sha('interaction_history.jsonl')}},\n  'reciprocal_driver_history':{'method':'reciprocal_history','value':reciprocal_history(root),'sources':{'interaction_history.jsonl':sha('interaction_history.jsonl')}},\n  'two_way_opposing_context':{'method':'two_way_context','value':context,'sources':{'road_geometry.json':sha('road_geometry.json')}}},\n  'limitations':['Fixture is a software diagnostic; Native trajectory is unverified.',\n   'Opposing actor presence, lamp pixels, governing priority, immediate hazard and lawful yielding require GPU/source review.']}\n output.write_text(json.dumps(report,indent=2)+'\\n')\n rows=[json.loads(s) for s in required(root,'trace.jsonl').read_text().splitlines() if s]\n interactions=[json.loads(s) for s in required(root,'interaction_history.jsonl').read_text().splitlines() if s]\n channels=root/'channels';channels.mkdir(exist_ok=True)\n for name,field in [('kin.speed','speed_mps'),('kin.velocity','velocity_mps')]:\n  (channels/(name+'.jsonl')).write_text(''.join(json.dumps({'time_s':r['time_s'],'value':r[field]})+'\\n' for r in rows))\n (channels/'interaction_history.jsonl').write_text(''.join(json.dumps({'time_s':r['time_s'],'value':r})+'\\n' for r in interactions))\n case=cfg['case'];result={'case_id':case['case_id'],'measured_values':{'opposing_inside_samples':measure['opposing_inside_sample_count']},\n  'target_checks':[{'target':'opposing_yield_window','requested':'opposing movement measured','measured':len(measure['original_samples']),\n   'method':'opposing_yield_window','tolerance':0,'matched':bool(measure['original_samples']),'physical_cause_confirmed':False,\n   'cause_evidence':'interaction_history.jsonl'}],\n  'setup_confirmed':False,'behavior_attempted':True,'maneuver_completed':False,'termination_reason':'saved analysis; physical checks pending',\n  'physical_failure_flags':{'detection_validated':False},'trace_reference':'trace.jsonl','video_references':['raw.mkv'],\n  'video_frame_map_reference':'video_frames.jsonl','recording_description':case['recording_description'],\n  'recording_evidence':[{'name':n,'unit':u,'reference':p} for n,u,p in [('kin.speed','m/s','channels/kin.speed.jsonl'),('kin.velocity','m/s','channels/kin.velocity.jsonl'),('interaction_history','structured record','channels/interaction_history.jsonl')]],'realized_observables':{}}\n write_result(root,result);return report\n\nif __name__=='__main__':\n p=argparse.ArgumentParser();p.add_argument('--attempt',required=True);p.add_argument('--output',required=True);a=p.parse_args();finalize(Path(a.attempt),Path(a.output))\n",
+  "test": "import unittest\nfrom analyze import inside\nfrom runner import check\nclass T(unittest.TestCase):\n def test_intersection(self):\n  self.assertTrue(inside([[0,0],[1,1]], [[-7,-7],[7,7]]))\n  self.assertFalse(inside([[20,0],[21,1]], [[-7,-7],[7,7]]))\n def test_topology(self):self.assertTrue(check()['left_turn_connected'])\n",
+  "cases": [
+    {
+      "name": "inside_yield",
+      "rationale": "Original inside_yield history with identical intersection and vehicle geometry.",
+      "config": {
+        "opposing_initial": "inside"
+      },
+      "fixture": {
+        "road_geometry.json": {
+          "source": "synthetic diagnostic geometry",
+          "approach_road_id": 1,
+          "departure_road_id": 4,
+          "connector_road_id": 13,
+          "approach_direction_xy": [
+            1,
+            0
+          ],
+          "approach_centerline_point_xy": [
+            -7,
+            0
+          ],
+          "departure_direction_xy": [
+            0,
+            -1
+          ],
+          "departure_centerline_point_xy": [
+            0,
+            -7
+          ],
+          "intersection_xy_m": [
+            [
+              -7,
+              -7
+            ],
+            [
+              7,
+              -7
+            ],
+            [
+              7,
+              7
+            ],
+            [
+              -7,
+              7
+            ]
+          ],
+          "two_way": true,
+          "public_highway_designation": "authored diagnostic assumption; requires factual source review"
+        },
+        "interaction_history.jsonl": "{\"frame\": 21714, \"time_s\": 0.05000000074505806, \"subject_body_vertices_m\": [[-5, -1.8, 0], [-5, -0.19999999999999996, 0], [-1, -0.19999999999999996, 0], [-1, -1.8, 0], [-5, -1.8, 1.5], [-5, -0.19999999999999996, 1.5], [-1, -0.19999999999999996, 1.5], [-1, -1.8, 1.5]], \"opposing_body_vertices_m\": [[0, 0.19999999999999996, 0], [0, 1.8, 0], [4, 1.8, 0], [4, 0.19999999999999996, 0], [0, 0.19999999999999996, 1.5], [0, 1.8, 1.5], [4, 1.8, 1.5], [4, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 0, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": false, \"reciprocal_body_vertices_m\": [[38, 0.19999999999999996, 0], [38, 1.8, 0], [42, 1.8, 0], [42, 0.19999999999999996, 0], [38, 0.19999999999999996, 1.5], [38, 1.8, 1.5], [42, 1.8, 1.5], [42, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n{\"frame\": 21715, \"time_s\": 0.10000000149011612, \"subject_body_vertices_m\": [[-4, -1.8, 0], [-4, -0.19999999999999996, 0], [0, -0.19999999999999996, 0], [0, -1.8, 0], [-4, -1.8, 1.5], [-4, -0.19999999999999996, 1.5], [0, -0.19999999999999996, 1.5], [0, -1.8, 1.5]], \"opposing_body_vertices_m\": [[-1, 0.19999999999999996, 0], [-1, 1.8, 0], [3, 1.8, 0], [3, 0.19999999999999996, 0], [-1, 0.19999999999999996, 1.5], [-1, 1.8, 1.5], [3, 1.8, 1.5], [3, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 0, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": false, \"reciprocal_body_vertices_m\": [[37, 0.19999999999999996, 0], [37, 1.8, 0], [41, 1.8, 0], [41, 0.19999999999999996, 0], [37, 0.19999999999999996, 1.5], [37, 1.8, 1.5], [41, 1.8, 1.5], [41, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n{\"frame\": 21716, \"time_s\": 0.15000000223517418, \"subject_body_vertices_m\": [[-3, -1.8, 0], [-3, -0.19999999999999996, 0], [1, -0.19999999999999996, 0], [1, -1.8, 0], [-3, -1.8, 1.5], [-3, -0.19999999999999996, 1.5], [1, -0.19999999999999996, 1.5], [1, -1.8, 1.5]], \"opposing_body_vertices_m\": [[-2, 0.19999999999999996, 0], [-2, 1.8, 0], [2, 1.8, 0], [2, 0.19999999999999996, 0], [-2, 0.19999999999999996, 1.5], [-2, 1.8, 1.5], [2, 1.8, 1.5], [2, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 0, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": true, \"reciprocal_body_vertices_m\": [[36, 0.19999999999999996, 0], [36, 1.8, 0], [40, 1.8, 0], [40, 0.19999999999999996, 0], [36, 0.19999999999999996, 1.5], [36, 1.8, 1.5], [40, 1.8, 1.5], [40, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n"
+      }
+    },
+    {
+      "name": "inside_no_yield",
+      "rationale": "Original inside_no_yield history with identical intersection and vehicle geometry.",
+      "config": {
+        "opposing_initial": "inside",
+        "ignore_yield": true
+      },
+      "fixture": {
+        "road_geometry.json": {
+          "source": "synthetic diagnostic geometry",
+          "approach_road_id": 1,
+          "departure_road_id": 4,
+          "connector_road_id": 13,
+          "approach_direction_xy": [
+            1,
+            0
+          ],
+          "approach_centerline_point_xy": [
+            -7,
+            0
+          ],
+          "departure_direction_xy": [
+            0,
+            -1
+          ],
+          "departure_centerline_point_xy": [
+            0,
+            -7
+          ],
+          "intersection_xy_m": [
+            [
+              -7,
+              -7
+            ],
+            [
+              7,
+              -7
+            ],
+            [
+              7,
+              7
+            ],
+            [
+              -7,
+              7
+            ]
+          ],
+          "two_way": true,
+          "public_highway_designation": "authored diagnostic assumption; requires factual source review"
+        },
+        "interaction_history.jsonl": "{\"frame\": 21714, \"time_s\": 0.05000000074505806, \"subject_body_vertices_m\": [[-5, -1.8, 0], [-5, -0.19999999999999996, 0], [-1, -0.19999999999999996, 0], [-1, -1.8, 0], [-5, -1.8, 1.5], [-5, -0.19999999999999996, 1.5], [-1, -0.19999999999999996, 1.5], [-1, -1.8, 1.5]], \"opposing_body_vertices_m\": [[0, 0.19999999999999996, 0], [0, 1.8, 0], [4, 1.8, 0], [4, 0.19999999999999996, 0], [0, 0.19999999999999996, 1.5], [0, 1.8, 1.5], [4, 1.8, 1.5], [4, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 5, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": false, \"reciprocal_body_vertices_m\": [[38, 0.19999999999999996, 0], [38, 1.8, 0], [42, 1.8, 0], [42, 0.19999999999999996, 0], [38, 0.19999999999999996, 1.5], [38, 1.8, 1.5], [42, 1.8, 1.5], [42, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n{\"frame\": 21715, \"time_s\": 0.10000000149011612, \"subject_body_vertices_m\": [[-4, -1.8, 0], [-4, -0.19999999999999996, 0], [0, -0.19999999999999996, 0], [0, -1.8, 0], [-4, -1.8, 1.5], [-4, -0.19999999999999996, 1.5], [0, -0.19999999999999996, 1.5], [0, -1.8, 1.5]], \"opposing_body_vertices_m\": [[-1, 0.19999999999999996, 0], [-1, 1.8, 0], [3, 1.8, 0], [3, 0.19999999999999996, 0], [-1, 0.19999999999999996, 1.5], [-1, 1.8, 1.5], [3, 1.8, 1.5], [3, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 5, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": false, \"reciprocal_body_vertices_m\": [[37, 0.19999999999999996, 0], [37, 1.8, 0], [41, 1.8, 0], [41, 0.19999999999999996, 0], [37, 0.19999999999999996, 1.5], [37, 1.8, 1.5], [41, 1.8, 1.5], [41, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n{\"frame\": 21716, \"time_s\": 0.15000000223517418, \"subject_body_vertices_m\": [[-3, -1.8, 0], [-3, -0.19999999999999996, 0], [1, -0.19999999999999996, 0], [1, -1.8, 0], [-3, -1.8, 1.5], [-3, -0.19999999999999996, 1.5], [1, -0.19999999999999996, 1.5], [1, -1.8, 1.5]], \"opposing_body_vertices_m\": [[-2, 0.19999999999999996, 0], [-2, 1.8, 0], [2, 1.8, 0], [2, 0.19999999999999996, 0], [-2, 0.19999999999999996, 1.5], [-2, 1.8, 1.5], [2, 1.8, 1.5], [2, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 5, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": true, \"reciprocal_body_vertices_m\": [[36, 0.19999999999999996, 0], [36, 1.8, 0], [40, 1.8, 0], [40, 0.19999999999999996, 0], [36, 0.19999999999999996, 1.5], [36, 1.8, 1.5], [40, 1.8, 1.5], [40, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n"
+      }
+    },
+    {
+      "name": "approaching_yield",
+      "rationale": "Original approaching_yield history with identical intersection and vehicle geometry.",
+      "config": {
+        "opposing_initial": "approach"
+      },
+      "fixture": {
+        "road_geometry.json": {
+          "source": "synthetic diagnostic geometry",
+          "approach_road_id": 1,
+          "departure_road_id": 4,
+          "connector_road_id": 13,
+          "approach_direction_xy": [
+            1,
+            0
+          ],
+          "approach_centerline_point_xy": [
+            -7,
+            0
+          ],
+          "departure_direction_xy": [
+            0,
+            -1
+          ],
+          "departure_centerline_point_xy": [
+            0,
+            -7
+          ],
+          "intersection_xy_m": [
+            [
+              -7,
+              -7
+            ],
+            [
+              7,
+              -7
+            ],
+            [
+              7,
+              7
+            ],
+            [
+              -7,
+              7
+            ]
+          ],
+          "two_way": true,
+          "public_highway_designation": "authored diagnostic assumption; requires factual source review"
+        },
+        "interaction_history.jsonl": "{\"frame\": 21714, \"time_s\": 0.05000000074505806, \"subject_body_vertices_m\": [[-5, -1.8, 0], [-5, -0.19999999999999996, 0], [-1, -0.19999999999999996, 0], [-1, -1.8, 0], [-5, -1.8, 1.5], [-5, -0.19999999999999996, 1.5], [-1, -0.19999999999999996, 1.5], [-1, -1.8, 1.5]], \"opposing_body_vertices_m\": [[10, 0.19999999999999996, 0], [10, 1.8, 0], [14, 1.8, 0], [14, 0.19999999999999996, 0], [10, 0.19999999999999996, 1.5], [10, 1.8, 1.5], [14, 1.8, 1.5], [14, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 0, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": false, \"reciprocal_body_vertices_m\": [[38, 0.19999999999999996, 0], [38, 1.8, 0], [42, 1.8, 0], [42, 0.19999999999999996, 0], [38, 0.19999999999999996, 1.5], [38, 1.8, 1.5], [42, 1.8, 1.5], [42, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n{\"frame\": 21715, \"time_s\": 0.10000000149011612, \"subject_body_vertices_m\": [[-4, -1.8, 0], [-4, -0.19999999999999996, 0], [0, -0.19999999999999996, 0], [0, -1.8, 0], [-4, -1.8, 1.5], [-4, -0.19999999999999996, 1.5], [0, -0.19999999999999996, 1.5], [0, -1.8, 1.5]], \"opposing_body_vertices_m\": [[9, 0.19999999999999996, 0], [9, 1.8, 0], [13, 1.8, 0], [13, 0.19999999999999996, 0], [9, 0.19999999999999996, 1.5], [9, 1.8, 1.5], [13, 1.8, 1.5], [13, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 0, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": false, \"reciprocal_body_vertices_m\": [[37, 0.19999999999999996, 0], [37, 1.8, 0], [41, 1.8, 0], [41, 0.19999999999999996, 0], [37, 0.19999999999999996, 1.5], [37, 1.8, 1.5], [41, 1.8, 1.5], [41, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n{\"frame\": 21716, \"time_s\": 0.15000000223517418, \"subject_body_vertices_m\": [[-3, -1.8, 0], [-3, -0.19999999999999996, 0], [1, -0.19999999999999996, 0], [1, -1.8, 0], [-3, -1.8, 1.5], [-3, -0.19999999999999996, 1.5], [1, -0.19999999999999996, 1.5], [1, -1.8, 1.5]], \"opposing_body_vertices_m\": [[8, 0.19999999999999996, 0], [8, 1.8, 0], [12, 1.8, 0], [12, 0.19999999999999996, 0], [8, 0.19999999999999996, 1.5], [8, 1.8, 1.5], [12, 1.8, 1.5], [12, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 0, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": true, \"reciprocal_body_vertices_m\": [[36, 0.19999999999999996, 0], [36, 1.8, 0], [40, 1.8, 0], [40, 0.19999999999999996, 0], [36, 0.19999999999999996, 1.5], [36, 1.8, 1.5], [40, 1.8, 1.5], [40, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n"
+      }
+    },
+    {
+      "name": "approaching_no_yield",
+      "rationale": "Original approaching_no_yield history with identical intersection and vehicle geometry.",
+      "config": {
+        "opposing_initial": "approach",
+        "ignore_yield": true
+      },
+      "fixture": {
+        "road_geometry.json": {
+          "source": "synthetic diagnostic geometry",
+          "approach_road_id": 1,
+          "departure_road_id": 4,
+          "connector_road_id": 13,
+          "approach_direction_xy": [
+            1,
+            0
+          ],
+          "approach_centerline_point_xy": [
+            -7,
+            0
+          ],
+          "departure_direction_xy": [
+            0,
+            -1
+          ],
+          "departure_centerline_point_xy": [
+            0,
+            -7
+          ],
+          "intersection_xy_m": [
+            [
+              -7,
+              -7
+            ],
+            [
+              7,
+              -7
+            ],
+            [
+              7,
+              7
+            ],
+            [
+              -7,
+              7
+            ]
+          ],
+          "two_way": true,
+          "public_highway_designation": "authored diagnostic assumption; requires factual source review"
+        },
+        "interaction_history.jsonl": "{\"frame\": 21714, \"time_s\": 0.05000000074505806, \"subject_body_vertices_m\": [[-5, -1.8, 0], [-5, -0.19999999999999996, 0], [-1, -0.19999999999999996, 0], [-1, -1.8, 0], [-5, -1.8, 1.5], [-5, -0.19999999999999996, 1.5], [-1, -0.19999999999999996, 1.5], [-1, -1.8, 1.5]], \"opposing_body_vertices_m\": [[10, 0.19999999999999996, 0], [10, 1.8, 0], [14, 1.8, 0], [14, 0.19999999999999996, 0], [10, 0.19999999999999996, 1.5], [10, 1.8, 1.5], [14, 1.8, 1.5], [14, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 5, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": false, \"reciprocal_body_vertices_m\": [[38, 0.19999999999999996, 0], [38, 1.8, 0], [42, 1.8, 0], [42, 0.19999999999999996, 0], [38, 0.19999999999999996, 1.5], [38, 1.8, 1.5], [42, 1.8, 1.5], [42, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n{\"frame\": 21715, \"time_s\": 0.10000000149011612, \"subject_body_vertices_m\": [[-4, -1.8, 0], [-4, -0.19999999999999996, 0], [0, -0.19999999999999996, 0], [0, -1.8, 0], [-4, -1.8, 1.5], [-4, -0.19999999999999996, 1.5], [0, -0.19999999999999996, 1.5], [0, -1.8, 1.5]], \"opposing_body_vertices_m\": [[9, 0.19999999999999996, 0], [9, 1.8, 0], [13, 1.8, 0], [13, 0.19999999999999996, 0], [9, 0.19999999999999996, 1.5], [9, 1.8, 1.5], [13, 1.8, 1.5], [13, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 5, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": false, \"reciprocal_body_vertices_m\": [[37, 0.19999999999999996, 0], [37, 1.8, 0], [41, 1.8, 0], [41, 0.19999999999999996, 0], [37, 0.19999999999999996, 1.5], [37, 1.8, 1.5], [41, 1.8, 1.5], [41, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n{\"frame\": 21716, \"time_s\": 0.15000000223517418, \"subject_body_vertices_m\": [[-3, -1.8, 0], [-3, -0.19999999999999996, 0], [1, -0.19999999999999996, 0], [1, -1.8, 0], [-3, -1.8, 1.5], [-3, -0.19999999999999996, 1.5], [1, -0.19999999999999996, 1.5], [1, -1.8, 1.5]], \"opposing_body_vertices_m\": [[8, 0.19999999999999996, 0], [8, 1.8, 0], [12, 1.8, 0], [12, 0.19999999999999996, 0], [8, 0.19999999999999996, 1.5], [8, 1.8, 1.5], [12, 1.8, 1.5], [12, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 5, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": true, \"reciprocal_body_vertices_m\": [[36, 0.19999999999999996, 0], [36, 1.8, 0], [40, 1.8, 0], [40, 0.19999999999999996, 0], [36, 0.19999999999999996, 1.5], [36, 1.8, 1.5], [40, 1.8, 1.5], [40, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n"
+      }
+    },
+    {
+      "name": "signal_omitted",
+      "rationale": "Original signal_omitted history with identical intersection and vehicle geometry.",
+      "config": {
+        "opposing_initial": "inside",
+        "signal_given": false
+      },
+      "fixture": {
+        "road_geometry.json": {
+          "source": "synthetic diagnostic geometry",
+          "approach_road_id": 1,
+          "departure_road_id": 4,
+          "connector_road_id": 13,
+          "approach_direction_xy": [
+            1,
+            0
+          ],
+          "approach_centerline_point_xy": [
+            -7,
+            0
+          ],
+          "departure_direction_xy": [
+            0,
+            -1
+          ],
+          "departure_centerline_point_xy": [
+            0,
+            -7
+          ],
+          "intersection_xy_m": [
+            [
+              -7,
+              -7
+            ],
+            [
+              7,
+              -7
+            ],
+            [
+              7,
+              7
+            ],
+            [
+              -7,
+              7
+            ]
+          ],
+          "two_way": true,
+          "public_highway_designation": "authored diagnostic assumption; requires factual source review"
+        },
+        "interaction_history.jsonl": "{\"frame\": 21714, \"time_s\": 0.05000000074505806, \"subject_body_vertices_m\": [[-5, -1.8, 0], [-5, -0.19999999999999996, 0], [-1, -0.19999999999999996, 0], [-1, -1.8, 0], [-5, -1.8, 1.5], [-5, -0.19999999999999996, 1.5], [-1, -0.19999999999999996, 1.5], [-1, -1.8, 1.5]], \"opposing_body_vertices_m\": [[0, 0.19999999999999996, 0], [0, 1.8, 0], [4, 1.8, 0], [4, 0.19999999999999996, 0], [0, 0.19999999999999996, 1.5], [0, 1.8, 1.5], [4, 1.8, 1.5], [4, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 0, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": false, \"ego_release_observed\": false, \"reciprocal_body_vertices_m\": [[38, 0.19999999999999996, 0], [38, 1.8, 0], [42, 1.8, 0], [42, 0.19999999999999996, 0], [38, 0.19999999999999996, 1.5], [38, 1.8, 1.5], [42, 1.8, 1.5], [42, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n{\"frame\": 21715, \"time_s\": 0.10000000149011612, \"subject_body_vertices_m\": [[-4, -1.8, 0], [-4, -0.19999999999999996, 0], [0, -0.19999999999999996, 0], [0, -1.8, 0], [-4, -1.8, 1.5], [-4, -0.19999999999999996, 1.5], [0, -0.19999999999999996, 1.5], [0, -1.8, 1.5]], \"opposing_body_vertices_m\": [[-1, 0.19999999999999996, 0], [-1, 1.8, 0], [3, 1.8, 0], [3, 0.19999999999999996, 0], [-1, 0.19999999999999996, 1.5], [-1, 1.8, 1.5], [3, 1.8, 1.5], [3, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 0, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": false, \"ego_release_observed\": false, \"reciprocal_body_vertices_m\": [[37, 0.19999999999999996, 0], [37, 1.8, 0], [41, 1.8, 0], [41, 0.19999999999999996, 0], [37, 0.19999999999999996, 1.5], [37, 1.8, 1.5], [41, 1.8, 1.5], [41, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n{\"frame\": 21716, \"time_s\": 0.15000000223517418, \"subject_body_vertices_m\": [[-3, -1.8, 0], [-3, -0.19999999999999996, 0], [1, -0.19999999999999996, 0], [1, -1.8, 0], [-3, -1.8, 1.5], [-3, -0.19999999999999996, 1.5], [1, -0.19999999999999996, 1.5], [1, -1.8, 1.5]], \"opposing_body_vertices_m\": [[-2, 0.19999999999999996, 0], [-2, 1.8, 0], [2, 1.8, 0], [2, 0.19999999999999996, 0], [-2, 0.19999999999999996, 1.5], [-2, 1.8, 1.5], [2, 1.8, 1.5], [2, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 0, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": false, \"ego_release_observed\": true, \"reciprocal_body_vertices_m\": [[36, 0.19999999999999996, 0], [36, 1.8, 0], [40, 1.8, 0], [40, 0.19999999999999996, 0], [36, 0.19999999999999996, 1.5], [36, 1.8, 1.5], [40, 1.8, 1.5], [40, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 0, \"reciprocal_yield_command\": true}\n"
+      }
+    },
+    {
+      "name": "reciprocal_no_yield",
+      "rationale": "Original reciprocal_no_yield history with identical intersection and vehicle geometry.",
+      "config": {
+        "opposing_initial": "inside",
+        "reciprocal_yield": false
+      },
+      "fixture": {
+        "road_geometry.json": {
+          "source": "synthetic diagnostic geometry",
+          "approach_road_id": 1,
+          "departure_road_id": 4,
+          "connector_road_id": 13,
+          "approach_direction_xy": [
+            1,
+            0
+          ],
+          "approach_centerline_point_xy": [
+            -7,
+            0
+          ],
+          "departure_direction_xy": [
+            0,
+            -1
+          ],
+          "departure_centerline_point_xy": [
+            0,
+            -7
+          ],
+          "intersection_xy_m": [
+            [
+              -7,
+              -7
+            ],
+            [
+              7,
+              -7
+            ],
+            [
+              7,
+              7
+            ],
+            [
+              -7,
+              7
+            ]
+          ],
+          "two_way": true,
+          "public_highway_designation": "authored diagnostic assumption; requires factual source review"
+        },
+        "interaction_history.jsonl": "{\"frame\": 21714, \"time_s\": 0.05000000074505806, \"subject_body_vertices_m\": [[-5, -1.8, 0], [-5, -0.19999999999999996, 0], [-1, -0.19999999999999996, 0], [-1, -1.8, 0], [-5, -1.8, 1.5], [-5, -0.19999999999999996, 1.5], [-1, -0.19999999999999996, 1.5], [-1, -1.8, 1.5]], \"opposing_body_vertices_m\": [[0, 0.19999999999999996, 0], [0, 1.8, 0], [4, 1.8, 0], [4, 0.19999999999999996, 0], [0, 0.19999999999999996, 1.5], [0, 1.8, 1.5], [4, 1.8, 1.5], [4, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 0, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": false, \"reciprocal_body_vertices_m\": [[38, 0.19999999999999996, 0], [38, 1.8, 0], [42, 1.8, 0], [42, 0.19999999999999996, 0], [38, 0.19999999999999996, 1.5], [38, 1.8, 1.5], [42, 1.8, 1.5], [42, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 5, \"reciprocal_yield_command\": false}\n{\"frame\": 21715, \"time_s\": 0.10000000149011612, \"subject_body_vertices_m\": [[-4, -1.8, 0], [-4, -0.19999999999999996, 0], [0, -0.19999999999999996, 0], [0, -1.8, 0], [-4, -1.8, 1.5], [-4, -0.19999999999999996, 1.5], [0, -0.19999999999999996, 1.5], [0, -1.8, 1.5]], \"opposing_body_vertices_m\": [[-1, 0.19999999999999996, 0], [-1, 1.8, 0], [3, 1.8, 0], [3, 0.19999999999999996, 0], [-1, 0.19999999999999996, 1.5], [-1, 1.8, 1.5], [3, 1.8, 1.5], [3, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 0, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": false, \"reciprocal_body_vertices_m\": [[37, 0.19999999999999996, 0], [37, 1.8, 0], [41, 1.8, 0], [41, 0.19999999999999996, 0], [37, 0.19999999999999996, 1.5], [37, 1.8, 1.5], [41, 1.8, 1.5], [41, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 5, \"reciprocal_yield_command\": false}\n{\"frame\": 21716, \"time_s\": 0.15000000223517418, \"subject_body_vertices_m\": [[-3, -1.8, 0], [-3, -0.19999999999999996, 0], [1, -0.19999999999999996, 0], [1, -1.8, 0], [-3, -1.8, 1.5], [-3, -0.19999999999999996, 1.5], [1, -0.19999999999999996, 1.5], [1, -1.8, 1.5]], \"opposing_body_vertices_m\": [[-2, 0.19999999999999996, 0], [-2, 1.8, 0], [2, 1.8, 0], [2, 0.19999999999999996, 0], [-2, 0.19999999999999996, 1.5], [-2, 1.8, 1.5], [2, 1.8, 1.5], [2, 0.19999999999999996, 1.5]], \"subject_speed_mps\": 0, \"opposing_speed_mps\": 5, \"subject_left_indicator_bit\": true, \"ego_release_observed\": true, \"reciprocal_body_vertices_m\": [[36, 0.19999999999999996, 0], [36, 1.8, 0], [40, 1.8, 0], [40, 0.19999999999999996, 0], [36, 0.19999999999999996, 1.5], [36, 1.8, 1.5], [40, 1.8, 1.5], [40, 0.19999999999999996, 1.5]], \"reciprocal_speed_mps\": 5, \"reciprocal_yield_command\": false}\n"
+      }
+    }
+  ],
+  "dispositions": [
+    {
+      "requirement": "The driver of a vehicle within an intersection intending to turn to the left shall yield the right-of-way to any vehicle approaching from the opposite direction which is within the intersection or so close thereto as to constitute an immediate hazard, but such driver, having so yielded and having given a signal when and as required, may make such left turn and the drivers of all other vehicles approaching the intersection from the opposite direction shall yield the right-of-way to the vehicle making the left turn.",
+      "source": "NRS 484B.253",
+      "evidence_or_gap": "Opposite and subject full-body intersection occupancy, synchronized speeds, release and signal history plus distinct reciprocal-driver full-body histories; no immediate hazard cutoff.",
+      "measurement": {
+        "output_key": "opposing_yield_window",
+        "method": "opposing_yield_window",
+        "kind": "measured",
+        "value_type": "object",
+        "inputs": [
+          "road_geometry.json",
+          "interaction_history.jsonl"
+        ]
+      }
+    },
+    {
+      "requirement": "Opposite-direction connectivity, statutory intersection occupancy and actual ordinary vehicle control context.",
+      "source": "assignment.witness.required_context",
+      "evidence_or_gap": "Opposite and subject full-body intersection occupancy, synchronized speeds, release and signal history plus distinct reciprocal-driver full-body histories; no immediate hazard cutoff.",
+      "measurement": {
+        "output_key": "two_way_opposing_context",
+        "method": "two_way_context",
+        "kind": "sourced_context",
+        "value_type": "object",
+        "inputs": [
+          "road_geometry.json"
+        ]
+      }
+    },
+    {
+      "requirement": "After yielding and signaling when required, later opposite drivers yield to the left-turning vehicle.",
+      "source": "assignment.witness.required_context",
+      "evidence_or_gap": "Opposite and subject full-body intersection occupancy, synchronized speeds, release and signal history plus distinct reciprocal-driver full-body histories; no immediate hazard cutoff.",
+      "measurement": {
+        "output_key": "reciprocal_driver_history",
+        "method": "reciprocal_history",
+        "kind": "measured",
+        "value_type": "object",
+        "inputs": [
+          "interaction_history.jsonl"
+        ]
+      }
+    }
+  ],
+  "negative": {
+    "remove": [
+      "road_geometry.json"
+    ],
+    "error_contains": "Missing required source: road_geometry.json"
+  },
+  "measurement_plan": "Opposite and subject full-body intersection occupancy, synchronized speeds, release and signal history plus distinct reciprocal-driver full-body histories; no immediate hazard cutoff.",
+  "static_checks": [
+    "Connected route and participants",
+    "Four cameras synchronized at 20Hz with complete duration"
+  ],
+  "mechanisms": [
+    "Physical velocity and steering controller, no position teleportation",
+    "Comparison-specific control parameter applied to Native actor"
+  ],
+  "limitations": [
+    "Native trajectories, actual driver ascertainment and legal judgments remain independently reviewed.",
+    "Lamp emission, all participant visibility, entire duration and body histories require GPU audits."
+  ],
+  "observation_mapping": {},
+  "audits": [
+    "Compare every original participant body and lamp state/pixels",
+    "Verify comparison fixed conditions and exactly intended control changes",
+    "Separate measured geometry from legal safety/hazard/priority conclusions"
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "occupying_yield",
+      "cases": [
+        "inside_yield",
+        "inside_no_yield"
+      ],
+      "fixed_conditions": [
+        "Same connected two-way intersection, subject inside intersection, route and participant bodies",
+        "Same four-camera 45 second capture and original-frame measurement"
+      ],
+      "deliberate_differences": [
+        "subject release policy while opposite vehicle occupies intersection"
+      ]
+    },
+    {
+      "comparison_id": "approaching_hazard",
+      "cases": [
+        "approaching_yield",
+        "approaching_no_yield"
+      ],
+      "fixed_conditions": [
+        "Same connected two-way intersection, subject inside intersection, route and participant bodies",
+        "Same four-camera 45 second capture and original-frame measurement"
+      ],
+      "deliberate_differences": [
+        "subject release policy with approaching opposite vehicle; no numerical immediate-hazard criterion"
+      ]
+    },
+    {
+      "comparison_id": "subsequent_signal",
+      "cases": [
+        "inside_yield",
+        "signal_omitted"
+      ],
+      "fixed_conditions": [
+        "Same connected two-way intersection, subject inside intersection, route and participant bodies",
+        "Same four-camera 45 second capture and original-frame measurement"
+      ],
+      "deliberate_differences": [
+        "left signal state after yielding; timing required by applicable signal law remains separate"
+      ]
+    },
+    {
+      "comparison_id": "reciprocal_duty",
+      "cases": [
+        "inside_yield",
+        "reciprocal_no_yield"
+      ],
+      "fixed_conditions": [
+        "Same connected two-way intersection, subject inside intersection, route and participant bodies",
+        "Same four-camera 45 second capture and original-frame measurement"
+      ],
+      "deliberate_differences": [
+        "later opposite driver brakes after the yielded-and-signaled turn begins"
+      ]
+    }
+  ],
+  "branches": [
+    {
+      "name": "occupying_yield",
+      "topic_ids": [
+        "text-0",
+        "activation_conditions-0",
+        "activation_conditions-1",
+        "exceptions-0",
+        "timing_requirements-0",
+        "timing_requirements-1",
+        "timing_requirements-2",
+        "review-context-0",
+        "review-context-1",
+        "review-context-2",
+        "review-context-3",
+        "review-context-4",
+        "review-context-5",
+        "review-context-6"
+      ],
+      "cases": [
+        "inside_yield",
+        "inside_no_yield"
+      ],
+      "comparison_ids": [
+        "occupying_yield"
+      ]
+    },
+    {
+      "name": "approaching_hazard",
+      "topic_ids": [
+        "text-0",
+        "activation_conditions-0",
+        "activation_conditions-1",
+        "exceptions-0",
+        "timing_requirements-0",
+        "timing_requirements-1",
+        "timing_requirements-2",
+        "review-context-0",
+        "review-context-1",
+        "review-context-2",
+        "review-context-3",
+        "review-context-4",
+        "review-context-5",
+        "review-context-6"
+      ],
+      "cases": [
+        "approaching_yield",
+        "approaching_no_yield"
+      ],
+      "comparison_ids": [
+        "approaching_hazard"
+      ]
+    },
+    {
+      "name": "subsequent_signal",
+      "topic_ids": [
+        "text-0",
+        "activation_conditions-0",
+        "activation_conditions-1",
+        "exceptions-0",
+        "timing_requirements-0",
+        "timing_requirements-1",
+        "timing_requirements-2",
+        "review-context-0",
+        "review-context-1",
+        "review-context-2",
+        "review-context-3",
+        "review-context-4",
+        "review-context-5",
+        "review-context-6"
+      ],
+      "cases": [
+        "inside_yield",
+        "signal_omitted"
+      ],
+      "comparison_ids": [
+        "subsequent_signal"
+      ]
+    },
+    {
+      "name": "reciprocal_duty",
+      "topic_ids": [
+        "text-0",
+        "activation_conditions-0",
+        "activation_conditions-1",
+        "exceptions-0",
+        "timing_requirements-0",
+        "timing_requirements-1",
+        "timing_requirements-2",
+        "review-context-0",
+        "review-context-1",
+        "review-context-2",
+        "review-context-3",
+        "review-context-4",
+        "review-context-5",
+        "review-context-6"
+      ],
+      "cases": [
+        "inside_yield",
+        "reciprocal_no_yield"
+      ],
+      "comparison_ids": [
+        "reciprocal_duty"
+      ]
+    }
+  ]
+}

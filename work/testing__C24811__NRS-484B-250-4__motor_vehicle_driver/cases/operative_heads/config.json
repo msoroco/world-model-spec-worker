@@ -1,0 +1,139 @@
+{
+  "case": {
+    "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__operative_heads",
+    "target_law_id": "NRS-484B-250-4",
+    "target_type": "boundary_probe",
+    "rationale": "Controlled operative_heads qualification source context in compatible C24811 fixed control cell.",
+    "variable_assignments": {
+      "head_state": {
+        "kind": "controller",
+        "value": "Off"
+      },
+      "west_stopline_x_m": {
+        "kind": "world_setup",
+        "value": -11,
+        "unit": "m"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "uncovered rendered heads",
+      "continuous cessation",
+      "cautiously",
+      "yielding",
+      "nearest clear viewpoint"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Native original ego speed and same-tick all-actor, all-head, marking and sight-ray packet",
+          "time_window": "full original 45-second approaches, halts, occupancy, entry, clearance and final observation",
+          "reference_frame": "Original Native frame and world XYZ",
+          "uncertainty": "20Hz; between-frame cessation, pixels and continuous sight unverified"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Official uncovered status, actual signal realization, physical line/occluder pixels and legal cautiousness require GPU/source review."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__operative_heads",
+  "supported_case_ids": [
+    "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__dark_heads",
+    "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__operative_heads"
+  ],
+  "cell_id": "C24811",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-250-4",
+  "duration_s": 45,
+  "rate_hz": 20,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed overhead all approaches and bodies"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached dark head/stopline approach"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed west corner showing line, heads and occluders"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego-attached modeled eye for original sight"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "dev.traffic_signal",
+    "dev.governs",
+    "st.stop_line",
+    "st.sight_distance",
+    "rel.visible"
+  ],
+  "source_packets": [],
+  "public_way_road_ids": [
+    1,
+    2,
+    3,
+    4,
+    11,
+    12
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "official_signal": "synthetic; actual authority unresolved",
+      "uncovered": "original rendered head pixels required",
+      "stopline": "Native physical tiles require verification"
+    }
+  },
+  "reference_kind": "line",
+  "reference_x_m": -11,
+  "request_stop": true,
+  "ego_release_tick": 600,
+  "earlier_release_tick": 160,
+  "occupant_release_tick": 340,
+  "crosswalk_definition": "none",
+  "installed_heads": true,
+  "cover_heads": false,
+  "operative_at_entry": true,
+  "physical_completion": {
+    "format": "worker-physical-completion-criteria-v002",
+    "criterion": "intersection_clearance",
+    "motion_source": "interaction_history.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 0.25,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true,
+    "context_sources": [
+      "signal_context.json"
+    ],
+    "body_key": "states.ego.body_vertices_m",
+    "exit_axis": 0,
+    "exit_sign": 1
+  },
+  "processing_contract_version": 2
+}

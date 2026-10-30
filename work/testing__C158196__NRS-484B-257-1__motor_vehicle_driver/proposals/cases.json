@@ -1,0 +1,167 @@
+{
+  "cell_id": "C158196",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "judgment-0",
+      "target_law_id": "NRS-484B-257-1",
+      "judgment_refs": [
+        {
+          "phrase": "immediate hazard",
+          "note": "Requires later legal judgment from actual Native evidence"
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The reviewed exact branch cases are controlled comparisons; no legal judgment threshold is inferred from CPU fixtures.",
+      "missing_inputs": [
+        "Physical Native evidence and source-backed fixed sweep dimensions are unavailable in this worker return."
+      ]
+    },
+    {
+      "sweep_id": "judgment-1",
+      "target_law_id": "NRS-484B-257-1",
+      "judgment_refs": [
+        {
+          "phrase": "point nearest the intersection where the driver has a view of approaching traffic",
+          "note": "Requires later legal judgment from actual Native evidence"
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The reviewed exact branch cases are controlled comparisons; no legal judgment threshold is inferred from CPU fixtures.",
+      "missing_inputs": [
+        "Physical Native evidence and source-backed fixed sweep dimensions are unavailable in this worker return."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral unselected reference definition for canonical case planning; no capture scheduled.",
+      "variable_assignments": {
+        "west_entrance_control": {
+          "kind": "world_setup",
+          "value": "yield_sign"
+        },
+        "through_vehicle": {
+          "kind": "world_setup",
+          "value": "north approach"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego velocity norm and full-body/through actor history",
+            "time_window": "entire original 45-second approach, interaction and final episode",
+            "reference_frame": "Original Native frame and world XYZ",
+            "uncertainty": "20Hz samples; between-frame state unobserved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Actual entrance sign pixels, governing relation and motion require Native source review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Measure signal nearest_view active_control through startup, initial response and all across-or-within interaction history.",
+      "variable_assignments": {
+        "west_entrance_control": {
+          "kind": "world_setup",
+          "value": "yield_sign"
+        },
+        "through_vehicle": {
+          "kind": "world_setup",
+          "value": "north approach"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "point nearest the intersection where the driver has a view of approaching traffic"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego velocity norm and full-body/through actor history",
+            "time_window": "entire original 45-second approach, interaction and final episode",
+            "reference_frame": "Original Native frame and world XYZ",
+            "uncertainty": "20Hz samples; between-frame state unobserved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Actual entrance sign pixels, governing relation and motion require Native source review."
+        ]
+      },
+      "paired_probe_id": "signal_governing_exception",
+      "deliberate_differences": [
+        "through_vehicle",
+        "west_entrance_control"
+      ],
+      "probe": {
+        "primary_variable": "west_entrance_control",
+        "comparison_or_standard": "Controlled exact-case comparison in case-plan.json; no CPU legal outcome",
+        "target_value_or_branch": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Measure signal nearest_view passive_control through startup, initial response and all across-or-within interaction history.",
+      "variable_assignments": {
+        "west_entrance_control": {
+          "kind": "world_setup",
+          "value": "yield_sign"
+        },
+        "through_vehicle": {
+          "kind": "world_setup",
+          "value": "north approach"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "point nearest the intersection where the driver has a view of approaching traffic"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego velocity norm and full-body/through actor history",
+            "time_window": "entire original 45-second approach, interaction and final episode",
+            "reference_frame": "Original Native frame and world XYZ",
+            "uncertainty": "20Hz samples; between-frame state unobserved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Actual entrance sign pixels, governing relation and motion require Native source review."
+        ]
+      },
+      "paired_probe_id": "signal_governing_exception",
+      "deliberate_differences": [
+        "through_vehicle",
+        "west_entrance_control"
+      ],
+      "probe": {
+        "primary_variable": "west_entrance_control",
+        "comparison_or_standard": "Controlled exact-case comparison in case-plan.json; no CPU legal outcome",
+        "target_value_or_branch": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      }
+    }
+  ]
+}

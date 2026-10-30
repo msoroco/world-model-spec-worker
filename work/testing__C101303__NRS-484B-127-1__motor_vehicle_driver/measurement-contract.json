@@ -1,0 +1,47 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Retain actual following interval, full-body separation, same-lane relation and both original speeds, without legal headway or duration threshold.",
+      "source": "NRS 484B.127(1)",
+      "method": "following_gap",
+      "output_key": "original_following_geometry",
+      "inputs": [
+        "following_samples.jsonl"
+      ],
+      "kind": "measured",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Retain highway and surface context, actual weather and traffic inventory source while following.",
+      "source": "NRS 484B.127(1)",
+      "method": "highway_conditions",
+      "output_key": "highway_condition_context",
+      "inputs": [
+        "surface_context.json"
+      ],
+      "kind": "measured",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Retain synchronized surrounding traffic bodies/speeds and actual weather throughout following.",
+      "source": "NRS 484B.127(1)",
+      "method": "traffic_conditions",
+      "output_key": "traffic_condition_history",
+      "inputs": [
+        "following_samples.jsonl"
+      ],
+      "kind": "measured",
+      "value_type": "object"
+    }
+  ],
+  "negative": {
+    "remove": [
+      "following_samples.jsonl"
+    ],
+    "error_contains": "Missing required source: following_samples.jsonl"
+  }
+}
