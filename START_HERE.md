@@ -1,16 +1,18 @@
 # Full demo-test delivery preparation
 
-Update 012 uses `runtime/main-pipeline-v6` and return branch `worker/demo-test-full-delivery-v2`. Read `DELIVERY_CONTRACT.md` first. Every selected case needs a primary and at least one tested physical fallback. Supply and CPU-test the exact canonical preparation, execution, saved-processing, audit, and acceptance commands. Preserve existing case IDs and comparisons. The worker does not use CARLA, NERSC or campaign SQLite.
+Update 013 uses `runtime/main-pipeline-v7` and return branch `worker/demo-test-full-delivery-v2`. Read `DELIVERY_CONTRACT.md` first. Every selected case needs a primary and at least one tested physical fallback. Supply and CPU-test the exact canonical preparation, execution, saved-processing, audit, and acceptance commands. Preserve existing case IDs and comparisons. The worker does not use CARLA, NERSC or campaign SQLite.
 
 Resume `worker/demo-test-full-delivery-v2` from its existing partial return at
 `6e50262789a2e3b1d938c384546b56f70bbb62ab`, then merge current `main`.
 Preserve its `work/` subtree, including the canonical queue and gap audit.
-The gap audit is a worklist, not a final result: repair all runtime bindings,
-refresh the primary proofs, add tested fallbacks, and supply the integration
-proof. Preserve the existing 236 cases, 150 comparisons and 66 reuses.
+The gap audit and pinned-v6 baseline blocker are worklists, not final results.
+The v7 checker excludes the required neutral baseline from selected recording
+case equality. Preserve the neutral baseline in each canonical proposal; bind
+all manifests and receipts to the effective v7 runtime, rerun the ordinary
+gate, and preserve the existing 236 cases, 150 comparisons and 66 reuses.
 
 The operator starts this agent manually. Use Python 3.11 or newer; create an
-ignored `.venv-cpu` and install `runtime/main-pipeline-v6/requirements-cpu.txt`.
+ignored `.venv-cpu` and install `runtime/main-pipeline-v7/requirements-cpu.txt`.
 Software compatibility also needs FFmpeg and the Lean `lake` toolchain pinned
 by the exported library. Record a precise dependency blocker if either cannot
 be installed. Read `batch.json`, its four partitions,
@@ -68,7 +70,7 @@ SHA-256. Put unresolved physical or legal conclusions in separate limitations;
 do not use `pending`, `unknown`, or an empty value as a measurement.
 
 Give each case a `worker-fixture-recipe-v1` JSON file with `base` set to
-`runtime/main-pipeline-v6/fixtures/retained-speed` and text `additions`
+`runtime/main-pipeline-v7/fixtures/retained-speed` and text `additions`
 (`path`, `source`, `sha256`) from that case's `work/` directory. The contract's
 recipe must set `remove` to `["case.json","config.json","result.json"]`
 to remove the retained example's outputs before the case's code runs. The contract's

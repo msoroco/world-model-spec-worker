@@ -77,13 +77,13 @@ local. Reuse environmental acquisition methods; a named channel is not a source.
 Every exact case needs acquisition mappings and a source-bound compatibility
 receipt from its actual bundled analysis, existing validator, converter and video
 processing. The generic runtime selftest alone cannot qualify a new package.
-The v6 batch also requires a selected-requirement measurement contract and a
+The current batch also requires a selected-requirement measurement contract and a
 case-specific positive/negative fixture recipe. Each selected requirement has
 a concrete saved finalizer output and exact source hashes. Keep generated
 fixture trees and rendered media in ignored `.runtime-work/`, committing only
 small source inputs, logs and receipts. The first GPU command supplies a local
 CARLA Python via `--python "$CARLA_PYTHON"`.
-For the v6 GPU-ready batch, use the current law split only and follow the
+For the current GPU-ready batch, use the current law split only and follow the
 four-camera `worker_exchange.capture.PROFILE`. Commit a case-specific camera
 and duration plan, synchronized source capture, and a composed primary video.
 The shared ready gate checks the declared plan and configuration.
