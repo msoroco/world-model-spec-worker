@@ -1,4 +1,4 @@
-# Complete delivery preparation (update 011)
+# Complete delivery preparation (update 013)
 
 Prepare the selected cases for canonical delivery, not research-only capability.
 The worker supplies constructions, fallback candidates, commands and CPU proofs.
