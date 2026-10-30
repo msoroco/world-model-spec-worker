@@ -1,8 +1,13 @@
 # Full demo-test delivery preparation
 
-Update 011 uses `runtime/main-pipeline-v6` and return branch `worker/demo-test-full-delivery-v2`. Read `DELIVERY_CONTRACT.md` first. Every selected case needs a primary and at least one tested physical fallback. Supply and CPU-test the exact canonical preparation, execution, saved-processing, audit, and acceptance commands. Preserve existing case IDs and comparisons. The worker does not use CARLA, NERSC or campaign SQLite.
+Update 012 uses `runtime/main-pipeline-v6` and return branch `worker/demo-test-full-delivery-v2`. Read `DELIVERY_CONTRACT.md` first. Every selected case needs a primary and at least one tested physical fallback. Supply and CPU-test the exact canonical preparation, execution, saved-processing, audit, and acceptance commands. Preserve existing case IDs and comparisons. The worker does not use CARLA, NERSC or campaign SQLite.
 
-Start from updated `main`. Fetch `worker/demo-test-full-delivery-v1` at commit `43af39a1cd5d231d9c71d2d855e206fc2dd57043` and restore only its `work/` subtree as editable CPU preparation. Do not merge its old batch, runtime, notices or proofs as current authority. Replace the `runtime-v3.py` and `sitecustomize` workaround with ordinary root launchers. Re-run all exact proofs under v6.
+Resume `worker/demo-test-full-delivery-v2` from its existing partial return at
+`6e50262789a2e3b1d938c384546b56f70bbb62ab`, then merge current `main`.
+Preserve its `work/` subtree, including the canonical queue and gap audit.
+The gap audit is a worklist, not a final result: repair all runtime bindings,
+refresh the primary proofs, add tested fallbacks, and supply the integration
+proof. Preserve the existing 236 cases, 150 comparisons and 66 reuses.
 
 The operator starts this agent manually. Use Python 3.11 or newer; create an
 ignored `.venv-cpu` and install `runtime/main-pipeline-v6/requirements-cpu.txt`.
