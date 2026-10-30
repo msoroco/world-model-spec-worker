@@ -44,10 +44,11 @@ to CARLA. Run runtime checks lazily, not at module import. Small fake fixtures
 can test schemas and joins, never establish physical capability or acceptance.
 
 Use result.json and HANDOFF.md under the assignment directory. Report commands,
-exit codes and hashed logs, implementation assumptions and remaining GPU checks.
-Prepared means CPU-tested and ready for local runtime verification. It does not
-mean physically verified, accepted, compliant or statutorily complete. For
-missing dependencies, commit a partial/blocked result and continue other work.
+exit codes, hashed logs and implementation assumptions. Fill the required
+`remaining_gpu_checks` field with unverified properties, without assigning
+downstream tasks or narrating another agent's responsibilities. Prepared means
+the worker's CPU package passed its full gate. For missing dependencies,
+record a precise partial/blocked result and continue other assignments.
 
 Never run NERSC tools, use the main campaign database, drive a simulation,
 register a recording, relabel research, or modify set membership. Run
@@ -85,10 +86,8 @@ CARLA Python via `--python "$CARLA_PYTHON"`.
 For the v6 GPU-ready batch, use the current law split only and follow the
 four-camera `worker_exchange.capture.PROFILE`. Commit a case-specific camera
 and duration plan, synchronized source capture, and a composed primary video.
-The shared ready gate checks the declared plan and configuration; local Native
-preflight and the first CARLA run check execution and physical visibility.
-Fixtures establish software compatibility only; unknown physical outcomes remain
-unconfirmed. Do not drop mandatory observations or fabricate physical success to
+The shared ready gate checks the declared plan and configuration.
+Fixtures establish software compatibility only. Do not drop mandatory observations or fabricate physical success to
 pass tests. Validate one exact case end to end before expanding all partitions.
 
 ## Full statutory coverage
@@ -97,9 +96,8 @@ For v7 read FULL_BRANCH_CONTRACT.md. Same-cell branch reuse is the default. Acco
 
 For update 007, also read DELIVERY_CONTRACT.md. Supply every canonical semantic
 stage proposal, exact delivery designation, and CPU-tested independent audit.
-The remote worker writes files only; local SQLite job adoption and NERSC GPU
-ownership remain entirely local. Do not relabel frozen v7 files in place.
+The worker writes files and CPU proofs only. Do not relabel frozen v7 files in place.
 
 ## Risk-based candidate constructions
 
-For update 004, assess every exact case for a specific Native motion or camera risk. Keep one primary construction and add at most two named fallbacks only for a concrete physical risk. A fallback is an alternate implementation of the same planned case, not another recording or cell. Record a measurable failure trigger and exact engineering changes. Keep the case, law, actor, required observations, cameras, duration and comparison variable fixed. Run exact offline and positive/negative compatibility checks for each fallback using `runtime.py offline --candidate fallback1` and `runtime.py compatibility-recipe --candidate fallback1`. The saved processor verifies the selected candidate in the attempt. Never choose by desired legal outcome. The lead independently reviews risk assessments and comparison isolation before the strict gate.
+For update 011, give every exact delivery case one primary construction and at least one genuine fallback; add a second for a distinct risk. A fallback is an alternate implementation of the same planned case, not another recording or cell. Record a measurable failure trigger and exact engineering changes. Keep the case, law, actor, required observations, cameras, duration and comparison variable fixed. Run exact offline and positive/negative compatibility checks for each fallback using `runtime.py offline --candidate fallback1` and `runtime.py compatibility-recipe --candidate fallback1`. The saved processor verifies candidate identity. Never choose by desired legal outcome. The lead independently reviews candidates and comparison isolation before the strict gate.
