@@ -1,11 +1,11 @@
 # Full demo-test delivery preparation
 
-Update 008 uses `runtime/main-pipeline-v4` and return branch `worker/demo-test-full-delivery-v2`. Read `DELIVERY_CONTRACT.md` first. Every selected case needs a primary and at least one tested physical fallback. The canonical queue must prepare, execute and accept one exact case through the local pipeline. Preserve the existing case IDs and comparisons. No CARLA, NERSC or local campaign database work is part of this return.
+Update 009 uses `runtime/main-pipeline-v5` and return branch `worker/demo-test-full-delivery-v2`. Read `DELIVERY_CONTRACT.md` first. Every selected case needs a primary and at least one tested physical fallback. The canonical queue must prepare, execute and accept one exact case through the local pipeline. Preserve the existing case IDs and comparisons. No CARLA, NERSC or local campaign database work is part of this return.
 
-Start from updated `main`. Fetch `worker/demo-test-full-delivery-v1` at commit `43af39a1cd5d231d9c71d2d855e206fc2dd57043` and restore only its `work/` subtree as editable CPU preparation. Do not merge its old batch, runtime, notices or proofs as current authority. Replace the `runtime-v3.py` and `sitecustomize` workaround with ordinary root launchers. Re-run all exact proofs under v4.
+Start from updated `main`. Fetch `worker/demo-test-full-delivery-v1` at commit `43af39a1cd5d231d9c71d2d855e206fc2dd57043` and restore only its `work/` subtree as editable CPU preparation. Do not merge its old batch, runtime, notices or proofs as current authority. Replace the `runtime-v3.py` and `sitecustomize` workaround with ordinary root launchers. Re-run all exact proofs under v5.
 
 The operator starts this agent manually. Use Python 3.11 or newer; create an
-ignored `.venv-cpu` and install `runtime/main-pipeline-v4/requirements-cpu.txt`.
+ignored `.venv-cpu` and install `runtime/main-pipeline-v5/requirements-cpu.txt`.
 Software compatibility also needs FFmpeg and the Lean `lake` toolchain pinned
 by the exported library. Record a precise dependency blocker if either cannot
 be installed. Read `batch.json`, its four partitions,
@@ -64,7 +64,7 @@ SHA-256. Put unresolved physical or legal conclusions in separate limitations;
 do not use `pending`, `unknown`, or an empty value as a measurement.
 
 Give each case a `worker-fixture-recipe-v1` JSON file with `base` set to
-`runtime/main-pipeline-v4/fixtures/retained-speed` and text `additions`
+`runtime/main-pipeline-v5/fixtures/retained-speed` and text `additions`
 (`path`, `source`, `sha256`) from that case's `work/` directory. The contract's
 recipe must set `remove` to `["case.json","config.json","result.json"]`
 to remove the retained example's outputs before the case's code runs. The contract's
@@ -106,11 +106,12 @@ package still needs executable, offline and compatibility proofs; use
 `blocked` only for a precise, test-backed CPU barrier. Diagnostic fixtures
 prove software compatibility, not physical behavior or legal compliance.
 
-The first GPU command in `result.json` must use `runtime.py capture` with
-`--python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT"`
-and an ignored `.runtime-work/` attempt path. The local launcher checks those
-imports before creating an attempt. Do not point `--python` at the worker's
-CPU environment or hardcode an NERSC path.
+The first GPU command in `result.json` must use local `execute-delivery`
+for one exact canonical job, with `--job "$JOB_ID" --db "$DB" --run "$RUN"`
+and `--python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT"`.
+The operator obtains the run and job ID from `prepare-delivery`. Portable
+`runtime.py capture` remains diagnostic; it is not the delivery launcher.
+Do not use the worker CPU environment as Native Python or hardcode a host.
 
 Commit source, small text fixture additions, tests, handoffs, receipts, and
 logs. Keep diagnostic videos, decoded frames, graph files, converted traces,
@@ -125,7 +126,7 @@ every exact-case offline check and every compatibility check. Copy its
 `log`, `log_sha256`, `verification_receipt` and `verification_sha256`.
 Finish with:
 
-Before the gate, run `python3.11 -m unittest discover -s tests -p test_v4_entrypoints.py`.
+Before the gate, run `python3.11 -m unittest discover -s tests -p test_entrypoints_current.py`.
 The gate must run without a bootstrap `PYTHONPATH`. All-empty candidate lists
 and queues lacking canonical local job commands fail under update 008.
 

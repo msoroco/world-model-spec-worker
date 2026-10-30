@@ -7,7 +7,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT/'runtime/main-pipeline-v4/scenario_pipeline'))
+batch=json.loads((ROOT/'batch.json').read_text())
+sys.path.insert(0, str(ROOT/batch['runtime']['root']/'scenario_pipeline'))
 from worker_exchange.preparation import runtime_for
 
 
