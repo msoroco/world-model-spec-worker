@@ -1,0 +1,101 @@
+{
+  "case_id": "C230259-600-1a-commanded-speed-v2-0000",
+  "cell_id": "C230259",
+  "actor": "motor_vehicle_driver",
+  "measured_values": {
+    "duration_s": 45.0,
+    "frames": 900,
+    "observed_stopping_event": {
+      "cessation_frame": 22223,
+      "cessation_speed_mps": 2.7066239795982815e-05,
+      "cessation_time_s": 25.50000037997961,
+      "command_time_s": 25.0,
+      "displacement_m": 1.0257570347579206,
+      "end_position_m": [
+        367.07904052734375,
+        1.7500017881393433,
+        0.0023165130987763405
+      ],
+      "first_applied_control_frame": 22214,
+      "first_applied_control_time_s": 25.050000373274088,
+      "start_position_m": [
+        366.05328369140625,
+        1.750001072883606,
+        0.0016778564313426614
+      ],
+      "start_reference": "Original pre-control native actor position, before braking tick",
+      "time_history_reference": "synchronized_motion_records.jsonl",
+      "uncertainty": "50ms endpoint bracket; cessation <=0.05m/s is an engineering convention, no legal stopping threshold. Endpoint positions retained separately from integrated path."
+    }
+  },
+  "target_checks": [
+    {
+      "cause_evidence": [
+        "synchronized_motion_records.jsonl"
+      ],
+      "matched": true,
+      "measured": {
+        "sample_count": 180,
+        "steady_max_mps": 3.0007736682901145,
+        "steady_min_mps": 2.984187364583377,
+        "window_s": [
+          15,
+          24
+        ]
+      },
+      "method": "Actual same-frame native velocity norm, every sample15..24s",
+      "physical_cause_confirmed": true,
+      "requested": 3.0,
+      "target": "commanded_speed",
+      "tolerance": {
+        "minimum_interval_s": 5,
+        "speed_mps": 0.5
+      }
+    },
+    {
+      "cause_evidence": [
+        "video_frames.jsonl",
+        "observed_stopping_event.json"
+      ],
+      "matched": true,
+      "measured": 900,
+      "method": "Full original45second20Hz acceleration/steady/braking/stopped episode",
+      "physical_cause_confirmed": true,
+      "requested": 900,
+      "target": "complete_episode",
+      "tolerance": 0
+    }
+  ],
+  "maneuver_completed": true,
+  "termination_reason": "completed_acceleration_steady_braking_stopped_episode",
+  "realized_observables": {
+    "ego_speed": {
+      "method": "Mean original native velocity norm over all recorded samples15..24s; every sample must also attain commanded speed within+/-0.5m/s for at least5s",
+      "reference": "channels/ego_speed.jsonl",
+      "sample_window_s": [
+        15.000000223517418,
+        23.95000035688281
+      ],
+      "statistic": "mean",
+      "time_window": "Original episode15..24s steady interval; full45s trace retained",
+      "unit": "m/s",
+      "value": 2.9944735169429872
+    }
+  },
+  "limitations": [
+    "The phrase 'reasonable or proper' remains unresolved; these requirements supply physical evidence without selecting a legal threshold, interpretation or compliance label.",
+    "The source atom drv.sight_distance_adequate and its surrogate description introduce a judgment classification. This extraction conflict is retained explicitly; only underlying physical sight distance is requested here, without silently changing the source.",
+    "The supplied residue is preserved in the exact note. Its reference to surrogate rules and model bounds does not authorize selecting an operationalization, model, bound or decision pattern.",
+    "Observed actions and circumstances do not establish interior mental states, intent or what the actor actually perceived.",
+    "Actual stopping distance is unavailable without a recorded stopping event and documented measurement endpoints. Missing stopping observations must remain missing.",
+    "Modeled stopping distance is derived evidence whose applicability depends on documented assumptions and inputs; it does not establish an observed stopping outcome.",
+    "Physical sight distance depends on viewing geometry, target characteristics, occlusion and measurement method; it does not establish adequacy or actual perception.",
+    "Traffic queue annotations depend on their extraction conventions. Underlying participant positions and motion must remain available without adopting an annotation as a legal rule.",
+    "Authored roadway and weather facts must remain distinguishable from measured physical observations, and factual lookups remain sourced world_setup inputs.",
+    "No simulator capabilities or external coverage landmarks were verified from the supplied inputs. The landmarks list is empty, and recording availability is not asserted.",
+    "Sampling, occlusion, synchronization and measurement uncertainty can limit reconstruction of contemporaneous conditions; these requirements do not support every imaginable later predicate.",
+    "No existing observable_requirements were supplied for this matched phrase and note.",
+    "Source capability limitation is prospectively addressed by native setup-probe-v4 and per-episode source-bound RGB contrast calibration; this remains finite target-specific sampled environmental range, never exact meteorological cutoff or geometric sight distance.",
+    "No modeled stopping distance is supplied; optional model channel explicitly records null. No legal speed/adequacy label."
+  ]
+}

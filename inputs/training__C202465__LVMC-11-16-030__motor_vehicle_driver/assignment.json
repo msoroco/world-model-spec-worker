@@ -1,0 +1,307 @@
+{
+  "assignment_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver",
+  "law_id": "LVMC-11-16-030",
+  "cell_id": "C202465",
+  "actor": "motor_vehicle_driver",
+  "role": "training",
+  "set_ids": [
+    "full-train"
+  ],
+  "branches": [
+    {
+      "law_id": "LVMC-11-16-030",
+      "cell_id": "C202465",
+      "actor": "motor_vehicle_driver",
+      "requirement": "LVMC-11-16-030",
+      "branch": "Crossing traversal under the stated sight conditions without either exception.",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 3,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "coverage_status": "pending_review",
+      "recording_ids": [],
+      "law_partition": "training",
+      "scenario_partition": "training"
+    }
+  ],
+  "objective": "Prepare complete source-grounded delivery coverage for LVMC-11-16-030 at C202465 with motor_vehicle_driver. Account for all statutory branches and existing accepted evidence.",
+  "remaining_requirement": "Review accepted recordings against these scope references and plan only uncovered evidence: Crossing traversal under the stated sight conditions without either exception.. Explicitly record completed equivalence and pending limitations; do not replay accepted originals.",
+  "dependency_review": "The export includes exact law, catalog cell, available reviewed witness or membership-only provenance, current selection snapshot, relevant archived handoff guidance and review context. Verify every dependency before drafting. Identify missing external authority or Native capability rather than inventing it.",
+  "external_imports": [
+    "carla"
+  ],
+  "local_snapshot": {
+    "scope_hashes": {
+      "full-train": "7527903f4fe7a8e7553dbe3e3595d8e46ac65b42bb200e0291c281a055855ec4"
+    },
+    "memberships": {
+      "full-train": []
+    },
+    "guidance": {},
+    "law_sha256": "63c412db614894634363ae45337c0a5a9740d322102dfba410a76e3768cb03a3",
+    "cell_sha256": "d35cd78c615802213cca24488e996b0198aafad819d97f3f7f38dd3e98aed188",
+    "law_policy_sha256": "77d7da97a21300aff4fc6560b6ea06defe41b5c9d4c4f5567f77571c94d9e5f6"
+  },
+  "cell": {
+    "cell_id": "C202465",
+    "layout": "rail_crossing",
+    "maneuver": "cross_railway",
+    "control": "rail_track",
+    "grounding": "grounded",
+    "source_laws": [
+      "NRS-484B-560-7a"
+    ],
+    "grounding_by_party": {
+      "motor_vehicle_driver": [
+        "NRS-484B-560-7a"
+      ]
+    },
+    "provenance": {
+      "annotation_refs": [
+        "LVMC-11-16-030",
+        "LVMC-11-30-080",
+        "NRS-484B-213-2b",
+        "NRS-484B-450-1i",
+        "NRS-484B-553-1",
+        "NRS-484B-553-2",
+        "NRS-484B-557",
+        "NRS-484B-560-3",
+        "NRS-484B-560-6",
+        "NRS-484B-560-7a",
+        "NRS-484B-560-7b"
+      ]
+    }
+  },
+  "law_record": {
+    "id": "LVMC-11-16-030",
+    "title": "Rail crossings at grade",
+    "text": "The prima facie speed limit shall be fifteen miles per hour when traversing a grade crossing of a steam, electric or any other motor railway, if during the last one hundred feet of the approach to such crossing the driver does not have a clear and unobstructed view of such crossing and of any traffic on such railway for a distance of four hundred feet in both directions along such railway. This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.",
+    "source": "LVMC 11.16.030"
+  },
+  "summary": {
+    "activation_conditions": [
+      "the subject traverses a railway grade crossing",
+      "during the last 100 feet of the approach the driver lacks a clear view of the crossing and of railway traffic 400 feet in both directions"
+    ],
+    "exceptions": [
+      "where a human flagman is on duty",
+      "where a clearly visible electrical or mechanical crossing signal is installed and is not then indicating the immediate approach of a train"
+    ],
+    "id": "LVMC-11-16-030",
+    "residue": [
+      "'prima facie' means the limit is rebuttable in law; a monitor can only report the speed against it",
+      "the view of the crossing itself is the region's sight distance; the traffic on the railway within 400 feet is read through rel.visible, which the source must supply"
+    ],
+    "source": "LVMC 11.16.030",
+    "subject": "driver",
+    "theme": "speed",
+    "tier": "Q",
+    "timing_requirements": [
+      {
+        "kind": "continuous",
+        "requirement": "the limit binds through the approach and the traversal"
+      },
+      {
+        "kind": "ordering",
+        "requirement": "the sight condition is evaluated over the last 100 feet before the crossing, so the speed must already be down on entering that stretch"
+      }
+    ],
+    "title": "Rail crossings at grade"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_candidates": [
+    {
+      "summary": {
+        "activation_conditions": [
+          "the subject traverses a railway grade crossing",
+          "during the last 100 feet of the approach the driver lacks a clear view of the crossing and of railway traffic 400 feet in both directions"
+        ],
+        "exceptions": [
+          "where a human flagman is on duty",
+          "where a clearly visible electrical or mechanical crossing signal is installed and is not then indicating the immediate approach of a train"
+        ],
+        "id": "LVMC-11-16-030",
+        "required_observations": [
+          {
+            "atom": "st.railway_crossing",
+            "note": "the grade crossing"
+          },
+          {
+            "atom": "drv.approaching",
+            "note": "the last 100 feet of the approach"
+          },
+          {
+            "atom": "st.sight_distance",
+            "note": "the clear and unobstructed view of the crossing and of traffic 400 feet along the railway in both directions"
+          },
+          {
+            "atom": "rel.visible",
+            "note": "'a clear and unobstructed view … of any traffic on such railway': the rail traffic within 400 feet in the subject's line of sight"
+          },
+          {
+            "atom": "kin.speed",
+            "note": "against the 15 mph prima facie limit"
+          },
+          {
+            "atom": "ru.rail_vehicle",
+            "note": "the traffic on the railway"
+          },
+          {
+            "atom": "dev.human_direction",
+            "note": "the exception: a human flagman on duty"
+          },
+          {
+            "atom": "dev.railway_signal_or_gate",
+            "note": "the exception: a visible signal device not indicating an approach"
+          },
+          {
+            "atom": "rel.centre_distance",
+            "note": "the 100-foot and 400-foot distances"
+          }
+        ],
+        "residue": [
+          "'prima facie' means the limit is rebuttable in law; a monitor can only report the speed against it",
+          "the view of the crossing itself is the region's sight distance; the traffic on the railway within 400 feet is read through rel.visible, which the source must supply"
+        ],
+        "source": "LVMC 11.16.030",
+        "subject": "driver",
+        "theme": "speed",
+        "tier": "Q",
+        "timing_requirements": [
+          {
+            "kind": "continuous",
+            "requirement": "the limit binds through the approach and the traversal"
+          },
+          {
+            "kind": "ordering",
+            "requirement": "the sight condition is evaluated over the last 100 feet before the crossing, so the speed must already be down on entering that stretch"
+          }
+        ],
+        "title": "Rail crossings at grade"
+      },
+      "runs": [
+        "demo-six-parallel-test-20261008",
+        "demo-thirteen-complete-20261010",
+        "heldout-C230289-r2",
+        "heldout-C230289-r3",
+        "heldout-C230289",
+        "heldout-lean-v1",
+        "C353238-fewshot",
+        "C353238-fewshot-wide",
+        "production-motor-v1",
+        "production-motor-v2"
+      ]
+    },
+    {
+      "summary": {
+        "activation_conditions": [
+          "the subject traverses a railway grade crossing",
+          "during the last 100 feet of the approach the driver lacks a clear view of the crossing and of railway traffic 400 feet in both directions"
+        ],
+        "exceptions": [
+          "where a human flagman is on duty",
+          "where a clearly visible electrical or mechanical crossing signal is installed and is not then indicating the immediate approach of a train"
+        ],
+        "id": "LVMC-11-16-030",
+        "required_observations": [
+          {
+            "atom": "st.railway_crossing",
+            "note": "the grade crossing"
+          },
+          {
+            "atom": "drv.approaching",
+            "note": "the last 100 feet of the approach"
+          },
+          {
+            "atom": "st.sight_distance",
+            "note": "the clear and unobstructed view of the crossing and of traffic 400 feet along the railway in both directions"
+          },
+          {
+            "atom": "kin.speed",
+            "note": "against the 15 mph prima facie limit"
+          },
+          {
+            "atom": "ru.rail_vehicle",
+            "note": "the traffic on the railway"
+          },
+          {
+            "atom": "dev.human_direction",
+            "note": "the exception: a human flagman on duty"
+          },
+          {
+            "atom": "dev.railway_signal_or_gate",
+            "note": "the exception: a visible signal device not indicating an approach"
+          },
+          {
+            "atom": "rel.centre_distance",
+            "note": "the 100-foot and 400-foot distances"
+          }
+        ],
+        "residue": [
+          "'prima facie' means the limit is rebuttable in law; a monitor can only report the speed against it",
+          "the 400-foot sight line along the railway is a geometric construction the source may not support"
+        ],
+        "source": "LVMC 11.16.030",
+        "subject": "driver",
+        "theme": "speed",
+        "tier": "Q",
+        "timing_requirements": [
+          {
+            "kind": "continuous",
+            "requirement": "the limit binds through the approach and the traversal"
+          },
+          {
+            "kind": "ordering",
+            "requirement": "the sight condition is evaluated over the last 100 feet before the crossing, so the speed must already be down on entering that stretch"
+          }
+        ],
+        "title": "Rail crossings at grade"
+      },
+      "runs": [
+        "catalog-import"
+      ]
+    }
+  ],
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "selection_targets": [
+    "full-train"
+  ],
+  "observation_terms_contract": "Summary required_observations are law-planning terms, not Core IDs. Map every term to measured evidence; put only supported pinned ontology IDs in config.required_atoms.",
+  "source_observation_terms": [
+    {
+      "term": "st.railway_crossing",
+      "note": "the grade crossing"
+    },
+    {
+      "term": "drv.approaching",
+      "note": "the last 100 feet of the approach"
+    },
+    {
+      "term": "st.sight_distance",
+      "note": "the clear and unobstructed view of the crossing and of traffic 400 feet along the railway in both directions"
+    },
+    {
+      "term": "rel.visible",
+      "note": "'a clear and unobstructed view … of any traffic on such railway': the rail traffic within 400 feet in the subject's line of sight"
+    },
+    {
+      "term": "kin.speed",
+      "note": "against the 15 mph prima facie limit"
+    },
+    {
+      "term": "ru.rail_vehicle",
+      "note": "the traffic on the railway"
+    },
+    {
+      "term": "dev.human_direction",
+      "note": "the exception: a human flagman on duty"
+    },
+    {
+      "term": "dev.railway_signal_or_gate",
+      "note": "the exception: a visible signal device not indicating an approach"
+    },
+    {
+      "term": "rel.centre_distance",
+      "note": "the 100-foot and 400-foot distances"
+    }
+  ]
+}
