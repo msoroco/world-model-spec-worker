@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
-RUNTIME = ROOT / 'runtime/main-pipeline-v6'
+RUNTIME = ROOT / 'runtime/main-pipeline-v7'
 sys.path.insert(0, str(RUNTIME))
 sys.path.insert(0, str(RUNTIME/'scenario_pipeline'))
 
@@ -51,7 +51,7 @@ def main():
     result = unittest.TextTestRunner(verbosity=2,stream=sys.stdout).run(suite)
     if not result.wasSuccessful() or result.skipped:
         raise SystemExit(1)
-    saved = subprocess.run([sys.executable, str(ROOT/'work/_shared/prove_saved_processing_v6.py')],
+    saved = subprocess.run([sys.executable, str(ROOT/'work/_shared/prove_saved_processing_v7.py')],
                            cwd=ROOT, capture_output=True, text=True)
     print(saved.stdout[-1200:])
     if saved.returncode:
