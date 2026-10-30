@@ -1,0 +1,151 @@
+{
+  "case": {
+    "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse",
+    "target_law_id": "NRS-484B-220-1",
+    "target_type": "boundary_probe",
+    "rationale": "Actual signed velocity direction with heading and sign fixed.",
+    "variable_assignments": {
+      "requested_speed_mps": {
+        "kind": "controller",
+        "value": 5.0,
+        "unit": "m/s"
+      },
+      "designated_direction_xy": {
+        "kind": "world_setup",
+        "value": [
+          1,
+          0
+        ]
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Regulatory sign authority and realized pixel visibility"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "original_motion",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Native actor positions and velocity per tick",
+          "time_window": "entire original 45s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+        },
+        {
+          "name": "native_geometry",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Native map and authored one-way lane geometry per tick",
+          "time_window": "entire original 45s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+        },
+        {
+          "name": "device_inventory",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Native one-way sign landmark and original tick identity",
+          "time_window": "entire original 45s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+        },
+        {
+          "name": "view_provenance",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Four original synchronized camera source identities",
+          "time_window": "entire original 45s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Road designation and sign authority require sourced review; original sign pixels unverified."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse",
+  "supported_case_ids": [
+    "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+    "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+  ],
+  "cell_id": "C147311",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-220-1",
+  "duration_s": 45,
+  "rate_hz": 20,
+  "requested_speed_mps": 5.0,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached overhead full travel"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached forward approach"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed roadside view toward sign and governed lanes"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego attached modeled eye toward direction sign"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity",
+    "st.one_way_roadway",
+    "dev.regulatory_sign"
+  ],
+  "source_packets": [
+    "scenario_geometry",
+    "scenario_rule_evidence"
+  ],
+  "public_way_road_ids": [
+    1
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "one_way_designation": "authored signposted highway; legal authority separate"
+    }
+  },
+  "reverse_motion": true,
+  "physical_completion": {
+    "format": "worker-physical-completion-criteria-v002",
+    "criterion": "travel_progress",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 112.5,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true,
+    "context_sources": [],
+    "direction_xy": [
+      -1,
+      0
+    ],
+    "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+  },
+  "processing_contract_version": 2
+}

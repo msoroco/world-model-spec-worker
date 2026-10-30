@@ -1,0 +1,612 @@
+{
+  "cell_id": "C331230",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral reference definition; not selected for capture",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": null,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "crosswalk": {
+          "value": "physical near-side stripes",
+          "kind": "world_setup"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "stop_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body front, speed, control and near-side crosswalk relation",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No statutory stop epsilon; actual sign governance and crosswalk pixels require Native review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_halt",
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "rationale": "Crosswalk-first statutory stopping hierarchy; compare complete halt and rolling movement with same reference geometry.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": 5.0,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "crosswalk": {
+          "value": "physical near-side stripes",
+          "kind": "world_setup"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "continuous statutory stop",
+        "actual sign governance and public-way status"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "stop_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body front, speed, control and near-side crosswalk relation",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No statutory stop epsilon; actual sign governance and crosswalk pixels require Native review."
+        ]
+      },
+      "paired_probe_id": "marked_crosswalk_cessation",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "marked_crosswalk_halt"
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_rolling",
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "rationale": "Crosswalk-first statutory stopping hierarchy; compare complete halt and rolling movement with same reference geometry.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": 5.0,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "crosswalk": {
+          "value": "physical near-side stripes",
+          "kind": "world_setup"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "continuous statutory stop",
+        "actual sign governance and public-way status"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "stop_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body front, speed, control and near-side crosswalk relation",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No statutory stop epsilon; actual sign governance and crosswalk pixels require Native review."
+        ]
+      },
+      "paired_probe_id": "marked_crosswalk_cessation",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "marked_crosswalk_rolling"
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_halt",
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "rationale": "Crosswalk-first statutory stopping hierarchy; compare complete halt and rolling movement with same reference geometry.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": 5.0,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "crosswalk": {
+          "value": "physical near-side stripes",
+          "kind": "world_setup"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "continuous statutory stop",
+        "actual sign governance and public-way status"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "stop_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body front, speed, control and near-side crosswalk relation",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No statutory stop epsilon; actual sign governance and crosswalk pixels require Native review."
+        ]
+      },
+      "paired_probe_id": "unmarked_crosswalk_cessation",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "unmarked_crosswalk_halt"
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_rolling",
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "rationale": "Crosswalk-first statutory stopping hierarchy; compare complete halt and rolling movement with same reference geometry.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": 5.0,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "crosswalk": {
+          "value": "physical near-side stripes",
+          "kind": "world_setup"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "continuous statutory stop",
+        "actual sign governance and public-way status"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "stop_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body front, speed, control and near-side crosswalk relation",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No statutory stop epsilon; actual sign governance and crosswalk pixels require Native review."
+        ]
+      },
+      "paired_probe_id": "unmarked_crosswalk_cessation",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "unmarked_crosswalk_rolling"
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__stop_line_halt",
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "rationale": "Crosswalk-first statutory stopping hierarchy; compare complete halt and rolling movement with same reference geometry.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": 5.0,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "crosswalk": {
+          "value": "physical near-side stripes",
+          "kind": "world_setup"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "continuous statutory stop",
+        "actual sign governance and public-way status"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "stop_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body front, speed, control and near-side crosswalk relation",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No statutory stop epsilon; actual sign governance and crosswalk pixels require Native review."
+        ]
+      },
+      "paired_probe_id": "stop_line_cessation",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "stop_line_halt"
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__stop_line_rolling",
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "rationale": "Crosswalk-first statutory stopping hierarchy; compare complete halt and rolling movement with same reference geometry.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": 5.0,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "crosswalk": {
+          "value": "physical near-side stripes",
+          "kind": "world_setup"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "continuous statutory stop",
+        "actual sign governance and public-way status"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "stop_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body front, speed, control and near-side crosswalk relation",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No statutory stop epsilon; actual sign governance and crosswalk pixels require Native review."
+        ]
+      },
+      "paired_probe_id": "stop_line_cessation",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "stop_line_rolling"
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__nearest_sight_halt",
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "rationale": "Crosswalk-first statutory stopping hierarchy; compare complete halt and rolling movement with same reference geometry.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": 5.0,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "crosswalk": {
+          "value": "physical near-side stripes",
+          "kind": "world_setup"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "continuous statutory stop",
+        "actual sign governance and public-way status"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "stop_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body front, speed, control and near-side crosswalk relation",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No statutory stop epsilon; actual sign governance and crosswalk pixels require Native review."
+        ]
+      },
+      "paired_probe_id": "nearest_sight_cessation",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "nearest_sight_halt"
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__nearest_sight_rolling",
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "rationale": "Crosswalk-first statutory stopping hierarchy; compare complete halt and rolling movement with same reference geometry.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "value": 5.0,
+          "kind": "controller",
+          "unit": "m/s"
+        },
+        "crosswalk": {
+          "value": "physical near-side stripes",
+          "kind": "world_setup"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "continuous statutory stop",
+        "actual sign governance and public-way status"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor speed",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          },
+          {
+            "name": "stop_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body front, speed, control and near-side crosswalk relation",
+            "time_window": "entire original 45-second episode",
+            "reference_frame": "Native original frame/world",
+            "uncertainty": "20Hz samples; continuous stop and actual pixels need GPU"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No statutory stop epsilon; actual sign governance and crosswalk pixels require Native review."
+        ]
+      },
+      "paired_probe_id": "nearest_sight_cessation",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "nearest_sight_rolling"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "judgment-0",
+      "target_law_id": "NRS-484A-450-2",
+      "judgment_refs": [
+        {
+          "phrase": "actual sign governance and public-way status",
+          "note": "Original physical evidence required; legal interpretation deferred"
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Existing v7 branch comparisons preserve exact identities; no legal cutoff is authored.",
+      "missing_inputs": [
+        "A source-backed scalar physical sweep design for this qualitative judgment is unavailable."
+      ]
+    },
+    {
+      "sweep_id": "judgment-1",
+      "target_law_id": "NRS-484A-450-2",
+      "judgment_refs": [
+        {
+          "phrase": "continuous statutory stop",
+          "note": "Original physical evidence required; legal interpretation deferred"
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Existing v7 branch comparisons preserve exact identities; no legal cutoff is authored.",
+      "missing_inputs": [
+        "A source-backed scalar physical sweep design for this qualitative judgment is unavailable."
+      ]
+    }
+  ]
+}

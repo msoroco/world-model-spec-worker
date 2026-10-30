@@ -1,0 +1,1196 @@
+{
+  "format": "worker-execution-manifest-v1",
+  "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "33ef9fb07675ee220a808c3a209ceaf6c010d84af47c77536671786558090f09",
+  "cases": [
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "10560b600bbe8999767837a972cfe21fff32c750881f3d05cd37615a634e1319",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "ec2fccb3e9356e8a21e5437e4f30ebf3ea7c0a48ad178a89fd1271ad855688ea",
+        "saved_only": true
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego velocity norm and full-body/through actor history",
+          "evidence": "Original Native acquisition and source finalizer"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture and original source packets",
+          "evidence": "Original subject/actor/road/control/weather observations in capture/evidence.jsonl; declared geometry/rule/environment packets: scenario_geometry"
+        }
+      },
+      "gpu_command": "python3.11 work/_shared/runtime-v3.py runtime.py capture --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-0",
+      "owner_release_command": "python3.11 work/_shared/runtime-v3.py runtime.py owner-released --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-0 --receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-0.json --acknowledge-owner-released",
+      "offline": {
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/nearest_view_response/offline-primary",
+        "exit_code": 0,
+        "log": "receipts/v3-offline-nearest_view_response.log",
+        "log_sha256": "0d1d6b43e5ed41a3f00c68bc94ae80fd05ef07a2b34b211dbb5a9258d0fae19a",
+        "construction_sha256": "10560b600bbe8999767837a972cfe21fff32c750881f3d05cd37615a634e1319"
+      },
+      "compatibility": {
+        "receipt": "receipts/v3-compat-nearest_view_response.json",
+        "sha256": "465ef48f5d9128dd2b3c27d07c8025c7ec78992f67ba613c16f5c7cadd36df5d",
+        "log": "receipts/v3-analysis-nearest_view_response.log",
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py compatibility-recipe --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/nearest_view_response/compatibility-recipe-primary --library /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/runtime/main-pipeline-v3/library --validator /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/decoder-v3/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "receipts/v3-negative-nearest_view_response.log",
+        "log_sha256": "7130e4b86ae9aa9416df62faaf3b8e95ff78f545c96cb73dd1fe34922aa2b0a8",
+        "exit_code": 1
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 work/_shared/runtime-v3.py runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-0 --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-0 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-0.json",
+        "feedback_command": "cat .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-0/v*/feedback.json",
+        "test_log": "receipts/v3-saved-nearest_view_response.log",
+        "test_log_sha256": "5eb5c459640e54d8724ac91b973ae4515858c5da528ed546f9d0190f544d623a",
+        "test_exit_code": 0,
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-0/v0001/analysis --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-0/v0001/analysis/additional-source-audit.json",
+        "source_join_fixture_proof": {
+          "receipt": "receipts/source-frame-joins.json",
+          "receipt_sha256": "3d30de59ffdc8210a6154a5e8ff5bedd04e726a044b5850a9e6f652512f536c7",
+          "test_log": "receipts/source-frame-joins.log",
+          "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
+          "test_exit_code": 0
+        }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-nearest_view_response.json",
+        "sha256": "dd82bada1143228cb6251c1a2235f4d5ed2e25cfb496e8d002684c103370e493"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d88fc0cdd2a9ae79e40b3cc317efa9c73abe3a7177ed58eda7ba0d8e4f855dd8",
+        "command": "python3.11 work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response --job \"$JOB_ID\" --attempt \"$CANONICAL_ATTEMPT\" --recording \"$RECORDING_ID\" --output \"$CANONICAL_ATTEMPT/delivery-audit.json\" --attempt-number \"$ATTEMPT_NUMBER\"",
+        "test_log": "receipts/delivery-positive-nearest_view_response.log",
+        "test_log_sha256": "1dcdddb546d6dcfeddfbcbe4d627ece3452225d5156d5d93c63c48426d1c15c2",
+        "test_exit_code": 0,
+        "negative_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/nearest_view_response-negative/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/nearest_view_response-negative.json --fixture-test",
+        "negative_log": "receipts/delivery-negative-nearest_view_response.log",
+        "negative_log_sha256": "f715785de3dd90ce6244fc44f71c79747a41ffc950cd4af320331d27eca13eb8",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Native source provenance required",
+        "test_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/nearest_view_response-positive/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/nearest_view_response-positive.json --fixture-test"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Exact nearest_view_response primary has a source-bound offline construction and diagnostic compatibility proof. No distinct spawn, timing, or controller failure trigger is established by CPU evidence for this case. Intended observation: Measure stop nearest_view nearest_view_response through startup, initial response and all across-or-within interaction history. Native motion and pixels remain unverified."
+      },
+      "candidates": []
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_uninterrupted",
+      "kind": "delivery",
+      "construction": "cases/nearest_view_uninterrupted/construction.json",
+      "construction_sha256": "7f56cb901489dd96db3c63b8b2d00a1c3c6e364454c066ff9fb048727451bd15",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "ec2fccb3e9356e8a21e5437e4f30ebf3ea7c0a48ad178a89fd1271ad855688ea",
+        "saved_only": true
+      },
+      "measurement_contract": "cases/nearest_view_uninterrupted/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/nearest_view_uninterrupted/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego velocity norm and full-body/through actor history",
+          "evidence": "Original Native acquisition and source finalizer"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture and original source packets",
+          "evidence": "Original subject/actor/road/control/weather observations in capture/evidence.jsonl; declared geometry/rule/environment packets: scenario_geometry"
+        }
+      },
+      "gpu_command": "python3.11 work/_shared/runtime-v3.py runtime.py capture --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_uninterrupted --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-1",
+      "owner_release_command": "python3.11 work/_shared/runtime-v3.py runtime.py owner-released --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-1 --receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-1.json --acknowledge-owner-released",
+      "offline": {
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_uninterrupted --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/nearest_view_uninterrupted/offline-primary",
+        "exit_code": 0,
+        "log": "receipts/v3-offline-nearest_view_uninterrupted.log",
+        "log_sha256": "0d1d6b43e5ed41a3f00c68bc94ae80fd05ef07a2b34b211dbb5a9258d0fae19a",
+        "construction_sha256": "7f56cb901489dd96db3c63b8b2d00a1c3c6e364454c066ff9fb048727451bd15"
+      },
+      "compatibility": {
+        "receipt": "receipts/v3-compat-nearest_view_uninterrupted.json",
+        "sha256": "8f854a9e865f7edb735f74ee271faee510a07e168e05c5d08a17b0d670188408",
+        "log": "receipts/v3-analysis-nearest_view_uninterrupted.log",
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py compatibility-recipe --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_uninterrupted --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/nearest_view_uninterrupted/compatibility-recipe-primary --library /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/runtime/main-pipeline-v3/library --validator /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/decoder-v3/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "receipts/v3-negative-nearest_view_uninterrupted.log",
+        "log_sha256": "ee30fb68a7a72c7222827bc4bf512cae019608a038cc30df93865e6e44cfe734",
+        "exit_code": 1
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 work/_shared/runtime-v3.py runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_uninterrupted --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-1 --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-1 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-1.json",
+        "feedback_command": "cat .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-1/v*/feedback.json",
+        "test_log": "receipts/v3-saved-nearest_view_uninterrupted.log",
+        "test_log_sha256": "aaa183851bc430c7107c41f6b640fa9aa2e44f81429a24ce75bf187c09268f6d",
+        "test_exit_code": 0,
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_uninterrupted --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-1/v0001/analysis --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-1/v0001/analysis/additional-source-audit.json",
+        "source_join_fixture_proof": {
+          "receipt": "receipts/source-frame-joins.json",
+          "receipt_sha256": "3d30de59ffdc8210a6154a5e8ff5bedd04e726a044b5850a9e6f652512f536c7",
+          "test_log": "receipts/source-frame-joins.log",
+          "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
+          "test_exit_code": 0
+        }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-nearest_view_uninterrupted.json",
+        "sha256": "cc1973893d1b9e2d91f1cdd6066b7ec489d77315210bda448c5f44a941389dca"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_uninterrupted",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d88fc0cdd2a9ae79e40b3cc317efa9c73abe3a7177ed58eda7ba0d8e4f855dd8",
+        "command": "python3.11 work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_uninterrupted --job \"$JOB_ID\" --attempt \"$CANONICAL_ATTEMPT\" --recording \"$RECORDING_ID\" --output \"$CANONICAL_ATTEMPT/delivery-audit.json\" --attempt-number \"$ATTEMPT_NUMBER\"",
+        "test_log": "receipts/delivery-positive-nearest_view_uninterrupted.log",
+        "test_log_sha256": "a1bc366dec25349bcb6b69df3f564725d0d037b3fbd34f005d7788a87b5db900",
+        "test_exit_code": 0,
+        "negative_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_uninterrupted --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/nearest_view_uninterrupted-negative/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/nearest_view_uninterrupted-negative.json --fixture-test",
+        "negative_log": "receipts/delivery-negative-nearest_view_uninterrupted.log",
+        "negative_log_sha256": "72926d7c7d87288cbd8f3d4d84ec03a5de809c46b09cd80fc783c731f3407bf1",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Required participant history incomplete",
+        "test_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__nearest_view_uninterrupted --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/nearest_view_uninterrupted-positive/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/nearest_view_uninterrupted-positive.json --fixture-test"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Exact nearest_view_uninterrupted primary has a source-bound offline construction and diagnostic compatibility proof. No distinct spawn, timing, or controller failure trigger is established by CPU evidence for this case. Intended observation: Measure stop nearest_view nearest_view_uninterrupted through startup, initial response and all across-or-within interaction history. Native motion and pixels remain unverified."
+      },
+      "candidates": []
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_response",
+      "kind": "delivery",
+      "construction": "cases/marked_stop_line_response/construction.json",
+      "construction_sha256": "ea5a064c4552788199ba9b1b2b666fcc27bab8c3771c5f643cf2741faa8c3b20",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "ec2fccb3e9356e8a21e5437e4f30ebf3ea7c0a48ad178a89fd1271ad855688ea",
+        "saved_only": true
+      },
+      "measurement_contract": "cases/marked_stop_line_response/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/marked_stop_line_response/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego velocity norm and full-body/through actor history",
+          "evidence": "Original Native acquisition and source finalizer"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture and original source packets",
+          "evidence": "Original subject/actor/road/control/weather observations in capture/evidence.jsonl; declared geometry/rule/environment packets: scenario_geometry"
+        }
+      },
+      "gpu_command": "python3.11 work/_shared/runtime-v3.py runtime.py capture --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_response --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-2",
+      "owner_release_command": "python3.11 work/_shared/runtime-v3.py runtime.py owner-released --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-2 --receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-2.json --acknowledge-owner-released",
+      "offline": {
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_response --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/marked_stop_line_response/offline-primary",
+        "exit_code": 0,
+        "log": "receipts/v3-offline-marked_stop_line_response.log",
+        "log_sha256": "f79032d1565fc24a8587ea0c3428e686ff1b2104dbd9f6ed434b2dcda9f893fe",
+        "construction_sha256": "ea5a064c4552788199ba9b1b2b666fcc27bab8c3771c5f643cf2741faa8c3b20"
+      },
+      "compatibility": {
+        "receipt": "receipts/v3-compat-marked_stop_line_response.json",
+        "sha256": "480b8f4f4f12396dc65ea1e2f241869ff008bb64e179e5a3cff19d823eb18604",
+        "log": "receipts/v3-analysis-marked_stop_line_response.log",
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py compatibility-recipe --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_response --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/marked_stop_line_response/compatibility-recipe-primary --library /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/runtime/main-pipeline-v3/library --validator /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/decoder-v3/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "receipts/v3-negative-marked_stop_line_response.log",
+        "log_sha256": "e6ea790f95f9e1af61332147511a6d3d7ed3db16d45af61e6eceb8f02d7b165f",
+        "exit_code": 1
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 work/_shared/runtime-v3.py runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_response --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-2 --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-2 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-2.json",
+        "feedback_command": "cat .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-2/v*/feedback.json",
+        "test_log": "receipts/v3-saved-marked_stop_line_response.log",
+        "test_log_sha256": "2d08b0a6d9f5226f7fc3de139b8501b30569fbb434f2b5cd8288d254ad927625",
+        "test_exit_code": 0,
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_response --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-2/v0001/analysis --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-2/v0001/analysis/additional-source-audit.json",
+        "source_join_fixture_proof": {
+          "receipt": "receipts/source-frame-joins.json",
+          "receipt_sha256": "3d30de59ffdc8210a6154a5e8ff5bedd04e726a044b5850a9e6f652512f536c7",
+          "test_log": "receipts/source-frame-joins.log",
+          "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
+          "test_exit_code": 0
+        }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-marked_stop_line_response.json",
+        "sha256": "189754e427c93ff17be524b9e261fafccd10592a71649fd63bd4a033f02b4e72"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_response",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d88fc0cdd2a9ae79e40b3cc317efa9c73abe3a7177ed58eda7ba0d8e4f855dd8",
+        "command": "python3.11 work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_response --job \"$JOB_ID\" --attempt \"$CANONICAL_ATTEMPT\" --recording \"$RECORDING_ID\" --output \"$CANONICAL_ATTEMPT/delivery-audit.json\" --attempt-number \"$ATTEMPT_NUMBER\"",
+        "test_log": "receipts/delivery-positive-marked_stop_line_response.log",
+        "test_log_sha256": "28b999aec5dd7319332326bbcabc2a39e91ac024d71eaac1671556f1d9b8af6e",
+        "test_exit_code": 0,
+        "negative_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_response --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/marked_stop_line_response-negative/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/marked_stop_line_response-negative.json --fixture-test",
+        "negative_log": "receipts/delivery-negative-marked_stop_line_response.log",
+        "negative_log_sha256": "875d793a22e51456f6cc719b3f93cabfafeb0682c1f3e2fd02b4aac41bfeef8f",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original timestamp join failed",
+        "test_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_response --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/marked_stop_line_response-positive/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/marked_stop_line_response-positive.json --fixture-test"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Exact marked_stop_line_response primary has a source-bound offline construction and diagnostic compatibility proof. No distinct spawn, timing, or controller failure trigger is established by CPU evidence for this case. Intended observation: Measure stop marked_stop_line marked_stop_line_response through startup, initial response and all across-or-within interaction history. Native motion and pixels remain unverified."
+      },
+      "candidates": []
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_uninterrupted",
+      "kind": "delivery",
+      "construction": "cases/marked_stop_line_uninterrupted/construction.json",
+      "construction_sha256": "9384ed206b09d0b220b02297a651fa351d22750881626d7aa2f654c7a49b2640",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "ec2fccb3e9356e8a21e5437e4f30ebf3ea7c0a48ad178a89fd1271ad855688ea",
+        "saved_only": true
+      },
+      "measurement_contract": "cases/marked_stop_line_uninterrupted/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/marked_stop_line_uninterrupted/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego velocity norm and full-body/through actor history",
+          "evidence": "Original Native acquisition and source finalizer"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture and original source packets",
+          "evidence": "Original subject/actor/road/control/weather observations in capture/evidence.jsonl; declared geometry/rule/environment packets: scenario_geometry"
+        }
+      },
+      "gpu_command": "python3.11 work/_shared/runtime-v3.py runtime.py capture --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_uninterrupted --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-3",
+      "owner_release_command": "python3.11 work/_shared/runtime-v3.py runtime.py owner-released --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-3 --receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-3.json --acknowledge-owner-released",
+      "offline": {
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_uninterrupted --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/marked_stop_line_uninterrupted/offline-primary",
+        "exit_code": 0,
+        "log": "receipts/v3-offline-marked_stop_line_uninterrupted.log",
+        "log_sha256": "f79032d1565fc24a8587ea0c3428e686ff1b2104dbd9f6ed434b2dcda9f893fe",
+        "construction_sha256": "9384ed206b09d0b220b02297a651fa351d22750881626d7aa2f654c7a49b2640"
+      },
+      "compatibility": {
+        "receipt": "receipts/v3-compat-marked_stop_line_uninterrupted.json",
+        "sha256": "31f168414685902550ee78084e569b260f29104c182f5cd6824b0bc42aa22d58",
+        "log": "receipts/v3-analysis-marked_stop_line_uninterrupted.log",
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py compatibility-recipe --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_uninterrupted --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/marked_stop_line_uninterrupted/compatibility-recipe-primary --library /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/runtime/main-pipeline-v3/library --validator /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/decoder-v3/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "receipts/v3-negative-marked_stop_line_uninterrupted.log",
+        "log_sha256": "021ab5245db42968b1f5f661a3e1de90a1d80bd8a235c7c5804ea39427f2bf77",
+        "exit_code": 1
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 work/_shared/runtime-v3.py runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_uninterrupted --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-3 --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-3 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-3.json",
+        "feedback_command": "cat .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-3/v*/feedback.json",
+        "test_log": "receipts/v3-saved-marked_stop_line_uninterrupted.log",
+        "test_log_sha256": "3df484b52ee98c5dde5addb1bb69c522a4cec41f797d32208cbd6b275b8dbb2d",
+        "test_exit_code": 0,
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_uninterrupted --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-3/v0001/analysis --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-3/v0001/analysis/additional-source-audit.json",
+        "source_join_fixture_proof": {
+          "receipt": "receipts/source-frame-joins.json",
+          "receipt_sha256": "3d30de59ffdc8210a6154a5e8ff5bedd04e726a044b5850a9e6f652512f536c7",
+          "test_log": "receipts/source-frame-joins.log",
+          "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
+          "test_exit_code": 0
+        }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-marked_stop_line_uninterrupted.json",
+        "sha256": "049498bf09df5fd46c0994367659fb1a7a3c1e4f9f1b4c8e3e559f9e99eafe52"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_uninterrupted",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d88fc0cdd2a9ae79e40b3cc317efa9c73abe3a7177ed58eda7ba0d8e4f855dd8",
+        "command": "python3.11 work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_uninterrupted --job \"$JOB_ID\" --attempt \"$CANONICAL_ATTEMPT\" --recording \"$RECORDING_ID\" --output \"$CANONICAL_ATTEMPT/delivery-audit.json\" --attempt-number \"$ATTEMPT_NUMBER\"",
+        "test_log": "receipts/delivery-positive-marked_stop_line_uninterrupted.log",
+        "test_log_sha256": "bc68825bc11ecf6b640cb4994ec8cee2c02a4d3ddfee61b64db4e2316297327d",
+        "test_exit_code": 0,
+        "negative_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_uninterrupted --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/marked_stop_line_uninterrupted-negative/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/marked_stop_line_uninterrupted-negative.json --fixture-test",
+        "negative_log": "receipts/delivery-negative-marked_stop_line_uninterrupted.log",
+        "negative_log_sha256": "df4fe86aa017238e0010158f28bd4529a59f7dd1b6569a68b0f1c957de35e89d",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Full video decode failed",
+        "test_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__marked_stop_line_uninterrupted --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/marked_stop_line_uninterrupted-positive/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/marked_stop_line_uninterrupted-positive.json --fixture-test"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Exact marked_stop_line_uninterrupted primary has a source-bound offline construction and diagnostic compatibility proof. No distinct spawn, timing, or controller failure trigger is established by CPU evidence for this case. Intended observation: Measure stop marked_stop_line marked_stop_line_uninterrupted through startup, initial response and all across-or-within interaction history. Native motion and pixels remain unverified."
+      },
+      "candidates": []
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_response",
+      "kind": "delivery",
+      "construction": "cases/near_side_marked_crosswalk_response/construction.json",
+      "construction_sha256": "ee753b48be2a744e119585960260a836a106c3f45980d915f12c8c609b85870f",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "ec2fccb3e9356e8a21e5437e4f30ebf3ea7c0a48ad178a89fd1271ad855688ea",
+        "saved_only": true
+      },
+      "measurement_contract": "cases/near_side_marked_crosswalk_response/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/near_side_marked_crosswalk_response/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego velocity norm and full-body/through actor history",
+          "evidence": "Original Native acquisition and source finalizer"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture and original source packets",
+          "evidence": "Original subject/actor/road/control/weather observations in capture/evidence.jsonl; declared geometry/rule/environment packets: scenario_geometry"
+        }
+      },
+      "gpu_command": "python3.11 work/_shared/runtime-v3.py runtime.py capture --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_response --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-4",
+      "owner_release_command": "python3.11 work/_shared/runtime-v3.py runtime.py owner-released --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-4 --receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-4.json --acknowledge-owner-released",
+      "offline": {
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_response --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_marked_crosswalk_response/offline-primary",
+        "exit_code": 0,
+        "log": "receipts/v3-offline-near_side_marked_crosswalk_response.log",
+        "log_sha256": "0d1d6b43e5ed41a3f00c68bc94ae80fd05ef07a2b34b211dbb5a9258d0fae19a",
+        "construction_sha256": "ee753b48be2a744e119585960260a836a106c3f45980d915f12c8c609b85870f"
+      },
+      "compatibility": {
+        "receipt": "receipts/v3-compat-near_side_marked_crosswalk_response.json",
+        "sha256": "f65843cf3b2f5e26f7ebce0607946bfcb926eb56eddd42c8c7d787f25eb92b6d",
+        "log": "receipts/v3-analysis-near_side_marked_crosswalk_response.log",
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py compatibility-recipe --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_response --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_marked_crosswalk_response/compatibility-recipe-primary --library /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/runtime/main-pipeline-v3/library --validator /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/decoder-v3/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "receipts/v3-negative-near_side_marked_crosswalk_response.log",
+        "log_sha256": "fae11e0a8107bce95347a3235c0dcc9fbe643510f2e0ffc6ce0149865fd9f1bb",
+        "exit_code": 1
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 work/_shared/runtime-v3.py runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_response --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-4 --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-4 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-4.json",
+        "feedback_command": "cat .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-4/v*/feedback.json",
+        "test_log": "receipts/v3-saved-near_side_marked_crosswalk_response.log",
+        "test_log_sha256": "66256aa464e85bdb45ccb7ab63ac7dacb4a4336a8e45fe5be225ea6ff60a10c1",
+        "test_exit_code": 0,
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_response --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-4/v0001/analysis --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-4/v0001/analysis/additional-source-audit.json",
+        "source_join_fixture_proof": {
+          "receipt": "receipts/source-frame-joins.json",
+          "receipt_sha256": "3d30de59ffdc8210a6154a5e8ff5bedd04e726a044b5850a9e6f652512f536c7",
+          "test_log": "receipts/source-frame-joins.log",
+          "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
+          "test_exit_code": 0
+        }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-near_side_marked_crosswalk_response.json",
+        "sha256": "f69d6d8252660178bc023bc56a6fbd5f57ae0666c8b0008e46ae1c3e49a2494d"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_response",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d88fc0cdd2a9ae79e40b3cc317efa9c73abe3a7177ed58eda7ba0d8e4f855dd8",
+        "command": "python3.11 work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_response --job \"$JOB_ID\" --attempt \"$CANONICAL_ATTEMPT\" --recording \"$RECORDING_ID\" --output \"$CANONICAL_ATTEMPT/delivery-audit.json\" --attempt-number \"$ATTEMPT_NUMBER\"",
+        "test_log": "receipts/delivery-positive-near_side_marked_crosswalk_response.log",
+        "test_log_sha256": "6ecf76fcf42664f060cdc02fb809f7235f3175db52e268e35e08750f7c33c842",
+        "test_exit_code": 0,
+        "negative_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_response --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_marked_crosswalk_response-negative/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_marked_crosswalk_response-negative.json --fixture-test",
+        "negative_log": "receipts/delivery-negative-near_side_marked_crosswalk_response.log",
+        "negative_log_sha256": "58b88594c0cfb1e6561f7aa90ed992198cc5afa539aa1cd29fe1bb6c6397e5b5",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Pixel review region out of bounds",
+        "test_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_response --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_marked_crosswalk_response-positive/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_marked_crosswalk_response-positive.json --fixture-test"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Exact near_side_marked_crosswalk_response primary has a source-bound offline construction and diagnostic compatibility proof. No distinct spawn, timing, or controller failure trigger is established by CPU evidence for this case. Intended observation: Measure stop near_side_marked_crosswalk near_side_marked_crosswalk_response through startup, initial response and all across-or-within interaction history. Native motion and pixels remain unverified."
+      },
+      "candidates": []
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_uninterrupted",
+      "kind": "delivery",
+      "construction": "cases/near_side_marked_crosswalk_uninterrupted/construction.json",
+      "construction_sha256": "b1ea99f0164bf04cfe9bd314744715ade72001ed1ca2fc5c1aaedf80497dbc00",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "ec2fccb3e9356e8a21e5437e4f30ebf3ea7c0a48ad178a89fd1271ad855688ea",
+        "saved_only": true
+      },
+      "measurement_contract": "cases/near_side_marked_crosswalk_uninterrupted/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/near_side_marked_crosswalk_uninterrupted/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego velocity norm and full-body/through actor history",
+          "evidence": "Original Native acquisition and source finalizer"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture and original source packets",
+          "evidence": "Original subject/actor/road/control/weather observations in capture/evidence.jsonl; declared geometry/rule/environment packets: scenario_geometry"
+        }
+      },
+      "gpu_command": "python3.11 work/_shared/runtime-v3.py runtime.py capture --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_uninterrupted --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-5",
+      "owner_release_command": "python3.11 work/_shared/runtime-v3.py runtime.py owner-released --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-5 --receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-5.json --acknowledge-owner-released",
+      "offline": {
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_uninterrupted --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_marked_crosswalk_uninterrupted/offline-primary",
+        "exit_code": 0,
+        "log": "receipts/v3-offline-near_side_marked_crosswalk_uninterrupted.log",
+        "log_sha256": "0d1d6b43e5ed41a3f00c68bc94ae80fd05ef07a2b34b211dbb5a9258d0fae19a",
+        "construction_sha256": "b1ea99f0164bf04cfe9bd314744715ade72001ed1ca2fc5c1aaedf80497dbc00"
+      },
+      "compatibility": {
+        "receipt": "receipts/v3-compat-near_side_marked_crosswalk_uninterrupted.json",
+        "sha256": "a0c3e9a62ad8b20e9ed73f405f74920ed1b22db2f05753f0b37e7733483d27a3",
+        "log": "receipts/v3-analysis-near_side_marked_crosswalk_uninterrupted.log",
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py compatibility-recipe --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_uninterrupted --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_marked_crosswalk_uninterrupted/compatibility-recipe-primary --library /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/runtime/main-pipeline-v3/library --validator /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/decoder-v3/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "receipts/v3-negative-near_side_marked_crosswalk_uninterrupted.log",
+        "log_sha256": "47be94f939a4d8cba198f7c70d124e0c0e3ffe1f69da043c05156e2ed2ba99d9",
+        "exit_code": 1
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 work/_shared/runtime-v3.py runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_uninterrupted --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-5 --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-5 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-5.json",
+        "feedback_command": "cat .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-5/v*/feedback.json",
+        "test_log": "receipts/v3-saved-near_side_marked_crosswalk_uninterrupted.log",
+        "test_log_sha256": "d45bb3e903d041821315ad10a5b6be8bbfbd2e44ade20592e54091c6d4d0a107",
+        "test_exit_code": 0,
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_uninterrupted --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-5/v0001/analysis --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-5/v0001/analysis/additional-source-audit.json",
+        "source_join_fixture_proof": {
+          "receipt": "receipts/source-frame-joins.json",
+          "receipt_sha256": "3d30de59ffdc8210a6154a5e8ff5bedd04e726a044b5850a9e6f652512f536c7",
+          "test_log": "receipts/source-frame-joins.log",
+          "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
+          "test_exit_code": 0
+        }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-near_side_marked_crosswalk_uninterrupted.json",
+        "sha256": "5f6db38024ef002a6c11f0a4825af9d514d69e06032161ea02af8b875e46e10e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_uninterrupted",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d88fc0cdd2a9ae79e40b3cc317efa9c73abe3a7177ed58eda7ba0d8e4f855dd8",
+        "command": "python3.11 work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_uninterrupted --job \"$JOB_ID\" --attempt \"$CANONICAL_ATTEMPT\" --recording \"$RECORDING_ID\" --output \"$CANONICAL_ATTEMPT/delivery-audit.json\" --attempt-number \"$ATTEMPT_NUMBER\"",
+        "test_log": "receipts/delivery-positive-near_side_marked_crosswalk_uninterrupted.log",
+        "test_log_sha256": "cb775bac9e48b36f0a48d7fc0cf7978a863a6371a7cfc4fff6cdcb8276864208",
+        "test_exit_code": 0,
+        "negative_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_uninterrupted --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_marked_crosswalk_uninterrupted-negative/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_marked_crosswalk_uninterrupted-negative.json --fixture-test",
+        "negative_log": "receipts/delivery-negative-near_side_marked_crosswalk_uninterrupted.log",
+        "negative_log_sha256": "fb89cee39170d1b9017ff9f9e9fd239fcb22a00d678f49bb73dadb5f49eb7e32",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion not measured",
+        "test_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_marked_crosswalk_uninterrupted --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_marked_crosswalk_uninterrupted-positive/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_marked_crosswalk_uninterrupted-positive.json --fixture-test"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Exact near_side_marked_crosswalk_uninterrupted primary has a source-bound offline construction and diagnostic compatibility proof. No distinct spawn, timing, or controller failure trigger is established by CPU evidence for this case. Intended observation: Measure stop near_side_marked_crosswalk near_side_marked_crosswalk_uninterrupted through startup, initial response and all across-or-within interaction history. Native motion and pixels remain unverified."
+      },
+      "candidates": []
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response",
+      "kind": "delivery",
+      "construction": "cases/near_side_sidewalk_derived_crosswalk_response/construction.json",
+      "construction_sha256": "118fdcb04a7e5cf8e3c0bb604e8c2ab8acc44099dd0e98f6a6d6e91bb56a87b0",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "ec2fccb3e9356e8a21e5437e4f30ebf3ea7c0a48ad178a89fd1271ad855688ea",
+        "saved_only": true
+      },
+      "measurement_contract": "cases/near_side_sidewalk_derived_crosswalk_response/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/near_side_sidewalk_derived_crosswalk_response/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego velocity norm and full-body/through actor history",
+          "evidence": "Original Native acquisition and source finalizer"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture and original source packets",
+          "evidence": "Original subject/actor/road/control/weather observations in capture/evidence.jsonl; declared geometry/rule/environment packets: scenario_geometry"
+        }
+      },
+      "gpu_command": "python3.11 work/_shared/runtime-v3.py runtime.py capture --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-6",
+      "owner_release_command": "python3.11 work/_shared/runtime-v3.py runtime.py owner-released --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-6 --receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-6.json --acknowledge-owner-released",
+      "offline": {
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_sidewalk_derived_crosswalk_response/offline-primary",
+        "exit_code": 0,
+        "log": "receipts/v3-offline-near_side_sidewalk_derived_crosswalk_response.log",
+        "log_sha256": "0d1d6b43e5ed41a3f00c68bc94ae80fd05ef07a2b34b211dbb5a9258d0fae19a",
+        "construction_sha256": "118fdcb04a7e5cf8e3c0bb604e8c2ab8acc44099dd0e98f6a6d6e91bb56a87b0"
+      },
+      "compatibility": {
+        "receipt": "receipts/v3-compat-near_side_sidewalk_derived_crosswalk_response.json",
+        "sha256": "e5401c205f829c9789b4e29f3bd9c101f53349157242aa2e3b983c9442856607",
+        "log": "receipts/v3-analysis-near_side_sidewalk_derived_crosswalk_response.log",
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py compatibility-recipe --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_sidewalk_derived_crosswalk_response/compatibility-recipe-primary --library /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/runtime/main-pipeline-v3/library --validator /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/decoder-v3/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "receipts/v3-negative-near_side_sidewalk_derived_crosswalk_response.log",
+        "log_sha256": "d70c460e05d9d350afebaec5899b63a9dbc7b5947690a955b027e5232cec293a",
+        "exit_code": 1
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 work/_shared/runtime-v3.py runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-6 --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-6 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-6.json",
+        "feedback_command": "cat .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-6/v*/feedback.json",
+        "test_log": "receipts/v3-saved-near_side_sidewalk_derived_crosswalk_response.log",
+        "test_log_sha256": "818c594a8ad929b9eed815c4d6357705b8df79cae3049ec499deac405a7efdc5",
+        "test_exit_code": 0,
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-6/v0001/analysis --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-6/v0001/analysis/additional-source-audit.json",
+        "source_join_fixture_proof": {
+          "receipt": "receipts/source-frame-joins.json",
+          "receipt_sha256": "3d30de59ffdc8210a6154a5e8ff5bedd04e726a044b5850a9e6f652512f536c7",
+          "test_log": "receipts/source-frame-joins.log",
+          "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
+          "test_exit_code": 0
+        }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-near_side_sidewalk_derived_crosswalk_response.json",
+        "sha256": "3bf336bf2abf26743ff953ca977359a8dfec29a2dd43bc726a6c76489de06fdf"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d88fc0cdd2a9ae79e40b3cc317efa9c73abe3a7177ed58eda7ba0d8e4f855dd8",
+        "command": "python3.11 work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response --job \"$JOB_ID\" --attempt \"$CANONICAL_ATTEMPT\" --recording \"$RECORDING_ID\" --output \"$CANONICAL_ATTEMPT/delivery-audit.json\" --attempt-number \"$ATTEMPT_NUMBER\"",
+        "test_log": "receipts/delivery-positive-near_side_sidewalk_derived_crosswalk_response.log",
+        "test_log_sha256": "2ab26c509ecadc6f5953f8ee42203e9622896862268b231f79e286f7895c5607",
+        "test_exit_code": 0,
+        "negative_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_sidewalk_derived_crosswalk_response-negative/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_sidewalk_derived_crosswalk_response-negative.json --fixture-test",
+        "negative_log": "receipts/delivery-negative-near_side_sidewalk_derived_crosswalk_response.log",
+        "negative_log_sha256": "f715785de3dd90ce6244fc44f71c79747a41ffc950cd4af320331d27eca13eb8",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Native source provenance required",
+        "test_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_sidewalk_derived_crosswalk_response-positive/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_sidewalk_derived_crosswalk_response-positive.json --fixture-test"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Exact near_side_sidewalk_derived_crosswalk_response primary has a source-bound offline construction and diagnostic compatibility proof. No distinct spawn, timing, or controller failure trigger is established by CPU evidence for this case. Intended observation: Measure stop near_side_sidewalk_derived_crosswalk near_side_sidewalk_derived_crosswalk_response through startup, initial response and all across-or-within interaction history. Native motion and pixels remain unverified."
+      },
+      "candidates": []
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted",
+      "kind": "delivery",
+      "construction": "cases/near_side_sidewalk_derived_crosswalk_uninterrupted/construction.json",
+      "construction_sha256": "8cd35c14f3cd9f9e991ecce62de7a15ed7bc3896ef34b7db7bc33d5647771146",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "ec2fccb3e9356e8a21e5437e4f30ebf3ea7c0a48ad178a89fd1271ad855688ea",
+        "saved_only": true
+      },
+      "measurement_contract": "cases/near_side_sidewalk_derived_crosswalk_uninterrupted/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/near_side_sidewalk_derived_crosswalk_uninterrupted/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego velocity norm and full-body/through actor history",
+          "evidence": "Original Native acquisition and source finalizer"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture and original source packets",
+          "evidence": "Original subject/actor/road/control/weather observations in capture/evidence.jsonl; declared geometry/rule/environment packets: scenario_geometry"
+        }
+      },
+      "gpu_command": "python3.11 work/_shared/runtime-v3.py runtime.py capture --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-7",
+      "owner_release_command": "python3.11 work/_shared/runtime-v3.py runtime.py owner-released --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-7 --receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-7.json --acknowledge-owner-released",
+      "offline": {
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_sidewalk_derived_crosswalk_uninterrupted/offline-primary",
+        "exit_code": 0,
+        "log": "receipts/v3-offline-near_side_sidewalk_derived_crosswalk_uninterrupted.log",
+        "log_sha256": "f79032d1565fc24a8587ea0c3428e686ff1b2104dbd9f6ed434b2dcda9f893fe",
+        "construction_sha256": "8cd35c14f3cd9f9e991ecce62de7a15ed7bc3896ef34b7db7bc33d5647771146"
+      },
+      "compatibility": {
+        "receipt": "receipts/v3-compat-near_side_sidewalk_derived_crosswalk_uninterrupted.json",
+        "sha256": "a29ef8ea62676e8bd4e30614313d127111353083323cece0c7a5d553fc8e487a",
+        "log": "receipts/v3-analysis-near_side_sidewalk_derived_crosswalk_uninterrupted.log",
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py compatibility-recipe --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_sidewalk_derived_crosswalk_uninterrupted/compatibility-recipe-primary --library /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/runtime/main-pipeline-v3/library --validator /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/decoder-v3/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "receipts/v3-negative-near_side_sidewalk_derived_crosswalk_uninterrupted.log",
+        "log_sha256": "bec5e60e4b8e40dc802cbf9c5eb21a71b79dae5a31c3e162f7d3c02d95ff088e",
+        "exit_code": 1
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 work/_shared/runtime-v3.py runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-7 --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-7 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-7.json",
+        "feedback_command": "cat .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-7/v*/feedback.json",
+        "test_log": "receipts/v3-saved-near_side_sidewalk_derived_crosswalk_uninterrupted.log",
+        "test_log_sha256": "e3204aa74a487b469083d13b2c8dfdf5852bd12ce87d1c7eaa84d309ed4d3d02",
+        "test_exit_code": 0,
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-7/v0001/analysis --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-7/v0001/analysis/additional-source-audit.json",
+        "source_join_fixture_proof": {
+          "receipt": "receipts/source-frame-joins.json",
+          "receipt_sha256": "3d30de59ffdc8210a6154a5e8ff5bedd04e726a044b5850a9e6f652512f536c7",
+          "test_log": "receipts/source-frame-joins.log",
+          "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
+          "test_exit_code": 0
+        }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-near_side_sidewalk_derived_crosswalk_uninterrupted.json",
+        "sha256": "bbc85da8b2fcb16ceceeb99d86263196872c7b402f2f3d268f05557884a4b5d3"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d88fc0cdd2a9ae79e40b3cc317efa9c73abe3a7177ed58eda7ba0d8e4f855dd8",
+        "command": "python3.11 work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted --job \"$JOB_ID\" --attempt \"$CANONICAL_ATTEMPT\" --recording \"$RECORDING_ID\" --output \"$CANONICAL_ATTEMPT/delivery-audit.json\" --attempt-number \"$ATTEMPT_NUMBER\"",
+        "test_log": "receipts/delivery-positive-near_side_sidewalk_derived_crosswalk_uninterrupted.log",
+        "test_log_sha256": "71d743ed295422daeea8a52cb3285935b452e99e96fbe110549189b58d312abc",
+        "test_exit_code": 0,
+        "negative_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_sidewalk_derived_crosswalk_uninterrupted-negative/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_sidewalk_derived_crosswalk_uninterrupted-negative.json --fixture-test",
+        "negative_log": "receipts/delivery-negative-near_side_sidewalk_derived_crosswalk_uninterrupted.log",
+        "negative_log_sha256": "72926d7c7d87288cbd8f3d4d84ec03a5de809c46b09cd80fc783c731f3407bf1",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Required participant history incomplete",
+        "test_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_sidewalk_derived_crosswalk_uninterrupted-positive/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/near_side_sidewalk_derived_crosswalk_uninterrupted-positive.json --fixture-test"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Exact near_side_sidewalk_derived_crosswalk_uninterrupted primary has a source-bound offline construction and diagnostic compatibility proof. No distinct spawn, timing, or controller failure trigger is established by CPU evidence for this case. Intended observation: Measure stop near_side_sidewalk_derived_crosswalk near_side_sidewalk_derived_crosswalk_uninterrupted through startup, initial response and all across-or-within interaction history. Native motion and pixels remain unverified."
+      },
+      "candidates": []
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__occupied_priority_probe",
+      "kind": "delivery",
+      "construction": "cases/occupied_priority_probe/construction.json",
+      "construction_sha256": "e71d09867260cfb3d41c31edb15bd41e0f3c4f3ba561d93c978c140daf235905",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "ec2fccb3e9356e8a21e5437e4f30ebf3ea7c0a48ad178a89fd1271ad855688ea",
+        "saved_only": true
+      },
+      "measurement_contract": "cases/occupied_priority_probe/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/occupied_priority_probe/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego velocity norm and full-body/through actor history",
+          "evidence": "Original Native acquisition and source finalizer"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture and original source packets",
+          "evidence": "Original subject/actor/road/control/weather observations in capture/evidence.jsonl; declared geometry/rule/environment packets: scenario_geometry"
+        }
+      },
+      "gpu_command": "python3.11 work/_shared/runtime-v3.py runtime.py capture --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__occupied_priority_probe --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-8",
+      "owner_release_command": "python3.11 work/_shared/runtime-v3.py runtime.py owner-released --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-8 --receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-8.json --acknowledge-owner-released",
+      "offline": {
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__occupied_priority_probe --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/occupied_priority_probe/offline-primary",
+        "exit_code": 0,
+        "log": "receipts/v3-offline-occupied_priority_probe.log",
+        "log_sha256": "0d1d6b43e5ed41a3f00c68bc94ae80fd05ef07a2b34b211dbb5a9258d0fae19a",
+        "construction_sha256": "e71d09867260cfb3d41c31edb15bd41e0f3c4f3ba561d93c978c140daf235905"
+      },
+      "compatibility": {
+        "receipt": "receipts/v3-compat-occupied_priority_probe.json",
+        "sha256": "057c0a272c8c152e3c1ba89edca9efb28e6a025134d4c6f1bad8373e68aa0c73",
+        "log": "receipts/v3-analysis-occupied_priority_probe.log",
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py compatibility-recipe --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__occupied_priority_probe --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/occupied_priority_probe/compatibility-recipe-primary --library /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/runtime/main-pipeline-v3/library --validator /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/decoder-v3/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "receipts/v3-negative-occupied_priority_probe.log",
+        "log_sha256": "774c4e54bc6793bd5fe26f08c85ee6e378f24077e09b053a3208c5db66f59b53",
+        "exit_code": 1
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 work/_shared/runtime-v3.py runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__occupied_priority_probe --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-8 --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-8 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-8.json",
+        "feedback_command": "cat .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-8/v*/feedback.json",
+        "test_log": "receipts/v3-saved-occupied_priority_probe.log",
+        "test_log_sha256": "0b494048520435eeaf772f6a1cf309603d43ebcf271fa9188fe44d9e8d9996f5",
+        "test_exit_code": 0,
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__occupied_priority_probe --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-8/v0001/analysis --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-8/v0001/analysis/additional-source-audit.json",
+        "source_join_fixture_proof": {
+          "receipt": "receipts/source-frame-joins.json",
+          "receipt_sha256": "3d30de59ffdc8210a6154a5e8ff5bedd04e726a044b5850a9e6f652512f536c7",
+          "test_log": "receipts/source-frame-joins.log",
+          "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
+          "test_exit_code": 0
+        }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-occupied_priority_probe.json",
+        "sha256": "85c8475a6e4e34700d0d87eeefc3f60e324ca54784f272f25175f6ad75181186"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__occupied_priority_probe",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d88fc0cdd2a9ae79e40b3cc317efa9c73abe3a7177ed58eda7ba0d8e4f855dd8",
+        "command": "python3.11 work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__occupied_priority_probe --job \"$JOB_ID\" --attempt \"$CANONICAL_ATTEMPT\" --recording \"$RECORDING_ID\" --output \"$CANONICAL_ATTEMPT/delivery-audit.json\" --attempt-number \"$ATTEMPT_NUMBER\"",
+        "test_log": "receipts/delivery-positive-occupied_priority_probe.log",
+        "test_log_sha256": "3dc40c46e8905c497fe434c3fdb8468d35b3b70b33770ceaee7977edd4125e94",
+        "test_exit_code": 0,
+        "negative_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__occupied_priority_probe --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/occupied_priority_probe-negative/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/occupied_priority_probe-negative.json --fixture-test",
+        "negative_log": "receipts/delivery-negative-occupied_priority_probe.log",
+        "negative_log_sha256": "875d793a22e51456f6cc719b3f93cabfafeb0682c1f3e2fd02b4aac41bfeef8f",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original timestamp join failed",
+        "test_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__occupied_priority_probe --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/occupied_priority_probe-positive/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/occupied_priority_probe-positive.json --fixture-test"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Exact occupied_priority_probe primary has a source-bound offline construction and diagnostic compatibility proof. No distinct spawn, timing, or controller failure trigger is established by CPU evidence for this case. Intended observation: Measure stop nearest_view occupied_priority_probe through startup, initial response and all across-or-within interaction history. Native motion and pixels remain unverified."
+      },
+      "candidates": []
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__approaching_phase_probe",
+      "kind": "delivery",
+      "construction": "cases/approaching_phase_probe/construction.json",
+      "construction_sha256": "49e4fa23659cef30d55dc8d0dc8be02bccec7d1df89b4e62c621a54afd839f9e",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "ec2fccb3e9356e8a21e5437e4f30ebf3ea7c0a48ad178a89fd1271ad855688ea",
+        "saved_only": true
+      },
+      "measurement_contract": "cases/approaching_phase_probe/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/approaching_phase_probe/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego velocity norm and full-body/through actor history",
+          "evidence": "Original Native acquisition and source finalizer"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture and original source packets",
+          "evidence": "Original subject/actor/road/control/weather observations in capture/evidence.jsonl; declared geometry/rule/environment packets: scenario_geometry"
+        }
+      },
+      "gpu_command": "python3.11 work/_shared/runtime-v3.py runtime.py capture --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__approaching_phase_probe --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-9",
+      "owner_release_command": "python3.11 work/_shared/runtime-v3.py runtime.py owner-released --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-9 --receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-9.json --acknowledge-owner-released",
+      "offline": {
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__approaching_phase_probe --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/approaching_phase_probe/offline-primary",
+        "exit_code": 0,
+        "log": "receipts/v3-offline-approaching_phase_probe.log",
+        "log_sha256": "0d1d6b43e5ed41a3f00c68bc94ae80fd05ef07a2b34b211dbb5a9258d0fae19a",
+        "construction_sha256": "49e4fa23659cef30d55dc8d0dc8be02bccec7d1df89b4e62c621a54afd839f9e"
+      },
+      "compatibility": {
+        "receipt": "receipts/v3-compat-approaching_phase_probe.json",
+        "sha256": "404fe885229cba67fc8869e13ed20ab6af78d9aeea832f6cee7dd4d750a6708f",
+        "log": "receipts/v3-analysis-approaching_phase_probe.log",
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py compatibility-recipe --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__approaching_phase_probe --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/approaching_phase_probe/compatibility-recipe-primary --library /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/runtime/main-pipeline-v3/library --validator /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/decoder-v3/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "receipts/v3-negative-approaching_phase_probe.log",
+        "log_sha256": "be1eee261a899ea08f7997fe475988c14ce27dec35cbde200136562d78039c38",
+        "exit_code": 1
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 work/_shared/runtime-v3.py runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__approaching_phase_probe --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-9 --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-9 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-9.json",
+        "feedback_command": "cat .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-9/v*/feedback.json",
+        "test_log": "receipts/v3-saved-approaching_phase_probe.log",
+        "test_log_sha256": "845bd62562eb37fec90a7d9bea383b7647e42082c2d84ca1689c537a5b8d890f",
+        "test_exit_code": 0,
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__approaching_phase_probe --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-9/v0001/analysis --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-9/v0001/analysis/additional-source-audit.json",
+        "source_join_fixture_proof": {
+          "receipt": "receipts/source-frame-joins.json",
+          "receipt_sha256": "3d30de59ffdc8210a6154a5e8ff5bedd04e726a044b5850a9e6f652512f536c7",
+          "test_log": "receipts/source-frame-joins.log",
+          "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
+          "test_exit_code": 0
+        }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-approaching_phase_probe.json",
+        "sha256": "06cffc258a403e94ce945724c0f3cec78c1a1bc4d15e541a66f79a7221c6070a"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__approaching_phase_probe",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d88fc0cdd2a9ae79e40b3cc317efa9c73abe3a7177ed58eda7ba0d8e4f855dd8",
+        "command": "python3.11 work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__approaching_phase_probe --job \"$JOB_ID\" --attempt \"$CANONICAL_ATTEMPT\" --recording \"$RECORDING_ID\" --output \"$CANONICAL_ATTEMPT/delivery-audit.json\" --attempt-number \"$ATTEMPT_NUMBER\"",
+        "test_log": "receipts/delivery-positive-approaching_phase_probe.log",
+        "test_log_sha256": "34a6e26c3b0167bceaa5e0120eeb6b62381f6ab782ac4662b08c74da654089f9",
+        "test_exit_code": 0,
+        "negative_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__approaching_phase_probe --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/approaching_phase_probe-negative/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/approaching_phase_probe-negative.json --fixture-test",
+        "negative_log": "receipts/delivery-negative-approaching_phase_probe.log",
+        "negative_log_sha256": "df4fe86aa017238e0010158f28bd4529a59f7dd1b6569a68b0f1c957de35e89d",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Full video decode failed",
+        "test_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__approaching_phase_probe --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/approaching_phase_probe-positive/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/approaching_phase_probe-positive.json --fixture-test"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Exact approaching_phase_probe primary has a source-bound offline construction and diagnostic compatibility proof. No distinct spawn, timing, or controller failure trigger is established by CPU evidence for this case. Intended observation: Measure stop nearest_view approaching_phase_probe through startup, initial response and all across-or-within interaction history. Native motion and pixels remain unverified."
+      },
+      "candidates": []
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__later_history_probe",
+      "kind": "delivery",
+      "construction": "cases/later_history_probe/construction.json",
+      "construction_sha256": "879b9ce568363ab2b7b5d57a03593b6fa4c9e31c77cac786bf3035d925452f94",
+      "measurement_procedure": {
+        "entrypoint": "analyze.py",
+        "output_schema": "worker-analysis-report-v1",
+        "analysis_revision": "ec2fccb3e9356e8a21e5437e4f30ebf3ea7c0a48ad178a89fd1271ad855688ea",
+        "saved_only": true
+      },
+      "measurement_contract": "cases/later_history_probe/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/later_history_probe/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "capture_only": true,
+        "resource_owner": "local_operator",
+        "owner_release_receipt_required": true
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego velocity norm and full-body/through actor history",
+          "evidence": "Original Native acquisition and source finalizer"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture and original source packets",
+          "evidence": "Original subject/actor/road/control/weather observations in capture/evidence.jsonl; declared geometry/rule/environment packets: scenario_geometry"
+        }
+      },
+      "gpu_command": "python3.11 work/_shared/runtime-v3.py runtime.py capture --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__later_history_probe --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-10",
+      "owner_release_command": "python3.11 work/_shared/runtime-v3.py runtime.py owner-released --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-10 --receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-10.json --acknowledge-owner-released",
+      "offline": {
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__later_history_probe --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/later_history_probe/offline-primary",
+        "exit_code": 0,
+        "log": "receipts/v3-offline-later_history_probe.log",
+        "log_sha256": "0d1d6b43e5ed41a3f00c68bc94ae80fd05ef07a2b34b211dbb5a9258d0fae19a",
+        "construction_sha256": "879b9ce568363ab2b7b5d57a03593b6fa4c9e31c77cac786bf3035d925452f94"
+      },
+      "compatibility": {
+        "receipt": "receipts/v3-compat-later_history_probe.json",
+        "sha256": "05fb9d057bdb6db6367d581d961d3d72988fc87a7c77633fd6d2c824734bb7d4",
+        "log": "receipts/v3-analysis-later_history_probe.log",
+        "command": ".venv-cpu/bin/python work/_shared/runtime-v3.py runtime.py compatibility-recipe --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__later_history_probe --output .runtime-work/partition3-v3-proofs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/later_history_probe/compatibility-recipe-primary --library /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/runtime/main-pipeline-v3/library --validator /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/decoder-v3/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "receipts/v3-negative-later_history_probe.log",
+        "log_sha256": "8fc89038c3e02abf063b77c2fe5ac37527ad453c92732df45541b6cb77a77048",
+        "exit_code": 1
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 work/_shared/runtime-v3.py runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__later_history_probe --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/native002-10 --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-10 --library \"$TRAFFIC_SPEC_LIBRARY\" --validator \"$TRAFFIC_SPEC_VALIDATOR\" --owner-release-receipt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/owner002-10.json",
+        "feedback_command": "cat .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-10/v*/feedback.json",
+        "test_log": "receipts/v3-saved-later_history_probe.log",
+        "test_log_sha256": "344b1a28e3eadbb09785bcc2a833dbd2bbaf2346b57d7f56ba30b477d29f064d",
+        "test_exit_code": 0,
+        "output_layout": "fresh vNNNN/analysis plus processing.json; originals never overwritten",
+        "owner_release_required": true,
+        "additional_source_audit_command": "python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__later_history_probe --attempt .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-10/v0001/analysis --output .runtime-work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/processed002-10/v0001/analysis/additional-source-audit.json",
+        "source_join_fixture_proof": {
+          "receipt": "receipts/source-frame-joins.json",
+          "receipt_sha256": "3d30de59ffdc8210a6154a5e8ff5bedd04e726a044b5850a9e6f652512f536c7",
+          "test_log": "receipts/source-frame-joins.log",
+          "test_log_sha256": "ee614e9d8d0047b220292c136deb2f46128b854414ec06c6827281b098030d80",
+          "test_exit_code": 0
+        }
+      },
+      "physical_preparation": {
+        "receipt": "receipts/physical002-later_history_probe.json",
+        "sha256": "d231b5e9d093c19c32390a7c5e817a0a46c033b6bc1075fad86ce9fc6d86f6ac"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__later_history_probe",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d88fc0cdd2a9ae79e40b3cc317efa9c73abe3a7177ed58eda7ba0d8e4f855dd8",
+        "command": "python3.11 work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__later_history_probe --job \"$JOB_ID\" --attempt \"$CANONICAL_ATTEMPT\" --recording \"$RECORDING_ID\" --output \"$CANONICAL_ATTEMPT/delivery-audit.json\" --attempt-number \"$ATTEMPT_NUMBER\"",
+        "test_log": "receipts/delivery-positive-later_history_probe.log",
+        "test_log_sha256": "40b48f7f6ae8d31ce951f73a7d69230c4e2f93df795f7c56ba860478bbf1f6f2",
+        "test_exit_code": 0,
+        "negative_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__later_history_probe --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/later_history_probe-negative/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/later_history_probe-negative.json --fixture-test",
+        "negative_log": "receipts/delivery-negative-later_history_probe.log",
+        "negative_log_sha256": "58b88594c0cfb1e6561f7aa90ed992198cc5afa539aa1cd29fe1bb6c6397e5b5",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Pixel review region out of bounds",
+        "test_command": "python3.11 /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__later_history_probe --job diagnostic-job --attempt /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/later_history_probe-positive/attempt-1 --recording diagnostic-recording --output /pscratch/sd/m/msoroco/scenario-worker-demo-test-trial9/.runtime-work/partition3-audit-fixture/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/later_history_probe-positive.json --fixture-test"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Exact later_history_probe primary has a source-bound offline construction and diagnostic compatibility proof. No distinct spawn, timing, or controller failure trigger is established by CPU evidence for this case. Intended observation: Measure stop nearest_view later_history_probe through startup, initial response and all across-or-within interaction history. Native motion and pixels remain unverified."
+      },
+      "candidates": []
+    }
+  ],
+  "processing_contract_version": 2
+}

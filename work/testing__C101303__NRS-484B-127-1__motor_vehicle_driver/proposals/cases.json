@@ -1,0 +1,599 @@
+{
+  "cell_id": "C101303",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral reference definition; not selected for capture",
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "controller",
+          "value": 140,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego velocity norm",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego 3D velocity",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Front of ego to rear of leader from original full-body vertices",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road condition is a separately sourced context; reasonable and prudent remains unresolved."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled base following measurement before same lane-change maneuver.",
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "controller",
+          "value": 140,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent",
+        "actual highway status",
+        "actual lane-change success"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego velocity norm",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego 3D velocity",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Front of ego to rear of leader from original full-body vertices",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road condition is a separately sourced context; reasonable and prudent remains unresolved."
+        ]
+      },
+      "paired_probe_id": "gap",
+      "deliberate_differences": [
+        "requested_gap_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "base"
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled closer following measurement before same lane-change maneuver.",
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "controller",
+          "value": 50,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent",
+        "actual highway status",
+        "actual lane-change success"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego velocity norm",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego 3D velocity",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Front of ego to rear of leader from original full-body vertices",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road condition is a separately sourced context; reasonable and prudent remains unresolved."
+        ]
+      },
+      "paired_probe_id": "gap",
+      "deliberate_differences": [
+        "requested_gap_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "closer"
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled faster_ego following measurement before same lane-change maneuver.",
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "controller",
+          "value": 140,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent",
+        "actual highway status",
+        "actual lane-change success"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego velocity norm",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego 3D velocity",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Front of ego to rear of leader from original full-body vertices",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road condition is a separately sourced context; reasonable and prudent remains unresolved."
+        ]
+      },
+      "paired_probe_id": "ego_speed",
+      "deliberate_differences": [
+        "requested_gap_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "faster_ego"
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled slower_lead following measurement before same lane-change maneuver.",
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "controller",
+          "value": 140,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent",
+        "actual highway status",
+        "actual lane-change success"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego velocity norm",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego 3D velocity",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Front of ego to rear of leader from original full-body vertices",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road condition is a separately sourced context; reasonable and prudent remains unresolved."
+        ]
+      },
+      "paired_probe_id": "lead_speed",
+      "deliberate_differences": [
+        "requested_gap_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "slower_lead"
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled lead_brakes following measurement before same lane-change maneuver.",
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "controller",
+          "value": 140,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent",
+        "actual highway status",
+        "actual lane-change success"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego velocity norm",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego 3D velocity",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Front of ego to rear of leader from original full-body vertices",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road condition is a separately sourced context; reasonable and prudent remains unresolved."
+        ]
+      },
+      "paired_probe_id": "lead_braking",
+      "deliberate_differences": [
+        "requested_gap_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "lead_brakes"
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled wet_surface following measurement before same lane-change maneuver.",
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "controller",
+          "value": 140,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent",
+        "actual highway status",
+        "actual lane-change success"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego velocity norm",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego 3D velocity",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Front of ego to rear of leader from original full-body vertices",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road condition is a separately sourced context; reasonable and prudent remains unresolved."
+        ]
+      },
+      "paired_probe_id": "wet_surface",
+      "deliberate_differences": [
+        "requested_gap_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "wet_surface"
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled following_ends following measurement before same lane-change maneuver.",
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "controller",
+          "value": 140,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent",
+        "actual highway status",
+        "actual lane-change success"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego velocity norm",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego 3D velocity",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Front of ego to rear of leader from original full-body vertices",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road condition is a separately sourced context; reasonable and prudent remains unresolved."
+        ]
+      },
+      "paired_probe_id": "following_relation",
+      "deliberate_differences": [
+        "requested_gap_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "following_ends"
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "rationale": "Actual third conventional vehicle queued behind while following and before lane change; traffic inventory retained.",
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "controller",
+          "value": 140,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent",
+        "actual highway status",
+        "actual lane-change success"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego velocity norm",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Native ego 3D velocity",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Front of ego to rear of leader from original full-body vertices",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native road 1 world coordinates and original tick",
+            "uncertainty": "20Hz; no legal headway threshold"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road condition is a separately sourced context; reasonable and prudent remains unresolved."
+        ]
+      },
+      "paired_probe_id": "traffic",
+      "deliberate_differences": [
+        "requested_gap_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "queued_traffic"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "judgment-0",
+      "target_law_id": "NRS-484B-127-1",
+      "judgment_refs": [
+        {
+          "phrase": "actual highway status",
+          "note": "Original physical evidence required; legal interpretation deferred"
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Existing v7 branch comparisons preserve exact identities; no legal cutoff is authored.",
+      "missing_inputs": [
+        "A source-backed scalar physical sweep design for this qualitative judgment is unavailable."
+      ]
+    },
+    {
+      "sweep_id": "judgment-1",
+      "target_law_id": "NRS-484B-127-1",
+      "judgment_refs": [
+        {
+          "phrase": "actual lane-change success",
+          "note": "Original physical evidence required; legal interpretation deferred"
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Existing v7 branch comparisons preserve exact identities; no legal cutoff is authored.",
+      "missing_inputs": [
+        "A source-backed scalar physical sweep design for this qualitative judgment is unavailable."
+      ]
+    },
+    {
+      "sweep_id": "judgment-2",
+      "target_law_id": "NRS-484B-127-1",
+      "judgment_refs": [
+        {
+          "phrase": "reasonable and prudent",
+          "note": "Original physical evidence required; legal interpretation deferred"
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Existing v7 branch comparisons preserve exact identities; no legal cutoff is authored.",
+      "missing_inputs": [
+        "A source-backed scalar physical sweep design for this qualitative judgment is unavailable."
+      ]
+    }
+  ]
+}

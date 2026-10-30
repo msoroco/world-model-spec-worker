@@ -1,0 +1,142 @@
+{
+  "case": {
+    "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__forward_overlap",
+    "target_law_id": "NRS-484B-113-2",
+    "target_type": "boundary_probe",
+    "rationale": "Measure forward_overlap with synchronized signed motion, body region overlap and heading; no statutory verdict.",
+    "variable_assignments": {
+      "reverse_target_x_m": {
+        "kind": "controller",
+        "value": -10.5,
+        "unit": "m"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Actual crosswalk presence and physical overlap"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Original Native velocity norm during reverse control",
+          "time_window": "full original 35-second episode",
+          "reference_frame": "Native world original frame/time",
+          "uncertainty": "20Hz samples; between-frame motion unobserved"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Physical crosswalk mesh and original pixels require Native review."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__forward_overlap",
+  "supported_case_ids": [
+    "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__marked_crosswalk",
+    "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__clear_marked",
+    "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__intersection",
+    "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__clear_intersection",
+    "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__sidewalk_crosswalk",
+    "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__clear_sidewalk",
+    "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__street_corner",
+    "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__clear_corner",
+    "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__forward_overlap"
+  ],
+  "cell_id": "C215286",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-113-2",
+  "duration_s": 35,
+  "rate_hz": 20,
+  "reverse_target_x_m": -10.5,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "subject-attached overhead view spanning approach and crosswalk"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached rear-facing approach view"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed west near-side crosswalk corner view"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego-attached modeled driver rear view"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed"
+  ],
+  "source_packets": [],
+  "public_way_road_ids": [
+    1,
+    2,
+    3,
+    4,
+    11,
+    12
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "road": "synthetic connected two-way intersection",
+      "crosswalk": "physical mesh stripes; Native inventory and pixels required"
+    }
+  },
+  "crosswalk_definition": "marked",
+  "motion_route_xy_m": [
+    [
+      -14,
+      1.75
+    ],
+    [
+      4,
+      1.75
+    ]
+  ],
+  "forward_after_reverse": true,
+  "forward_switch_tick": 160,
+  "sidewalk_lateral_connections_m": [],
+  "physical_completion": {
+    "format": "worker-physical-completion-criteria-v002",
+    "criterion": "reverse_goal",
+    "motion_source": "reverse_history.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 0.25,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true,
+    "context_sources": [
+      "crosswalk_context.json"
+    ],
+    "body_key": "body_vertices_m",
+    "heading_key": "heading_deg",
+    "velocity_key": "velocity_mps",
+    "goal_xy_m": [
+      4,
+      1.75
+    ],
+    "goal_tolerance_m": 3
+  },
+  "processing_contract_version": 2
+}

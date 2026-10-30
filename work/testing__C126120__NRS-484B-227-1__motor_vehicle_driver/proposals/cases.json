@@ -1,0 +1,539 @@
+{
+  "cell_id": "C126120",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "C126120-NRS-484B-227-1-judgment-0",
+      "target_law_id": "NRS-484B-227-1",
+      "judgment_refs": [
+        {
+          "phrase": "established by a public authority",
+          "note": "whether a crossover was 'established by a public authority' is an administrative fact; the observable substitute is the physical opening"
+        }
+      ],
+      "rationale": "Preserve unresolved statutory judgment for physical coverage planning.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Native observed outcomes, sourced legal interpretation and a justified coverage axis are unavailable in CPU preparation."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "baseline",
+      "rationale": "Neutral comparison definition; no selected capture.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "median_opening_width_m": {
+          "kind": "world_setup",
+          "value": 40
+        }
+      },
+      "unresolved_judgment_calls": [
+        "established by a public authority"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native ego body and velocity through all U-turn movements",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "native_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native right/opposing roadway and median/opening source geometry",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native barrier and authority/traffic-control inventory",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "view_provenance",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original RGB source-camera identities",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Public authority establishment is administrative context, not inferred from geometry.",
+          "Exact Native U-turn motion and barrier pixels remain GPU checks."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "boundary_probe",
+      "rationale": "Physical U-turn body geometry and explicit source context; no legal exception verdict.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "median_opening_width_m": {
+          "kind": "world_setup",
+          "value": 40
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Public authority establishment and physical barrier realization"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native ego body and velocity through all U-turn movements",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "native_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native right/opposing roadway and median/opening source geometry",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native barrier and authority/traffic-control inventory",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "view_provenance",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original RGB source-camera identities",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Public authority establishment is administrative context, not inferred from geometry.",
+          "Exact Native U-turn motion and barrier pixels remain GPU checks."
+        ]
+      },
+      "paired_probe_id": "over_across_within_divider",
+      "deliberate_differences": [
+        "requested_speed_mps",
+        "median_opening_width_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "source-grounded controlled comparison; legal judgment remains unresolved",
+        "target_value_or_branch": "opening"
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__closed_divider",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "boundary_probe",
+      "rationale": "Physical U-turn body geometry and explicit source context; no legal exception verdict.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "median_opening_width_m": {
+          "kind": "world_setup",
+          "value": 40
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Public authority establishment and physical barrier realization"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native ego body and velocity through all U-turn movements",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "native_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native right/opposing roadway and median/opening source geometry",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native barrier and authority/traffic-control inventory",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "view_provenance",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original RGB source-camera identities",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Public authority establishment is administrative context, not inferred from geometry.",
+          "Exact Native U-turn motion and barrier pixels remain GPU checks."
+        ]
+      },
+      "paired_probe_id": "over_across_within_divider",
+      "deliberate_differences": [
+        "requested_speed_mps",
+        "median_opening_width_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "source-grounded controlled comparison; legal judgment remains unresolved",
+        "target_value_or_branch": "closed_divider"
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__wrong_roadway",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "boundary_probe",
+      "rationale": "Physical U-turn body geometry and explicit source context; no legal exception verdict.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "median_opening_width_m": {
+          "kind": "world_setup",
+          "value": 40
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Public authority establishment and physical barrier realization"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native ego body and velocity through all U-turn movements",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "native_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native right/opposing roadway and median/opening source geometry",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native barrier and authority/traffic-control inventory",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "view_provenance",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original RGB source-camera identities",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Public authority establishment is administrative context, not inferred from geometry.",
+          "Exact Native U-turn motion and barrier pixels remain GPU checks."
+        ]
+      },
+      "paired_probe_id": "right_hand_roadway",
+      "deliberate_differences": [
+        "requested_speed_mps",
+        "median_opening_width_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "source-grounded controlled comparison; legal judgment remains unresolved",
+        "target_value_or_branch": "wrong_roadway"
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__paused_uturn",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "boundary_probe",
+      "rationale": "Physical U-turn body geometry and explicit source context; no legal exception verdict.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "median_opening_width_m": {
+          "kind": "world_setup",
+          "value": 40
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Public authority establishment and physical barrier realization"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native ego body and velocity through all U-turn movements",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "native_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native right/opposing roadway and median/opening source geometry",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native barrier and authority/traffic-control inventory",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "view_provenance",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original RGB source-camera identities",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Public authority establishment is administrative context, not inferred from geometry.",
+          "Exact Native U-turn motion and barrier pixels remain GPU checks."
+        ]
+      },
+      "paired_probe_id": "continuous_multiple_movement",
+      "deliberate_differences": [
+        "requested_speed_mps",
+        "median_opening_width_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "source-grounded controlled comparison; legal judgment remains unresolved",
+        "target_value_or_branch": "paused_uturn"
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__authority_crossover",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "boundary_probe",
+      "rationale": "Physical U-turn body geometry and explicit source context; no legal exception verdict.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "median_opening_width_m": {
+          "kind": "world_setup",
+          "value": 40
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Public authority establishment and physical barrier realization"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native ego body and velocity through all U-turn movements",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "native_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native right/opposing roadway and median/opening source geometry",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native barrier and authority/traffic-control inventory",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "view_provenance",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original RGB source-camera identities",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Public authority establishment is administrative context, not inferred from geometry.",
+          "Exact Native U-turn motion and barrier pixels remain GPU checks."
+        ]
+      },
+      "paired_probe_id": "established_crossover",
+      "deliberate_differences": [
+        "requested_speed_mps",
+        "median_opening_width_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "source-grounded controlled comparison; legal judgment remains unresolved",
+        "target_value_or_branch": "authority_crossover"
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__authority_intersection",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "boundary_probe",
+      "rationale": "Physical U-turn body geometry and explicit source context; no legal exception verdict.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "median_opening_width_m": {
+          "kind": "world_setup",
+          "value": 40
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Public authority establishment and physical barrier realization"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native ego body and velocity through all U-turn movements",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "native_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native right/opposing roadway and median/opening source geometry",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native barrier and authority/traffic-control inventory",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          },
+          {
+            "name": "view_provenance",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original RGB source-camera identities",
+            "time_window": "entire original 60s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz full-body and heading/velocity samples; Native turn remains unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Public authority establishment is administrative context, not inferred from geometry.",
+          "Exact Native U-turn motion and barrier pixels remain GPU checks."
+        ]
+      },
+      "paired_probe_id": "established_intersection",
+      "deliberate_differences": [
+        "requested_speed_mps",
+        "median_opening_width_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "source-grounded controlled comparison; legal judgment remains unresolved",
+        "target_value_or_branch": "authority_intersection"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+--- work/_shared/runtime-overlay/scenario_pipeline/worker_exchange/runtime_cli.py
++++ work/_shared/runtime-overlay/scenario_pipeline/worker_exchange/runtime_cli.py
+@@ -78,9 +78,22 @@
+     env=execution_env()
+     subprocess.run([python,str(entry),'--check'],cwd=destination,env=env,check=True)
+     # Caller must own the dedicated server. This wrapper never owns its lifecycle.
+-    subprocess.run([python,str(entry),'--output-dir',str(destination),'--host',host,'--port',str(port)],cwd=destination,env=env,check=True)
+     from .saved_processing import record_native_exit
+-    record_native_exit(destination)
++    try:
++        subprocess.run([python,str(entry),'--output-dir',str(destination),'--host',host,'--port',str(port)],cwd=destination,env=env,check=True)
++    except subprocess.CalledProcessError as native_failure:
++        try:
++            receipt=record_native_exit(destination)
++            receipt.update(native_process_exit_code=native_failure.returncode,capture_command_failed=True)
++            write(destination/'native-exit.json',receipt)
++        except Exception as closure_error:
++            # Never replace the original Native command failure with a receipt error.
++            try:write(destination/'native-exit-feedback.json',{'recorded_only':True,'native_process_exit_code':native_failure.returncode,'error':str(closure_error),'native_replay_requested':False})
++            except Exception:pass
++        raise
++    receipt=record_native_exit(destination)
++    receipt.update(native_process_exit_code=0,capture_command_failed=False)
++    write(destination/'native-exit.json',receipt)
+     return {'case_id':case_id,'attempt':str(destination),'native_preflight':preflight,'capture_executed':True,'acceptance_claimed':False}
+ 
+ 

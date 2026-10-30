@@ -1,0 +1,559 @@
+{
+  "assignment_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C158196",
+  "law_id": "NRS-484B-257-1",
+  "selected_branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+  "cases": [
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Measure signal nearest_view active_control through startup, initial response and all across-or-within interaction history.",
+      "variable_assignments": {
+        "west_entrance_control": {
+          "kind": "world_setup",
+          "value": "yield_sign"
+        },
+        "through_vehicle": {
+          "kind": "world_setup",
+          "value": "north approach"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "yielding and cautious proceeding",
+        "continuous nearest visible point"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego velocity norm and full-body/through actor history",
+            "time_window": "entire original 45-second approach, interaction and final episode",
+            "reference_frame": "Original Native frame and world XYZ",
+            "uncertainty": "20Hz samples; between-frame state unobserved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Actual entrance sign pixels, governing relation and motion require Native source review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Measure signal nearest_view passive_control through startup, initial response and all across-or-within interaction history.",
+      "variable_assignments": {
+        "west_entrance_control": {
+          "kind": "world_setup",
+          "value": "yield_sign"
+        },
+        "through_vehicle": {
+          "kind": "world_setup",
+          "value": "north approach"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "yielding and cautious proceeding",
+        "continuous nearest visible point"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego velocity norm and full-body/through actor history",
+            "time_window": "entire original 45-second approach, interaction and final episode",
+            "reference_frame": "Original Native frame and world XYZ",
+            "uncertainty": "20Hz samples; between-frame state unobserved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Actual entrance sign pixels, governing relation and motion require Native source review."
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "signal_governing_exception",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ],
+      "fixed_conditions": [
+        "same officer identity and approach, or same official signal states",
+        "same subject motion capability",
+        "same 45s cameras and source readback"
+      ],
+      "deliberate_differences": [
+        "Native affected approach lanes"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "kin.speed",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+      "sha256": "113e62d10a1a348aaa148ec5278e66aaff1ef90ce2b7e0daf8e3b8054d6d6361"
+    },
+    {
+      "path": "inputs/definitions.jsonl",
+      "sha256": "824cd469115f586687c709bff2714968b4c9ab2ce22091c790887084480035c0"
+    },
+    {
+      "path": "references/v6-capability/index.json",
+      "sha256": "da62c780c03ff73f11f0e3a2d86001979ceb28532d22f9d21b7bc93ff3ec2d3a"
+    },
+    {
+      "path": "references/v6-capability/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/runner.py",
+      "sha256": "f0c16bb4dd0360cc29f224c926bc4213f9f57a01647221942ccca7a407430c84"
+    },
+    {
+      "path": "references/v6-capability/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/analyze.py",
+      "sha256": "6e37357eb7270d51dfa0197dc214151a86a5f619d4db24833775cbd55bfbc40e"
+    },
+    {
+      "path": "references/v6-capability/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/scene.xodr",
+      "sha256": "4cd9766383adf9169c5dcaad60bf918d7dc7f32c5d81e0425a185055d88655f6"
+    },
+    {
+      "path": "examples/measurement/README.md",
+      "sha256": "a81c642db790611b4e0a6b533634564b19129ef9c0aa2b27856b95c26c97e7d7"
+    },
+    {
+      "path": "references/catalog.json",
+      "sha256": "87997ba7ceb64e0c98f56a269a561f5a2b5ab0266c9123ec3d60accf368bd26e"
+    },
+    {
+      "path": "references/accepted-sources/C111325/stop257_controller_v2.py",
+      "sha256": "bd9cfda0679f8c1113927e4d829a852fa5cca7bad12c574f1482b83c2e818b1e"
+    },
+    {
+      "path": "references/accepted-sources/C111325/stop257_markings_v2.py",
+      "sha256": "50924ba27ba040a401e64c7658d5f5d3938a476a619e808ca808f2cf4f9f014e"
+    },
+    {
+      "path": "references/accepted-sources/C111325/stop257_native_inventory_v1.py",
+      "sha256": "de602f58932fe45688a7b8ed5ff7b55457a878e542e3201a808c086c206e7a50"
+    },
+    {
+      "path": "references/accepted-sources/C111325/scene-stop257-v1.xodr",
+      "sha256": "0ea7dbd4166c121da257829664f36893c30e7e0dfc2b92183d29a6c22e15e46c"
+    },
+    {
+      "path": "examples/intersection/README.md",
+      "sha256": "f0a5ddabfa1bb0e2a0b540ad82c596aa03b5936aa6b69f17c080922ae59be048"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "CPU fixtures establish executable software compatibility only. No Native execution, pixels, Core/video acceptance or legal compliance.",
+    "Finite sampled body/ray measurements do not define statutory contact, danger, immediate hazard, cautious proceeding or visibility."
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "Except when traffic is being controlled by a police officer or a traffic-control signal:",
+      "source": "NRS 484B.257(1):text-0",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved control_and_response_history preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway.",
+      "source": "NRS 484B.257(1):text-1",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved governing_control preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
+      "source": "NRS 484B.257(1):text-2",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved stop_and_yield_history preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "proper stop or yield signs have been erected at the subject's approach",
+      "source": "assignment.summary:activation_conditions-0",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved stop_and_yield_history preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "the subject approaches that intersection",
+      "source": "assignment.summary:activation_conditions-1",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved stop_and_yield_history preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "traffic is not being controlled by a police officer or a traffic-control signal",
+      "source": "assignment.summary:activation_conditions-2",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved control_and_response_history preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "Establish absence of actual officer traffic control for this sign-governed comparison; the statutory exception remains explicit.",
+      "source": "NRS 484B.257(1); governing-control exception absence",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved control_and_response_history preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "when traffic is being controlled by a traffic-control signal",
+      "source": "assignment.summary:exceptions-1",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved control_and_response_history preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control"
+      ]
+    },
+    {
+      "requirement": "stop or yield at the reference point first, then enter",
+      "source": "assignment.summary:timing_requirements-0",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved stop_and_yield_history preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "the yield duty runs for the whole time the subject is moving across or within the intersection, not only at entry",
+      "source": "assignment.summary:timing_requirements-1",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved stop_and_yield_history preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "Establish absence of a clearly marked stop line and near-side crosswalk, including any sidewalk-derived crosswalk.",
+      "source": "assignment.witness.required_context:review-context-0",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved governing_control preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "Establish governed approach, stopping-reference geometry, sightlines and participant routes required by scene_requirements.",
+      "source": "assignment.witness.required_context:review-context-1",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved nearest_visible_point preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "Establish proper yield-sign erection, approach governance, statutory intersection boundaries and connected routes.",
+      "source": "assignment.witness.required_context:review-context-2",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved governing_control preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "Establish through-highway status and the nearest point where the driver has a view of approaching traffic.",
+      "source": "assignment.witness.required_context:review-context-3",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved nearest_visible_point preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "Establish through-highway status, driver viewpoint and the nearest point where the driver has a view of approaching traffic.",
+      "source": "assignment.witness.required_context:review-context-4",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved nearest_visible_point preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "Exclude actual officer or signal control; preserve immediate hazard and visibility standards without numerical cutoffs.",
+      "source": "assignment.witness.required_context:review-context-5",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved control_and_response_history preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "Neither a clearly marked stop line nor a near-side crosswalk exists.",
+      "source": "assignment.witness.required_context:review-context-6",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved governing_control preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "Provide proper-sign evidence and exclude actual officer or signal control.",
+      "source": "assignment.witness.required_context:review-context-7",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved control_and_response_history preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "Retain approaching traffic throughout movement across or within the intersection.",
+      "source": "assignment.witness.required_context:review-context-8",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved stop_and_yield_history preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    },
+    {
+      "requirement": "Retain initial slowing or stopping and subsequent through-highway vehicle interactions throughout movement across or within the intersection.",
+      "source": "assignment.witness.required_context:review-context-9",
+      "status": "selected_required",
+      "evidence_or_gap": "Executed saved stop_and_yield_history preserves original source values; statutory judgment and original pixels remain local checks.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_control",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__passive_control"
+      ]
+    }
+  ],
+  "source_observation_mapping": {
+    "dev.stop_sign": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.yield_sign": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.stop_line": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.sight_distance": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.visible": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.priority_roadway": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.human_direction": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "Law-specific original full-body motion, geometry, control and source context; exact saved finalizer outputs for every source topic.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability-v1",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "All participant bodies and route context",
+        "interval": [
+          0,
+          45
+        ],
+        "view": "overview"
+      },
+      {
+        "subject": "Approach and lane body position",
+        "interval": [
+          0,
+          45
+        ],
+        "view": "approach"
+      },
+      {
+        "subject": "Junction boundaries and priority interaction",
+        "interval": [
+          0,
+          45
+        ],
+        "view": "reference_corner"
+      },
+      {
+        "subject": "Driver perspective and controls",
+        "interval": [
+          0,
+          45
+        ],
+        "view": "driver_reference"
+      }
+    ]
+  },
+  "physical_pixel_audits": [
+    "Review all original source ticks and four views for bodies, governance, markings and occlusion.",
+    "Review complete startup, approach, interaction, clearance and final observation.",
+    "Compare measured deliberate variable and all fixed conditions; retain uncertainty without legal verdict.",
+    "Verify properly erected authorized stop/yield signs and actual approach governance, all entrance obligations and through/non-through highway context.",
+    "Verify stop-line precedence, marked or sidewalk-derived crosswalk geometry, and actual absence of both before the nearest-view fallback; retain original complete-cessation/slowing measurements without legal epsilon.",
+    "Verify actual officer identity/authority, original arm-bone gesture readback and subject response, or actual Native signal state and affected approach lanes; mere presence is not governance.",
+    "Verify approaching and entered traffic through the entire across-or-within movement, actual driver viewpoint samples/spacing and original four-view pixels; immediate hazard, caution and continuous nearest visibility remain judgments."
+  ]
+}

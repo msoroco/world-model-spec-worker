@@ -1,0 +1,48 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "The driver of a vehicle within an intersection intending to turn to the left shall yield the right-of-way to any vehicle approaching from the opposite direction which is within the intersection or so close thereto as to constitute an immediate hazard, but such driver, having so yielded and having given a signal when and as required, may make such left turn and the drivers of all other vehicles approaching the intersection from the opposite direction shall yield the right-of-way to the vehicle making the left turn.",
+      "source": "NRS 484B.253",
+      "output_key": "opposing_yield_window",
+      "method": "opposing_yield_window",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "road_geometry.json",
+        "interaction_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Opposite-direction connectivity, statutory intersection occupancy and actual ordinary vehicle control context.",
+      "source": "assignment.witness.required_context",
+      "output_key": "two_way_opposing_context",
+      "method": "two_way_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "After yielding and signaling when required, later opposite drivers yield to the left-turning vehicle.",
+      "source": "assignment.witness.required_context",
+      "output_key": "reciprocal_driver_history",
+      "method": "reciprocal_history",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "interaction_history.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "road_geometry.json"
+    ],
+    "error_contains": "Missing required source: road_geometry.json"
+  }
+}

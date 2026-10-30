@@ -1,0 +1,262 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "The driver of any truck or combination of vehicles 80 inches or more in overall width, which is following a truck, or combination of vehicles 80 inches or more in overall width, shall, whenever conditions permit, leave a space of 500 feet so that an overtaking vehicle may enter and occupy such space without danger, but this shall not prevent a truck or combination of vehicles from overtaking and passing any vehicle or combination of vehicles.",
+      "source": "NRS 484B.127(2):text-0",
+      "output_key": "requirement_0",
+      "method": "following_space_context",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "truck_history.jsonl",
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "This subsection does not apply to any vehicle or combination of vehicles while moving on a highway on which there are two or more lanes available for traffic moving in the same direction.",
+      "source": "NRS 484B.127(2):text-1",
+      "output_key": "requirement_1",
+      "method": "truck_width_and_lanes",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "the subject is a truck or combination 80 inches or more in overall width",
+      "source": "assignment.summary:activation_conditions-0",
+      "output_key": "requirement_2",
+      "method": "truck_width_and_lanes",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "the vehicle ahead in the same lane is also a truck or combination 80 inches or more wide",
+      "source": "assignment.summary:activation_conditions-1",
+      "output_key": "requirement_3",
+      "method": "truck_width_and_lanes",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "the subject is following it",
+      "source": "assignment.summary:activation_conditions-2",
+      "output_key": "requirement_4",
+      "method": "following_space_context",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "truck_history.jsonl",
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 5,
+      "requirement": "the highway has fewer than two lanes for traffic in the subject's direction",
+      "source": "assignment.summary:activation_conditions-3",
+      "output_key": "requirement_5",
+      "method": "following_space_context",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "truck_history.jsonl",
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "while overtaking and passing another vehicle or combination",
+      "source": "assignment.summary:exceptions-0",
+      "output_key": "requirement_6",
+      "method": "following_space_context",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "truck_history.jsonl",
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 7,
+      "requirement": "on a highway with two or more lanes available for traffic moving in the same direction",
+      "source": "assignment.summary:exceptions-1",
+      "output_key": "requirement_7",
+      "method": "truck_width_and_lanes",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 8,
+      "requirement": "'whenever conditions permit' \u2014 the space need not be left where traffic or the road makes it impossible",
+      "source": "assignment.summary:exceptions-2",
+      "output_key": "requirement_8",
+      "method": "following_space_context",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "truck_history.jsonl",
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 9,
+      "requirement": "the 500-foot space is a standing requirement while following, not a single-instant test",
+      "source": "assignment.summary:timing_requirements-0",
+      "output_key": "requirement_9",
+      "method": "following_space_context",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "truck_history.jsonl",
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 10,
+      "requirement": "This shall not prevent a truck or combination of vehicles from overtaking and passing any vehicle or combination of vehicles; no post-overtake grace duration is supplied by this law.",
+      "source": "NRS 484B.127(2); original-law correction to unsupported summary post-overtake duration",
+      "output_key": "requirement_10",
+      "method": "following_space_context",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "truck_history.jsonl",
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 11,
+      "requirement": "Document overtaking and passing activity and preserve the unresolved conditions-permit and without-danger qualifications.",
+      "source": "assignment.witness.required_context:review-context-0",
+      "output_key": "requirement_11",
+      "method": "following_space_context",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "truck_history.jsonl",
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 12,
+      "requirement": "Establish both qualifying goods-transport trucks, their widths of at least 80 inches, the driver and the following relationship.",
+      "source": "assignment.witness.required_context:review-context-1",
+      "output_key": "requirement_12",
+      "method": "truck_width_and_lanes",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 13,
+      "requirement": "Establish public-highway status and lane availability over time.",
+      "source": "assignment.witness.required_context:review-context-2",
+      "output_key": "requirement_13",
+      "method": "truck_width_and_lanes",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 14,
+      "requirement": "Establish public-highway status.",
+      "source": "assignment.witness.required_context:review-context-3",
+      "output_key": "requirement_14",
+      "method": "following_space_context",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "truck_history.jsonl",
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 15,
+      "requirement": "Establish qualifying subject and lead trucks, each at least 80 inches overall width, and their driver relationships.",
+      "source": "assignment.witness.required_context:review-context-4",
+      "output_key": "requirement_15",
+      "method": "truck_width_and_lanes",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 16,
+      "requirement": "Provide geometry and motion relevant to potential entering vehicles or combinations without declaring entry safe.",
+      "source": "assignment.witness.required_context:review-context-5",
+      "output_key": "requirement_16",
+      "method": "following_space_context",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "truck_history.jsonl",
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 17,
+      "requirement": "Retain spacing relative to the statutory 500 feet and physical circumstances relevant to entering vehicles or combinations.",
+      "source": "assignment.witness.required_context:review-context-6",
+      "output_key": "requirement_17",
+      "method": "following_space_context",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "truck_history.jsonl",
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 18,
+      "requirement": "Specify one available lane in the travel direction rather than inferring it from one-way status.",
+      "source": "assignment.witness.required_context:review-context-7",
+      "output_key": "requirement_18",
+      "method": "truck_width_and_lanes",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "truck_context.json"
+      ]
+    },
+    {
+      "disposition_index": 19,
+      "requirement": "Specify one available travel lane; one-way status alone does not establish lane count.",
+      "source": "assignment.witness.required_context:review-context-8",
+      "output_key": "requirement_19",
+      "method": "truck_width_and_lanes",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "truck_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "truck_history.jsonl"
+    ],
+    "error_contains": "Missing required source: truck_history.jsonl"
+  }
+}

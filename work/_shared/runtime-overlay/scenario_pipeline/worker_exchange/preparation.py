@@ -1,0 +1,295 @@
+"""Standalone six-step return contract; no database, simulator or code execution."""
+import ast
+import shlex
+from pathlib import Path
+from .common import read, sha, tree, digest, within
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def runtime_for(repo, batch):
+    """Resolve the source-verified v3 runtime, including declared CPU repairs."""
+    import importlib.util
+    repo = Path(repo).resolve()
+    launcher = repo / 'work/_shared/runtime-v3.py'
+    if launcher.is_file():
+        spec = importlib.util.spec_from_file_location('_worker_v3_runtime', launcher)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module.runtime()
+    baseline = repo / batch['runtime']['root']
+    pinned = batch['runtime'].get('source_manifest_sha256')
+    if pinned and sha(baseline / 'SOURCE-MANIFEST.json') != pinned:
+        raise ValueError('Batch pinned runtime mismatch')
+    return baseline
+
+
+def check_legacy_capture_handoff(repo, contract):
+    """Bind a retained recording to an exact saved-only case, never a renamed sweep case."""
+    repo = Path(repo).resolve()
+    source = read(within(repo, contract['input']))
+    report = read(within(repo, contract['report']))
+    case_id = source['case_id']
+    require(source.get('format') == 'worker-legacy-capture-contract-v1' and
+            source.get('original_construction_sha256') and
+            source.get('frames', 0) > 0, 'Incomplete legacy capture contract')
+    require(report.get('format') == 'worker-legacy-saved-handoff-v1' and
+            report.get('case_id') == case_id and
+            report.get('original_construction_sha256') == source['original_construction_sha256'] and
+            report.get('actual_recording_audited') is False and
+            report.get('native_replay_requested') is False,
+            'Legacy handoff identity or acceptance claim differs')
+    manifest_path = within(repo, report['manifest'])
+    require(manifest_path.as_posix().startswith((repo/'work/_shared/legacy-captures').as_posix()+'/'),
+            'Legacy manifest must be isolated from v7 delivery cases')
+    manifest = read(manifest_path)
+    require([entry.get('case_id') for entry in manifest.get('cases', [])] == [case_id],
+            'Legacy manifest does not contain the exact retained case')
+    entry = manifest['cases'][0]
+    construction = read(within(manifest_path.parent, entry['construction']))
+    require(construction.get('case_id') == case_id and
+            entry.get('native_construction_sha256') == source['original_construction_sha256'] and
+            sha(within(manifest_path.parent, entry['construction'])) == entry.get('construction_sha256') and
+            entry.get('measurement_procedure', {}).get('entrypoint') == 'analyze.py',
+            'Legacy construction or analyzer identity differs')
+    proposal = read(manifest_path.parent/'proposals/cases.json')
+    require([case.get('case_id') for case in proposal.get('cases', [])] == [case_id],
+            'Legacy proposal does not contain the exact retained case')
+    try:
+        tokens = shlex.split(report['saved_only_audit_command'])
+        def option(key):
+            index = tokens.index(key)
+            return tokens[index+1]
+        command_ok = ('runtime.py' in tokens and 'process-saved' in tokens and
+                      option('--manifest') == report['manifest'] and
+                      option('--case') == case_id and
+                      option('--attempt') == '$RETAINED_C109705_ATTEMPT')
+    except (ValueError, IndexError, TypeError):
+        command_ok = False
+    require(command_ok, 'Legacy saved-only command selects another case or manifest')
+    proof = report.get('diagnostic_proof', {})
+    require(proof.get('exit_code') == 0 and proof.get('frames') == source['frames'] and
+            proof.get('case_id') == case_id and
+            sha(within(repo, proof['log'])) == proof.get('log_sha256'),
+            'Missing exact-ID legacy saved-only diagnostic proof')
+
+
+def check(repo, complete=False, require_ready=False):
+    repo = Path(repo)
+    batch = read(repo/'batch.json')
+    require(batch['mode'] == 'six_step_preparation', 'Wrong batch mode')
+    for rel, checksum in batch['frozen_files'].items():
+        require(sha(within(repo, rel)) == checksum, 'Changed frozen file: '+rel)
+    if batch.get('reference_catalog'):
+        catalog = read(within(repo, batch['reference_catalog']))
+        require(catalog.get('format')=='worker-reference-catalog-v1', 'Invalid reference catalog')
+        for source in catalog['items']:
+            require(sha(within(repo, source['path']))==source['sha256'], 'Changed source reference')
+    allocated = []
+    partitions = [read(path) for path in sorted((repo/'partitions').glob('*.json'))]
+    for partition in partitions:
+        allocated.extend(partition['assignment_ids'])
+    require(len(allocated) == len(set(allocated)) and set(allocated) == set(batch['assignments']), 'Partition coverage/overlap')
+    if batch.get('gpu_ready_required'):
+        require(batch.get('law_split_version') == 'demo-overlap-v3', 'GPU-ready batch must use the current law split')
+        for partition in partitions:
+            require(partition.get('set_id') == 'demo-test', 'GPU-ready partition targets another set')
+            for aid in partition['assignment_ids']:
+                original = read(repo/'inputs'/aid/'assignment.json')
+                require(original.get('role') == 'testing' and
+                        original.get('local_snapshot',{}).get('scope_hashes',{}).get('demo-test') == partition.get('scope_sha256'),
+                        'GPU-ready assignment does not match frozen demo-test scope')
+    from .branch_coverage import assignments, assignment_path
+    items = assignments(repo, batch) if batch.get('full_branch_coverage_required') else batch['assignments']
+    files = tree(repo)
+    if batch.get('lean_return_required'):
+        returned=[rel for rel in files if rel.startswith('work/')]
+        require(len(returned)<=batch.get('max_return_files',1000), 'Return contains too many generated files')
+        forbidden={'.png','.jpg','.jpeg','.pkl','.mkv','.webm','.mp4','.ass','.lock','.uasset','.uexp'}
+        for rel in returned:
+            require(Path(rel).suffix.lower() not in forbidden, 'Generated binary/media belongs in ignored runtime work: '+rel)
+            require(not any(part.startswith(('compatibility-','offline-')) for part in Path(rel).parts),
+                    'Generated diagnostic directory belongs in ignored runtime work: '+rel)
+    for rel in files:
+        if rel in batch['frozen_files'] or rel == 'batch.json':
+            continue
+        parts = Path(rel).parts
+        require(len(parts)>2 and parts[0]=='work' and parts[1] in (*items, '_shared'), 'Unapproved output: '+rel)
+        path = within(repo, rel)
+        require(path.stat().st_size <= 2*1024*1024, 'Oversized return')
+        if path.suffix == '.py':
+            ast.parse(path.read_text())
+    results, all_ids = {}, set()
+    for aid, item in items.items():
+        folder = repo/'work'/aid
+        if not (folder/'result.json').exists():
+            require(not complete, 'Missing result: '+aid)
+            continue
+        result, original = read(folder/'result.json'), read(assignment_path(repo,aid,item))
+        require(result['assignment_id']==aid and result['input_sha256']==item['input_sha256'], 'Return identity/input mismatch')
+        require(result['status'] in ('ready','partial','blocked'), 'Invalid return status')
+        require(result.get('applied_update')==batch['update_version'], 'Unacknowledged current update')
+        require((folder/'HANDOFF.md').is_file(), 'Missing handoff')
+        require(result['status']=='ready' or result.get('reason'), 'Missing precise gap')
+        plan = read(folder/'case-plan.json')
+        require(plan['assignment_id']==aid and plan['actor']==original['actor'] and plan['cell_id']==original['cell_id'] and plan['law_id']==original['law_id'], 'Plan scope mismatch')
+        for key in ('cases','comparisons','observations','sources','existing_evidence','runtime_uncertainties'):
+            require(isinstance(plan.get(key),list), 'Missing/malformed plan '+key)
+        require(plan['sources'] and plan['runtime_uncertainties'], 'Missing sources or explicit runtime limits')
+        if batch.get('selected_branch_dispositions_required'):
+            require(plan.get('selected_branch') == original['branch'], 'Selected witness branch changed')
+            dispositions = plan.get('requirement_dispositions')
+            require(isinstance(dispositions,list) and dispositions, 'Missing requirement dispositions')
+            require(any(d.get('status')=='selected_required' for d in dispositions), 'No selected branch requirement')
+            for disposition in dispositions:
+                require(disposition.get('requirement') and disposition.get('source') and
+                        disposition.get('status') in ('selected_required','alternative_pending','exception_pending') and
+                        disposition.get('evidence_or_gap'), 'Incomplete requirement disposition')
+        for ref in plan['sources']:
+            require(isinstance(ref,dict) and ref.get('path') and ref.get('sha256'), 'Unversioned source reference')
+            require(sha(within(repo,ref['path']))==ref['sha256'], 'Stale cited source')
+        ids=set()
+        for case in plan['cases']:
+            cid=case.get('case_id')
+            require(isinstance(cid,str) and cid.startswith(aid+'__') and cid not in all_ids, 'Duplicate/unqualified case ID')
+            all_ids.add(cid);ids.add(cid)
+            require(case.get('target_law_id') in (None,original['law_id']), 'Wrong case law')
+        if batch.get('full_branch_coverage_required') and result['status']=='ready':
+            require(all(d['status']=='selected_required' and d.get('case_ids') and set(d['case_ids']) <= ids for d in plan.get('requirement_dispositions',[])), 'Full branch ready plans cannot leave requirements pending or unassigned to cases')
+        for comparison in plan['comparisons']:
+            require(set(comparison.get('case_ids',[])) <= ids and len(comparison.get('case_ids',[]))>=2, 'Broken comparison members')
+            require(comparison.get('deliberate_differences') and 'fixed_conditions' in comparison, 'Unspecified comparison isolation')
+        executable_required = batch.get('all_executable_required') and result['status']!='blocked'
+        if result['status']=='ready' or executable_required:
+            if batch.get('measurement_contract_required') and result['status']=='ready':
+                command=result.get('first_gpu_delivery_command' if batch.get('delivery_handoff_required') else 'first_gpu_capability_command','')
+                try:tokens=shlex.split(command)
+                except ValueError:tokens=[]
+                def argument(option):
+                    return tokens[tokens.index(option)+1] if option in tokens and tokens.index(option)+1<len(tokens) else None
+                require('runtime.py' in tokens and 'capture' in tokens and
+                        argument('--python')=='$CARLA_PYTHON' and
+                        argument('--host')=='$CARLA_HOST' and
+                        argument('--port')=='$CARLA_PORT' and
+                        argument('--case') in ids and
+                        str(argument('--output') or '').startswith('.runtime-work/'),
+                        'First GPU command does not use portable local runtime variables')
+            if batch.get('runtime'):
+                if result['status']=='ready' and result.get('readiness_kind') not in ('capability','delivery_prepared'):
+                    raise ValueError('Declare first-run capability versus delivery preparation')
+                if batch.get('delivery_handoff_required') and result['status']=='ready' and result.get('readiness_kind') != 'delivery_prepared':
+                    raise ValueError('Delivery return cannot use capability readiness')
+                from .execution_manifest import validate as validate_execution_manifest
+                executable=validate_execution_manifest(repo,aid)
+                if batch.get('delivery_handoff_required'):
+                    from .semantic_delivery import validate as validate_semantic_delivery
+                    validate_semantic_delivery(folder,original,executable)
+                    from .delivery_handoff import validate_case as validate_delivery_case
+                    for delivery_entry in executable['cases']:
+                        validate_delivery_case(folder,delivery_entry)
+                if batch['runtime'].get('package_compatibility_required'):
+                    from .package_compatibility import check_receipts
+                    check_receipts(repo,folder,executable)
+            require(plan['cases'] and plan['observations'], 'Ready with no cases/observations')
+            for filename in ('runner.py','config.json','construction.json','proposals/cases.json'):
+                require((folder/filename).is_file(), 'Missing executable artifact '+filename)
+            construction = read(folder/'construction.json')
+            from .identity_preflight import validate as validate_identity
+            validate_identity(construction, original['law_id'], original['cell_id'])
+            for key in ('entrypoint','files','measurement_plan','recording_description','static_checks','termination_rules','mechanisms'):
+                require(key in construction, 'Missing construction contract '+key)
+            require(construction.get('cell_id')==original['cell_id'] and construction.get('actor')==original['actor'], 'Construction identity mismatch')
+            require(construction['entrypoint']=='runner.py', 'Noncanonical entrypoint')
+            for entry in construction['files']:
+                require(within(repo,entry['source']).read_text()==entry['content'] if entry.get('source') else within(folder,entry['path']).read_text()==entry['content'], 'Inline/materialized construction mismatch')
+            require('runner.py' in {f['path'] for f in construction['files']}, 'Runner omitted from construction')
+            proposal = read(folder/'proposals/cases.json')
+            require(proposal.get('cell_id')==original['cell_id'] and proposal.get('actor')==original['actor'] and proposal.get('status')=='draft', 'Noncanonical cases proposal identity')
+            require(isinstance(proposal.get('sweep_specs'),list) and isinstance(proposal.get('cases'),list), 'Missing canonical cases/sweeps')
+            require({c.get('case_id') for c in proposal['cases'] if c.get('target_type')!='baseline'}==ids, 'Proposal/plan case coverage mismatch')
+            for case in proposal['cases']:
+                for key in ('target_law_id','target_type','rationale','variable_assignments','unresolved_judgment_calls','recording_description'):
+                    require(key in case, 'Missing canonical case field '+key)
+            config = read(folder/'config.json')
+            if batch.get('capture_profile_required'):
+                from .capture import PROFILE
+                camera_plan = plan.get('camera_plan')
+                require(isinstance(camera_plan, dict) and
+                        camera_plan.get('profile') == PROFILE['version'] and
+                        camera_plan.get('duration_s') == config.get('duration_s') and
+                        isinstance(camera_plan.get('coverage'), list) and camera_plan['coverage'],
+                        'Missing exact camera and duration plan')
+                names = ('overview', 'approach', 'reference_corner', 'driver_reference')
+                sizes = [PROFILE['overview'], *PROFILE['detail_views']]
+                cameras = config.get('cameras')
+                require(isinstance(cameras, list) and len(cameras) == 4 and
+                        [(c.get('name'), c.get('width'), c.get('height')) for c in cameras] ==
+                        [(name, *size) for name, size in zip(names, sizes)] and
+                        all(c.get('pose_strategy') and c.get('fov_deg') for c in cameras),
+                        'Four-view capture configuration differs from profile')
+                require({c.get('view') for c in camera_plan['coverage']} <= set(names) and
+                        all(c.get('subject') and c.get('interval') and c.get('view') for c in camera_plan['coverage']),
+                        'Camera coverage plan lacks subjects, views or intervals')
+                require(camera_plan.get('composition') == 'synchronized_four_view_primary',
+                        'Four-view capture needs synchronized primary composition')
+            if batch.get('runtime'):
+                from .atom_preflight import check_required_atoms
+                check_required_atoms(runtime_for(repo,batch), config.get('required_atoms', []), config.get('source_packets', []))
+            require(config.get('actor')==original['actor'] and config.get('law_id')==original['law_id'], 'Wrong config identity')
+            require(set(config.get('supported_case_ids',[]))==ids, 'Configuration does not cover cases')
+            channels = {c['name'] for c in construction['recording_description']['channels']}
+            if batch.get('source_observation_mapping_required'):
+                terms = {item['term'] for item in original.get('source_observation_terms', [])}
+                mapping = plan.get('source_observation_mapping')
+                require(isinstance(mapping, dict) and set(mapping) == terms,
+                        'Every source observation term needs an evidence mapping')
+                for term, evidence in mapping.items():
+                    require(isinstance(evidence, dict) and evidence.get('evidence') and
+                            isinstance(evidence.get('channels'), list) and
+                            isinstance(evidence.get('source_refs'), list) and
+                            (evidence['channels'] or evidence['source_refs']),
+                            'Incomplete source observation mapping: '+term)
+                    require(set(evidence['channels']) <= channels,
+                            'Source observation mapping names uncaptured channel: '+term)
+            required = {o['name'] for o in plan['observations'] if o.get('mandatory',True)}
+            require(required <= channels, 'Missing mandatory capture channels')
+            require(list((folder/'tests').glob('test*.py')), 'Missing CPU tests')
+            require(result.get('tests'), 'Missing CPU test evidence')
+            for test in result['tests']:
+                require(test.get('exit_code')==0 and test.get('command'), 'CPU test did not pass')
+                require(sha(within(folder,test['log']))==test['sha256'], 'Missing/changed test log')
+        results[aid]=result
+    if complete and batch.get('full_branch_coverage_required'):
+        from .branch_coverage import validate as validate_branches
+        validate_branches(repo,batch,items,require_ready)
+    if complete and batch.get('delivery_handoff_required'):
+        from .delivery_handoff import validate_queue
+        validate_queue(repo,items)
+    if complete and batch.get('legacy_capture_handoff'):
+        check_legacy_capture_handoff(repo,batch['legacy_capture_handoff'])
+    if require_ready:
+        require(len(results)==len(items) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
+    if complete and batch.get('runtime_selftest_required'):
+        proof = read(repo/'work/_shared/runtime-proof.json')
+        runtime = runtime_for(repo,batch)
+        require(proof.get('format')=='worker-runtime-proof-v1' and
+                proof.get('runtime_manifest_sha256')==sha(runtime/'SOURCE-MANIFEST.json'),
+                'Runtime selftest proof binds another runtime')
+        require(proof.get('exit_code')==0 and proof.get('command') and
+                sha(within(repo,proof['log']))==proof.get('log_sha256'),
+                'Runtime selftest log missing/changed')
+        receipt_path=within(repo,proof['verification_receipt'])
+        require(sha(receipt_path)==proof.get('verification_sha256'),
+                'Runtime selftest receipt missing/changed')
+        receipt=read(receipt_path)
+        require(receipt.get('source_manifest_sha256')==proof['runtime_manifest_sha256'] and
+                receipt.get('passed') is True and receipt.get('decoder_validated') is True and
+                receipt.get('rendered_video_decoded') is True and
+                len(receipt.get('negative_fixtures',[]))>=3 and
+                all(n.get('rejected') is True for n in receipt['negative_fixtures']),
+                'Runtime selftest incomplete')
+    return {'batch_id':batch['batch_id'],'results':results,'files':files,'package_sha256':digest(files),
+            'verification':'Static contract only; explicitly run CPU tests before local adoption'}

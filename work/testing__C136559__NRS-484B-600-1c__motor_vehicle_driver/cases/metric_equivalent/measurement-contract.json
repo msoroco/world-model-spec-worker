@@ -1,0 +1,37 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Retain exact original speeds and strict greater-than rate comparison, without legal tolerance or minimum duration.",
+      "source": "NRS 484B.600(1)(c)",
+      "method": "speed_history",
+      "output_key": "posted_zone_speed_history",
+      "inputs": [
+        "speed_samples.jsonl",
+        "posted_speed_context.json"
+      ],
+      "kind": "measured",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Establish qualifying operation and source context for the actual highway portion.",
+      "source": "NRS 484B.600(1)(c)",
+      "method": "posted_sign_context",
+      "output_key": "posted_sign_context",
+      "inputs": [
+        "posted_speed_context.json",
+        "capture/evidence.jsonl"
+      ],
+      "kind": "measured",
+      "value_type": "object"
+    }
+  ],
+  "negative": {
+    "remove": [
+      "speed_samples.jsonl"
+    ],
+    "error_contains": "Missing required source: speed_samples.jsonl"
+  }
+}

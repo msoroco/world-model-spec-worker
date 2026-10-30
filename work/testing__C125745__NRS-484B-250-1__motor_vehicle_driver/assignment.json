@@ -1,0 +1,172 @@
+{
+  "assignment_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver",
+  "law_id": "NRS-484B-250-1",
+  "cell_id": "C125745",
+  "actor": "motor_vehicle_driver",
+  "role": "testing",
+  "branch": "Other vehicle enters the same statutory roadway crossing at a median opening before ego.",
+  "witness": {
+    "actor": "motor_vehicle_driver",
+    "branch": "Other vehicle enters the same statutory roadway crossing at a median opening before ego.",
+    "cell": "C125714",
+    "confidence": "low",
+    "covers": [
+      "NRS-484B-250-1"
+    ],
+    "decision": "conditional",
+    "quote": "approaching an intersection shall yield the right-of-way",
+    "reason": "A different highway can cross at the retained median opening; the opening alone does not establish an intersection.",
+    "relevance_type": "specific_match",
+    "required_context": [
+      "Apply separate-intersection treatment for roadway crossings 30 feet or more apart.",
+      "Construct an actual crossing highway through the opening and establish connected roadway boundaries and conflict areas.",
+      "Establish both highway identities, public dedication, access and conventional human-driven vehicle scope.",
+      "Establish highway dedication and public access, vehicle and driver scope, earlier other-vehicle entry and compatible ego approach.",
+      "Inventory all official devices and preserve both stated exclusions and the unresolved subsection-4 qualification.",
+      "Inventory official devices and preserve both exceptions and the unresolved subsection-4 qualification.",
+      "Preserve right-of-way judgment standards without interpreting them.",
+      "Provide crossing-road boundaries and conflict geometry; identify the same separate roadway intersection when the 30-foot rule applies.",
+      "Retain earlier other-vehicle entry, ego approach, precedence actions and both complete trajectories."
+    ],
+    "subject_reason": "Select the available motor_vehicle_driver as the human controlling a conventional motor vehicle.",
+    "targeted_requirements": [],
+    "audit_status": "accepted",
+    "audit_receipt": "85e4d2e4a73c3696d286f73355766288603fdd05ee4522e4fa9907f4a8918906",
+    "source_assignment_hash": "250a5d4ddf9cbf316f0cc85b68b67941779483840f1e0823f23a60d75c7bc084",
+    "law": "NRS-484B-250-1",
+    "splits": [
+      "training",
+      "testing",
+      "heldout"
+    ],
+    "readiness_score": 0,
+    "receipt": "00941656249e4a95b69c294a55f67284c8bfcaf4b4bfd23209103e031c11c68e",
+    "evidence_readiness": "unverified_proposal",
+    "split": "testing",
+    "requirement": "NRS-484B-250-1"
+  },
+  "law": {
+    "id": "NRS-484B-250-1",
+    "title": "Vehicle approaching or entering intersection (1)",
+    "text": "The driver of a vehicle approaching an intersection shall yield the right-of-way to a vehicle which has entered the intersection from a different highway. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+    "source": "NRS 484B.250(1); with 484B.250(5)"
+  },
+  "cell": {
+    "cell_id": "C125745",
+    "layout": "median_opening",
+    "maneuver": "travel",
+    "control": "stop_sign",
+    "candidate_ego_parties": [
+      "bus_driver",
+      "heavy_vehicle_driver",
+      "motor_vehicle_driver"
+    ],
+    "allocated_sets": []
+  },
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "the subject is approaching an intersection",
+      "another vehicle has already entered the intersection from a different highway",
+      "the intersection is not controlled by official traffic-control devices"
+    ],
+    "exceptions": [
+      "intersections controlled by official traffic-control devices, unless the signal is inoperative (the subsection-4 case)",
+      "vehicles approaching from opposite directions where one is making or intending a left turn"
+    ],
+    "id": "NRS-484B-250-1",
+    "residue": [],
+    "source": "NRS 484B.250(1); with 484B.250(5)",
+    "subject": "driver",
+    "theme": "intersections_and_right_of_way",
+    "tier": "C",
+    "timing_requirements": [
+      {
+        "kind": "ordering",
+        "requirement": "the other vehicle's entry precedes the subject's; that order is the whole test"
+      },
+      {
+        "kind": "continuous",
+        "requirement": "the duty lasts while the other vehicle is in the intersection"
+      }
+    ],
+    "title": "Vehicle approaching or entering intersection (1)"
+  },
+  "template_provenance": "derive_fresh_from_exact_law_and_summary_using_supplied_contract",
+  "templates": [],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "st.intersection",
+      "note": "the intersection region and its boundary"
+    },
+    {
+      "term": "st.lane_enters",
+      "note": "the lanes on which the two vehicles approach enter the same intersection; the exception reads which intersection a device controls through the lanes it governs"
+    },
+    {
+      "term": "drv.approaching",
+      "note": "the subject approaching it"
+    },
+    {
+      "term": "drv.entering_intersection",
+      "note": "the other vehicle has entered from a different highway"
+    },
+    {
+      "term": "drv.arrival_order",
+      "note": "who entered first"
+    },
+    {
+      "term": "drv.yields_to",
+      "note": "the subject gives way"
+    },
+    {
+      "term": "drv.in_intersection",
+      "note": "the other vehicle inside the region"
+    },
+    {
+      "term": "dev.traffic_signal",
+      "note": "the exception: an intersection controlled by a device"
+    },
+    {
+      "term": "dev.stop_sign",
+      "note": "the same"
+    },
+    {
+      "term": "dev.yield_sign",
+      "note": "the same"
+    },
+    {
+      "term": "drv.turning",
+      "note": "the exception for a left-turning vehicle from the opposite direction"
+    },
+    {
+      "term": "rel.oncoming",
+      "note": "that vehicle approaches from the opposite direction"
+    }
+  ],
+  "observation_terms_contract": "Source observation terms are law-planning requirements, not Core IDs. Map each to evidence and use only supported pinned ontology IDs in config.required_atoms.",
+  "local_snapshot": {
+    "scope_hashes": {
+      "demo-test": "c48496f07e3aa8d4ebde1c178712e9dca917bc5e3b9e45b076432cbe30a80ec6",
+      "full-test": "28ca803371eafe309465a39c13b162d0a3fa0a15773c8d23e1d2f7d132c3c52a"
+    },
+    "memberships": {
+      "demo-test": [],
+      "full-test": []
+    },
+    "guidance": {},
+    "law_sha256": "08023686e245933be1b6fff5a5d72549111fbc39960e64979f55ff94f7963a88",
+    "cell_sha256": "968a827b02755160259325dee1e8b7bbbfb0badd0ebc6d056281ec144a6f09dd",
+    "law_policy_sha256": "77d7da97a21300aff4fc6560b6ea06defe41b5c9d4c4f5567f77571c94d9e5f6"
+  }
+}

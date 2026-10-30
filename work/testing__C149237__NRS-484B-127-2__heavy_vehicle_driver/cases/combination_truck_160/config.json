@@ -1,0 +1,137 @@
+{
+  "case": {
+    "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_truck_160",
+    "target_law_id": "NRS-484B-127-2",
+    "target_type": "boundary_probe",
+    "rationale": "Measure full combination widths, actual all-unit gap, entrant occupancy, lane availability and prospective activity for combination_truck_160",
+    "variable_assignments": {
+      "requested_body_gap_m": {
+        "kind": "world_setup",
+        "value": 160
+      }
+    },
+    "unresolved_judgment_calls": [
+      "whenever conditions permit",
+      "overtaking vehicle may enter without danger"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Original Native subject velocity norm from PipelineCapture",
+          "time_window": "full original 42-second following episode",
+          "reference_frame": "Original Native frame and road1 directed station",
+          "uncertainty": "20Hz samples; between-frame speed unobserved"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Widths and body gap require full Native source review; fixture only exercises software."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_truck_160",
+  "supported_case_ids": [
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__truck_truck_160",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__truck_truck_140",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__truck_combination_160",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__truck_combination_140",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_truck_160",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_truck_140",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_combination_160",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_combination_140",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__subject_width_probe",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__lead_width_probe",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__constrained_conditions",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__entrant_late",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__two_available_lanes"
+  ],
+  "cell_id": "C149237",
+  "actor": "heavy_vehicle_driver",
+  "law_id": "NRS-484B-127-2",
+  "duration_s": 42,
+  "rate_hz": 20,
+  "truck_blueprint": "vehicle.carlamotors.carlacola",
+  "requested_body_gap_m": 160,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "subject-attached overhead tracking both truck bodies"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "subject-attached forward view of leader"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "leader-attached overhead body gap reference"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "subject-attached modeled driver eye"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "st.one_way_roadway"
+  ],
+  "source_packets": [
+    "scenario_geometry"
+  ],
+  "public_way_road_ids": [
+    1
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "roadway": "synthetic crest road with one lane each direction"
+    }
+  },
+  "ego_class": "combination",
+  "lead_class": "truck",
+  "ego_blueprint": "vehicle.carlamotors.carlacola",
+  "lead_blueprint": "vehicle.carlamotors.carlacola",
+  "same_direction_lane_count": 1,
+  "overtake": false,
+  "conditions_context": {
+    "authored_condition": "available",
+    "legal_conditions_permit": "unresolved",
+    "native_obstruction_bodies": []
+  },
+  "entrant_start_tick": 300,
+  "physical_completion": {
+    "format": "worker-physical-completion-criteria-v002",
+    "criterion": "following_progress",
+    "motion_source": "truck_history.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 0.25,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true,
+    "context_sources": [
+      "truck_context.json"
+    ],
+    "body_key": "ego_vertices_m",
+    "other_body_key": "lead_vertices_m",
+    "lateral_transition_m": 1
+  },
+  "processing_contract_version": 2
+}

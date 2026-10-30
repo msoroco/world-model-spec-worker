@@ -1,0 +1,178 @@
+{
+  "assignment_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver",
+  "law_id": "NRS-484B-250-4",
+  "cell_id": "C24811",
+  "actor": "motor_vehicle_driver",
+  "role": "testing",
+  "branch": "Blind-intersection post-stop interactions under complete signal inoperability.",
+  "witness": {
+    "actor": "motor_vehicle_driver",
+    "branch": "Blind-intersection post-stop interactions under complete signal inoperability.",
+    "cell": "C24757",
+    "confidence": "medium",
+    "covers": [
+      "NRS-484B-250-4"
+    ],
+    "decision": "conditional",
+    "quote": "After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
+    "reason": "An intersection with obstructed approach sight lines can support installed, uncovered, wholly inoperative signals and distinct post-stop vehicle interactions. Obstruction does not itself establish signal governance or yielding relationships. This is a new null-reservation alternative.",
+    "relevance_type": "specific_match",
+    "required_context": [
+      "Establish actual sight obstructions, driver viewpoint, connected ordinary-vehicle routes and statutory intersection boundaries.",
+      "Establish installed, uncovered governing vehicular signals that are wholly inoperative at entry; do not substitute malfunction or failed detection.",
+      "Establish official-device provenance and the driver's actual physical control.",
+      "Establish official-device provenance, signal governance and complete inoperability at entry.",
+      "Establish vehicle classification and actual driver control; preserve caution and visibility judgments without numerical standards.",
+      "Provide a clearly marked stop line and complete cessation before subsequent movement.",
+      "Provide a clearly marked stop line and record complete cessation there before subsequent movement.",
+      "Provide separate vehicles with synchronized earlier stop-completion histories and intersection occupancy.",
+      "Realize obstructed approach sight lines and supported ordinary-motor-vehicle routes.",
+      "Retain every entrance and synchronized histories for distinct earlier-stopped and intersection-occupying vehicles.",
+      "Retain every entrance, driver viewpoint and occlusion geometry without assigning a numerical visibility or caution standard."
+    ],
+    "subject_reason": "The available motor_vehicle_driver is a driver within the supplied subject scope and can enter the governed intersection in an ordinary motor vehicle.",
+    "targeted_requirements": [],
+    "audit_status": "accepted",
+    "audit_receipt": "cf2c22397679a6fbbfd13ccbd4d4d076799ccb14285e8e2b8038b9420de917f9",
+    "source_assignment_hash": "4f39350795ec57c09820cf311bd8a661b63ab6277280947b8c220101d5072e33",
+    "law": "NRS-484B-250-4",
+    "splits": [
+      "training",
+      "testing",
+      "heldout"
+    ],
+    "readiness_score": 0,
+    "receipt": "a86a9bbf3c0b58c45155f90854d70dd2eceb0cf8ecad7ee4e5c393455799799b",
+    "evidence_readiness": "unverified_proposal",
+    "split": "testing",
+    "requirement": "NRS-484B-250-4"
+  },
+  "law": {
+    "id": "NRS-484B-250-4",
+    "title": "Vehicle approaching or entering intersection (4)",
+    "text": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
+    "source": "NRS 484B.250(4)"
+  },
+  "cell": {
+    "cell_id": "C24811",
+    "layout": "blind_intersection",
+    "maneuver": "travel",
+    "control": "traffic_light",
+    "candidate_ego_parties": [
+      "bus_driver",
+      "cycle_or_scooter_operator",
+      "heavy_vehicle_driver",
+      "motor_vehicle_driver",
+      "motorcycle_or_moped_operator"
+    ],
+    "allocated_sets": []
+  },
+  "existing_evidence": [],
+  "summary": {
+    "activation_conditions": [
+      "the intersection is controlled by a traffic-control signal that is installed with uncovered vehicular signals",
+      "the signal is inoperative when the subject enters"
+    ],
+    "exceptions": [],
+    "id": "NRS-484B-250-4",
+    "residue": [
+      "'proceed cautiously' after the stop is a judgement element"
+    ],
+    "source": "NRS 484B.250(4)",
+    "subject": "driver",
+    "theme": "intersections_and_right_of_way",
+    "tier": "C",
+    "timing_requirements": [
+      {
+        "kind": "ordering",
+        "requirement": "stop first, then proceed: the halt precedes entry, and the yield is owed to whoever completed a stop earlier"
+      },
+      {
+        "kind": "duration",
+        "requirement": "a full halt at the stop line, not a slowing"
+      },
+      {
+        "kind": "span",
+        "requirement": "deciding 'previously completed a stop' needs the other vehicles' histories, so the trace must cover their approaches too"
+      }
+    ],
+    "title": "Vehicle approaching or entering intersection (4)"
+  },
+  "template_provenance": "derive_fresh_from_exact_law_and_summary_using_supplied_contract",
+  "templates": [],
+  "external_imports": [
+    "carla",
+    "numpy",
+    "PIL",
+    "shapely",
+    "networkx",
+    "tqdm",
+    "matplotlib",
+    "pydot"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "dev.traffic_signal",
+      "note": "the head, with its uncovered attribute"
+    },
+    {
+      "term": "dev.inoperative",
+      "note": "installed and uncovered but showing no valid indication"
+    },
+    {
+      "term": "st.lane_enters",
+      "note": "the lane the inoperative signal governs enters the intersection in question"
+    },
+    {
+      "term": "st.stop_line",
+      "note": "the clearly marked stop line"
+    },
+    {
+      "term": "st.crosswalk",
+      "note": "the near-side crosswalk"
+    },
+    {
+      "term": "st.sight_distance",
+      "note": "the point where the view of the through highway opens"
+    },
+    {
+      "term": "rel.visible",
+      "note": "'a clear view of approaching traffic': the traffic on the intersecting highway in the subject's line of sight from the stopping point"
+    },
+    {
+      "term": "drv.stopped",
+      "note": "the required halt"
+    },
+    {
+      "term": "drv.entering_intersection",
+      "note": "entry after the halt"
+    },
+    {
+      "term": "drv.arrival_order",
+      "note": "vehicles that previously completed a stop"
+    },
+    {
+      "term": "drv.in_intersection",
+      "note": "vehicles already inside"
+    },
+    {
+      "term": "drv.yields_to",
+      "note": "the yield after the stop"
+    }
+  ],
+  "observation_terms_contract": "Source observation terms are law-planning requirements, not Core IDs. Map each to evidence and use only supported pinned ontology IDs in config.required_atoms.",
+  "local_snapshot": {
+    "scope_hashes": {
+      "demo-test": "c48496f07e3aa8d4ebde1c178712e9dca917bc5e3b9e45b076432cbe30a80ec6",
+      "full-test": "28ca803371eafe309465a39c13b162d0a3fa0a15773c8d23e1d2f7d132c3c52a"
+    },
+    "memberships": {
+      "demo-test": [],
+      "full-test": []
+    },
+    "guidance": {},
+    "law_sha256": "ca222c326238866cb2a632bfd5b9d138eef6ecfd7c020fd5dca122a3f76aafe1",
+    "cell_sha256": "e86f93f93c65034a9ecd65a2b865b88aace5c6e10c25584aa400d2624b07982e",
+    "law_policy_sha256": "77d7da97a21300aff4fc6560b6ea06defe41b5c9d4c4f5567f77571c94d9e5f6"
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "case": {
+    "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__rain",
+    "target_law_id": "NRS-484B-600-1a",
+    "target_type": "judgment_sweep",
+    "rationale": "Controlled rain condition; no reasonable/proper speed verdict.",
+    "variable_assignments": {
+      "requested_speed_mps": {
+        "value": 4,
+        "kind": "controller",
+        "unit": "m/s"
+      },
+      "authored_road_surface": {
+        "kind": "world_setup",
+        "value": "synthetic asphalt"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "reasonable or proper",
+      "due regard",
+      "sight adequacy",
+      "motorcycle equipment archived-source caveat"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "original_motion",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Native ego and other vehicle motion per original tick",
+          "time_window": "entire original 45s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz samples and finite visibility/ray grid; legal adequacy unresolved"
+        },
+        {
+          "name": "native_geometry",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Native map roadway/shoulder width and authored surface",
+          "time_window": "entire original 45s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz samples and finite visibility/ray grid; legal adequacy unresolved"
+        },
+        {
+          "name": "device_inventory",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Native traffic device/actor inventory",
+          "time_window": "entire original 45s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz samples and finite visibility/ray grid; legal adequacy unresolved"
+        },
+        {
+          "name": "view_provenance",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Four original synchronized camera source identities",
+          "time_window": "entire original 45s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz samples and finite visibility/ray grid; legal adequacy unresolved"
+        },
+        {
+          "name": "environment_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Same-frame weather, RGB target calibration and direct ray samples",
+          "time_window": "entire original 45s episode",
+          "reference_frame": "Native frame/time and world XYZ",
+          "uncertainty": "20Hz samples and finite visibility/ray grid; legal adequacy unresolved"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Reasonable or proper and due regard remain legal judgments.",
+        "Diagnostic fixture is a three-frame software check."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__rain",
+  "supported_case_ids": [
+    "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__reference",
+    "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__faster",
+    "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__rain",
+    "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_surface",
+    "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__fog",
+    "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__nearer_traffic",
+    "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrower"
+  ],
+  "cell_id": "C179789",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-600-1a",
+  "duration_s": 45,
+  "rate_hz": 20,
+  "requested_speed_mps": 4,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "Fixed overhead at Native world(150,0,220), pitch-90; both traffic routes across full45s"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached forward traffic approach"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "Fixed roadside at Native world(150,-15,45), pitch-65 toward interaction corridor"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego attached modeled eye and traffic view"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity",
+    "env.visibility",
+    "env.ice_or_snow",
+    "env.wet_road",
+    "env.precipitation",
+    "st.lane_width",
+    "st.curvature",
+    "st.roadway"
+  ],
+  "source_packets": [
+    "environment_calibration",
+    "surface_provenance"
+  ],
+  "public_way_road_ids": [
+    1
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "road_surface": "synthetic authored asphalt; Native surface readback and calibration required"
+    }
+  },
+  "precipitation": 70,
+  "wetness": 0,
+  "physical_completion": {
+    "format": "worker-physical-completion-criteria-v002",
+    "criterion": "travel_progress",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 90.0,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true,
+    "context_sources": [],
+    "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+  },
+  "processing_contract_version": 2
+}

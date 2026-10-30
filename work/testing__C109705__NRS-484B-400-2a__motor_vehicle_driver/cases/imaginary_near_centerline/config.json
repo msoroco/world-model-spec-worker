@@ -1,0 +1,146 @@
+{
+  "case": {
+    "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline",
+    "target_law_id": "NRS-484B-400-2a",
+    "target_type": "boundary_probe",
+    "rationale": "Controlled full-body approach lateral-position probe with no legal cutoff.",
+    "variable_assignments": {
+      "requested_speed_mps": {
+        "value": 5.0,
+        "kind": "controller",
+        "unit": "m/s"
+      },
+      "lateral_offset_m": {
+        "value": 0,
+        "unit": "m",
+        "kind": "controller"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Nearest portion of the right half and full legal highway status"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Native actor velocity norm",
+          "time_window": "full original 45-second episode",
+          "reference_frame": "Native world and original frame",
+          "uncertainty": "20Hz frame samples; between-frame motion and pixels unverified"
+        },
+        {
+          "name": "kin.velocity",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Native actor 3D velocity",
+          "time_window": "full original 45-second episode",
+          "reference_frame": "Native world and original frame",
+          "uncertainty": "20Hz frame samples; between-frame motion and pixels unverified"
+        },
+        {
+          "name": "body_vertices",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "All eight original Native full-body bounding-box vertices",
+          "time_window": "full original 45-second episode",
+          "reference_frame": "Native world and original frame",
+          "uncertainty": "20Hz frame samples; between-frame motion and pixels unverified"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Road designation is authored; final legal position judgment unresolved."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline",
+  "supported_case_ids": [
+    "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline",
+    "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline",
+    "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline",
+    "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline"
+  ],
+  "cell_id": "C109705",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-400-2a",
+  "measurement_mode": "approach",
+  "duration_s": 45,
+  "rate_hz": 20,
+  "requested_speed_mps": 5.0,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached overhead full route"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached forward quarter"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed junction corner"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego-attached modeled driver eye"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity"
+  ],
+  "source_packets": [],
+  "public_way_road_ids": [
+    1,
+    2,
+    3,
+    4,
+    11,
+    12,
+    13
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "two_directional": "OpenDRIVE opposing driving lanes; Native readback required",
+      "public_way": "synthetic assumption only"
+    }
+  },
+  "lateral_offset_m": 0,
+  "centerline_definition": "imaginary_equidistant",
+  "physical_completion": {
+    "format": "worker-physical-completion-criteria-v002",
+    "criterion": "intersection_clearance",
+    "motion_source": "body_history.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 0.25,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true,
+    "context_sources": [
+      "road_geometry.json"
+    ],
+    "body_key": "body_vertices_m",
+    "exit_axis": 1,
+    "exit_sign": -1
+  },
+  "processing_contract_version": 2
+}

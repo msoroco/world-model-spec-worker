@@ -1,0 +1,314 @@
+{
+  "assignment_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver",
+  "runner": "\"\"\"One original signaled lane-change episode on a two-lane one-way road.\"\"\"\nimport argparse, hashlib, json, queue, subprocess, traceback, xml.etree.ElementTree as ET\nfrom pathlib import Path\nfrom worker_exchange.native_output import FrameMap\nfrom worker_exchange.media import compose_four_views\nfrom worker_exchange.world_restore import snapshot, restore\n\nROOT = Path(__file__).resolve().parent\n\ndef check():\n    cfg = json.loads((ROOT/'config.json').read_text())\n    road = ET.parse(ROOT/'scene.xodr').getroot().find(\"road[@id='1']\")\n    assert road is not None and float(road.attrib['length']) >= 1500\n    assert {lane.get('id') for lane in road.findall('.//lane[@type=\"driving\"]')} == {'-1','-2'}\n    assert cfg['duration_s'] == 45 and cfg['rate_hz'] == 20\n    assert [c['name'] for c in cfg['cameras']] == ['overview','approach','reference_corner','driver_reference']\n    assert [(c['width'],c['height']) for c in cfg['cameras']] == [(1920,1080),(1280,720),(1280,720),(1280,720)]\n    assert cfg['required_atoms'] == ['kin.speed','kin.velocity','st.one_way_roadway'] and cfg['source_packets'] == ['scenario_geometry']\n    return {'passed': True, 'road_length_m': float(road.attrib['length']), 'cameras': 4, 'carla_contacted': False}\n\ndef run(args):\n    import carla\n    from pipeline_capture import PipelineCapture\n    from analyze import finalize\n    client = carla.Client(args.host,args.port); client.set_timeout(60)\n    saved = snapshot(client); world = None; owned = []; cameras = {}; queues = {}; encoders = {}; streams = {}; capture = None\n    out = Path(args.output_dir); cfg = json.loads((ROOT/'config.json').read_text())\n    frames = 0; errors = []\n    try:\n        world = client.generate_opendrive_world((ROOT/'scene.xodr').read_text())\n        settings = world.get_settings(); settings.synchronous_mode=True; settings.fixed_delta_seconds=.05\n        world.apply_settings(settings); world.set_weather(carla.WeatherParameters.ClearNoon)\n        mapping = world.get_map(); wp = mapping.get_waypoint_xodr(1,-2,100)\n        if wp is None: raise ValueError('Native lane 1/-1 is missing')\n        blueprint = world.get_blueprint_library().find('vehicle.lincoln.mkz_2020')\n        blueprint.set_attribute('role_name','subject_lane_change_223')\n        ego = world.spawn_actor(blueprint, wp.transform); owned.append(ego)\n        other_bp=world.get_blueprint_library().find('vehicle.tesla.model3');other_bp.set_attribute('role_name','target_lane_vehicle')\n        other_wp=mapping.get_waypoint_xodr(1,-1,cfg.get(\"target_station_m\",220));other=world.spawn_actor(other_bp,other_wp.transform);owned.append(other)\n        ego.apply_control(carla.VehicleControl(brake=1,hand_brake=True));other.apply_control(carla.VehicleControl(brake=1,hand_brake=True))\n        for _ in range(20): world.tick()\n        for spec in cfg['cameras']:\n            name,w,h = spec['name'],spec['width'],spec['height']\n            bp = world.get_blueprint_library().find('sensor.camera.rgb')\n            for key,value in [('image_size_x',w),('image_size_y',h),('fov',spec['fov_deg']),('sensor_tick',0)]:\n                bp.set_attribute(key,str(value))\n            if name == 'overview': pose = carla.Transform(carla.Location(x=0,y=0,z=65),carla.Rotation(pitch=-90))\n            elif name == 'approach': pose = carla.Transform(carla.Location(x=-12,y=0,z=8),carla.Rotation(pitch=-15))\n            elif name == 'reference_corner': pose = carla.Transform(carla.Location(x=180,y=14,z=30),carla.Rotation(pitch=-65))\n            else: pose = carla.Transform(carla.Location(x=0,y=0,z=1.5),carla.Rotation())\n            camera = world.spawn_actor(bp,pose,attach_to=ego if name in ('overview','approach','driver_reference') else None)\n            owned.append(camera); cameras[name]=camera; queues[name]=queue.Queue();camera.listen(queues[name].put)\n            stream=(out/(name+'.encoder.log')).open('x');streams[name]=stream\n            encoders[name]=subprocess.Popen(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-n','-f','rawvideo','-pix_fmt','bgra',\n                '-s',f'{w}x{h}','-r','20','-i','pipe:0','-an','-c:v','ffv1','-pix_fmt','bgr0',str(out/(name+'.mkv'))],stdin=subprocess.PIPE,stderr=stream)\n        geometry={'source':'Native generated OpenDRIVE road and original lane readback','physical_verification':{'native_map':'road.xodr','lane_readback':'lane_history.jsonl'},\n          'directed_roadways':[{'polygon':[[0,-7],[1500,-7],[1500,7],[0,7]],'direction_xy':[1,0],'one_way':True}],\n          'lane_centers_native_y_m':{'-2':mapping.get_waypoint_xodr(1,-2,100).transform.location.y,'-1':mapping.get_waypoint_xodr(1,-1,100).transform.location.y},\n          'marking':'OpenDRIVE broken white lane divider; Native pixels unverified'}\n        (out/'scenario_geometry.json').write_text(json.dumps(geometry,indent=2)+'\\n')\n        capture=PipelineCapture(client,ego,out,cfg['selected_case_id'],required_observations=cfg['required_atoms'])\n        started=world.get_snapshot().timestamp.elapsed_seconds\n        with FrameMap(out/'video_frames.jsonl') as fmap, (out/'lane_history.jsonl').open('x') as lane:\n            for index in range(cfg['duration_s']*cfg['rate_hz']):\n                speed=ego.get_velocity().length();effort=max(0,min(.55,.3*(cfg['requested_speed_mps']-speed)))\n                other_speed=other.get_velocity().length();other.apply_control(carla.VehicleControl(throttle=max(0,min(.5,.25*(5-other_speed)))))\n                if index>=cfg.get(\"signal_tick\",80):ego.set_light_state(carla.VehicleLightState.LeftBlinker)\n                target_y=geometry['lane_centers_native_y_m']['-2'] if index<160 else geometry['lane_centers_native_y_m']['-1']\n                lateral=ego.get_transform().location.y-target_y;steer=max(-.35,min(.35,-.16*lateral))\n                ego.apply_control(carla.VehicleControl(throttle=effort,brake=max(0,min(.5,.2*(speed-cfg['requested_speed_mps']))),steer=steer))\n                frame=world.tick(); now=world.get_snapshot().timestamp.elapsed_seconds-started\n                native_images={}\n                for spec in cfg['cameras']:\n                    name=spec['name']; image=queues[name].get(timeout=30)\n                    while image.frame<frame: image=queues[name].get(timeout=30)\n                    if image.frame!=frame: raise ValueError('Camera original tick mismatch: '+name)\n                    encoders[name].stdin.write(image.raw_data)\n                    native_images[name]={'frame':image.frame,'sha256':hashlib.sha256(image.raw_data).hexdigest()}\n                transform=ego.get_transform(); vertices=[[v.x,v.y,v.z] for v in ego.bounding_box.get_world_vertices(transform)]\n                other_t=other.get_transform();other_vertices=[[v.x,v.y,v.z] for v in other.bounding_box.get_world_vertices(other_t)]\n                lane.write(json.dumps({'frame':frame,'time_s':now,'subject_vertices_m':vertices,'target_vehicle_vertices_m':other_vertices,\n                  'subject_lane_id':mapping.get_waypoint(transform.location).lane_id,'target_lane_id':mapping.get_waypoint(other_t.location).lane_id,\n                  'subject_speed_mps':ego.get_velocity().length(),'target_speed_mps':other.get_velocity().length(),\n                  'left_indicator_bit':bool(ego.get_light_state() & carla.VehicleLightState.LeftBlinker),'camera_originals':native_images})+'\\n')\n                capture.capture(frame,now)\n                fmap.append(frame,now)\n                frames+=1\n        if frames!=cfg['duration_s']*cfg['rate_hz']: raise ValueError('Incomplete original duration')\n    except BaseException as error:\n        errors.append({'message':str(error),'traceback':traceback.format_exc()})\n    finally:\n        if capture:\n            try: capture.close(confirmed=not errors and frames==cfg['duration_s']*cfg['rate_hz'])\n            except BaseException as error: errors.append({'capture_close':str(error)})\n        for process in encoders.values():\n            try:\n                process.stdin.close()\n                if process.wait(timeout=180): errors.append({'encoder_exit':process.returncode})\n            except BaseException as error: errors.append({'encoder':str(error)})\n        for stream in streams.values(): stream.close()\n        for actor in reversed(owned):\n            try: actor.destroy()\n            except BaseException as error: errors.append({'destroy':str(error)})\n        try: restoration=restore(client,saved)\n        except BaseException as error: errors.append({'restore':str(error)}); restoration={'restored':False}\n        (out/'native-run-status.json').write_text(json.dumps({'frames':frames,'errors':errors,'restoration':restoration},indent=2)+'\\n')\n    if errors: raise RuntimeError('Native capture failed: '+str(errors))\n    sources={name:out/(name+'.mkv') for name in cameras}\n    receipt=compose_four_views(sources,out/'video_frames.jsonl',out/'raw.mkv')\n    (out/'four-view-receipt.json').write_text(json.dumps(receipt,indent=2)+'\\n')\n    finalize(out,out/'analysis-report.json')\n\nif __name__=='__main__':\n    parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true');parser.add_argument('--output-dir',default='.')\n    parser.add_argument('--host',default='127.0.0.1');parser.add_argument('--port',type=int,default=2000)\n    args=parser.parse_args()\n    if args.check: print(json.dumps(check()))\n    else: run(args)\n",
+  "analysis": "\"\"\"Original signal onset, lane-boundary movement and target-lane body-gap samples.\"\"\"\nimport argparse,hashlib,json\nfrom pathlib import Path\nfrom worker_exchange.native_output import write_result\n\ndef required(root,name):\n path=root/name\n if not path.is_file():raise ValueError('Missing required source: '+name)\n return path\n\ndef lane_samples(root):\n rows=[json.loads(s) for s in required(root,'lane_history.jsonl').read_text().splitlines() if s]\n if not rows:raise ValueError('No original lane-movement samples')\n return rows\n\ndef movement_event(root):\n geometry=json.loads(required(root,'scenario_geometry.json').read_text());rows=lane_samples(root)\n centers=geometry['lane_centers_native_y_m'];boundary=(centers['-2']+centers['-1'])/2\n if centers['-2']<=centers['-1']:raise ValueError('Selected lateral lane ordering differs')\n first_signal=next((r for r in rows if r['left_indicator_bit']),None)\n first_move=next((r for r in rows if min(v[1] for v in r['subject_vertices_m'])<boundary),None)\n return {'lane_boundary_y_m':boundary,'signal_first_frame':-1 if first_signal is None else first_signal['frame'],\n  'body_boundary_first_frame':-1 if first_move is None else first_move['frame'],\n  'signal_bit_before_body_boundary':bool(first_signal and first_move and first_signal['frame']<first_move['frame']),\n  'samples':len(rows),'limitation':'Native lamp state bit is not original emitted-light pixel proof; no intent/ascertainment finding'}\n\ndef target_lane_gap(root):\n rows=lane_samples(root);samples=[]\n for row in rows:\n  ego=row['subject_vertices_m'];other=row['target_vehicle_vertices_m'];gap=min(v[0] for v in other)-max(v[0] for v in ego)\n  samples.append({'frame':row['frame'],'time_s':row['time_s'],'signed_body_gap_m':gap,'ego_lane_id':row['subject_lane_id'],\n   'other_lane_id':row['target_lane_id'],'ego_speed_mps':row['subject_speed_mps'],'other_speed_mps':row['target_speed_mps']})\n return {'samples':samples,'minimum_signed_gap_m':min(s['signed_body_gap_m'] for s in samples),\n  'scope':'original full-body longitudinal gap; safety ascertainment and danger remain unresolved'}\n\ndef one_way_context(root):\n geometry=json.loads(required(root,'scenario_geometry.json').read_text());roadways=geometry['directed_roadways']\n return {'one_way':all(r['one_way'] for r in roadways),'direction_xy':roadways[0]['direction_xy'],\n  'lane_centers_native_y_m':geometry['lane_centers_native_y_m'],'marking':geometry['marking'],\n  'physical_verification':geometry['physical_verification']}\n\ndef finalize(root,output):\n cfg=json.loads(required(root,'config.json').read_text());event=movement_event(root);gap=target_lane_gap(root);context=one_way_context(root)\n sha=lambda n:hashlib.sha256(required(root,n).read_bytes()).hexdigest()\n report={'format':'worker-analysis-report-v1','case_id':cfg['selected_case_id'],'measurements':{\n  'signal_onset_relative_to_lateral_movement':{'method':'movement_event','value':event,'sources':{'scenario_geometry.json':sha('scenario_geometry.json'),'lane_history.jsonl':sha('lane_history.jsonl')}},\n  'target_lane_full_body_gap':{'method':'target_lane_gap','value':gap,'sources':{'lane_history.jsonl':sha('lane_history.jsonl')}},\n  'one_way_marked_lane_context':{'method':'one_way_context','value':context,'sources':{'scenario_geometry.json':sha('scenario_geometry.json')}}},\n  'limitations':['Fixture is diagnostic synthetic data only.','Actual signaled emitted light, safety ascertainment, boundary pixels and Native motion require GPU/source review.']}\n output.write_text(json.dumps(report,indent=2)+'\\n')\n traces=[json.loads(s) for s in required(root,'trace.jsonl').read_text().splitlines() if s];rows=lane_samples(root);channels=root/'channels';channels.mkdir(exist_ok=True)\n for n,f in [('kin.speed','speed_mps'),('kin.velocity','velocity_mps')]:\n  (channels/(n+'.jsonl')).write_text(''.join(json.dumps({'time_s':r['time_s'],'value':r[f]})+'\\n' for r in traces))\n (channels/'lane_history.jsonl').write_text(''.join(json.dumps({'time_s':r['time_s'],'value':r})+'\\n' for r in rows))\n case=cfg['case'];result={'case_id':case['case_id'],'measured_values':{'minimum_signed_gap_m':gap['minimum_signed_gap_m']},\n  'target_checks':[{'target':'lane_movement_observed','requested':'lane change','measured':event['body_boundary_first_frame'],\n   'method':'movement_event','tolerance':0,'matched':event['body_boundary_first_frame']>=0,'physical_cause_confirmed':False,'cause_evidence':'lane_history.jsonl'}],\n  'setup_confirmed':False,'behavior_attempted':True,'maneuver_completed':False,'termination_reason':'saved analysis; Native checks pending',\n  'physical_failure_flags':{'detection_validated':False},'trace_reference':'trace.jsonl','video_references':['raw.mkv'],\n  'video_frame_map_reference':'video_frames.jsonl','recording_description':case['recording_description'],\n  'recording_evidence':[{'name':n,'unit':u,'reference':p} for n,u,p in [('kin.speed','m/s','channels/kin.speed.jsonl'),('kin.velocity','m/s','channels/kin.velocity.jsonl'),('lane_history','structured record','channels/lane_history.jsonl')]],\n  'realized_observables':{}}\n write_result(root,result);return report\nif __name__=='__main__':\n p=argparse.ArgumentParser();p.add_argument('--attempt',required=True);p.add_argument('--output',required=True);a=p.parse_args();finalize(Path(a.attempt),Path(a.output))\n",
+  "test": "import unittest\nfrom pathlib import Path\nfrom analyze import movement_event\nfrom runner import check\nclass T(unittest.TestCase):\n def test_topology(self):self.assertTrue(check()['passed'])\n def test_missing(self):\n  with self.assertRaisesRegex(ValueError,'Missing required source: scenario_geometry.json'):movement_event(Path('nonexistent'))\n",
+  "cases": [
+    {
+      "name": "signal_and_open_gap",
+      "rationale": "Original signal/movement ordering and target-lane clearances; safety ascertainment left as legal/driver evidence judgment.",
+      "config": {
+        "signal_tick": 80,
+        "target_station_m": 220
+      },
+      "fixture": {
+        "scenario_geometry.json": {
+          "source": "synthetic diagnostic scenario geometry",
+          "physical_verification": {
+            "native_map": "road.xodr",
+            "lane_readback": "lane_history.jsonl"
+          },
+          "directed_roadways": [
+            {
+              "polygon": [
+                [
+                  0,
+                  -7
+                ],
+                [
+                  1500,
+                  -7
+                ],
+                [
+                  1500,
+                  7
+                ],
+                [
+                  0,
+                  7
+                ]
+              ],
+              "direction_xy": [
+                1,
+                0
+              ],
+              "one_way": true
+            }
+          ],
+          "lane_centers_native_y_m": {
+            "-2": 5.25,
+            "-1": 1.75
+          },
+          "marking": "broken white lane divider; software fixture only"
+        },
+        "lane_history.jsonl": "{\"frame\": 21714, \"time_s\": 0.05000000074505806, \"subject_vertices_m\": [[98, 4.45, 0], [98, 6.05, 0], [102, 6.05, 0], [102, 4.45, 0], [98, 4.45, 1.5], [98, 6.05, 1.5], [102, 6.05, 1.5], [102, 4.45, 1.5]], \"target_vehicle_vertices_m\": [[218, 0.95, 0], [218, 2.55, 0], [222, 2.55, 0], [222, 0.95, 0], [218, 0.95, 1.5], [218, 2.55, 1.5], [222, 2.55, 1.5], [222, 0.95, 1.5]], \"subject_lane_id\": -2, \"target_lane_id\": -1, \"subject_speed_mps\": 5, \"target_speed_mps\": 5, \"left_indicator_bit\": true}\n{\"frame\": 21715, \"time_s\": 0.10000000149011612, \"subject_vertices_m\": [[99, 2.7, 0], [99, 4.3, 0], [103, 4.3, 0], [103, 2.7, 0], [99, 2.7, 1.5], [99, 4.3, 1.5], [103, 4.3, 1.5], [103, 2.7, 1.5]], \"target_vehicle_vertices_m\": [[219, 0.95, 0], [219, 2.55, 0], [223, 2.55, 0], [223, 0.95, 0], [219, 0.95, 1.5], [219, 2.55, 1.5], [223, 2.55, 1.5], [223, 0.95, 1.5]], \"subject_lane_id\": -1, \"target_lane_id\": -1, \"subject_speed_mps\": 5, \"target_speed_mps\": 5, \"left_indicator_bit\": true}\n{\"frame\": 21716, \"time_s\": 0.15000000223517418, \"subject_vertices_m\": [[100, 0.95, 0], [100, 2.55, 0], [104, 2.55, 0], [104, 0.95, 0], [100, 0.95, 1.5], [100, 2.55, 1.5], [104, 2.55, 1.5], [104, 0.95, 1.5]], \"target_vehicle_vertices_m\": [[220, 0.95, 0], [220, 2.55, 0], [224, 2.55, 0], [224, 0.95, 0], [220, 0.95, 1.5], [220, 2.55, 1.5], [224, 2.55, 1.5], [224, 0.95, 1.5]], \"subject_lane_id\": -1, \"target_lane_id\": -1, \"subject_speed_mps\": 5, \"target_speed_mps\": 5, \"left_indicator_bit\": true}\n"
+      }
+    },
+    {
+      "name": "late_signal",
+      "rationale": "Original signal/movement ordering and target-lane clearances; safety ascertainment left as legal/driver evidence judgment.",
+      "config": {
+        "signal_tick": 220,
+        "target_station_m": 220
+      },
+      "fixture": {
+        "scenario_geometry.json": {
+          "source": "synthetic diagnostic scenario geometry",
+          "physical_verification": {
+            "native_map": "road.xodr",
+            "lane_readback": "lane_history.jsonl"
+          },
+          "directed_roadways": [
+            {
+              "polygon": [
+                [
+                  0,
+                  -7
+                ],
+                [
+                  1500,
+                  -7
+                ],
+                [
+                  1500,
+                  7
+                ],
+                [
+                  0,
+                  7
+                ]
+              ],
+              "direction_xy": [
+                1,
+                0
+              ],
+              "one_way": true
+            }
+          ],
+          "lane_centers_native_y_m": {
+            "-2": 5.25,
+            "-1": 1.75
+          },
+          "marking": "broken white lane divider; software fixture only"
+        },
+        "lane_history.jsonl": "{\"frame\": 21714, \"time_s\": 0.05000000074505806, \"subject_vertices_m\": [[98, 4.45, 0], [98, 6.05, 0], [102, 6.05, 0], [102, 4.45, 0], [98, 4.45, 1.5], [98, 6.05, 1.5], [102, 6.05, 1.5], [102, 4.45, 1.5]], \"target_vehicle_vertices_m\": [[218, 0.95, 0], [218, 2.55, 0], [222, 2.55, 0], [222, 0.95, 0], [218, 0.95, 1.5], [218, 2.55, 1.5], [222, 2.55, 1.5], [222, 0.95, 1.5]], \"subject_lane_id\": -2, \"target_lane_id\": -1, \"subject_speed_mps\": 5, \"target_speed_mps\": 5, \"left_indicator_bit\": false}\n{\"frame\": 21715, \"time_s\": 0.10000000149011612, \"subject_vertices_m\": [[99, 2.7, 0], [99, 4.3, 0], [103, 4.3, 0], [103, 2.7, 0], [99, 2.7, 1.5], [99, 4.3, 1.5], [103, 4.3, 1.5], [103, 2.7, 1.5]], \"target_vehicle_vertices_m\": [[219, 0.95, 0], [219, 2.55, 0], [223, 2.55, 0], [223, 0.95, 0], [219, 0.95, 1.5], [219, 2.55, 1.5], [223, 2.55, 1.5], [223, 0.95, 1.5]], \"subject_lane_id\": -1, \"target_lane_id\": -1, \"subject_speed_mps\": 5, \"target_speed_mps\": 5, \"left_indicator_bit\": true}\n{\"frame\": 21716, \"time_s\": 0.15000000223517418, \"subject_vertices_m\": [[100, 0.95, 0], [100, 2.55, 0], [104, 2.55, 0], [104, 0.95, 0], [100, 0.95, 1.5], [100, 2.55, 1.5], [104, 2.55, 1.5], [104, 0.95, 1.5]], \"target_vehicle_vertices_m\": [[220, 0.95, 0], [220, 2.55, 0], [224, 2.55, 0], [224, 0.95, 0], [220, 0.95, 1.5], [220, 2.55, 1.5], [224, 2.55, 1.5], [224, 0.95, 1.5]], \"subject_lane_id\": -1, \"target_lane_id\": -1, \"subject_speed_mps\": 5, \"target_speed_mps\": 5, \"left_indicator_bit\": true}\n"
+      }
+    },
+    {
+      "name": "close_target_gap",
+      "rationale": "Original signal/movement ordering and target-lane clearances; safety ascertainment left as legal/driver evidence judgment.",
+      "config": {
+        "signal_tick": 80,
+        "target_station_m": 110
+      },
+      "fixture": {
+        "scenario_geometry.json": {
+          "source": "synthetic diagnostic scenario geometry",
+          "physical_verification": {
+            "native_map": "road.xodr",
+            "lane_readback": "lane_history.jsonl"
+          },
+          "directed_roadways": [
+            {
+              "polygon": [
+                [
+                  0,
+                  -7
+                ],
+                [
+                  1500,
+                  -7
+                ],
+                [
+                  1500,
+                  7
+                ],
+                [
+                  0,
+                  7
+                ]
+              ],
+              "direction_xy": [
+                1,
+                0
+              ],
+              "one_way": true
+            }
+          ],
+          "lane_centers_native_y_m": {
+            "-2": 5.25,
+            "-1": 1.75
+          },
+          "marking": "broken white lane divider; software fixture only"
+        },
+        "lane_history.jsonl": "{\"frame\": 21714, \"time_s\": 0.05000000074505806, \"subject_vertices_m\": [[98, 4.45, 0], [98, 6.05, 0], [102, 6.05, 0], [102, 4.45, 0], [98, 4.45, 1.5], [98, 6.05, 1.5], [102, 6.05, 1.5], [102, 4.45, 1.5]], \"target_vehicle_vertices_m\": [[108, 0.95, 0], [108, 2.55, 0], [112, 2.55, 0], [112, 0.95, 0], [108, 0.95, 1.5], [108, 2.55, 1.5], [112, 2.55, 1.5], [112, 0.95, 1.5]], \"subject_lane_id\": -2, \"target_lane_id\": -1, \"subject_speed_mps\": 5, \"target_speed_mps\": 5, \"left_indicator_bit\": true}\n{\"frame\": 21715, \"time_s\": 0.10000000149011612, \"subject_vertices_m\": [[99, 2.7, 0], [99, 4.3, 0], [103, 4.3, 0], [103, 2.7, 0], [99, 2.7, 1.5], [99, 4.3, 1.5], [103, 4.3, 1.5], [103, 2.7, 1.5]], \"target_vehicle_vertices_m\": [[109, 0.95, 0], [109, 2.55, 0], [113, 2.55, 0], [113, 0.95, 0], [109, 0.95, 1.5], [109, 2.55, 1.5], [113, 2.55, 1.5], [113, 0.95, 1.5]], \"subject_lane_id\": -1, \"target_lane_id\": -1, \"subject_speed_mps\": 5, \"target_speed_mps\": 5, \"left_indicator_bit\": true}\n{\"frame\": 21716, \"time_s\": 0.15000000223517418, \"subject_vertices_m\": [[100, 0.95, 0], [100, 2.55, 0], [104, 2.55, 0], [104, 0.95, 0], [100, 0.95, 1.5], [100, 2.55, 1.5], [104, 2.55, 1.5], [104, 0.95, 1.5]], \"target_vehicle_vertices_m\": [[110, 0.95, 0], [110, 2.55, 0], [114, 2.55, 0], [114, 0.95, 0], [110, 0.95, 1.5], [110, 2.55, 1.5], [114, 2.55, 1.5], [114, 0.95, 1.5]], \"subject_lane_id\": -1, \"target_lane_id\": -1, \"subject_speed_mps\": 5, \"target_speed_mps\": 5, \"left_indicator_bit\": true}\n"
+      }
+    }
+  ],
+  "dispositions": [
+    {
+      "requirement": "If a highway has two or more clearly marked lanes for traffic traveling in one direction, vehicles must: Not be moved from that lane until the driver has given the appropriate turn signal and ascertained that such movement can be made with safety.",
+      "source": "NRS 484B.223(1)(b)",
+      "evidence_or_gap": "Original indicator onset and earliest body-boundary crossing, target-lane full-body clear gap and source-authored marked lane direction; mental ascertainment cannot be inferred from a gap.",
+      "measurement": {
+        "output_key": "signal_onset_relative_to_lateral_movement",
+        "method": "movement_event",
+        "kind": "measured",
+        "value_type": "object",
+        "inputs": [
+          "scenario_geometry.json",
+          "lane_history.jsonl"
+        ]
+      }
+    },
+    {
+      "requirement": "Driver must ascertain movement safety; retain target-lane vehicle body gaps without inventing a safety threshold.",
+      "source": "assignment.witness.required_context",
+      "evidence_or_gap": "Original indicator onset and earliest body-boundary crossing, target-lane full-body clear gap and source-authored marked lane direction; mental ascertainment cannot be inferred from a gap.",
+      "measurement": {
+        "output_key": "target_lane_full_body_gap",
+        "method": "target_lane_gap",
+        "kind": "measured",
+        "value_type": "object",
+        "inputs": [
+          "lane_history.jsonl"
+        ]
+      }
+    },
+    {
+      "requirement": "Highway has two or more clearly marked lanes in one direction.",
+      "source": "assignment.witness.required_context",
+      "evidence_or_gap": "Original indicator onset and earliest body-boundary crossing, target-lane full-body clear gap and source-authored marked lane direction; mental ascertainment cannot be inferred from a gap.",
+      "measurement": {
+        "output_key": "one_way_marked_lane_context",
+        "method": "one_way_context",
+        "kind": "sourced_context",
+        "value_type": "object",
+        "inputs": [
+          "scenario_geometry.json"
+        ]
+      }
+    }
+  ],
+  "negative": {
+    "remove": [
+      "scenario_geometry.json"
+    ],
+    "error_contains": "Missing required source: scenario_geometry.json"
+  },
+  "measurement_plan": "Original indicator onset and earliest body-boundary crossing, target-lane full-body clear gap and source-authored marked lane direction; mental ascertainment cannot be inferred from a gap.",
+  "static_checks": [
+    "Connected route and participants",
+    "Four cameras synchronized at 20Hz with complete duration"
+  ],
+  "mechanisms": [
+    "Physical velocity and steering controller, no position teleportation",
+    "Comparison-specific control parameter applied to Native actor"
+  ],
+  "limitations": [
+    "Native trajectories, actual driver ascertainment and legal judgments remain independently reviewed.",
+    "Lamp emission, all participant visibility, entire duration and body histories require GPU audits."
+  ],
+  "observation_mapping": {},
+  "audits": [
+    "Compare every original participant body and lamp state/pixels",
+    "Verify comparison fixed conditions and exactly intended control changes",
+    "Separate measured geometry from legal safety/hazard/priority conclusions"
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "signal_before_movement",
+      "cases": [
+        "signal_and_open_gap",
+        "late_signal"
+      ],
+      "fixed_conditions": [
+        "Same one-way highway with two marked lanes, lane-change path, speed and cameras",
+        "Same 45-second capture duration"
+      ],
+      "deliberate_differences": [
+        "indicator onset tick before versus after lane movement"
+      ]
+    },
+    {
+      "comparison_id": "safety_ascertainment_context",
+      "cases": [
+        "signal_and_open_gap",
+        "close_target_gap"
+      ],
+      "fixed_conditions": [
+        "Same one-way highway with two marked lanes, lane-change path, speed and cameras",
+        "Same 45-second capture duration"
+      ],
+      "deliberate_differences": [
+        "target-lane vehicle initial separation; no legal safety gap cutoff"
+      ]
+    }
+  ],
+  "branches": [
+    {
+      "name": "signal_before_movement",
+      "topic_ids": [
+        "text-0",
+        "text-1",
+        "activation_conditions-0",
+        "activation_conditions-1",
+        "timing_requirements-0",
+        "timing_requirements-1",
+        "review-context-0",
+        "review-context-1",
+        "review-context-2",
+        "review-context-3",
+        "review-context-4",
+        "review-context-5",
+        "review-context-6",
+        "review-context-7",
+        "review-context-8"
+      ],
+      "cases": [
+        "signal_and_open_gap",
+        "late_signal"
+      ],
+      "comparison_ids": [
+        "signal_before_movement"
+      ]
+    },
+    {
+      "name": "safety_ascertainment_context",
+      "topic_ids": [
+        "text-0",
+        "text-1",
+        "activation_conditions-0",
+        "activation_conditions-1",
+        "timing_requirements-0",
+        "timing_requirements-1",
+        "review-context-0",
+        "review-context-1",
+        "review-context-2",
+        "review-context-3",
+        "review-context-4",
+        "review-context-5",
+        "review-context-6",
+        "review-context-7",
+        "review-context-8"
+      ],
+      "cases": [
+        "signal_and_open_gap",
+        "close_target_gap"
+      ],
+      "comparison_ids": [
+        "safety_ascertainment_context"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+# Migration002: source provenance, capture sealing and evidence-backed results.
+def provenance_kind(root):
+    root=Path(root)
+    for filename in ('acquisition-provenance.json','capture-seal.json'):
+        p=root/filename
+        if p.is_file():
+            value=json.loads(p.read_text());kind=value.get('provenance_kind',value.get('kind'))
+            if kind in ('native','synthetic_fixture'):return kind
+    old=root/'native-run-status.json'
+    if old.is_file():
+        value=json.loads(old.read_text())
+        if isinstance(value.get('errors'),list):return 'native'  # Failed Native capture is still Native provenance.
+    return 'synthetic_fixture'
+
+def provenance_record(root):
+    root=Path(root);kind=provenance_kind(root)
+    marker=root/'acquisition-provenance.json'
+    value=json.loads(marker.read_text()) if marker.is_file() else {}
+    return {'provenance_kind':kind,'diagnostic_fixture':value.get('diagnostic_fixture',kind!='native'),
+            'scope':'Source protocol provenance, not physical or legal acceptance'}
+
+def capture_context(values):
+    result={}
+    for key in ('geometry','native_landmarks','native_map_name','cal','surface_authoring','context','aisle_inventory'):
+        if key in values:
+            try:json.dumps(values[key],allow_nan=False);result[key]=values[key]
+            except (TypeError,ValueError):pass
+    landmarks=values.get('landmarks')
+    if landmarks is not None:result['landmark_ids']=[str(x.id) for x in landmarks]
+    mapping=values.get('mapping')
+    if mapping is not None:result['native_map_name']=mapping.name
+    return result
+
+def seal_capture(attempt,*,frames,restoration,errors,encoder_exit_codes=None,context=None):
+    from .common import tree,digest,sha
+    root=Path(attempt)
+    if errors or restoration.get('restored') is not True:raise ValueError('Cannot seal capture before verified restoration')
+    codes=encoder_exit_codes or {}
+    if codes and any(code!=0 for code in codes.values()):raise ValueError('Cannot seal unclosed/failed encoders')
+    sources=tree(root)
+    if not (root/'trace.jsonl').is_file() or not (root/'video_frames.jsonl').is_file():raise ValueError('Cannot seal missing original acquisition')
+    write(root/'acquisition-context.json',context or {})
+    sources=tree(root)
+    receipt={'format':'worker-sealed-capture-v2','provenance_kind':'native','diagnostic_fixture':json.loads((root/'acquisition-provenance.json').read_text()).get('diagnostic_fixture',False) if (root/'acquisition-provenance.json').is_file() else False,
+       'frames':frames,'restoration':restoration,'encoder_exit_codes':codes,'sources':sources,
+       'native_revision':{'construction_sha256':sha(root/'construction.json'),'runner_sha256':sha(root/'runner.py')},
+       'events':['capture_finished','encoders_closed','restoration_verified'],'source_digest':digest(sources),
+       'physical_acceptance_claimed':False}
+    if (root/'capture-seal.json').exists():raise ValueError('Retain existing capture seal')
+    write(root/'capture-seal.json',receipt);return receipt
+
+def finalize_report(root,output):
+    from .common import sha
+    path=Path(output)
+    if path.is_file():
+        report=json.loads(path.read_text());report.update(provenance_record(root))
+        report['limitations']=[s for s in report.get('limitations',[]) if 'fixture' not in s.lower()]
+        report['limitations']+=['Diagnostic provenance denotes a software fixture only; Native source provenance does not establish physical acceptance.']
+        if (Path(root)/'result.json').is_file():
+            result=json.loads((Path(root)/'result.json').read_text());report['physical_checks']=result['physical_checks'];report['realized_observables']=result['realized_observables']
+        write(path,report)
+
+def physical_result(root,result):
+    from .common import sha
+    root=Path(root);cfg=json.loads((root/'config.json').read_text())
+    checks,observed=assess_physical(root,cfg,result.get('target_checks',[]))
+    if cfg.get('law_id') in ('NRS-484B-400-2a','NRS-484B-400-2b'):
+        check=assess_left_turn(root);checks['maneuver']=check;observed['left_turn']=check.get('observed',{})
+    motion=observed.get('original_motion',{})
+    attempt_status='unverified' if not motion else ('met' if motion.get('sampled_path_m',0)>0 else 'not_met')
+    checks['attempt']={'status':attempt_status,'method':'observed finite original motion; separate from target success','intervals':checks['maneuver'].get('intervals',[]),'sources':checks['maneuver']['sources'],'physical_causation_claimed':False}
+    result['physical_checks']=checks
+    result['setup_confirmed']=checks['setup']['status']=='met'
+    result['maneuver_completed']=checks['maneuver']['status']=='met'
+    result['behavior_attempted']=checks.get('attempt',checks['target'])['status']=='met'
+    result['physical_observations']=observed
+    descriptor=default_descriptor(cfg);reference=descriptor['motion_source'];summary={}
+    for name,unit,statistic in [('sampled_path_m','m','sum of consecutive body-center distances'),('displacement_m','m','first-to-last body-center distance')]:
+        value=motion.get(name)
+        if type(value) in (int,float) and math.isfinite(value):summary[name]={'value':value,'unit':unit,'statistic':statistic,'method':'original timestamp-joined sampled body geometry','time_window':'recorded original motion interval','reference':reference}
+    result['realized_observables']=summary
+    result.update(provenance_record(root));result['physical_acceptance_claimed']=False
+    result['termination_reason']='Saved evidence assessed; maneuver '+checks['maneuver']['status']+'; legal judgments remain separate'
+    return result
+
+def missing_evidence_result(root,error):
+    from .common import sha
+    root=Path(root);cfg=json.loads((root/'config.json').read_text())
+    sources={name:sha(root/name) for name in ('config.json','trace.jsonl','video_frames.jsonl') if (root/name).is_file()}
+    check={'status':'unverified','method':'selected_analyzer_missing_required_evidence','intervals':[],
+           'sources':sources,'missing':[str(error)]}
+    result={'case_id':cfg['selected_case_id'],'measured_values':{},'target_checks':[{'target':'required_evidence','requested':True,'measured':False,'method':check['method'],'tolerance':0,'matched':False,'physical_cause_confirmed':False,'cause_evidence':str(error)}],
+      'setup_confirmed':False,'behavior_attempted':False,'maneuver_completed':False,'termination_reason':'Required evidence unavailable',
+      'physical_checks':{k:dict(check) for k in ('setup','target','maneuver')},'realized_observables':{},'physical_observations':{'available_source_hashes':sources},
+      'physical_failure_flags':{'detection_validated':False},'trace_reference':'trace.jsonl','video_references':['raw.mkv'],
+      'video_frame_map_reference':'video_frames.jsonl','recording_description':cfg['case']['recording_description'],'recording_evidence':[],
+      'physical_acceptance_claimed':False,**provenance_record(root)}
+    validate_result(result);write(root/'result.json',result);return result

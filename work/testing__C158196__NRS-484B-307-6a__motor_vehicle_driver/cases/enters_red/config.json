@@ -1,0 +1,140 @@
+{
+  "case": {
+    "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_red",
+    "target_law_id": "NRS-484B-307-6a",
+    "target_type": "boundary_probe",
+    "rationale": "Controlled enters_red original signal and body entry history, no legal entry cutoff.",
+    "variable_assignments": {
+      "yellow_start_s": {
+        "kind": "controller",
+        "value": 6,
+        "unit": "s"
+      },
+      "red_start_s": {
+        "kind": "controller",
+        "value": 10,
+        "unit": "s"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "Immediately thereafter",
+      "statutory entry reference and actual signal pixels"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "kin.speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "Native original ego velocity norm and same-tick signal state/full body",
+          "time_window": "entire 45-second startup, approach, transition, entry, clearance and final observation",
+          "reference_frame": "Native original frame and world XYZ",
+          "uncertainty": "20Hz; between-frame transition and pixel state unverified"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Actual Native signal head, pixels, official status and entry reference require review."
+      ]
+    }
+  },
+  "selected_case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_red",
+  "supported_case_ids": [
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_red",
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_red",
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_yellow",
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__inside_on_red",
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_red",
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_non_alone",
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__red_other_route"
+  ],
+  "cell_id": "C158196",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-307-6a",
+  "duration_s": 45,
+  "rate_hz": 20,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed overhead west approach and full intersection"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-attached approach facing governing head"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed west corner showing signal and entry boundary"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 110,
+      "pose_strategy": "ego-attached modeled driver eye"
+    }
+  ],
+  "required_atoms": [
+    "kin.speed",
+    "dev.traffic_signal",
+    "dev.governs",
+    "st.one_way_roadway"
+  ],
+  "source_packets": [
+    "scenario_geometry"
+  ],
+  "public_way_road_ids": [
+    1,
+    2,
+    3,
+    4,
+    11,
+    12
+  ],
+  "authored_test_context": {
+    "core_assumptions": [
+      [
+        "asm.public_highway",
+        true
+      ]
+    ],
+    "scene_assumptions": {
+      "official_signal": "synthetic authored; actual Native governance and authority pending"
+    }
+  },
+  "obey_red": false,
+  "spawn_station_m": 355,
+  "yellow_tick": 120,
+  "red_tick": 200,
+  "green_return_tick": 400,
+  "requested_speed_mps": 3.5,
+  "approach_goal_m": 30,
+  "companion_aspect": false,
+  "other_route_signal": false,
+  "physical_completion": {
+    "format": "worker-physical-completion-criteria-v002",
+    "criterion": "intersection_clearance",
+    "motion_source": "signal_history.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 0.25,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true,
+    "context_sources": [
+      "scenario_geometry.json",
+      "signal_context.json"
+    ],
+    "body_key": "ego.body_vertices_m",
+    "exit_axis": 0,
+    "exit_sign": 1
+  },
+  "processing_contract_version": 2
+}

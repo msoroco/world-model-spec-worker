@@ -1,0 +1,470 @@
+{
+  "assignment_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C147311",
+  "law_id": "NRS-484B-220-1",
+  "selected_branch": "multilane designated and signposted one-way highway",
+  "cases": [
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+      "target_law_id": "NRS-484B-220-1",
+      "target_type": "boundary_probe",
+      "rationale": "Actual signed velocity direction with heading and sign fixed.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "designated_direction_xy": {
+          "kind": "world_setup",
+          "value": [
+            1,
+            0
+          ]
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Regulatory sign authority and realized pixel visibility"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native actor positions and velocity per tick",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "native_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map and authored one-way lane geometry per tick",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native one-way sign landmark and original tick identity",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "view_provenance",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four original synchronized camera source identities",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road designation and sign authority require sourced review; original sign pixels unverified."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse",
+      "target_law_id": "NRS-484B-220-1",
+      "target_type": "boundary_probe",
+      "rationale": "Actual signed velocity direction with heading and sign fixed.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "designated_direction_xy": {
+          "kind": "world_setup",
+          "value": [
+            1,
+            0
+          ]
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Regulatory sign authority and realized pixel visibility"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native actor positions and velocity per tick",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "native_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map and authored one-way lane geometry per tick",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native one-way sign landmark and original tick identity",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          },
+          {
+            "name": "view_provenance",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four original synchronized camera source identities",
+            "time_window": "entire original 45s episode",
+            "reference_frame": "Native frame/time and world XYZ",
+            "uncertainty": "20Hz samples; physical/pixel realization remains GPU check"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Road designation and sign authority require sourced review; original sign pixels unverified."
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "actual_direction",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+      ],
+      "fixed_conditions": [
+        "Same fixed catalog cell, actor classification, route, four-camera profile and full duration",
+        "Only declared parameter changes; source factual/legal judgments retained separately"
+      ],
+      "deliberate_differences": [
+        "Physical vehicle reverse flag only; measure actual velocity projection"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "original_motion",
+      "mandatory": true
+    },
+    {
+      "name": "native_geometry",
+      "mandatory": true
+    },
+    {
+      "name": "device_inventory",
+      "mandatory": true
+    },
+    {
+      "name": "view_provenance",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json",
+      "sha256": "7416c12629862d60b4a46b2fa691a60e7c2467ed7c035b3295aae5197a14c2e5"
+    },
+    {
+      "path": "inputs/definitions.jsonl",
+      "sha256": "824cd469115f586687c709bff2714968b4c9ab2ce22091c790887084480035c0"
+    },
+    {
+      "path": "references/v6-capability/index.json",
+      "sha256": "da62c780c03ff73f11f0e3a2d86001979ceb28532d22f9d21b7bc93ff3ec2d3a"
+    },
+    {
+      "path": "references/v6-capability/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/runner.py",
+      "sha256": "1380235b836dca80a98668a361e1a58a462571356d80a650b3c1e881e2e255a5"
+    },
+    {
+      "path": "references/v6-capability/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/analyze.py",
+      "sha256": "b2f0a52ad7252ed27eab6d832a6acb92c0dfa8a2c7003ab01746152aedb39e70"
+    },
+    {
+      "path": "references/v6-capability/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/scene.xodr",
+      "sha256": "2355bee1410741100eb0b7a14d99d30f20e2b65c68a312d677091e76dc681328"
+    },
+    {
+      "path": "examples/measurement/README.md",
+      "sha256": "a81c642db790611b4e0a6b533634564b19129ef9c0aa2b27856b95c26c97e7d7"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "CPU fixtures demonstrate software compatibility only. Native motion, pixels, district/public-authority facts and legal judgments remain unverified."
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "Upon a highway designated and signposted for one-way traffic a vehicle shall be driven only in the direction designated.",
+      "source": "NRS 484B.220(1)",
+      "status": "selected_required",
+      "evidence_or_gap": "Complete original law-specific geometry, trajectories, control and signal/environment measurements are returned together. Factual scope and legal judgments remain separate limitations.",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+      ]
+    },
+    {
+      "requirement": "Highway dedication and public-access source context, conventional vehicle/controller classification and exact fixed cell identity; factual legal scope conclusions remain separate.",
+      "source": "assignment.witness.required_context; DEF-NRS-484A-080; DEF-NRS-484A-095; DEF-NRS-484A-320",
+      "status": "selected_required",
+      "evidence_or_gap": "Saved scope_context contains exact authored highway, vehicle blueprint, physical-control mechanism and fixed cell facts; actual public dedication, driver identity and legal vehicle qualification require independent factual review.",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+      ]
+    }
+  ],
+  "source_observation_mapping": {
+    "st.one_way_roadway": {
+      "evidence": "Original-frame law-specific geometry/motion/signal/environment measurements; no invented legal numerical threshold.",
+      "channels": [
+        "original_motion",
+        "native_geometry",
+        "device_inventory",
+        "view_provenance"
+      ],
+      "source_refs": [
+        "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Original-frame law-specific geometry/motion/signal/environment measurements; no invented legal numerical threshold.",
+      "channels": [
+        "original_motion",
+        "native_geometry",
+        "device_inventory",
+        "view_provenance"
+      ],
+      "source_refs": [
+        "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "Original-frame law-specific geometry/motion/signal/environment measurements; no invented legal numerical threshold.",
+      "channels": [
+        "original_motion",
+        "native_geometry",
+        "device_inventory",
+        "view_provenance"
+      ],
+      "source_refs": [
+        "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.heading": {
+      "evidence": "Original-frame law-specific geometry/motion/signal/environment measurements; no invented legal numerical threshold.",
+      "channels": [
+        "original_motion",
+        "native_geometry",
+        "device_inventory",
+        "view_provenance"
+      ],
+      "source_refs": [
+        "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.wrong_way": {
+      "evidence": "Original-frame law-specific geometry/motion/signal/environment measurements; no invented legal numerical threshold.",
+      "channels": [
+        "original_motion",
+        "native_geometry",
+        "device_inventory",
+        "view_provenance"
+      ],
+      "source_refs": [
+        "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original-frame law-specific geometry/motion/signal/environment measurements; no invented legal numerical threshold.",
+      "channels": [
+        "original_motion",
+        "native_geometry",
+        "device_inventory",
+        "view_provenance"
+      ],
+      "source_refs": [
+        "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability-v1",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "All participant bodies and route context",
+        "interval": [
+          0,
+          45
+        ],
+        "view": "overview"
+      },
+      {
+        "subject": "Approach and lane body position",
+        "interval": [
+          0,
+          45
+        ],
+        "view": "approach"
+      },
+      {
+        "subject": "Junction boundaries and priority interaction",
+        "interval": [
+          0,
+          45
+        ],
+        "view": "reference_corner"
+      },
+      {
+        "subject": "Driver perspective and controls",
+        "interval": [
+          0,
+          45
+        ],
+        "view": "driver_reference"
+      }
+    ]
+  },
+  "physical_pixel_audits": [
+    "Audit every source packet and original frame identity",
+    "Review actual four-view subject visibility throughout approach, interaction and clearance",
+    "Inspect all stated branch-specific measurements without converting engineering uncertainty into legal standards"
+  ],
+  "witness_requirement_applicability": [
+    {
+      "requirement": "Document ordinary driver actual physical control where relevant.",
+      "source": "assignment.witness.required_context",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+      ],
+      "evidence_output_keys": [
+        "complete_statutory_observations",
+        "selected_scope_context"
+      ],
+      "applicability_reason": "Applies only to listed exact cases with matching district, course, threshold and activation context; original guidance retained without overriding statutory branch alternatives."
+    },
+    {
+      "requirement": "Establish highway status, qualifying vehicle and actual physical control.",
+      "source": "assignment.witness.required_context",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+      ],
+      "evidence_output_keys": [
+        "complete_statutory_observations",
+        "selected_scope_context"
+      ],
+      "applicability_reason": "Applies only to listed exact cases with matching district, course, threshold and activation context; original guidance retained without overriding statutory branch alternatives."
+    },
+    {
+      "requirement": "Establish qualifying highway and motor-vehicle status.",
+      "source": "assignment.witness.required_context",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+      ],
+      "evidence_output_keys": [
+        "complete_statutory_observations",
+        "selected_scope_context"
+      ],
+      "applicability_reason": "Applies only to listed exact cases with matching district, course, threshold and activation context; original guidance retained without overriding statutory branch alternatives."
+    },
+    {
+      "requirement": "Establish sign instruction, orientation, authority, placement and governance over the ego route.",
+      "source": "assignment.witness.required_context",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+      ],
+      "evidence_output_keys": [
+        "complete_statutory_observations",
+        "selected_scope_context"
+      ],
+      "applicability_reason": "Applies only to listed exact cases with matching district, course, threshold and activation context; original guidance retained without overriding statutory branch alternatives."
+    },
+    {
+      "requirement": "Establish sign instruction, orientation, authority, spatial scope and actual vehicle direction of travel.",
+      "source": "assignment.witness.required_context",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+      ],
+      "evidence_output_keys": [
+        "complete_statutory_observations",
+        "selected_scope_context"
+      ],
+      "applicability_reason": "Applies only to listed exact cases with matching district, course, threshold and activation context; original guidance retained without overriding statutory branch alternatives."
+    },
+    {
+      "requirement": "Preserve unresolved incorporated traffic-control-device provisions.",
+      "source": "assignment.witness.required_context",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+      ],
+      "evidence_output_keys": [
+        "complete_statutory_observations",
+        "selected_scope_context"
+      ],
+      "applicability_reason": "Applies only to listed exact cases with matching district, course, threshold and activation context; original guidance retained without overriding statutory branch alternatives."
+    },
+    {
+      "requirement": "Retain actual motion and travel direction rather than relying solely on heading.",
+      "source": "assignment.witness.required_context",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+      ],
+      "evidence_output_keys": [
+        "complete_statutory_observations",
+        "selected_scope_context"
+      ],
+      "applicability_reason": "Applies only to listed exact cases with matching district, course, threshold and activation context; original guidance retained without overriding statutory branch alternatives."
+    },
+    {
+      "requirement": "Retain at least two same-direction vehicle lanes and document one-way designation and signposting over the ego route.",
+      "source": "assignment.witness.required_context",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+      ],
+      "evidence_output_keys": [
+        "complete_statutory_observations",
+        "selected_scope_context"
+      ],
+      "applicability_reason": "Applies only to listed exact cases with matching district, course, threshold and activation context; original guidance retained without overriding statutory branch alternatives."
+    },
+    {
+      "requirement": "Retain at least two same-direction vehicle lanes and document the one-way designation and its extent.",
+      "source": "assignment.witness.required_context",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+      ],
+      "evidence_output_keys": [
+        "complete_statutory_observations",
+        "selected_scope_context"
+      ],
+      "applicability_reason": "Applies only to listed exact cases with matching district, course, threshold and activation context; original guidance retained without overriding statutory branch alternatives."
+    }
+  ]
+}

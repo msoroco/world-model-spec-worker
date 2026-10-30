@@ -1,0 +1,213 @@
+{
+  "format": "worker-source-migration-ast-proof-v002",
+  "cases_tested": 236,
+  "failures": [],
+  "source_sha256": "a4d6a6d11e5a44c8118a2eb6cb7351488a3a509974514b1cb2aedfd24502aa68",
+  "families": {
+    "NRS-484B-127-1": {
+      "preparation_source": "def prepare_saved(root):\n    import json\n    from pathlib import Path\n    out = Path(root)\n    cfg = json.loads((out / 'config.json').read_text())\n    expected_outputs = ['surface_context.json']\n    if all((out / p).is_file() for p in expected_outputs):\n        return {'status': 'already_prepared', 'outputs': expected_outputs}\n    context_path = out / 'acquisition-context.json'\n    saved_context = json.loads(context_path.read_text()) if context_path.is_file() else {}\n    if 'surface_authoring' not in saved_context:\n        raise ValueError('Missing required source: acquisition-context.json:surface_authoring')\n    surface_authoring = saved_context['surface_authoring']\n    context = {'highway_source': 'synthetic public highway assumption; actual dedication not established', 'road_geometry_source': 'scene.xodr crest and four connected driving lanes; Native readback in road.xodr', 'surface': cfg['surface_description'], 'weather': {'wetness': cfg['wetness'], 'precipitation': cfg['precipitation']}, 'traffic_scope': 'ego and lead are generated participants; other traffic needs Native inventory'}\n    context['surface_authoring'] = surface_authoring\n    context['ice_or_snow'] = False\n    context['native_traffic_inventory_source'] = 'trace.jsonl scene_actor_inventory'\n    context['driver_context'] = 'conventional vehicle, controller represents physical-control operation; human identity requires source review'\n    if not (out / 'surface_context.json').exists():\n        (out / 'surface_context.json').write_text(json.dumps(context, indent=2) + '\\n')\n    return {'status': 'prepared', 'outputs': expected_outputs}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-600-1e": {
+      "preparation_source": "def prepare_saved(root):\n    import json\n    from pathlib import Path\n    out = Path(root)\n    cfg = json.loads((out / 'config.json').read_text())\n    expected_outputs = ['alley_context.json', 'speed_samples.jsonl']\n    if all((out / p).is_file() for p in expected_outputs):\n        return {'status': 'already_prepared', 'outputs': expected_outputs}\n    context_path = out / 'acquisition-context.json'\n    saved_context = json.loads(context_path.read_text()) if context_path.is_file() else {}\n    if 'aisle_inventory' not in saved_context:\n        raise ValueError('Missing required source: acquisition-context.json:aisle_inventory')\n    aisle_inventory = saved_context['aisle_inventory']\n    if 'native_map_name' not in saved_context:\n        raise ValueError('Missing required source: acquisition-context.json:native_map_name')\n    native_map_name = saved_context['native_map_name']\n    context = {'designation_source': 'authored synthetic public highway for this test; legal public-way status unresolved', 'road_geometry_source': 'scene.xodr, Native generated map and road.xodr', 'road_id': 1, 'marked_access_aisle_polygon_xy': [[400, 5], [420, 5], [420, 7.5], [400, 7.5]], 'native_aisle_markings': aisle_inventory, 'aisle_relative_to_ego_route': 'adjacent to right pavement boundary at x400..420, y5..7.5; ego lane center y1.75', 'native_map_name': native_map_name, 'motion_source': 'original Native actor velocity'}\n    if not (out / 'alley_context.json').exists():\n        (out / 'alley_context.json').write_text(json.dumps(context, indent=2) + '\\n')\n    if not (out / 'speed_samples.jsonl').exists():\n        (out / 'speed_samples.jsonl').write_text((out / 'trace.jsonl').read_text())\n    return {'status': 'prepared', 'outputs': expected_outputs}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-400-2a": {
+      "preparation_source": "def prepare_saved(root):\n    return {'status': 'not_required', 'outputs': []}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-400-2b": {
+      "preparation_source": "def prepare_saved(root):\n    return {'status': 'not_required', 'outputs': []}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-253": {
+      "preparation_source": "def prepare_saved(root):\n    return {'status': 'not_required', 'outputs': []}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-250-1": {
+      "preparation_source": "def prepare_saved(root):\n    import json\n    from pathlib import Path\n    out = Path(root)\n    cfg = json.loads((out / 'config.json').read_text())\n    expected_outputs = ['scenario_geometry.json', 'case_observation.json']\n    if all((out / p).is_file() for p in expected_outputs):\n        return {'status': 'already_prepared', 'outputs': expected_outputs}\n    context_path = out / 'acquisition-context.json'\n    saved_context = json.loads(context_path.read_text()) if context_path.is_file() else {}\n    history = [json.loads(line) for line in (out / 'crossing_history.jsonl').read_text().splitlines() if line]\n    def overlaps(vertices):\n        xs = [v[0] for v in vertices]\n        ys = [v[1] for v in vertices]\n        return min(xs) < 7 and max(xs) > -7 and (min(ys) < 7) and (max(ys) > -7)\n    events = {}\n    for role in ('ego', 'other'):\n        row = next((r for r in history if overlaps(r[role + '_vertices_m'])), None)\n        if row is None:\n            raise ValueError('Missing actual original crossing entry: ' + role)\n        events[role] = {'frame': row['frame'], 'time_s': row['time_s']}\n    other_clear = next((r['time_s'] for r in history if ((max((v[1] for v in r['other_vertices_m'])) < -7 if cfg.get('other_makes_left') else max((v[0] for v in r['other_vertices_m'])) < -7) if cfg.get('opposite_other') else min((v[1] for v in r['other_vertices_m'])) > 7)), None)\n    ego_clear = next((r['frame'] for r in history if min((v[0] for v in r['ego_vertices_m'])) > 7), None)\n    if other_clear is None or ego_clear is None:\n        raise ValueError('Incomplete crossing clearance')\n    geometry = {'source': 'authored scene.xodr and Native OpenDRIVE readback', 'physical_verification': {'road_xodr': 'road.xodr', 'crossing_history': 'crossing_history.jsonl', 'median_barrier_objects_authored': [250101, 250102], 'actual_barrier_pixels_verified': False}, 'prohibited_median_polygons': [[[-400, -0.5], [-20, -0.5], [-20, 0.5], [-400, 0.5]], [[20, -0.5], [400, -0.5], [400, 0.5], [20, 0.5]]], 'median_opening_polygons': [[[-20, -0.5], [20, -0.5], [20, 0.5], [-20, 0.5]]], 'intersection_polygon': [[-7, -7], [7, -7], [7, 7], [-7, 7]]}\n    if not (out / 'scenario_geometry.json').exists():\n        (out / 'scenario_geometry.json').write_text(json.dumps(geometry, indent=2) + '\\n')\n    packet = {'law_id': cfg['law_id'], 'diagnostic_fixture_only': False, 'entry_events': events, 'motion_rows': [{'frame': r['frame'], 'ego_speed_mps': r['ego_speed_mps'], 'other_speed_mps': r['other_speed_mps']} for r in history], 'official_control_inventory': [r['official_controls'] for r in history], 'highway_ids': [1, 3], 'intersection_polygon': geometry['intersection_polygon'], 'separate_crossing_spacing_m': 35, 'other_clearance_time_s': other_clear, 'ego_clearance_frame': ego_clear, 'ego_approach_xy': [1, 0], 'other_approach_xy': [-1, 0] if cfg.get('opposite_other') else [0, 1], 'crossing_id': 'road1-road3-opening', 'control_context': {'governing_control': cfg.get('governing_control', 'none'), 'signal_inoperative': cfg.get('signal_inoperative', False), 'authority': 'authored synthetic authority designation; actual jurisdiction must be reviewed'}, 'opposite_context': {'opposite_approach': cfg.get('opposite_other', False), 'controller_intends_left': cfg.get('other_intends_left', False), 'controller_makes_left': cfg.get('other_makes_left', False), 'driver_intent_is_not_inferred_from_lamp': True}, 'resolution_s': 0.05, 'other_clearance_frame': next((r['frame'] for r in history if r['time_s'] == other_clear))}\n    packet['scope_context'] = {'highway_designation': 'Authored synthetic public highway; independent factual/legal jurisdiction review required', 'vehicle_blueprint': 'vehicle.lincoln.mkz_2020', 'controller_scope': 'Physical throttle/brake/steering commands on conventional vehicle; no automated-driving-system legal inference', 'cell_identity': 'C125697', 'fixed_layout': 'median_opening', 'fixed_maneuver': 'travel', 'fixed_control': 'inoperative_signal', 'source': 'Exact case config plus authored OpenDRIVE; actual public dedication/driver identity is not established by CPU fixture'}\n    if not (out / 'case_observation.json').exists():\n        (out / 'case_observation.json').write_text(json.dumps(packet, indent=2) + '\\n')\n    return {'status': 'prepared', 'outputs': expected_outputs}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-250-2": {
+      "preparation_source": "def prepare_saved(root):\n    import json\n    from pathlib import Path\n    out = Path(root)\n    cfg = json.loads((out / 'config.json').read_text())\n    expected_outputs = ['scenario_geometry.json', 'case_observation.json']\n    if all((out / p).is_file() for p in expected_outputs):\n        return {'status': 'already_prepared', 'outputs': expected_outputs}\n    context_path = out / 'acquisition-context.json'\n    saved_context = json.loads(context_path.read_text()) if context_path.is_file() else {}\n    history = [json.loads(line) for line in (out / 'crossing_history.jsonl').read_text().splitlines() if line]\n    def overlaps(vertices):\n        xs = [v[0] for v in vertices]\n        ys = [v[1] for v in vertices]\n        return min(xs) < 7 and max(xs) > -7 and (min(ys) < 7) and (max(ys) > -7)\n    events = {}\n    for role in ('ego', 'other'):\n        row = next((r for r in history if overlaps(r[role + '_vertices_m'])), None)\n        if row is None:\n            raise ValueError('Missing actual original crossing entry: ' + role)\n        events[role] = {'frame': row['frame'], 'time_s': row['time_s']}\n    other_clear = next((r['time_s'] for r in history if ((max((v[1] for v in r['other_vertices_m'])) < -7 if cfg.get('other_makes_left') else max((v[0] for v in r['other_vertices_m'])) < -7) if cfg.get('opposite_other') else min((v[1] for v in r['other_vertices_m'])) > 7)), None)\n    ego_clear = next((r['frame'] for r in history if min((v[0] for v in r['ego_vertices_m'])) > 7), None)\n    if other_clear is None or ego_clear is None:\n        raise ValueError('Incomplete crossing clearance')\n    geometry = {'source': 'authored scene.xodr and Native OpenDRIVE readback', 'physical_verification': {'road_xodr': 'road.xodr', 'crossing_history': 'crossing_history.jsonl', 'median_barrier_objects_authored': [250101, 250102], 'actual_barrier_pixels_verified': False}, 'prohibited_median_polygons': [[[-400, -0.5], [-20, -0.5], [-20, 0.5], [-400, 0.5]], [[20, -0.5], [400, -0.5], [400, 0.5], [20, 0.5]]], 'median_opening_polygons': [[[-20, -0.5], [20, -0.5], [20, 0.5], [-20, 0.5]]], 'intersection_polygon': [[-7, -7], [7, -7], [7, 7], [-7, 7]]}\n    if not (out / 'scenario_geometry.json').exists():\n        (out / 'scenario_geometry.json').write_text(json.dumps(geometry, indent=2) + '\\n')\n    packet = {'law_id': cfg['law_id'], 'diagnostic_fixture_only': False, 'entry_events': events, 'motion_rows': [{'frame': r['frame'], 'ego_speed_mps': r['ego_speed_mps'], 'other_speed_mps': r['other_speed_mps']} for r in history], 'official_control_inventory': [r['official_controls'] for r in history], 'highway_ids': [1, 3], 'intersection_polygon': geometry['intersection_polygon'], 'separate_crossing_spacing_m': 35, 'other_clearance_time_s': other_clear, 'ego_clearance_frame': ego_clear, 'ego_approach_xy': [1, 0], 'other_approach_xy': [-1, 0] if cfg.get('opposite_other') else [0, 1], 'crossing_id': 'road1-road3-opening', 'control_context': {'governing_control': cfg.get('governing_control', 'none'), 'signal_inoperative': cfg.get('signal_inoperative', False), 'authority': 'authored synthetic authority designation; actual jurisdiction must be reviewed'}, 'opposite_context': {'opposite_approach': cfg.get('opposite_other', False), 'controller_intends_left': cfg.get('other_intends_left', False), 'controller_makes_left': cfg.get('other_makes_left', False), 'driver_intent_is_not_inferred_from_lamp': True}, 'resolution_s': 0.05, 'other_clearance_frame': next((r['frame'] for r in history if r['time_s'] == other_clear))}\n    packet['scope_context'] = {'highway_designation': 'Authored synthetic public highway; independent factual/legal jurisdiction review required', 'vehicle_blueprint': 'vehicle.lincoln.mkz_2020', 'controller_scope': 'Physical throttle/brake/steering commands on conventional vehicle; no automated-driving-system legal inference', 'cell_identity': 'C125697', 'fixed_layout': 'median_opening', 'fixed_maneuver': 'travel', 'fixed_control': 'inoperative_signal', 'source': 'Exact case config plus authored OpenDRIVE; actual public dedication/driver identity is not established by CPU fixture'}\n    if not (out / 'case_observation.json').exists():\n        (out / 'case_observation.json').write_text(json.dumps(packet, indent=2) + '\\n')\n    return {'status': 'prepared', 'outputs': expected_outputs}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-227-1": {
+      "preparation_source": "def prepare_saved(root):\n    import json\n    from pathlib import Path\n    out = Path(root)\n    cfg = json.loads((out / 'config.json').read_text())\n    expected_outputs = ['case_observation.json', 'scenario_geometry.json']\n    if all((out / p).is_file() for p in expected_outputs):\n        return {'status': 'already_prepared', 'outputs': expected_outputs}\n    context_path = out / 'acquisition-context.json'\n    saved_context = json.loads(context_path.read_text()) if context_path.is_file() else {}\n    if 'geometry' not in saved_context and (out / 'road_geometry.json').is_file():\n        saved_context['geometry'] = json.loads((out / 'road_geometry.json').read_text())\n    if 'geometry' not in saved_context:\n        raise ValueError('Missing required source: acquisition-context.json:geometry')\n    geometry = saved_context['geometry']\n    rows = [json.loads(line) for line in (out / 'trace.jsonl').read_text().splitlines() if line]\n    bodies = [json.loads(line) for line in (out / 'body_history.jsonl').read_text().splitlines() if line]\n    moving = rows\n    if len(moving) < 2:\n        raise ValueError('Native U-turn movement not observed')\n    body_by_frame = {r['frame']: r for r in bodies}\n    trajectory = []\n    for row in moving:\n        vertices = body_by_frame[row['frame']]['body_vertices_m']\n        overlap = any((-20 < v[0] < 20 and -0.5 < v[1] < 0.5 for v in vertices))\n        trajectory.append({'frame': row['frame'], 'velocity_xy': row['velocity_mps'][:2], 'body_overlaps_median': overlap, 'body_vertices_m': vertices})\n    packet = {'law_id': cfg['law_id'], 'diagnostic_fixture_only': False, 'right_roadway_polygon': geometry['right_roadway_polygon'], 'opposing_roadway_polygon': geometry['opposing_roadway_polygon'], 'barrier_polygons': geometry['barrier_polygons'], 'opening_polygon': geometry['opening_polygon'], 'opening_width_m': geometry['opening_width_m'], 'trajectory': trajectory, 'opening_source_models': {'barrier': 'Physical barrier authored as two0.8m-high OpenDRIVE objects; actual rendering/collision requires Native audit', 'dividing_section': 'Non-roadway separating strip bounded by explicit median polygons', 'dividing_space': 'Exclusive dividing-space footprint between the opposing roadway boundaries; no legal numeric meaning assigned'}, 'divider_top_z_m': 0.8, 'authority_context': cfg.get('authority_context', {'designation': 'physical opening only', 'source': 'authored test configuration; legal establishment unverified'})}\n    packet['scope_context'] = {'highway_designation': 'Authored synthetic public highway; independent factual/legal jurisdiction review required', 'vehicle_blueprint': 'vehicle.lincoln.mkz_2020', 'controller_scope': 'Physical throttle/brake/steering commands on conventional vehicle; no automated-driving-system legal inference', 'cell_identity': 'C126120', 'fixed_layout': 'median_opening', 'fixed_maneuver': 'u_turn', 'fixed_control': 'median_barrier', 'source': 'Exact case config plus authored OpenDRIVE; actual public dedication/driver identity is not established by CPU fixture'}\n    if not (out / 'case_observation.json').exists():\n        (out / 'case_observation.json').write_text(json.dumps(packet, indent=2) + '\\n')\n    scenario = {'source': 'authored scene.xodr and Native road readback', 'physical_verification': {'road_xodr': 'road.xodr', 'body_history': 'body_history.jsonl', 'barrier_objects_authored': [250101, 250102], 'barrier_pixels_verified': False}, 'prohibited_median_polygons': geometry['barrier_polygons'], 'median_opening_polygons': [geometry['opening_polygon']]}\n    if not (out / 'scenario_geometry.json').exists():\n        (out / 'scenario_geometry.json').write_text(json.dumps(scenario, indent=2) + '\\n')\n    return {'status': 'prepared', 'outputs': expected_outputs}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-407": {
+      "preparation_source": "def prepare_saved(root):\n    return {'status': 'not_required', 'outputs': []}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-600-1c": {
+      "preparation_source": "def prepare_saved(root):\n    import json\n    from pathlib import Path\n    out = Path(root)\n    cfg = json.loads((out / 'config.json').read_text())\n    expected_outputs = ['posted_speed_context.json', 'speed_samples.jsonl']\n    if all((out / p).is_file() for p in expected_outputs):\n        return {'status': 'already_prepared', 'outputs': expected_outputs}\n    context_path = out / 'acquisition-context.json'\n    saved_context = json.loads(context_path.read_text()) if context_path.is_file() else {}\n    if 'native_landmarks' not in saved_context:\n        raise ValueError('Missing required source: acquisition-context.json:native_landmarks')\n    native_landmarks = saved_context['native_landmarks']\n    if 'native_map_name' not in saved_context:\n        raise ValueError('Missing required source: acquisition-context.json:native_map_name')\n    native_map_name = saved_context['native_map_name']\n    context = {'authority_source': 'synthetic posted limit; public authority verification pending', 'road_geometry_source': 'scene.xodr, Native generated map and road.xodr', 'road_id': 1, 'sign_station_m': cfg['sign_station_m'], 'posted_limit_mph': cfg['posted_rate'] if cfg['posted_unit'] == 'mph' else cfg['posted_rate'] / 1.609344, 'posted_rate': cfg['posted_rate'], 'posted_unit': cfg['posted_unit'], 'governed_station_interval_m': cfg['governed_station_interval_m'], 'governed_direction_xy': cfg['governed_direction_xy'], 'authority_asserted': cfg['authority_asserted'], 'authority_source': cfg['authority_source'], 'native_landmarks': native_landmarks, 'native_map_name': native_map_name, 'original_frame_pixel_check': 'pending local Native footage review'}\n    if not (out / 'posted_speed_context.json').exists():\n        (out / 'posted_speed_context.json').write_text(json.dumps(context, indent=2) + '\\n')\n    if not (out / 'speed_samples.jsonl').exists():\n        (out / 'speed_samples.jsonl').write_text((out / 'trace.jsonl').read_text())\n    return {'status': 'prepared', 'outputs': expected_outputs}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-223-1b": {
+      "preparation_source": "def prepare_saved(root):\n    return {'status': 'not_required', 'outputs': []}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-220-1": {
+      "preparation_source": "def prepare_saved(root):\n    import json\n    from pathlib import Path\n    out = Path(root)\n    cfg = json.loads((out / 'config.json').read_text())\n    expected_outputs = ['case_observation.json', 'scenario_geometry.json', 'scenario_rule_evidence.jsonl']\n    if all((out / p).is_file() for p in expected_outputs):\n        return {'status': 'already_prepared', 'outputs': expected_outputs}\n    context_path = out / 'acquisition-context.json'\n    saved_context = json.loads(context_path.read_text()) if context_path.is_file() else {}\n    if 'landmark_ids' not in saved_context:\n        raise ValueError('Missing required source: acquisition-context.json:landmark_ids')\n    landmark_ids = saved_context['landmark_ids']\n    if 'native_map_name' not in saved_context:\n        raise ValueError('Missing required source: acquisition-context.json:native_map_name')\n    native_map_name = saved_context['native_map_name']\n    context = {'designation_source': 'authored synthetic public highway for this test; legal public-way status unresolved', 'road_geometry_source': 'scene.xodr, Native generated map and road.xodr', 'road_id': 1, 'native_map_name': saved_context['native_map_name'], 'motion_source': 'original Native actor velocity'}\n    if not (out / 'alley_context.json').exists():\n        (out / 'alley_context.json').write_text(json.dumps(context, indent=2) + '\\n')\n    rows = [json.loads(line) for line in (out / 'trace.jsonl').read_text().splitlines() if line]\n    mapping_rows = [json.loads(line) for line in (out / 'video_frames.jsonl').read_text().splitlines() if line]\n    sign = {'native_id': 220001, 'text': 'ONE WAY', 'orientation_deg': 0, 'governs_roadway_indices': [0], 'original_frames': [row['carla_frame'] for row in mapping_rows], 'pixel_visibility_verified': False}\n    obs = {'law_id': cfg['law_id'], 'diagnostic_fixture_only': False, 'direction_sign': sign, 'one_way_lanes': [-1, -2], 'designated_direction_xy': [1, 0], 'velocity_rows': [{'frame': row['frame'], 'velocity_xy': row['velocity_mps'][:2]} for row in rows]}\n    obs['scope_context'] = {'highway_designation': 'Authored synthetic public highway; independent factual/legal jurisdiction review required', 'vehicle_blueprint': 'vehicle.lincoln.mkz_2020', 'controller_scope': 'Physical throttle/brake/steering commands on conventional vehicle; no automated-driving-system legal inference', 'cell_identity': 'C147311', 'fixed_layout': 'one_way_multilane', 'fixed_maneuver': 'travel', 'fixed_control': 'direction_sign', 'source': 'Exact case config plus authored OpenDRIVE; actual public dedication/driver identity is not established by CPU fixture'}\n    if not (out / 'case_observation.json').exists():\n        (out / 'case_observation.json').write_text(json.dumps(obs, indent=2) + '\\n')\n    geometry = {'source': 'authored scene.xodr and Native map landmark survey', 'physical_verification': {'native_landmark_ids': saved_context['landmark_ids'], 'source_road': 'road.xodr', 'original_frame_map': 'video_frames.jsonl', 'sign_pixels_verified': False}, 'directed_roadways': [{'polygon': [[0, -8.5], [1800, -8.5], [1800, 0], [0, 0]], 'direction_xy': [1, 0], 'one_way': True}], 'direction_sign_objects': [{'id': 220001, 'native_name': 'ONE WAY', 'position_m': [50, -9.5, 2], 'governs_roadway_indices': [0]}]}\n    if not (out / 'scenario_geometry.json').exists():\n        (out / 'scenario_geometry.json').write_text(json.dumps(geometry, indent=2) + '\\n')\n    if not (out / 'scenario_rule_evidence.jsonl').exists():\n        with (out / 'scenario_rule_evidence.jsonl').open('x') as stream:\n            for row in mapping_rows:\n                stream.write(json.dumps({'time_s': row['time_s'], 'value': {'devices': [{'actor_id': 220001, 'native_name': 'ONE WAY', 'position_m': [50, -9.5, 2], 'pixel_visibility_verified': False}]}}) + '\\n')\n    return {'status': 'prepared', 'outputs': expected_outputs}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-127-2": {
+      "preparation_source": "def prepare_saved(root):\n    return {'status': 'not_required', 'outputs': []}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-257-1": {
+      "preparation_source": "def prepare_saved(root):\n    return {'status': 'not_required', 'outputs': []}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-257-2": {
+      "preparation_source": "def prepare_saved(root):\n    return {'status': 'not_required', 'outputs': []}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-307-6a": {
+      "preparation_source": "def prepare_saved(root):\n    return {'status': 'not_required', 'outputs': []}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-127-3": {
+      "preparation_source": "def prepare_saved(root):\n    return {'status': 'not_required', 'outputs': []}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-413-2": {
+      "preparation_source": "def prepare_saved(root):\n    import json\n    from pathlib import Path\n    out = Path(root)\n    cfg = json.loads((out / 'config.json').read_text())\n    expected_outputs = ['case_observation.json']\n    if all((out / p).is_file() for p in expected_outputs):\n        return {'status': 'already_prepared', 'outputs': expected_outputs}\n    context_path = out / 'acquisition-context.json'\n    saved_context = json.loads(context_path.read_text()) if context_path.is_file() else {}\n    if 'geometry' not in saved_context and (out / 'road_geometry.json').is_file():\n        saved_context['geometry'] = json.loads((out / 'road_geometry.json').read_text())\n    if 'geometry' not in saved_context:\n        raise ValueError('Missing required source: acquisition-context.json:geometry')\n    geometry = saved_context['geometry']\n    rows = [json.loads(line) for line in (out / 'signal_history.jsonl').read_text().splitlines() if line]\n    onset = next((i for i, r in enumerate(rows) if r.get('lane_id') == -2), None)\n    if onset is None or onset < 1:\n        raise ValueError('Native right-turn onset not observed')\n    approach = rows[:onset + 1]\n    packet = {'law_id': cfg['law_id'], 'diagnostic_fixture_only': False, 'road_id': 1, 'frontage_m': geometry['business_district_frontage_m'], 'business_use_frontage_m': geometry['business_use_frontage_m'], 'district_source': cfg.get('district_source', geometry['district_source']), 'turn_onset_frame': rows[onset]['frame'], 'path_rows': [{'x_m': r['position_m'][0], 'y_m': r['position_m'][1]} for r in approach], 'indicator_rows': [{'frame': r['frame'], 'lamp_bits': int(r['right_indicator_api_bit']), 'pixel_luminance': None if not r['body_roi_photometry'] or not r['body_roi_photometry'].get('photometry') else r['body_roi_photometry']['photometry']['mean_luminance']} for r in approach], 'zone_polygon': geometry['loading_zone_polygon'], 'zone_route_distance_m': 6, 'zone_designation_source': geometry['loading_zone_designation_source'], 'residence_use_frontage_m': cfg.get('residence_use_frontage_m', 0), 'threshold_ft': cfg.get('signal_reference_ft', 100), 'district_class': cfg.get('district_class', 'business'), 'weather_context': {'precipitation': cfg.get('precipitation', 0)}}\n    packet['scope_context'] = {'highway_designation': 'Authored synthetic public highway; independent factual/legal jurisdiction review required', 'vehicle_blueprint': 'vehicle.lincoln.mkz_2020', 'controller_scope': 'Physical throttle/brake/steering commands on conventional vehicle; no automated-driving-system legal inference', 'cell_identity': 'C177008', 'fixed_layout': 'paved_road', 'fixed_maneuver': 'change_lane', 'fixed_control': 'other_vehicle', 'source': 'Exact case config plus authored OpenDRIVE; actual public dedication/driver identity is not established by CPU fixture'}\n    if not (out / 'case_observation.json').exists():\n        (out / 'case_observation.json').write_text(json.dumps(packet, indent=2) + '\\n')\n    return {'status': 'prepared', 'outputs': expected_outputs}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-600-1a": {
+      "preparation_source": "def prepare_saved(root):\n    import json\n    from pathlib import Path\n    out = Path(root)\n    cfg = json.loads((out / 'config.json').read_text())\n    expected_outputs = ['case_observation.json']\n    if all((out / p).is_file() for p in expected_outputs):\n        return {'status': 'already_prepared', 'outputs': expected_outputs}\n    context_path = out / 'acquisition-context.json'\n    saved_context = json.loads(context_path.read_text()) if context_path.is_file() else {}\n    if 'cal' not in saved_context and (out / 'environment_calibration.json').is_file():\n        saved_context['cal'] = json.loads((out / 'environment_calibration.json').read_text())\n    if 'cal' not in saved_context:\n        raise ValueError('Missing required source: acquisition-context.json:cal')\n    cal = saved_context['cal']\n    if 'native_map_name' not in saved_context:\n        raise ValueError('Missing required source: acquisition-context.json:native_map_name')\n    native_map_name = saved_context['native_map_name']\n    context = {'designation_source': 'authored synthetic public highway for this test; legal public-way status unresolved', 'road_geometry_source': 'scene.xodr, Native generated map and road.xodr', 'road_id': 1, 'native_map_name': saved_context['native_map_name'], 'motion_source': 'original Native actor velocity'}\n    if not (out / 'alley_context.json').exists():\n        (out / 'alley_context.json').write_text(json.dumps(context, indent=2) + '\\n')\n    rows = [json.loads(s) for s in (out / 'trace.jsonl').read_text().splitlines() if s]\n    traffic = [json.loads(s) for s in (out / 'other_motion.jsonl').read_text().splitlines() if s]\n    road = __import__('xml.etree.ElementTree', fromlist=['ElementTree']).parse(out / 'road.xodr').getroot()\n    section = road.find('.//laneSection')\n    width = sum((float(l.find('width').get('a')) for l in section.findall('.//lane') if l.get('type') in ('driving', 'shoulder')))\n    packet = {'law_id': cfg['law_id'], 'diagnostic_fixture_only': False, 'motion_rows': [{'frame': r['frame'], 'ego_speed_mps': r['speed_mps'], 'other_speed_mps': t['other_speed_mps'], 'separation_m': t['separation_m']} for r, t in zip(rows, traffic)], 'highway_width_m': width, 'roadway_width_m': width - 3, 'shoulder_each_m': 1.5, 'curvature_per_m': 0, 'traffic_actor_inventory_by_frame': [{'frame': t['frame'], 'actors': t['traffic_actor_inventory']} for t in traffic], 'surface': 'authored synthetic asphalt; Native wetness ' + str(traffic[-1]['weather']['wetness']), 'surface_provenance': 'surface_provenance.json', 'weather_rows': [{'frame': t['frame'], 'fog_density_native': t['weather']['fog_density'], 'precipitation_native': t['weather']['precipitation'], 'wetness_native': t['weather']['wetness']} for t in traffic], 'target_visibility_samples_m': [x['longitudinal_range_m'] for x in cal['samples']], 'sight_ray_samples': [{'frame': t['frame'], 'clear_distance_m': t['separation_m'] if t['sight_ray_hit_count'] == 0 else 0, 'ray_tested': True, 'hit_count': t['sight_ray_hit_count']} for t in traffic], 'stopping_event': {'observed': False, 'reason': 'No full original stop event established by this capability runner'}}\n    packet['scope_context'] = {'highway_designation': 'Authored synthetic public highway; independent factual/legal jurisdiction review required', 'vehicle_blueprint': 'vehicle.lincoln.mkz_2020', 'controller_scope': 'Physical throttle/brake/steering commands on conventional vehicle; no automated-driving-system legal inference', 'cell_identity': 'C179789', 'fixed_layout': 'paved_road', 'fixed_maneuver': 'travel', 'fixed_control': 'other_vehicle', 'source': 'Exact case config plus authored OpenDRIVE; actual public dedication/driver identity is not established by CPU fixture'}\n    packet['visibility_calibration'] = json.loads((out / 'environment_calibration.json').read_text())\n    if not (out / 'case_observation.json').exists():\n        (out / 'case_observation.json').write_text(json.dumps(packet, indent=2) + '\\n')\n    return {'status': 'prepared', 'outputs': expected_outputs}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-113-2": {
+      "preparation_source": "def prepare_saved(root):\n    return {'status': 'not_required', 'outputs': []}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484B-250-4": {
+      "preparation_source": "def prepare_saved(root):\n    return {'status': 'not_required', 'outputs': []}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    },
+    "NRS-484A-450-2": {
+      "preparation_source": "def prepare_saved(root):\n    return {'status': 'not_required', 'outputs': []}\n",
+      "capture_only_ast": {
+        "capture_only": true,
+        "context_before_cleanup": true,
+        "seal_after_cleanup": true,
+        "world_used_after_cleanup": false
+      }
+    }
+  },
+  "exact_packages_changed": false,
+  "test_log": "migration-source-builder-tests.log",
+  "test_log_sha256": "a7634202bff5cbbc3c28729da4b5ac5a0971ff49be96470dc55b6f6942cd7189",
+  "regression_tests_passed": 6,
+  "legacy_source_sets_preserved": 236,
+  "native600_calibration_source": "Actual saved environment_calibration.json; no fixture substitution",
+  "course_onset_engineering_minimum": "At least1 prior sample plusonset; no claimof100/300ftcoverage"
+}

@@ -1,0 +1,269 @@
+{
+  "cell_id": "C10301",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral reference definition; not selected for capture",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 35.316159999999996,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original actor velocity norm in trace.jsonl",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native actor/world at original tick",
+            "uncertainty": "20 Hz samples; between-frame values unobserved"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original native 3D actor velocity in trace.jsonl",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native actor/world at original tick",
+            "uncertainty": "20 Hz samples; between-frame values unobserved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Physical road status and actual four-view visibility remain Native checks."
+        ]
+      },
+      "epsilon_used": {
+        "value": 0.44704,
+        "unit": "m/s",
+        "rationale": "One-mph engineering probe step; no legal tolerance."
+      }
+    },
+    {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below",
+      "target_law_id": "NRS-484B-600-1e",
+      "target_type": "boundary_probe",
+      "rationale": "Measure 79 mph relative to 80 mph with exact strict comparison; no physical result asserted.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 35.316159999999996,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Between-frame peak and public highway status"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original actor velocity norm in trace.jsonl",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native actor/world at original tick",
+            "uncertainty": "20 Hz samples; between-frame values unobserved"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original native 3D actor velocity in trace.jsonl",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native actor/world at original tick",
+            "uncertainty": "20 Hz samples; between-frame values unobserved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Physical road status and actual four-view visibility remain Native checks."
+        ]
+      },
+      "paired_probe_id": "strict_rate_boundary",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "ego_speed",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "below",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "m/s",
+        "test_value": 35.316159999999996
+      },
+      "epsilon_used": {
+        "value": 0.44704,
+        "unit": "m/s",
+        "rationale": "One-mph engineering probe step; no legal tolerance."
+      }
+    },
+    {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal",
+      "target_law_id": "NRS-484B-600-1e",
+      "target_type": "boundary_probe",
+      "rationale": "Measure 80 mph relative to 80 mph with exact strict comparison; no physical result asserted.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 35.7632,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Between-frame peak and public highway status"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original actor velocity norm in trace.jsonl",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native actor/world at original tick",
+            "uncertainty": "20 Hz samples; between-frame values unobserved"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original native 3D actor velocity in trace.jsonl",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native actor/world at original tick",
+            "uncertainty": "20 Hz samples; between-frame values unobserved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Physical road status and actual four-view visibility remain Native checks."
+        ]
+      },
+      "paired_probe_id": "strict_rate_boundary",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "ego_speed",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "equal",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "m/s",
+        "test_value": 35.7632
+      },
+      "epsilon_used": {
+        "value": 0.44704,
+        "unit": "m/s",
+        "rationale": "One-mph engineering probe step; no legal tolerance."
+      }
+    },
+    {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above",
+      "target_law_id": "NRS-484B-600-1e",
+      "target_type": "boundary_probe",
+      "rationale": "Measure 81 mph relative to 80 mph with exact strict comparison; no physical result asserted.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 36.21024,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Between-frame peak and public highway status"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original actor velocity norm in trace.jsonl",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native actor/world at original tick",
+            "uncertainty": "20 Hz samples; between-frame values unobserved"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original native 3D actor velocity in trace.jsonl",
+            "time_window": "full original 45-second episode",
+            "reference_frame": "Native actor/world at original tick",
+            "uncertainty": "20 Hz samples; between-frame values unobserved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Physical road status and actual four-view visibility remain Native checks."
+        ]
+      },
+      "paired_probe_id": "strict_rate_boundary",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "ego_speed",
+        "comparison_or_standard": "Controlled physical branch comparison; legal judgment unresolved",
+        "target_value_or_branch": "above",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "m/s",
+        "test_value": 36.21024
+      },
+      "epsilon_used": {
+        "value": 0.44704,
+        "unit": "m/s",
+        "rationale": "One-mph engineering probe step; no legal tolerance."
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "judgment-0",
+      "target_law_id": "NRS-484B-600-1e",
+      "judgment_refs": [
+        {
+          "phrase": "Between-frame peak and public highway status",
+          "note": "Original physical evidence required; legal interpretation deferred"
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Existing v7 branch comparisons preserve exact identities; no legal cutoff is authored.",
+      "missing_inputs": [
+        "A source-backed scalar physical sweep design for this qualitative judgment is unavailable."
+      ]
+    }
+  ]
+}
