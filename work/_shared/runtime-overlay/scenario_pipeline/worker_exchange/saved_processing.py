@@ -70,7 +70,19 @@ def run(manifest,case,attempt,output,library,validator,owner_receipt=None):
         if sha(within(manifest.parent,entry['construction']))!=entry['construction_sha256']:raise ValueError('Selected construction changed')
         original=read(attempt/'construction.json');config=read(attempt/'config.json')
         if original['case_id']!=case or config.get('selected_case_id',config.get('case',{}).get('case_id'))!=case:raise ValueError('Wrong Native case identity')
-        provenance=provenance_record(attempt);_closure(attempt,owner_receipt,provenance['provenance_kind'],provenance['diagnostic_fixture'])
+        provenance=provenance_record(attempt)
+        legacy_binding=None
+        if entry.get('native_construction_sha256'):
+            capture_manifest=read(attempt/'capture/manifest.json')
+            if config.get('case',{}).get('case_id')!=case or capture_manifest.get('case_id')!=case:
+                raise ValueError('Legacy embedded case identity differs')
+            expected_native=entry['native_construction_sha256'];actual_native=sha(attempt/'construction.json')
+            diagnostic_marker=read(attempt/'acquisition-provenance.json') if (attempt/'acquisition-provenance.json').is_file() else {}
+            diagnostic_exception=(diagnostic_marker.get('diagnostic_fixture') is True and diagnostic_marker.get('provenance_kind')=='native')
+            if actual_native!=expected_native and not diagnostic_exception:
+                raise ValueError('Legacy Native construction hash differs from frozen retained capture')
+            legacy_binding={'expected_native_construction_sha256':expected_native,'actual_native_construction_sha256':actual_native,'original_hash_matched':actual_native==expected_native,'explicit_diagnostic_exception':actual_native!=expected_native and diagnostic_exception,'actual_recording_audited':False}
+        _closure(attempt,owner_receipt,provenance['provenance_kind'],provenance['diagnostic_fixture'])
         stage=_workspace(attempt,version,construction,entry['measurement_procedure']['entrypoint'])
         if not (stage/'raw.mkv').exists():
             composition=compose_four_views({n:stage/(n+'.mkv') for n in ('overview','approach','reference_corner','driver_reference')},stage/'video_frames.jsonl',stage/'raw.mkv')
@@ -128,6 +140,7 @@ def run(manifest,case,attempt,output,library,validator,owner_receipt=None):
           'missing_evidence':missing,'physical_acceptance_claimed':False,'legal_acceptance_claimed':False,
           'events':['saved_processing_started','selected_analysis_executed','originals_verified'],
           'remaining':['original pixels and actual physical completion review','unresolved legal judgments']}
+        if legacy_binding is not None:receipt['legacy_native_binding']=legacy_binding
         write(version/'processing.json',receipt);return receipt
     except Exception as error:
         write(version/'feedback.json',{'case_id':case,'recorded_only':True,'error_type':type(error).__name__,'error':str(error),'manifest_sha256':sha(manifest),'native_replay_requested':False})

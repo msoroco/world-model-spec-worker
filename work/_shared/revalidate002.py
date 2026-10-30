@@ -39,7 +39,7 @@ def main():
   if a.phase in ('physical','all'):
    e=prove_entry(folder,e,runtime);m['cases'][i]=e;write(path,m)
   print(cid,a.phase,'PASS',flush=True)
- result=read(folder/'result.json');result['applied_update']=2
+ result=read(folder/'result.json');result['applied_update']=read(ROOT/'batch.json')['update_version']
  if all(e.get('physical_preparation') and e.get('compatibility') and e.get('offline') and e.get('post_capture') for e in m['cases']):
   result.update(status='ready',readiness_kind='capability',first_gpu_capability_command=m['cases'][0]['gpu_command']);result.pop('reason',None)
  result['tests']=[{'command':e['offline']['command'],'exit_code':0,'log':e['offline']['log'],'sha256':e['offline']['log_sha256']} for e in m['cases'] if e.get('offline')]

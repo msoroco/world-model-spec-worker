@@ -9,8 +9,8 @@ def main():
  from worker_exchange.common import read
  from worker_exchange.saved_processing import run
  attempt=pathlib.Path(a.attempt).resolve();cfg=read(attempt/'config.json');cid=cfg.get('selected_case_id',cfg.get('case',{}).get('case_id'))
- manifest=ROOT/'work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json'
- if cid not in {e['case_id'] for e in read(manifest)['cases']}:raise ValueError('Retained capture is not an exact C109705/400-2a case')
+ manifest=ROOT/'work/_shared/legacy-captures/c109705-400-2a-v6/execution-manifest.json'
+ if cid not in {e['case_id'] for e in read(manifest)['cases']}:raise ValueError('Retained capture is not the exact v6 selected_left_turn case')
  result=run(manifest,cid,attempt,pathlib.Path(a.output),a.library,a.validator,a.owner_release_receipt)
  print(__import__('json').dumps(result,indent=2))
 if __name__=='__main__':main()

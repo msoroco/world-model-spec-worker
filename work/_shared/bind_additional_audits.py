@@ -13,7 +13,7 @@ def main():
   folder=path.parent;m=read(path);receipts=folder/'receipts'
   selected=[cases[c['case_id']] for c in m['cases']]
   receipt=receipts/'source-frame-joins.json';write(receipt,{'passed':True,'cases':selected,'physical_acceptance_claimed':False})
-  log=receipts/'source-frame-joins.log';shutil.copyfile(ROOT/'work/_shared/source-join-tests002.log',log)
+  log=receipts/'source-frame-joins.log';shutil.copyfile(ROOT/('work/_shared/source-join-tests%03d.log'%read(ROOT/'batch.json')['update_version']),log)
   for c in m['cases']:
    tokens=shlex.split(c['post_capture']['command']);attempt=tokens[tokens.index('--output')+1]+'/v0001/analysis'
    c['post_capture']['additional_source_audit_command']='python3.11 work/_shared/source_audit.py --spec work/_shared/source-audit-specs.json --case '+c['case_id']+' --attempt '+attempt+' --output '+attempt+'/additional-source-audit.json'
