@@ -31,6 +31,56 @@ def runtime_for(repo, batch):
     return module.effective_runtime()
 
 
+def check_legacy_capture_handoff(repo, contract):
+    """Bind a retained recording to an exact saved-only case, never a renamed sweep case."""
+    repo = Path(repo).resolve()
+    source = read(within(repo, contract['input']))
+    report = read(within(repo, contract['report']))
+    case_id = source['case_id']
+    require(source.get('format') == 'worker-legacy-capture-contract-v1' and
+            source.get('original_construction_sha256') and
+            source.get('frames', 0) > 0, 'Incomplete legacy capture contract')
+    require(report.get('format') == 'worker-legacy-saved-handoff-v1' and
+            report.get('case_id') == case_id and
+            report.get('original_construction_sha256') == source['original_construction_sha256'] and
+            report.get('actual_recording_audited') is False and
+            report.get('native_replay_requested') is False,
+            'Legacy handoff identity or acceptance claim differs')
+    manifest_path = within(repo, report['manifest'])
+    require(manifest_path.as_posix().startswith((repo/'work/_shared/legacy-captures').as_posix()+'/'),
+            'Legacy manifest must be isolated from v7 delivery cases')
+    manifest = read(manifest_path)
+    require([entry.get('case_id') for entry in manifest.get('cases', [])] == [case_id],
+            'Legacy manifest does not contain the exact retained case')
+    entry = manifest['cases'][0]
+    construction = read(within(manifest_path.parent, entry['construction']))
+    require(construction.get('case_id') == case_id and
+            entry.get('native_construction_sha256') == source['original_construction_sha256'] and
+            sha(within(manifest_path.parent, entry['construction'])) == entry.get('construction_sha256') and
+            entry.get('measurement_procedure', {}).get('entrypoint') == 'analyze.py',
+            'Legacy construction or analyzer identity differs')
+    proposal = read(manifest_path.parent/'proposals/cases.json')
+    require([case.get('case_id') for case in proposal.get('cases', [])] == [case_id],
+            'Legacy proposal does not contain the exact retained case')
+    try:
+        tokens = shlex.split(report['saved_only_audit_command'])
+        def option(key):
+            index = tokens.index(key)
+            return tokens[index+1]
+        command_ok = ('runtime.py' in tokens and 'process-saved' in tokens and
+                      option('--manifest') == report['manifest'] and
+                      option('--case') == case_id and
+                      option('--attempt') == '$RETAINED_C109705_ATTEMPT')
+    except (ValueError, IndexError, TypeError):
+        command_ok = False
+    require(command_ok, 'Legacy saved-only command selects another case or manifest')
+    proof = report.get('diagnostic_proof', {})
+    require(proof.get('exit_code') == 0 and proof.get('frames') == source['frames'] and
+            proof.get('case_id') == case_id and
+            sha(within(repo, proof['log'])) == proof.get('log_sha256'),
+            'Missing exact-ID legacy saved-only diagnostic proof')
+
+
 def check(repo, complete=False, require_ready=False):
     repo = Path(repo)
     batch = read(repo/'batch.json')
@@ -209,6 +259,8 @@ def check(repo, complete=False, require_ready=False):
     if complete and batch.get('full_branch_coverage_required'):
         from .branch_coverage import validate as validate_branches
         validate_branches(repo,batch,items,require_ready)
+    if complete and batch.get('legacy_capture_handoff'):
+        check_legacy_capture_handoff(repo,batch['legacy_capture_handoff'])
     if require_ready:
         require(len(results)==len(items) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
     if complete and batch.get('runtime_selftest_required'):
