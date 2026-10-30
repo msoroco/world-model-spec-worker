@@ -1,8 +1,8 @@
-# Complete delivery preparation (update 007)
+# Complete delivery preparation (update 011)
 
 Prepare the selected cases for canonical delivery, not research-only capability.
-CARLA motion and legal judgments remain unverified until local execution. The
-worker never accesses NERSC or the local SQLite database.
+The worker supplies constructions, fallback candidates, commands and CPU proofs.
+It never accesses CARLA, NERSC or campaign SQLite.
 
 ## Required return
 
@@ -42,8 +42,7 @@ worker shape check is insufficient.
 
 For each selected manifest entry, add `delivery_acceptance`. Its `script` is a
 worker-authored, CPU-tested saved-evidence audit, with positive and negative
-fixture logs. The local runner invokes it after CARLA and saved processing;
-the script writes `worker-delivery-audit-v1` JSON for the exact case, job,
+fixture logs. The script writes `worker-delivery-audit-v1` JSON for the exact case, job,
 attempt and canonical recording. Required entry fields:
 
 ```json
@@ -71,24 +70,23 @@ The actual audit JSON must contain `format`, `passed`, `case_id`, `job_id`,
 and `trace` paths, their SHA-256 values, and a `checks` object with all six
 named checks true. It must fail when original evidence, timestamps, required
 participants, complete decoding, relevant visible pixels, or physical outcome
-fails. A positive CPU fixture proves code behavior only; it never claims that
-future Native evidence will pass. Include at least one negative fixture that
+fails. A positive CPU fixture proves code behavior only. Include at least one negative fixture that
 actually exercises each independent audit implementation across the return.
 
 The ordered `work/_shared/gpu-queue.json` must contain every selected case
 once and every comparison audit once. Preserve exact IDs, participant histories,
 duration, evidence channels, and same-cell comparison controls. The queue is
-the local execution order, not a record of completed GPU work. A successful
-case is referenced by the same canonical recording ID in both test sets;
-explicit reference reuse requires a hash-bound receipt.
+the declared execution order, not a record of completed recordings. Declare
+both test-set targets for each case and hash-bind explicit reference reuse;
+recording IDs are not known during CPU preparation.
 
 Update 008 requires each queue row to include `prepare_command`,
 `execute_command`, `accept_command`, and `candidate_commands` keyed by every
 declared fallback. Preparation selects one exact case and candidate, freezing
-a separate local run and input revision. Execution dispatches only its returned
-job ID to an operator-owned CARLA server. Acceptance uses the completed
-canonical attempt and independent saved audit; a portable `.runtime-work/`
-capture cannot be directly selected into sets. Commands use local variables
+a separate run and input revision. Execution selects only its returned
+job ID. Acceptance requires a completed canonical attempt and independent
+saved audit; a portable `.runtime-work/` capture is not canonical evidence.
+Commands use variables
 for database, host, port, Native Python, job ID and attempt number. The worker
 must not assume NERSC paths or invent job IDs.
 
@@ -98,19 +96,17 @@ Write `work/_shared/local-integration-proof.json` with format
 `fallback_job`, `saved_processing`, `rejected_audit`, and
 `accepted_both_sets`. Its synthetic local fixture must show one accepted
 recording ID in both test selections and no membership from a failed audit.
-This is a software integration proof, not a physical acceptance claim.
+This is a software integration proof.
 
-The local operator imports the committed worker return once, then uses the
-`local_checkout` path in the import receipt for preparation, execution and
-acceptance. That checkout lives under the main scenario pipeline artifact root
-and does not need `.git` or subsequent access to the remote worker repository.
-The integration proof must exercise this path, including a repeat import from
-the local checkout.
+The integration proof must exercise a repeat import from the `local_checkout`
+path in the import receipt. That imported layout is independent of `.git` and
+the remote worker repository.
 
 ## Completion gate
 
 Run `python3.11 worker_check.py --complete --require-delivery-ready` after the
 full runtime selftest, exact offline checks, compatibility recipes, fallback
 proofs and saved-audit fixture tests. Return only when all assignments are
-delivery prepared. Report any physical uncertainties separately; they are GPU
-checks, not missing CPU implementations.
+delivery prepared. Report only worker-owned CPU results and blockers. Record
+unverified physical assumptions in the required package fields without
+describing another agent's tasks.

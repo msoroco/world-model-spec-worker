@@ -1,8 +1,13 @@
 # Full demo-test delivery preparation
 
-Update 010 uses `runtime/main-pipeline-v6` and return branch `worker/demo-test-full-delivery-v2`. Read `DELIVERY_CONTRACT.md` first. Every selected case needs a primary and at least one tested physical fallback. The canonical queue must prepare, execute and accept one exact case through the local pipeline. Preserve the existing case IDs and comparisons. No CARLA, NERSC or local campaign database work is part of this return.
+Update 012 uses `runtime/main-pipeline-v6` and return branch `worker/demo-test-full-delivery-v2`. Read `DELIVERY_CONTRACT.md` first. Every selected case needs a primary and at least one tested physical fallback. Supply and CPU-test the exact canonical preparation, execution, saved-processing, audit, and acceptance commands. Preserve existing case IDs and comparisons. The worker does not use CARLA, NERSC or campaign SQLite.
 
-Start from updated `main`. Fetch `worker/demo-test-full-delivery-v1` at commit `43af39a1cd5d231d9c71d2d855e206fc2dd57043` and restore only its `work/` subtree as editable CPU preparation. Do not merge its old batch, runtime, notices or proofs as current authority. Replace the `runtime-v3.py` and `sitecustomize` workaround with ordinary root launchers. Re-run all exact proofs under v6.
+Resume `worker/demo-test-full-delivery-v2` from its existing partial return at
+`6e50262789a2e3b1d938c384546b56f70bbb62ab`, then merge current `main`.
+Preserve its `work/` subtree, including the canonical queue and gap audit.
+The gap audit is a worklist, not a final result: repair all runtime bindings,
+refresh the primary proofs, add tested fallbacks, and supply the integration
+proof. Preserve the existing 236 cases, 150 comparisons and 66 reuses.
 
 The operator starts this agent manually. Use Python 3.11 or newer; create an
 ignored `.venv-cpu` and install `runtime/main-pipeline-v6/requirements-cpu.txt`.
@@ -33,8 +38,7 @@ Build exact cases, connected road geometry, controllers, cameras, complete
 capture channels, a measured-results finalizer and CPU tests. Use the
 source-hashed accepted training implementations as adaptation examples, never
 as test evidence. Check topology, routes, signs/markings, participants, camera
-configuration and duration offline. Record unverified native motion and pixel
-visibility as GPU checks. A law-specific measurement cannot be replaced by a
+configuration and duration offline. Record assumptions that offline tests cannot establish in the required case fields. A law-specific measurement cannot be replaced by a
 generic speed or source-presence check.
 
 Use `worker_exchange.capture.PROFILE` for every exact case: one 1920×1080
@@ -49,7 +53,7 @@ primary `raw.mkv` with the supplied `worker_exchange.media.compose_four_views`
 helper and the original `video_frames.jsonl` map. Store its source-hashed
 receipt with the capture. Keep full startup, approach,
 interaction, clearance and final observation. Offline plans establish intended
-coverage; actual pixels and adequate duration remain GPU checks.
+coverage; do not claim measured pixels or duration adequacy from offline plans.
 
 For **each exact case**, write a `worker-measurement-contract-v1` JSON file.
 Its `requirements` list has one row for every `selected_required` disposition
@@ -88,8 +92,8 @@ If a portable adapter/capture/validation defect blocks the selected branch,
 place source-hashed replacement Python files and `overlay.json` under
 `work/_shared/runtime-overlay/`. See `overlay.py`; materialize with
 `python3.11 overlay.py` and test the effective runtime. Keep the
-pinned baseline and Core ontology unchanged. The local operator verifies any
-overlay before adopting it into a new local runtime revision.
+pinned baseline and Core ontology unchanged. Source-hash and test every
+overlay against the pinned runtime.
 The v6 baseline already contains the reviewed v5 adapter repair. Do not copy
 the v5 overlay or any returned v5 package into this fresh batch.
 
@@ -109,8 +113,8 @@ prove software compatibility, not physical behavior or legal compliance.
 The first GPU command in `result.json` must use local `execute-delivery`
 for one exact canonical job, with `--job "$JOB_ID" --db "$DB" --run "$RUN"`
 and `--python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT"`.
-The operator obtains the run and job ID from `prepare-delivery`. Portable
-`runtime.py capture` remains diagnostic; it is not the delivery launcher.
+The command uses run and job placeholders returned by `prepare-delivery`.
+Portable `runtime.py capture` remains diagnostic; it is not the delivery launcher.
 Do not use the worker CPU environment as Native Python or hardcode a host.
 
 Commit source, small text fixture additions, tests, handoffs, receipts, and
@@ -124,9 +128,7 @@ every exact-case offline check and every compatibility check. Copy its
 `work/_shared/runtime-proof.json` with `format: worker-runtime-proof-v1`,
 `runtime_manifest_sha256` (effective runtime), `command`, `exit_code: 0`,
 `log`, `log_sha256`, `verification_receipt` and `verification_sha256`.
-Finish with:
-
-Before the gate, run `python3.11 -m unittest discover -s tests -p test_entrypoints_current.py`.
+Run `python3.11 -m unittest discover -s tests -p test_entrypoints_current.py`.
 The gate must run without a bootstrap `PYTHONPATH`. All-empty candidate lists
 and queues lacking canonical local job commands fail under update 008.
 
@@ -134,8 +136,7 @@ and queues lacking canonical local job commands fail under update 008.
 python3.11 worker_check.py --complete --require-delivery-ready
 ```
 
-If that gate fails, report exact test-backed CPU blockers. Commit and push the
-return branch. Report commit, counts, hashed logs and the first GPU delivery
-command per assignment. The local operator then runs `check-return` and
-`preflight-return --python <actual Native Python>` against the committed branch;
-neither contacts CARLA. No physical acceptance is claimed.
+If the gate fails, continue repairing worker-owned code and proofs. Commit and
+push the return branch after the strict gate passes. Report the commit, case and
+fallback counts, exact CPU proof hashes, and any remaining worker-owned blocker.
+Do not describe downstream execution tasks or claim physical acceptance.

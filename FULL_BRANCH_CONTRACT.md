@@ -38,11 +38,11 @@ A genuine unsupported branch uses status capability_blocked with blocker_receipt
 
 After all four partition owners finish, a separate review pass reads the original law texts and definitions independently, checks omitted alternatives and exceptions, cell reuse, measurement rules and comparison isolation. Write work/_shared/branch-review.json with coverage_sha256, review_method and missing_branches: [] only if none are missing. The gate checks structure and source joins; this semantic review is mandatory.
 
-Report planned recording counts, explicit reuses, complete/pending branches and exact failures. Keep branch planned, Native executed, video/Core accepted and comparison complete distinct. Push the configured return branch. The local operator will validate and apply any scope extension, import/freeze the code, then run the exact GPU queue.
+Report planned recording counts, explicit reuses, complete/pending branches and exact worker-owned failures. Keep planned cases separate from accepted recordings. Push the configured return branch only after its strict CPU gate passes.
 
 Exact statutory text controls over summaries. Reject any summary that turns an engineering epsilon, duration, time-to-conflict or numeric spacing into an unsupported legal definition. Keep measurements and legal judgments separate.
 
 Update 007 adds DELIVERY_CONTRACT.md. Selected manifest cases are delivery
 intent, never research capability. Every assignment needs canonical semantic
 stage proposals and a tested independent saved-audit implementation. The
-strict delivery gate checks these before local GPU execution begins.
+strict delivery gate checks these as package readiness requirements.
