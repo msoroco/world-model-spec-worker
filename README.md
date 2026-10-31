@@ -22,6 +22,21 @@ If available, I recommend **GPT-6-sol with medium reasoning**, or
 `-m` value with `gpt-6.1-sol` and set `model_reasoning_effort=low` or
 `model_reasoning_effort=medium`. The worker needs Git push access.
 
+## Keep the long task active
+
+If you use an interactive Codex session, set this Goal in that same session
+before giving the agent the task:
+
+```text
+/goal Complete the full-train-delivery work in AGENT_PROMPT.md. Continue through all independent assignments, publish progress checkpoints, and finish with either a passing strict delivery gate or a pushed best-effort return that identifies every unresolved blocker. Preserve frozen inputs and truthful readiness statuses.
+```
+
+Then prompt: `Read AGENT_PROMPT.md and complete the work assigned in batch.json. Do not edit batch.json.`
+The `codex exec` command above is the one-shot launch path; `/goal` is an
+interactive command, so do not paste it into the `codex exec` prompt and assume
+it will be interpreted as a command. A Goal helps maintain the objective
+across turns. It does not replace checkpoint pushes or restart a stopped agent.
+
 
 ## Notes
 ### Progress checkpoints
