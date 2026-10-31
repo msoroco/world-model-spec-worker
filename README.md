@@ -14,7 +14,7 @@ git clone --branch worker/full-train-delivery --single-branch \
 cd scenario-worker-full-train
 codex exec --approve-for-me -s workspace-write \
   -m gpt-6-sol -c model_reasoning_effort=medium \
-  "Read AGENT_PROMPT.md and complete the work assigned in batch.json. Do not edit batch.json."
+  "Create an active Goal for this thread: complete the full-train-delivery work in AGENT_PROMPT.md, publish progress checkpoints, and finish with either a passing strict delivery gate or a pushed best-effort return identifying every unresolved blocker. Preserve frozen inputs and truthful readiness statuses. Then read AGENT_PROMPT.md and complete the work assigned in batch.json. Do not edit batch.json. If Goals are unavailable, continue the task and report that limitation."
 ```
 
 If available, I recommend **GPT-6-sol with medium reasoning**, or
@@ -32,10 +32,10 @@ before giving the agent the task:
 ```
 
 Then prompt: `Read AGENT_PROMPT.md and complete the work assigned in batch.json. Do not edit batch.json.`
-The `codex exec` command above is the one-shot launch path; `/goal` is an
-interactive command, so do not paste it into the `codex exec` prompt and assume
-it will be interpreted as a command. A Goal helps maintain the objective
-across turns. It does not replace checkpoint pushes or restart a stopped agent.
+The `codex exec` command above requests Goal creation in its ordinary prompt;
+it does not run `/goal` as a shell or CLI command. Goal support depends on the
+Codex build. A Goal helps maintain the objective across turns. It does not
+replace checkpoint pushes or restart a stopped agent.
 
 
 ## Notes
