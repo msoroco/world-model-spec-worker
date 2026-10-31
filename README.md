@@ -24,7 +24,9 @@ If available, I recommend **GPT-6-sol with medium reasoning**, or
 approval may still reject a push; the prompt requires preserving the local
 commit and reporting that rejection.
 
-## Progress checkpoints
+
+## Notes
+### Progress checkpoints
 
 The lead agent commits and attempts to push coherent work during the run,
 using `scripts/checkpoint.sh "short progress summary"` after every eight
