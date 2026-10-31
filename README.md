@@ -12,7 +12,7 @@ On the machine that will run the worker agent:
 git clone --branch worker/full-train-delivery --single-branch \
   https://github.com/msoroco/world-model-spec-worker.git scenario-worker-full-train
 cd scenario-worker-full-train
-codex exec --approve-for-me -s workspace-write \
+codex exec --approve-for-me \
   -m gpt-6-sol -c model_reasoning_effort=medium \
   "Create an active Goal for this thread: complete the full-train-delivery work in AGENT_PROMPT.md, publish progress checkpoints, and finish with either a passing strict delivery gate or a pushed best-effort return identifying every unresolved blocker. Preserve frozen inputs and truthful readiness statuses. Then read AGENT_PROMPT.md and complete the work assigned in batch.json. Do not edit batch.json. If Goals are unavailable, continue the task and report that limitation."
 ```
