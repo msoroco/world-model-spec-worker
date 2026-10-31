@@ -46,6 +46,18 @@ GitHub issues or main-project set files. Do not alter frozen inputs or
 `batch.json`. The local operator chooses an exact prepared candidate and
 independently accepts evidence later.
 
+The lead publishes progress throughout the run. After every eight completed
+assignment packages, or at least every 30 minutes when files have changed,
+whichever comes first, collect coherent assignment snapshots and update
+`work/_shared/RETURN-REPORT.md` with completed IDs and current blockers.
+Invoke `scripts/checkpoint.sh "short progress summary"`. Only the lead may
+commit or push; subagents write their owned assignment directories and send
+progress to the lead. Do not wait for all eight partitions before the first
+checkpoint. A checkpoint can contain honest partial results. If Git push is
+rejected, preserve the commit, record the reason, and continue other work.
+Do not bypass approval controls. The script retries an unpushed commit at the
+next checkpoint; the final publication attempt remains required.
+
 The lead reviews every assignment and shared law matrix. Validate all
 nonbaseline exact cases, all four candidate plans per case, every comparison,
 the ordered delivery queue and synthetic local integration proof. Set

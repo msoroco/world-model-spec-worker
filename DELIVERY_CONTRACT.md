@@ -47,3 +47,7 @@ acceptance or legal outcome is claimed by the worker.
 ## Best-effort publication
 
 Continue independent assignments when one fails. Run the strict gate at the end even if it reports incomplete packages. Commit and attempt to push all completed work, partial results, precise blockers, hashed gate logs and resume instructions regardless of gate outcome. A failed gate remains a failed gate; do not relabel a partial package ready. If remote access or automatic approval rejects the push, preserve the local commit and report that rejection without bypassing it.
+
+## Progress publication
+
+The lead checkpoints coherent assignment bundles after every eight completed packages or at least every 30 minutes with changed files. Use `scripts/checkpoint.sh`, which stages only `work/`. Subagents never commit or push. Record a rejected push and continue independent work; the final best-effort push remains required.
