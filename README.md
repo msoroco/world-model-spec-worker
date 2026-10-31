@@ -20,9 +20,7 @@ codex exec --approve-for-me -s workspace-write \
 If available, I recommend **GPT-6-sol with medium reasoning**, or
 **GPT-6.1-sol with low or medium reasoning**. To use the latter, replace the
 `-m` value with `gpt-6.1-sol` and set `model_reasoning_effort=low` or
-`model_reasoning_effort=medium`. The worker needs Git push access. Automatic
-approval may still reject a push; the prompt requires preserving the local
-commit and reporting that rejection.
+`model_reasoning_effort=medium`. The worker needs Git push access.
 
 
 ## Notes
