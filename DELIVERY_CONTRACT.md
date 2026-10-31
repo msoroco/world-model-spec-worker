@@ -43,3 +43,7 @@ validation, comparison audits, entrypoint tests and strict gate. Set each
 `result.json` to `ready`/`delivery_prepared` after its CPU proofs pass, then
 run the strict gate. The gate validates that claim. No CARLA run, recording
 acceptance or legal outcome is claimed by the worker.
+
+## Best-effort publication
+
+Continue independent assignments when one fails. Run the strict gate at the end even if it reports incomplete packages. Commit and attempt to push all completed work, partial results, precise blockers, hashed gate logs and resume instructions regardless of gate outcome. A failed gate remains a failed gate; do not relabel a partial package ready. If remote access or automatic approval rejects the push, preserve the local commit and report that rejection without bypassing it.
