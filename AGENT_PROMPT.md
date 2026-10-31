@@ -24,6 +24,10 @@ packages, run `python3.11 runtime.py verify --runtime runtime/pipeline`, build
 the decoder from the pinned runtime Core, and run the CPU selftest. After any
 runtime update, rerun proofs bound to its previous source-manifest hash; a
 previous decoder or proof does not validate the updated runtime.
+If CPU packages or Lake are missing, create an ignored `.venv-cpu/` from
+Python 3.11, install `runtime/pipeline/requirements-cpu.txt`, and install the
+version in `runtime/pipeline/library/lean-toolchain` under ignored
+`.runtime-work/`. Use those private tools for the decoder build and selftest.
 
 Your output must be a **deployable delivery return**, not synthetic test cases
 or one research capability example per assignment. Plan all supported
