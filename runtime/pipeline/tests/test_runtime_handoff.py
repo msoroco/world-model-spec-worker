@@ -1,4 +1,4 @@
-import json,pathlib,sys,tempfile,unittest
+import json,pathlib,shutil,sys,tempfile,unittest
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]))
 from worker_exchange.common import read,write,sha
 from worker_exchange.execution_manifest import validate
@@ -8,6 +8,7 @@ class HandoffTests(unittest.TestCase):
  def setUp(self):
   self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.root=pathlib.Path(self.tmp.name);self.aid='testing__C1__L1__driver';self.folder=self.root/'work'/self.aid;self.folder.mkdir(parents=True)
   runtime=self.root/'runtime';runtime.mkdir();(runtime/'source.py').write_text('pass\n');write(runtime/'SOURCE-MANIFEST.json',{'files':{'source.py':sha(runtime/'source.py')}})
+  shutil.copytree(pathlib.Path(__file__).resolve().parents[1]/'library',runtime/'library')
   write(self.root/'batch.json',{'runtime':{'root':'runtime'}})
   self.case=self.aid+'__probe';desc={'channels':[],'context_inputs':[],'limitations':[]}
   write(self.folder/'proposals/cases.json',{'cases':[{'case_id':self.case,'target_type':'boundary_probe','recording_description':desc}],'sweep_specs':[],'sweeps_expanded':True})

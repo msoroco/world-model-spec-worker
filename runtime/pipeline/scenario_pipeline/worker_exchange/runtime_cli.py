@@ -40,7 +40,7 @@ def materialize(manifest, case_id, destination, candidate='primary'):
 def execution_env():
     pipeline=Path(__file__).resolve().parents[1];runtime=pipeline.parent
     env=dict(os.environ)
-    env['PYTHONPATH']=os.pathsep.join([str(pipeline),str(runtime/'python'),env.get('PYTHONPATH','')])
+    env['PYTHONPATH']=os.pathsep.join([str(runtime),str(pipeline),str(runtime/'python'),env.get('PYTHONPATH','')])
     return env
 
 

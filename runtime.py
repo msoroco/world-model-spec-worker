@@ -8,11 +8,13 @@ sys.path.insert(1, str(ROOT / "runtime/pipeline/python"))
 
 from worker_exchange.common import read, sha
 from worker_exchange.runtime_cli import main
+from worker_exchange.runtime_integrity import verify as verify_runtime
 
 batch = read(ROOT / "batch.json")
 runtime = ROOT / batch["runtime"]["root"]
 if sha(runtime / "SOURCE-MANIFEST.json") != batch["runtime"]["source_manifest_sha256"]:
     raise ValueError("Frozen runtime changed")
+verify_runtime(ROOT, runtime, batch)
 
 if __name__ == "__main__":
     main()

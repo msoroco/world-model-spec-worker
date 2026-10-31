@@ -43,7 +43,7 @@ def run(runtime,output,validator=None,lake=None,compare_to=None):
     p=subprocess.run([str(Path(validator).resolve()),str(bad),str(converted/'manifest.json')],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True)
     if not p.returncode:raise ValueError('Decoder accepted dangling identity')
     negatives.append({'fixture':'dangling_core_identity','rejected':True,'reason':p.stderr.strip()})
-    env=dict(os.environ,PYTHONPATH=os.pathsep.join([str(runtime/'scenario_pipeline'),str(runtime/'python')]),PYTHONDONTWRITEBYTECODE='1')
+    env=dict(os.environ,PYTHONPATH=os.pathsep.join([str(runtime),str(runtime/'scenario_pipeline'),str(runtime/'python')]),PYTHONDONTWRITEBYTECODE='1')
     with (output/'existing-regressions.log').open('w') as log:
         subprocess.run([sys.executable,'-m','unittest','discover','-s',str(runtime/'tests'),'-v'],cwd=output,env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
     equivalent=None

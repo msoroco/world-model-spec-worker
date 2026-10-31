@@ -105,7 +105,7 @@ def main():
         cmd+=['-']
         wire=request;transport={'format':'inline','original_characters':len(json.dumps(request))}
         if len(json.dumps(request))>250000:
-            from prompt_encoding import canonical,referenced_request,resolve_request
+            from batch_pipeline.prompt_encoding import canonical,referenced_request,resolve_request
             source=(evidence if evidence else Path(temp))/'complete_request.json'
             source.write_text(canonical(request))
             wire=referenced_request(request,source.resolve())

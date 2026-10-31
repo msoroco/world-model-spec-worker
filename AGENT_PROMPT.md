@@ -19,6 +19,12 @@ against exact law text and witness context before choosing observables.
 Never invent a historically accepted requirement ID or treat a model metric
 as a legal rule.
 
+The top-level `skills/` is the worker's only skill directory. Before preparing
+packages, run `python3.11 runtime.py verify --runtime runtime/pipeline`, build
+the decoder from the pinned runtime Core, and run the CPU selftest. After any
+runtime update, rerun proofs bound to its previous source-manifest hash; a
+previous decoder or proof does not validate the updated runtime.
+
 Your output must be a **deployable delivery return**, not synthetic test cases
 or one research capability example per assignment. Plan all supported
 statutory branches, alternatives and exceptions for all 221 laws, using the

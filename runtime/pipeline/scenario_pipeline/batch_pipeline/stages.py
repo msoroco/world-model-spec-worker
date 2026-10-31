@@ -4,6 +4,7 @@ from pathlib import Path
 from .store import digest
 
 ROOT = Path(__file__).resolve().parents[1]
+SKILLS_ROOT = ROOT.parents[2] / 'skills'
 SKILLS = {'relevance': 'law-relevance-mapping', 'relevance_batch': 'law-relevance-mapping', 'template': 'law-cell-bindings',
           'judgment_observables': 'law-judgment-observables', 'bindings': 'law-cell-bindings',
           'cases': 'scenario-coverage-cases', 'construction': 'carla-scenario-build'}
@@ -11,7 +12,7 @@ SEMANTIC_STAGES = tuple(SKILLS)
 
 
 def skill(stage):
-    return (ROOT/'skills'/SKILLS[stage]/'SKILL.md').read_text()
+    return (SKILLS_ROOT/SKILLS[stage]/'SKILL.md').read_text()
 
 
 def run_info(store, run):

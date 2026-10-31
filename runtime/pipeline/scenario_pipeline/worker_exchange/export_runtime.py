@@ -71,7 +71,11 @@ def export(project,destination,fixture_attempt=None,capability_root=None):
     for folder in ('traffic_spec_adapter','batch_pipeline','worker_exchange'):
         target=destination/'scenario_pipeline'/folder;target.mkdir(parents=True)
         for p in (source/folder).glob('*.py'):shutil.copyfile(p,target/p.name)
-    for filename in ('authored_context.py','control_evidence.py','delivery_contract.py','expected_labels.py',
+    for filename in ('catalog.py','delivery_definitions.py','demo_rule_evidence.py','intentions.py',
+                     'lean_work.py','migrate_law_split.py','organize_sets.py','organize_work.py',
+                     'pipeline.py','production_verdicts.py','recording_readmes.py','recover_core_evidence.py',
+                     'run_selected.py','production_metadata.py','trace_derivations.py','trace_json.py',
+                     'authored_context.py','control_evidence.py','delivery_contract.py','expected_labels.py',
                      'review_recordings.py','trace_scope_audit.py','scenario_overlay.py','speed_overlay.py',
                      'workspaces.py','pipeline_paths.py','law_split.py','recording_store.py','convert_demo_videos.py','lane_signal_measurement.py'):
         shutil.copyfile(source/filename,destination/'scenario_pipeline'/filename)
@@ -90,7 +94,7 @@ def export(project,destination,fixture_attempt=None,capability_root=None):
     shutil.copyfile(library/'lean-toolchain',destination/'library/lean-toolchain')
     (destination/'ontology').mkdir()
     shutil.copyfile(library.parent/'ontology/ATOMS.md',destination/'ontology/ATOMS.md')
-    (destination/'requirements-cpu.txt').write_text('numpy==1.24.4\nshapely==1.8.5.post1\nnetworkx==2.6.3\nPillow==10.4.0\ntqdm==4.67.1\nmatplotlib==3.7.5\npydot==2.0.0\n')
+    (destination/'requirements-cpu.txt').write_text('numpy==1.24.4\nshapely==1.8.5.post1\nnetworkx==2.6.3\nPillow==10.4.0\ntqdm==4.67.1\nmatplotlib==3.7.5\npydot==2.0.0\nscipy==1.10.1\n')
     if fixture_attempt:fixture(fixture_attempt,destination/'fixtures/retained-speed')
     tests=destination/'tests';tests.mkdir()
     for name in ('test_traffic_spec_adapter.py','test_original_participant_projection.py','test_native_control_observations.py',
