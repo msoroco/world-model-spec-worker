@@ -9,7 +9,7 @@ if [[ $# -ne 1 || -z "$1" ]]; then
   exit 2
 fi
 branch="$(git branch --show-current)"
-if [[ "$branch" != 'worker/full-train-delivery' ]]; then
+if [[ "$branch" != "${WORKER_CHECKPOINT_BRANCH:-worker/full-train-delivery}" ]]; then
   echo "refusing to publish from unexpected branch: $branch" >&2
   exit 2
 fi

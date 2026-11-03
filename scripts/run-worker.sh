@@ -3,7 +3,7 @@ set -euo pipefail
 
 repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
-branch=worker/full-train-delivery
+branch="${WORKER_CHECKPOINT_BRANCH:-worker/full-train-delivery}"
 
 if [[ "$(git branch --show-current)" != "$branch" ]]; then
   echo "expected branch $branch" >&2
@@ -34,7 +34,7 @@ checkpoint_pid=$!
 
 codex_status=0
 codex exec --approve-for-me -m "$model" -c "model_reasoning_effort=$effort" \
-  'Create an active Goal for this thread: complete the full-train-delivery work in AGENT_PROMPT.md and finish with either a passing strict delivery gate or a best-effort return identifying every unresolved blocker. Preserve frozen inputs and truthful readiness statuses. Then read AGENT_PROMPT.md and complete the work assigned in batch.json. Do not edit batch.json. Git checkpoints are published by the separate timer; do not commit or push from the agent. If Goals are unavailable, continue the task and report that limitation.' || codex_status=$?
+  'Read TEST_ASSIGNMENT.md and complete its one real assignment deliverable. This is a temporary integration branch, so finish that one assignment artifact and stop. Do not commit or push; the separate timer handles Git.' || codex_status=$?
 
 touch "$run_dir/codex-exited"
 echo "Codex exited ($codex_status); waiting up to $interval seconds for the next scheduled Git checkpoint."
