@@ -12,15 +12,13 @@ On the machine that will run the worker agent:
 git clone --branch worker/full-train-delivery --single-branch \
   https://github.com/msoroco/world-model-spec-worker.git scenario-worker-full-train
 cd scenario-worker-full-train
-codex exec --approve-for-me \
-  -m gpt-6-sol -c model_reasoning_effort=medium \
-  "Create an active Goal for this thread: complete the full-train-delivery work in AGENT_PROMPT.md, publish progress checkpoints, and finish with either a passing strict delivery gate or a pushed best-effort return identifying every unresolved blocker. Preserve frozen inputs and truthful readiness statuses. Then read AGENT_PROMPT.md and complete the work assigned in batch.json. Do not edit batch.json. If Goals are unavailable, continue the task and report that limitation."
+scripts/run-worker.sh
 ```
 
-If available, I recommend **GPT-6-sol with medium reasoning**, or
-**GPT-6.1-sol with low or medium reasoning**. To use the latter, replace the
-`-m` value with `gpt-6.1-sol` and set `model_reasoning_effort=low` or
-`model_reasoning_effort=medium`. The worker needs Git push access.
+The launcher uses **GPT-6-sol with medium reasoning**. To use GPT-6.1-sol,
+run `WORKER_CODEX_MODEL=gpt-6.1-sol WORKER_CODEX_REASONING=low scripts/run-worker.sh`
+instead. It checks Git identity and attempts a dry-run push before spending
+model time. A later push can still fail; the timer logs and retries it.
 
 ## Keep the long task active
 
@@ -28,23 +26,24 @@ If you use an interactive Codex session, set this Goal in that same session
 before giving the agent the task:
 
 ```text
-/goal Complete the full-train-delivery work in AGENT_PROMPT.md. Continue through all independent assignments, publish progress checkpoints, and finish with either a passing strict delivery gate or a pushed best-effort return that identifies every unresolved blocker. Preserve frozen inputs and truthful readiness statuses.
+/goal Complete the full-train-delivery work in AGENT_PROMPT.md. Continue through all independent assignments and finish with either a passing strict delivery gate or a best-effort return that identifies every unresolved blocker. Preserve frozen inputs and truthful readiness statuses.
 ```
 
-Then prompt: `Read AGENT_PROMPT.md and complete the work assigned in batch.json. Do not edit batch.json.`
-The `codex exec` command above requests Goal creation in its ordinary prompt;
+Then prompt: `Read AGENT_PROMPT.md and complete the work assigned in batch.json. Do not edit batch.json. Do not commit or push; the separate timer publishes Git checkpoints.`
+The launcher requests Goal creation in its ordinary prompt;
 it does not run `/goal` as a shell or CLI command. Goal support depends on the
 Codex build. A Goal helps maintain the objective across turns. It does not
-replace checkpoint pushes or restart a stopped agent.
+restart a stopped agent.
 
 
 ## Notes
 ### Progress checkpoints
 
-The lead agent commits and attempts to push coherent work during the run,
-using `scripts/checkpoint.sh "short progress summary"` after every eight
-completed assignment packages or at least every 30 minutes when files have
-changed, whichever happens first. The script stages only `work/`, leaves
-frozen inputs alone, and retries an earlier unpushed commit. Assignment
-subagents never commit or push. A failed checkpoint push must not stop
-independent preparation; the lead records the failure and continues.
+`scripts/run-worker.sh` starts a separate Git timer before Codex. Every
+15 minutes it commits changed files under `work/` and attempts to push the
+branch. No changed files means no new commit. Failures are recorded under
+ignored `.runtime-work/worker-run.*/checkpoint.log` and retried on later
+ticks. After Codex finishes, the timer makes one more attempt at its next
+scheduled tick, within 15 minutes, and stops. No Git command is triggered by
+the exit itself. The launcher reports a failed final checkpoint. Set
+`WORKER_CHECKPOINT_INTERVAL_SECONDS` to change the interval.

@@ -5,7 +5,8 @@ You are the lead worker agent in this repository. Complete the frozen
 one of `partitions/full-train-01.json` through `full-train-08.json` to each.
 If your platform cannot run eight at once, process the eight owners in waves;
 keep assignment ownership disjoint and finish all eight. The lead alone edits
-shared files and commits/pushes the return branch. Work autonomously: do not
+shared files. A separate timer publishes Git checkpoints. Do not commit or
+push from this agent or its subagents. Work autonomously: do not
 ask the user questions or pause for clarification. Make reasonable, documented
 assumptions. Record precise blockers and continue every independent assignment.
 
@@ -56,17 +57,13 @@ GitHub issues or main-project set files. Do not alter frozen inputs or
 `batch.json`. The local operator chooses an exact prepared candidate and
 independently accepts evidence later.
 
-The lead publishes progress throughout the run. After every eight completed
-assignment packages, or at least every 30 minutes when files have changed,
-whichever comes first, collect coherent assignment snapshots and update
-`work/_shared/RETURN-REPORT.md` with completed IDs and current blockers.
-Invoke `scripts/checkpoint.sh "short progress summary"`. Only the lead may
-commit or push; subagents write their owned assignment directories and send
-progress to the lead. Do not wait for all eight partitions before the first
-checkpoint. A checkpoint can contain honest partial results. If Git push is
-rejected, preserve the commit, record the reason, and continue other work.
-Do not bypass approval controls. The script retries an unpushed commit at the
-next checkpoint; the final publication attempt remains required.
+Update `work/_shared/RETURN-REPORT.md` as assignments progress, including
+completed IDs and current blockers. Subagents write their owned assignment
+directories and send progress to the lead. The launcher runs a separate
+15-minute Git checkpoint timer; do not wait for a checkpoint before
+continuing work. A checkpoint can contain honest partial results. The timer
+logs failed commits or pushes under `.runtime-work/worker-run.*/checkpoint.log`
+and retries on later ticks. Do not bypass approval controls.
 
 The lead reviews every assignment and shared law matrix. Validate all
 nonbaseline exact cases, all four candidate plans per case, every comparison,
@@ -79,14 +76,13 @@ python3.11 worker_check.py --complete --require-delivery-ready
 ```
 
 Repair failures and rerun affected proofs while progress is possible. Run
-the strict gate even if some assignments remain incomplete. At the end, commit
-and attempt to push `worker/full-train-delivery` **whether the gate passes or
-fails**. Publish the complete best-effort return so the user can review it.
+the strict gate even if some assignments remain incomplete. At the end, write
+the complete best-effort return so the user can review it. Git publication
+is owned by the separate timer while this agent runs.
 Keep failed packages `partial` or `blocked`; never claim `ready` merely to pass
 the gate. Include exact gate commands, exit codes, hashed logs, completed
 work, blockers and resume instructions in `work/_shared/RETURN-REPORT.md`.
-Report the commit; assignment, law, branch, case, comparison, reuse and
+Report assignment, law, branch, case, comparison, reuse and
 candidate counts; gate result and log SHA-256; and unverified physical
-assumptions. Never claim CARLA execution or accepted recordings. If a remote
-access or automatic approval control rejects the push, preserve the local
-commit and report the rejected action and reason exactly. Do not bypass it.
+assumptions. Never claim CARLA execution or accepted recordings. If a Git
+checkpoint failed, report the exact error from the checkpoint log.
