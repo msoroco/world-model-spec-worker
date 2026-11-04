@@ -10,6 +10,17 @@ def require(condition, message):
         raise ValueError(message)
 
 
+def validate_selected_branch(plan, original):
+    """Only singular-witness assignments have one selected branch label."""
+    if 'branch' in original:
+        require(plan.get('selected_branch') == original['branch'], 'Selected witness branch changed')
+    else:
+        branches = original.get('branches')
+        require(isinstance(branches, list) and branches and
+                all(isinstance(branch, dict) for branch in branches),
+                'Missing frozen branch records')
+
+
 def selected_proposal_case_ids(proposal):
     """Neutral baselines define a comparison but are not delivery recordings."""
     return {case.get('case_id') for case in proposal['cases']
@@ -156,7 +167,7 @@ def check(repo, complete=False, require_ready=False):
             require(isinstance(plan.get(key),list), 'Missing/malformed plan '+key)
         require(plan['sources'] and plan['runtime_uncertainties'], 'Missing sources or explicit runtime limits')
         if batch.get('selected_branch_dispositions_required'):
-            require(plan.get('selected_branch') == original['branch'], 'Selected witness branch changed')
+            validate_selected_branch(plan, original)
             dispositions = plan.get('requirement_dispositions')
             require(isinstance(dispositions,list) and dispositions, 'Missing requirement dispositions')
             require(any(d.get('status')=='selected_required' for d in dispositions), 'No selected branch requirement')
