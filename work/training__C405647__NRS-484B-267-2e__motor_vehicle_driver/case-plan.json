@@ -1,0 +1,163 @@
+{
+  "assignment_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver",
+  "law_id": "NRS-484B-267-2e",
+  "cell_id": "C405647",
+  "actor": "motor_vehicle_driver",
+  "source_law_text": "Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: If possible, drive in a lane that is not adjacent to the lane in which the authorized emergency vehicle or official vehicle of a regulatory agency is moving, unless roadway, traffic, weather or other conditions make doing so unsafe or impossible. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.",
+  "source_law_citation": "NRS 484B.267(2)(e); with 484B.267(4)",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "moving/preparing emergency or regulatory vehicle",
+  "cell_fixed_facts": {
+    "layout": "road",
+    "maneuver": "travel",
+    "control": "emergency_vehicle"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "NRS-484B-267-2e",
+      "branch": "Moving emergency vehicle; conditional non-adjacent-lane duty",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 106,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_01",
+      "target_law_id": "NRS-484B-267-2e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "approach with feasible nonadjacent lane and move over",
+      "comparison_variable": "nonadjacent-lane feasibility",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_02",
+      "target_law_id": "NRS-484B-267-2e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "same setup staying adjacent despite feasibility",
+      "comparison_variable": "nonadjacent-lane feasibility",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_03",
+      "target_law_id": "NRS-484B-267-2e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "adjacent lane with documented unsafe/impossible move",
+      "comparison_variable": "nonadjacent-lane feasibility",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__planned_comparison",
+      "case_ids": [
+        "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_01",
+        "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_02",
+        "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_03"
+      ],
+      "deliberate_differences": [
+        "nonadjacent-lane feasibility"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "vehicle authority and qualifying flashing lights",
+    "preparing-to-move visible indication",
+    "lane adjacency and route",
+    "traffic/weather feasibility",
+    "officer direction"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "drv.responding_emergency",
+      "note": "the emergency or official vehicle with its lamps"
+    },
+    {
+      "term": "st.lane",
+      "note": "the lane it is moving in"
+    },
+    {
+      "term": "st.lane_adjacency",
+      "note": "which lanes are adjacent to it"
+    },
+    {
+      "term": "rel.occupies",
+      "note": "the lane the subject occupies"
+    },
+    {
+      "term": "drv.lane_change_feasible",
+      "note": "operationalizes 'if possible' and 'unsafe or impossible'"
+    },
+    {
+      "term": "env.precipitation",
+      "note": "weather conditions that excuse"
+    },
+    {
+      "term": "env.wet_road",
+      "note": "the same"
+    },
+    {
+      "term": "st.obstruction",
+      "note": "roadway conditions that excuse"
+    },
+    {
+      "term": "drv.queue_behind",
+      "note": "traffic conditions that excuse"
+    },
+    {
+      "term": "dev.human_direction",
+      "note": "the officer exception"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/assignment.json",
+      "sha256": "1215ef662a372a2fc5d26b6c04013724928f72ee9a47a19f6c0c22f5aa998efc"
+    },
+    {
+      "path": "inputs/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/witnesses.json",
+      "sha256": "38d969186e2789ef3b5525a0c069c55bfaff6e76f8e6fd3e0ace3488846a9f2a"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Conditional safety/possibility is unresolved judgment; do not label feasibility from lane count alone. Moving emergency actor and light state need Native proof."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

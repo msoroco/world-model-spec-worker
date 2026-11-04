@@ -1,0 +1,395 @@
+{
+  "assignment_id": "training__C111256__NRS-484B-283-1a__motor_vehicle_driver",
+  "law_id": "NRS-484B-283-1a",
+  "cell_id": "C111256",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "travel",
+    "control": "crosswalk"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.283(1)(a); with 484B.283(4)",
+    "text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: When official traffic-control devices are not in place or not in operation, the driver of a vehicle shall yield the right-of-way, slowing down or stopping if need be so to yield, to a pedestrian crossing the highway within a crosswalk when the pedestrian is upon the half of the highway upon which the vehicle is traveling or onto which the vehicle is turning, or when the pedestrian is approaching so closely from the opposite half of the highway as to be in danger. As used in this section, “half of the highway” means all traffic lanes of a highway which are designated for traffic traveling in one direction, and includes the entire highway in the case of a one-way highway.",
+    "sha256": "5ab5307a99b8b1c9a8f64e82f9f7f2bd30f02e24057a79a515171b66c054f30e"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Crosswalk crossing on ego's highway half."
+  ],
+  "selected_branch": null,
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-283-1a",
+      "source": "NRS 484B.283(1)(a); with 484B.283(4)",
+      "branch": "Crosswalk crossing on ego's highway half.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__witness_1",
+        "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__witness_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+    },
+    {
+      "requirement": "NRS-484B-283-1a",
+      "source": "NRS 484B.283(1)(a); with 484B.283(4)",
+      "branch": "the crossing rules the text cites for pedestrians outside crosswalks, the white-cane rule, and the school-crossing rule govern instead where they apply",
+      "status": "exception_pending",
+      "case_ids": [
+        "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__exception_1_1",
+        "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__exception_1_2"
+      ],
+      "evidence_or_gap": "Exact cited-law scope, actor eligibility, construction and observed evidence of this exception remain unverified; these are planning targets only."
+    }
+  ],
+  "activation_conditions": [
+    "official traffic-control devices are not in place or not in operation at the crossing",
+    "a pedestrian is crossing the highway within a crosswalk",
+    "the pedestrian is on the half of the highway the subject travels on or is turning onto, or is approaching so closely from the other half as to be in danger"
+  ],
+  "timing_requirements": [
+    {
+      "kind": "continuous",
+      "requirement": "the yield is owed while the pedestrian is in the protected half and until the conflict passes"
+    },
+    {
+      "kind": "ordering",
+      "requirement": "the pedestrian completes the crossing of the subject's path first"
+    }
+  ],
+  "unresolved_judgment_calls": [
+    "'in danger' is a judgement element bounding the approach from the far half"
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__witness_1",
+      "target_law_id": "NRS-484B-283-1a",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver waits for pedestrian occupying the governed highway half",
+      "comparison_variable": "crosswalk_pedestrian_yield",
+      "source_branch": "Crosswalk crossing on ego's highway half.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "intersection",
+          "maneuver": "travel",
+          "control": "crosswalk"
+        },
+        "activation_conditions_to_verify": [
+          "official traffic-control devices are not in place or not in operation at the crossing",
+          "a pedestrian is crossing the highway within a crosswalk",
+          "the pedestrian is on the half of the highway the subject travels on or is turning onto, or is approaching so closely from the other half as to be in danger"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver waits for pedestrian occupying the governed highway half"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "'in danger' is a judgement element bounding the approach from the far half"
+      ]
+    },
+    {
+      "case_id": "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__witness_2",
+      "target_law_id": "NRS-484B-283-1a",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver proceeds through pedestrian conflict while crossing remains active",
+      "comparison_variable": "crosswalk_pedestrian_yield",
+      "source_branch": "Crosswalk crossing on ego's highway half.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "intersection",
+          "maneuver": "travel",
+          "control": "crosswalk"
+        },
+        "activation_conditions_to_verify": [
+          "official traffic-control devices are not in place or not in operation at the crossing",
+          "a pedestrian is crossing the highway within a crosswalk",
+          "the pedestrian is on the half of the highway the subject travels on or is turning onto, or is approaching so closely from the other half as to be in danger"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver proceeds through pedestrian conflict while crossing remains active"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "'in danger' is a judgement element bounding the approach from the far half"
+      ]
+    },
+    {
+      "case_id": "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__exception_1_1",
+      "target_law_id": "NRS-484B-283-1a",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "hold selected activation with the crossing rules the text cites for pedestrians outside crosswalks, the white-cane rule, and the school-crossing rule govern instead where they apply absent",
+      "comparison_variable": "exception_1_applicability",
+      "source_branch": "the crossing rules the text cites for pedestrians outside crosswalks, the white-cane rule, and the school-crossing rule govern instead where they apply",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "intersection",
+          "maneuver": "travel",
+          "control": "crosswalk"
+        },
+        "activation_conditions_to_verify": [
+          "official traffic-control devices are not in place or not in operation at the crossing",
+          "a pedestrian is crossing the highway within a crosswalk",
+          "the pedestrian is on the half of the highway the subject travels on or is turning onto, or is approaching so closely from the other half as to be in danger"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "hold selected activation with the crossing rules the text cites for pedestrians outside crosswalks, the white-cane rule, and the school-crossing rule govern instead where they apply absent"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "'in danger' is a judgement element bounding the approach from the far half"
+      ]
+    },
+    {
+      "case_id": "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__exception_1_2",
+      "target_law_id": "NRS-484B-283-1a",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "hold selected activation with the crossing rules the text cites for pedestrians outside crosswalks, the white-cane rule, and the school-crossing rule govern instead where they apply present",
+      "comparison_variable": "exception_1_applicability",
+      "source_branch": "the crossing rules the text cites for pedestrians outside crosswalks, the white-cane rule, and the school-crossing rule govern instead where they apply",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "intersection",
+          "maneuver": "travel",
+          "control": "crosswalk"
+        },
+        "activation_conditions_to_verify": [
+          "official traffic-control devices are not in place or not in operation at the crossing",
+          "a pedestrian is crossing the highway within a crosswalk",
+          "the pedestrian is on the half of the highway the subject travels on or is turning onto, or is approaching so closely from the other half as to be in danger"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "hold selected activation with the crossing rules the text cites for pedestrians outside crosswalks, the white-cane rule, and the school-crossing rule govern instead where they apply present"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "'in danger' is a judgement element bounding the approach from the far half"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__witness_comparison",
+      "case_ids": [
+        "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__witness_1",
+        "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__witness_2"
+      ],
+      "deliberate_differences": [
+        "crosswalk_pedestrian_yield"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "same map geometry except named comparison variable",
+        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+      ]
+    },
+    {
+      "comparison_id": "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__exception_1_comparison",
+      "case_ids": [
+        "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__exception_1_1",
+        "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__exception_1_2"
+      ],
+      "deliberate_differences": [
+        "exception_1_applicability"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "same map geometry except named comparison variable",
+        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "ru.pedestrian",
+      "purpose": "the pedestrian crossing",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.crosswalk",
+      "purpose": "the crosswalk, marked or unmarked",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.occupies",
+      "purpose": "the pedestrian within the crosswalk",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_direction",
+      "purpose": "'half of the highway' = all lanes for one direction",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.one_way_roadway",
+      "purpose": "on a one-way highway the half is the whole highway",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.turning",
+      "purpose": "the half 'onto which the vehicle is turning'",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.yields_to",
+      "purpose": "the yield owed",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.speed",
+      "purpose": "'slowing down or stopping if need be'",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.stopped",
+      "purpose": "the halt where one is needed",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.time_to_conflict",
+      "purpose": "operationalizes 'approaching so closely … as to be in danger'",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.traffic_signal",
+      "purpose": "the activation condition: devices not in place or not in operation",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.inoperative",
+      "purpose": "the same",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "ru.pedestrian",
+      "mandatory": true,
+      "reason": "the pedestrian crossing"
+    },
+    {
+      "name": "st.crosswalk",
+      "mandatory": true,
+      "reason": "the crosswalk, marked or unmarked"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "the pedestrian within the crosswalk"
+    },
+    {
+      "name": "st.lane_direction",
+      "mandatory": true,
+      "reason": "'half of the highway' = all lanes for one direction"
+    },
+    {
+      "name": "st.one_way_roadway",
+      "mandatory": true,
+      "reason": "on a one-way highway the half is the whole highway"
+    },
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "reason": "the half 'onto which the vehicle is turning'"
+    },
+    {
+      "name": "drv.yields_to",
+      "mandatory": true,
+      "reason": "the yield owed"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "reason": "'slowing down or stopping if need be'"
+    },
+    {
+      "name": "drv.stopped",
+      "mandatory": true,
+      "reason": "the halt where one is needed"
+    },
+    {
+      "name": "drv.time_to_conflict",
+      "mandatory": true,
+      "reason": "operationalizes 'approaching so closely … as to be in danger'"
+    },
+    {
+      "name": "dev.traffic_signal",
+      "mandatory": true,
+      "reason": "the activation condition: devices not in place or not in operation"
+    },
+    {
+      "name": "dev.inoperative",
+      "mandatory": true,
+      "reason": "the same"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [],
+  "sources": [
+    {
+      "path": "inputs/training__C111256__NRS-484B-283-1a__motor_vehicle_driver/assignment.json",
+      "sha256": "95d7fdad6a7fa5fbb6a889278e5a1ba7e8c20e0d8a317e927f5ede39d9d8b9c4"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map realizes frozen layout, maneuver and control",
+    "Actor blueprints and controllers can produce proposed behavior",
+    "Four camera views and saved channels can establish every decisive relation",
+    "Legal context and exceptions can be represented without substituting authored targets for measurements"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+  ],
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
+    "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
+  ],
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+}

@@ -1,0 +1,241 @@
+{
+  "assignment_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver",
+  "law_id": "NRS-484B-400-1",
+  "cell_id": "C382355",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "right_turn",
+    "control": "right_turn_lane"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.400(1)",
+    "text": "If the driver of a vehicle intends to turn at an intersection and: The turn is a right turn, both the approach for the right turn and the right turn must be made from the right turn lane if the highway has a right turn lane as set forth in subsection 4 of NRS 484B.223 [NRS-484B-223-4a, NRS-484B-223-4b], or must be made from the extreme right lane.",
+    "sha256": "d79f4c2261b770a65cbb0d1aa4c0000869d7f0684fdc4f154ae5539cb2516aa8"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Referenced right-turn-lane branch."
+  ],
+  "selected_branch": null,
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-400-1",
+      "source": "NRS 484B.400(1)",
+      "branch": "Referenced right-turn-lane branch.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_1",
+        "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+    }
+  ],
+  "activation_conditions": [
+    "the subject intends to turn right at an intersection"
+  ],
+  "timing_requirements": [
+    {
+      "kind": "continuous",
+      "requirement": "both the approach and the turn must be from the required lane — the lane occupancy is tracked over the whole manoeuvre"
+    },
+    {
+      "kind": "span",
+      "requirement": "intention is shown by the turn that follows, so the trace must cover the approach and the turn"
+    }
+  ],
+  "unresolved_judgment_calls": [
+    "'intends to turn' is interior state; the completed turn is the observable substitute"
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_1",
+      "target_law_id": "NRS-484B-400-1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver approaches and turns from required right lane",
+      "comparison_variable": "right_turn_approach_lane",
+      "source_branch": "Referenced right-turn-lane branch.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "intersection",
+          "maneuver": "right_turn",
+          "control": "right_turn_lane"
+        },
+        "activation_conditions_to_verify": [
+          "the subject intends to turn right at an intersection"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver approaches and turns from required right lane"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "'intends to turn' is interior state; the completed turn is the observable substitute"
+      ]
+    },
+    {
+      "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_2",
+      "target_law_id": "NRS-484B-400-1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver approaches or turns from a lane other than required right lane",
+      "comparison_variable": "right_turn_approach_lane",
+      "source_branch": "Referenced right-turn-lane branch.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "intersection",
+          "maneuver": "right_turn",
+          "control": "right_turn_lane"
+        },
+        "activation_conditions_to_verify": [
+          "the subject intends to turn right at an intersection"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver approaches or turns from a lane other than required right lane"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "'intends to turn' is interior state; the completed turn is the observable substitute"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_comparison",
+      "case_ids": [
+        "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_1",
+        "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_2"
+      ],
+      "deliberate_differences": [
+        "right_turn_approach_lane"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "same map geometry except named comparison variable",
+        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "drv.turning",
+      "purpose": "the right turn at the intersection",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.intersection",
+      "purpose": "the intersection",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.turn_lane",
+      "purpose": "a right turn lane, side=right, where the highway has one",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.extreme_lane",
+      "purpose": "otherwise the extreme right lane, side=right",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.occupies",
+      "purpose": "the lane occupied on the approach and through the turn",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.approaching",
+      "purpose": "the approach phase",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_adjacency",
+      "purpose": "the lane ordinal in the subject's direction",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "reason": "the right turn at the intersection"
+    },
+    {
+      "name": "st.intersection",
+      "mandatory": true,
+      "reason": "the intersection"
+    },
+    {
+      "name": "st.turn_lane",
+      "mandatory": true,
+      "reason": "a right turn lane, side=right, where the highway has one"
+    },
+    {
+      "name": "drv.extreme_lane",
+      "mandatory": true,
+      "reason": "otherwise the extreme right lane, side=right"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "the lane occupied on the approach and through the turn"
+    },
+    {
+      "name": "drv.approaching",
+      "mandatory": true,
+      "reason": "the approach phase"
+    },
+    {
+      "name": "st.lane_adjacency",
+      "mandatory": true,
+      "reason": "the lane ordinal in the subject's direction"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [],
+  "sources": [
+    {
+      "path": "inputs/training__C382355__NRS-484B-400-1__motor_vehicle_driver/assignment.json",
+      "sha256": "d3150b8a2f434a697fedf18a09d70b00bbe71d0f6672c3a4f1624d61f9bcadfd"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map realizes frozen layout, maneuver and control",
+    "Actor blueprints and controllers can produce proposed behavior",
+    "Four camera views and saved channels can establish every decisive relation",
+    "Legal context and exceptions can be represented without substituting authored targets for measurements"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+  ],
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
+    "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
+  ],
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+}

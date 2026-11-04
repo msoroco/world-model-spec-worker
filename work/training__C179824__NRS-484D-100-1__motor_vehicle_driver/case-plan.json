@@ -1,0 +1,224 @@
+{
+  "assignment_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver",
+  "law_id": "NRS-484D-100-1",
+  "cell_id": "C179824",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "paved_road",
+    "maneuver": "travel",
+    "control": "traffic_control_device"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484D.100(1)",
+    "text": "Every vehicle upon a highway of this State, subject to exceptions with respect to parked vehicles as stated in chapters 484A to 484E, inclusive, of NRS, must display lighted lamps and illuminating devices as respectively required in this chapter for different classes of vehicles: (a) At any time from one-half hour after sunset to one-half hour before sunrise; (b) At any other time when, because of insufficient light or unfavorable atmospheric conditions, persons and vehicles on the highway are not clearly discernible at a distance of 1,000 feet ahead; and (c) When directed by an official traffic control device.",
+    "sha256": "0a7431e64d5644d8ceb232d52b5d686c86104071c7eb88d49aa64c46bed8366a",
+    "text_sha256": "0a7431e64d5644d8ceb232d52b5d686c86104071c7eb88d49aa64c46bed8366a"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "(c) Official traffic-control device directs lamp use",
+  "witness_branches": [
+    "(c) Official traffic-control device directs lamp use"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484D-100-1",
+      "source": "NRS 484D.100(1)",
+      "branch": "(c) Official traffic-control device directs lamp use",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1",
+        "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+    },
+    {
+      "requirement": "NRS-484D-100-1",
+      "source": "NRS 484D.100(1)",
+      "branch": "Textual exceptions, alternatives, or dependencies: except",
+      "status": "exception_pending",
+      "case_ids": [],
+      "evidence_or_gap": "Each applicable statutory qualifier requires a separately controlled construction or an explicit unsupported-physical finding; source language must be retained in audit."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Same frozen cell and actor with target activation absent; context only, no selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484D-100-1",
+      "kind": "planned_only",
+      "source_branch": "(c) Official traffic-control device directs lamp use",
+      "physical_target": "activate required lamps when official device directs",
+      "comparison_variable": "lamp state under governing official device",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2",
+      "target_law_id": "NRS-484D-100-1",
+      "kind": "planned_only",
+      "source_branch": "(c) Official traffic-control device directs lamp use",
+      "physical_target": "leave required lamps unlit when official device directs",
+      "comparison_variable": "lamp state under governing official device",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1",
+        "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2"
+      ],
+      "deliberate_differences": [
+        "lamp state under governing official device"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
+        "route and controller policy except requested comparison variable",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "sig.headlamp",
+      "purpose": "state off / low_beam / high_beam — the lamps displayed",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "sig.position_lamp",
+      "purpose": "the other required illuminating devices",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.civil_night",
+      "purpose": "(a) from half an hour after sunset to half an hour before sunrise",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "env.civil_time",
+      "purpose": "the date and clock time that fixes it",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "env.visibility",
+      "purpose": "(b) insufficient light or unfavourable atmospheric conditions at 1,000 feet",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "env.darkness",
+      "purpose": "the observed light level",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "env.precipitation",
+      "purpose": "an unfavourable atmospheric condition",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.regulatory_sign",
+      "purpose": "(c) a device directing lamps to be used",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.highway",
+      "purpose": "the highway the vehicle is on",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.standing_or_parked",
+      "purpose": "the parked-vehicle exceptions",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "sig.headlamp",
+      "mandatory": true,
+      "reason": "state off / low_beam / high_beam — the lamps displayed"
+    },
+    {
+      "name": "sig.position_lamp",
+      "mandatory": true,
+      "reason": "the other required illuminating devices"
+    },
+    {
+      "name": "drv.civil_night",
+      "mandatory": true,
+      "reason": "(a) from half an hour after sunset to half an hour before sunrise"
+    },
+    {
+      "name": "env.civil_time",
+      "mandatory": true,
+      "reason": "the date and clock time that fixes it"
+    },
+    {
+      "name": "env.visibility",
+      "mandatory": true,
+      "reason": "(b) insufficient light or unfavourable atmospheric conditions at 1,000 feet"
+    },
+    {
+      "name": "env.darkness",
+      "mandatory": true,
+      "reason": "the observed light level"
+    },
+    {
+      "name": "env.precipitation",
+      "mandatory": true,
+      "reason": "an unfavourable atmospheric condition"
+    },
+    {
+      "name": "dev.regulatory_sign",
+      "mandatory": true,
+      "reason": "(c) a device directing lamps to be used"
+    },
+    {
+      "name": "st.highway",
+      "mandatory": true,
+      "reason": "the highway the vehicle is on"
+    },
+    {
+      "name": "drv.standing_or_parked",
+      "mandatory": true,
+      "reason": "the parked-vehicle exceptions"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json",
+      "sha256": "3bae020135926815188e6702c7dd5e0b7f60e632fe5e55f3efb23f39dac0169e"
+    },
+    {
+      "path": "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/witnesses.json",
+      "sha256": "409c4a7c83a708d65d38d38c6ef1ce0e02aa34dcff4ef808dd6adee3045b93a5"
+    }
+  ],
+  "existing_evidence": [],
+  "reuse_count": 0,
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
+    "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
+    "No CARLA execution or accepted recording is claimed.",
+    "Night-time, poor visibility and device direction are distinct activation branches; vehicle-class lamp requirements and parked-vehicle exceptions remain dependencies."
+  ],
+  "unverified_physical_assumptions": [
+    "Frozen cell can physically realize required law context",
+    "Actor blueprint and route can realize each requested behavior",
+    "Decisive physical distinction can be seen by retained cameras"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+  ],
+  "source_context_review": "Night-time, poor visibility and device direction are distinct activation branches; vehicle-class lamp requirements and parked-vehicle exceptions remain dependencies."
+}

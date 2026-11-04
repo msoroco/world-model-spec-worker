@@ -1,0 +1,150 @@
+{
+  "assignment_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver",
+  "law_id": "LVMC-11-52-130-A7",
+  "cell_id": "C150094",
+  "actor": "motor_vehicle_driver",
+  "source_law_text": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: In front of or within five feet of a public or private driveway; provided, however, that this provision does not apply to the parking of a vehicle in or near a private driveway by a person who owns or is in control of that driveway, or who is a family member or invitee of the person so owning or controlling the driveway. The provisions of Paragraphs (1) and (7) of Subsection (A) of this Section do not apply to a United States Postal Service vehicle while it is being operated on official business.",
+  "source_law_citation": "LVMC 11.52.130(A)(7); with 11.52.130(B)",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "driveway frontage stopping or parking",
+  "cell_fixed_facts": {
+    "layout": "one_way_road",
+    "maneuver": "park",
+    "control": "driveway_entrance"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "LVMC-11-52-130-A7",
+      "branch": "parking near driveway",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 45,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_01",
+      "target_law_id": "LVMC-11-52-130-A7",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "park beyond five feet of driveway frontage",
+      "comparison_variable": "distance from driveway and exception status",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02",
+      "target_law_id": "LVMC-11-52-130-A7",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "park within five feet without ownership/invitee exception",
+      "comparison_variable": "distance from driveway and exception status",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_03",
+      "target_law_id": "LVMC-11-52-130-A7",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "park within five feet with documented owner/invitee status",
+      "comparison_variable": "distance from driveway and exception status",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__planned_comparison",
+      "case_ids": [
+        "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_01",
+        "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02",
+        "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_03"
+      ],
+      "deliberate_differences": [
+        "distance from driveway and exception status"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "driveway opening and curb projection",
+    "vehicle footprint distance in feet",
+    "stop/stand/park time",
+    "owner/invitee and USPS status"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "st.driveway_or_alley_entrance",
+      "note": "the public or private driveway"
+    },
+    {
+      "term": "rel.centre_distance",
+      "note": "the five feet on either side, and 'in front of'"
+    },
+    {
+      "term": "drv.standing_or_parked",
+      "note": "the vehicle at rest"
+    },
+    {
+      "term": "rel.occupies",
+      "note": "the footprint across the driveway mouth"
+    },
+    {
+      "term": "kin.extent",
+      "note": "the body, against the five-foot bands"
+    },
+    {
+      "term": "ru.official_vehicle",
+      "note": "the postal vehicle the exception names"
+    },
+    {
+      "term": "dev.regulatory_sign",
+      "note": "any markings at the driveway"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/assignment.json",
+      "sha256": "919bc4fe8a9bc47f80be32b4594ac8078003c0581632323424055c02c8453e94"
+    },
+    {
+      "path": "inputs/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/witnesses.json",
+      "sha256": "e3167d2268bfd919c464ede8af0f3f52754973eb9061f47c7e76b966737399ca"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Private-driveway ownership/invitee, USPS official business and compelled-stop exceptions are nonvisual authority facts requiring declaration."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

@@ -1,0 +1,218 @@
+{
+  "assignment_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver",
+  "law_id": "NRS-484B-560-7a",
+  "cell_id": "C202465",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "rail_crossing",
+    "maneuver": "cross_railway",
+    "control": "rail_track"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.560(7)(a); with 484B.560(8)",
+    "text": "It is unlawful for the driver of any vehicle: When crossing at grade any track or tracks of a railroad, to fail to completely cross the track or tracks without stopping due to insufficient: (1) Space for the vehicle on the opposite side of the railroad crossing; or (2) Undercarriage clearance of the vehicle. As used in this section, “completely cross” means to travel across a railroad track or tracks in such a manner that the trailing end of the vehicle is 15 feet or more past the nearest rail of the railroad track or tracks.",
+    "sha256": "05c9b0823793d39cc18cda9ff91c2bb887599d2304a29c0773bd297a73685fd0"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Opposite-side space insufficiency."
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-560-7a",
+      "source": "NRS 484B.560(7)(a); with 484B.560(8)",
+      "branch": "Opposite-side space insufficiency.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__probe_1",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__probe_2"
+      ],
+      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    },
+    {
+      "requirement": "NRS-484B-560-7a",
+      "source": "NRS 484B.560(7)(a); with 484B.560(8)",
+      "branch": "undercarriage-clearance alternative",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    },
+    {
+      "requirement": "NRS-484B-560-7a",
+      "source": "NRS 484B.560(7)(a); with 484B.560(8)",
+      "branch": "completely-cross trailing-end definition",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; retained only as a proposal, not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__probe_1",
+      "target_law_id": "NRS-484B-560-7a",
+      "kind": "planned_only",
+      "target_type": "below",
+      "physical_target": "vehicle crosses without stopping and trailing end reaches 15 ft beyond nearest rail",
+      "comparison_variable": "opposite_side_clearance_feet",
+      "source_branch": "Opposite-side space insufficiency.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__probe_2",
+      "target_law_id": "NRS-484B-560-7a",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "insufficient opposite-side space causes stop before full 15-ft clearance",
+      "comparison_variable": "opposite_side_clearance_feet",
+      "source_branch": "Opposite-side space insufficiency.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__probe_1",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__probe_2"
+      ],
+      "deliberate_differences": [
+        "opposite_side_clearance_feet"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor and physical road context",
+        "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "st.railway_crossing",
+      "purpose": "the track or tracks and the nearest rail",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.crossing_line",
+      "purpose": "the crossing of the track",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.cleared_line",
+      "purpose": "'completely cross': the trailing end 15 feet or more past the nearest rail",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.extent",
+      "purpose": "the body, from which the trailing end is taken",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.stopped",
+      "purpose": "the halt on the crossing that the rule forbids",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.surface_gap",
+      "purpose": "(1) the space available on the opposite side",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.following",
+      "purpose": "the queue that leaves no space",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.grade",
+      "purpose": "(2) undercarriage clearance — the hump geometry that grounds a vehicle",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.velocity",
+      "purpose": "the stop while on the tracks",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [],
+  "sources": [
+    {
+      "path": "inputs/training__C202465__NRS-484B-560-7a__motor_vehicle_driver/assignment.json",
+      "sha256": "d7a150d5ea5ff1c666ba6af57be2dd94175cfa0c71ef600e4e36fec3ea640d26"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction"
+  ],
+  "blockers": [
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ],
+  "selected_branch": null,
+  "observations": [
+    {
+      "name": "st.railway_crossing",
+      "mandatory": true,
+      "reason": "the track or tracks and the nearest rail"
+    },
+    {
+      "name": "drv.crossing_line",
+      "mandatory": true,
+      "reason": "the crossing of the track"
+    },
+    {
+      "name": "drv.cleared_line",
+      "mandatory": true,
+      "reason": "'completely cross': the trailing end 15 feet or more past the nearest rail"
+    },
+    {
+      "name": "kin.extent",
+      "mandatory": true,
+      "reason": "the body, from which the trailing end is taken"
+    },
+    {
+      "name": "drv.stopped",
+      "mandatory": true,
+      "reason": "the halt on the crossing that the rule forbids"
+    },
+    {
+      "name": "rel.surface_gap",
+      "mandatory": true,
+      "reason": "(1) the space available on the opposite side"
+    },
+    {
+      "name": "drv.following",
+      "mandatory": true,
+      "reason": "the queue that leaves no space"
+    },
+    {
+      "name": "st.grade",
+      "mandatory": true,
+      "reason": "(2) undercarriage clearance — the hump geometry that grounds a vehicle"
+    },
+    {
+      "name": "kin.velocity",
+      "mandatory": true,
+      "reason": "the stop while on the tracks"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction",
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ]
+}

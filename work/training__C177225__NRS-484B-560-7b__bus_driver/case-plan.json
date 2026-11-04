@@ -1,0 +1,225 @@
+{
+  "assignment_id": "training__C177225__NRS-484B-560-7b__bus_driver",
+  "actor": "bus_driver",
+  "cell_id": "C177225",
+  "law_id": "NRS-484B-560-7b",
+  "selected_branch": null,
+  "scope_branches": [
+    "Police officer direction to a bus driver."
+  ],
+  "source_law_text": "It is unlawful for the driver of any vehicle: To fail to obey an official traffic-control device or the directions of a police officer at a railroad crossing.",
+  "source_law_citation": "NRS 484B.560(7)(b)",
+  "requirement_dispositions": [
+    {
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: It is unlawful for the driver of any vehicle:; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C177225__NRS-484B-560-7b__bus_driver__reference",
+        "training__C177225__NRS-484B-560-7b__bus_driver__contrast"
+      ]
+    },
+    {
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: To fail to obey an official traffic-control device or the directions of a police officer at a railroad crossing.; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C177225__NRS-484B-560-7b__bus_driver__reference",
+        "training__C177225__NRS-484B-560-7b__bus_driver__contrast"
+      ]
+    },
+    {
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: Police officer direction to a bus driver.; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C177225__NRS-484B-560-7b__bus_driver__reference",
+        "training__C177225__NRS-484B-560-7b__bus_driver__contrast"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C177225__NRS-484B-560-7b__bus_driver__reference",
+      "target_law_id": "NRS-484B-560-7b",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "bus_obeys_officer_direction",
+      "comparison_unit": "bool",
+      "requested_setting": "reference",
+      "recorded_value": null,
+      "case_description": "rail-crossing officer direction obeyed versus not obeyed",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    },
+    {
+      "case_id": "training__C177225__NRS-484B-560-7b__bus_driver__contrast",
+      "target_law_id": "NRS-484B-560-7b",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "bus_obeys_officer_direction",
+      "comparison_unit": "bool",
+      "requested_setting": "contrast",
+      "recorded_value": null,
+      "case_description": "rail-crossing officer direction obeyed versus not obeyed",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C177225__NRS-484B-560-7b__bus_driver__comparison_main",
+      "case_ids": [
+        "training__C177225__NRS-484B-560-7b__bus_driver__reference",
+        "training__C177225__NRS-484B-560-7b__bus_driver__contrast"
+      ],
+      "deliberate_differences": [
+        "bus_obeys_officer_direction"
+      ],
+      "fixed_conditions": [
+        "cell",
+        "actor",
+        "legal context",
+        "traffic controls",
+        "weather",
+        "other controller settings",
+        "camera and capture profile"
+      ],
+      "status": "planned_unverified"
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_pose",
+      "unit": "m,deg",
+      "mandatory": true,
+      "purpose": "Measured position, heading and footprint over time"
+    },
+    {
+      "name": "ego_speed",
+      "unit": "m/s",
+      "mandatory": true,
+      "purpose": "Observed movement and stop intervals"
+    },
+    {
+      "name": "bus_obeys_officer_direction",
+      "unit": "bool",
+      "mandatory": true,
+      "purpose": "rail-crossing officer direction obeyed versus not obeyed"
+    }
+  ],
+  "source_observation_mapping": {
+    "st.railway_crossing": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "bus_obeys_officer_direction"
+      ],
+      "source_refs": [
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+      ]
+    },
+    "dev.railway_signal_or_gate": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "bus_obeys_officer_direction"
+      ],
+      "source_refs": [
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+      ]
+    },
+    "dev.stop_sign": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "bus_obeys_officer_direction"
+      ],
+      "source_refs": [
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "bus_obeys_officer_direction"
+      ],
+      "source_refs": [
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+      ]
+    },
+    "dev.human_direction": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "bus_obeys_officer_direction"
+      ],
+      "source_refs": [
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "bus_obeys_officer_direction"
+      ],
+      "source_refs": [
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "bus_obeys_officer_direction"
+      ],
+      "source_refs": [
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "bus_obeys_officer_direction"
+      ],
+      "source_refs": [
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json",
+      "sha256": "c94d7d9e154825bb4ded1da972ada6f75066c5f52894c50357b0d26f0cb5c65b"
+    },
+    {
+      "path": "inputs/training__C177225__NRS-484B-560-7b__bus_driver/witnesses.json",
+      "sha256": "90a928e177e1a11d11f723addb78257cde9b53083c5d788b26663c22e332f5c2"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "set_id": "full-train",
+      "membership_rows": 0,
+      "status": "unreviewed_membership_only",
+      "reuse_receipt": null
+    }
+  ],
+  "runtime_uncertainties": [
+    "No exact CARLA construction, four candidate variants, or offline feasibility proof exists for these case definitions.",
+    "No positive/negative saved fixture, semantic stage validation, independent saved audit, or comparison audit exists.",
+    "Historical membership is context only; no source-hashed accepted equivalence receipt was verified.",
+    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified."
+  ],
+  "selection_targets": [
+    "full-train"
+  ]
+}

@@ -1,0 +1,204 @@
+{
+  "assignment_id": "training__C227853__NRS-484B-410__motor_vehicle_driver",
+  "law_id": "NRS-484B-410",
+  "cell_id": "C227853",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "road",
+    "maneuver": "depart_parked",
+    "control": "curb"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.410",
+    "text": "A person, except when stopping, standing or parking where no parking is permitted, shall not start a vehicle which is stopped, standing or parked on a highway nor enter upon a highway unless and until such movement can be made with safety.",
+    "sha256": "a51e49cd4b28938e205275b3a7dcfdfe93cc70cb0fe6beac14fc7b32cd80875a",
+    "text_sha256": "a51e49cd4b28938e205275b3a7dcfdfe93cc70cb0fe6beac14fc7b32cd80875a"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "Start from a parked position on a highway",
+  "witness_branches": [
+    "Start from a parked position on a highway"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-410",
+      "source": "NRS 484B.410",
+      "branch": "Start from a parked position on a highway",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_1",
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+    },
+    {
+      "requirement": "NRS-484B-410",
+      "source": "NRS 484B.410",
+      "branch": "Textual exceptions, alternatives, or dependencies: except, unless",
+      "status": "exception_pending",
+      "case_ids": [],
+      "evidence_or_gap": "Each applicable statutory qualifier requires a separately controlled construction or an explicit unsupported-physical finding; source language must be retained in audit."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Same frozen cell and actor with target activation absent; context only, no selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484B-410",
+      "kind": "planned_only",
+      "source_branch": "Start from a parked position on a highway",
+      "physical_target": "start from highway parking only after path is clear",
+      "comparison_variable": "clearance and conflict during start",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_2",
+      "target_law_id": "NRS-484B-410",
+      "kind": "planned_only",
+      "source_branch": "Start from a parked position on a highway",
+      "physical_target": "start from highway parking into conflicting traffic",
+      "comparison_variable": "clearance and conflict during start",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_1",
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_2"
+      ],
+      "deliberate_differences": [
+        "clearance and conflict during start"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
+        "route and controller policy except requested comparison variable",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "drv.standing_or_parked",
+      "purpose": "the vehicle is stopped, standing or parked",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.moving_off",
+      "purpose": "the start from rest",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.highway",
+      "purpose": "the highway started onto or entered",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.lane_change_feasible",
+      "purpose": "operationalizes 'can be made with safety' for the lane entered",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.time_to_conflict",
+      "purpose": "with users on the highway",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.surface_gap",
+      "purpose": "the gap accepted",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.hard_deceleration",
+      "purpose": "a user forced to brake by the start",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.curb_zone",
+      "purpose": "'where no parking is permitted' — the carve-out for a vehicle that must move",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "drv.standing_or_parked",
+      "mandatory": true,
+      "reason": "the vehicle is stopped, standing or parked"
+    },
+    {
+      "name": "drv.moving_off",
+      "mandatory": true,
+      "reason": "the start from rest"
+    },
+    {
+      "name": "st.highway",
+      "mandatory": true,
+      "reason": "the highway started onto or entered"
+    },
+    {
+      "name": "drv.lane_change_feasible",
+      "mandatory": true,
+      "reason": "operationalizes 'can be made with safety' for the lane entered"
+    },
+    {
+      "name": "drv.time_to_conflict",
+      "mandatory": true,
+      "reason": "with users on the highway"
+    },
+    {
+      "name": "rel.surface_gap",
+      "mandatory": true,
+      "reason": "the gap accepted"
+    },
+    {
+      "name": "drv.hard_deceleration",
+      "mandatory": true,
+      "reason": "a user forced to brake by the start"
+    },
+    {
+      "name": "st.curb_zone",
+      "mandatory": true,
+      "reason": "'where no parking is permitted' — the carve-out for a vehicle that must move"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C227853__NRS-484B-410__motor_vehicle_driver/assignment.json",
+      "sha256": "802ff9fea112e0513eb224a8cd99000c8244e0b64d9b71b03be2bb668e8146ca"
+    },
+    {
+      "path": "inputs/training__C227853__NRS-484B-410__motor_vehicle_driver/witnesses.json",
+      "sha256": "fb340c19528bb1df391271a82c8c4f409c65710a9763d71b428908aaa5aee4c5"
+    }
+  ],
+  "existing_evidence": [],
+  "reuse_count": 0,
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
+    "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
+    "No CARLA execution or accepted recording is claimed.",
+    "Starting a stopped highway vehicle and entering a highway are alternative movements. Safety is a judgment standard, so preserve conflict trajectories without claiming a legal cutoff."
+  ],
+  "unverified_physical_assumptions": [
+    "Frozen cell can physically realize required law context",
+    "Actor blueprint and route can realize each requested behavior",
+    "Decisive physical distinction can be seen by retained cameras"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+  ],
+  "source_context_review": "Starting a stopped highway vehicle and entering a highway are alternative movements. Safety is a judgment standard, so preserve conflict trajectories without claiming a legal cutoff."
+}

@@ -1,0 +1,224 @@
+{
+  "assignment_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C110454",
+  "law_id": "NRS-484B-213-2b",
+  "selected_branch": null,
+  "scope_branches": [
+    null
+  ],
+  "source_law_text": "A vehicle must not be driven to the left side of the highway at any time: When approaching within 100 feet or traversing any intersection or railroad grade crossing. Subsection 2 does not apply upon a one-way highway.",
+  "source_law_citation": "NRS 484B.213(2)(b); with 484B.213(3)",
+  "requirement_dispositions": [
+    {
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: A vehicle must not be driven to the left side of the highway at any time:; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__reference",
+        "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__contrast"
+      ]
+    },
+    {
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: When approaching within 100 feet or traversing any intersection or railroad grade crossing.; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__reference",
+        "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__contrast"
+      ]
+    },
+    {
+      "requirement": "text-2",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "exception_pending",
+      "evidence_or_gap": "Exact statute: Subsection 2 does not apply upon a one-way highway.; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": []
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__reference",
+      "target_law_id": "NRS-484B-213-2b",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "left_side_entry_distance_to_intersection",
+      "comparison_unit": "ft",
+      "requested_setting": "reference",
+      "recorded_value": null,
+      "case_description": "left-side driving approaching or traversing an intersection/rail crossing",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ]
+    },
+    {
+      "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__contrast",
+      "target_law_id": "NRS-484B-213-2b",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "left_side_entry_distance_to_intersection",
+      "comparison_unit": "ft",
+      "requested_setting": "contrast",
+      "recorded_value": null,
+      "case_description": "left-side driving approaching or traversing an intersection/rail crossing",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__comparison_main",
+      "case_ids": [
+        "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__reference",
+        "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__contrast"
+      ],
+      "deliberate_differences": [
+        "left_side_entry_distance_to_intersection"
+      ],
+      "fixed_conditions": [
+        "cell",
+        "actor",
+        "legal context",
+        "traffic controls",
+        "weather",
+        "other controller settings",
+        "camera and capture profile"
+      ],
+      "status": "planned_unverified"
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_pose",
+      "unit": "m,deg",
+      "mandatory": true,
+      "purpose": "Measured position, heading and footprint over time"
+    },
+    {
+      "name": "ego_speed",
+      "unit": "m/s",
+      "mandatory": true,
+      "purpose": "Observed movement and stop intervals"
+    },
+    {
+      "name": "left_side_entry_distance_to_intersection",
+      "unit": "ft",
+      "mandatory": true,
+      "purpose": "left-side driving approaching or traversing an intersection/rail crossing"
+    }
+  ],
+  "source_observation_mapping": {
+    "st.intersection": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "left_side_entry_distance_to_intersection"
+      ],
+      "source_refs": [
+        "inputs/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.railway_crossing": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "left_side_entry_distance_to_intersection"
+      ],
+      "source_refs": [
+        "inputs/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.approaching": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "left_side_entry_distance_to_intersection"
+      ],
+      "source_refs": [
+        "inputs/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.centre_distance": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "left_side_entry_distance_to_intersection"
+      ],
+      "source_refs": [
+        "inputs/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "left_side_entry_distance_to_intersection"
+      ],
+      "source_refs": [
+        "inputs/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "left_side_entry_distance_to_intersection"
+      ],
+      "source_refs": [
+        "inputs/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.in_intersection": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "left_side_entry_distance_to_intersection"
+      ],
+      "source_refs": [
+        "inputs/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.one_way_roadway": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "left_side_entry_distance_to_intersection"
+      ],
+      "source_refs": [
+        "inputs/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/assignment.json",
+      "sha256": "0c9f45319324999edde627db7de2cb9826a05a8b9c276bf2484fe85508153bde"
+    },
+    {
+      "path": "inputs/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/witnesses.json",
+      "sha256": "f84cc9139c25f01f4a1dd2d7a15eb7bf85e5de706a11541c408a4892b606f6cf"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "set_id": "full-train",
+      "membership_rows": 3,
+      "status": "unreviewed_membership_only",
+      "reuse_receipt": null
+    }
+  ],
+  "runtime_uncertainties": [
+    "No exact CARLA construction, four candidate variants, or offline feasibility proof exists for these case definitions.",
+    "No positive/negative saved fixture, semantic stage validation, independent saved audit, or comparison audit exists.",
+    "Historical membership is context only; no source-hashed accepted equivalence receipt was verified.",
+    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified."
+  ],
+  "selection_targets": [
+    "full-train"
+  ]
+}

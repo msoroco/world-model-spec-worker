@@ -1,0 +1,226 @@
+{
+  "assignment_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver",
+  "law_id": "NRS-484B-307-7a",
+  "cell_id": "C111603",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "turn",
+    "control": "other_vehicle"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.307(7)(a)",
+    "text": "Where the signal is a flashing yellow turn arrow, displayed alone or in combination with another signal: Vehicular traffic facing the signal is permitted to cautiously enter the intersection only to make the movement indicated by the arrow signal, or other such movement as is permitted by other signal indications displayed at the same time. Such vehicular traffic must yield the right-of-way to pedestrians lawfully within the intersection or an adjacent crosswalk and yield the right-of-way to other traffic lawfully within the intersection.",
+    "sha256": "60f726538e4db1df3b5da73637e803093b38723e84d1b2fd55ed337ebd3cad23",
+    "text_sha256": "60f726538e4db1df3b5da73637e803093b38723e84d1b2fd55ed337ebd3cad23"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "Other-traffic yield duty",
+  "witness_branches": [
+    "Other-traffic yield duty"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-307-7a",
+      "source": "NRS 484B.307(7)(a)",
+      "branch": "Other-traffic yield duty",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_1",
+        "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Same frozen cell and actor with target activation absent; context only, no selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484B-307-7a",
+      "kind": "planned_only",
+      "source_branch": "Other-traffic yield duty",
+      "physical_target": "turn on flashing yellow arrow after yielding to lawful users",
+      "comparison_variable": "yield timing under flashing yellow turn arrow",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_2",
+      "target_law_id": "NRS-484B-307-7a",
+      "kind": "planned_only",
+      "source_branch": "Other-traffic yield duty",
+      "physical_target": "turn on flashing yellow arrow ahead of lawful user",
+      "comparison_variable": "yield timing under flashing yellow turn arrow",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_1",
+        "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_2"
+      ],
+      "deliberate_differences": [
+        "yield timing under flashing yellow turn arrow"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
+        "route and controller policy except requested comparison variable",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "dev.traffic_signal",
+      "purpose": "state flashing_yellow_arrow(dir), alone or with another indication",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.governs",
+      "purpose": "the head faces the subject",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_enters",
+      "purpose": "the lane facing the signal enters the intersection turned through",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.turning",
+      "purpose": "the movement indicated by the arrow",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.entering_intersection",
+      "purpose": "the cautious entry",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.speed",
+      "purpose": "the caution, as speed on entry",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "ru.pedestrian",
+      "purpose": "pedestrians lawfully in the intersection or adjacent crosswalk",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.crosswalk",
+      "purpose": "that crosswalk",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.in_intersection",
+      "purpose": "other traffic lawfully within",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.yields_to",
+      "purpose": "the yield owed to both",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.time_to_conflict",
+      "purpose": "operationalizes 'cautiously'",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "dev.traffic_signal",
+      "mandatory": true,
+      "reason": "state flashing_yellow_arrow(dir), alone or with another indication"
+    },
+    {
+      "name": "dev.governs",
+      "mandatory": true,
+      "reason": "the head faces the subject"
+    },
+    {
+      "name": "st.lane_enters",
+      "mandatory": true,
+      "reason": "the lane facing the signal enters the intersection turned through"
+    },
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "reason": "the movement indicated by the arrow"
+    },
+    {
+      "name": "drv.entering_intersection",
+      "mandatory": true,
+      "reason": "the cautious entry"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "reason": "the caution, as speed on entry"
+    },
+    {
+      "name": "ru.pedestrian",
+      "mandatory": true,
+      "reason": "pedestrians lawfully in the intersection or adjacent crosswalk"
+    },
+    {
+      "name": "st.crosswalk",
+      "mandatory": true,
+      "reason": "that crosswalk"
+    },
+    {
+      "name": "drv.in_intersection",
+      "mandatory": true,
+      "reason": "other traffic lawfully within"
+    },
+    {
+      "name": "drv.yields_to",
+      "mandatory": true,
+      "reason": "the yield owed to both"
+    },
+    {
+      "name": "drv.time_to_conflict",
+      "mandatory": true,
+      "reason": "operationalizes 'cautiously'"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/assignment.json",
+      "sha256": "50579842a052cc59b1536a88c9f4310c4d70c112b60244a2d37a1d08c070b29e"
+    },
+    {
+      "path": "inputs/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/witnesses.json",
+      "sha256": "6fb9b4f66c3b081a94d05cf2140cf7b3a414fe227fc45b9f6fb5cc17bb373d8f"
+    }
+  ],
+  "existing_evidence": [],
+  "reuse_count": 0,
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
+    "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
+    "No CARLA execution or accepted recording is claimed.",
+    "Arrow may be displayed alone or with other indications; only its indicated movement or one permitted by a concurrent indication is allowed. Pedestrian and other-traffic yield duties are separate branches."
+  ],
+  "unverified_physical_assumptions": [
+    "Frozen cell can physically realize required law context",
+    "Actor blueprint and route can realize each requested behavior",
+    "Decisive physical distinction can be seen by retained cameras"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+  ],
+  "source_context_review": "Arrow may be displayed alone or with other indications; only its indicated movement or one permitted by a concurrent indication is allowed. Pedestrian and other-traffic yield duties are separate branches."
+}

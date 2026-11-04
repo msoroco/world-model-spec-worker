@@ -1,0 +1,254 @@
+{
+  "assignment_id": "training__C230259__NRS-484B-203-1__motor_vehicle_driver",
+  "law_id": "NRS-484B-203-1",
+  "cell_id": "C230259",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "road",
+    "maneuver": "travel",
+    "control": "other_vehicle"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.203(1)",
+    "text": "Drivers of vehicles proceeding in opposite directions shall pass each other keeping to the right, and upon highways having width for not more than one line of traffic in each direction, each driver shall give to the other at least one-half of the paved portion of the highway as nearly as possible.",
+    "sha256": "3e50dbf52ec76e0aff3702084ae0e8ee9485d3f41b983607861eedf77daa814c"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Keeping right during opposite-direction passing"
+  ],
+  "selected_branch": null,
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-203-1",
+      "source": "NRS 484B.203(1)",
+      "branch": "Keeping right during opposite-direction passing",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C230259__NRS-484B-203-1__motor_vehicle_driver__witness_1",
+        "training__C230259__NRS-484B-203-1__motor_vehicle_driver__witness_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+    }
+  ],
+  "activation_conditions": [
+    "the subject meets a vehicle proceeding in the opposite direction",
+    "on a road with width for not more than one line of traffic in each direction, the second duty also applies"
+  ],
+  "timing_requirements": [
+    {
+      "kind": "point_event",
+      "requirement": "judged at the meeting — the frames in which the two bodies are abreast"
+    },
+    {
+      "kind": "continuous",
+      "requirement": "the approach to the meeting matters too: the half must be given up before the vehicles are abreast, not at the last instant"
+    }
+  ],
+  "unresolved_judgment_calls": [
+    "'as nearly as possible' is a judgement element bounding the lateral offset"
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C230259__NRS-484B-203-1__motor_vehicle_driver__witness_1",
+      "target_law_id": "NRS-484B-203-1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "drivers meet while each keeps to the right",
+      "comparison_variable": "oncoming_pass_side",
+      "source_branch": "Keeping right during opposite-direction passing",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "road",
+          "maneuver": "travel",
+          "control": "other_vehicle"
+        },
+        "activation_conditions_to_verify": [
+          "the subject meets a vehicle proceeding in the opposite direction",
+          "on a road with width for not more than one line of traffic in each direction, the second duty also applies"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "drivers meet while each keeps to the right"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "'as nearly as possible' is a judgement element bounding the lateral offset"
+      ]
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-203-1__motor_vehicle_driver__witness_2",
+      "target_law_id": "NRS-484B-203-1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "subject meets opposing vehicle while occupying left half",
+      "comparison_variable": "oncoming_pass_side",
+      "source_branch": "Keeping right during opposite-direction passing",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "road",
+          "maneuver": "travel",
+          "control": "other_vehicle"
+        },
+        "activation_conditions_to_verify": [
+          "the subject meets a vehicle proceeding in the opposite direction",
+          "on a road with width for not more than one line of traffic in each direction, the second duty also applies"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "subject meets opposing vehicle while occupying left half"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "'as nearly as possible' is a judgement element bounding the lateral offset"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C230259__NRS-484B-203-1__motor_vehicle_driver__witness_comparison",
+      "case_ids": [
+        "training__C230259__NRS-484B-203-1__motor_vehicle_driver__witness_1",
+        "training__C230259__NRS-484B-203-1__motor_vehicle_driver__witness_2"
+      ],
+      "deliberate_differences": [
+        "oncoming_pass_side"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "same map geometry except named comparison variable",
+        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "rel.oncoming",
+      "purpose": "two vehicles proceeding in opposite directions",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.meeting",
+      "purpose": "their paths overlap within the horizon",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.bearing",
+      "purpose": "which side each passes on",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.centre_line",
+      "purpose": "the centre of the paved portion",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_width",
+      "purpose": "the paved width available",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.occupies",
+      "purpose": "each vehicle's lateral position",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.surface_gap",
+      "purpose": "the lateral clearance at the moment of meeting",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.roadway",
+      "purpose": "the paved portion",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "rel.oncoming",
+      "mandatory": true,
+      "reason": "two vehicles proceeding in opposite directions"
+    },
+    {
+      "name": "drv.meeting",
+      "mandatory": true,
+      "reason": "their paths overlap within the horizon"
+    },
+    {
+      "name": "rel.bearing",
+      "mandatory": true,
+      "reason": "which side each passes on"
+    },
+    {
+      "name": "st.centre_line",
+      "mandatory": true,
+      "reason": "the centre of the paved portion"
+    },
+    {
+      "name": "st.lane_width",
+      "mandatory": true,
+      "reason": "the paved width available"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "each vehicle's lateral position"
+    },
+    {
+      "name": "rel.surface_gap",
+      "mandatory": true,
+      "reason": "the lateral clearance at the moment of meeting"
+    },
+    {
+      "name": "st.roadway",
+      "mandatory": true,
+      "reason": "the paved portion"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [],
+  "sources": [
+    {
+      "path": "inputs/training__C230259__NRS-484B-203-1__motor_vehicle_driver/assignment.json",
+      "sha256": "32d3814c3319e19b5231b66edb83aec8caa18401fddbfb2766799db1cf202264"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map realizes frozen layout, maneuver and control",
+    "Actor blueprints and controllers can produce proposed behavior",
+    "Four camera views and saved channels can establish every decisive relation",
+    "Legal context and exceptions can be represented without substituting authored targets for measurements"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+  ],
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
+    "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
+  ],
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+}

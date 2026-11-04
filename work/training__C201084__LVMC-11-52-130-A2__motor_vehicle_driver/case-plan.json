@@ -1,0 +1,207 @@
+{
+  "assignment_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C201084",
+  "law_id": "LVMC-11-52-130-A2",
+  "selected_branch": null,
+  "scope_branches": [
+    "Destination stop in a fire lane on public-access premises"
+  ],
+  "source_law_text": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: At any place or in any space adjacent to a curb which has been designated and posted as a fire lane pursuant to the City's Fire Code, whether the vehicle is attended or unattended and whether the location is on public or private property.",
+  "source_law_citation": "LVMC 11.52.130(A)(2)",
+  "requirement_dispositions": [
+    {
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places:; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast"
+      ]
+    },
+    {
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: At any place or in any space adjacent to a curb which has been designated and posted as a fire lane pursuant to the City's Fire Code, whether the vehicle is attended or unattended and whether the location is on public or private property.; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast"
+      ]
+    },
+    {
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: Destination stop in a fire lane on public-access premises; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
+      "target_law_id": "LVMC-11-52-130-A2",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "vehicle_stops_in_posted_fire_lane",
+      "comparison_unit": "bool",
+      "requested_setting": "reference",
+      "recorded_value": null,
+      "case_description": "destination stop inside versus outside signed fire lane",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    },
+    {
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
+      "target_law_id": "LVMC-11-52-130-A2",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "vehicle_stops_in_posted_fire_lane",
+      "comparison_unit": "bool",
+      "requested_setting": "contrast",
+      "recorded_value": null,
+      "case_description": "destination stop inside versus outside signed fire lane",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__comparison_main",
+      "case_ids": [
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast"
+      ],
+      "deliberate_differences": [
+        "vehicle_stops_in_posted_fire_lane"
+      ],
+      "fixed_conditions": [
+        "cell",
+        "actor",
+        "legal context",
+        "traffic controls",
+        "weather",
+        "other controller settings",
+        "camera and capture profile"
+      ],
+      "status": "planned_unverified"
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_pose",
+      "unit": "m,deg",
+      "mandatory": true,
+      "purpose": "Measured position, heading and footprint over time"
+    },
+    {
+      "name": "ego_speed",
+      "unit": "m/s",
+      "mandatory": true,
+      "purpose": "Observed movement and stop intervals"
+    },
+    {
+      "name": "vehicle_stops_in_posted_fire_lane",
+      "unit": "bool",
+      "mandatory": true,
+      "purpose": "destination stop inside versus outside signed fire lane"
+    }
+  ],
+  "source_observation_mapping": {
+    "st.curb_zone": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "vehicle_stops_in_posted_fire_lane"
+      ],
+      "source_refs": [
+        "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "vehicle_stops_in_posted_fire_lane"
+      ],
+      "source_refs": [
+        "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.standing_or_parked": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "vehicle_stops_in_posted_fire_lane"
+      ],
+      "source_refs": [
+        "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "vehicle_stops_in_posted_fire_lane"
+      ],
+      "source_refs": [
+        "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.occupant_count": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "vehicle_stops_in_posted_fire_lane"
+      ],
+      "source_refs": [
+        "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.driveway_or_alley_entrance": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "vehicle_stops_in_posted_fire_lane"
+      ],
+      "source_refs": [
+        "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json",
+      "sha256": "43bdb4701bc77a156652197831bf4280058c984b3e5bfa70f2264fcb44209a14"
+    },
+    {
+      "path": "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/witnesses.json",
+      "sha256": "75e9f0d04d7ec0c98810c20347e52489c60cc0093dd9b72e3107893cbc943a7f"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "set_id": "full-train",
+      "membership_rows": 0,
+      "status": "unreviewed_membership_only",
+      "reuse_receipt": null
+    }
+  ],
+  "runtime_uncertainties": [
+    "No exact CARLA construction, four candidate variants, or offline feasibility proof exists for these case definitions.",
+    "No positive/negative saved fixture, semantic stage validation, independent saved audit, or comparison audit exists.",
+    "Historical membership is context only; no source-hashed accepted equivalence receipt was verified.",
+    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified."
+  ],
+  "selection_targets": [
+    "full-train"
+  ]
+}

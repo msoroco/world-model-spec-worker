@@ -1,0 +1,145 @@
+{
+  "assignment_id": "training__C110919__NRS-484B-307-8c__motor_vehicle_driver",
+  "law_id": "NRS-484B-307-8c",
+  "cell_id": "C110919",
+  "actor": "motor_vehicle_driver",
+  "selected_branch": "right_turn",
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-307-8c",
+      "source": "NRS 484B.307(8)(c)",
+      "branch": "right_turn",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C110919__NRS-484B-307-8c__motor_vehicle_driver__probe_a",
+        "training__C110919__NRS-484B-307-8c__motor_vehicle_driver__probe_b"
+      ],
+      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C110919__NRS-484B-307-8c__motor_vehicle_driver__probe_a",
+      "target_law_id": "NRS-484B-307-8c",
+      "kind": "planned_only",
+      "target_type": "compliant_attempt",
+      "physical_target": "stop and yield before permitted right turn",
+      "comparison_variable": "red_turn_stop_and_yield"
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8c__motor_vehicle_driver__probe_b",
+      "target_law_id": "NRS-484B-307-8c",
+      "kind": "planned_only",
+      "target_type": "violating_attempt",
+      "physical_target": "turn on red without the required stop",
+      "comparison_variable": "red_turn_stop_and_yield"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C110919__NRS-484B-307-8c__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C110919__NRS-484B-307-8c__motor_vehicle_driver__probe_a",
+        "training__C110919__NRS-484B-307-8c__motor_vehicle_driver__probe_b"
+      ],
+      "deliberate_differences": [
+        "red_turn_stop_and_yield"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "dev.traffic_signal",
+      "mandatory": true,
+      "reason": "state circular_red alone"
+    },
+    {
+      "name": "st.lane_enters",
+      "mandatory": true,
+      "reason": "the subject's lane enters the intersection at which the turn is made"
+    },
+    {
+      "name": "drv.stopped",
+      "mandatory": true,
+      "reason": "the stop that must precede the turn"
+    },
+    {
+      "name": "drv.extreme_lane",
+      "mandatory": true,
+      "reason": "the subject on the extreme right, or extreme left of a one-way highway"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "which lane the subject is in"
+    },
+    {
+      "name": "st.one_way_roadway",
+      "mandatory": true,
+      "reason": "the intersecting highway's directionality"
+    },
+    {
+      "name": "st.lane_direction",
+      "mandatory": true,
+      "reason": "one-way to the right or to the left"
+    },
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "reason": "the right or left turn made"
+    },
+    {
+      "name": "ru.pedestrian",
+      "mandatory": true,
+      "reason": "pedestrians proceeding as directed"
+    },
+    {
+      "name": "drv.yields_to",
+      "mandatory": true,
+      "reason": "the yield owed to them and to other traffic"
+    },
+    {
+      "name": "drv.entering_intersection",
+      "mandatory": true,
+      "reason": "the entry for the turn"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C110919__NRS-484B-307-8c__motor_vehicle_driver/assignment.json",
+      "sha256": "2bf619a7cceca5f1accd93842918b59b3d4236862b138d4b997c2a8d85914775"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
+    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
+  ],
+  "statutory_text": "Where the signal is a steady red signal alone: After complying with the requirement to stop, vehicular traffic facing such a signal and situated on the extreme right of the highway may proceed into the intersection for a right turn only when the intersecting highway is two-directional or one-way to the right, or vehicular traffic facing such a signal and situated on the extreme left of a one-way highway may proceed into the intersection for a left turn only when the intersecting highway is one-way to the left, but must yield the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection.",
+  "activation_conditions_from_unreviewed_summary": [
+    "a steady red signal alone faces the subject",
+    "the subject has stopped as required",
+    "the subject is on the extreme right, or on the extreme left of a one-way highway",
+    "the intersecting highway is two-directional or one-way in the direction of the turn"
+  ],
+  "witness_branches": [
+    "right_turn"
+  ],
+  "physical_capability_to_check": [
+    "red_turn_stop_and_yield",
+    "dev.traffic_signal",
+    "st.lane_enters",
+    "drv.stopped",
+    "drv.extreme_lane",
+    "rel.occupies",
+    "st.one_way_roadway",
+    "st.lane_direction",
+    "drv.turning",
+    "ru.pedestrian",
+    "drv.yields_to",
+    "drv.entering_intersection"
+  ]
+}

@@ -1,0 +1,260 @@
+{
+  "assignment_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver",
+  "law_id": "NRS-484B-223-1b",
+  "cell_id": "C245490",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "same_direction_multilane",
+    "maneuver": "change_lane",
+    "control": "lane_marking"
+  },
+  "selection_targets": [
+    "demo-train",
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.223(1)(b)",
+    "text": "If a highway has two or more clearly marked lanes for traffic traveling in one direction, vehicles must: Not be moved from that lane until the driver has given the appropriate turn signal and ascertained that such movement can be made with safety.",
+    "sha256": "646e4408b1982c001c8581d40d13db2be5c10614470d315c3dd29481caee7ed1"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Both conjunctive prerequisites before movement from the occupied lane."
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-223-1b",
+      "source": "NRS 484B.223(1)(b)",
+      "branch": "Both conjunctive prerequisites before movement from the occupied lane.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__probe_1",
+        "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__probe_2"
+      ],
+      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    },
+    {
+      "requirement": "NRS-484B-223-1b",
+      "source": "NRS 484B.223(1)(b)",
+      "branch": "two or more clearly marked same-direction lanes",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    },
+    {
+      "requirement": "NRS-484B-223-1b",
+      "source": "NRS 484B.223(1)(b)",
+      "branch": "independent safety ascertainment",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    },
+    {
+      "requirement": "NRS-484B-223-1b",
+      "source": "NRS 484B.223(1)(b)",
+      "branch": "unsafe-gap branch",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; retained only as a proposal, not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__probe_1",
+      "target_law_id": "NRS-484B-223-1b",
+      "kind": "planned_only",
+      "target_type": "below",
+      "physical_target": "driver signals and checks safe gap before departing marked lane",
+      "comparison_variable": "prior_signal_before_lane_departure",
+      "source_branch": "Both conjunctive prerequisites before movement from the occupied lane.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__probe_2",
+      "target_law_id": "NRS-484B-223-1b",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver departs same lane without prior signal",
+      "comparison_variable": "prior_signal_before_lane_departure",
+      "source_branch": "Both conjunctive prerequisites before movement from the occupied lane.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__probe_1",
+        "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__probe_2"
+      ],
+      "deliberate_differences": [
+        "prior_signal_before_lane_departure"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor and physical road context",
+        "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "drv.laned_roadway",
+      "purpose": "two or more marked lanes in the subject's direction",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane",
+      "purpose": "the lane occupied",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.lane_change",
+      "purpose": "the movement out of the lane",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "sig.turn_indicator",
+      "purpose": "the appropriate turn signal",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.distance_while",
+      "purpose": "the signal held before the movement begins",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.lane_change_feasible",
+      "purpose": "operationalizes 'ascertained that the movement can be made with safety'",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.surface_gap",
+      "purpose": "the gap in the target lane",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.time_to_conflict",
+      "purpose": "with users in the target lane",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [
+    {
+      "recording_id": "8fa433d2d8392e1a4ba14e2a1aefde955854b441e18036ac9073330b5f296d60",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "b2d79758cb852f84c13d00155b9d159d2d49365584bae1dcae010d210be7efef",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "010f0658528b8e1716715475b6f3883dd4d6387efe92768bce2c76891aa75528",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "02a39873345d825078a6c27e94eb4b1caa2109aa00acc504489e3a43763872bc",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "57c4b2b69e9cda3ae09a40ae907094f202b807a26ae114bec8a8c5c525288d19",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "c64516d78d73fe55ef359f20d360ff493f20c3bfbc2e174b86ef9cc1d990f138",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "e53620e80af6caee83b10b7d9563fb72c2e3872981e4965ccf548485cfbff0d7",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "91c9ad7f9f1907858636323962e6e5d996de412c6c003eac42017d36f9992e38",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "411137039708ce4d554d4f108dc0cf4e3c95e20cfd289c1ce7e2992b012f7bf4",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "fbcb4b1c4a7741dc0b04c096920789fe1bae0922de7946ea02bd8c5a2994eae5",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/assignment.json",
+      "sha256": "51f3ce5ad5c9a2cbf613c816780292afb03b8b1fd3c3e02e52bb5bbe411383e5"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction"
+  ],
+  "blockers": [
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ],
+  "selected_branch": null,
+  "observations": [
+    {
+      "name": "drv.laned_roadway",
+      "mandatory": true,
+      "reason": "two or more marked lanes in the subject's direction"
+    },
+    {
+      "name": "st.lane",
+      "mandatory": true,
+      "reason": "the lane occupied"
+    },
+    {
+      "name": "drv.lane_change",
+      "mandatory": true,
+      "reason": "the movement out of the lane"
+    },
+    {
+      "name": "sig.turn_indicator",
+      "mandatory": true,
+      "reason": "the appropriate turn signal"
+    },
+    {
+      "name": "drv.distance_while",
+      "mandatory": true,
+      "reason": "the signal held before the movement begins"
+    },
+    {
+      "name": "drv.lane_change_feasible",
+      "mandatory": true,
+      "reason": "operationalizes 'ascertained that the movement can be made with safety'"
+    },
+    {
+      "name": "rel.surface_gap",
+      "mandatory": true,
+      "reason": "the gap in the target lane"
+    },
+    {
+      "name": "drv.time_to_conflict",
+      "mandatory": true,
+      "reason": "with users in the target lane"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction",
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ]
+}

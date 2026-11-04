@@ -1,0 +1,145 @@
+{
+  "assignment_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver",
+  "law_id": "NRS-484B-600-1e",
+  "cell_id": "C230259",
+  "actor": "motor_vehicle_driver",
+  "source_law_text": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: In any event, a rate of speed greater than 80 miles per hour.",
+  "source_law_citation": "NRS 484B.600(1)(e)",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "absolute 80 mph limit",
+  "cell_fixed_facts": {
+    "layout": "road",
+    "maneuver": "travel",
+    "control": "other_vehicle"
+  },
+  "selection_targets": [
+    "demo-train",
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "demo:NRS-484B-600-1e:8a9a3aa239fd",
+      "branch": "In any event; no posted-limit dependency.",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 265,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    },
+    {
+      "requirement": "NRS-484B-600-1e",
+      "branch": "absolute 80 mph limit",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/demo-continuation-20261017-v32/coverage-worklist.json",
+      "source_index": 15,
+      "source_sha256": "544afcc078c42786bc2e419ca165deda1b862f2db498748c04aa5b7373bc24d5",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "demo-train": [],
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_01",
+      "target_law_id": "NRS-484B-600-1e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "travel at 75 mph",
+      "comparison_variable": "measured speed while driving",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
+      "target_law_id": "NRS-484B-600-1e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "travel at 79.5 mph",
+      "comparison_variable": "measured speed while driving",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
+      "target_law_id": "NRS-484B-600-1e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "travel at 85 mph",
+      "comparison_variable": "measured speed while driving",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__planned_comparison",
+      "case_ids": [
+        "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_01",
+        "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
+        "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03"
+      ],
+      "deliberate_differences": [
+        "measured speed while driving"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "speed time series in mph",
+    "driving state",
+    "route and vehicle capability"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "kin.speed",
+      "note": "the speed driven, against the 80 mph absolute cap"
+    },
+    {
+      "term": "kin.velocity",
+      "note": "the measurement it comes from"
+    },
+    {
+      "term": "ru.subject",
+      "note": "the vehicle judged — any kind"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/assignment.json",
+      "sha256": "1eece3c1ae66add2e063d9f4cc68f688128429b24974ec4b0dcfbebe15402bdc"
+    },
+    {
+      "path": "inputs/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/witnesses.json",
+      "sha256": "6acb8868c20668951634fcddb52e4d6b28b65de1e1a7972a07691621979a5a36"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "No posted speed sign is needed for this absolute limit; 80 mph may be physically unsafe on this road, requiring route/capability proof."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

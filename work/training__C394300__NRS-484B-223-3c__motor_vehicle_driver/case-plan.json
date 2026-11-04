@@ -1,0 +1,218 @@
+{
+  "assignment_id": "training__C394300__NRS-484B-223-3c__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C394300",
+  "law_id": "NRS-484B-223-3c",
+  "selected_branch": null,
+  "scope_branches": [
+    "Left turn onto the highway followed by center-lane travel and merge"
+  ],
+  "source_law_text": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle must not travel more than 50 feet in a center turn lane after making a left-hand turn onto the highway before merging with traffic.",
+  "source_law_citation": "NRS 484B.223(3)(c)",
+  "requirement_dispositions": [
+    {
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply:; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__below_50_ft",
+        "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__at_50_ft",
+        "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__above_50_ft"
+      ]
+    },
+    {
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: A vehicle must not travel more than 50 feet in a center turn lane after making a left-hand turn onto the highway before merging with traffic.; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__below_50_ft",
+        "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__at_50_ft",
+        "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__above_50_ft"
+      ]
+    },
+    {
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: Left turn onto the highway followed by center-lane travel and merge; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__below_50_ft",
+        "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__at_50_ft",
+        "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__above_50_ft"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__below_50_ft",
+      "target_law_id": "NRS-484B-223-3c",
+      "planning_status": "unverified_definition",
+      "target_type": "boundary_probe",
+      "comparison_variable": "center_turn_lane_distance_after_left_turn",
+      "comparison_unit": "ft",
+      "requested_setting": 45,
+      "recorded_value": null,
+      "case_description": "merge before versus after 50 ft",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    },
+    {
+      "case_id": "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__at_50_ft",
+      "target_law_id": "NRS-484B-223-3c",
+      "planning_status": "unverified_definition",
+      "target_type": "boundary_probe",
+      "comparison_variable": "center_turn_lane_distance_after_left_turn",
+      "comparison_unit": "ft",
+      "requested_setting": 50,
+      "recorded_value": null,
+      "case_description": "merge before versus after 50 ft",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    },
+    {
+      "case_id": "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__above_50_ft",
+      "target_law_id": "NRS-484B-223-3c",
+      "planning_status": "unverified_definition",
+      "target_type": "boundary_probe",
+      "comparison_variable": "center_turn_lane_distance_after_left_turn",
+      "comparison_unit": "ft",
+      "requested_setting": 55,
+      "recorded_value": null,
+      "case_description": "merge before versus after 50 ft",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__comparison_main",
+      "case_ids": [
+        "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__below_50_ft",
+        "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__at_50_ft",
+        "training__C394300__NRS-484B-223-3c__motor_vehicle_driver__above_50_ft"
+      ],
+      "deliberate_differences": [
+        "center_turn_lane_distance_after_left_turn"
+      ],
+      "fixed_conditions": [
+        "cell",
+        "actor",
+        "legal context",
+        "traffic controls",
+        "weather",
+        "other controller settings",
+        "camera and capture profile"
+      ],
+      "status": "planned_unverified"
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_pose",
+      "unit": "m,deg",
+      "mandatory": true,
+      "purpose": "Measured position, heading and footprint over time"
+    },
+    {
+      "name": "ego_speed",
+      "unit": "m/s",
+      "mandatory": true,
+      "purpose": "Observed movement and stop intervals"
+    },
+    {
+      "name": "center_turn_lane_distance_after_left_turn",
+      "unit": "ft",
+      "mandatory": true,
+      "purpose": "merge before versus after 50 ft"
+    }
+  ],
+  "source_observation_mapping": {
+    "st.centre_turn_lane": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "center_turn_lane_distance_after_left_turn"
+      ],
+      "source_refs": [
+        "inputs/training__C394300__NRS-484B-223-3c__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "center_turn_lane_distance_after_left_turn"
+      ],
+      "source_refs": [
+        "inputs/training__C394300__NRS-484B-223-3c__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.path_length": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "center_turn_lane_distance_after_left_turn"
+      ],
+      "source_refs": [
+        "inputs/training__C394300__NRS-484B-223-3c__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.lane_change": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "center_turn_lane_distance_after_left_turn"
+      ],
+      "source_refs": [
+        "inputs/training__C394300__NRS-484B-223-3c__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "center_turn_lane_distance_after_left_turn"
+      ],
+      "source_refs": [
+        "inputs/training__C394300__NRS-484B-223-3c__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/training__C394300__NRS-484B-223-3c__motor_vehicle_driver/assignment.json",
+      "sha256": "f56af1c6871691c977a9789d642b135562b0c057987eb44bc18e99f52573dde5"
+    },
+    {
+      "path": "inputs/training__C394300__NRS-484B-223-3c__motor_vehicle_driver/witnesses.json",
+      "sha256": "8c24cb5bb80b7af4e6404e8f640d3161469ba9ae5c695d9d85d62207275246d5"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "set_id": "full-train",
+      "membership_rows": 0,
+      "status": "unreviewed_membership_only",
+      "reuse_receipt": null
+    }
+  ],
+  "runtime_uncertainties": [
+    "No exact CARLA construction, four candidate variants, or offline feasibility proof exists for these case definitions.",
+    "No positive/negative saved fixture, semantic stage validation, independent saved audit, or comparison audit exists.",
+    "Historical membership is context only; no source-hashed accepted equivalence receipt was verified.",
+    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified."
+  ],
+  "selection_targets": [
+    "full-train"
+  ]
+}

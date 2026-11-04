@@ -1,0 +1,153 @@
+{
+  "assignment_id": "training__C229388__LVMC-11-40-170__cycle_or_scooter_operator",
+  "law_id": "LVMC-11-40-170",
+  "cell_id": "C229388",
+  "actor": "cycle_or_scooter_operator",
+  "source_law_text": "It shall be unlawful for any person to park a bicycle, electric bicycle, or electric scooter upon a street other than upon the roadway against the curb or upon the sidewalk in a rack to support the bicycle, electric bicycle, or electric scooter or against a building or at the curb, in such a manner as to afford the least obstruction to pedestrian traffic.",
+  "source_law_citation": "LVMC 11.40.170",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "parking bicycle or scooter on street",
+  "cell_fixed_facts": {
+    "layout": "road",
+    "maneuver": "park",
+    "control": "bicycle_rack"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "LVMC-11-40-170",
+      "branch": "Sidewalk parking in a supporting rack.",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 28,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C229388__LVMC-11-40-170__cycle_or_scooter_operator__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C229388__LVMC-11-40-170__cycle_or_scooter_operator__probe_01",
+      "target_law_id": "LVMC-11-40-170",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "park in rack with least measured obstruction",
+      "comparison_variable": "allowed position and pedestrian obstruction",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C229388__LVMC-11-40-170__cycle_or_scooter_operator__probe_02",
+      "target_law_id": "LVMC-11-40-170",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "park across pedestrian path outside allowed placement",
+      "comparison_variable": "allowed position and pedestrian obstruction",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C229388__LVMC-11-40-170__cycle_or_scooter_operator__planned_comparison",
+      "case_ids": [
+        "training__C229388__LVMC-11-40-170__cycle_or_scooter_operator__probe_01",
+        "training__C229388__LVMC-11-40-170__cycle_or_scooter_operator__probe_02"
+      ],
+      "deliberate_differences": [
+        "allowed position and pedestrian obstruction"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "device subtype",
+    "rack/curb/building geometry",
+    "footprint and pedestrian clearance"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "ru.bicycle",
+      "note": "the machine parked"
+    },
+    {
+      "term": "ru.electric_bicycle",
+      "note": "or an electric bicycle"
+    },
+    {
+      "term": "ru.electric_scooter",
+      "note": "or an electric scooter"
+    },
+    {
+      "term": "drv.standing_or_parked",
+      "note": "the machine at rest"
+    },
+    {
+      "term": "st.roadway",
+      "note": "the roadway against the curb"
+    },
+    {
+      "term": "st.road_edge",
+      "note": "the curb"
+    },
+    {
+      "term": "st.sidewalk",
+      "note": "the sidewalk, where a rack or building is"
+    },
+    {
+      "term": "rel.occupies",
+      "note": "where the machine stands"
+    },
+    {
+      "term": "ru.pedestrian",
+      "note": "the pedestrian traffic that must not be obstructed"
+    },
+    {
+      "term": "rel.surface_gap",
+      "note": "the clear width left for them"
+    },
+    {
+      "term": "st.obstruction",
+      "note": "the machine itself, as an object on the way"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C229388__LVMC-11-40-170__cycle_or_scooter_operator/assignment.json",
+      "sha256": "0311694972447eb5805b390b937c28fa7780f2ad633882c34379097b5fc0e888"
+    },
+    {
+      "path": "inputs/training__C229388__LVMC-11-40-170__cycle_or_scooter_operator/witnesses.json",
+      "sha256": "5e2976fcb73bf24f6abf00ceac03bfc6b3dcd1d90bc4903776d5c2a2f435137f"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Least obstruction is judgmental; a rack alone does not establish its satisfaction. Include roadway against curb as separate supported alternative."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

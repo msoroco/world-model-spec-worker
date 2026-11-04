@@ -1,0 +1,141 @@
+{
+  "assignment_id": "training__C109166__NRS-484B-287-1d__pedestrian",
+  "law_id": "NRS-484B-287-1d",
+  "cell_id": "C109166",
+  "actor": "pedestrian",
+  "source_law_text": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]: A pedestrian shall not cross an intersection diagonally unless authorized by official traffic-control devices.",
+  "source_law_citation": "NRS 484B.287(1)(d)",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "diagonal crossing authorization",
+  "cell_fixed_facts": {
+    "layout": "intersection",
+    "maneuver": "enter_road",
+    "control": "traffic_control_device"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "NRS-484B-287-1d",
+      "branch": "Intersection crossing without diagonal authorization",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 125,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C109166__NRS-484B-287-1d__pedestrian__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C109166__NRS-484B-287-1d__pedestrian__probe_01",
+      "target_law_id": "NRS-484B-287-1d",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "diagonal crossing under device authorizing diagonal travel",
+      "comparison_variable": "official device authorization",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C109166__NRS-484B-287-1d__pedestrian__probe_02",
+      "target_law_id": "NRS-484B-287-1d",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "same crossing with no such authorization",
+      "comparison_variable": "official device authorization",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C109166__NRS-484B-287-1d__pedestrian__planned_comparison",
+      "case_ids": [
+        "training__C109166__NRS-484B-287-1d__pedestrian__probe_01",
+        "training__C109166__NRS-484B-287-1d__pedestrian__probe_02"
+      ],
+      "deliberate_differences": [
+        "official device authorization"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "device face/state/authority",
+    "pedestrian trajectory across intersection",
+    "intersection boundaries"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "ru.subject",
+      "note": "the pedestrian judged"
+    },
+    {
+      "term": "st.intersection",
+      "note": "the intersection crossed"
+    },
+    {
+      "term": "kin.path_length",
+      "note": "the crossing path across the intersection"
+    },
+    {
+      "term": "kin.heading",
+      "note": "the diagonal direction of the crossing"
+    },
+    {
+      "term": "rel.occupies",
+      "note": "the footprint inside the intersection"
+    },
+    {
+      "term": "dev.pedestrian_signal",
+      "note": "a device authorizing a diagonal crossing"
+    },
+    {
+      "term": "dev.regulatory_sign",
+      "note": "or a sign authorizing it"
+    },
+    {
+      "term": "st.crosswalk",
+      "note": "the crosswalks the diagonal path does not follow"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C109166__NRS-484B-287-1d__pedestrian/assignment.json",
+      "sha256": "0621873b32a1479d489bd926c90ece10b33ca266d6cc7a4188f55653ac891c63"
+    },
+    {
+      "path": "inputs/training__C109166__NRS-484B-287-1d__pedestrian/witnesses.json",
+      "sha256": "1b96710a3bab2c6c0e9f6cfc0ce660b6a3de465faa9c2fc4e795e37d9bf8fe92"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Requires a physical official control authorizing diagonal crossing; exception NRS 484B.290 must be resolved."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

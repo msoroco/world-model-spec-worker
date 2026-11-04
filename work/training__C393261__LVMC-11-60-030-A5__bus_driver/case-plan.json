@@ -1,0 +1,138 @@
+{
+  "assignment_id": "training__C393261__LVMC-11-60-030-A5__bus_driver",
+  "law_id": "LVMC-11-60-030-A5",
+  "cell_id": "C393261",
+  "actor": "bus_driver",
+  "source_law_text": "The operator of a bus, other than a tour bus, shall: Not stand or park a bus at a bus stop or an origin or destination point for a period of time longer than has been designated for such bus stop or origin or destination point in accordance with Section 11.60.010 [DEF-LVMC-11-60-010].",
+  "source_law_citation": "LVMC 11.60.030(A)(5)",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "non-tour bus at designated stop or endpoint",
+  "cell_fixed_facts": {
+    "layout": "residence_district",
+    "maneuver": "park",
+    "control": "bus_route_terminus"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "LVMC-11-60-030-A5",
+      "branch": "Parking at a residential endpoint",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 54,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__probe_01",
+      "target_law_id": "LVMC-11-60-030-A5",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "non-tour bus dwell shorter than posted designated period",
+      "comparison_variable": "dwell versus designated maximum",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__probe_02",
+      "target_law_id": "LVMC-11-60-030-A5",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "same stop with dwell longer than designated period",
+      "comparison_variable": "dwell versus designated maximum",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__planned_comparison",
+      "case_ids": [
+        "training__C393261__LVMC-11-60-030-A5__bus_driver__probe_01",
+        "training__C393261__LVMC-11-60-030-A5__bus_driver__probe_02"
+      ],
+      "deliberate_differences": [
+        "dwell versus designated maximum"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "bus and non-tour identity",
+    "official stop/endpoint designation",
+    "designated duration source",
+    "arrival/departure times"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "ru.bus",
+      "note": "the bus judged"
+    },
+    {
+      "term": "st.curb_zone",
+      "note": "kind bus_stop — the stop or origin/destination point"
+    },
+    {
+      "term": "dev.regulatory_sign",
+      "note": "the sign carrying the designated time limit"
+    },
+    {
+      "term": "drv.standing_or_parked",
+      "note": "the bus standing or parked there"
+    },
+    {
+      "term": "kin.time",
+      "note": "how long it stands, against that limit"
+    },
+    {
+      "term": "rel.occupies",
+      "note": "its position in the stop"
+    },
+    {
+      "term": "drv.condition_in_effect",
+      "note": "whether the designated limit applies now"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C393261__LVMC-11-60-030-A5__bus_driver/assignment.json",
+      "sha256": "9a16ef6d44f39fd451089728127b383383a83c76161cc66adc00c9bdbf705546"
+    },
+    {
+      "path": "inputs/training__C393261__LVMC-11-60-030-A5__bus_driver/witnesses.json",
+      "sha256": "226ec9ff65047ebca2c257f5ebe672c8f772bb9eb806c38ae3fea0bac4db8a55"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Frozen endpoint is plausible; exact designated period under Section 11.60.010 is absent from cell and must be sourced."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

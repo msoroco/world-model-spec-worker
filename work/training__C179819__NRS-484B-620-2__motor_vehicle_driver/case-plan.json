@@ -1,0 +1,149 @@
+{
+  "assignment_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver",
+  "law_id": "NRS-484B-620-2",
+  "cell_id": "C179819",
+  "actor": "motor_vehicle_driver",
+  "source_law_text": "After the establishment of a speed zone and the installation of appropriate signs to control speed, it is unlawful for any person to drive a motor vehicle upon the road and in the speed zone in excess of the speed therein authorized.",
+  "source_law_citation": "NRS 484B.620(2)",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "signed established speed zone",
+  "cell_fixed_facts": {
+    "layout": "paved_road",
+    "maneuver": "travel",
+    "control": "speed_limit_sign"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "NRS-484B-620-2",
+      "branch": "Speed-zone occupancy on a paved road.",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 204,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_01",
+      "target_law_id": "NRS-484B-620-2",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "governed-zone speed below posted value",
+      "comparison_variable": "measured speed versus authorized posted value",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_02",
+      "target_law_id": "NRS-484B-620-2",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "governed-zone speed 0.5 mph below posted value",
+      "comparison_variable": "measured speed versus authorized posted value",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_03",
+      "target_law_id": "NRS-484B-620-2",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "governed-zone speed above posted value",
+      "comparison_variable": "measured speed versus authorized posted value",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver__planned_comparison",
+      "case_ids": [
+        "training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_01",
+        "training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_02",
+        "training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_03"
+      ],
+      "deliberate_differences": [
+        "measured speed versus authorized posted value"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "official sign and zone bounds",
+    "full speed time series in governed zone",
+    "sign approach and passage"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "dev.speed_limit_sign",
+      "note": "kind zone, with the authorized speed"
+    },
+    {
+      "term": "dev.zone_sign",
+      "note": "kind speed_zone, with its conditions"
+    },
+    {
+      "term": "drv.within_signed_zone",
+      "note": "kind speed_zone"
+    },
+    {
+      "term": "dev.governs",
+      "note": "the road and direction the zone applies to"
+    },
+    {
+      "term": "kin.speed",
+      "note": "the speed driven, against the authorized value"
+    },
+    {
+      "term": "rel.occupies",
+      "note": "the subject inside the zone"
+    },
+    {
+      "term": "ru.motor_vehicle",
+      "note": "the class bound"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C179819__NRS-484B-620-2__motor_vehicle_driver/assignment.json",
+      "sha256": "772dbb1d1eeabe8ec4a7e16d73d91f8eb6802adaa4a8633986607d3f9deebda1"
+    },
+    {
+      "path": "inputs/training__C179819__NRS-484B-620-2__motor_vehicle_driver/witnesses.json",
+      "sha256": "1913c2f4cf2c853563beb56ac107aa2680b771b76aa3055560354ca878c279d1"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Speed-zone establishment is an administrative fact; exact authorized value must come from the physical sign and source."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

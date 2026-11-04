@@ -1,0 +1,234 @@
+{
+  "assignment_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver",
+  "law_id": "NRS-484B-587-1",
+  "cell_id": "C228131",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "road",
+    "maneuver": "enter_road",
+    "control": "traffic_control_device"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.587(1)",
+    "text": "When official traffic-control devices are erected giving notice thereof, a person shall not drive a vehicle onto or from any controlled-access highway except at those entrances and exits which are indicated by such devices.",
+    "sha256": "c573096505dc2802c5be3cd5e737eef5dc0991ac1b189301c18a6a9f05b21041"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Entry with additional controlled-access context."
+  ],
+  "selected_branch": null,
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-587-1",
+      "source": "NRS 484B.587(1)",
+      "branch": "Entry with additional controlled-access context.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1",
+        "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+    }
+  ],
+  "activation_conditions": [
+    "official traffic-control devices indicate the entrances and exits of a controlled-access highway",
+    "the subject drives onto or from the highway"
+  ],
+  "timing_requirements": [
+    {
+      "kind": "point_event",
+      "requirement": "the violation is the entry or exit itself, judged at the point where the footprint leaves or joins the highway"
+    }
+  ],
+  "unresolved_judgment_calls": [],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1",
+      "target_law_id": "NRS-484B-587-1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver uses an indicated controlled-access entrance",
+      "comparison_variable": "controlled_access_entry",
+      "source_branch": "Entry with additional controlled-access context.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "road",
+          "maneuver": "enter_road",
+          "control": "traffic_control_device"
+        },
+        "activation_conditions_to_verify": [
+          "official traffic-control devices indicate the entrances and exits of a controlled-access highway",
+          "the subject drives onto or from the highway"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver uses an indicated controlled-access entrance"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2",
+      "target_law_id": "NRS-484B-587-1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver joins controlled-access road outside the indicated entrance",
+      "comparison_variable": "controlled_access_entry",
+      "source_branch": "Entry with additional controlled-access context.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "road",
+          "maneuver": "enter_road",
+          "control": "traffic_control_device"
+        },
+        "activation_conditions_to_verify": [
+          "official traffic-control devices indicate the entrances and exits of a controlled-access highway",
+          "the subject drives onto or from the highway"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver joins controlled-access road outside the indicated entrance"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_comparison",
+      "case_ids": [
+        "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1",
+        "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2"
+      ],
+      "deliberate_differences": [
+        "controlled_access_entry"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "same map geometry except named comparison variable",
+        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "st.controlled_access",
+      "purpose": "the controlled-access highway and its designated entrances and exits",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.regulatory_sign",
+      "purpose": "codes entrance, exit — the devices giving notice",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.governs",
+      "purpose": "the point each device marks",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.occupies",
+      "purpose": "where the subject enters or leaves the highway",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.path_length",
+      "purpose": "the path onto or off the highway",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_connectivity",
+      "purpose": "whether the path used is a designated entrance or exit",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.position",
+      "purpose": "the point of entry or exit",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "st.controlled_access",
+      "mandatory": true,
+      "reason": "the controlled-access highway and its designated entrances and exits"
+    },
+    {
+      "name": "dev.regulatory_sign",
+      "mandatory": true,
+      "reason": "codes entrance, exit — the devices giving notice"
+    },
+    {
+      "name": "dev.governs",
+      "mandatory": true,
+      "reason": "the point each device marks"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "where the subject enters or leaves the highway"
+    },
+    {
+      "name": "kin.path_length",
+      "mandatory": true,
+      "reason": "the path onto or off the highway"
+    },
+    {
+      "name": "st.lane_connectivity",
+      "mandatory": true,
+      "reason": "whether the path used is a designated entrance or exit"
+    },
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "reason": "the point of entry or exit"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [],
+  "sources": [
+    {
+      "path": "inputs/training__C228131__NRS-484B-587-1__motor_vehicle_driver/assignment.json",
+      "sha256": "35f0f71b27a22d3ea07577aee63ffbe60832b8861187d19f878e344a5946e964"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map realizes frozen layout, maneuver and control",
+    "Actor blueprints and controllers can produce proposed behavior",
+    "Four camera views and saved channels can establish every decisive relation",
+    "Legal context and exceptions can be represented without substituting authored targets for measurements"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+  ],
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
+    "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
+  ],
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+}

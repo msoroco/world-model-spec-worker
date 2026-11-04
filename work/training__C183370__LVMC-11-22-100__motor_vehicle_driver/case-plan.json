@@ -1,0 +1,222 @@
+{
+  "assignment_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C183370",
+  "law_id": "LVMC-11-22-100",
+  "selected_branch": null,
+  "scope_branches": [
+    "Warning person"
+  ],
+  "source_law_text": "No person shall ride or drive any horse or vehicle over or across any pavement newly laid or repaired across or around which there has been placed a barrier, or at or near which there is a person or a sign warning persons against riding or driving over such pavement, or a sign stating that the highway is closed. The provisions of this Section shall not apply to the employees actually engaged in the paving or repair of such pavement.",
+  "source_law_citation": "LVMC 11.22.100",
+  "requirement_dispositions": [
+    {
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: No person shall ride or drive any horse or vehicle over or across any pavement newly laid or repaired across or around which there has been placed a barrier, or at or near which there is a person or a sign warning persons against riding or driving over such pavement, or a sign stating that the highway is closed.; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference",
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast"
+      ]
+    },
+    {
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "exception_pending",
+      "evidence_or_gap": "Exact statute: The provisions of this Section shall not apply to the employees actually engaged in the paving or repair of such pavement.; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": []
+    },
+    {
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: Warning person; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference",
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference",
+      "target_law_id": "LVMC-11-22-100",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "drive_over_warned_new_pavement",
+      "comparison_unit": "bool",
+      "requested_setting": "reference",
+      "recorded_value": null,
+      "case_description": "drive over newly repaired pavement with person warning versus avoid",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    },
+    {
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast",
+      "target_law_id": "LVMC-11-22-100",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "drive_over_warned_new_pavement",
+      "comparison_unit": "bool",
+      "requested_setting": "contrast",
+      "recorded_value": null,
+      "case_description": "drive over newly repaired pavement with person warning versus avoid",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__comparison_main",
+      "case_ids": [
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference",
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast"
+      ],
+      "deliberate_differences": [
+        "drive_over_warned_new_pavement"
+      ],
+      "fixed_conditions": [
+        "cell",
+        "actor",
+        "legal context",
+        "traffic controls",
+        "weather",
+        "other controller settings",
+        "camera and capture profile"
+      ],
+      "status": "planned_unverified"
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_pose",
+      "unit": "m,deg",
+      "mandatory": true,
+      "purpose": "Measured position, heading and footprint over time"
+    },
+    {
+      "name": "ego_speed",
+      "unit": "m/s",
+      "mandatory": true,
+      "purpose": "Observed movement and stop intervals"
+    },
+    {
+      "name": "drive_over_warned_new_pavement",
+      "unit": "bool",
+      "mandatory": true,
+      "purpose": "drive over newly repaired pavement with person warning versus avoid"
+    }
+  ],
+  "source_observation_mapping": {
+    "st.roadway": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "drive_over_warned_new_pavement"
+      ],
+      "source_refs": [
+        "inputs/training__C183370__LVMC-11-22-100__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.temporary_traffic_control": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "drive_over_warned_new_pavement"
+      ],
+      "source_refs": [
+        "inputs/training__C183370__LVMC-11-22-100__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "drive_over_warned_new_pavement"
+      ],
+      "source_refs": [
+        "inputs/training__C183370__LVMC-11-22-100__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.human_direction": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "drive_over_warned_new_pavement"
+      ],
+      "source_refs": [
+        "inputs/training__C183370__LVMC-11-22-100__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "drive_over_warned_new_pavement"
+      ],
+      "source_refs": [
+        "inputs/training__C183370__LVMC-11-22-100__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.animal_or_animal_drawn": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "drive_over_warned_new_pavement"
+      ],
+      "source_refs": [
+        "inputs/training__C183370__LVMC-11-22-100__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.path_length": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "drive_over_warned_new_pavement"
+      ],
+      "source_refs": [
+        "inputs/training__C183370__LVMC-11-22-100__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.official_vehicle": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "drive_over_warned_new_pavement"
+      ],
+      "source_refs": [
+        "inputs/training__C183370__LVMC-11-22-100__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/training__C183370__LVMC-11-22-100__motor_vehicle_driver/assignment.json",
+      "sha256": "1b9dba4c1973ca5614fdb07ee967b56c8d668f4b76877b124c70d827dee157f2"
+    },
+    {
+      "path": "inputs/training__C183370__LVMC-11-22-100__motor_vehicle_driver/witnesses.json",
+      "sha256": "36e7ec9bd2350845e8ea06b2ac538eb7b157cfdf1d9729362723c6e7e9511f4d"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "set_id": "full-train",
+      "membership_rows": 0,
+      "status": "unreviewed_membership_only",
+      "reuse_receipt": null
+    }
+  ],
+  "runtime_uncertainties": [
+    "No exact CARLA construction, four candidate variants, or offline feasibility proof exists for these case definitions.",
+    "No positive/negative saved fixture, semantic stage validation, independent saved audit, or comparison audit exists.",
+    "Historical membership is context only; no source-hashed accepted equivalence receipt was verified.",
+    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified."
+  ],
+  "selection_targets": [
+    "full-train"
+  ]
+}

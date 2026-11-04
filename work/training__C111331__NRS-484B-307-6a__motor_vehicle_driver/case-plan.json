@@ -1,0 +1,264 @@
+{
+  "assignment_id": "training__C111331__NRS-484B-307-6a__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C111331",
+  "law_id": "NRS-484B-307-6a",
+  "selected_branch": null,
+  "scope_branches": [
+    "Yellow warning followed by red exhibition and entry observation",
+    "Yellow warning followed by red exhibition and entry observation",
+    "Yellow warning followed by red exhibition and entry observation",
+    null
+  ],
+  "source_law_text": "Where the signal is a steady yellow signal alone: Vehicular traffic facing the signal is thereby warned that the related green movement is being terminated or that a steady red indication will be exhibited immediately thereafter, and such vehicular traffic must not enter the intersection when the red signal is exhibited.",
+  "source_law_citation": "NRS 484B.307(6)(a)",
+  "requirement_dispositions": [
+    {
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: Where the signal is a steady yellow signal alone:; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__reference",
+        "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__contrast"
+      ]
+    },
+    {
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: Vehicular traffic facing the signal is thereby warned that the related green movement is being terminated or that a steady red indication will be exhibited immediately thereafter, and such vehicular traffic must not enter the intersection when the red signal is exhibited.; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__reference",
+        "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__contrast"
+      ]
+    },
+    {
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: Yellow warning followed by red exhibition and entry observation; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__reference",
+        "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__contrast"
+      ]
+    },
+    {
+      "requirement": "reviewed-scope-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: Yellow warning followed by red exhibition and entry observation; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__reference",
+        "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__contrast"
+      ]
+    },
+    {
+      "requirement": "reviewed-scope-2",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: Yellow warning followed by red exhibition and entry observation; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__reference",
+        "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__contrast"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__reference",
+      "target_law_id": "NRS-484B-307-6a",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "intersection_entry_signal_phase",
+      "comparison_unit": "yellow_or_red",
+      "requested_setting": "reference",
+      "recorded_value": null,
+      "case_description": "entry before versus after observed red exhibition",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__contrast",
+      "target_law_id": "NRS-484B-307-6a",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "intersection_entry_signal_phase",
+      "comparison_unit": "yellow_or_red",
+      "requested_setting": "contrast",
+      "recorded_value": null,
+      "case_description": "entry before versus after observed red exhibition",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__comparison_main",
+      "case_ids": [
+        "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__reference",
+        "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__contrast"
+      ],
+      "deliberate_differences": [
+        "intersection_entry_signal_phase"
+      ],
+      "fixed_conditions": [
+        "cell",
+        "actor",
+        "legal context",
+        "traffic controls",
+        "weather",
+        "other controller settings",
+        "camera and capture profile"
+      ],
+      "status": "planned_unverified"
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_pose",
+      "unit": "m,deg",
+      "mandatory": true,
+      "purpose": "Measured position, heading and footprint over time"
+    },
+    {
+      "name": "ego_speed",
+      "unit": "m/s",
+      "mandatory": true,
+      "purpose": "Observed movement and stop intervals"
+    },
+    {
+      "name": "intersection_entry_signal_phase",
+      "unit": "yellow_or_red",
+      "mandatory": true,
+      "purpose": "entry before versus after observed red exhibition"
+    }
+  ],
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "intersection_entry_signal_phase"
+      ],
+      "source_refs": [
+        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "intersection_entry_signal_phase"
+      ],
+      "source_refs": [
+        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "intersection_entry_signal_phase"
+      ],
+      "source_refs": [
+        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.time": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "intersection_entry_signal_phase"
+      ],
+      "source_refs": [
+        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "intersection_entry_signal_phase"
+      ],
+      "source_refs": [
+        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "intersection_entry_signal_phase"
+      ],
+      "source_refs": [
+        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.crossing_line": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "intersection_entry_signal_phase"
+      ],
+      "source_refs": [
+        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "intersection_entry_signal_phase"
+      ],
+      "source_refs": [
+        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.stopping_distance": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "intersection_entry_signal_phase"
+      ],
+      "source_refs": [
+        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json",
+      "sha256": "5a8f744e782b38fd7e61cb1173abe55403db8d64f925a044ad0ab078300ef32e"
+    },
+    {
+      "path": "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/witnesses.json",
+      "sha256": "dcec7dd5068a5e9890811c44f105d850039efdd669d0a4705e7f99d3a6aeffd4"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "set_id": "demo-train",
+      "membership_rows": 4,
+      "status": "unreviewed_membership_only",
+      "reuse_receipt": null
+    },
+    {
+      "set_id": "full-train",
+      "membership_rows": 4,
+      "status": "unreviewed_membership_only",
+      "reuse_receipt": null
+    }
+  ],
+  "runtime_uncertainties": [
+    "No exact CARLA construction, four candidate variants, or offline feasibility proof exists for these case definitions.",
+    "No positive/negative saved fixture, semantic stage validation, independent saved audit, or comparison audit exists.",
+    "Historical membership is context only; no source-hashed accepted equivalence receipt was verified.",
+    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified."
+  ],
+  "selection_targets": [
+    "demo-train",
+    "full-train"
+  ]
+}

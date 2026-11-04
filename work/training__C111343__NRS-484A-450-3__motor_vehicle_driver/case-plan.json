@@ -1,0 +1,265 @@
+{
+  "assignment_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C111343",
+  "law_id": "NRS-484A-450-3",
+  "selected_branch": null,
+  "scope_branches": [
+    {
+      "law_id": "NRS-484A-450-3",
+      "cell_id": "C111343",
+      "actor": "motor_vehicle_driver",
+      "requirement": "NRS-484A-450-3",
+      "branch": "Conditional stop before nearest-side crosswalk",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 58,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "coverage_status": "pending_review",
+      "recording_ids": [],
+      "law_partition": "training",
+      "scenario_partition": "training"
+    }
+  ],
+  "source_law_text": "The driver of a vehicle approaching a yield sign if required for safety to stop shall stop before entering the crosswalk on the nearest side of the intersection or, if there is no crosswalk, at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway.",
+  "source_law_citation": "NRS 484A.450(3)",
+  "summary_status": "recovered_requires_source_review",
+  "summary_conflicts": "Do not adopt summary or witness as legal authority; exact law controls. Unreviewed historical summaries remain provisional.",
+  "requirement_dispositions": [
+    {
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "statutory_text: The driver of a vehicle approaching a yield sign if required for safety to stop shall stop before entering the crosswalk on the nearest side of the intersection or, if there is no crosswalk, at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway. | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "case_ids": [
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk",
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk"
+      ]
+    },
+    {
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "reviewed_scope: Conditional stop before nearest-side crosswalk | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "case_ids": [
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk",
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk",
+      "target_law_id": "NRS-484A-450-3",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "conditional_stop_position",
+      "comparison_unit": "category",
+      "requested_setting": "before_crosswalk",
+      "recorded_value": null,
+      "case_description": "yield sign and approaching traffic requiring stop for safety; nearest-side crosswalk physically present",
+      "fixed_context": "Keep cell C111343, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. yield sign and approaching traffic requiring stop for safety; nearest-side crosswalk physically present",
+      "source_topic_ids": [
+        "text-0",
+        "reviewed-scope-0"
+      ],
+      "selected": false
+    },
+    {
+      "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk",
+      "target_law_id": "NRS-484A-450-3",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "conditional_stop_position",
+      "comparison_unit": "category",
+      "requested_setting": "past_crosswalk",
+      "recorded_value": null,
+      "case_description": "yield sign and approaching traffic requiring stop for safety; nearest-side crosswalk physically present",
+      "fixed_context": "Keep cell C111343, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. yield sign and approaching traffic requiring stop for safety; nearest-side crosswalk physically present",
+      "source_topic_ids": [
+        "text-0",
+        "reviewed-scope-0"
+      ],
+      "selected": false
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk",
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk"
+      ],
+      "deliberate_differences": [
+        "conditional_stop_position"
+      ],
+      "fixed_conditions": [
+        "cell geometry",
+        "actor",
+        "applicable legal context",
+        "participants except comparison target",
+        "traffic controls",
+        "weather except explicitly separate weather branch",
+        "controller behavior except comparison variable",
+        "capture profile"
+      ],
+      "status": "planned_unverified",
+      "measurement_method": "Measure crosswalk/stop-line geometry, ego footprint and zero-speed interval before entry."
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_pose",
+      "unit": "m,deg",
+      "mandatory": true,
+      "purpose": "Actual pose, trajectory and footprint over full event"
+    },
+    {
+      "name": "conditional_stop_position",
+      "unit": "category",
+      "mandatory": true,
+      "purpose": "Measure crosswalk/stop-line geometry, ego footprint and zero-speed interval before entry."
+    }
+  ],
+  "source_observation_mapping": {
+    "dev.yield_sign": {
+      "evidence": "Proposed capture only: a yield sign at the intersection. No Native channel or Core atom proof yet.",
+      "channels": [
+        "conditional_stop_position"
+      ],
+      "source_refs": [
+        "inputs/training__C111343__NRS-484A-450-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Proposed capture only: the sign faces the subject's approach. No Native channel or Core atom proof yet.",
+      "channels": [
+        "conditional_stop_position"
+      ],
+      "source_refs": [
+        "inputs/training__C111343__NRS-484A-450-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Proposed capture only: the subject's lane is an approach to the intersection the sign governs. No Native channel or Core atom proof yet.",
+      "channels": [
+        "conditional_stop_position"
+      ],
+      "source_refs": [
+        "inputs/training__C111343__NRS-484A-450-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.approaching": {
+      "evidence": "Proposed capture only: the subject is approaching that intersection. No Native channel or Core atom proof yet.",
+      "channels": [
+        "conditional_stop_position"
+      ],
+      "source_refs": [
+        "inputs/training__C111343__NRS-484A-450-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Proposed capture only: the nearest-side crosswalk. No Native channel or Core atom proof yet.",
+      "channels": [
+        "conditional_stop_position"
+      ],
+      "source_refs": [
+        "inputs/training__C111343__NRS-484A-450-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.stop_line": {
+      "evidence": "Proposed capture only: a clearly marked stop line, if there is one. No Native channel or Core atom proof yet.",
+      "channels": [
+        "conditional_stop_position"
+      ],
+      "source_refs": [
+        "inputs/training__C111343__NRS-484A-450-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.sight_distance": {
+      "evidence": "Proposed capture only: the point where a view of approaching traffic opens, if there is neither. No Native channel or Core atom proof yet.",
+      "channels": [
+        "conditional_stop_position"
+      ],
+      "source_refs": [
+        "inputs/training__C111343__NRS-484A-450-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.visible": {
+      "evidence": "Proposed capture only: 'where the driver has a view of approaching traffic': the traffic on the intersecting highway in the subject's line of sight. No Native channel or Core atom proof yet.",
+      "channels": [
+        "conditional_stop_position"
+      ],
+      "source_refs": [
+        "inputs/training__C111343__NRS-484A-450-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Proposed capture only: a full halt, when one is required. No Native channel or Core atom proof yet.",
+      "channels": [
+        "conditional_stop_position"
+      ],
+      "source_refs": [
+        "inputs/training__C111343__NRS-484A-450-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Proposed capture only: operationalizes 'required for safety to stop' against the users on the intersecting highway. No Native channel or Core atom proof yet.",
+      "channels": [
+        "conditional_stop_position"
+      ],
+      "source_refs": [
+        "inputs/training__C111343__NRS-484A-450-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.oncoming": {
+      "evidence": "Proposed capture only: traffic approaching on the intersecting highway. No Native channel or Core atom proof yet.",
+      "channels": [
+        "conditional_stop_position"
+      ],
+      "source_refs": [
+        "inputs/training__C111343__NRS-484A-450-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Proposed capture only: the subject's approach speed. No Native channel or Core atom proof yet.",
+      "channels": [
+        "conditional_stop_position"
+      ],
+      "source_refs": [
+        "inputs/training__C111343__NRS-484A-450-3__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/training__C111343__NRS-484A-450-3__motor_vehicle_driver/assignment.json",
+      "sha256": "e62ded616966215f8cdbb2b0c410c72610fd0f751761ac42955d74588182e0c2"
+    },
+    {
+      "path": "inputs/training__C111343__NRS-484A-450-3__motor_vehicle_driver/witnesses.json",
+      "sha256": "2cc4ac1da2dba7d03fa0d8e0e7f41796b83aa302128c5dc9dcdf8d007d4bcc0d"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "set_id": "full-train",
+      "membership_rows": 0,
+      "status": "unreviewed_membership_only",
+      "reuse_receipt": null
+    }
+  ],
+  "runtime_uncertainties": [
+    "No exact Native construction, four distinct candidate plans, offline feasibility checks, or positive/negative compatibility proofs have been produced.",
+    "No saved-only processing, semantic-stage validation, independent audit or comparison audit has passed.",
+    "Membership rows do not prove statutory coverage or accepted equivalence; no source-hashed reuse receipt was verified.",
+    "CARLA execution, physical realization, camera framing and legal judgments are unverified.",
+    "Whether safety requires a stop is unresolved; no-crosswalk stop-line and nearest-view alternatives remain pending."
+  ],
+  "selection_targets": [
+    "full-train"
+  ]
+}

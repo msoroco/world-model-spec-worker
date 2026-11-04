@@ -1,0 +1,207 @@
+{
+  "assignment_id": "training__C228133__NRS-484B-307-9c__pedestrian",
+  "actor": "pedestrian",
+  "cell_id": "C228133",
+  "law_id": "NRS-484B-307-9c",
+  "selected_branch": null,
+  "scope_branches": [
+    "Pedestrian road-entry connection"
+  ],
+  "source_law_text": "Where the signal is a steady red with a green turn arrow: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4].",
+  "source_law_citation": "NRS 484B.307(9)(c)",
+  "requirement_dispositions": [
+    {
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: Where the signal is a steady red with a green turn arrow:; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C228133__NRS-484B-307-9c__pedestrian__reference",
+        "training__C228133__NRS-484B-307-9c__pedestrian__contrast"
+      ]
+    },
+    {
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4].; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C228133__NRS-484B-307-9c__pedestrian__reference",
+        "training__C228133__NRS-484B-307-9c__pedestrian__contrast"
+      ]
+    },
+    {
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: Pedestrian road-entry connection; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C228133__NRS-484B-307-9c__pedestrian__reference",
+        "training__C228133__NRS-484B-307-9c__pedestrian__contrast"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C228133__NRS-484B-307-9c__pedestrian__reference",
+      "target_law_id": "NRS-484B-307-9c",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "pedestrian_enters_highway",
+      "comparison_unit": "bool",
+      "requested_setting": "reference",
+      "recorded_value": null,
+      "case_description": "road entry versus no entry while facing red plus turn arrow",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    },
+    {
+      "case_id": "training__C228133__NRS-484B-307-9c__pedestrian__contrast",
+      "target_law_id": "NRS-484B-307-9c",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "pedestrian_enters_highway",
+      "comparison_unit": "bool",
+      "requested_setting": "contrast",
+      "recorded_value": null,
+      "case_description": "road entry versus no entry while facing red plus turn arrow",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C228133__NRS-484B-307-9c__pedestrian__comparison_main",
+      "case_ids": [
+        "training__C228133__NRS-484B-307-9c__pedestrian__reference",
+        "training__C228133__NRS-484B-307-9c__pedestrian__contrast"
+      ],
+      "deliberate_differences": [
+        "pedestrian_enters_highway"
+      ],
+      "fixed_conditions": [
+        "cell",
+        "actor",
+        "legal context",
+        "traffic controls",
+        "weather",
+        "other controller settings",
+        "camera and capture profile"
+      ],
+      "status": "planned_unverified"
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_pose",
+      "unit": "m,deg",
+      "mandatory": true,
+      "purpose": "Measured position, heading and footprint over time"
+    },
+    {
+      "name": "ego_speed",
+      "unit": "m/s",
+      "mandatory": true,
+      "purpose": "Observed movement and stop intervals"
+    },
+    {
+      "name": "pedestrian_enters_highway",
+      "unit": "bool",
+      "mandatory": true,
+      "purpose": "road entry versus no entry while facing red plus turn arrow"
+    }
+  ],
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "pedestrian_enters_highway"
+      ],
+      "source_refs": [
+        "inputs/training__C228133__NRS-484B-307-9c__pedestrian/assignment.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "pedestrian_enters_highway"
+      ],
+      "source_refs": [
+        "inputs/training__C228133__NRS-484B-307-9c__pedestrian/assignment.json"
+      ]
+    },
+    "ru.subject": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "pedestrian_enters_highway"
+      ],
+      "source_refs": [
+        "inputs/training__C228133__NRS-484B-307-9c__pedestrian/assignment.json"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "pedestrian_enters_highway"
+      ],
+      "source_refs": [
+        "inputs/training__C228133__NRS-484B-307-9c__pedestrian/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "pedestrian_enters_highway"
+      ],
+      "source_refs": [
+        "inputs/training__C228133__NRS-484B-307-9c__pedestrian/assignment.json"
+      ]
+    },
+    "dev.pedestrian_signal": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "pedestrian_enters_highway"
+      ],
+      "source_refs": [
+        "inputs/training__C228133__NRS-484B-307-9c__pedestrian/assignment.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/training__C228133__NRS-484B-307-9c__pedestrian/assignment.json",
+      "sha256": "b7fdb3146623b69e1554b340129bad1f614149d9a73b1f4eb7f570542bc3b19d"
+    },
+    {
+      "path": "inputs/training__C228133__NRS-484B-307-9c__pedestrian/witnesses.json",
+      "sha256": "ed7a214c5c6f5cd65475af6182306159a24d5b4bafb72a597f4c20272eb90d16"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "set_id": "full-train",
+      "membership_rows": 0,
+      "status": "unreviewed_membership_only",
+      "reuse_receipt": null
+    }
+  ],
+  "runtime_uncertainties": [
+    "No exact CARLA construction, four candidate variants, or offline feasibility proof exists for these case definitions.",
+    "No positive/negative saved fixture, semantic stage validation, independent saved audit, or comparison audit exists.",
+    "Historical membership is context only; no source-hashed accepted equivalence receipt was verified.",
+    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified."
+  ],
+  "selection_targets": [
+    "full-train"
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "assignment_id": "training__C135709__NRS-484B-490__motor_vehicle_driver",
+  "law_id": "NRS-484B-490",
+  "cell_id": "C135709",
+  "actor": "motor_vehicle_driver",
+  "source_law_text": "When official traffic-control devices are erected prohibiting parking upon a narrow highway, a person shall not park a vehicle upon any such highway.",
+  "source_law_citation": "NRS 484B.490",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "official narrow-highway parking ban",
+  "cell_fixed_facts": {
+    "layout": "narrow_road",
+    "maneuver": "park",
+    "control": "parking_restriction_device"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "NRS-484B-490",
+      "branch": "park_on_governed_narrow_highway",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 185,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C135709__NRS-484B-490__motor_vehicle_driver__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C135709__NRS-484B-490__motor_vehicle_driver__probe_01",
+      "target_law_id": "NRS-484B-490",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "park outside prohibited narrow-highway extent",
+      "comparison_variable": "parking on governed highway",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C135709__NRS-484B-490__motor_vehicle_driver__probe_02",
+      "target_law_id": "NRS-484B-490",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "park on governed narrow-highway extent",
+      "comparison_variable": "parking on governed highway",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C135709__NRS-484B-490__motor_vehicle_driver__planned_comparison",
+      "case_ids": [
+        "training__C135709__NRS-484B-490__motor_vehicle_driver__probe_01",
+        "training__C135709__NRS-484B-490__motor_vehicle_driver__probe_02"
+      ],
+      "deliberate_differences": [
+        "parking on governed highway"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "native highway width and designated narrow section",
+    "official prohibitory device and extent",
+    "stopped duration and vehicle footprint"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "dev.zone_sign",
+      "note": "kind narrow_highway, or the regulatory signs erected"
+    },
+    {
+      "term": "dev.regulatory_sign",
+      "note": "code no_parking"
+    },
+    {
+      "term": "dev.governs",
+      "note": "the stretch of highway the devices control"
+    },
+    {
+      "term": "drv.standing_or_parked",
+      "note": "the vehicle parked"
+    },
+    {
+      "term": "rel.occupies",
+      "note": "the resting position within that stretch"
+    },
+    {
+      "term": "st.lane_width",
+      "note": "the narrowness the signs mark"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C135709__NRS-484B-490__motor_vehicle_driver/assignment.json",
+      "sha256": "c39dcc3a32ce59979b2c7916271fc7c6111b61f468a96f2aaa1b743315a72b68"
+    },
+    {
+      "path": "inputs/training__C135709__NRS-484B-490__motor_vehicle_driver/witnesses.json",
+      "sha256": "651e6601af7532e0b33c1fac6899fa5f20d478e6e499caec055d7a4f9ad078a6"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "The official device and governed extent must physically exist and be auditable."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

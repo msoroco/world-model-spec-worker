@@ -1,0 +1,162 @@
+{
+  "assignment_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver",
+  "law_id": "NRS-484B-363-1",
+  "cell_id": "C262666",
+  "actor": "heavy_vehicle_driver",
+  "source_law_text": "A person shall not drive a motor vehicle at a speed in excess of 15 miles per hour in an area designated as a school zone except: (a) On a day on which school is not in session; (b) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (c) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (d) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone indicates that the speed limit is not in effect. As used in this section, “speed limit beacon” means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.",
+  "source_law_citation": "NRS 484B.363(1); with 484B.363(9)",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "school-zone 15 mph limit and exceptions",
+  "cell_fixed_facts": {
+    "layout": "school_zone",
+    "maneuver": "travel",
+    "control": "crosswalk"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "NRS-484B-363-1",
+      "branch": "Heavy motor vehicle traversing a school-zone crosswalk scene",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 152,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_01",
+      "target_law_id": "NRS-484B-363-1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "active school zone below 15 mph",
+      "comparison_variable": "zone speed with active-period status",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_02",
+      "target_law_id": "NRS-484B-363-1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "active school zone at 14.5 mph",
+      "comparison_variable": "zone speed with active-period status",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_03",
+      "target_law_id": "NRS-484B-363-1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "active school zone above 15 mph",
+      "comparison_variable": "zone speed with active-period status",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_04",
+      "target_law_id": "NRS-484B-363-1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "inactive beacon or school-closed exception context",
+      "comparison_variable": "zone speed with active-period status",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__planned_comparison",
+      "case_ids": [
+        "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_01",
+        "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_02",
+        "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_03",
+        "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_04"
+      ],
+      "deliberate_differences": [
+        "zone speed with active-period status"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "zone designation and signs",
+    "school calendar and half-hour schedule",
+    "beacon phase or non-beacon sign state",
+    "heavy vehicle speed and footprint"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "dev.zone_sign",
+      "note": "kind school, with its conditions attribute"
+    },
+    {
+      "term": "drv.within_signed_zone",
+      "note": "kind school"
+    },
+    {
+      "term": "kin.speed",
+      "note": "against the 15 mph limit"
+    },
+    {
+      "term": "dev.speed_limit_beacon",
+      "note": "its flashing attribute, where the zone has one"
+    },
+    {
+      "term": "drv.condition_in_effect",
+      "note": "whether the zone's hours condition holds now"
+    },
+    {
+      "term": "env.civil_time",
+      "note": "the date and time of day the condition is judged against"
+    },
+    {
+      "term": "ru.motor_vehicle",
+      "note": "the class the rule binds"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json",
+      "sha256": "77a0483b8cd70769758c4cfb741ba4d2444812ea4d4052a45fa99db7efdbfa5d"
+    },
+    {
+      "path": "inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/witnesses.json",
+      "sha256": "0fce6fa539d47e24d8cdacaef485a9a5c60e28041aa9539f49c5abd5c4e65a49"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "School calendar and legal zone designation require authoritative inputs; do not infer from visible crosswalk or beacon alone."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

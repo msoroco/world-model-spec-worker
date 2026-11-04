@@ -1,0 +1,268 @@
+{
+  "assignment_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver",
+  "law_id": "NRS-484A-450-2",
+  "cell_id": "C111325",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "travel",
+    "control": "stop_sign"
+  },
+  "selection_targets": [
+    "demo-train",
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484A.450(2)",
+    "text": "Every driver of a vehicle approaching a stop intersection indicated by a stop sign shall stop before entering the crosswalk on the near side of the intersection or, if there is no crosswalk, shall stop at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway before entering the intersection.",
+    "sha256": "911f0bb697eddc6e0dbe7fd651aab7de10298438c8d9dd2ceeebe01dc10217dc"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Near-side crosswalk"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484A-450-2",
+      "source": "NRS 484A.450(2)",
+      "branch": "Near-side crosswalk",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_1",
+        "training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_2"
+      ],
+      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    },
+    {
+      "requirement": "NRS-484A-450-2",
+      "source": "NRS 484A.450(2)",
+      "branch": "no-crosswalk marked-stop-line branch",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    },
+    {
+      "requirement": "NRS-484A-450-2",
+      "source": "NRS 484A.450(2)",
+      "branch": "no-crosswalk/no-line sight-point branch",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; retained only as a proposal, not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_1",
+      "target_law_id": "NRS-484A-450-2",
+      "kind": "planned_only",
+      "target_type": "below",
+      "physical_target": "full stop before near-side crosswalk",
+      "comparison_variable": "stop_before_applicable_boundary",
+      "source_branch": "Near-side crosswalk",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_2",
+      "target_law_id": "NRS-484A-450-2",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "cross near-side crosswalk without full stop",
+      "comparison_variable": "stop_before_applicable_boundary",
+      "source_branch": "Near-side crosswalk",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_1",
+        "training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_2"
+      ],
+      "deliberate_differences": [
+        "stop_before_applicable_boundary"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor and physical road context",
+        "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "dev.stop_sign",
+      "purpose": "a stop sign at the intersection",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.governs",
+      "purpose": "the sign faces the subject's approach",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_enters",
+      "purpose": "the subject's lane is an approach to the intersection the sign governs",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.approaching",
+      "purpose": "the subject is approaching that intersection",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.crosswalk",
+      "purpose": "the near-side crosswalk, marked or unmarked",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.stop_line",
+      "purpose": "a clearly marked stop line, if there is one",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.intersection",
+      "purpose": "the intersection region and its boundary",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.sight_distance",
+      "purpose": "where a view of approaching traffic on the intersecting highway first opens, when there is neither crosswalk nor stop line",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.visible",
+      "purpose": "'where the driver has a view of approaching traffic': the traffic on the intersecting highway in the subject's line of sight from the stopping point",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.stopped",
+      "purpose": "a full halt",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.crossing_line",
+      "purpose": "the footprint crossing the crosswalk / stop line boundary",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.entering_intersection",
+      "purpose": "the footprint entering the intersection",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [
+    {
+      "recording_id": "8b66dc7110651355664b44be213e621f4447b0bea996732725d583ecf47f284e",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "f82eb9859f5705429c4cdf17b2872854069ff4692a20870cba4010e5e7e26530",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "cc58ed7ec5ab3e21578eab4293638d2a2aa23cc90b3e46b38b026d61991846e7",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "1d44f472c13b303e2b4691b2e7348e3a20ce0c53fefbc704f95d064c5984f78e",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C111325__NRS-484A-450-2__motor_vehicle_driver/assignment.json",
+      "sha256": "e0033b7249757148b11cad2e526569b8af704708671bfe6c8860cf061f205185"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction"
+  ],
+  "blockers": [
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ],
+  "selected_branch": null,
+  "observations": [
+    {
+      "name": "dev.stop_sign",
+      "mandatory": true,
+      "reason": "a stop sign at the intersection"
+    },
+    {
+      "name": "dev.governs",
+      "mandatory": true,
+      "reason": "the sign faces the subject's approach"
+    },
+    {
+      "name": "st.lane_enters",
+      "mandatory": true,
+      "reason": "the subject's lane is an approach to the intersection the sign governs"
+    },
+    {
+      "name": "drv.approaching",
+      "mandatory": true,
+      "reason": "the subject is approaching that intersection"
+    },
+    {
+      "name": "st.crosswalk",
+      "mandatory": true,
+      "reason": "the near-side crosswalk, marked or unmarked"
+    },
+    {
+      "name": "st.stop_line",
+      "mandatory": true,
+      "reason": "a clearly marked stop line, if there is one"
+    },
+    {
+      "name": "st.intersection",
+      "mandatory": true,
+      "reason": "the intersection region and its boundary"
+    },
+    {
+      "name": "st.sight_distance",
+      "mandatory": true,
+      "reason": "where a view of approaching traffic on the intersecting highway first opens, when there is neither crosswalk nor stop line"
+    },
+    {
+      "name": "rel.visible",
+      "mandatory": true,
+      "reason": "'where the driver has a view of approaching traffic': the traffic on the intersecting highway in the subject's line of sight from the stopping point"
+    },
+    {
+      "name": "drv.stopped",
+      "mandatory": true,
+      "reason": "a full halt"
+    },
+    {
+      "name": "drv.crossing_line",
+      "mandatory": true,
+      "reason": "the footprint crossing the crosswalk / stop line boundary"
+    },
+    {
+      "name": "drv.entering_intersection",
+      "mandatory": true,
+      "reason": "the footprint entering the intersection"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction",
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ]
+}

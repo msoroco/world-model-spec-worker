@@ -1,0 +1,166 @@
+{
+  "assignment_id": "training__C200542__LVMC-11-52-136__motor_vehicle_driver",
+  "law_id": "LVMC-11-52-136",
+  "cell_id": "C200542",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "public_access_premises",
+    "maneuver": "park",
+    "control": "access_aisle"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "LVMC 11.52.136",
+    "text": "No person shall park a vehicle in an access aisle.",
+    "sha256": "4147a294452b24a168965eabe69e4cabc65117588131940d8fe62c7e99369def",
+    "text_sha256": "4147a294452b24a168965eabe69e4cabc65117588131940d8fe62c7e99369def"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "premises access-aisle parking",
+  "witness_branches": [
+    "premises access-aisle parking"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "LVMC-11-52-136",
+      "source": "LVMC 11.52.136",
+      "branch": "premises access-aisle parking",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_1",
+        "training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Same frozen cell and actor with target activation absent; context only, no selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_1",
+      "target_law_id": "LVMC-11-52-136",
+      "kind": "planned_only",
+      "source_branch": "premises access-aisle parking",
+      "physical_target": "park outside access aisle",
+      "comparison_variable": "vehicle footprint overlap with access aisle",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_2",
+      "target_law_id": "LVMC-11-52-136",
+      "kind": "planned_only",
+      "source_branch": "premises access-aisle parking",
+      "physical_target": "park inside marked access aisle",
+      "comparison_variable": "vehicle footprint overlap with access aisle",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C200542__LVMC-11-52-136__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_1",
+        "training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_2"
+      ],
+      "deliberate_differences": [
+        "vehicle footprint overlap with access aisle"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
+        "route and controller policy except requested comparison variable",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "st.parking_space",
+      "purpose": "designation access_aisle",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_marking",
+      "purpose": "the hatching that marks it",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.standing_or_parked",
+      "purpose": "the vehicle parked",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.occupies",
+      "purpose": "the footprint in the aisle",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.extent",
+      "purpose": "the body against the aisle's extent",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "st.parking_space",
+      "mandatory": true,
+      "reason": "designation access_aisle"
+    },
+    {
+      "name": "st.lane_marking",
+      "mandatory": true,
+      "reason": "the hatching that marks it"
+    },
+    {
+      "name": "drv.standing_or_parked",
+      "mandatory": true,
+      "reason": "the vehicle parked"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "the footprint in the aisle"
+    },
+    {
+      "name": "kin.extent",
+      "mandatory": true,
+      "reason": "the body against the aisle's extent"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/assignment.json",
+      "sha256": "03c26d7107cf7eec106ec4fbc486c2101eab3e0a21ce4ad13f7fbd08863e240b"
+    },
+    {
+      "path": "inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/witnesses.json",
+      "sha256": "a0537190cc7d0c1bb66d8ca65f7b99e7bb2af4a08ad46a8b6e868425ed5e4119"
+    }
+  ],
+  "existing_evidence": [],
+  "reuse_count": 0,
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
+    "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
+    "No CARLA execution or accepted recording is claimed.",
+    "Access-aisle boundaries and designation must be evidenced; ordinary drive aisle or generic parking-lot stripe cannot substitute."
+  ],
+  "unverified_physical_assumptions": [
+    "Frozen cell can physically realize required law context",
+    "Actor blueprint and route can realize each requested behavior",
+    "Decisive physical distinction can be seen by retained cameras"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+  ],
+  "source_context_review": "Access-aisle boundaries and designation must be evidenced; ordinary drive aisle or generic parking-lot stripe cannot substitute."
+}

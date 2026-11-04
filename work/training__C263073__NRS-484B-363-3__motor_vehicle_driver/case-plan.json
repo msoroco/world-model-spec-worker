@@ -1,0 +1,204 @@
+{
+  "assignment_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver",
+  "law_id": "NRS-484B-363-3",
+  "cell_id": "C263073",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "school_zone",
+    "maneuver": "u_turn",
+    "control": "children"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.363(3); with 484B.363(9)",
+    "text": "The driver of a vehicle shall not make a U-turn in an area designated as a school zone or school crossing zone except: (a) When there are no children present; (b) On a day on which school is not in session; (c) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (d) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (e) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone or school crossing zone indicates that the speed limit is not in effect. As used in this section, “speed limit beacon” means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.",
+    "sha256": "c20b0a21740b67777751b5668ffae09708eb909edecc77fc75e2e304fe993713",
+    "text_sha256": "c20b0a21740b67777751b5668ffae09708eb909edecc77fc75e2e304fe993713"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "U-turn in a school zone containing children",
+  "witness_branches": [
+    "U-turn in a school zone containing children"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-363-3",
+      "source": "NRS 484B.363(3); with 484B.363(9)",
+      "branch": "U-turn in a school zone containing children",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+        "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+    },
+    {
+      "requirement": "NRS-484B-363-3",
+      "source": "NRS 484B.363(3); with 484B.363(9)",
+      "branch": "Textual exceptions, alternatives, or dependencies: except, when there are no children",
+      "status": "exception_pending",
+      "case_ids": [],
+      "evidence_or_gap": "Each applicable statutory qualifier requires a separately controlled construction or an explicit unsupported-physical finding; source language must be retained in audit."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Same frozen cell and actor with target activation absent; context only, no selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484B-363-3",
+      "kind": "planned_only",
+      "source_branch": "U-turn in a school zone containing children",
+      "physical_target": "defer U-turn in active school zone with children present",
+      "comparison_variable": "U-turn occurrence while school-zone prohibition active",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2",
+      "target_law_id": "NRS-484B-363-3",
+      "kind": "planned_only",
+      "source_branch": "U-turn in a school zone containing children",
+      "physical_target": "make U-turn in active school zone with children present",
+      "comparison_variable": "U-turn occurrence while school-zone prohibition active",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+        "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2"
+      ],
+      "deliberate_differences": [
+        "U-turn occurrence while school-zone prohibition active"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
+        "route and controller policy except requested comparison variable",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "dev.zone_sign",
+      "purpose": "kind school or school_crossing",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.within_signed_zone",
+      "purpose": "inside such a zone",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.u_turn",
+      "purpose": "the prohibited manoeuvre",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.heading",
+      "purpose": "the heading reversal",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "ru.child",
+      "purpose": "exception (a): no children present",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.speed_limit_beacon",
+      "purpose": "its flashing attribute",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.condition_in_effect",
+      "purpose": "whether the zone's condition holds",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "env.civil_time",
+      "purpose": "the date and time of day",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "dev.zone_sign",
+      "mandatory": true,
+      "reason": "kind school or school_crossing"
+    },
+    {
+      "name": "drv.within_signed_zone",
+      "mandatory": true,
+      "reason": "inside such a zone"
+    },
+    {
+      "name": "drv.u_turn",
+      "mandatory": true,
+      "reason": "the prohibited manoeuvre"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "reason": "the heading reversal"
+    },
+    {
+      "name": "ru.child",
+      "mandatory": true,
+      "reason": "exception (a): no children present"
+    },
+    {
+      "name": "dev.speed_limit_beacon",
+      "mandatory": true,
+      "reason": "its flashing attribute"
+    },
+    {
+      "name": "drv.condition_in_effect",
+      "mandatory": true,
+      "reason": "whether the zone's condition holds"
+    },
+    {
+      "name": "env.civil_time",
+      "mandatory": true,
+      "reason": "the date and time of day"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C263073__NRS-484B-363-3__motor_vehicle_driver/assignment.json",
+      "sha256": "ac32420ebe70d1afe74e1a1b746ea785b99aa7c89b3729b4424461d6ac0fe9b3"
+    },
+    {
+      "path": "inputs/training__C263073__NRS-484B-363-3__motor_vehicle_driver/witnesses.json",
+      "sha256": "9124ce6505740f6f72892ad8a5285daa71b6d801ae6863f6f5cde58ccaa257d0"
+    }
+  ],
+  "existing_evidence": [],
+  "reuse_count": 0,
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
+    "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
+    "No CARLA execution or accepted recording is claimed.",
+    "School zone designation and active period are legal context. Each listed exception has different children/session/time/beacon facts; a generic school sign is insufficient."
+  ],
+  "unverified_physical_assumptions": [
+    "Frozen cell can physically realize required law context",
+    "Actor blueprint and route can realize each requested behavior",
+    "Decisive physical distinction can be seen by retained cameras"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+  ],
+  "source_context_review": "School zone designation and active period are legal context. Each listed exception has different children/session/time/beacon facts; a generic school sign is insufficient."
+}

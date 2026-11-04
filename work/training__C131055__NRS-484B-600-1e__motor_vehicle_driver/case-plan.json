@@ -1,0 +1,159 @@
+{
+  "assignment_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver",
+  "law_id": "NRS-484B-600-1e",
+  "cell_id": "C131055",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "multilane_roundabout",
+    "maneuver": "exit_roundabout",
+    "control": "lane_allocation"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.600(1)(e)",
+    "text": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: In any event, a rate of speed greater than 80 miles per hour.",
+    "sha256": "d135fb6c8f3edfcb76ed18ff6a2379517d06b9c991b59ff10a02cdcff422a737",
+    "text_sha256": "d135fb6c8f3edfcb76ed18ff6a2379517d06b9c991b59ff10a02cdcff422a737"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "selected assignment branch",
+  "witness_branches": [
+    "selected assignment branch"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-600-1e",
+      "source": "NRS 484B.600(1)(e)",
+      "branch": "selected assignment branch",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1",
+        "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Same frozen cell and actor with target activation absent; context only, no selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484B-600-1e",
+      "kind": "planned_only",
+      "source_branch": "selected assignment branch",
+      "physical_target": "drive below 80 mph",
+      "comparison_variable": "measured speed relative to 80 mph",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2",
+      "target_law_id": "NRS-484B-600-1e",
+      "kind": "planned_only",
+      "source_branch": "selected assignment branch",
+      "physical_target": "drive above 80 mph",
+      "comparison_variable": "measured speed relative to 80 mph",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1",
+        "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2"
+      ],
+      "deliberate_differences": [
+        "measured speed relative to 80 mph"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
+        "route and controller policy except requested comparison variable",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "kin.speed",
+      "purpose": "the speed driven, against the 80 mph absolute cap",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.velocity",
+      "purpose": "the measurement it comes from",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "ru.subject",
+      "purpose": "the vehicle judged — any kind",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "reason": "the speed driven, against the 80 mph absolute cap"
+    },
+    {
+      "name": "kin.velocity",
+      "mandatory": true,
+      "reason": "the measurement it comes from"
+    },
+    {
+      "name": "ru.subject",
+      "mandatory": true,
+      "reason": "the vehicle judged — any kind"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/assignment.json",
+      "sha256": "f3c594ba1ffbb22ef58d279e76e8474ef466e31f31b73f5283f5825e393944e5"
+    },
+    {
+      "path": "inputs/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/witnesses.json",
+      "sha256": "bbb40ff6b29056bfb7a4620ef6bf5d9c5e95877e45569e587f29279eb0df3913"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "recording_id": "b1862c074dad63bb562cb9ade067c2c835bc20f8a3fa74f8360449f62ee7295e",
+      "status": "membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "1fbcab13e237b6fe9a9241e88cc5e0e85726a8da53e7a9d4191b07e9fcb3592d",
+      "status": "membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "aee957d2baa824183dee602f2521ccaea619624070baec18873b73feb8517117",
+      "status": "membership_only_no_equivalence_receipt"
+    }
+  ],
+  "reuse_count": 0,
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
+    "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
+    "No CARLA execution or accepted recording is claimed.",
+    "Statutory boundary is 80 mph. Use measured full-trace speed and a disclosed sampling/uncertainty convention; no model performance metric substitutes for the law."
+  ],
+  "unverified_physical_assumptions": [
+    "Frozen cell can physically realize required law context",
+    "Actor blueprint and route can realize each requested behavior",
+    "Decisive physical distinction can be seen by retained cameras"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+  ],
+  "source_context_review": "Statutory boundary is 80 mph. Use measured full-trace speed and a disclosed sampling/uncertainty convention; no model performance metric substitutes for the law."
+}

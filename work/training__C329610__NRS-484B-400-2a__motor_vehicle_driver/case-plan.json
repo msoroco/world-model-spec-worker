@@ -1,0 +1,225 @@
+{
+  "assignment_id": "training__C329610__NRS-484B-400-2a__motor_vehicle_driver",
+  "law_id": "NRS-484B-400-2a",
+  "cell_id": "C329610",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "two_way_to_two_way_intersection",
+    "maneuver": "left_turn",
+    "control": "centerline"
+  },
+  "selection_targets": [
+    "demo-train",
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.400(2)(a)",
+    "text": "If the driver of a vehicle intends to turn at an intersection and: Both intersecting highways are two-directional: The approach for a left turn must be made in that portion of the right half of the highway nearest the centerline thereof.",
+    "sha256": "17fb429ff30594e751be3a294245ecfea8fb0aeddcf710427fdfc2030d46dd4c",
+    "text_sha256": "17fb429ff30594e751be3a294245ecfea8fb0aeddcf710427fdfc2030d46dd4c"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "Left-turn approach between two-directional highways.",
+  "witness_branches": [
+    "Left-turn approach between two-directional highways.",
+    "selected assignment branch"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-400-2a",
+      "source": "NRS 484B.400(2)(a)",
+      "branch": "Left-turn approach between two-directional highways.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C329610__NRS-484B-400-2a__motor_vehicle_driver__controlled_1",
+        "training__C329610__NRS-484B-400-2a__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+    },
+    {
+      "requirement": "NRS-484B-400-2a",
+      "source": "NRS 484B.400(2)(a)",
+      "branch": "selected assignment branch",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "Witness describes a separate branch; exact same-cell construction and proof remain pending."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Same frozen cell and actor with target activation absent; context only, no selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C329610__NRS-484B-400-2a__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484B-400-2a",
+      "kind": "planned_only",
+      "source_branch": "Left-turn approach between two-directional highways.",
+      "physical_target": "approach left turn near centerline in right half",
+      "comparison_variable": "approach-lane lateral position",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C329610__NRS-484B-400-2a__motor_vehicle_driver__controlled_2",
+      "target_law_id": "NRS-484B-400-2a",
+      "kind": "planned_only",
+      "source_branch": "Left-turn approach between two-directional highways.",
+      "physical_target": "approach left turn away from centerline in right half",
+      "comparison_variable": "approach-lane lateral position",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C329610__NRS-484B-400-2a__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C329610__NRS-484B-400-2a__motor_vehicle_driver__controlled_1",
+        "training__C329610__NRS-484B-400-2a__motor_vehicle_driver__controlled_2"
+      ],
+      "deliberate_differences": [
+        "approach-lane lateral position"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
+        "route and controller policy except requested comparison variable",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "drv.turning",
+      "purpose": "the left turn",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.intersection",
+      "purpose": "the intersection",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_enters",
+      "purpose": "the approach lane enters the intersection turned at",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.centre_line",
+      "purpose": "the centreline of the highway approached on",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.occupies",
+      "purpose": "the position within the right half on approach",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.position",
+      "purpose": "the lateral offset from the centreline",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.one_way_roadway",
+      "purpose": "both highways must be two-directional for this line to apply",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_direction",
+      "purpose": "the directions of the two highways",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "reason": "the left turn"
+    },
+    {
+      "name": "st.intersection",
+      "mandatory": true,
+      "reason": "the intersection"
+    },
+    {
+      "name": "st.lane_enters",
+      "mandatory": true,
+      "reason": "the approach lane enters the intersection turned at"
+    },
+    {
+      "name": "st.centre_line",
+      "mandatory": true,
+      "reason": "the centreline of the highway approached on"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "the position within the right half on approach"
+    },
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "reason": "the lateral offset from the centreline"
+    },
+    {
+      "name": "st.one_way_roadway",
+      "mandatory": true,
+      "reason": "both highways must be two-directional for this line to apply"
+    },
+    {
+      "name": "st.lane_direction",
+      "mandatory": true,
+      "reason": "the directions of the two highways"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json",
+      "sha256": "e7e7effcfe587661cd9c480880a611f9f6fe171810cd230c6d6c6e561106dc48"
+    },
+    {
+      "path": "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/witnesses.json",
+      "sha256": "dd06ef4b1f76c65daa4ff5d9f5c06680585bf904ab6a00446f9abf485e27fe33"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "recording_id": "ef2f98a929ac9985d0436685bcc223f679b411932328325f67cc0d46db592f56",
+      "status": "membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "4198f85f6b00d478e1da13d523a4f356477fa4305ccca15bf83b5659b6fa343c",
+      "status": "membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "ef2f98a929ac9985d0436685bcc223f679b411932328325f67cc0d46db592f56",
+      "status": "membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "4198f85f6b00d478e1da13d523a4f356477fa4305ccca15bf83b5659b6fa343c",
+      "status": "membership_only_no_equivalence_receipt"
+    }
+  ],
+  "reuse_count": 0,
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
+    "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
+    "No CARLA execution or accepted recording is claimed.",
+    "Both intersecting highways must be two-directional. Measure approach path in the right half nearest centerline before the left turn; the turn exit is not the target."
+  ],
+  "unverified_physical_assumptions": [
+    "Frozen cell can physically realize required law context",
+    "Actor blueprint and route can realize each requested behavior",
+    "Decisive physical distinction can be seen by retained cameras"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+  ],
+  "source_context_review": "Both intersecting highways must be two-directional. Measure approach path in the right half nearest centerline before the left turn; the turn exit is not the target."
+}

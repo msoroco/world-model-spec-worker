@@ -1,0 +1,137 @@
+{
+  "assignment_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver",
+  "law_id": "LVMC-11-48-060",
+  "cell_id": "C394566",
+  "actor": "motor_vehicle_driver",
+  "source_law_text": "Streets, other than truck routes, shall not be used as through routes from one truck route to another unless pick-up, delivery or essential use is required enroute.",
+  "source_law_citation": "LVMC 11.48.060",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "truck-route-to-truck-route through use",
+  "cell_fixed_facts": {
+    "layout": "road",
+    "maneuver": "travel",
+    "control": "truck_route_designation"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "LVMC-11-48-060",
+      "branch": "Complete passage over an intervening non-truck street.",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 34,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01",
+      "target_law_id": "LVMC-11-48-060",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "travel between two truck routes through non-truck street without enroute need",
+      "comparison_variable": "enroute essential use",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02",
+      "target_law_id": "LVMC-11-48-060",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "same traversal with documented pickup/delivery or essential use",
+      "comparison_variable": "enroute essential use",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__planned_comparison",
+      "case_ids": [
+        "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01",
+        "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02"
+      ],
+      "deliberate_differences": [
+        "enroute essential use"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "truck-route designations and endpoints",
+    "through-route path",
+    "enroute pickup/delivery/essential purpose"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "dev.regulatory_sign",
+      "note": "code truck_route — which streets are truck routes"
+    },
+    {
+      "term": "ru.truck",
+      "note": "the vehicle judged"
+    },
+    {
+      "term": "kin.path_length",
+      "note": "the route taken between two truck routes"
+    },
+    {
+      "term": "kin.position",
+      "note": "the entry and exit points of the non-truck-route street"
+    },
+    {
+      "term": "drv.standing_or_parked",
+      "note": "a stop for pick-up or delivery — the evidence the trip had a purpose en route"
+    },
+    {
+      "term": "st.roadway",
+      "note": "the street used"
+    },
+    {
+      "term": "st.driveway_or_alley_entrance",
+      "note": "the premises served"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C394566__LVMC-11-48-060__motor_vehicle_driver/assignment.json",
+      "sha256": "2eb55aae79b7ea2356bbf6410d64ab09dec4c7073e234af43ac64aaaee324606"
+    },
+    {
+      "path": "inputs/training__C394566__LVMC-11-48-060__motor_vehicle_driver/witnesses.json",
+      "sha256": "778fd16915fefa796b40c665c335eb64af29fe297485ed2b385307ff31b60b76"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Rule may target truck-route through traffic; selected generic motor-vehicle actor and road cell require compatible qualifying route and purpose."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

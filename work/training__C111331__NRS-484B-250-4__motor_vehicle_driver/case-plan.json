@@ -1,0 +1,256 @@
+{
+  "assignment_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver",
+  "law_id": "NRS-484B-250-4",
+  "cell_id": "C111331",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "travel",
+    "control": "traffic_light"
+  },
+  "selection_targets": [
+    "demo-train",
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.250(4)",
+    "text": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
+    "sha256": "eb5fb0c216119db607c762d01d5d69b20bd3e58cf5ea308cfe90147bb9a405ac",
+    "text_sha256": "eb5fb0c216119db607c762d01d5d69b20bd3e58cf5ea308cfe90147bb9a405ac"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "Marked stop line; complete cessation; all-entrance stop treatment.",
+  "witness_branches": [
+    "Marked stop line; complete cessation; all-entrance stop treatment.",
+    "selected assignment branch"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-250-4",
+      "source": "NRS 484B.250(4)",
+      "branch": "Marked stop line; complete cessation; all-entrance stop treatment.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__controlled_1",
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+    },
+    {
+      "requirement": "NRS-484B-250-4",
+      "source": "NRS 484B.250(4)",
+      "branch": "selected assignment branch",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "Witness describes a separate branch; exact same-cell construction and proof remain pending."
+    },
+    {
+      "requirement": "NRS-484B-250-4",
+      "source": "NRS 484B.250(4)",
+      "branch": "Textual exceptions, alternatives, or dependencies: if there is none",
+      "status": "exception_pending",
+      "case_ids": [],
+      "evidence_or_gap": "Each applicable statutory qualifier requires a separately controlled construction or an explicit unsupported-physical finding; source language must be retained in audit."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Same frozen cell and actor with target activation absent; context only, no selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484B-250-4",
+      "kind": "planned_only",
+      "source_branch": "Marked stop line; complete cessation; all-entrance stop treatment.",
+      "physical_target": "stop at governing point and yield before cautious entry",
+      "comparison_variable": "complete stop and precedence under inoperative uncovered signal",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__controlled_2",
+      "target_law_id": "NRS-484B-250-4",
+      "kind": "planned_only",
+      "source_branch": "Marked stop line; complete cessation; all-entrance stop treatment.",
+      "physical_target": "enter past governing point without a complete stop",
+      "comparison_variable": "complete stop and precedence under inoperative uncovered signal",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__controlled_1",
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__controlled_2"
+      ],
+      "deliberate_differences": [
+        "complete stop and precedence under inoperative uncovered signal"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
+        "route and controller policy except requested comparison variable",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "dev.traffic_signal",
+      "purpose": "the head, with its uncovered attribute",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.inoperative",
+      "purpose": "installed and uncovered but showing no valid indication",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_enters",
+      "purpose": "the lane the inoperative signal governs enters the intersection in question",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.stop_line",
+      "purpose": "the clearly marked stop line",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.crosswalk",
+      "purpose": "the near-side crosswalk",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.sight_distance",
+      "purpose": "the point where the view of the through highway opens",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.visible",
+      "purpose": "'a clear view of approaching traffic': the traffic on the intersecting highway in the subject's line of sight from the stopping point",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.stopped",
+      "purpose": "the required halt",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.entering_intersection",
+      "purpose": "entry after the halt",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.arrival_order",
+      "purpose": "vehicles that previously completed a stop",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.in_intersection",
+      "purpose": "vehicles already inside",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.yields_to",
+      "purpose": "the yield after the stop",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "dev.traffic_signal",
+      "mandatory": true,
+      "reason": "the head, with its uncovered attribute"
+    },
+    {
+      "name": "dev.inoperative",
+      "mandatory": true,
+      "reason": "installed and uncovered but showing no valid indication"
+    },
+    {
+      "name": "st.lane_enters",
+      "mandatory": true,
+      "reason": "the lane the inoperative signal governs enters the intersection in question"
+    },
+    {
+      "name": "st.stop_line",
+      "mandatory": true,
+      "reason": "the clearly marked stop line"
+    },
+    {
+      "name": "st.crosswalk",
+      "mandatory": true,
+      "reason": "the near-side crosswalk"
+    },
+    {
+      "name": "st.sight_distance",
+      "mandatory": true,
+      "reason": "the point where the view of the through highway opens"
+    },
+    {
+      "name": "rel.visible",
+      "mandatory": true,
+      "reason": "'a clear view of approaching traffic': the traffic on the intersecting highway in the subject's line of sight from the stopping point"
+    },
+    {
+      "name": "drv.stopped",
+      "mandatory": true,
+      "reason": "the required halt"
+    },
+    {
+      "name": "drv.entering_intersection",
+      "mandatory": true,
+      "reason": "entry after the halt"
+    },
+    {
+      "name": "drv.arrival_order",
+      "mandatory": true,
+      "reason": "vehicles that previously completed a stop"
+    },
+    {
+      "name": "drv.in_intersection",
+      "mandatory": true,
+      "reason": "vehicles already inside"
+    },
+    {
+      "name": "drv.yields_to",
+      "mandatory": true,
+      "reason": "the yield after the stop"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C111331__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "sha256": "7b271093f3f008d89ede8740a3a74a0b3b5211e746805e3f651579f2278fee49"
+    },
+    {
+      "path": "inputs/training__C111331__NRS-484B-250-4__motor_vehicle_driver/witnesses.json",
+      "sha256": "130a2a8ce2f13005cedb1c83c1449ac23866310c13cdeddeb3cdeb4b814747fa"
+    }
+  ],
+  "existing_evidence": [],
+  "reuse_count": 0,
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
+    "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
+    "No CARLA execution or accepted recording is claimed.",
+    "Signal must be installed, vehicular indications uncovered and inoperative at ego entry. Stop-point priority is line, then near-side crosswalk, then nearest point with view. The after-stop yielding and cautious-entry duties need separate observations."
+  ],
+  "unverified_physical_assumptions": [
+    "Frozen cell can physically realize required law context",
+    "Actor blueprint and route can realize each requested behavior",
+    "Decisive physical distinction can be seen by retained cameras"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+  ],
+  "source_context_review": "Signal must be installed, vehicular indications uncovered and inoperative at ego entry. Stop-point priority is line, then near-side crosswalk, then nearest point with view. The after-stop yielding and cautious-entry duties need separate observations."
+}

@@ -1,0 +1,188 @@
+{
+  "assignment_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver",
+  "law_id": "NRS-484B-307-12b",
+  "cell_id": "C230247",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "road",
+    "maneuver": "travel",
+    "control": "lane_signal"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.307(12)(b)",
+    "text": "Whenever signals are placed over the individual lanes of a highway, the signals indicate, and apply to drivers of vehicles, as follows: A red “X” symbol means a driver facing the signal must not enter or drive in any lane over which the red signal is shown.",
+    "sha256": "fb486b63a3cdf3cff29f8a51a600e9b0f74668b11e22e1c720d8f2f14a350b2a"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Approach to and motion within a red-X-governed lane."
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-307-12b",
+      "source": "NRS 484B.307(12)(b)",
+      "branch": "Approach to and motion within a red-X-governed lane.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_1",
+        "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_2"
+      ],
+      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    },
+    {
+      "requirement": "NRS-484B-307-12b",
+      "source": "NRS 484B.307(12)(b)",
+      "branch": "signal directly over individual lane",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    },
+    {
+      "requirement": "NRS-484B-307-12b",
+      "source": "NRS 484B.307(12)(b)",
+      "branch": "facing driver",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; retained only as a proposal, not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_1",
+      "target_law_id": "NRS-484B-307-12b",
+      "kind": "planned_only",
+      "target_type": "below",
+      "physical_target": "driver stays outside red-X-governed lane",
+      "comparison_variable": "red_x_lane_occupancy",
+      "source_branch": "Approach to and motion within a red-X-governed lane.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_2",
+      "target_law_id": "NRS-484B-307-12b",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver enters red-X-governed lane",
+      "comparison_variable": "red_x_lane_occupancy",
+      "source_branch": "Approach to and motion within a red-X-governed lane.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_1",
+        "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_2"
+      ],
+      "deliberate_differences": [
+        "red_x_lane_occupancy"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor and physical road context",
+        "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "dev.lane_control_signal",
+      "purpose": "state red_x",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.governs",
+      "purpose": "the lane the signal is over",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane",
+      "purpose": "that lane",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.occupies",
+      "purpose": "the subject's footprint in it",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.lane_change",
+      "purpose": "entering the lane",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.velocity",
+      "purpose": "'or drive in' — remaining in it while moving",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [],
+  "sources": [
+    {
+      "path": "inputs/training__C230247__NRS-484B-307-12b__motor_vehicle_driver/assignment.json",
+      "sha256": "d42e30c79c02bce4f926329dc4fab17642c618aca476b9798cc32f9c0efb668d"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction"
+  ],
+  "blockers": [
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ],
+  "selected_branch": null,
+  "observations": [
+    {
+      "name": "dev.lane_control_signal",
+      "mandatory": true,
+      "reason": "state red_x"
+    },
+    {
+      "name": "dev.governs",
+      "mandatory": true,
+      "reason": "the lane the signal is over"
+    },
+    {
+      "name": "st.lane",
+      "mandatory": true,
+      "reason": "that lane"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "the subject's footprint in it"
+    },
+    {
+      "name": "drv.lane_change",
+      "mandatory": true,
+      "reason": "entering the lane"
+    },
+    {
+      "name": "kin.velocity",
+      "mandatory": true,
+      "reason": "'or drive in' — remaining in it while moving"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction",
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ]
+}

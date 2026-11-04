@@ -1,0 +1,238 @@
+{
+  "assignment_id": "training__C230254__NRS-486-341__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C230254",
+  "law_id": "NRS-486-341",
+  "selected_branch": null,
+  "scope_branches": [
+    {
+      "law_id": "NRS-486-341",
+      "cell_id": "C230254",
+      "actor": "motor_vehicle_driver",
+      "requirement": "NRS-486-341",
+      "branch": "Other motor vehicle relative to protected motorcycle",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 218,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "coverage_status": "pending_review",
+      "recording_ids": [],
+      "law_partition": "training",
+      "scenario_partition": "training"
+    }
+  ],
+  "source_law_text": "Every motorcycle or moped when being driven on the highway is entitled to full use of the traffic lane it is occupying, and a person shall not drive another motor vehicle in a manner which would deprive any such motorcycle or moped of such use.",
+  "source_law_citation": "NRS 486.341",
+  "summary_status": "recovered_requires_source_review",
+  "summary_conflicts": "Do not adopt summary or witness as legal authority; exact law controls. Unreviewed historical summaries remain provisional.",
+  "requirement_dispositions": [
+    {
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "statutory_text: Every motorcycle or moped when being driven on the highway is entitled to full use of the traffic lane it is occupying, and a person shall not drive another motor vehicle in a manner which would deprive any such motorcycle or moped of such use. | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "case_ids": [
+        "training__C230254__NRS-486-341__motor_vehicle_driver__full_lane_available",
+        "training__C230254__NRS-486-341__motor_vehicle_driver__blocked_by_ego"
+      ]
+    },
+    {
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "reviewed_scope: Other motor vehicle relative to protected motorcycle | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "case_ids": [
+        "training__C230254__NRS-486-341__motor_vehicle_driver__full_lane_available",
+        "training__C230254__NRS-486-341__motor_vehicle_driver__blocked_by_ego"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C230254__NRS-486-341__motor_vehicle_driver__full_lane_available",
+      "target_law_id": "NRS-486-341",
+      "planning_status": "unverified_definition",
+      "target_type": "physical_sweep",
+      "comparison_variable": "motorcycle_lane_use_deprivation",
+      "comparison_unit": "category",
+      "requested_setting": "full_lane_available",
+      "recorded_value": null,
+      "case_description": "motorcycle traveling in occupied lane; other motor vehicle ego alongside",
+      "fixed_context": "Keep cell C230254, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. motorcycle traveling in occupied lane; other motor vehicle ego alongside",
+      "source_topic_ids": [
+        "text-0",
+        "reviewed-scope-0"
+      ],
+      "selected": false
+    },
+    {
+      "case_id": "training__C230254__NRS-486-341__motor_vehicle_driver__blocked_by_ego",
+      "target_law_id": "NRS-486-341",
+      "planning_status": "unverified_definition",
+      "target_type": "physical_sweep",
+      "comparison_variable": "motorcycle_lane_use_deprivation",
+      "comparison_unit": "category",
+      "requested_setting": "blocked_by_ego",
+      "recorded_value": null,
+      "case_description": "motorcycle traveling in occupied lane; other motor vehicle ego alongside",
+      "fixed_context": "Keep cell C230254, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. motorcycle traveling in occupied lane; other motor vehicle ego alongside",
+      "source_topic_ids": [
+        "text-0",
+        "reviewed-scope-0"
+      ],
+      "selected": false
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C230254__NRS-486-341__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C230254__NRS-486-341__motor_vehicle_driver__full_lane_available",
+        "training__C230254__NRS-486-341__motor_vehicle_driver__blocked_by_ego"
+      ],
+      "deliberate_differences": [
+        "motorcycle_lane_use_deprivation"
+      ],
+      "fixed_conditions": [
+        "cell geometry",
+        "actor",
+        "applicable legal context",
+        "participants except comparison target",
+        "traffic controls",
+        "weather except explicitly separate weather branch",
+        "controller behavior except comparison variable",
+        "capture profile"
+      ],
+      "status": "planned_unverified",
+      "measurement_method": "Measure lane polygon, both full footprints, lateral clearance and motorcycle control response."
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_pose",
+      "unit": "m,deg",
+      "mandatory": true,
+      "purpose": "Actual pose, trajectory and footprint over full event"
+    },
+    {
+      "name": "motorcycle_lane_use_deprivation",
+      "unit": "category",
+      "mandatory": true,
+      "purpose": "Measure lane polygon, both full footprints, lateral clearance and motorcycle control response."
+    }
+  ],
+  "source_observation_mapping": {
+    "ru.motorcycle": {
+      "evidence": "Proposed capture only: the machine entitled to the lane. No Native channel or Core atom proof yet.",
+      "channels": [
+        "motorcycle_lane_use_deprivation"
+      ],
+      "source_refs": [
+        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.moped": {
+      "evidence": "Proposed capture only: or a moped. No Native channel or Core atom proof yet.",
+      "channels": [
+        "motorcycle_lane_use_deprivation"
+      ],
+      "source_refs": [
+        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane": {
+      "evidence": "Proposed capture only: the traffic lane it occupies. No Native channel or Core atom proof yet.",
+      "channels": [
+        "motorcycle_lane_use_deprivation"
+      ],
+      "source_refs": [
+        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Proposed capture only: both users' occupancy of that lane. No Native channel or Core atom proof yet.",
+      "channels": [
+        "motorcycle_lane_use_deprivation"
+      ],
+      "source_refs": [
+        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.subject": {
+      "evidence": "Proposed capture only: the other motor vehicle judged. No Native channel or Core atom proof yet.",
+      "channels": [
+        "motorcycle_lane_use_deprivation"
+      ],
+      "source_refs": [
+        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.longitudinal_overlap": {
+      "evidence": "Proposed capture only: the subject drawing abreast within the lane. No Native channel or Core atom proof yet.",
+      "channels": [
+        "motorcycle_lane_use_deprivation"
+      ],
+      "source_refs": [
+        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Proposed capture only: the lateral clearance left to the machine. No Native channel or Core atom proof yet.",
+      "channels": [
+        "motorcycle_lane_use_deprivation"
+      ],
+      "source_refs": [
+        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.lane_change": {
+      "evidence": "Proposed capture only: the subject's encroachment. No Native channel or Core atom proof yet.",
+      "channels": [
+        "motorcycle_lane_use_deprivation"
+      ],
+      "source_refs": [
+        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "Proposed capture only: the machine forced to deviate. No Native channel or Core atom proof yet.",
+      "channels": [
+        "motorcycle_lane_use_deprivation"
+      ],
+      "source_refs": [
+        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json",
+      "sha256": "f2e3a06ff6dee8a7d58f60349fbc69428245063b55913fb90b3589843f0d0cdf"
+    },
+    {
+      "path": "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/witnesses.json",
+      "sha256": "a7fe7ef19762ac5e4532d09957b5e8d1cf8e7328b39276c9ef15abdd0a009094"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "set_id": "full-train",
+      "membership_rows": 0,
+      "status": "unreviewed_membership_only",
+      "reuse_receipt": null
+    }
+  ],
+  "runtime_uncertainties": [
+    "No exact Native construction, four distinct candidate plans, offline feasibility checks, or positive/negative compatibility proofs have been produced.",
+    "No saved-only processing, semantic-stage validation, independent audit or comparison audit has passed.",
+    "Membership rows do not prove statutory coverage or accepted equivalence; no source-hashed reuse receipt was verified.",
+    "CARLA execution, physical realization, camera framing and legal judgments are unverified.",
+    "Deprive of full use is qualitative and remains legally unresolved."
+  ],
+  "selection_targets": [
+    "full-train"
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "assignment_id": "training__C111294__NRS-484B-250-2__motor_vehicle_driver",
+  "law_id": "NRS-484B-250-2",
+  "cell_id": "C111294",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "travel",
+    "control": "other_vehicle"
+  },
+  "selection_targets": [
+    "demo-train",
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.250(2); with 484B.250(5)",
+    "text": "When two vehicles enter an intersection from different highways at approximately the same time, the driver of the vehicle on the left shall yield the right-of-way to the vehicle on the right. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+    "sha256": "7470207abf157eff5696ad33af1aa0165312932f9647ce0a5d474f2d7b38e5ec",
+    "text_sha256": "7470207abf157eff5696ad33af1aa0165312932f9647ce0a5d474f2d7b38e5ec"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "Left-hand ego and right-hand other vehicle with active entry-time variation and precedence actions.",
+  "witness_branches": [
+    "Left-hand ego and right-hand other vehicle with active entry-time variation and precedence actions.",
+    "selected assignment branch"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-250-2",
+      "source": "NRS 484B.250(2); with 484B.250(5)",
+      "branch": "Left-hand ego and right-hand other vehicle with active entry-time variation and precedence actions.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111294__NRS-484B-250-2__motor_vehicle_driver__controlled_1",
+        "training__C111294__NRS-484B-250-2__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+    },
+    {
+      "requirement": "NRS-484B-250-2",
+      "source": "NRS 484B.250(2); with 484B.250(5)",
+      "branch": "selected assignment branch",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "Witness describes a separate branch; exact same-cell construction and proof remain pending."
+    },
+    {
+      "requirement": "NRS-484B-250-2",
+      "source": "NRS 484B.250(2); with 484B.250(5)",
+      "branch": "Textual exceptions, alternatives, or dependencies: except, provided",
+      "status": "exception_pending",
+      "case_ids": [],
+      "evidence_or_gap": "Each applicable statutory qualifier requires a separately controlled construction or an explicit unsupported-physical finding; source language must be retained in audit."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Same frozen cell and actor with target activation absent; context only, no selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C111294__NRS-484B-250-2__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484B-250-2",
+      "kind": "planned_only",
+      "source_branch": "Left-hand ego and right-hand other vehicle with active entry-time variation and precedence actions.",
+      "physical_target": "left-side vehicle yields to near-simultaneous right-side vehicle",
+      "comparison_variable": "entry order and precedence at near-simultaneous arrival",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-250-2__motor_vehicle_driver__controlled_2",
+      "target_law_id": "NRS-484B-250-2",
+      "kind": "planned_only",
+      "source_branch": "Left-hand ego and right-hand other vehicle with active entry-time variation and precedence actions.",
+      "physical_target": "left-side vehicle enters ahead of near-simultaneous right-side vehicle",
+      "comparison_variable": "entry order and precedence at near-simultaneous arrival",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C111294__NRS-484B-250-2__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C111294__NRS-484B-250-2__motor_vehicle_driver__controlled_1",
+        "training__C111294__NRS-484B-250-2__motor_vehicle_driver__controlled_2"
+      ],
+      "deliberate_differences": [
+        "entry order and precedence at near-simultaneous arrival"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
+        "route and controller policy except requested comparison variable",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "st.intersection",
+      "purpose": "the intersection",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_enters",
+      "purpose": "the lanes on which the two vehicles enter are approaches to the same intersection from different highways; the exception reads which intersection a device controls through the lanes it governs",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.entering_intersection",
+      "purpose": "both vehicles entering",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.arrival_order",
+      "purpose": "'at approximately the same time' — the simultaneity tolerance is the parameter",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.bearing",
+      "purpose": "which vehicle is on the other's right",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.yields_to",
+      "purpose": "the vehicle on the left gives way",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.traffic_signal",
+      "purpose": "the exception: a controlled intersection",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.turning",
+      "purpose": "the left-turn exception",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "st.intersection",
+      "mandatory": true,
+      "reason": "the intersection"
+    },
+    {
+      "name": "st.lane_enters",
+      "mandatory": true,
+      "reason": "the lanes on which the two vehicles enter are approaches to the same intersection from different highways; the exception reads which intersection a device controls through the lanes it governs"
+    },
+    {
+      "name": "drv.entering_intersection",
+      "mandatory": true,
+      "reason": "both vehicles entering"
+    },
+    {
+      "name": "drv.arrival_order",
+      "mandatory": true,
+      "reason": "'at approximately the same time' — the simultaneity tolerance is the parameter"
+    },
+    {
+      "name": "rel.bearing",
+      "mandatory": true,
+      "reason": "which vehicle is on the other's right"
+    },
+    {
+      "name": "drv.yields_to",
+      "mandatory": true,
+      "reason": "the vehicle on the left gives way"
+    },
+    {
+      "name": "dev.traffic_signal",
+      "mandatory": true,
+      "reason": "the exception: a controlled intersection"
+    },
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "reason": "the left-turn exception"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C111294__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "sha256": "91097a36e8dbbb1493a174ebacd22e566df58d0e914af050a9f8a8e990ed83cd"
+    },
+    {
+      "path": "inputs/training__C111294__NRS-484B-250-2__motor_vehicle_driver/witnesses.json",
+      "sha256": "e50e4ef4786a57effc723a573ca41671efaa95ecccc2e1e90cad580e0fc37331"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "recording_id": "4e75563106b7328283d6edfdf29908ec28c93b744aaec9c85d81255644e1a931",
+      "status": "membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "4cdb398277750f0597dee9a91e433e645f18273ca881b8215087d16751bc9e99",
+      "status": "membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "5481ef5ac4b9f8e17bc614c98d0bf65863bed255ac68070ff82c117244cee479",
+      "status": "membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "4e75563106b7328283d6edfdf29908ec28c93b744aaec9c85d81255644e1a931",
+      "status": "membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "4cdb398277750f0597dee9a91e433e645f18273ca881b8215087d16751bc9e99",
+      "status": "membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "5481ef5ac4b9f8e17bc614c98d0bf65863bed255ac68070ff82c117244cee479",
+      "status": "membership_only_no_equivalence_receipt"
+    }
+  ],
+  "reuse_count": 0,
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
+    "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
+    "No CARLA execution or accepted recording is claimed.",
+    "Require different highways, approximately simultaneous entry and left-versus-right approach. Device-controlled intersections, opposite-direction left turns and subsection 4 are exclusions/dependencies."
+  ],
+  "unverified_physical_assumptions": [
+    "Frozen cell can physically realize required law context",
+    "Actor blueprint and route can realize each requested behavior",
+    "Decisive physical distinction can be seen by retained cameras"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+  ],
+  "source_context_review": "Require different highways, approximately simultaneous entry and left-versus-right approach. Device-controlled intersections, opposite-direction left turns and subsection 4 are exclusions/dependencies."
+}

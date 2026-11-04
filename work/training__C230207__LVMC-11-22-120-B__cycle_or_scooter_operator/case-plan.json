@@ -1,0 +1,141 @@
+{
+  "assignment_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator",
+  "law_id": "LVMC-11-22-120-B",
+  "cell_id": "C230207",
+  "actor": "cycle_or_scooter_operator",
+  "source_law_text": "The City Traffic Engineer is authorized to determine and designate those heavily traveled streets upon which shall be prohibited the use of the roadway by motor-driven cycles, bicycles, horse-drawn vehicles or other nonmotorized traffic and shall erect appropriate signs giving notice thereof. When signs are erected giving notice thereof, no person shall disobey the restriction stated on such signs.",
+  "source_law_citation": "LVMC 11.22.120(B); with 11.22.120(A)",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "signed roadway access restriction",
+  "cell_fixed_facts": {
+    "layout": "road",
+    "maneuver": "travel",
+    "control": "access_restriction_sign"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "LVMC-11-22-120-B",
+      "branch": "Signed bicycle roadway restriction",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 13,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_01",
+      "target_law_id": "LVMC-11-22-120-B",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "rider follows restriction off roadway",
+      "comparison_variable": "roadway use against sign",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_02",
+      "target_law_id": "LVMC-11-22-120-B",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "same signed segment with rider on prohibited roadway",
+      "comparison_variable": "roadway use against sign",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__planned_comparison",
+      "case_ids": [
+        "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_01",
+        "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_02"
+      ],
+      "deliberate_differences": [
+        "roadway use against sign"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "official sign and exact wording",
+    "heavily traveled designated segment",
+    "rider subtype and footprint"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "dev.regulatory_sign",
+      "note": "codes bicycles_prohibited, nonmotorized_prohibited — the signs erected"
+    },
+    {
+      "term": "dev.governs",
+      "note": "the street and direction they control"
+    },
+    {
+      "term": "ru.bicycle",
+      "note": "the prohibited classes"
+    },
+    {
+      "term": "ru.moped",
+      "note": "motor-driven cycles"
+    },
+    {
+      "term": "ru.animal_or_animal_drawn",
+      "note": "horse-drawn vehicles"
+    },
+    {
+      "term": "ru.other_conveyance",
+      "note": "other nonmotorized traffic"
+    },
+    {
+      "term": "st.roadway",
+      "note": "the roadway whose use is restricted"
+    },
+    {
+      "term": "rel.occupies",
+      "note": "the subject's use of it"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/assignment.json",
+      "sha256": "0ac0cee4f0ed22725a14bc7289b7ceae16f4aeaaedd883ec9125b38a7a24e607"
+    },
+    {
+      "path": "inputs/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/witnesses.json",
+      "sha256": "3879c333a15aac5fa5ab671ef48f493ef0c96c2bae6df3f077204d869241152e"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Sign restriction must explicitly cover the selected bicycle/scooter subtype; motor-driven cycle category is not interchangeable."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

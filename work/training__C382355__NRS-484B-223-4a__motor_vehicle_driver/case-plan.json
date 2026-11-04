@@ -1,0 +1,166 @@
+{
+  "assignment_id": "training__C382355__NRS-484B-223-4a__motor_vehicle_driver",
+  "law_id": "NRS-484B-223-4a",
+  "cell_id": "C382355",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "right_turn",
+    "control": "right_turn_lane"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.223(4)(a)",
+    "text": "If a highway has been designed to provide a single right lane to be used only for turning, a vehicle must: Be driven in the right turn lane only for the purpose of making a right turn.",
+    "sha256": "94f905fc52f7e4a7e1aeea18c0beba09a7c245230b2d7eec0b569dbaee46ff0c",
+    "text_sha256": "94f905fc52f7e4a7e1aeea18c0beba09a7c245230b2d7eec0b569dbaee46ff0c"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "Intersection approach in a right-turn lane",
+  "witness_branches": [
+    "Intersection approach in a right-turn lane"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-223-4a",
+      "source": "NRS 484B.223(4)(a)",
+      "branch": "Intersection approach in a right-turn lane",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__controlled_1",
+        "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Same frozen cell and actor with target activation absent; context only, no selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484B-223-4a",
+      "kind": "planned_only",
+      "source_branch": "Intersection approach in a right-turn lane",
+      "physical_target": "use right-only lane to make right turn",
+      "comparison_variable": "subsequent movement from right-only lane",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__controlled_2",
+      "target_law_id": "NRS-484B-223-4a",
+      "kind": "planned_only",
+      "source_branch": "Intersection approach in a right-turn lane",
+      "physical_target": "use right-only lane then continue straight",
+      "comparison_variable": "subsequent movement from right-only lane",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__controlled_1",
+        "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__controlled_2"
+      ],
+      "deliberate_differences": [
+        "subsequent movement from right-only lane"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
+        "route and controller policy except requested comparison variable",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "st.turn_lane",
+      "purpose": "a single right lane designated only for turning, side=right",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.occupies",
+      "purpose": "the subject in that lane",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.turning",
+      "purpose": "the right turn",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.heading",
+      "purpose": "the heading change that shows the turn",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.intersection",
+      "purpose": "where the turn is made",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "st.turn_lane",
+      "mandatory": true,
+      "reason": "a single right lane designated only for turning, side=right"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "the subject in that lane"
+    },
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "reason": "the right turn"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "reason": "the heading change that shows the turn"
+    },
+    {
+      "name": "st.intersection",
+      "mandatory": true,
+      "reason": "where the turn is made"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C382355__NRS-484B-223-4a__motor_vehicle_driver/assignment.json",
+      "sha256": "b2e6e36fdcbc597434e997556f448d9fba61d480bbc2184fe373d5da574eaeed"
+    },
+    {
+      "path": "inputs/training__C382355__NRS-484B-223-4a__motor_vehicle_driver/witnesses.json",
+      "sha256": "5fd03a51ee218f82867eeae0f463dc8db27d976e5b27396ffc039ecac8ba4582"
+    }
+  ],
+  "existing_evidence": [],
+  "reuse_count": 0,
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
+    "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
+    "No CARLA execution or accepted recording is claimed.",
+    "Right-only lane must be a single designed right lane; commanded right turn does not prove actual turn or lane-use purpose."
+  ],
+  "unverified_physical_assumptions": [
+    "Frozen cell can physically realize required law context",
+    "Actor blueprint and route can realize each requested behavior",
+    "Decisive physical distinction can be seen by retained cameras"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+  ],
+  "source_context_review": "Right-only lane must be a single designed right lane; commanded right turn does not prove actual turn or lane-use purpose."
+}

@@ -1,0 +1,158 @@
+{
+  "assignment_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver",
+  "law_id": "NRS-484B-307-4a",
+  "cell_id": "C111603",
+  "actor": "motor_vehicle_driver",
+  "source_law_text": "Where the signal is a green turn arrow alone: Vehicular traffic facing the signal may proceed only in the direction indicated by the arrow signal so long as the arrow is illuminated, but the traffic must yield the right-of-way to pedestrians lawfully within the adjacent crosswalk and to other traffic lawfully using the intersection.",
+  "source_law_citation": "NRS 484B.307(4)(a)",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "green arrow only",
+  "cell_fixed_facts": {
+    "layout": "intersection",
+    "maneuver": "turn",
+    "control": "other_vehicle"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "NRS-484B-307-4a",
+      "branch": "Turning interaction with other intersection traffic",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 136,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__probe_01",
+      "target_law_id": "NRS-484B-307-4a",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "turn in indicated direction while yielding to lawful crosswalk user",
+      "comparison_variable": "arrow direction and priority",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__probe_02",
+      "target_law_id": "NRS-484B-307-4a",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "same arrow and crossing user: turn into conflict without yield",
+      "comparison_variable": "arrow direction and priority",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__probe_03",
+      "target_law_id": "NRS-484B-307-4a",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "travel contrary to arrow direction",
+      "comparison_variable": "arrow direction and priority",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__planned_comparison",
+      "case_ids": [
+        "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__probe_01",
+        "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__probe_02",
+        "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__probe_03"
+      ],
+      "deliberate_differences": [
+        "arrow direction and priority"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "arrow phase and governed lane",
+    "turn direction",
+    "pedestrian lawfulness and crosswalk occupancy",
+    "other lawful traffic trajectory"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "dev.traffic_signal",
+      "note": "state green_arrow(dir) alone"
+    },
+    {
+      "term": "dev.governs",
+      "note": "the head faces the subject"
+    },
+    {
+      "term": "drv.turning",
+      "note": "the movement made, against the arrow's direction"
+    },
+    {
+      "term": "kin.heading",
+      "note": "the direction actually taken"
+    },
+    {
+      "term": "drv.entering_intersection",
+      "note": "entry into the intersection"
+    },
+    {
+      "term": "ru.pedestrian",
+      "note": "pedestrians lawfully in the adjacent crosswalk"
+    },
+    {
+      "term": "st.crosswalk",
+      "note": "that crosswalk"
+    },
+    {
+      "term": "drv.in_intersection",
+      "note": "other traffic lawfully using the intersection"
+    },
+    {
+      "term": "drv.yields_to",
+      "note": "the yield owed"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C111603__NRS-484B-307-4a__motor_vehicle_driver/assignment.json",
+      "sha256": "5548bd0e3c0bd1a3b8e1d78182730e27d43196ed71c16e7c0fc5360f11d1eb2a"
+    },
+    {
+      "path": "inputs/training__C111603__NRS-484B-307-4a__motor_vehicle_driver/witnesses.json",
+      "sha256": "70b5f21bf036655fed1b6a2feb36c3053d51c0bb2609c7a4d5a1b8cd6e811c59"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Lawful participant status cannot be inferred solely from position; retain authored source and measured crossing."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

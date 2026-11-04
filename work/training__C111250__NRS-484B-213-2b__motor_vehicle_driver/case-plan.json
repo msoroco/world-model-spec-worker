@@ -1,0 +1,153 @@
+{
+  "assignment_id": "training__C111250__NRS-484B-213-2b__motor_vehicle_driver",
+  "law_id": "NRS-484B-213-2b",
+  "cell_id": "C111250",
+  "actor": "motor_vehicle_driver",
+  "source_law_text": "A vehicle must not be driven to the left side of the highway at any time: When approaching within 100 feet or traversing any intersection or railroad grade crossing. Subsection 2 does not apply upon a one-way highway.",
+  "source_law_citation": "NRS 484B.213(2)(b); with 484B.213(3)",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "left side near intersection or rail crossing",
+  "cell_fixed_facts": {
+    "layout": "intersection",
+    "maneuver": "travel",
+    "control": "centerline"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "NRS-484B-213-2b",
+      "branch": "intersection approach and traversal",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 78,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_01",
+      "target_law_id": "NRS-484B-213-2b",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "two-way approach stays right within 100 ft",
+      "comparison_variable": "left-side occupancy relative to boundary",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_02",
+      "target_law_id": "NRS-484B-213-2b",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "same approach uses left side within 100 ft",
+      "comparison_variable": "left-side occupancy relative to boundary",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_03",
+      "target_law_id": "NRS-484B-213-2b",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "left-side travel while traversing intersection",
+      "comparison_variable": "left-side occupancy relative to boundary",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__planned_comparison",
+      "case_ids": [
+        "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_01",
+        "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_02",
+        "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_03"
+      ],
+      "deliberate_differences": [
+        "left-side occupancy relative to boundary"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "native centerline and lane direction",
+    "distance to intersection or rail crossing",
+    "full vehicle footprint"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "st.intersection",
+      "note": "the intersection region"
+    },
+    {
+      "term": "st.railway_crossing",
+      "note": "the grade crossing"
+    },
+    {
+      "term": "drv.approaching",
+      "note": "within 100 feet, measured along the lane"
+    },
+    {
+      "term": "rel.centre_distance",
+      "note": "the 100-foot distance to the region boundary"
+    },
+    {
+      "term": "st.centre_line",
+      "note": "the centre of the highway"
+    },
+    {
+      "term": "rel.occupies",
+      "note": "the footprint on the left side"
+    },
+    {
+      "term": "drv.in_intersection",
+      "note": "'or traversing'"
+    },
+    {
+      "term": "st.one_way_roadway",
+      "note": "the exception"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/assignment.json",
+      "sha256": "886a3f44c82efa9a271693e9a127f0019abb2b31cda8123d6ab31fe444446a19"
+    },
+    {
+      "path": "inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/witnesses.json",
+      "sha256": "5c816af0ffeb109f60f34759002e748a7ee0c0e4b6ea8ebf3abfff376d633f15"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "One-way exception is an explicit applicability-negative context; railroad branch needs a physically present crossing, not a generic intersection."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

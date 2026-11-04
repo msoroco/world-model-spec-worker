@@ -1,0 +1,213 @@
+{
+  "assignment_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver",
+  "law_id": "NRS-484B-153-3",
+  "cell_id": "C228817",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "road",
+    "maneuver": "load_unload",
+    "control": "other_vehicle"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.153(3)",
+    "text": "A person shall not leave open a door on the side of a vehicle which is closest to passing traffic longer than is necessary for immediate loading or unloading of passengers or cargo.",
+    "sha256": "8b0e0f90c23f501c774849be5a49eefa26b403f73d5ad3fc5cbcb497f8cf42bc"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Traffic-side door left open during loading or unloading"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-153-3",
+      "source": "NRS 484B.153(3)",
+      "branch": "Traffic-side door left open during loading or unloading",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_1",
+        "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_2"
+      ],
+      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    },
+    {
+      "requirement": "NRS-484B-153-3",
+      "source": "NRS 484B.153(3)",
+      "branch": "passenger or cargo loading",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    },
+    {
+      "requirement": "NRS-484B-153-3",
+      "source": "NRS 484B.153(3)",
+      "branch": "traffic-side orientation",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    },
+    {
+      "requirement": "NRS-484B-153-3",
+      "source": "NRS 484B.153(3)",
+      "branch": "necessity duration unresolved",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; retained only as a proposal, not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_1",
+      "target_law_id": "NRS-484B-153-3",
+      "kind": "planned_only",
+      "target_type": "below",
+      "physical_target": "traffic-side door closes when immediate loading ends",
+      "comparison_variable": "traffic_side_door_open_duration",
+      "source_branch": "Traffic-side door left open during loading or unloading",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_2",
+      "target_law_id": "NRS-484B-153-3",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "same door remains open after immediate loading ends",
+      "comparison_variable": "traffic_side_door_open_duration",
+      "source_branch": "Traffic-side door left open during loading or unloading",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_1",
+        "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_2"
+      ],
+      "deliberate_differences": [
+        "traffic_side_door_open_duration"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor and physical road context",
+        "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "sig.door_open",
+      "purpose": "the door on the traffic side, and how long it stays open",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.time",
+      "purpose": "the duration the door is open",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.standing_or_parked",
+      "purpose": "the vehicle is stationary while the door stands open",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "ru.occupant_count",
+      "purpose": "a change in occupancy is the evidence of loading or unloading of passengers",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "ru.pedestrian",
+      "purpose": "a person moving to or from the door",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane",
+      "purpose": "the passing-traffic side",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [
+    {
+      "recording_id": "bb0949d34e02fed04a98e6241f527ed2fc3db82269366e514ba38941984c91ce",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "1f638aa35757e3008dcb6de4284232e94070e5844d70a5a510b6bec8cf5ca64d",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "642698c8d6811f67b26beef115205f819461480e47bd5dc42350a47044eb7052",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "1805344f01965016b510f851dc816241c4313ed87864c51f26adac1f4bbbc701",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C228817__NRS-484B-153-3__motor_vehicle_driver/assignment.json",
+      "sha256": "34723fa34ee3e80c931850d01be9edebc44a78009c2259ffc683d26ac78efffb"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction"
+  ],
+  "blockers": [
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ],
+  "selected_branch": null,
+  "observations": [
+    {
+      "name": "sig.door_open",
+      "mandatory": true,
+      "reason": "the door on the traffic side, and how long it stays open"
+    },
+    {
+      "name": "kin.time",
+      "mandatory": true,
+      "reason": "the duration the door is open"
+    },
+    {
+      "name": "drv.standing_or_parked",
+      "mandatory": true,
+      "reason": "the vehicle is stationary while the door stands open"
+    },
+    {
+      "name": "ru.occupant_count",
+      "mandatory": true,
+      "reason": "a change in occupancy is the evidence of loading or unloading of passengers"
+    },
+    {
+      "name": "ru.pedestrian",
+      "mandatory": true,
+      "reason": "a person moving to or from the door"
+    },
+    {
+      "name": "st.lane",
+      "mandatory": true,
+      "reason": "the passing-traffic side"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction",
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "assignment_id": "training__C230289__NRS-484B-633-2__motor_vehicle_driver",
+  "law_id": "NRS-484B-633-2",
+  "cell_id": "C230289",
+  "actor": "motor_vehicle_driver",
+  "source_law_text": "It is unlawful for any person to drive a vehicle over any bridge or other elevated structure constituting a part of a highway at a speed which is greater than the maximum speed which can be maintained with safety to the bridge or structure, when such structure is signposted as provided in this section [(3) appended below]. The Department of Transportation upon request from any local authority shall, or upon its own initiative may, conduct an investigation of any bridge or other elevated structure constituting a part of a highway constructed and maintained under the authority granted by chapter 408 of NRS, and if it thereupon finds that such structure cannot with safety to itself withstand vehicles traveling at the speed otherwise permissible under chapters 484A to 484E, inclusive, of NRS, the Department shall determine and declare the maximum speed of vehicles which such structure can safely withstand, and shall cause or permit suitable signs stating such maximum speed to be erected and maintained at a distance of 100 feet before each end of such structure.",
+  "source_law_citation": "NRS 484B.633(2); with 484B.633(3)",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "signposted bridge safe speed",
+  "cell_fixed_facts": {
+    "layout": "road",
+    "maneuver": "travel",
+    "control": "speed_limit_sign"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "NRS-484B-633-2",
+      "branch": "Road route over a signposted elevated structure",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 507,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "unsupported_same_cell_physics"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C230289__NRS-484B-633-2__motor_vehicle_driver__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C230289__NRS-484B-633-2__motor_vehicle_driver__probe_01",
+      "target_law_id": "NRS-484B-633-2",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "cross bridge below signed structural maximum",
+      "comparison_variable": "speed relative to declared structural maximum",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C230289__NRS-484B-633-2__motor_vehicle_driver__probe_02",
+      "target_law_id": "NRS-484B-633-2",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "cross bridge above signed structural maximum",
+      "comparison_variable": "speed relative to declared structural maximum",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C230289__NRS-484B-633-2__motor_vehicle_driver__planned_comparison",
+      "case_ids": [
+        "training__C230289__NRS-484B-633-2__motor_vehicle_driver__probe_01",
+        "training__C230289__NRS-484B-633-2__motor_vehicle_driver__probe_02"
+      ],
+      "deliberate_differences": [
+        "speed relative to declared structural maximum"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "bridge/elevated structure physically present",
+    "sign 100 ft before each end",
+    "authorized maximum and speed throughout structure"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "st.elevated_structure",
+      "note": "the bridge or other elevated structure"
+    },
+    {
+      "term": "dev.speed_limit_sign",
+      "note": "kind structure_maximum, with its value; posted 100 feet before each end"
+    },
+    {
+      "term": "dev.position",
+      "note": "the sign's position relative to the structure"
+    },
+    {
+      "term": "dev.governs",
+      "note": "the approach it controls"
+    },
+    {
+      "term": "kin.speed",
+      "note": "the speed over the structure, against the posted maximum"
+    },
+    {
+      "term": "rel.occupies",
+      "note": "the footprint on the structure"
+    },
+    {
+      "term": "drv.approaching",
+      "note": "the approach where the sign stands"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C230289__NRS-484B-633-2__motor_vehicle_driver/assignment.json",
+      "sha256": "e407621298023669f0b180cc10e1bd1dbb33119cee01bf69c1212397b49b5b51"
+    },
+    {
+      "path": "inputs/training__C230289__NRS-484B-633-2__motor_vehicle_driver/witnesses.json",
+      "sha256": "96ccc35f2f9ca4ecfb5c666f077208fe5cb88f2f693d326888a3a3af0a624a10"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Frozen generic road with speed-limit sign does not establish a bridge; current cell branch is physically unsupported pending same-cell bridge geometry proof."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

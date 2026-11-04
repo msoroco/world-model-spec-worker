@@ -1,0 +1,247 @@
+{
+  "assignment_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C213851",
+  "law_id": "LVMC-11-20-060",
+  "selected_branch": null,
+  "scope_branches": [
+    {
+      "law_id": "LVMC-11-20-060",
+      "cell_id": "C213851",
+      "actor": "motor_vehicle_driver",
+      "requirement": "LVMC-11-20-060",
+      "branch": "Road exit into driveway across sidewalk",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 9,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "coverage_status": "pending_review",
+      "recording_ids": [],
+      "law_partition": "training",
+      "scenario_partition": "training"
+    }
+  ],
+  "source_law_text": "The driver of a vehicle within a business or residence district emerging or entering an alley, driveway or building shall stop such vehicle immediately prior to driving onto a sidewalk or onto the sidewalk area extending across any alleyway or driveway, yielding the right-of-way to any pedestrian as may be necessary to avoid collision, and upon entering the roadway shall yield the right-of-way to all vehicles approaching on said roadway.",
+  "source_law_citation": "LVMC 11.20.060",
+  "summary_status": "recovered_requires_source_review",
+  "summary_conflicts": "Do not adopt summary or witness as legal authority; exact law controls. Unreviewed historical summaries remain provisional.",
+  "requirement_dispositions": [
+    {
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "statutory_text: The driver of a vehicle within a business or residence district emerging or entering an alley, driveway or building shall stop such vehicle immediately prior to driving onto a sidewalk or onto the sidewalk area extending across any alleyway or driveway, yielding the right-of-way to any pedestrian as may be necessary to avoid collision, and upon entering the roadway shall yield the right-of-way to all vehicles approaching on said roadway. | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "case_ids": [
+        "training__C213851__LVMC-11-20-060__motor_vehicle_driver__stop_before_sidewalk",
+        "training__C213851__LVMC-11-20-060__motor_vehicle_driver__cross_without_stop"
+      ]
+    },
+    {
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "reviewed_scope: Road exit into driveway across sidewalk | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "case_ids": [
+        "training__C213851__LVMC-11-20-060__motor_vehicle_driver__stop_before_sidewalk",
+        "training__C213851__LVMC-11-20-060__motor_vehicle_driver__cross_without_stop"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__stop_before_sidewalk",
+      "target_law_id": "LVMC-11-20-060",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "sidewalk_crossing_stop",
+      "comparison_unit": "category",
+      "requested_setting": "stop_before_sidewalk",
+      "recorded_value": null,
+      "case_description": "residence district; driver exiting driveway across sidewalk then entering roadway; pedestrians and roadway traffic fixed",
+      "fixed_context": "Keep cell C213851, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. residence district; driver exiting driveway across sidewalk then entering roadway; pedestrians and roadway traffic fixed",
+      "source_topic_ids": [
+        "text-0",
+        "reviewed-scope-0"
+      ],
+      "selected": false
+    },
+    {
+      "case_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__cross_without_stop",
+      "target_law_id": "LVMC-11-20-060",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "sidewalk_crossing_stop",
+      "comparison_unit": "category",
+      "requested_setting": "cross_without_stop",
+      "recorded_value": null,
+      "case_description": "residence district; driver exiting driveway across sidewalk then entering roadway; pedestrians and roadway traffic fixed",
+      "fixed_context": "Keep cell C213851, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. residence district; driver exiting driveway across sidewalk then entering roadway; pedestrians and roadway traffic fixed",
+      "source_topic_ids": [
+        "text-0",
+        "reviewed-scope-0"
+      ],
+      "selected": false
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C213851__LVMC-11-20-060__motor_vehicle_driver__stop_before_sidewalk",
+        "training__C213851__LVMC-11-20-060__motor_vehicle_driver__cross_without_stop"
+      ],
+      "deliberate_differences": [
+        "sidewalk_crossing_stop"
+      ],
+      "fixed_conditions": [
+        "cell geometry",
+        "actor",
+        "applicable legal context",
+        "participants except comparison target",
+        "traffic controls",
+        "weather except explicitly separate weather branch",
+        "controller behavior except comparison variable",
+        "capture profile"
+      ],
+      "status": "planned_unverified",
+      "measurement_method": "Measure footprint, zero-speed span before sidewalk, pedestrian conflict and roadway approach."
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_pose",
+      "unit": "m,deg",
+      "mandatory": true,
+      "purpose": "Actual pose, trajectory and footprint over full event"
+    },
+    {
+      "name": "sidewalk_crossing_stop",
+      "unit": "category",
+      "mandatory": true,
+      "purpose": "Measure footprint, zero-speed span before sidewalk, pedestrian conflict and roadway approach."
+    }
+  ],
+  "source_observation_mapping": {
+    "st.alley": {
+      "evidence": "Proposed capture only: the alley emerged from or entered. No Native channel or Core atom proof yet.",
+      "channels": [
+        "sidewalk_crossing_stop"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-20-060__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.driveway_or_alley_entrance": {
+      "evidence": "Proposed capture only: the driveway or building entrance. No Native channel or Core atom proof yet.",
+      "channels": [
+        "sidewalk_crossing_stop"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-20-060__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.sidewalk": {
+      "evidence": "Proposed capture only: the sidewalk or sidewalk area crossed. No Native channel or Core atom proof yet.",
+      "channels": [
+        "sidewalk_crossing_stop"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-20-060__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Proposed capture only: the halt immediately before driving onto it. No Native channel or Core atom proof yet.",
+      "channels": [
+        "sidewalk_crossing_stop"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-20-060__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.crossing_line": {
+      "evidence": "Proposed capture only: the sidewalk boundary. No Native channel or Core atom proof yet.",
+      "channels": [
+        "sidewalk_crossing_stop"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-20-060__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.pedestrian": {
+      "evidence": "Proposed capture only: pedestrians on the sidewalk. No Native channel or Core atom proof yet.",
+      "channels": [
+        "sidewalk_crossing_stop"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-20-060__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Proposed capture only: the yield owed to them, and then to vehicles. No Native channel or Core atom proof yet.",
+      "channels": [
+        "sidewalk_crossing_stop"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-20-060__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.roadway": {
+      "evidence": "Proposed capture only: the roadway entered afterwards. No Native channel or Core atom proof yet.",
+      "channels": [
+        "sidewalk_crossing_stop"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-20-060__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.approaching": {
+      "evidence": "Proposed capture only: vehicles approaching on it. No Native channel or Core atom proof yet.",
+      "channels": [
+        "sidewalk_crossing_stop"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-20-060__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Proposed capture only: operationalizes 'as may be necessary to avoid collision'. No Native channel or Core atom proof yet.",
+      "channels": [
+        "sidewalk_crossing_stop"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-20-060__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/training__C213851__LVMC-11-20-060__motor_vehicle_driver/assignment.json",
+      "sha256": "83146921c4e9d80e05bb57bf5ce58edabfddaf015dff4c3c7a5fb2783baed47c"
+    },
+    {
+      "path": "inputs/training__C213851__LVMC-11-20-060__motor_vehicle_driver/witnesses.json",
+      "sha256": "aed8852955d5b12d24ccaf576095a1fa0dbe96bdc81d13764760c519b2330831"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "set_id": "full-train",
+      "membership_rows": 0,
+      "status": "unreviewed_membership_only",
+      "reuse_receipt": null
+    }
+  ],
+  "runtime_uncertainties": [
+    "No exact Native construction, four distinct candidate plans, offline feasibility checks, or positive/negative compatibility proofs have been produced.",
+    "No saved-only processing, semantic-stage validation, independent audit or comparison audit has passed.",
+    "Membership rows do not prove statutory coverage or accepted equivalence; no source-hashed reuse receipt was verified.",
+    "CARLA execution, physical realization, camera framing and legal judgments are unverified.",
+    "Source also says emerging or entering; entering driveway may need a distinct direction and yield context."
+  ],
+  "selection_targets": [
+    "full-train"
+  ]
+}

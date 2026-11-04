@@ -1,0 +1,303 @@
+{
+  "assignment_id": "training__C329610__NRS-484B-400-2b__motor_vehicle_driver",
+  "law_id": "NRS-484B-400-2b",
+  "cell_id": "C329610",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "two_way_to_two_way_intersection",
+    "maneuver": "left_turn",
+    "control": "centerline"
+  },
+  "selection_targets": [
+    "demo-train",
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.400(2)(b)",
+    "text": "If the driver of a vehicle intends to turn at an intersection and: Both intersecting highways are two-directional: After entering the intersection, the left turn must be made so as to leave the intersection to the right of the centerline of the highway being entered.",
+    "sha256": "0d6b3eebdaf3d75a2d77d41c134728e9cad2c08b99ee3172a733172444b4e037"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Left-turn exit onto a two-directional destination highway.",
+    "Left-turn exit onto a two-directional destination highway."
+  ],
+  "selected_branch": null,
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-400-2b",
+      "source": "NRS 484B.400(2)(b)",
+      "branch": "Left-turn exit onto a two-directional destination highway.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C329610__NRS-484B-400-2b__motor_vehicle_driver__witness_1",
+        "training__C329610__NRS-484B-400-2b__motor_vehicle_driver__witness_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+    }
+  ],
+  "activation_conditions": [
+    "the subject has entered the intersection to turn left",
+    "both intersecting highways are two-directional"
+  ],
+  "timing_requirements": [
+    {
+      "kind": "point_event",
+      "requirement": "judged at the exit from the intersection: the footprint must leave right of the centreline"
+    },
+    {
+      "kind": "ordering",
+      "requirement": "entry, then the turn, then the exit — the exit position is the test"
+    }
+  ],
+  "unresolved_judgment_calls": [],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C329610__NRS-484B-400-2b__motor_vehicle_driver__witness_1",
+      "target_law_id": "NRS-484B-400-2b",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver exits intersection right of destination centerline",
+      "comparison_variable": "left_turn_exit_centerline_side",
+      "source_branch": "Left-turn exit onto a two-directional destination highway.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "two_way_to_two_way_intersection",
+          "maneuver": "left_turn",
+          "control": "centerline"
+        },
+        "activation_conditions_to_verify": [
+          "the subject has entered the intersection to turn left",
+          "both intersecting highways are two-directional"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver exits intersection right of destination centerline"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C329610__NRS-484B-400-2b__motor_vehicle_driver__witness_2",
+      "target_law_id": "NRS-484B-400-2b",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver exits intersection left of destination centerline",
+      "comparison_variable": "left_turn_exit_centerline_side",
+      "source_branch": "Left-turn exit onto a two-directional destination highway.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "two_way_to_two_way_intersection",
+          "maneuver": "left_turn",
+          "control": "centerline"
+        },
+        "activation_conditions_to_verify": [
+          "the subject has entered the intersection to turn left",
+          "both intersecting highways are two-directional"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver exits intersection left of destination centerline"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C329610__NRS-484B-400-2b__motor_vehicle_driver__witness_comparison",
+      "case_ids": [
+        "training__C329610__NRS-484B-400-2b__motor_vehicle_driver__witness_1",
+        "training__C329610__NRS-484B-400-2b__motor_vehicle_driver__witness_2"
+      ],
+      "deliberate_differences": [
+        "left_turn_exit_centerline_side"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "same map geometry except named comparison variable",
+        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "drv.turning",
+      "purpose": "the left turn",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.in_intersection",
+      "purpose": "the subject inside the intersection",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.centre_line",
+      "purpose": "the centreline of the highway being entered",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.occupies",
+      "purpose": "which side of it the subject leaves on",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.position",
+      "purpose": "the exit path",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_direction",
+      "purpose": "the direction of the highway entered",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_enters",
+      "purpose": "the approach lane enters the intersection turned at",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "reason": "the left turn"
+    },
+    {
+      "name": "drv.in_intersection",
+      "mandatory": true,
+      "reason": "the subject inside the intersection"
+    },
+    {
+      "name": "st.centre_line",
+      "mandatory": true,
+      "reason": "the centreline of the highway being entered"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "which side of it the subject leaves on"
+    },
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "reason": "the exit path"
+    },
+    {
+      "name": "st.lane_direction",
+      "mandatory": true,
+      "reason": "the direction of the highway entered"
+    },
+    {
+      "name": "st.lane_enters",
+      "mandatory": true,
+      "reason": "the approach lane enters the intersection turned at"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [
+    {
+      "set_id": "demo-train",
+      "membership": {
+        "campaign": "demo-five-revised-20261005",
+        "cell_id": "C329610",
+        "actor": "motor_vehicle_driver",
+        "case_id": "C329610-400-2b-compliant-attempt",
+        "law_id": "NRS-484B-400-2b",
+        "split": "training",
+        "status": "accepted",
+        "recording_id": "f4efad151c9cd41d6584485b20b235ffe127eba43c06ea10b5273db2a4d229f6"
+      },
+      "equivalence_status": "unverified_membership_only",
+      "reuse_claimed": false
+    },
+    {
+      "set_id": "demo-train",
+      "membership": {
+        "campaign": "demo-five-revised-20261005",
+        "cell_id": "C329610",
+        "actor": "motor_vehicle_driver",
+        "case_id": "C329610-400-2b-violating-attempt",
+        "law_id": "NRS-484B-400-2b",
+        "split": "training",
+        "status": "accepted",
+        "recording_id": "dec0af1b61813fd2c5c9d7da4436ca6d2e5b75acd0248e1c19e93bd5fe2c9f4a"
+      },
+      "equivalence_status": "unverified_membership_only",
+      "reuse_claimed": false
+    },
+    {
+      "set_id": "full-train",
+      "membership": {
+        "campaign": "demo-five-revised-20261005",
+        "cell_id": "C329610",
+        "actor": "motor_vehicle_driver",
+        "case_id": "C329610-400-2b-compliant-attempt",
+        "law_id": "NRS-484B-400-2b",
+        "split": "training",
+        "status": "accepted",
+        "recording_id": "f4efad151c9cd41d6584485b20b235ffe127eba43c06ea10b5273db2a4d229f6"
+      },
+      "equivalence_status": "unverified_membership_only",
+      "reuse_claimed": false
+    },
+    {
+      "set_id": "full-train",
+      "membership": {
+        "campaign": "demo-five-revised-20261005",
+        "cell_id": "C329610",
+        "actor": "motor_vehicle_driver",
+        "case_id": "C329610-400-2b-violating-attempt",
+        "law_id": "NRS-484B-400-2b",
+        "split": "training",
+        "status": "accepted",
+        "recording_id": "dec0af1b61813fd2c5c9d7da4436ca6d2e5b75acd0248e1c19e93bd5fe2c9f4a"
+      },
+      "equivalence_status": "unverified_membership_only",
+      "reuse_claimed": false
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C329610__NRS-484B-400-2b__motor_vehicle_driver/assignment.json",
+      "sha256": "59ab1cb4f642888dd4c8ec7c46f845add6e1d2fc812857838fd7d88cb6016c6f"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map realizes frozen layout, maneuver and control",
+    "Actor blueprints and controllers can produce proposed behavior",
+    "Four camera views and saved channels can establish every decisive relation",
+    "Legal context and exceptions can be represented without substituting authored targets for measurements"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+  ],
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
+    "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
+  ],
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+}

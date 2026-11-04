@@ -1,0 +1,141 @@
+{
+  "assignment_id": "training__C10316__NRS-484B-283-1d2__pedestrian",
+  "law_id": "NRS-484B-283-1d2",
+  "cell_id": "C10316",
+  "actor": "pedestrian",
+  "source_law_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place, such signals indicate as follows: While the “Don’t Walk” or “Wait” indication or an upraised hand symbol is illuminated, is flashing and is accompanied by a countdown timer, a pedestrian may proceed across the highway in the direction of the signal, but must complete the crossing before the countdown timer gets to zero.",
+  "source_law_citation": "NRS 484B.283(1)(d)(2)",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "flashing countdown crossing",
+  "cell_fixed_facts": {
+    "layout": "alley",
+    "maneuver": "travel",
+    "control": "crosswalk"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "NRS-484B-283-1d2",
+      "branch": "Crossing during flashing indication with countdown",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 121,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C10316__NRS-484B-283-1d2__pedestrian__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C10316__NRS-484B-283-1d2__pedestrian__probe_01",
+      "target_law_id": "NRS-484B-283-1d2",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "crossing fully clears far curb before displayed zero",
+      "comparison_variable": "completion time relative to displayed zero",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C10316__NRS-484B-283-1d2__pedestrian__probe_02",
+      "target_law_id": "NRS-484B-283-1d2",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "crossing still occupies road when displayed zero",
+      "comparison_variable": "completion time relative to displayed zero",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C10316__NRS-484B-283-1d2__pedestrian__planned_comparison",
+      "case_ids": [
+        "training__C10316__NRS-484B-283-1d2__pedestrian__probe_01",
+        "training__C10316__NRS-484B-283-1d2__pedestrian__probe_02"
+      ],
+      "deliberate_differences": [
+        "completion time relative to displayed zero"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "device phase and displayed countdown",
+    "pedestrian footprint and far road edge",
+    "entry and completion times"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "dev.pedestrian_signal",
+      "note": "state dont_walk_flashing with a countdown attribute"
+    },
+    {
+      "term": "dev.governs",
+      "note": "it faces the pedestrian's direction"
+    },
+    {
+      "term": "ru.subject",
+      "note": "the pedestrian judged"
+    },
+    {
+      "term": "st.crosswalk",
+      "note": "the crossing"
+    },
+    {
+      "term": "rel.occupies",
+      "note": "the pedestrian's position in the crossing"
+    },
+    {
+      "term": "kin.time",
+      "note": "the countdown's remaining time against the crossing"
+    },
+    {
+      "term": "st.road_edge",
+      "note": "the far curb that completes the crossing"
+    },
+    {
+      "term": "kin.speed",
+      "note": "whether the crossing can be completed in time"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C10316__NRS-484B-283-1d2__pedestrian/assignment.json",
+      "sha256": "680adbd84190c505eb235e922ddfe7ac0f577a7a8dca0f91deaa0f61aacaa206"
+    },
+    {
+      "path": "inputs/training__C10316__NRS-484B-283-1d2__pedestrian/witnesses.json",
+      "sha256": "d4386ef379db529c7a862eb39e153f42b1bf6a43c9abb275265dbfb43549d2ce"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Countdown display and pedestrian control need an authored, frame-synchronized Native device; exception contexts must be checked."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "assignment_id": "training__C151707__NRS-484B-307-8e__motor_vehicle_driver",
+  "law_id": "NRS-484B-307-8e",
+  "cell_id": "C151707",
+  "actor": "motor_vehicle_driver",
+  "source_law_text": "Where the signal is a steady red signal alone: Vehicular traffic facing the signal may not proceed on or through any private or public property to enter the intersecting street where traffic is not facing a red signal to avoid the red signal.",
+  "source_law_citation": "NRS 484B.307(8)(e)",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "red-signal property bypass",
+  "cell_fixed_facts": {
+    "layout": "one_way_to_one_way_intersection",
+    "maneuver": "bypass_signal",
+    "control": "traffic_light"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "NRS-484B-307-8e",
+      "branch": "One-way-to-one-way property bypass",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 145,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C151707__NRS-484B-307-8e__motor_vehicle_driver__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C151707__NRS-484B-307-8e__motor_vehicle_driver__probe_01",
+      "target_law_id": "NRS-484B-307-8e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "remain on governed road at red",
+      "comparison_variable": "route through property to avoid signal",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C151707__NRS-484B-307-8e__motor_vehicle_driver__probe_02",
+      "target_law_id": "NRS-484B-307-8e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "traverse physically distinct property to enter non-red cross street",
+      "comparison_variable": "route through property to avoid signal",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C151707__NRS-484B-307-8e__motor_vehicle_driver__planned_comparison",
+      "case_ids": [
+        "training__C151707__NRS-484B-307-8e__motor_vehicle_driver__probe_01",
+        "training__C151707__NRS-484B-307-8e__motor_vehicle_driver__probe_02"
+      ],
+      "deliberate_differences": [
+        "route through property to avoid signal"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "steady red control and lane",
+    "property boundary and route",
+    "cross street signal status",
+    "purpose/intention declaration"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "dev.traffic_signal",
+      "note": "state circular_red alone facing the subject"
+    },
+    {
+      "term": "st.lane_enters",
+      "note": "the lane facing the red signal enters the intersection the detour avoids"
+    },
+    {
+      "term": "st.driveway_or_alley_entrance",
+      "note": "the private or public property crossed"
+    },
+    {
+      "term": "kin.path_length",
+      "note": "the path taken off the highway and back"
+    },
+    {
+      "term": "rel.occupies",
+      "note": "the footprint leaving the roadway and re-entering on the intersecting street"
+    },
+    {
+      "term": "st.intersection",
+      "note": "the intersection avoided"
+    },
+    {
+      "term": "st.roadway",
+      "note": "the intersecting street entered"
+    },
+    {
+      "term": "kin.position",
+      "note": "entry and re-entry points"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C151707__NRS-484B-307-8e__motor_vehicle_driver/assignment.json",
+      "sha256": "220b7d1181586c05a81956392a5f28f52be6534fbd471753efe4bd062aaf7d17"
+    },
+    {
+      "path": "inputs/training__C151707__NRS-484B-307-8e__motor_vehicle_driver/witnesses.json",
+      "sha256": "e0d290f07c0d6c4a196500cbfede67a5f1d34b7adece923f7e4a4f3ca534c072"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Avoidance purpose cannot be deduced from route alone; property geometry and authority must be sourced."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

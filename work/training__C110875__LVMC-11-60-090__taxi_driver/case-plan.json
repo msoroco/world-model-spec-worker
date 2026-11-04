@@ -1,0 +1,141 @@
+{
+  "assignment_id": "training__C110875__LVMC-11-60-090__taxi_driver",
+  "law_id": "LVMC-11-60-090",
+  "cell_id": "C110875",
+  "actor": "taxi_driver",
+  "source_law_text": "Any cab, upon leaving any stand designated in accordance with the provisions of this Section, shall execute a right-hand turn, when a sign is posted giving notice of this requirement, at the first street intersection after it leaves such stand.",
+  "source_law_citation": "LVMC 11.60.090",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "designated cab stand departure",
+  "cell_fixed_facts": {
+    "layout": "intersection",
+    "maneuver": "right_turn",
+    "control": "mandatory_turn_sign"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "LVMC-11-60-090",
+      "branch": "Posted requirement after designated-stand departure",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 56,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C110875__LVMC-11-60-090__taxi_driver__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C110875__LVMC-11-60-090__taxi_driver__probe_01",
+      "target_law_id": "LVMC-11-60-090",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "cab departs designated stand and turns right at first signed intersection",
+      "comparison_variable": "first intersection turn direction",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C110875__LVMC-11-60-090__taxi_driver__probe_02",
+      "target_law_id": "LVMC-11-60-090",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "same signed route with cab turning another direction",
+      "comparison_variable": "first intersection turn direction",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C110875__LVMC-11-60-090__taxi_driver__planned_comparison",
+      "case_ids": [
+        "training__C110875__LVMC-11-60-090__taxi_driver__probe_01",
+        "training__C110875__LVMC-11-60-090__taxi_driver__probe_02"
+      ],
+      "deliberate_differences": [
+        "first intersection turn direction"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "cab identity and stand designation",
+    "posted sign and governed first intersection",
+    "departure and turn trajectory"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "ru.taxicab",
+      "note": "the cab judged"
+    },
+    {
+      "term": "st.curb_zone",
+      "note": "kind taxicab_stand — the stand left"
+    },
+    {
+      "term": "dev.regulatory_sign",
+      "note": "code right_turn_only — the posted sign giving notice of the requirement"
+    },
+    {
+      "term": "dev.governs",
+      "note": "the stand and the intersection it applies to"
+    },
+    {
+      "term": "st.intersection",
+      "note": "the first street intersection after the stand"
+    },
+    {
+      "term": "drv.turning",
+      "note": "the right-hand turn"
+    },
+    {
+      "term": "kin.heading",
+      "note": "the heading change at that intersection"
+    },
+    {
+      "term": "kin.path_length",
+      "note": "the distance from the stand to it"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C110875__LVMC-11-60-090__taxi_driver/assignment.json",
+      "sha256": "a6cfb3f434e01365249559231c8247340e46b2b3fdf5c727e341e20bc151b4a3"
+    },
+    {
+      "path": "inputs/training__C110875__LVMC-11-60-090__taxi_driver/witnesses.json",
+      "sha256": "af6623f5264ee604a0261070b9d9358be0f6aa1b789b5f02fbe866526cfcde27"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Cab stand designation and posted sign authority require external source/context, plus taxi blueprint and first-intersection route."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

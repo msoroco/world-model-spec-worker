@@ -1,0 +1,138 @@
+{
+  "assignment_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator",
+  "law_id": "NRS-484B-270-7b",
+  "cell_id": "C146108",
+  "actor": "cycle_or_scooter_operator",
+  "source_law_text": "The operator of a bicycle, an electric bicycle or an electric scooter shall not: Overtake and pass a motor vehicle unless the operator can do so safely without endangering himself or herself or the occupants of the motor vehicle.",
+  "source_law_citation": "NRS 484B.270(7)(b)",
+  "summary_status": "recovered_requires_source_review",
+  "selected_branch": "cycle/scooter overtaking motor vehicle",
+  "cell_fixed_facts": {
+    "layout": "one_way_multilane",
+    "maneuver": "overtake",
+    "control": "other_vehicle"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "branch_inventory": [
+    {
+      "requirement": "NRS-484B-270-7b",
+      "branch": "Electric bicycle overtakes a motor vehicle",
+      "coverage_status": "pending_review",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 115,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "recording_ids": [],
+      "disposition": "planned_unproven"
+    }
+  ],
+  "accepted_membership_snapshot": {
+    "full-train": []
+  },
+  "reuse_receipts_proven": [],
+  "neutral_baseline": {
+    "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__baseline",
+    "selected": false,
+    "purpose": "observe fixed cell without targeting a violation"
+  },
+  "cases": [
+    {
+      "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__probe_01",
+      "target_law_id": "NRS-484B-270-7b",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "electric bicycle passes with measured clearance and stable other vehicle",
+      "comparison_variable": "endangerment during pass",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__probe_02",
+      "target_law_id": "NRS-484B-270-7b",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "same pass geometry with reduced clearance or forced evasive response",
+      "comparison_variable": "endangerment during pass",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__planned_comparison",
+      "case_ids": [
+        "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__probe_01",
+        "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__probe_02"
+      ],
+      "deliberate_differences": [
+        "endangerment during pass"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ],
+  "mandatory_observation_targets": [
+    "rider subtype and motor-vehicle identity",
+    "full-body surface gap",
+    "evasive motion and braking",
+    "pass start and completion"
+  ],
+  "source_observation_terms": [
+    {
+      "term": "drv.overtaking",
+      "note": "the rider passes a motor vehicle"
+    },
+    {
+      "term": "ru.motor_vehicle",
+      "note": "the vehicle overtaken"
+    },
+    {
+      "term": "rel.surface_gap",
+      "note": "the clearance during the pass"
+    },
+    {
+      "term": "drv.time_to_conflict",
+      "note": "operationalizes 'without endangering'"
+    },
+    {
+      "term": "drv.passing_side",
+      "note": "which side the rider passes on"
+    },
+    {
+      "term": "kin.speed",
+      "note": "the closing speed"
+    },
+    {
+      "term": "ru.occupant_count",
+      "note": "the occupants said to be endangered"
+    }
+  ],
+  "source_dependencies": [
+    {
+      "path": "inputs/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/assignment.json",
+      "sha256": "53e32e5a2258e9721b1e0bb6ed7099148a4cea8a4204583be7850d0367c1b9f6"
+    },
+    {
+      "path": "inputs/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/witnesses.json",
+      "sha256": "692c41adaad777a5408098d78eeb37154ebeef036f801f83d3cef672dd79596e"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Safe/endanger is a judgment phrase; physical sweep remains unlabeled pending reviewed observables and capability."
+  ],
+  "runtime_gaps": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ]
+}

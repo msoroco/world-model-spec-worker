@@ -1,0 +1,214 @@
+{
+  "assignment_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C179480",
+  "law_id": "NRS-484B-627-2",
+  "selected_branch": null,
+  "scope_branches": [
+    "Paved roadway destination stop"
+  ],
+  "source_law_text": "A person shall not bring a vehicle to a complete stop upon a roadway so as to impede or block the normal and reasonable movement of traffic unless the stop is necessary for safe operation or in compliance with law.",
+  "source_law_citation": "NRS 484B.627(2)",
+  "requirement_dispositions": [
+    {
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: A person shall not bring a vehicle to a complete stop upon a roadway so as to impede or block the normal and reasonable movement of traffic unless the stop is necessary for safe operation or in compliance with law.; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__reference",
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__contrast"
+      ]
+    },
+    {
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact statute: Paved roadway destination stop; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "case_ids": [
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__reference",
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__contrast"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver__reference",
+      "target_law_id": "NRS-484B-627-2",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "roadway_stop_blocks_traffic",
+      "comparison_unit": "bool",
+      "requested_setting": "reference",
+      "recorded_value": null,
+      "case_description": "stopped vehicle blocks versus does not block other traffic; necessity separately",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0"
+      ]
+    },
+    {
+      "case_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver__contrast",
+      "target_law_id": "NRS-484B-627-2",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "roadway_stop_blocks_traffic",
+      "comparison_unit": "bool",
+      "requested_setting": "contrast",
+      "recorded_value": null,
+      "case_description": "stopped vehicle blocks versus does not block other traffic; necessity separately",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver__comparison_main",
+      "case_ids": [
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__reference",
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__contrast"
+      ],
+      "deliberate_differences": [
+        "roadway_stop_blocks_traffic"
+      ],
+      "fixed_conditions": [
+        "cell",
+        "actor",
+        "legal context",
+        "traffic controls",
+        "weather",
+        "other controller settings",
+        "camera and capture profile"
+      ],
+      "status": "planned_unverified"
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_pose",
+      "unit": "m,deg",
+      "mandatory": true,
+      "purpose": "Measured position, heading and footprint over time"
+    },
+    {
+      "name": "ego_speed",
+      "unit": "m/s",
+      "mandatory": true,
+      "purpose": "Observed movement and stop intervals"
+    },
+    {
+      "name": "roadway_stop_blocks_traffic",
+      "unit": "bool",
+      "mandatory": true,
+      "purpose": "stopped vehicle blocks versus does not block other traffic; necessity separately"
+    }
+  ],
+  "source_observation_mapping": {
+    "drv.stopped": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "roadway_stop_blocks_traffic"
+      ],
+      "source_refs": [
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.roadway": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "roadway_stop_blocks_traffic"
+      ],
+      "source_refs": [
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "roadway_stop_blocks_traffic"
+      ],
+      "source_refs": [
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.queue_behind": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "roadway_stop_blocks_traffic"
+      ],
+      "source_refs": [
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.hard_deceleration": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "roadway_stop_blocks_traffic"
+      ],
+      "source_refs": [
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.forced_halt": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "roadway_stop_blocks_traffic"
+      ],
+      "source_refs": [
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "roadway_stop_blocks_traffic"
+      ],
+      "source_refs": [
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "channels": [
+        "roadway_stop_blocks_traffic"
+      ],
+      "source_refs": [
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json",
+      "sha256": "3b68efe7bcb4b51ba880fe4ad7f67900c90b943393ef8d3ec6ac8406555e0afa"
+    },
+    {
+      "path": "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/witnesses.json",
+      "sha256": "d253492b9bc05d5c8cef408991172963136e5a19c2bf66f6932846019d703025"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "set_id": "full-train",
+      "membership_rows": 0,
+      "status": "unreviewed_membership_only",
+      "reuse_receipt": null
+    }
+  ],
+  "runtime_uncertainties": [
+    "No exact CARLA construction, four candidate variants, or offline feasibility proof exists for these case definitions.",
+    "No positive/negative saved fixture, semantic stage validation, independent saved audit, or comparison audit exists.",
+    "Historical membership is context only; no source-hashed accepted equivalence receipt was verified.",
+    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified.",
+    "Safety, practicability, reasonableness, or blocking judgment remains unresolved; no numeric legal surrogate is authorized."
+  ],
+  "selection_targets": [
+    "full-train"
+  ]
+}

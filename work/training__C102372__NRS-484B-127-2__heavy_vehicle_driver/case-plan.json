@@ -1,0 +1,290 @@
+{
+  "assignment_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver",
+  "law_id": "NRS-484B-127-2",
+  "cell_id": "C102372",
+  "actor": "heavy_vehicle_driver",
+  "frozen_cell": {
+    "layout": "hill_crest",
+    "maneuver": "follow",
+    "control": "truck"
+  },
+  "selection_targets": [
+    "demo-train",
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.127(2)",
+    "text": "The driver of any truck or combination of vehicles 80 inches or more in overall width, which is following a truck, or combination of vehicles 80 inches or more in overall width, shall, whenever conditions permit, leave a space of 500 feet so that an overtaking vehicle may enter and occupy such space without danger, but this shall not prevent a truck or combination of vehicles from overtaking and passing any vehicle or combination of vehicles. This subsection does not apply to any vehicle or combination of vehicles while moving on a highway on which there are two or more lanes available for traffic moving in the same direction.",
+    "sha256": "9b10c46abc64b14c56f33b93d51369cb749d69bb637e9517ba6e0c4e8f1c3a32"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Qualifying truck following"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-127-2",
+      "source": "NRS 484B.127(2)",
+      "branch": "Qualifying truck following",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_1",
+        "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_2"
+      ],
+      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    },
+    {
+      "requirement": "NRS-484B-127-2",
+      "source": "NRS 484B.127(2)",
+      "branch": "passing while gap closes",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    },
+    {
+      "requirement": "NRS-484B-127-2",
+      "source": "NRS 484B.127(2)",
+      "branch": "two or more same-direction lanes",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    },
+    {
+      "requirement": "NRS-484B-127-2",
+      "source": "NRS 484B.127(2)",
+      "branch": "conditions do not permit leaving space",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; retained only as a proposal, not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_1",
+      "target_law_id": "NRS-484B-127-2",
+      "kind": "planned_only",
+      "target_type": "below",
+      "physical_target": "same-lane 80-inch-or-wider truck following with measured gap above 500 ft",
+      "comparison_variable": "following_surface_gap_ft",
+      "source_branch": "Qualifying truck following",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_2",
+      "target_law_id": "NRS-484B-127-2",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "same-lane 80-inch-or-wider truck following with measured gap below 500 ft",
+      "comparison_variable": "following_surface_gap_ft",
+      "source_branch": "Qualifying truck following",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_1",
+        "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_2"
+      ],
+      "deliberate_differences": [
+        "following_surface_gap_ft"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor and physical road context",
+        "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "ru.truck",
+      "purpose": "both the subject and the vehicle it follows",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "ru.trailer_or_combination",
+      "purpose": "a combination counts as well",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.extent",
+      "purpose": "overall width, to apply the 80-inch class",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.following",
+      "purpose": "the subject is following the lead truck",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.surface_gap",
+      "purpose": "the longitudinal space, against the 500-foot requirement",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.ahead_behind_in_lane",
+      "purpose": "same lane, subject behind",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.laned_roadway",
+      "purpose": "the exemption: two or more lanes in the same direction",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_adjacency",
+      "purpose": "the count of lanes in the subject's direction",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.overtaking",
+      "purpose": "the carve-out while overtaking",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [
+    {
+      "recording_id": "455e9fa8f5bbb60821aec7000edbb57f4573b693a07b72bae90708cf86a0be27",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "3dc0037fc224af20af9ed597a66c6a71f2d87be2eb1c51ff71f8c059f31e4bb8",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "f2c5cf20644aee191cfa73480334c9b4b12ad0cdd79939a7f45f9ed1f0d1041f",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "ff1d3321711548e9c42035e4f837c56a86c16295d04b11eb606a936d60e88e20",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "449db75b6deb7fcef3e76d683a0507bdf6c50d1053e0a2e5ed3ad3d53629a84d",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "02fcf14dc0945c0f07279e6b685fc4c0dd5f73abacf5f8b1874184bdc241e054",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "0a68c6469a07dbded02332aef734ffdb163c1f03ae0cd01c506e9ada5e39ccf2",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "f15248276c39f22d099a7c1b72f725f53f2de64254f2ee3ce545579543c0c8fb",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "3eda6b4a63793aaf713bd5895e6008e256773f321e1b8cb94a85d1d3f6c2c1be",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "b95f70eed807c843026234032c1ec1174c12780eecfc4000593886a09c3b42b5",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "c5414c123b9a697f91adedede5ea0e72818f2ccf1f296fa74aee594c51ceeab4",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "13095c5817ec499b096db066c11b5d71cda7ef8269c8059790f330048f4abbc0",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "e966540e668fb113c2a9c78152fd16308b960397611bf683400efddbc3deb259",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "0725dbbf1b13740ab0d720bc6a7df157c3fd65e36174a902ea0eb3c817b7dd2d",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    },
+    {
+      "recording_id": "ec01e6c4d7fb920d180fca977463879fe88bf5506cfdf429063cf3d90795f1f5",
+      "status": "accepted_membership_only_no_equivalence_receipt"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+      "sha256": "7e295f041d0d0e41aa5fad7b1ad15033e34913746430644019fd6544aa969a9a"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction"
+  ],
+  "blockers": [
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ],
+  "selected_branch": null,
+  "observations": [
+    {
+      "name": "ru.truck",
+      "mandatory": true,
+      "reason": "both the subject and the vehicle it follows"
+    },
+    {
+      "name": "ru.trailer_or_combination",
+      "mandatory": true,
+      "reason": "a combination counts as well"
+    },
+    {
+      "name": "kin.extent",
+      "mandatory": true,
+      "reason": "overall width, to apply the 80-inch class"
+    },
+    {
+      "name": "drv.following",
+      "mandatory": true,
+      "reason": "the subject is following the lead truck"
+    },
+    {
+      "name": "rel.surface_gap",
+      "mandatory": true,
+      "reason": "the longitudinal space, against the 500-foot requirement"
+    },
+    {
+      "name": "rel.ahead_behind_in_lane",
+      "mandatory": true,
+      "reason": "same lane, subject behind"
+    },
+    {
+      "name": "drv.laned_roadway",
+      "mandatory": true,
+      "reason": "the exemption: two or more lanes in the same direction"
+    },
+    {
+      "name": "st.lane_adjacency",
+      "mandatory": true,
+      "reason": "the count of lanes in the subject's direction"
+    },
+    {
+      "name": "drv.overtaking",
+      "mandatory": true,
+      "reason": "the carve-out while overtaking"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction",
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ]
+}

@@ -1,0 +1,316 @@
+{
+  "assignment_id": "training__C394300__NRS-484B-223-3b__motor_vehicle_driver",
+  "law_id": "NRS-484B-223-3b",
+  "cell_id": "C394300",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "road",
+    "maneuver": "left_turn",
+    "control": "center_turn_lane"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.223(3)(b)",
+    "text": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle must not travel more than 200 feet in a center turn lane before making a left-hand turn from the highway.",
+    "sha256": "a054eecf0eeaa9cd361d5e98f2d6826e70d17f01971afab0b9a59c352b4f1b6f"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Center-lane travel before a left turn from the highway"
+  ],
+  "selected_branch": null,
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-223-3b",
+      "source": "NRS 484B.223(3)(b)",
+      "branch": "Center-lane travel before a left turn from the highway",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__witness_1",
+        "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__witness_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+    },
+    {
+      "requirement": "NRS-484B-223-3b",
+      "source": "NRS 484B.223(3)(b)",
+      "branch": "center turn lane travel numeric boundary 200 feet",
+      "status": "alternative_pending",
+      "case_ids": [
+        "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__numeric_1_0",
+        "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__numeric_1_1",
+        "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__numeric_1_2"
+      ],
+      "evidence_or_gap": "Below/at/above requested probes exist, but target resolution, measured uncertainty and exact boundary proof are pending."
+    }
+  ],
+  "activation_conditions": [
+    "the subject is in a centre turn lane preparing to turn left from the highway"
+  ],
+  "timing_requirements": [
+    {
+      "kind": "span",
+      "requirement": "the distance is cumulative from entry into the lane to the start of the turn; the trace must cover both"
+    },
+    {
+      "kind": "point_event",
+      "requirement": "the violation is the instant the accumulated in-lane distance passes 200 feet before the turn begins"
+    }
+  ],
+  "unresolved_judgment_calls": [],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__witness_1",
+      "target_law_id": "NRS-484B-223-3b",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver begins left turn within 200 feet of entering center turn lane",
+      "comparison_variable": "center_turn_lane_distance",
+      "source_branch": "Center-lane travel before a left turn from the highway",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "road",
+          "maneuver": "left_turn",
+          "control": "center_turn_lane"
+        },
+        "activation_conditions_to_verify": [
+          "the subject is in a centre turn lane preparing to turn left from the highway"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver begins left turn within 200 feet of entering center turn lane"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__witness_2",
+      "target_law_id": "NRS-484B-223-3b",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver travels over 200 feet in center turn lane before left turn",
+      "comparison_variable": "center_turn_lane_distance",
+      "source_branch": "Center-lane travel before a left turn from the highway",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "road",
+          "maneuver": "left_turn",
+          "control": "center_turn_lane"
+        },
+        "activation_conditions_to_verify": [
+          "the subject is in a centre turn lane preparing to turn left from the highway"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver travels over 200 feet in center turn lane before left turn"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__numeric_1_0",
+      "target_law_id": "NRS-484B-223-3b",
+      "kind": "planned_only",
+      "target_type": "below",
+      "physical_target": "center turn lane travel requested at 199 feet; actual measured value and uncertainty required",
+      "comparison_variable": "center_turn_lane_travel",
+      "source_branch": "center turn lane travel: 200 feet",
+      "threshold_reference": {
+        "source": "NRS 484B.223(3)(b)",
+        "value": 200,
+        "units": "feet",
+        "epsilon": 1.0,
+        "epsilon_basis": "planning spacing only; must be justified by measured scene and sensor resolution"
+      },
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null
+    },
+    {
+      "case_id": "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__numeric_1_1",
+      "target_law_id": "NRS-484B-223-3b",
+      "kind": "planned_only",
+      "target_type": "at",
+      "physical_target": "center turn lane travel requested at 200 feet; actual measured value and uncertainty required",
+      "comparison_variable": "center_turn_lane_travel",
+      "source_branch": "center turn lane travel: 200 feet",
+      "threshold_reference": {
+        "source": "NRS 484B.223(3)(b)",
+        "value": 200,
+        "units": "feet",
+        "epsilon": 1.0,
+        "epsilon_basis": "planning spacing only; must be justified by measured scene and sensor resolution"
+      },
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null
+    },
+    {
+      "case_id": "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__numeric_1_2",
+      "target_law_id": "NRS-484B-223-3b",
+      "kind": "planned_only",
+      "target_type": "above",
+      "physical_target": "center turn lane travel requested at 201 feet; actual measured value and uncertainty required",
+      "comparison_variable": "center_turn_lane_travel",
+      "source_branch": "center turn lane travel: 200 feet",
+      "threshold_reference": {
+        "source": "NRS 484B.223(3)(b)",
+        "value": 200,
+        "units": "feet",
+        "epsilon": 1.0,
+        "epsilon_basis": "planning spacing only; must be justified by measured scene and sensor resolution"
+      },
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__witness_comparison",
+      "case_ids": [
+        "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__witness_1",
+        "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__witness_2"
+      ],
+      "deliberate_differences": [
+        "center_turn_lane_distance"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "same map geometry except named comparison variable",
+        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+      ]
+    },
+    {
+      "comparison_id": "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__numeric_1_comparison",
+      "case_ids": [
+        "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__numeric_1_0",
+        "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__numeric_1_1",
+        "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__numeric_1_2"
+      ],
+      "deliberate_differences": [
+        "center_turn_lane_travel"
+      ],
+      "fixed_conditions": [
+        "same applicable statutory branch, actor, map, controllers and observation policy; construction proof pending"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "st.centre_turn_lane",
+      "purpose": "the centre turn lane",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.occupies",
+      "purpose": "the subject in the lane",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.path_length",
+      "purpose": "distance travelled inside the lane, against the 200-foot limit",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.turning",
+      "purpose": "the left turn from the highway that ends the occupancy",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.position",
+      "purpose": "entry point into the lane",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "st.centre_turn_lane",
+      "mandatory": true,
+      "reason": "the centre turn lane"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "the subject in the lane"
+    },
+    {
+      "name": "kin.path_length",
+      "mandatory": true,
+      "reason": "distance travelled inside the lane, against the 200-foot limit"
+    },
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "reason": "the left turn from the highway that ends the occupancy"
+    },
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "reason": "entry point into the lane"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [],
+  "sources": [
+    {
+      "path": "inputs/training__C394300__NRS-484B-223-3b__motor_vehicle_driver/assignment.json",
+      "sha256": "476a0bce0b22db136e07bb3e245ce6f8ded273d54865899c52560a6db1864c39"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map realizes frozen layout, maneuver and control",
+    "Actor blueprints and controllers can produce proposed behavior",
+    "Four camera views and saved channels can establish every decisive relation",
+    "Legal context and exceptions can be represented without substituting authored targets for measurements"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+  ],
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
+    "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
+  ],
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+}

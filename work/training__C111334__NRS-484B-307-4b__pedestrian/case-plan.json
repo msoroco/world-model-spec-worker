@@ -1,0 +1,180 @@
+{
+  "assignment_id": "training__C111334__NRS-484B-307-4b__pedestrian",
+  "law_id": "NRS-484B-307-4b",
+  "cell_id": "C111334",
+  "actor": "pedestrian",
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "travel",
+    "control": "turn_arrow"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.307(4)(b)",
+    "text": "Where the signal is a green turn arrow alone: Pedestrians facing such a signal shall not enter the highway until permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4].",
+    "sha256": "6576fd0097b7820ce589312054de6b4f64645ba771244a55ccdc13abd973cdf3"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Travel route containing highway entry"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-307-4b",
+      "source": "NRS 484B.307(4)(b)",
+      "branch": "Travel route containing highway entry",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111334__NRS-484B-307-4b__pedestrian__probe_1",
+        "training__C111334__NRS-484B-307-4b__pedestrian__probe_2"
+      ],
+      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    },
+    {
+      "requirement": "NRS-484B-307-4b",
+      "source": "NRS 484B.307(4)(b)",
+      "branch": "other-device permission under 484B.283",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; retained only as a proposal, not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C111334__NRS-484B-307-4b__pedestrian__probe_1",
+      "target_law_id": "NRS-484B-307-4b",
+      "kind": "planned_only",
+      "target_type": "below",
+      "physical_target": "pedestrian waits for permitting device",
+      "comparison_variable": "pedestrian_highway_entry_before_permission",
+      "source_branch": "Travel route containing highway entry",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C111334__NRS-484B-307-4b__pedestrian__probe_2",
+      "target_law_id": "NRS-484B-307-4b",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "pedestrian enters highway facing green turn arrow alone without other permission",
+      "comparison_variable": "pedestrian_highway_entry_before_permission",
+      "source_branch": "Travel route containing highway entry",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C111334__NRS-484B-307-4b__pedestrian__comparison",
+      "case_ids": [
+        "training__C111334__NRS-484B-307-4b__pedestrian__probe_1",
+        "training__C111334__NRS-484B-307-4b__pedestrian__probe_2"
+      ],
+      "deliberate_differences": [
+        "pedestrian_highway_entry_before_permission"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor and physical road context",
+        "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "dev.traffic_signal",
+      "purpose": "state green_arrow(dir) alone",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.governs",
+      "purpose": "the head faces the pedestrian",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "ru.subject",
+      "purpose": "the pedestrian judged",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.entering_intersection",
+      "purpose": "entry onto the highway",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.occupies",
+      "purpose": "the pedestrian's footprint on the roadway",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.pedestrian_signal",
+      "purpose": "the device that could permit the crossing",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [],
+  "sources": [
+    {
+      "path": "inputs/training__C111334__NRS-484B-307-4b__pedestrian/assignment.json",
+      "sha256": "8ce0b2b8c52785a4690e1bb32c1b9f8172803dac06b20dc2afe9d2f058fc3162"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction"
+  ],
+  "blockers": [
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ],
+  "selected_branch": null,
+  "observations": [
+    {
+      "name": "dev.traffic_signal",
+      "mandatory": true,
+      "reason": "state green_arrow(dir) alone"
+    },
+    {
+      "name": "dev.governs",
+      "mandatory": true,
+      "reason": "the head faces the pedestrian"
+    },
+    {
+      "name": "ru.subject",
+      "mandatory": true,
+      "reason": "the pedestrian judged"
+    },
+    {
+      "name": "drv.entering_intersection",
+      "mandatory": true,
+      "reason": "entry onto the highway"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "the pedestrian's footprint on the roadway"
+    },
+    {
+      "name": "dev.pedestrian_signal",
+      "mandatory": true,
+      "reason": "the device that could permit the crossing"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction",
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ]
+}

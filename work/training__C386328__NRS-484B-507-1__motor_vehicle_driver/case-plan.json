@@ -1,0 +1,236 @@
+{
+  "assignment_id": "training__C386328__NRS-484B-507-1__motor_vehicle_driver",
+  "law_id": "NRS-484B-507-1",
+  "cell_id": "C386328",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "one_way_road",
+    "maneuver": "park",
+    "control": "freight_loading_zone"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.507(1); with 484B.507(2)",
+    "text": "A person shall not stop, stand or park a vehicle for any purpose or length of time other than for the expeditious unloading and delivery or pickup and loading of materials in any place marked as a freight curb loading zone during hours when the provisions applicable to such zones are in effect. The driver of a vehicle may stop temporarily at a place marked as a freight curb loading zone for the purpose of and while actually engaged in loading or unloading passengers, when such stopping does not interfere with any motor vehicle used for the transportation of materials which is waiting to enter or about to enter such zone.",
+    "sha256": "2b53b8785db784eadc2d8522beb42748f3b940b53f9300bde39132ff8ad03524"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Parking in an effective freight curb loading zone"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-507-1",
+      "source": "NRS 484B.507(1); with 484B.507(2)",
+      "branch": "Parking in an effective freight curb loading zone",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C386328__NRS-484B-507-1__motor_vehicle_driver__probe_1",
+        "training__C386328__NRS-484B-507-1__motor_vehicle_driver__probe_2"
+      ],
+      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    },
+    {
+      "requirement": "NRS-484B-507-1",
+      "source": "NRS 484B.507(1); with 484B.507(2)",
+      "branch": "passenger stop while actually loading",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    },
+    {
+      "requirement": "NRS-484B-507-1",
+      "source": "NRS 484B.507(1); with 484B.507(2)",
+      "branch": "no interference with material-transport vehicle",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    },
+    {
+      "requirement": "NRS-484B-507-1",
+      "source": "NRS 484B.507(1); with 484B.507(2)",
+      "branch": "zone hours",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; retained only as a proposal, not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C386328__NRS-484B-507-1__motor_vehicle_driver__probe_1",
+      "target_law_id": "NRS-484B-507-1",
+      "kind": "planned_only",
+      "target_type": "below",
+      "physical_target": "stop in active freight zone for expeditious material loading",
+      "comparison_variable": "freight_zone_activity",
+      "source_branch": "Parking in an effective freight curb loading zone",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C386328__NRS-484B-507-1__motor_vehicle_driver__probe_2",
+      "target_law_id": "NRS-484B-507-1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "park in same active freight zone without material loading",
+      "comparison_variable": "freight_zone_activity",
+      "source_branch": "Parking in an effective freight curb loading zone",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C386328__NRS-484B-507-1__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C386328__NRS-484B-507-1__motor_vehicle_driver__probe_1",
+        "training__C386328__NRS-484B-507-1__motor_vehicle_driver__probe_2"
+      ],
+      "deliberate_differences": [
+        "freight_zone_activity"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor and physical road context",
+        "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "st.curb_zone",
+      "purpose": "kind freight_loading — the marked freight curb loading zone",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.regulatory_sign",
+      "purpose": "the sign stating when its provisions are in effect",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.condition_in_effect",
+      "purpose": "whether they hold now",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "env.civil_time",
+      "purpose": "the clock time",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.standing_or_parked",
+      "purpose": "the vehicle at rest",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "ru.commercial_motor_vehicle",
+      "purpose": "the class the zone serves",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.extent",
+      "purpose": "materials being moved to or from the vehicle",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "sig.door_open",
+      "purpose": "the loading observed",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "ru.occupant_count",
+      "purpose": "the passenger exchange the exception allows",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.approaching",
+      "purpose": "a materials vehicle waiting or about to enter the zone",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [],
+  "sources": [
+    {
+      "path": "inputs/training__C386328__NRS-484B-507-1__motor_vehicle_driver/assignment.json",
+      "sha256": "60c2f679fb20e8942f63910e2c2633b4bcc3ab76e4ddbfe8258e5831392e351e"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction"
+  ],
+  "blockers": [
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ],
+  "selected_branch": null,
+  "observations": [
+    {
+      "name": "st.curb_zone",
+      "mandatory": true,
+      "reason": "kind freight_loading — the marked freight curb loading zone"
+    },
+    {
+      "name": "dev.regulatory_sign",
+      "mandatory": true,
+      "reason": "the sign stating when its provisions are in effect"
+    },
+    {
+      "name": "drv.condition_in_effect",
+      "mandatory": true,
+      "reason": "whether they hold now"
+    },
+    {
+      "name": "env.civil_time",
+      "mandatory": true,
+      "reason": "the clock time"
+    },
+    {
+      "name": "drv.standing_or_parked",
+      "mandatory": true,
+      "reason": "the vehicle at rest"
+    },
+    {
+      "name": "ru.commercial_motor_vehicle",
+      "mandatory": true,
+      "reason": "the class the zone serves"
+    },
+    {
+      "name": "kin.extent",
+      "mandatory": true,
+      "reason": "materials being moved to or from the vehicle"
+    },
+    {
+      "name": "sig.door_open",
+      "mandatory": true,
+      "reason": "the loading observed"
+    },
+    {
+      "name": "ru.occupant_count",
+      "mandatory": true,
+      "reason": "the passenger exchange the exception allows"
+    },
+    {
+      "name": "drv.approaching",
+      "mandatory": true,
+      "reason": "a materials vehicle waiting or about to enter the zone"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction",
+    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+  ]
+}
