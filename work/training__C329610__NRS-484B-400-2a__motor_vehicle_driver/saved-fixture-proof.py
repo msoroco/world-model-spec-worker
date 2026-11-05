@@ -1,6 +1,7 @@
 """Two-case positive/negative saved finalizer diagnostics; synthetic only."""
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import shutil
@@ -29,11 +30,12 @@ def source_digest(folder):
     return {str(p.relative_to(folder)):sha(p) for p in folder.rglob('*') if p.is_file() and p.name not in ('analysis-report.json','result.json')}
 
 
-def make_base(destination,suffix,lateral):
+def make_base(destination,suffix,lateral,frame_count=4):
     destination.mkdir();(destination/'capture').mkdir()
     construction=json.loads((FOLDER/'draft-candidates'/suffix/'primary/construction.json').read_text())
     config=json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
-    config['duration_s']=.2;config['rate_hz']=20
+    if frame_count not in (4,480):raise ValueError('Only defined diagnostic frame counts are supported')
+    config['duration_s']=frame_count/20;config['rate_hz']=20
     (destination/'config.json').write_text(json.dumps(config))
     directions={'approach_forward':[1,0],'approach_opposing':[-1,0],
                 'destination_forward':[0,-1],'destination_opposing':[0,1]}
@@ -47,14 +49,31 @@ def make_base(destination,suffix,lateral):
     (destination/'road_geometry.json').write_text(json.dumps(geometry))
     (destination/'context.json').write_text(json.dumps({'surveyed_two_way_intersection':geometry}))
     trace=[];evidence=[];mapping=[];motion=[];history=[]
-    for i,(x,y,forward) in enumerate([(-20,lateral,(1,0)),(-10,lateral,(1,0)),
-                                       (-8,lateral,(1,0)),(1.75,-12,(0,-1))]):
+    if frame_count==4:
+        states=[(-20,lateral,(1,0)),(-10,lateral,(1,0)),
+                (-8,lateral,(1,0)),(1.75,-12,(0,-1))]
+    else:
+        states=[]
+        for index in range(frame_count):
+            if index<160:
+                x=-40+30*index/159;y=lateral;angle=0
+            elif index<320:
+                progress=(index-160)/159
+                x=-9.5+11.25*progress;y=lateral+(-10-lateral)*progress
+                angle=-math.pi*progress/2
+            else:
+                x=1.75;y=-10-30*(index-320)/159;angle=-math.pi/2
+            states.append((x,y,(math.cos(angle),math.sin(angle))))
+    for i,(x,y,forward) in enumerate(states):
         frame=100+i;t=.05*(i+1)
-        corners=[[x-2.6,y-1.1],[x-2.6,y+1.1],[x+2.6,y+1.1],[x+2.6,y-1.1]]
+        fx,fy=forward;rx,ry=-fy,fx
+        corners=[[x+direction*2.6*fx+side*1.1*rx,
+                  y+direction*2.6*fy+side*1.1*ry]
+                 for direction,side in ((-1,-1),(-1,1),(1,1),(1,-1))]
         body=[[a,b,z] for a,b in corners for z in (0,1.5)]
         trace.append({'frame':frame,'time_s':t,
                       'position':{'x':x,'y':y,'z':0.5},
-                      'heading_deg':0 if forward==(1,0) else -90,
+                      'heading_deg':math.degrees(math.atan2(fy,fx)),
                       'speed_mps':5.0})
         evidence.append({'original_frame':frame,'recording_time_s':t,'ego':{'body_vertices_m':body}})
         mapping.append({'video_frame':i,'native_frame':frame,'carla_frame':frame,'time_s':t})
@@ -64,7 +83,7 @@ def make_base(destination,suffix,lateral):
     for name,rows in [('trace.jsonl',trace),('capture/evidence.jsonl',evidence),
                       ('video_frames.jsonl',mapping),('native_samples.jsonl',motion),
                       ('body_history.jsonl',history)]:write_rows(destination/name,rows)
-    (destination/'capture/manifest.json').write_text(json.dumps({'extraction_confirmed':True,'frames':4}))
+    (destination/'capture/manifest.json').write_text(json.dumps({'extraction_confirmed':True,'frames':frame_count}))
     (destination/'channels').mkdir()
     for channel in config['recording_description']['channels']:
         name=channel['name'];values=[]
@@ -82,11 +101,12 @@ def make_base(destination,suffix,lateral):
         write_rows(destination/'channels'/(name+'.jsonl'),values)
     for name in ('overview','approach','reference_corner','driver_reference'):
         subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
-            '-f','lavfi','-i','color=c=black:s=32x32:r=20:d=0.2','-frames:v','4',
+            '-f','lavfi','-i',f'color=c=black:s=32x32:r=20:d={frame_count/20}',
+            '-frames:v',str(frame_count),
             '-c:v','ffv1',str(destination/(name+'.mkv'))],check=True,timeout=30)
 
 
-def run():
+def run(frame_count=4):
     env=dict(os.environ)
     env['PYTHONPATH']=os.pathsep.join((str(ROOT/'runtime/pipeline/scenario_pipeline'),
       str(ROOT/'runtime/pipeline/python'),str(ROOT/'runtime/pipeline'),env.get('PYTHONPATH','')))
@@ -94,7 +114,7 @@ def run():
     with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c329610-saved-') as temp:
         scratch=Path(temp)
         for suffix,lateral in (('controlled_1',1.75),('controlled_2',5.25)):
-            base=scratch/(suffix+'-base');make_base(base,suffix,lateral)
+            base=scratch/(suffix+'-base');make_base(base,suffix,lateral,frame_count)
             positive=scratch/(suffix+'-positive');negative=scratch/(suffix+'-negative')
             shutil.copytree(base,positive);shutil.copytree(base,negative)
             before=source_digest(positive)
@@ -118,7 +138,7 @@ def run():
                 raise RuntimeError('Synthetic diagnostic unexpectedly claimed physical acceptance')
             if not result['maneuver_completed'] or not result['target_checks'][0]['matched']:
                 raise RuntimeError('Synthetic positive did not meet its engineering target')
-            if report['original_joins']['frames']!=4 or len(report['video_frames'])!=4:
+            if report['original_joins']['frames']!=frame_count or len(report['video_frames'])!=4 or any(v!=frame_count for v in report['video_frames'].values()):
                 raise RuntimeError('Synthetic video/trace join absent')
             (negative/'native_samples.jsonl').unlink()
             bad_command=[sys.executable,str(FINALIZER),'--attempt',str(negative),
@@ -131,13 +151,16 @@ def run():
                 'positive_exit_code':success.returncode,'negative_exit_code':failure.returncode,
                 'negative_expected_error':expected,'positive_log':success.stdout.strip(),
                 'negative_log_tail':failure.stdout.strip().splitlines()[-1],
-                'source_unchanged':True,'video_sources_decoded':4,'frames':4,
+                'source_unchanged':True,'video_sources_decoded':4,'frames':frame_count,
                 'native_attempt_validator_passed':True,'rebuild_required':True,
                 'analysis_report_sha256':sha(positive/'analysis-report.json'),
                 'result_sha256':sha(positive/'result.json'),
-                'scope':'Four-frame synthetic local saved-processing diagnostic, not exact 480-frame delivery compatibility or Native physical evidence'})
+                'scope':f'{frame_count}-frame synthetic local saved-processing diagnostic, not pinned-runtime Core compatibility or Native physical evidence'})
     return records
 
 
 if __name__=='__main__':
-    print(json.dumps({'format':'c329610-synthetic-saved-fixture-v1','results':run()},indent=2))
+    import argparse
+    parser=argparse.ArgumentParser();parser.add_argument('--frames',type=int,choices=(4,480),default=4)
+    args=parser.parse_args()
+    print(json.dumps({'format':'c329610-synthetic-saved-fixture-v1','results':run(args.frames)},indent=2))

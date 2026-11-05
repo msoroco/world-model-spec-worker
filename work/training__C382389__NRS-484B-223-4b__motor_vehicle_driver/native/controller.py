@@ -1,4 +1,4 @@
-"""Observed-pose path controller for proposed C382355 right-turn constructions.
+"""Observed-pose path controller for proposed C382389 straight constructions.
 
 The route and target speed are requests. Completion is determined separately
 from saved Native body/heading evidence; this controller never asserts it.

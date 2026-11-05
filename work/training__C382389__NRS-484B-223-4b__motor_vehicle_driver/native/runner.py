@@ -210,7 +210,7 @@ def execute(config, output, host, port):
                     "native_body_xy_m":body,"speed_mps":speed,
                     "native_road_id":lane.road_id,"native_lane_id":lane.lane_id,
                     "controller_request":command}
-                capture.capture(frame,time_s,extra={"c382355_native":sample})
+                capture.capture(frame,time_s,extra={"c382389_native":sample})
                 native_file.write(json.dumps(sample,allow_nan=False)+"\n")
                 body_file.write(json.dumps({"frame":frame,"time_s":time_s,
                     "body_vertices_m":[[v.x,v.y,v.z] for v in ego.bounding_box.get_world_vertices(pose)]},

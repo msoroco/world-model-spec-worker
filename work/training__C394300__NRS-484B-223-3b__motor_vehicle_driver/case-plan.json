@@ -32,7 +32,7 @@
         "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__witness_1",
         "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__witness_2"
       ],
-      "evidence_or_gap": "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+      "evidence_or_gap": "Exact clause and 200-foot operator reviewed. Source-bound entry-to-turn interval prototype passes seven CPU tests, including synthetic 199/200/201-foot probes; Native turn-only designation, event calibration, exact construction/offline/compatibility and independent delivery proof remain absent."
     },
     {
       "requirement": "NRS-484B-223-3b",
@@ -44,7 +44,7 @@
         "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__numeric_1_1",
         "training__C394300__NRS-484B-223-3b__motor_vehicle_driver__numeric_1_2"
       ],
-      "evidence_or_gap": "Below/at/above requested probes exist, but target resolution, measured uncertainty and exact boundary proof are pending."
+      "evidence_or_gap": "Exact clause and 200-foot operator reviewed. Source-bound entry-to-turn interval prototype passes seven CPU tests, including synthetic 199/200/201-foot probes; Native turn-only designation, event calibration, exact construction/offline/compatibility and independent delivery proof remain absent."
     }
   ],
   "activation_conditions": [
@@ -312,5 +312,45 @@
     "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
     "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
   ],
-  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts.",
+  "statutory_branch_review": {
+    "status": "exact_clause_reviewed_native_design_pending",
+    "source": "NRS 484B.223(3)(b)",
+    "activation": "Highway has one center lane designed only for turns by traffic in both directions; subject enters and remains in that lane before a left-hand turn from the highway.",
+    "obligation": "Vehicle must not travel more than 200 feet in the center turn lane before making the left-hand turn from the highway.",
+    "threshold_m": 60.96,
+    "boundary_operator": "not more than; exactly 200 feet is within the text boundary",
+    "timing": "From first body contact with center lane to first observed left-turn onset; original frame brackets bound both events.",
+    "exceptions_in_exact_supplied_clause": [],
+    "distinct_related_clauses": "NRS 484B.223(3)(a) addresses purpose; (3)(c) addresses post-turn travel and merge. Neither is this pre-turn distance rule.",
+    "unverified_fact": "Authored lane center geometry does not prove Native dual-direction turn-only designation or actual entry/turn event."
+  },
+  "source_bound_measurement_prototype": {
+    "source": "native/measure_center_lane.py",
+    "status": "cpu_prototype_only",
+    "sources": [
+      "native_samples.jsonl",
+      "road_geometry.json"
+    ],
+    "outputs": [
+      "entry and turn frame brackets",
+      "cumulative path-distance interval in meters",
+      "threshold relation or unresolved",
+      "Native design verification flag"
+    ],
+    "test_log": "measurement-prototype-test.log",
+    "test_log_sha256": "a0dfe48139cb562c85252c06b3cabc03f7ec9d23c33aa30d59b8fd50f903ed78",
+    "test_exit_code": 0,
+    "passing_tests": 7,
+    "threshold_probe_observations_synthetic": {
+      "199_feet": "unresolved_at_200_feet",
+      "200_feet": "unresolved_at_200_feet",
+      "201_feet": "exceeds_200_feet"
+    },
+    "limitations": [
+      "synthetic samples are not Native physical proof",
+      "one-foot targets require event-bracket uncertainty review",
+      "legal outcome is not assigned by prototype"
+    ]
+  }
 }

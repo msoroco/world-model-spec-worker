@@ -111,7 +111,7 @@ def run(frame_count=4):
     env['PYTHONPATH']=os.pathsep.join((str(ROOT/'runtime/pipeline/scenario_pipeline'),
       str(ROOT/'runtime/pipeline/python'),str(ROOT/'runtime/pipeline'),env.get('PYTHONPATH','')))
     records=[]
-    with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c382355-saved-') as temp:
+    with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c382389-saved-') as temp:
         scratch=Path(temp)
         for suffix,lateral in (('reference',1.75),('contrast',5.25)):
             base=scratch/(suffix+'-base');make_base(base,suffix,lateral,frame_count)
