@@ -1,0 +1,317 @@
+{
+  "cell_id": "C382389",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Adjacent straight lane is the shared neutral context; activation is absent. Unselected.",
+      "variable_assignments": {
+        "commanded_approach_lane_id": {
+          "kind": "controller",
+          "value": -1,
+          "unit": "lane_id"
+        },
+        "observed_right_only_lane_crossing": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original full body crossing the intersection boundary with Native road/lane identity",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native map readback and original body/intersection boundary history",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "st.turn_lane",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native lane ID and authored right-only cue; design confirmation pending",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Full original Native body footprint across adjacent and right-only lane candidates",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native straight heading across approach, connector and complete exit",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, velocity, applied control and body footprint",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Every source camera frame joined to original Native frame and timestamp",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surveyed_right_turn_lane_intersection",
+            "unit": "structured",
+            "method": "Native map/lane readback hash, right-only design cue and intersection-boundary source"
+          }
+        ],
+        "limitations": [
+          "Right-only lane designation, actual route tracking, map lane links, camera pixels and physical success require Native evidence",
+          "Finite samples do not prove intersample behavior or legal outcome"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__reference",
+      "target_law_id": "NRS-484B-223-4b",
+      "target_type": "compliant_attempt",
+      "rationale": "Compare straight travel from adjacent lane against straight travel from authored right-only lane; outcome awaits Native designation and independent review.",
+      "variable_assignments": {
+        "commanded_approach_lane_id": {
+          "kind": "controller",
+          "value": -1,
+          "unit": "lane_id"
+        },
+        "observed_right_only_lane_crossing": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__approach_lane_pair",
+      "deliberate_differences": [
+        "commanded_approach_lane_id"
+      ],
+      "probe": {
+        "primary_variable": "commanded_approach_lane_id",
+        "comparison_or_standard": "adjacent through lane versus right-only lane, same straight movement",
+        "target_value_or_branch": -1
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original full body crossing the intersection boundary with Native road/lane identity",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native map readback and original body/intersection boundary history",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "st.turn_lane",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native lane ID and authored right-only cue; design confirmation pending",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Full original Native body footprint across adjacent and right-only lane candidates",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native straight heading across approach, connector and complete exit",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, velocity, applied control and body footprint",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Every source camera frame joined to original Native frame and timestamp",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surveyed_right_turn_lane_intersection",
+            "unit": "structured",
+            "method": "Native map/lane readback hash, right-only design cue and intersection-boundary source"
+          }
+        ],
+        "limitations": [
+          "Right-only lane designation, actual route tracking, map lane links, camera pixels and physical success require Native evidence",
+          "Finite samples do not prove intersample behavior or legal outcome"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__contrast",
+      "target_law_id": "NRS-484B-223-4b",
+      "target_type": "violating_attempt",
+      "rationale": "Compare straight travel from adjacent lane against straight travel from authored right-only lane; outcome awaits Native designation and independent review.",
+      "variable_assignments": {
+        "commanded_approach_lane_id": {
+          "kind": "controller",
+          "value": -2,
+          "unit": "lane_id"
+        },
+        "observed_right_only_lane_crossing": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__approach_lane_pair",
+      "deliberate_differences": [
+        "commanded_approach_lane_id"
+      ],
+      "probe": {
+        "primary_variable": "commanded_approach_lane_id",
+        "comparison_or_standard": "adjacent through lane versus right-only lane, same straight movement",
+        "target_value_or_branch": -2
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original full body crossing the intersection boundary with Native road/lane identity",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native map readback and original body/intersection boundary history",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "st.turn_lane",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native lane ID and authored right-only cue; design confirmation pending",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Full original Native body footprint across adjacent and right-only lane candidates",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native straight heading across approach, connector and complete exit",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, velocity, applied control and body footprint",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Every source camera frame joined to original Native frame and timestamp",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surveyed_right_turn_lane_intersection",
+            "unit": "structured",
+            "method": "Native map/lane readback hash, right-only design cue and intersection-boundary source"
+          }
+        ],
+        "limitations": [
+          "Right-only lane designation, actual route tracking, map lane links, camera pixels and physical success require Native evidence",
+          "Finite samples do not prove intersample behavior or legal outcome"
+        ]
+      }
+    }
+  ],
+  "sweep_specs": []
+}

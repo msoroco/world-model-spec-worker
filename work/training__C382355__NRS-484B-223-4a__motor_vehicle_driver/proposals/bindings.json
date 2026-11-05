@@ -1,0 +1,55 @@
+{
+  "cell_id": "C382355",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "established_contexts": [
+    "authored right-only-lane intersection; verify actual Native lane designation and straight connector before use"
+  ],
+  "law_refs": [
+    {
+      "template_id": "NRS-484B-223-4a@motor_vehicle_driver",
+      "binding_kind": "direct"
+    }
+  ],
+  "context_refs": [],
+  "fixed_parameters": [
+    {
+      "name": "right_only_lane_intersection_authored",
+      "value": true,
+      "rationale": "Authored map proposal only; actual right-only lane design needs Native map and saved-pixel confirmation"
+    }
+  ],
+  "variable_parameters": [
+    {
+      "name": "commanded_subsequent_movement",
+      "kind": "controller",
+      "range_or_domain": [
+        "right_turn",
+        "straight_through"
+      ],
+      "used_by_laws": [
+        "NRS-484B-223-4a"
+      ]
+    },
+    {
+      "name": "actual_right_only_lane_occupancy",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured original Native body and lane IDs, initially unknown",
+      "used_by_laws": [
+        "NRS-484B-223-4a"
+      ]
+    },
+    {
+      "name": "observed_subsequent_movement",
+      "kind": "subject_behavior",
+      "range_or_domain": [
+        "right_turn_follows",
+        "straight_follows",
+        null
+      ],
+      "used_by_laws": [
+        "NRS-484B-223-4a"
+      ]
+    }
+  ]
+}

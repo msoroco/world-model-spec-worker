@@ -4,15 +4,123 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__controlled_1",
-      "target_law_id": "NRS-484B-223-4a",
-      "target_type": "boundary_probe",
-      "rationale": "Unselected observable comparison of subsequent movement after right-only-lane approach; purpose and legal outcome unresolved.",
+      "case_id": "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Activation absent because the subject does not enter the right-only lane; neutral context only, unselected.",
       "variable_assignments": {
         "commanded_subsequent_movement": {
           "kind": "controller",
           "value": "right_turn",
           "unit": "categorical"
+        },
+        "actual_right_only_lane_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "observed_subsequent_movement": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Authored movement request separately joined to observed heading and completed exit history",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native map readback and original body/intersection boundary history",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "st.turn_lane",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native lane ID and authored right-only cue; design confirmation pending",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Full original Native body footprint within right-only-lane bounds",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native heading across approach, connector and exit",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, velocity, applied control and body footprint",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Every source camera frame joined to original Native frame and timestamp",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame, with authored intent separate",
+            "uncertainty": "50 ms sampling and map/body precision; no statutory threshold inferred"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surveyed_right_turn_lane_intersection",
+            "unit": "structured",
+            "method": "Native map/lane readback hash, right-only design cue and intersection-boundary source"
+          }
+        ],
+        "limitations": [
+          "Right-only lane designation, actual route tracking, map lane links, camera pixels and physical success require Native evidence",
+          "Straight-through probe fit with frozen right-turn cell remains unverified",
+          "Finite samples do not prove private purpose, intersample behavior or legal outcome"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484B-223-4a",
+      "target_type": "boundary_probe",
+      "rationale": "Compare subsequent right turn versus straight continuation after the same right-only lane approach; purpose and legal outcome await independent review.",
+      "variable_assignments": {
+        "commanded_subsequent_movement": {
+          "kind": "controller",
+          "value": "right_turn",
+          "unit": "categorical"
+        },
+        "actual_right_only_lane_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
         },
         "observed_subsequent_movement": {
           "kind": "subject_behavior",
@@ -21,8 +129,17 @@
         }
       },
       "unresolved_judgment_calls": [
-        "The statutory purpose is private; a completed movement is an observable proxy, not proof of purpose."
+        "for the purpose of making a right turn"
       ],
+      "paired_probe_id": "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__subsequent_movement_pair",
+      "deliberate_differences": [
+        "commanded_subsequent_movement"
+      ],
+      "probe": {
+        "primary_variable": "commanded_subsequent_movement",
+        "comparison_or_standard": "right turn versus straight continuation after right-only lane occupancy",
+        "target_value_or_branch": "right_turn"
+      },
       "recording_description": {
         "channels": [
           {
@@ -107,12 +224,17 @@
       "case_id": "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__controlled_2",
       "target_law_id": "NRS-484B-223-4a",
       "target_type": "boundary_probe",
-      "rationale": "Unselected observable comparison of subsequent movement after right-only-lane approach; purpose and legal outcome unresolved.",
+      "rationale": "Compare subsequent right turn versus straight continuation after the same right-only lane approach; purpose and legal outcome await independent review.",
       "variable_assignments": {
         "commanded_subsequent_movement": {
           "kind": "controller",
           "value": "straight_through",
           "unit": "categorical"
+        },
+        "actual_right_only_lane_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
         },
         "observed_subsequent_movement": {
           "kind": "subject_behavior",
@@ -121,8 +243,17 @@
         }
       },
       "unresolved_judgment_calls": [
-        "The statutory purpose is private; a completed movement is an observable proxy, not proof of purpose."
+        "for the purpose of making a right turn"
       ],
+      "paired_probe_id": "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__subsequent_movement_pair",
+      "deliberate_differences": [
+        "commanded_subsequent_movement"
+      ],
+      "probe": {
+        "primary_variable": "commanded_subsequent_movement",
+        "comparison_or_standard": "right turn versus straight continuation after right-only lane occupancy",
+        "target_value_or_branch": "straight_through"
+      },
       "recording_description": {
         "channels": [
           {
@@ -206,13 +337,20 @@
   ],
   "sweep_specs": [
     {
-      "sweep_id": "c382355-4a-purpose-pending",
+      "sweep_id": "c382355-4a-purpose-coverage-pending",
       "target_law_id": "NRS-484B-223-4a",
+      "judgment_refs": [
+        {
+          "phrase": "for the purpose of making a right turn",
+          "note": "Private purpose is not directly observable; preserve authored command and observed subsequent movement separately."
+        }
+      ],
+      "rationale": "Additional coverage of private purpose requires measured Native feasibility and independent judgment design.",
       "status": "incomplete",
       "missing_inputs": [
-        "Native right-only lane designation",
-        "independent purpose judgment coverage design",
-        "straight-probe fit with frozen right-turn maneuver"
+        "Native right-only lane design confirmation",
+        "straight-probe fit with frozen right-turn maneuver",
+        "independent purpose judgment coverage design"
       ]
     }
   ]

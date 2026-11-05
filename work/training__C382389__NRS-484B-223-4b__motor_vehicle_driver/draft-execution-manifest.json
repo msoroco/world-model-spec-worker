@@ -1,0 +1,122 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "391baee19ccece687c5632aa2cc64ba3b958c8b492045b30e4bfc4caa131c235",
+  "status": "draft_not_selected",
+  "cases": [
+    {
+      "case_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__reference",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Right-only lane designation, continuous crossing, tracking and camera framing require original Native evidence"
+      },
+      "measurement_contract": "draft-candidates/reference/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c382389-right-only-lane-crossing-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/reference/fallback1/construction.json",
+          "construction_sha256": "5bcd116fc14fd67bc015d6f18378e9912822b29558b02c0eaca6e9fba5571935",
+          "trigger": {
+            "source": "original Native capture or saved pixels",
+            "metric": "straight connector clearance or complete exit",
+            "failure_condition": "Native route lacks requested straight connector or full-body exit absent by 24 s"
+          },
+          "changed_knobs": [
+            "straight route start -50 m to -55 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/reference/fallback2/construction.json",
+          "construction_sha256": "5d01fd67a8ccd864cb082e3b9d750fab9c0a833c139e50109a76cb73000fb293",
+          "trigger": {
+            "source": "original Native capture or saved pixels",
+            "metric": "straight path tracking",
+            "failure_condition": "maximum recorded route error on x=-10..7 m exceeds 0.35 m"
+          },
+          "changed_knobs": [
+            "pure-pursuit lookahead 4.0 m to 3.0 m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/reference/fallback3/construction.json",
+          "construction_sha256": "2ed2d807f7f3f78286f90cb61b5f86e235f52a82b2921e3d24f960209222ac40",
+          "trigger": {
+            "source": "original Native capture or saved pixels",
+            "metric": "right-only-lane camera framing",
+            "failure_condition": "independent pixel audit cannot see full body and right-only lane cue in 95% of approach frames"
+          },
+          "changed_knobs": [
+            "ego-following camera height 3.2 m to 4.5 m and FOV 90 to 105 degrees"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/reference/primary/construction.json",
+      "construction_sha256": "50351770e53be5eb683fc4e51fc5bff952215968b46c76f7e63e21da5ee17967"
+    },
+    {
+      "case_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__contrast",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Right-only lane designation, continuous crossing, tracking and camera framing require original Native evidence"
+      },
+      "measurement_contract": "draft-candidates/contrast/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c382389-right-only-lane-crossing-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/contrast/fallback1/construction.json",
+          "construction_sha256": "e3f77d8f6a0e4599c84e4a6a07caeca181b89256ce1659a2c00cc16051d52df2",
+          "trigger": {
+            "source": "original Native capture or saved pixels",
+            "metric": "straight connector clearance or complete exit",
+            "failure_condition": "Native route lacks requested straight connector or full-body exit absent by 24 s"
+          },
+          "changed_knobs": [
+            "straight route start -50 m to -55 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/contrast/fallback2/construction.json",
+          "construction_sha256": "00c9cb1faa65cb14b79440484e806e6beb6197989370f22ae3f22e4615cb56f6",
+          "trigger": {
+            "source": "original Native capture or saved pixels",
+            "metric": "straight path tracking",
+            "failure_condition": "maximum recorded route error on x=-10..7 m exceeds 0.35 m"
+          },
+          "changed_knobs": [
+            "pure-pursuit lookahead 4.0 m to 3.0 m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/contrast/fallback3/construction.json",
+          "construction_sha256": "314661104ad3b31c4edc7f5214d997c16ad89cc312d993bf684cb86a3e256602",
+          "trigger": {
+            "source": "original Native capture or saved pixels",
+            "metric": "right-only-lane camera framing",
+            "failure_condition": "independent pixel audit cannot see full body and right-only lane cue in 95% of approach frames"
+          },
+          "changed_knobs": [
+            "ego-following camera height 3.2 m to 4.5 m and FOV 90 to 105 degrees"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/contrast/primary/construction.json",
+      "construction_sha256": "4887d112c63b7e9129a2300d7aea61a656927de7c65ffb25d867eb087997d811"
+    }
+  ]
+}

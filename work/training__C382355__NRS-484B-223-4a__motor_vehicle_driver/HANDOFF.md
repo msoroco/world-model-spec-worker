@@ -1,15 +1,9 @@
 # NRS-484B-223-4a at C382355
 
-Actor: `motor_vehicle_driver`. Frozen cell: `intersection` / `right_turn` / `right_turn_lane`.
+Actor: `motor_vehicle_driver`. Frozen cell: intersection / right turn / right turn lane. Status: **blocked**. Two controlled probes and eight primary/fallback bundles are unselected CPU drafts; selected count is zero.
 
-Exact source: NRS 484B.223(4)(a). The full text and source hash are retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branch: Intersection approach in a right-turn lane.
+The exact NRS 484B.223(4)(a) text is reviewed in `case-plan.json`. A qualifying single right-only lane and the subject's use of it activate the clause. The subsequent right turn or straight continuation is an observable proxy for purpose, not proof of private purpose or a legal verdict. NRS 484B.223(4)(b) is a distinct through-intersection prohibition. The straight probe's fit with this cell's frozen `right_turn` maneuver remains unresolved.
 
-Controlled variable: `subsequent movement from right-only lane`. Requested pair: use right-only lane to make right turn; use right-only lane then continue straight. These are construction requests, not measurements or legal verdicts. The baseline is unselected.
+`native/` contains an authored right/straight junction, two approach routes from the same right-only lane, observed-pose controller, four camera policies, Native body/lane and ordered-exit measurement, source-bound finalizer and CARLA runner proposal. Geometry, nine Native prototype tests, runner preflight and Core atom preflight pass. Both probes have primary plus three distinct fallbacks with measurable triggers. All eight exact unselected bundles pass pinned `runtime.py offline` with nine tests each; independent source/hash and controlled-input audits pass. Six semantic stages validate using the in-memory frozen `law_record` alias. Two 480-frame synthetic saved positive/negative fixtures pass finalization, four video decodes and missing-source rejection; the Native attempt validator returns `rebuild_required: true`. An independent 480-frame saved audit holds the full 160-frame approach identical and measures right turn versus straight continuation. These are CPU diagnostics only.
 
-Statutory branch dispositions: 1. Review each exception and dependency against the exact text before physical selection. Accepted membership rows: 0; no source-hashed equivalence receipt is available, so reuse is unclaimed.
-
-Blocker: No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.
-
-Resume: build Native geometry, actor control, cameras and mandatory capture for each runnable branch; prepare four distinct source-preserving constructions per selected case; run exact pinned-runtime offline and compatibility checks, saved positive/negative fixtures and an independent audit. Set `ready` only after those CPU proofs pass.
-
-Source-context review: Right-only lane must be a single designed right lane; commanded right turn does not prove actual turn or lane-use purpose.
+Next: verify Native lane designation and both connectors, resolve straight-probe frozen-cell fit, complete purpose judgment coverage, exact positive/negative pinned-runtime compatibility for all four candidates per case, saved Core/render processing and independent delivery acceptance. Only then select cases, queue GPU jobs or evaluate readiness. Do not infer accepted recordings or legal outcomes from authored targets.

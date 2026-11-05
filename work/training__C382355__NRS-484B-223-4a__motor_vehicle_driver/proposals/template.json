@@ -1,0 +1,54 @@
+{
+  "template_id": "NRS-484B-223-4a@motor_vehicle_driver",
+  "law_id": "NRS-484B-223-4a",
+  "actor": "motor_vehicle_driver",
+  "quote": "If a highway has been designed to provide a single right lane to be used only for turning, a vehicle must: Be driven in the right turn lane only for the purpose of making a right turn.",
+  "status": "draft",
+  "structure": {
+    "law_id": "NRS-484B-223-4a",
+    "activation": {
+      "condition": "highway has a single right lane designed only for turning and the vehicle is driven in it",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "drive in that right turn lane only for the purpose of making a right turn",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "right-only lane occupancy precedes the observed subsequent movement",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "for the purpose of making a right turn",
+        "note": "Private purpose is not directly observable; preserve authored command and observed subsequent movement separately."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "commanded_subsequent_movement",
+      "kind": "controller",
+      "range_or_domain": [
+        "right_turn",
+        "straight_through"
+      ]
+    },
+    {
+      "name": "actual_right_only_lane_occupancy",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured original Native body and lane IDs, initially unknown"
+    },
+    {
+      "name": "observed_subsequent_movement",
+      "kind": "subject_behavior",
+      "range_or_domain": [
+        "right_turn_follows",
+        "straight_follows",
+        null
+      ]
+    }
+  ]
+}

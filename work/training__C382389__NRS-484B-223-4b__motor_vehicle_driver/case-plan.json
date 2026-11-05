@@ -11,34 +11,15 @@
   "source_law_citation": "NRS 484B.223(4)(b)",
   "requirement_dispositions": [
     {
-      "requirement": "text-0",
-      "source": "inputs/coverage/branch-sources.json",
+      "requirement": "NRS-484B-223-4b",
+      "source": "NRS 484B.223(4)(b)",
+      "branch": "Straight traversal from a right-turn-lane approach",
       "status": "selected_required",
-      "evidence_or_gap": "Exact statute: If a highway has been designed to provide a single right lane to be used only for turning, a vehicle must:; no measured Native evidence or source-hashed equivalence receipt yet.",
       "case_ids": [
         "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__reference",
         "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__contrast"
-      ]
-    },
-    {
-      "requirement": "text-1",
-      "source": "inputs/coverage/branch-sources.json",
-      "status": "selected_required",
-      "evidence_or_gap": "Exact statute: While being driven in the right turn lane, not travel through an intersection.; no measured Native evidence or source-hashed equivalence receipt yet.",
-      "case_ids": [
-        "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__reference",
-        "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__contrast"
-      ]
-    },
-    {
-      "requirement": "reviewed-scope-0",
-      "source": "inputs/coverage/branch-sources.json",
-      "status": "selected_required",
-      "evidence_or_gap": "Exact statute: Straight traversal from a right-turn-lane approach; no measured Native evidence or source-hashed equivalence receipt yet.",
-      "case_ids": [
-        "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__reference",
-        "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__contrast"
-      ]
+      ],
+      "evidence_or_gap": "Exact clause and activation reviewed. Native right-only lane design and complete body/lane crossing remain unverified; no selected delivery case or source-hashed reuse."
     }
   ],
   "cases": [
@@ -51,12 +32,15 @@
       "comparison_unit": "bool",
       "requested_setting": "reference",
       "recorded_value": null,
-      "case_description": "straight traversal versus right turn from signed/designated lane",
+      "case_description": "Straight through intersection from adjacent straight lane; compare approach lane only.",
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
       "source_topic_ids": [
         "text-0",
         "text-1"
-      ]
+      ],
+      "physical_target": "straight from adjacent through lane",
+      "requested_approach_lane_id": -1,
+      "requested_not_measured": true
     },
     {
       "case_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__contrast",
@@ -67,12 +51,15 @@
       "comparison_unit": "bool",
       "requested_setting": "contrast",
       "recorded_value": null,
-      "case_description": "straight traversal versus right turn from signed/designated lane",
+      "case_description": "Straight through intersection from right-only straight lane; compare approach lane only.",
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
       "source_topic_ids": [
         "text-0",
         "text-1"
-      ]
+      ],
+      "physical_target": "straight from right-only lane",
+      "requested_approach_lane_id": -2,
+      "requested_not_measured": true
     }
   ],
   "comparisons": [
@@ -83,16 +70,18 @@
         "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__contrast"
       ],
       "deliberate_differences": [
-        "right_turn_only_lane_traversal"
+        "commanded_approach_lane_id",
+        "3.5 m lateral placement"
       ],
       "fixed_conditions": [
         "cell",
         "actor",
-        "legal context",
-        "traffic controls",
-        "weather",
-        "other controller settings",
-        "camera and capture profile"
+        "exact law",
+        "straight maneuver",
+        "road geometry",
+        "rate",
+        "camera and capture profile",
+        "x/time/frame/road trace"
       ],
       "status": "planned_unverified"
     }
@@ -128,7 +117,7 @@
       ]
     },
     "rel.occupies": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original full Native body footprint and road/lane ID in approach and intersection; source-bound saved measurement prototype under native/.",
       "channels": [
         "right_turn_only_lane_traversal"
       ],
@@ -187,12 +176,46 @@
     }
   ],
   "runtime_uncertainties": [
-    "No exact CARLA construction, four candidate variants, or offline feasibility proof exists for these case definitions.",
-    "No positive/negative saved fixture, semantic stage validation, independent saved audit, or comparison audit exists.",
+    "Eight exact unselected draft bundles pass pinned runtime offline; they have no positive/negative pinned-runtime compatibility receipts or physical-preparation proof.",
+    "Synthetic Native-shaped 480-frame saved positive/missing-source negatives and controlled comparison pass, but source fixture is not a CARLA run or Core/render integration.",
+    "Authored right-only lane design and straight connector identities remain unverified in Native map and saved pixels.",
     "Historical membership is context only; no source-hashed accepted equivalence receipt was verified.",
-    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified."
+    "CARLA execution, physical realization, legal verdict, independent delivery acceptance and ordered GPU queue remain unverified."
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "statutory_branch_review": {
+    "status": "draft_source_review_pending_native_design",
+    "exact_clause": "NRS 484B.223(4)(b)",
+    "activation": "A highway designed to provide a single right lane used only for turning; subject is being driven in that right turn lane.",
+    "obligation": "While driven in that right turn lane, do not travel through an intersection.",
+    "timing": "Continuous lane identity and body crossing of the intersection boundary, followed by complete straight exit.",
+    "exceptions_in_exact_supplied_clause": [],
+    "distinct_related_clause": "NRS 484B.223(4)(a) concerns purpose of right-turn-lane use; this (4)(b) clause concerns the through-intersection crossing.",
+    "unverified_fact": "Authored arrow does not prove Native single right-only lane designation or connector identity; original map and pixels are required."
+  },
+  "draft_delivery_work": {
+    "status": "unselected_cpu_prototypes",
+    "candidate_ids": [
+      "primary",
+      "fallback1",
+      "fallback2",
+      "fallback3"
+    ],
+    "case_suffixes": [
+      "reference",
+      "contrast"
+    ],
+    "offline_bundles_passing": 8,
+    "distinct_fallbacks_audited": true,
+    "semantic_stages_validated_with_in_memory_frozen_alias": 5,
+    "synthetic_saved_frames_per_case": 480,
+    "synthetic_saved_positive_and_missing_native_negative_passed": true,
+    "independent_saved_comparison_passed": true,
+    "native_right_only_lane_design_verified": false,
+    "exact_pinned_runtime_compatibility_proven": false,
+    "saved_core_render_integration_proven": false,
+    "selected_delivery_cases": 0
+  }
 }
