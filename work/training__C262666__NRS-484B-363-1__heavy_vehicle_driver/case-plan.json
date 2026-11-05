@@ -3,7 +3,7 @@
   "law_id": "NRS-484B-363-1",
   "cell_id": "C262666",
   "actor": "heavy_vehicle_driver",
-  "source_law_text": "A person shall not drive a motor vehicle at a speed in excess of 15 miles per hour in an area designated as a school zone except: (a) On a day on which school is not in session; (b) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (c) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (d) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone indicates that the speed limit is not in effect. As used in this section, “speed limit beacon” means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.",
+  "source_law_text": "A person shall not drive a motor vehicle at a speed in excess of 15 miles per hour in an area designated as a school zone except: (a) On a day on which school is not in session; (b) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (c) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (d) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone indicates that the speed limit is not in effect. As used in this section, \u201cspeed limit beacon\u201d means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.",
   "source_law_citation": "NRS 484B.363(1); with 484B.363(9)",
   "summary_status": "recovered_requires_source_review",
   "selected_branch": "school-zone 15 mph limit and exceptions",
@@ -158,5 +158,76 @@
     "No four distinct candidate files with offline and positive/negative compatibility proofs.",
     "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
     "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ],
+  "observations": [
+    {
+      "name": "dev.zone_sign",
+      "mandatory": true,
+      "reason": "kind school, with its conditions attribute"
+    },
+    {
+      "name": "drv.within_signed_zone",
+      "mandatory": true,
+      "reason": "kind school"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "reason": "against the 15 mph limit"
+    },
+    {
+      "name": "dev.speed_limit_beacon",
+      "mandatory": true,
+      "reason": "its flashing attribute, where the zone has one"
+    },
+    {
+      "name": "drv.condition_in_effect",
+      "mandatory": true,
+      "reason": "whether the zone's hours condition holds now"
+    },
+    {
+      "name": "env.civil_time",
+      "mandatory": true,
+      "reason": "the date and time of day the condition is judged against"
+    },
+    {
+      "name": "ru.motor_vehicle",
+      "mandatory": true,
+      "reason": "the class the rule binds"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json",
+      "sha256": "77a0483b8cd70769758c4cfb741ba4d2444812ea4d4052a45fa99db7efdbfa5d"
+    },
+    {
+      "path": "inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/witnesses.json",
+      "sha256": "0fce6fa539d47e24d8cdacaef485a9a5c60e28041aa9539f49c5abd5c4e65a49"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage.",
+    "School calendar and legal zone designation require authoritative inputs; do not infer from visible crosswalk or beacon alone.",
+    "No CARLA execution or accepted recording is claimed."
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-363-1",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "branch": "Heavy motor vehicle traversing a school-zone crosswalk scene",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_01",
+        "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_02",
+        "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_03",
+        "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_04"
+      ],
+      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+    }
   ]
 }

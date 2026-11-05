@@ -3,7 +3,7 @@
   "law_id": "NRS-484B-283-1d2",
   "cell_id": "C10316",
   "actor": "pedestrian",
-  "source_law_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place, such signals indicate as follows: While the “Don’t Walk” or “Wait” indication or an upraised hand symbol is illuminated, is flashing and is accompanied by a countdown timer, a pedestrian may proceed across the highway in the direction of the signal, but must complete the crossing before the countdown timer gets to zero.",
+  "source_law_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words \u201cWalk,\u201d \u201cDon\u2019t Walk,\u201d \u201cWait\u201d or similar symbols are in place, such signals indicate as follows: While the \u201cDon\u2019t Walk\u201d or \u201cWait\u201d indication or an upraised hand symbol is illuminated, is flashing and is accompanied by a countdown timer, a pedestrian may proceed across the highway in the direction of the signal, but must complete the crossing before the countdown timer gets to zero.",
   "source_law_citation": "NRS 484B.283(1)(d)(2)",
   "summary_status": "recovered_requires_source_review",
   "selected_branch": "flashing countdown crossing",
@@ -137,5 +137,79 @@
     "No four distinct candidate files with offline and positive/negative compatibility proofs.",
     "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
     "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+  ],
+  "observations": [
+    {
+      "name": "dev.pedestrian_signal",
+      "mandatory": true,
+      "reason": "state dont_walk_flashing with a countdown attribute"
+    },
+    {
+      "name": "dev.governs",
+      "mandatory": true,
+      "reason": "it faces the pedestrian's direction"
+    },
+    {
+      "name": "ru.subject",
+      "mandatory": true,
+      "reason": "the pedestrian judged"
+    },
+    {
+      "name": "st.crosswalk",
+      "mandatory": true,
+      "reason": "the crossing"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "the pedestrian's position in the crossing"
+    },
+    {
+      "name": "kin.time",
+      "mandatory": true,
+      "reason": "the countdown's remaining time against the crossing"
+    },
+    {
+      "name": "st.road_edge",
+      "mandatory": true,
+      "reason": "the far curb that completes the crossing"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "reason": "whether the crossing can be completed in time"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C10316__NRS-484B-283-1d2__pedestrian/assignment.json",
+      "sha256": "680adbd84190c505eb235e922ddfe7ac0f577a7a8dca0f91deaa0f61aacaa206"
+    },
+    {
+      "path": "inputs/training__C10316__NRS-484B-283-1d2__pedestrian/witnesses.json",
+      "sha256": "d4386ef379db529c7a862eb39e153f42b1bf6a43c9abb275265dbfb43549d2ce"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "No Native construction or physically verified map/route/footprint and camera implementation.",
+    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
+    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
+    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage.",
+    "Countdown display and pedestrian control need an authored, frame-synchronized Native device; exception contexts must be checked.",
+    "No CARLA execution or accepted recording is claimed."
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-283-1d2",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "branch": "Crossing during flashing indication with countdown",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C10316__NRS-484B-283-1d2__pedestrian__probe_01",
+        "training__C10316__NRS-484B-283-1d2__pedestrian__probe_02"
+      ],
+      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+    }
   ]
 }

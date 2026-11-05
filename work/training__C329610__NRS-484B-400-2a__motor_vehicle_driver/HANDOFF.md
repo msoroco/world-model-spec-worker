@@ -13,3 +13,7 @@ Blocker: No executable Native construction or four distinct candidates have been
 Resume: build Native geometry, actor control, cameras and mandatory capture for each runnable branch; prepare four distinct source-preserving constructions per selected case; run exact pinned-runtime offline and compatibility checks, saved positive/negative fixtures and an independent audit. Set `ready` only after those CPU proofs pass.
 
 Source-context review: Both intersecting highways must be two-directional. Measure approach path in the right half nearest centerline before the left turn; the turn exit is not the target.
+
+## Current source and measurement review
+
+The two witness labels describe the same NRS 484B.400(2)(a) clause; the duplicate was removed from requirement dispositions. The plan now has a time scoped measurement contract draft, exact activation facts, required Native geometry and controller evidence, and three measurable candidate risks. This remains a draft. No selected delivery manifest, exact offline or compatibility proof, saved audit, or CARLA observation exists. The result remains blocked.

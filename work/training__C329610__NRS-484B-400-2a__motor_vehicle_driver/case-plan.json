@@ -28,21 +28,13 @@
     {
       "requirement": "NRS-484B-400-2a",
       "source": "NRS 484B.400(2)(a)",
-      "branch": "Left-turn approach between two-directional highways.",
+      "branch": "Left-turn approach where both intersecting highways are two-directional",
       "status": "selected_required",
       "case_ids": [
         "training__C329610__NRS-484B-400-2a__motor_vehicle_driver__controlled_1",
         "training__C329610__NRS-484B-400-2a__motor_vehicle_driver__controlled_2"
       ],
-      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
-    },
-    {
-      "requirement": "NRS-484B-400-2a",
-      "source": "NRS 484B.400(2)(a)",
-      "branch": "selected assignment branch",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "Witness describes a separate branch; exact same-cell construction and proof remain pending."
+      "evidence_or_gap": "Source reviewed; exact approach geometry, Native controller, four candidate proofs per selected case, saved audits, and physical realization remain pending."
     }
   ],
   "neutral_baseline": {
@@ -221,5 +213,120 @@
   "blockers": [
     "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
   ],
-  "source_context_review": "Both intersecting highways must be two-directional. Measure approach path in the right half nearest centerline before the left turn; the turn exit is not the target."
+  "source_context_review": "Both intersecting highways must be two-directional. Measure approach path in the right half nearest centerline before the left turn; the turn exit is not the target.",
+  "statutory_review": {
+    "source_sha256": "17fb429ff30594e751be3a294245ecfea8fb0aeddcf710427fdfc2030d46dd4c",
+    "activation": [
+      "vehicle driver intends to turn left at an intersection",
+      "both intersecting highways are two-directional"
+    ],
+    "obligation": "approach in the portion of the right half of the approached highway nearest its centerline",
+    "time_scope": "approach before intersection entry",
+    "exceptions_in_exact_clause": [],
+    "witness_aliases": [
+      "selected assignment branch"
+    ],
+    "unverified": [
+      "native evidence of two-directional directions on both highways",
+      "centerline and right-half boundaries",
+      "approach trajectory and vehicle footprint",
+      "actual left turn completion"
+    ]
+  },
+  "measurement_contract_draft": {
+    "status": "unverified_draft",
+    "primary_quantity": "ego lateral placement relative to the native centerline during the approach",
+    "unit": "metres",
+    "reference_frame": "road-aligned station and lateral coordinates on the approached highway",
+    "window": "from stabilized approach until the front vehicle footprint first enters the intersection",
+    "raw_evidence": [
+      "time stamped ego pose and full footprint vertices",
+      "native centerline polyline and lane direction",
+      "native intersection boundary and entry time",
+      "intended turn declaration and measured route/heading after intersection"
+    ],
+    "comparison": "compare the two requested approach placements under the same road geometry, actor, turn route, controller policy, capture rate, and camera policy; record any changed engineering parameter",
+    "acceptance_limit": "No universal metre cutoff is assigned to the statutory word nearest; preserve measured lateral offsets and lane adjacency for later review",
+    "uncertainties": [
+      "native centerline extraction",
+      "lane width and vehicle footprint",
+      "intersection entry sampling interval",
+      "actual controller tracking"
+    ]
+  },
+  "source_observation_mapping_draft": {
+    "drv.turning": {
+      "evidence": "planned Native geometry or time series; unverified",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "planned Native geometry or time series; unverified",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "planned Native geometry or time series; unverified",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "planned Native geometry or time series; unverified",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "planned Native geometry or time series; unverified",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.position": {
+      "evidence": "planned Native geometry or time series; unverified",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.one_way_roadway": {
+      "evidence": "planned Native geometry or time series; unverified",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "planned Native geometry or time series; unverified",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "candidate_risks_draft": [
+    {
+      "risk": "approach route or left turn not connected",
+      "measured_trigger": "offline route connectivity or recorded turn completion false",
+      "possible_engineering_knob": "approach start station or target waypoint, holding legal context and comparison variable fixed"
+    },
+    {
+      "risk": "lateral controller does not track requested position",
+      "measured_trigger": "maximum recorded lateral tracking error exceeds predeclared tolerance",
+      "possible_engineering_knob": "controller lookahead or gain, applied identically across linked comparison cases"
+    },
+    {
+      "risk": "centerline and approach position not visible in retained views",
+      "measured_trigger": "camera audit cannot identify vehicle footprint and centerline during full approach window",
+      "possible_engineering_knob": "camera mount or field of view, applied identically across linked comparison cases"
+    }
+  ]
 }
