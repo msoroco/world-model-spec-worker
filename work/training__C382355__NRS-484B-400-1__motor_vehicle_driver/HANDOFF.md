@@ -1,21 +1,9 @@
 # NRS-484B-400-1 at C382355
 
-Actor: `motor_vehicle_driver`. Frozen cell: `intersection` / `right_turn` / `right_turn_lane`.
+Actor: `motor_vehicle_driver`; frozen cell: intersection / right turn / right turn lane. Status: **blocked**. Two planned boundary probes and eight candidate bundles are unselected drafts; selected count is zero.
 
-Exact statutory source: NRS 484B.400(1). Source text and hash are in `case-plan.json`. Historical summary status: `recovered_requires_source_review`.
+The exact NRS 484B.400(1) clause and the cited NRS 484B.223(4)(a)/(b) frozen texts are reviewed in `case-plan.json`. The C382355 draft addresses the qualifying right-turn-lane branch. A Native-design survey must establish the single right-only lane; an authored arrow is insufficient. The alternative extreme-right-lane branch and judgment sweep remain pending. Neither requested probe has a measured legal outcome.
 
-Selected witness: Referenced right-turn-lane branch.. Planned comparison variable: `right_turn_approach_lane`. Requests: driver approaches and turns from required right lane; driver approaches or turns from a lane other than required right lane. These are proposed targets, never measured behavior or legal verdicts.
+`native/` now contains authored right-turn geometry, observed-pose controller, four-view camera plan, saved full-body/lane-ID measurement, source-bound finalizer, and a CARLA runner proposal. Geometry and eight Native prototype tests pass on CPU. Both case IDs have a primary plus three distinct fallback bundles with measured triggers. All eight exact unselected bundles pass pinned `runtime.py offline` (eight unit tests each), with independent source/hash and controlled comparison audits. Five semantic stages validate using the in-memory frozen `law_record` alias. Two 480-frame synthetic Native-shaped saved fixtures pass finalization, four source-video decodes and missing-source rejection. An independent 480-frame controlled-pair audit holds cell, law, actor, duration, rate, cameras, channels, geometry and frame/time IDs fixed; measured approach lane identity fractions are 1 and 0. The four-frame smoke fixtures also pass. None proves 480-frame compatibility, Native physical realization, Core/render processing, or independent delivery acceptance.
 
-Activation to verify: the subject intends to turn right at an intersection.
-
-Timing to retain: both the approach and the turn must be from the required lane — the lane occupancy is tracked over the whole manoeuvre; intention is shown by the turn that follows, so the trace must cover the approach and the turn.
-
-Exceptions and numeric alternatives planned: none in supplied clause.
-
-Unresolved judgment or rule composition: 'intends to turn' is interior state; the completed turn is the observable substitute. No judgment bound is set by this plan.
-
-Accepted membership: 0 membership rows; exact source-hashed equivalence and reuse are unverified.
-
-Blocker: No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.
-
-Resume: reconcile each branch against the exact law and cited provisions; establish compatible Native construction and measurement channels; produce four distinct candidate plans and exact offline, compatibility, saved-only, semantic and audit proofs; then evaluate readiness.
+Next: verify the right-only lane and connector on original Native evidence; finish statutory branches and judgment sweep; build exact positive/negative 480-frame compatibility receipts, saved Core/render processing and independent audits; only then select cases, queue GPU jobs and evaluate readiness. Do not infer accepted recordings or legal verdicts from authored targets.

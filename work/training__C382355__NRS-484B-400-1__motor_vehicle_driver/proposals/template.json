@@ -1,0 +1,59 @@
+{
+  "template_id": "NRS-484B-400-1@motor_vehicle_driver",
+  "law_id": "NRS-484B-400-1",
+  "actor": "motor_vehicle_driver",
+  "quote": "If the driver of a vehicle intends to turn at an intersection and: The turn is a right turn, both the approach for the right turn and the right turn must be made from the right turn lane if the highway has a right turn lane as set forth in subsection 4 of NRS 484B.223 [NRS-484B-223-4a, NRS-484B-223-4b], or must be made from the extreme right lane.",
+  "status": "draft",
+  "structure": {
+    "law_id": "NRS-484B-400-1",
+    "activation": {
+      "condition": "driver intends a right turn at an intersection",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "make both the right-turn approach and turn from the right-turn lane when present, otherwise from the extreme right lane",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "during the approach and right turn",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "intends to turn",
+        "note": "Interior intent is not directly observable; preserve authored command and observed turn separately."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "commanded_approach_lane_y_m",
+      "kind": "controller",
+      "range_or_domain": "rightmost and inner approach lane centers, measured separately"
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": [
+        "right_turn",
+        "through"
+      ]
+    },
+    {
+      "name": "actual_right_turn_lane_occupancy",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured Native full-body approach lane occupancy, initially unknown"
+    },
+    {
+      "name": "actual_turn_completion",
+      "kind": "subject_behavior",
+      "range_or_domain": [
+        true,
+        false,
+        null
+      ]
+    }
+  ]
+}

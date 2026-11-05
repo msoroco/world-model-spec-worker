@@ -40,7 +40,10 @@ def measure(samples_path,geometry_path):
             raise ValueError('Two-way Native direction evidence missing')
     dest=vector(directions['destination_forward'],'destination_forward')
     right=vector(geometry['destination_right_normal_native'],'destination_right_normal_native')
-    if abs(dot(dest,right))>.01:raise ValueError('Destination right axis is not perpendicular')
+    # CARLA's Native XY frame is left handed: forward (0,-1) has right (1,0).
+    expected_right=[-dest[1],dest[0]]
+    if dot(right,expected_right)<.99:
+        raise ValueError('Destination right axis differs from Native lane direction')
     center=point(geometry['destination_centerline_point_native_m'],'destination_centerline_point_native_m')
     boundary=point(geometry['destination_exit_point_native_m'],'destination_exit_point_native_m')
     rows=[json.loads(line) for line in samples_path.read_text().splitlines() if line.strip()]

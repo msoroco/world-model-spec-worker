@@ -44,6 +44,14 @@ class ExitMeasurementTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'Two-way Native direction evidence missing'):
             measure(self.samples,self.geometry)
 
+    def test_reversed_destination_right_axis_rejected(self):
+        self.write(1.75)
+        data=json.loads(self.geometry.read_text())
+        data['destination_right_normal_native']=[-1,0]
+        self.geometry.write_text(json.dumps(data))
+        with self.assertRaisesRegex(ValueError,'Destination right axis differs'):
+            measure(self.samples,self.geometry)
+
     def test_incomplete_turn_rejected(self):
         self.write(1.75)
         data=[json.loads(s) for s in self.samples.read_text().splitlines()]

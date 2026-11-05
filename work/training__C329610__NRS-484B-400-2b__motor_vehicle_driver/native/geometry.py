@@ -12,10 +12,12 @@ from base_geometry import open_drive
 EXIT_X_M={'witness_1':1.75,'witness_2':-1.75}
 
 
-def route(exit_x_m):
+def route(exit_x_m,turn_entry_x_m=-7):
     if exit_x_m not in EXIT_X_M.values():raise ValueError('Unknown controlled exit side')
-    points=[[-50+i*.1,-1.75] for i in range(431)]
-    p0=(-7,-1.75);p1=(-3,-1.75);p2=(exit_x_m,0);p3=(exit_x_m,7)
+    if turn_entry_x_m not in (-7,-10):raise ValueError('Unknown turn entry station')
+    approach_steps=round((turn_entry_x_m+50)/.1)
+    points=[[-50+i*.1,-1.75] for i in range(approach_steps+1)]
+    p0=(turn_entry_x_m,-1.75);p1=(turn_entry_x_m+4,-1.75);p2=(exit_x_m,0);p3=(exit_x_m,7)
     for i in range(1,151):
         t=i/150
         points.append([(1-t)**3*p0[j]+3*(1-t)**2*t*p1[j]+3*(1-t)*t*t*p2[j]+t**3*p3[j]

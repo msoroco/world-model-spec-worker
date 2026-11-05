@@ -1,0 +1,63 @@
+{
+  "cell_id": "C382355",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "established_contexts": [
+    "authored right-turn-lane intersection; verify actual Native lane marking and design before use"
+  ],
+  "law_refs": [
+    {
+      "template_id": "NRS-484B-400-1@motor_vehicle_driver",
+      "binding_kind": "direct"
+    }
+  ],
+  "context_refs": [],
+  "fixed_parameters": [
+    {
+      "name": "right_turn_lane_intersection",
+      "value": true,
+      "rationale": "Frozen cell and exact clause; actual right-only lane design needs Native map and saved-pixel confirmation"
+    }
+  ],
+  "variable_parameters": [
+    {
+      "name": "commanded_approach_lane_y_m",
+      "kind": "controller",
+      "range_or_domain": "rightmost and inner approach lane centers, measured separately",
+      "used_by_laws": [
+        "NRS-484B-400-1"
+      ]
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": [
+        "right_turn",
+        "through"
+      ],
+      "used_by_laws": [
+        "NRS-484B-400-1"
+      ]
+    },
+    {
+      "name": "actual_right_turn_lane_occupancy",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured Native full-body approach lane occupancy, initially unknown",
+      "used_by_laws": [
+        "NRS-484B-400-1"
+      ]
+    },
+    {
+      "name": "actual_turn_completion",
+      "kind": "subject_behavior",
+      "range_or_domain": [
+        true,
+        false,
+        null
+      ],
+      "used_by_laws": [
+        "NRS-484B-400-1"
+      ]
+    }
+  ]
+}
