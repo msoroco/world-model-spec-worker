@@ -24,6 +24,15 @@ from geometry import EXIT_X_M, check as geometry_check
 ROOT = Path(__file__).resolve().parent
 
 
+def frame_map_row(index,frame,time_s):
+    """Preserve both Native and canonical CARLA identities for saved/Core joins."""
+    if type(index) is not int or index<0 or type(frame) is not int or frame<0:
+        raise ValueError("Invalid original video/Native frame identity")
+    if isinstance(time_s,bool) or not isinstance(time_s,(int,float)) or not math.isfinite(time_s):
+        raise ValueError("Invalid original video/Native time")
+    return {"video_frame":index,"native_frame":frame,"carla_frame":frame,"time_s":time_s}
+
+
 def write_new(path, value):
     with path.open("x") as output:
         json.dump(value, output, indent=2, allow_nan=False)
@@ -226,7 +235,7 @@ def execute(config, output, host, port):
                     if image.frame!=frame:raise RuntimeError("Original camera/Native frame join failed")
                     rgb=np.frombuffer(image.raw_data,dtype=np.uint8).reshape(spec["height"],spec["width"],4)[:,:,:3][:,:,::-1]
                     encoders[spec["name"]].stdin.write(rgb.tobytes())
-                frame_file.write(json.dumps({"video_frame":index,"native_frame":frame,"time_s":time_s})+"\n")
+                frame_file.write(json.dumps(frame_map_row(index,frame,time_s))+"\n")
                 frames+=1
         if frames!=config["duration_s"]*config["rate_hz"]:
             raise RuntimeError("Original frame count incomplete")

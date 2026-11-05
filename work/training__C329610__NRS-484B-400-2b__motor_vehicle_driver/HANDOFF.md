@@ -36,3 +36,7 @@ Both case IDs pass four-frame synthetic positive saved finalization, original-so
 ## Full-duration synthetic saved continuation
 
 Both planned exit-side cases now pass 480-frame, 20 Hz, 24 s synthetic saved positive processing, measurement-contract verification, four source-video decodes, Native attempt validation with `rebuild_required: true`, and missing-Native-samples negative rejection. An independent saved audit holds the first 160 approach frames, map, law, actor, rate, cameras, channels and frame/time/y/heading trace fixed; it varies only the destination lateral exit and measures full-body right versus left exits. This does not establish CARLA physical feasibility, pinned-runtime Core/render compatibility, legal outcome or independent delivery acceptance. Both cases remain unselected and the result remains blocked.
+
+## Canonical original frame identity continuation
+
+The proposed Native runner now writes `video_frame`, `native_frame`, canonical `carla_frame` and `time_s` together for every source camera frame. An independent CPU audit checks this row against the pinned frame-map writer and rejects invalid identities. All eight exact unselected primary/fallback bundles were rebuilt and passed pinned offline checks and source/controlled-input audits after this source change. No CARLA run, Core/render compatibility receipt or delivery acceptance is inferred; this assignment remains blocked.

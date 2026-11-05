@@ -26,7 +26,7 @@ def main():
         contract=json.loads((FOLDER/entry['measurement_contract']).read_text())
         plan=json.loads((FOLDER/'case-plan.json').read_text())
         source=json.loads((FOLDER/entry['construction']).read_text())
-        analysis=next(f['content'] for f in source['files'] if f['path']=='measure_saved.py')
+        analysis=next(f['content'] for f in source['files'] if f['path']=='finalize.py')
         validate_measurement(contract,plan['requirement_dispositions'],analysis,entry['case_id'])
         for item in source['files']:
             if item['path']=='config.json':continue
@@ -47,11 +47,11 @@ def main():
         assert digest(FOLDER/receipt['command_log'])==receipt['command_log_sha256']
         assert digest(FOLDER/receipt['unit_log'])==receipt['unit_log_sha256']
         unit=(FOLDER/receipt['unit_log']).read_text()
-        assert 'Ran 12 tests' in unit and '\nOK\n' in unit
+        assert 'Ran 14 tests' in unit and '\nOK\n' in unit
         assert 'offline_geometry' in unit and '"native_center_lane_design_verified": false' in unit
     assert actual==expected
     print(json.dumps({'passed':True,'cases':5,'draft_candidates':20,
-                      'offline_unit_tests_per_bundle':12,
+                      'offline_unit_tests_per_bundle':14,
                       'selected_delivery_cases':0,'physical_verified':False}))
 
 

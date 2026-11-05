@@ -9,3 +9,7 @@ The exact clause forbids travel through an intersection while driven in a single
 The 480-frame synthetic saved fixtures pass positive processing, four video-source decodes, measurement-contract verification, Native attempt validation with `rebuild_required: true`, and missing-Native-source rejection. The independent pair audit holds straight movement, geometry, x/time/frame/road trace, rate and cameras fixed; measured right-only intersection sample fractions are 0 and 1. These proofs do not establish Native physical feasibility, right-only lane designation, exact pinned-runtime compatibility, Core/render integration, or independent delivery acceptance.
 
 Next: survey Native lane and connector identities, finish exact positive/negative compatibility receipts for each candidate, physical-preparation and Core/render saved integration, and independent delivery audits. Keep status blocked until all CPU proofs pass. The ordered GPU queue has no dispatchable row.
+
+## Canonical original frame identity continuation
+
+The proposed Native runner now writes `video_frame`, `native_frame`, canonical `carla_frame` and `time_s` together for every source camera frame. An independent CPU audit checks this row against the pinned frame-map writer and rejects invalid identities. All eight exact unselected primary/fallback bundles were rebuilt and passed pinned offline checks and source/controlled-input audits after this source change. No CARLA run, Core/render compatibility receipt or delivery acceptance is inferred; this assignment remains blocked.

@@ -11,7 +11,8 @@ SUFFIXES=('witness_1','witness_2','numeric_1_0','numeric_1_1','numeric_1_2')
 NAMES=('primary','fallback1','fallback2','fallback3')
 SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','controller.py':'controller.py',
          'engineering.py':'engineering.py','measure_center_lane.py':'measure_center_lane.py',
-         'measure_saved.py':'measure_saved.py','cameras.py':'cameras.py',
+         'measure_saved.py':'measure_saved.py','finalize.py':'finalize.py',
+         'cameras.py':'cameras.py',
          'tests/test_measure_center_lane.py':'test_measure_center_lane.py',
          'tests/test_controller.py':'test_controller.py',
          'tests/test_candidate_knobs.py':'test_candidate_knobs.py',
@@ -61,8 +62,8 @@ def build():
         entry={'case_id':case_id,'kind':'draft_not_selected','candidate_risk':{
             'status':'physical','reason':'Native center-lane designation, observed distance, lane-change tracking and camera framing require original capture'},
             'measurement_contract':str(contract_path.relative_to(FOLDER)),
-            'measurement_procedure':{'entrypoint':'measure_saved.py',
-                'output_schema':'c394300-3b-saved-measurement-draft-v1'},'candidates':[]}
+            'measurement_procedure':{'entrypoint':'finalize.py',
+                'output_schema':'c394300-3b-saved-distance-analysis-v1'},'candidates':[]}
         for candidate in NAMES:
             config=json.loads((NATIVE/'config.json').read_text())
             config.update(case_id=case_id,selected_case_id=case_id,case_suffix=suffix,

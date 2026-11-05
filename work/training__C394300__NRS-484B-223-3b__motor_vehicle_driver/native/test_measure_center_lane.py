@@ -11,6 +11,7 @@ from measure_center_lane import THRESHOLD_M,measure
 def fixture(root,distance_m):
     geometry={'center_turn_lane_native_xy_bounds_m':[-70,-1.75,0,1.75],
               'center_turn_lane_native_id':-1,
+              'left_turn_connector_road_id':13,
               'approach_forward_native_xy':[1,0],
               'native_center_lane_design_verified':False}
     (root/'road_geometry.json').write_text(json.dumps(geometry))
@@ -28,7 +29,8 @@ def fixture(root,distance_m):
         rows.append({'native_frame':100+i,'time_s':.05*(i+1),
                      'native_center_xy_m':[x,0],'native_body_xy_m':body,
                      'native_forward_xy':[fx,fy],
-                     'native_lane_id':-2 if i<2 else -1})
+                     'native_lane_id':-2 if i<2 else -1,
+                     'native_road_id':13 if i==len(xs)-1 else 1})
     (root/'native_samples.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
     return rows
 
@@ -87,6 +89,14 @@ class CenterLaneMeasurement(unittest.TestCase):
             (root/'native_samples.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
             with self.assertRaisesRegex(ValueError,'Observed left-turn onset absent'):
                 measure(root/'native_samples.jsonl',root/'road_geometry.json')
+
+    def test_lane_change_heading_is_not_turn_onset(self):
+        with tempfile.TemporaryDirectory() as name:
+            root=Path(name);rows=fixture(root,180*.3048)
+            rows[2]['native_forward_xy']=[math.cos(math.radians(-10)),math.sin(math.radians(-10))]
+            (root/'native_samples.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            report=measure(root/'native_samples.jsonl',root/'road_geometry.json')
+            self.assertEqual(report['turn_onset_frame_bracket'][-1],rows[-1]['native_frame'])
 
 
 if __name__=='__main__':unittest.main()

@@ -69,6 +69,8 @@ def measure(samples_path,geometry_path):
     if not bounds[0]<bounds[2] or not bounds[1]<bounds[3]:raise ValueError('Invalid center-lane bounds')
     lane_id=geometry.get('center_turn_lane_native_id')
     if not isinstance(lane_id,int):raise ValueError('Missing center-lane Native ID')
+    connector_id=geometry.get('left_turn_connector_road_id')
+    if not isinstance(connector_id,int):raise ValueError('Missing left-turn connector Native road ID')
     direction=point(geometry.get('approach_forward_native_xy'),'approach_forward_native_xy')
     norm=math.hypot(*direction)
     if abs(norm-1)>.01:raise ValueError('Approach direction is not unit length')
@@ -95,14 +97,18 @@ def measure(samples_path,geometry_path):
         dot=direction[0]*heading[0]+direction[1]*heading[1]
         # Native/CARLA Y points to the subject's right: this left turn runs
         # toward negative Native Y from the eastbound approach.
-        turn.append(math.degrees(math.atan2(cross,dot))<=-5.0)
+        turn.append(row.get('native_road_id')==connector_id and
+                    math.degrees(math.atan2(cross,dot))<=-5.0)
     entry=next((i for i,v in enumerate(contact) if v),None)
     if entry is None or entry==0 or contact[0]:raise ValueError('Center-lane entry lacks a preceding outside sample')
     turn_index=next((i for i,v in enumerate(turn) if v),None)
     if turn_index is None or turn_index<=entry+1:raise ValueError('Observed left-turn onset absent after lane entry')
-    if not any(full[entry:turn_index]) or not all(contact[i] for i in range(entry+1,turn_index)):
+    full_index=next((i for i in range(entry,turn_index) if full[i]),None)
+    if full_index is None or not all(contact[i] for i in range(entry+1,turn_index)):
         raise ValueError('Continuous sampled center-lane occupancy absent before turn')
-    if not all(rows[i]['native_lane_id']==lane_id for i in range(entry+1,turn_index+1)):
+    # First body contact precedes the waypoint lane-ID change during a real
+    # lane change. Require center identity only once the whole body is inside.
+    if not all(rows[i]['native_lane_id']==lane_id for i in range(full_index,turn_index+1)):
         raise ValueError('Native lane identity changed before turn')
     lower=max(0,cumulative[turn_index-1]-cumulative[entry])
     upper=cumulative[turn_index]-cumulative[entry-1]

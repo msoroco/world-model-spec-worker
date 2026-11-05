@@ -37,3 +37,7 @@ The static checker prohibits generated diagnostic paths beginning `offline-` und
 ## Full-duration synthetic saved continuation
 
 The two-case saved fixture now supports the full proposed 480-frame, 20 Hz, 24 s duration. Both cases pass positive finalization, measurement-contract verification, four source-video decodes, Native attempt validation with `rebuild_required: true`, and missing-Native-samples negative rejection. An independent controlled-pair audit measures mean approach centerline offsets of 1.75 m and 5.25 m while holding map, law, actor, frame/time/x/heading trace, capture rate, cameras and channels fixed. The paths converge to the same destination; both sampled bodies remain in the right half during approach and complete the synthetic exit. The evidence remains synthetic; it does not prove physical Native behavior, pinned-runtime Core/render compatibility, independent delivery acceptance, or legal outcome. Case and candidate selection counts remain zero.
+
+## Canonical original frame identity continuation
+
+The proposed Native runner now writes `video_frame`, `native_frame`, canonical `carla_frame` and `time_s` together for every source camera frame. An independent CPU audit checks this row against the pinned frame-map writer and rejects invalid identities. All eight exact unselected primary/fallback bundles were rebuilt and passed pinned offline checks and source/controlled-input audits after this source change. No CARLA run, Core/render compatibility receipt or delivery acceptance is inferred; this assignment remains blocked.

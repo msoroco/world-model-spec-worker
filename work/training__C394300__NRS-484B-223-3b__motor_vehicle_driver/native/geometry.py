@@ -64,7 +64,9 @@ def route(case,start_x_m=-95):
     # The command stations are nominal; the source-body contact and turn
     # brackets, not this path request, determine any measured distance.
     entry_x=TURN_START_X-nominal_m
-    lane_change_start=entry_x-10
+    # Calibrate the request against first full-body contact, which precedes
+    # the end of a ten-metre lane change by roughly 9.7 m in the body proxy.
+    lane_change_start=entry_x-0.3
     points=[]
     count=round((TURN_START_X-start_x_m)/STEP_M)
     for i in range(count+1):
@@ -107,11 +109,11 @@ def check():
             assert surface.covers(body),'Prospective body leaves authored pavement'
         results[case]={'nominal_commanded_center_lane_distance_ft':feet,
                        'nominal_commanded_entry_station_x_m':round(TURN_START_X-feet*.3048,5),
-                       'lateral_at_x_minus_80_m':points[150][1],
+                       'lateral_at_x_minus_68_m':points[270][1],
                        'route_points':len(points),
                        'route_length_m':round(LineString(points).length,3),
                        'maximum_sample_gap_m':round(max(gaps),5)}
-    assert len({route(case)[150][1] for case in TARGET_FEET})>1, 'Controlled entry routes are identical'
+    assert len({route(case)[270][1] for case in TARGET_FEET})==5, 'Controlled entry routes are not distinct'
     return {'passed':True,'scope':'authored OpenDRIVE, route and prospective body proxy only',
             'native_center_lane_design_verified':False,
             'native_connector_identity_verified':False,
