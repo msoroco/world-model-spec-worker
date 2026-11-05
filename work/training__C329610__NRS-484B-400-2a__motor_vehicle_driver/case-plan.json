@@ -200,7 +200,7 @@
   ],
   "reuse_count": 0,
   "runtime_uncertainties": [
-    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
+    "An authored OpenDRIVE geometry and route proposal passed CPU XML, continuity and prospective-body checks; no Native runner, exact candidate bundle, decoder-compatible capture or saved audit exists.",
     "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
     "No CARLA execution or accepted recording is claimed.",
     "Both intersecting highways must be two-directional. Measure approach path in the right half nearest centerline before the left turn; the turn exit is not the target."
@@ -211,7 +211,7 @@
     "Decisive physical distinction can be seen by retained cameras"
   ],
   "blockers": [
-    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+    "Native runner/capture/finalizer and three fallback construction bundles per selected case remain unbuilt; exact offline and positive/negative compatibility proofs, saved independent audits and comparison audit remain unrun."
   ],
   "source_context_review": "Both intersecting highways must be two-directional. Measure approach path in the right half nearest centerline before the left turn; the turn exit is not the target.",
   "statutory_review": {
@@ -252,61 +252,85 @@
       "lane width and vehicle footprint",
       "intersection entry sampling interval",
       "actual controller tracking"
-    ]
+    ],
+    "sample_rate_hz": 20,
+    "engineering_tracking_tolerance_m": 0.35,
+    "engineering_tracking_window": "native ego center x=-35..-10 m, sampled at 20 Hz before intersection entry",
+    "statutory_note": "The 0.35 m tolerance diagnoses controller tracking only and is not a legal nearest-centerline threshold.",
+    "prototype": "native/measure.py computes sampled centerline offsets, full-body right-half occupancy, intersection-entry time bracket, and observed northbound exit; no legal threshold or verdict."
   },
   "source_observation_mapping_draft": {
     "drv.turning": {
-      "evidence": "planned Native geometry or time series; unverified",
-      "channels": [],
+      "evidence": "Authored intent declaration plus observed Native heading/route and full-body departure; unverified",
+      "channels": [
+        "drv.turning",
+        "native_body_pose_control"
+      ],
       "source_refs": [
         "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.intersection": {
-      "evidence": "planned Native geometry or time series; unverified",
-      "channels": [],
+      "evidence": "Native surveyed OpenDRIVE topology and source-hashed scenario_geometry packet, joined to original frames; unverified",
+      "channels": [
+        "st.intersection"
+      ],
       "source_refs": [
         "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.lane_enters": {
-      "evidence": "planned Native geometry or time series; unverified",
-      "channels": [],
+      "evidence": "Native surveyed OpenDRIVE topology and source-hashed scenario_geometry packet, joined to original frames; unverified",
+      "channels": [
+        "st.lane_enters"
+      ],
       "source_refs": [
         "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.centre_line": {
-      "evidence": "planned Native geometry or time series; unverified",
-      "channels": [],
+      "evidence": "Native surveyed OpenDRIVE topology and source-hashed scenario_geometry packet, joined to original frames; unverified",
+      "channels": [
+        "st.centre_line"
+      ],
       "source_refs": [
         "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "planned Native geometry or time series; unverified",
-      "channels": [],
+      "evidence": "Synchronized full-body Native positions relative to surveyed right-half and centerline during approach; unverified",
+      "channels": [
+        "rel.occupies",
+        "native_body_pose_control"
+      ],
       "source_refs": [
         "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.position": {
-      "evidence": "planned Native geometry or time series; unverified",
-      "channels": [],
+      "evidence": "Synchronized full-body Native positions relative to surveyed right-half and centerline during approach; unverified",
+      "channels": [
+        "kin.position",
+        "native_body_pose_control"
+      ],
       "source_refs": [
         "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.one_way_roadway": {
-      "evidence": "planned Native geometry or time series; unverified",
-      "channels": [],
+      "evidence": "Native surveyed OpenDRIVE topology and source-hashed scenario_geometry packet, joined to original frames; unverified",
+      "channels": [
+        "st.one_way_roadway"
+      ],
       "source_refs": [
         "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.lane_direction": {
-      "evidence": "planned Native geometry or time series; unverified",
-      "channels": [],
+      "evidence": "Native surveyed OpenDRIVE topology and source-hashed scenario_geometry packet, joined to original frames; unverified",
+      "channels": [
+        "st.lane_direction"
+      ],
       "source_refs": [
         "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json"
       ]
@@ -314,19 +338,166 @@
   },
   "candidate_risks_draft": [
     {
-      "risk": "approach route or left turn not connected",
-      "measured_trigger": "offline route connectivity or recorded turn completion false",
-      "possible_engineering_knob": "approach start station or target waypoint, holding legal context and comparison variable fixed"
+      "risk": "native junction lane connection rejects far-lane turn",
+      "measured_trigger": "Native waypoint graph has no connected path from selected incoming lane to northbound destination, or turn completion=false by 24 s",
+      "possible_engineering_knob": "Move turn entry station from x=-7 m to x=-10 m and regenerate only the internal turn path while retaining approach placement, legal context and comparison variable"
     },
     {
-      "risk": "lateral controller does not track requested position",
-      "measured_trigger": "maximum recorded lateral tracking error exceeds predeclared tolerance",
-      "possible_engineering_knob": "controller lookahead or gain, applied identically across linked comparison cases"
+      "risk": "lateral tracking misses selected approach placement",
+      "measured_trigger": "Maximum native body-center lateral tracking error on x=-35..-10 m exceeds 0.35 m, with 20 Hz samples and full body history retained",
+      "possible_engineering_knob": "Adjust pure-pursuit lookahead from 4.0 m to 3.0 m in both paired cases; retain identical speed target and path geometry"
     },
     {
-      "risk": "centerline and approach position not visible in retained views",
-      "measured_trigger": "camera audit cannot identify vehicle footprint and centerline during full approach window",
-      "possible_engineering_knob": "camera mount or field of view, applied identically across linked comparison cases"
+      "risk": "near and far approach position cannot be inspected in primary video",
+      "measured_trigger": "Independent saved-pixel audit cannot identify the centerline and complete ego body in at least 95% of 20 Hz approach frames x=-35..-10 m",
+      "possible_engineering_knob": "Raise chase camera from 3.2 m to 4.5 m and widen FOV from 90 to 105 degrees in both paired cases while preserving four-view dimensions/rate/duration"
     }
-  ]
+  ],
+  "construction_proposal": {
+    "status": "offline_geometry_only_not_selected",
+    "implementation": "native/geometry.py",
+    "implementation_sha256": "6a913e8f4a871e1b8ee020162b67625cefd683c2e15772cbf76eca101b8f869c",
+    "check_command": "LD_LIBRARY_PATH=\"$PWD/.runtime-work/geos-wheel/shapely.libs\" .venv-cpu/bin/python work/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/native/geometry.py --output .runtime-work/c329610-geometry-20261105",
+    "check_log": "geometry-check.log",
+    "check_log_sha256": "80a937583c7ba4902e1f5c8c83e6c394a4e6a92114a93041ce070e133c97627d",
+    "map": "Authored two-way orthogonal intersection, two 3.5 m lanes per direction, centerline y=0, right half -7<y<0; connector from road 1 to road 4.",
+    "case_approach_lateral_m": {
+      "controlled_1": -1.75,
+      "controlled_2": -5.25
+    },
+    "shared_route_policy": "Both use the same map, actor blueprint, speed target, left-turn destination, duration, capture policy, and path controller; only requested approach lane changes.",
+    "offline_checks": [
+      "XML road and junction links",
+      "two left-turn lane links",
+      "no authored signal",
+      "sampled route continuity",
+      "authored surface containment of a 5.2m x 2.2m prospective body proxy"
+    ],
+    "native_checks_pending": [
+      "CARLA loads map and reads intended lane links",
+      "actual vehicle bounding box is contained before motion",
+      "native road centerline and both directions match authored model",
+      "both trajectories complete left turns without crossing another actor",
+      "actual camera pixels show lane and centerline throughout approach"
+    ]
+  },
+  "saved_measurement_prototype": {
+    "status": "CPU_fixture_tested_not_runtime_integrated",
+    "module": "native/measure.py",
+    "module_sha256": "486348fb3594b060c1975ab93290bc4eb6f69227be8911cbd3a6c42940de747f",
+    "test": "native/test_measure.py",
+    "test_sha256": "cbdf5a800cd8c1627abeedf12d9d110525b6cde323cf13afd2c0f52547bcfff0",
+    "command": "LD_LIBRARY_PATH=\"$PWD/.runtime-work/geos-wheel/shapely.libs\" .venv-cpu/bin/python -m unittest discover -s work/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/native -p 'test_measure.py' -v",
+    "log": "measurement-prototype-test.log",
+    "log_sha256": "7e90db28650d948e7142afbe49fb649ee093562e32670577c1a5a1b87323446c",
+    "exit_code": 0,
+    "fixture_scope": "Synthetic in-memory Native-shaped samples; rejects missing source, missing two-way evidence, wrong direction, and incomplete approach; no CARLA or runtime saved-processing proof."
+  },
+  "capture_plan_draft": {
+    "status": "unverified_camera_and_channel_proposal",
+    "profile": "overview1080-capability-v1",
+    "rate_hz": 20,
+    "duration_s": 24,
+    "expected_frames": 480,
+    "composition": "synchronized_four_view_primary",
+    "views": [
+      {
+        "name": "overview",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "pose_strategy": "fixed southeast of intersection, elevated approximately 35 m, looking toward intersection",
+        "fov_deg": 75,
+        "critical_evidence": "both incoming and destination directions, complete left turn and full-body exit"
+      },
+      {
+        "name": "approach",
+        "resolution": [
+          1280,
+          720
+        ],
+        "pose_strategy": "vehicle-following elevated rear camera, frames ego and road centerline on approach",
+        "fov_deg": 90,
+        "critical_evidence": "full body, right-half lanes and centerline during x=-35..-10 m"
+      },
+      {
+        "name": "reference_corner",
+        "resolution": [
+          1280,
+          720
+        ],
+        "pose_strategy": "fixed at northeast corner toward inbound approach and turn entry",
+        "fov_deg": 90,
+        "critical_evidence": "intersection boundary, lane markings, physical turn path"
+      },
+      {
+        "name": "driver_reference",
+        "resolution": [
+          1280,
+          720
+        ],
+        "pose_strategy": "ego-attached driver-height forward camera",
+        "fov_deg": 105,
+        "critical_evidence": "original road and intersection view from subject reference"
+      }
+    ],
+    "mandatory_channels": [
+      {
+        "name": "drv.turning",
+        "source": "Native map survey or synchronized Native full-body pose/control history as appropriate",
+        "rate_hz": 20
+      },
+      {
+        "name": "st.intersection",
+        "source": "Native map survey or synchronized Native full-body pose/control history as appropriate",
+        "rate_hz": 20
+      },
+      {
+        "name": "st.lane_enters",
+        "source": "Native map survey or synchronized Native full-body pose/control history as appropriate",
+        "rate_hz": 20
+      },
+      {
+        "name": "st.centre_line",
+        "source": "Native map survey or synchronized Native full-body pose/control history as appropriate",
+        "rate_hz": 20
+      },
+      {
+        "name": "rel.occupies",
+        "source": "Native map survey or synchronized Native full-body pose/control history as appropriate",
+        "rate_hz": 20
+      },
+      {
+        "name": "kin.position",
+        "source": "Native map survey or synchronized Native full-body pose/control history as appropriate",
+        "rate_hz": 20
+      },
+      {
+        "name": "st.one_way_roadway",
+        "source": "Native map survey or synchronized Native full-body pose/control history as appropriate",
+        "rate_hz": 20
+      },
+      {
+        "name": "st.lane_direction",
+        "source": "Native map survey or synchronized Native full-body pose/control history as appropriate",
+        "rate_hz": 20
+      },
+      {
+        "name": "native_body_pose_control",
+        "source": "per-frame Native actor transform, velocity, bounding box vertices and applied control",
+        "rate_hz": 20
+      },
+      {
+        "name": "camera_frame_join",
+        "source": "per-frame original camera frame index, Native frame and timestamp",
+        "rate_hz": 20
+      }
+    ],
+    "limitations": [
+      "poses and fields have not passed Native load or saved pixel audit",
+      "24 s is an engineering duration request, not a legal time scope",
+      "all four source videos and full original trace must be retained"
+    ]
+  }
 }

@@ -20,10 +20,9 @@
   "summary_status": "recovered_requires_source_review",
   "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
   "witness_branches": [
-    "Left-turn exit onto a two-directional destination highway.",
     "Left-turn exit onto a two-directional destination highway."
   ],
-  "selected_branch": null,
+  "selected_branch": "Left-turn exit onto a two-directional destination highway.",
   "requirement_dispositions": [
     {
       "requirement": "NRS-484B-400-2b",
@@ -48,7 +47,7 @@
     },
     {
       "kind": "ordering",
-      "requirement": "entry, then the turn, then the exit — the exit position is the test"
+      "requirement": "entry, then the turn, then the exit \u2014 the exit position is the test"
     }
   ],
   "unresolved_judgment_calls": [],
@@ -299,5 +298,59 @@
     "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
     "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
   ],
-  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts.",
+  "statutory_review": {
+    "source_sha256": "0d6b3eebdaf3d75a2d77d41c134728e9cad2c08b99ee3172a733172444b4e037",
+    "activation": [
+      "vehicle driver intends to turn left at an intersection",
+      "both intersecting highways are two-directional"
+    ],
+    "obligation": "after entering the intersection, leave it to the right of the centerline of the destination highway",
+    "time_scope": "from intersection entry through the complete vehicle footprint leaving the intersection",
+    "exceptions_in_exact_clause": [],
+    "unverified": [
+      "Native directions for both highways",
+      "actual destination centerline",
+      "intersection boundary and full vehicle footprint exit event",
+      "native left turn completion"
+    ]
+  },
+  "measurement_contract_draft": {
+    "status": "unverified_draft",
+    "primary_quantity": "position of all vehicle footprint vertices relative to the destination centerline when the rear body first fully clears the intersection",
+    "unit": "metres and signed side",
+    "reference_frame": "native destination highway centerline, signed right side for northbound travel",
+    "window": "from first front-body intersection entry until first full-body exit into destination highway",
+    "raw_evidence": [
+      "time stamped ego pose and all native bounding-box vertices",
+      "native map surveyed destination centerline and incoming/outgoing lane directions",
+      "native intersection boundary and full-body occupancy history"
+    ],
+    "comparison": "hold same map, actor, approach lane, turn route policy, capture and duration; vary only requested exit placement and disclose any engineering differences",
+    "acceptance_limit": "Record signed offsets and boundary event bracket; no statutory metre epsilon is invented",
+    "uncertainties": [
+      "native intersection boundary",
+      "sample interval and rear-body crossing bracket",
+      "actual controller path tracking",
+      "whether left-of-centerline exit is physically connected and safe to construct"
+    ]
+  },
+  "source_context_review": "The exact (2)(b) clause concerns exit position after intersection entry, not approach position in (2)(a). For a northbound destination, the right side of its centerline is east of the line. Measure full vehicle footprint when it leaves the intersection; do not use a center point alone.",
+  "candidate_risks_draft": [
+    {
+      "risk": "left-of-centerline turn route may not be connected in Native map",
+      "measured_trigger": "native waypoint graph reports no route from incoming lane to target exit or completion=false by declared duration",
+      "possible_engineering_knob": "choose a different connected junction connector while preserving the requested exit side and same frozen cell"
+    },
+    {
+      "risk": "controller crosses intended exit side before rear clears intersection",
+      "measured_trigger": "full-body signed destination-centerline interval at first full-body exit spans both sides",
+      "possible_engineering_knob": "adjust turn-path control point and apply matching controller policy to both paired cases"
+    },
+    {
+      "risk": "exit body and centerline not both visible in retained camera",
+      "measured_trigger": "independent saved-pixel audit cannot inspect full body and centerline at exit frame bracket",
+      "possible_engineering_knob": "reframe reference-corner camera while preserving synchronized four-view profile"
+    }
+  ]
 }
