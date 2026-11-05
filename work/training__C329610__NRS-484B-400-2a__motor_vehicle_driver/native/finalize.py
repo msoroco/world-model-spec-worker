@@ -72,6 +72,7 @@ def measure_approach(attempt):
     return {'value':{'sampled_right_offset_m':result['center_to_centerline_right_offset_m'],
                      'full_body_right_half':result['full_body_within_right_half_on_sampled_approach'],
                      'destination_exit_observed':result['destination_exit_observed'],
+                     'approach_window_s':result['approach_window_s'],
                      'entry_time_bracket_s':result['intersection_entry_time_bracket_s']},
             'method':'measure_approach',
             'sources':{name:sha(attempt/name) for name in ('native_samples.jsonl','road_geometry.json')}}
@@ -94,6 +95,18 @@ def finalize(attempt,output):
         raise ValueError("Source camera frame count differs from delivered trace")
     actual=measured['value'];requested={'controlled_1':1.75,'controlled_2':5.25}[config['case_suffix']]
     mean=actual['sampled_right_offset_m']['mean'];matched=abs(mean-requested)<=.35
+    description=config['recording_description']
+    recording_evidence=[]
+    for channel in description['channels']:
+        name=channel['name'];reference='channels/'+name+'.jsonl'
+        path=attempt/reference
+        if not path.is_file():raise ValueError('Missing required source: '+reference)
+        recording_evidence.append({'name':name,'unit':channel['unit'],'reference':reference})
+    for context in description['context_inputs']:
+        reference='context.json'
+        if not (attempt/reference).is_file():raise ValueError('Missing required source: '+reference)
+        recording_evidence.append({'name':context['name'],'unit':context['unit'],
+                                   'reference':reference})
     result={'case_id':config['case_id'],'measured_values':actual,
       'target_checks':[{'target':'approach centerline offset engineering target',
         'requested':requested,'measured':mean,'method':'original sampled Native body center vs surveyed centerline',
@@ -108,12 +121,13 @@ def finalize(attempt,output):
            ['tracking_or_completion_unconfirmed']),
       'trace_reference':'trace.jsonl','video_references':videos,
       'video_frame_map_reference':'video_frames.jsonl',
-      'recording_description':config['recording_description'],
-      'recording_evidence':{'original':original,'source_videos':
-          {name:{'frames':video_counts[name],'sha256':sha(attempt/name)} for name in videos},
-          'native_map_sha256':json.loads((attempt/'road_geometry.json').read_text())['native_map_sha256']},
+      'recording_description':description,
+      'recording_evidence':recording_evidence,
       'realized_observables':{'approach_centerline_right_offset_m':
-          actual['sampled_right_offset_m'],'destination_exit_observed':actual['destination_exit_observed']},
+          {'value':mean,'unit':'m','method':'sampled Native body center projection onto surveyed right normal',
+           'time_window':'before first front-body intersection entry',
+           'statistic':'mean','reference':'native_samples.jsonl',
+           'sample_window_s':measured['value']['approach_window_s']}},
       'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
     from worker_exchange.native_output import validate_result
     validate_result(result)

@@ -8,6 +8,7 @@ ROOT=Path(__file__).resolve().parents[2]
 FOLDER=Path(__file__).resolve().parent
 sys.path.insert(0,str(ROOT/'runtime/pipeline/scenario_pipeline'))
 from worker_exchange.candidate_constructions import validate
+from worker_exchange.measurement_contract import validate as validate_measurement
 
 
 def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -22,6 +23,15 @@ def main():
     for entry in manifest['cases']:
         validate(FOLDER,entry,'NRS-484B-400-2a','C329610',
                  required=False,require_alternate=True,candidate_count=4)
+        contract=json.loads((FOLDER/entry['measurement_contract']).read_text())
+        plan=json.loads((FOLDER/'case-plan.json').read_text())
+        source=json.loads((FOLDER/entry['construction']).read_text())
+        analysis=next(f['content'] for f in source['files'] if f['path']=='finalize.py')
+        validate_measurement(contract,plan['requirement_dispositions'],analysis,entry['case_id'])
+        for item in source['files']:
+            if item['path']=='config.json':continue
+            native=FOLDER/'native'/Path(item['path']).name
+            assert native.read_text()==item['content'],native
         expected.update((entry['case_id'],name) for name in
                         ('primary','fallback1','fallback2','fallback3'))
     actual=set()

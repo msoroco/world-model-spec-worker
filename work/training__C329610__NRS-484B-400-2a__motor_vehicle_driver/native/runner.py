@@ -132,6 +132,7 @@ def execute(config, output, host, port):
         native_hash=hashlib.sha256(native_xml.encode()).hexdigest()
         survey=map_survey(carla,mapping,native_hash)
         write_new(output/"road_geometry.json",survey)
+        write_new(output/"context.json",{'surveyed_two_way_intersection':survey})
         suffix=config["case_suffix"];candidate=config["candidate_id"]
         lateral=CASE_PLACEMENTS[suffix]
         blueprint=world.get_blueprint_library().find("vehicle.lincoln.mkz_2020")

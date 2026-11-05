@@ -1,0 +1,20 @@
+{
+  "format": "worker-frozen-checker-defect-v1",
+  "kind": "semantic_assignment_field_mismatch",
+  "scope": "Reproduced on C329610 2a; input shape law_record without law occurs in all 253 frozen assignment inputs",
+  "input": "inputs/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/assignment.json",
+  "input_sha256": "e7e7effcfe587661cd9c480880a611f9f6fe171810cd230c6d6c6e561106dc48",
+  "runtime_source": "runtime/pipeline/scenario_pipeline/worker_exchange/semantic_delivery.py",
+  "runtime_source_sha256": "92e849249a5e5f43b15292cc70e14edbe1058732ae214e9dc6592ffb3693d8f0",
+  "failure_command": "python3.11 work/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/reproduce-semantic-defect.py",
+  "failure_exit_code": 1,
+  "failure_log": "work/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/semantic-frozen-input-failure.log",
+  "failure_log_sha256": "e168c109c243b588fdddb6afaa14db813e3a2b6281f9c6dc645bbc67f1a477b1",
+  "failure": "ValueError: Assignment lacks exact law text at semantic_delivery.py:38; frozen assignment has law_record but no law",
+  "adapted_diagnostic_command": "python3.11 work/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/validate-semantic-draft.py",
+  "adapted_diagnostic_exit_code": 0,
+  "adapted_diagnostic_log": "work/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/semantic-validation-adapted.log",
+  "adapted_diagnostic_log_sha256": "538d4082faa994842934a384a0d6c66644c633daf0fa7f626e6827d34488599a",
+  "adaptation": "In-memory assignment[\"law\"] = assignment[\"law_record\"]; neither frozen input nor runtime modified",
+  "readiness_effect": "Current static gate does not call semantic_delivery for blocked packages; a future ready package would reach this mismatch. Worker-owned delivery proofs are also incomplete."
+}

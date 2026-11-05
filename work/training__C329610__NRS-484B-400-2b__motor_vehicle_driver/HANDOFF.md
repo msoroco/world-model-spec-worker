@@ -22,3 +22,7 @@ Resume: reconcile each branch against the exact law and cited provisions; establ
 # Source review continuation, 2026-11-05
 
 The exact NRS 484B.400(2)(b) clause concerns the **exit** of a left turn, after intersection entry, on a two-directional destination highway. It differs from the C329610 (2)(a) approach-position assignment. The duplicate witness label was collapsed. `case-plan.json` now specifies the full-body exit event, a destination-centerline signed-position measurement draft, activation facts and three measurable construction risks. For a northbound destination, the right side is east of the destination centerline. This is a statutory and measurement draft only; no Native case, fallback or saved proof was built. The result remains blocked.
+
+## Exit geometry continuation
+
+An authored same-cell map and two exit-side routes now pass CPU pavement, route-continuity and prospective vehicle-body checks. A simple bicycle diagnostic follows both requested paths. The saved Native-frame measurement prototype computes the complete vehicle footprint's side at the first measured full-body exit; positive right/left fixtures and negative incomplete-turn/two-way-direction fixtures pass. The wrong-side route traverses an opposing lane by design and has not been verified in Native CARLA. No selected runner, four fallback bundles, exact runtime offline/compatibility proof, saved Core processing, or independent delivery audit exists, so the assignment remains blocked.
