@@ -93,12 +93,14 @@ def measure(samples_path,geometry_path):
         full.append(all(inside(v,bounds) for v in vertices) and row.get('native_lane_id')==lane_id)
         cross=direction[0]*heading[1]-direction[1]*heading[0]
         dot=direction[0]*heading[0]+direction[1]*heading[1]
-        turn.append(math.degrees(math.atan2(cross,dot))>=5.0)
+        # Native/CARLA Y points to the subject's right: this left turn runs
+        # toward negative Native Y from the eastbound approach.
+        turn.append(math.degrees(math.atan2(cross,dot))<=-5.0)
     entry=next((i for i,v in enumerate(contact) if v),None)
     if entry is None or entry==0 or contact[0]:raise ValueError('Center-lane entry lacks a preceding outside sample')
     turn_index=next((i for i,v in enumerate(turn) if v),None)
     if turn_index is None or turn_index<=entry+1:raise ValueError('Observed left-turn onset absent after lane entry')
-    if not any(full[entry:turn_index]) or not all(full[i] for i in range(entry+1,turn_index)):
+    if not any(full[entry:turn_index]) or not all(contact[i] for i in range(entry+1,turn_index)):
         raise ValueError('Continuous sampled center-lane occupancy absent before turn')
     if not all(rows[i]['native_lane_id']==lane_id for i in range(entry+1,turn_index+1)):
         raise ValueError('Native lane identity changed before turn')

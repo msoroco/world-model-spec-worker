@@ -57,17 +57,18 @@ def open_drive():
     return ET.tostring(root,encoding='unicode')
 
 
-def route(case):
+def route(case,start_x_m=-95):
     if case not in TARGET_FEET:raise ValueError('Unknown planned case')
+    if start_x_m not in (-95,-98):raise ValueError('Unknown candidate route start')
     nominal_m=TARGET_FEET[case]*.3048
     # The command stations are nominal; the source-body contact and turn
     # brackets, not this path request, determine any measured distance.
     entry_x=TURN_START_X-nominal_m
     lane_change_start=entry_x-10
     points=[]
-    count=round((TURN_START_X+95)/STEP_M)
+    count=round((TURN_START_X-start_x_m)/STEP_M)
     for i in range(count+1):
-        x=-95+i*STEP_M
+        x=start_x_m+i*STEP_M
         phase=max(0,min(1,(x-lane_change_start)/10))
         smooth=phase*phase*(3-2*phase)
         points.append([round(x,5),round(-3.5+3.5*smooth,5)])

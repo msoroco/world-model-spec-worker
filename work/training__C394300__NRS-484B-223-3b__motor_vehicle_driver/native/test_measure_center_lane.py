@@ -21,7 +21,7 @@ def fixture(root,distance_m):
     xs.extend([destination-.25,destination])
     rows=[]
     for i,x in enumerate(xs):
-        angle=math.radians(6) if i==len(xs)-1 else 0
+        angle=math.radians(-6) if i==len(xs)-1 else 0
         fx,fy=math.cos(angle),math.sin(angle);rx,ry=-fy,fx
         body=[[x+d*2.5*fx+s*1.0*rx,d*2.5*fy+s*1.0*ry]
               for d,s in ((-1,-1),(-1,1),(1,1),(1,-1))]
@@ -69,13 +69,21 @@ class CenterLaneMeasurement(unittest.TestCase):
             root=Path(name);rows=fixture(root,180*.3048)
             rows[len(rows)//2]['native_lane_id']=-2
             (root/'native_samples.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
-            with self.assertRaisesRegex(ValueError,'Continuous sampled center-lane occupancy absent'):
+            with self.assertRaisesRegex(ValueError,'Native lane identity changed before turn'):
                 measure(root/'native_samples.jsonl',root/'road_geometry.json')
 
     def test_missing_turn_rejected(self):
         with tempfile.TemporaryDirectory() as name:
             root=Path(name);rows=fixture(root,180*.3048)
             rows[-1]['native_forward_xy']=[1,0]
+            (root/'native_samples.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            with self.assertRaisesRegex(ValueError,'Observed left-turn onset absent'):
+                measure(root/'native_samples.jsonl',root/'road_geometry.json')
+
+    def test_opposite_direction_turn_rejected(self):
+        with tempfile.TemporaryDirectory() as name:
+            root=Path(name);rows=fixture(root,180*.3048)
+            rows[-1]['native_forward_xy']=[math.cos(math.radians(6)),math.sin(math.radians(6))]
             (root/'native_samples.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
             with self.assertRaisesRegex(ValueError,'Observed left-turn onset absent'):
                 measure(root/'native_samples.jsonl',root/'road_geometry.json')
