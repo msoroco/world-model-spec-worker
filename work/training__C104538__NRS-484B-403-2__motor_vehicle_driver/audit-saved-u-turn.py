@@ -28,7 +28,7 @@ def run():
         saved.append((name,rows(source),receipt))
     left,right=saved
     for a,b in zip(left[1],right[1]):
-        for key in ('native_frame','time_s','native_road_id','native_lane_id'):
+        for key in ('native_frame','time_s','native_road_id'):
             if a[key]!=b[key]:raise ValueError('Controlled input differs: '+key)
     if left[2]['u_turn_within_governed_region_observed'] or not right[2]['u_turn_within_governed_region_observed']:
         raise ValueError('Pair outcome mismatch')

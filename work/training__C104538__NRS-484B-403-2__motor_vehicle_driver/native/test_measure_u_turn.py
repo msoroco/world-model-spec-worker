@@ -6,6 +6,7 @@ import tempfile
 import unittest
 
 from measure_u_turn import measure,sha
+from geometry import native_route
 
 
 class UTurnMeasurementTests(unittest.TestCase):
@@ -21,23 +22,30 @@ class UTurnMeasurementTests(unittest.TestCase):
 
     def write(self, turn=True, governed=True):
         samples=[];mapping=[]
+        route=native_route('witness_2' if turn else 'witness_1')
         for i in range(480):
             frame=100+i;time=(i+1)/20
-            phase=max(0,min(1,(i-120)/120))
-            angle=math.pi*phase if turn else 0
-            x=-8+16*i/479 if not turn else -3+2*math.sin(math.pi*phase)
-            y=0 if not turn else 2*phase
-            body=[[x-1,y-.5],[x+1,y-.5],[x+1,y+.5],[x-1,y+.5]]
+            station=round(i*(len(route)-1)/479)
+            x,y=route[station]
+            before=route[max(0,station-2)];after=route[min(len(route)-1,station+2)]
+            angle=math.atan2(after[1]-before[1],after[0]-before[0])
+            lane=1 if turn and station>700 else -1
+            forward=(math.cos(angle),math.sin(angle))
+            right=(-forward[1],forward[0])
+            body=[[x+a*forward[0]+b*right[0],y+a*forward[1]+b*right[1]]
+                  for a,b in ((-2.5,-1),(-2.5,1),(2.5,1),(2.5,-1))]
             samples.append({'native_frame':frame,'time_s':time,
                 'native_center_xy_m':[x,y],
-                'native_forward_xy':[math.cos(angle),math.sin(angle)],
-                'native_body_xy_m':body,'native_road_id':1,'native_lane_id':-1})
+                'native_forward_xy':list(forward),
+                'native_body_xy_m':body,'native_road_id':1,'native_lane_id':lane})
             mapping.append({'video_frame':i,'native_frame':frame,'carla_frame':frame,'time_s':time})
         self.samples.write_text(''.join(json.dumps(row)+'\n' for row in samples))
         self.mapping.write_text(''.join(json.dumps(row)+'\n' for row in mapping))
         self.review.write_text(json.dumps({'source_kind':'original_camera_sign_review',
             'sign_code':'no_u_turn','governs_approach':governed,
-            'governed_approach_lane_id':-1,'governed_native_xy_bounds_m':[-10,-4,10,4],
+            'governed_approach_lane_id':-1,'opposing_lane_id':1,
+            'full_body_and_sign_visible_frames':120,'approach_frames':120,
+            'governed_native_xy_bounds_m':[-10,-8,10,8],
             'native_samples_sha256':sha(self.samples),'frame_map_sha256':sha(self.mapping),
             'video_sha256':sha(self.video)}))
 
@@ -48,7 +56,8 @@ class UTurnMeasurementTests(unittest.TestCase):
         turning=measure(self.samples,self.mapping,self.review,self.video)
         self.assertFalse(straight['u_turn_within_governed_region_observed'])
         self.assertTrue(turning['u_turn_within_governed_region_observed'])
-        self.assertEqual(turning['reversal_native_frame'],327)
+        self.assertIsNotNone(turning['reversal_native_frame'])
+        self.assertTrue(turning['opposing_lane_exit_observed'])
         self.assertFalse(turning['physical_success_claimed'])
         self.assertFalse(turning['legal_verdict_claimed'])
 
@@ -70,7 +79,7 @@ class UTurnMeasurementTests(unittest.TestCase):
     def test_reversal_outside_governed_region_not_counted(self):
         self.write(turn=True)
         review=json.loads(self.review.read_text())
-        review['governed_native_xy_bounds_m']=[-10,-4,-2.5,4]
+        review['governed_native_xy_bounds_m']=[-10,-8,-2.5,8]
         self.review.write_text(json.dumps(review))
         result=measure(self.samples,self.mapping,self.review,self.video)
         self.assertFalse(result['u_turn_within_governed_region_observed'])

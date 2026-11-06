@@ -42,7 +42,8 @@ def measure(samples_path, frame_map_path, sign_review_path, video_path):
     if not isinstance(region,list) or len(region)!=4 or not all(isinstance(v,(int,float)) and math.isfinite(v) for v in region) or region[0]>=region[2] or region[1]>=region[3]:
         raise ValueError('Invalid sign-governed Native region')
     lane=review.get('governed_approach_lane_id')
-    if type(lane)!=int:
+    opposing=review.get('opposing_lane_id')
+    if type(lane)!=int or type(opposing)!=int or opposing==lane:
         raise ValueError('Missing governed approach lane')
     first=point(samples[0].get('native_forward_xy'),'initial Native heading')
     if abs(math.hypot(*first)-1)>.01:
@@ -61,6 +62,8 @@ def measure(samples_path, frame_map_path, sign_review_path, video_path):
         body=[point(p,'Native body corner') for p in sample.get('native_body_xy_m',[])]
         if len(body)!=4:
             raise ValueError('Original four-corner body missing')
+        if math.dist(center,(sum(p[0] for p in body)/4,sum(p[1] for p in body)/4))>.1:
+            raise ValueError('Native center/body source mismatch')
         heading=point(sample.get('native_forward_xy'),'Native heading')
         if abs(math.hypot(*heading)-1)>.01:
             raise ValueError('Native heading is not unit length')
@@ -76,13 +79,16 @@ def measure(samples_path, frame_map_path, sign_review_path, video_path):
     if samples[0].get('native_lane_id')!=lane:
         raise ValueError('Initial vehicle not in sign-governed approach lane')
     reversal=next((i for i,a in enumerate(angles) if abs(a)>=math.radians(160)),None)
-    observed=bool(reversal is not None and all(inside[i] for i in range(reversal+1) if abs(angles[i])>=math.radians(20)))
+    observed=bool(reversal is not None and
+                  all(inside[i] for i in range(reversal+1) if abs(angles[i])>=math.radians(20)) and
+                  samples[-1].get('native_lane_id')==opposing)
     return {'format':'signed-u-turn-original-frame-measurement-v1',
             'samples':480,'applicable_no_u_turn_device_reviewed':True,
             'u_turn_within_governed_region_observed':observed,
             'reversal_native_frame':frames[reversal] if reversal is not None else None,
             'maximum_heading_change_deg':max(abs(math.degrees(a)) for a in angles),
             'complete_body_inside_governed_region_at_reversal':inside[reversal] if reversal is not None else False,
+            'opposing_lane_exit_observed':samples[-1].get('native_lane_id')==opposing,
             'source_hashes':{p.name:sha(p) for p in paths},
             'physical_success_claimed':False,
             'legal_verdict_claimed':False}
