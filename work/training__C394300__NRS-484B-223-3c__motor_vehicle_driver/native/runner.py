@@ -1,4 +1,4 @@
-"""Proposed original Native center-lane left-turn capture; not executed or accepted.
+"""Proposed original Native after-left-turn merge capture; not executed or accepted.
 
 The local operator must supply an exclusively owned CARLA server. The runner
 never starts a server, touches SQLite, or assigns a statutory outcome.
@@ -68,9 +68,9 @@ def direction(waypoint):
 
 
 def map_survey(carla, mapping, native_hash):
-    requests={"center_turn_approach_lane":(-40,0,1,-1,[1,0]),
-              "adjacent_through_approach_lane":(-40,3.5,1,-2,[1,0]),
-              "left_turn_destination_lane":(-3,-30,4,-1,[0,-1])}
+    requests={"inbound_left_turn_lane":(-71.75,-25,4,-1,[0,1]),
+              "center_turn_highway_lane":(-40,0,1,-1,[1,0]),
+              "adjacent_through_highway_lane":(-40,3.5,1,-2,[1,0])}
     observed={};waypoints={}
     for name,(x,y,road_id,lane_id,expected) in requests.items():
         wp=mapping.get_waypoint(carla.Location(x=x,y=y,z=.2),project_to_road=False,lane_type=carla.LaneType.Driving)
@@ -80,19 +80,22 @@ def map_survey(carla, mapping, native_hash):
         if sum(a*b for a,b in zip(vector,expected))<.98:
             raise RuntimeError("Native lane direction differs from authored road: "+name)
         observed[name]=vector;waypoints[name]=wp
-    center=waypoints['center_turn_approach_lane']
+    center=waypoints['center_turn_highway_lane']
     low=center.transform.location.y-center.lane_width/2
     high=center.transform.location.y+center.lane_width/2
     if abs(low+1.75)>.15 or abs(high-1.75)>.15:
         raise RuntimeError('Native center lane boundaries differ from authored map')
-    return {"native_map_sha256":native_hash,"road_directions_native":observed,
-            "approach_road_id":1,"left_turn_connector_road_id":13,
-            "left_turn_destination_road_id":4,
-            "center_turn_lane_native_id":-1,"adjacent_through_lane_native_id":-2,
-            "center_turn_lane_native_xy_bounds_m":[-100,-1.75,-10,1.75],
-            "approach_forward_native_xy":[1,0],
+    return {"native_map_sha256":native_hash,
+            "authored_map_sha256":hashlib.sha256(open_drive().encode()).hexdigest(),
+            "road_directions_native":observed,
+            "inbound_road_id":4,"left_turn_connector_road_id":13,
+            "highway_road_id":1,
+            "center_turn_lane_native_id":-1,"through_lane_native_id":-2,
+            "center_turn_lane_native_xy_bounds_m":[-66.5,-1.75,90,1.75],
+            "through_lane_native_xy_bounds_m":[-66.5,1.75,90,5.25],
+            "highway_forward_native_xy":[1,0],
             "native_center_lane_design_verified":False,
-            "boundary_provenance":"Native road/lane readback at survey points; dual-direction turn-only designation and connector lane link require independent saved review"}
+            "boundary_provenance":"Native road/lane readback at survey points; dual-direction turn-only designation, connector lane link and traffic merge require independent saved review"}
 
 
 def camera_transform(carla, spec):
@@ -139,22 +142,23 @@ def execute(config, output, host, port):
         write_new(output/"road_geometry.json",survey)
         write_new(output/"context.json",{'surveyed_center_turn_lane':survey})
         suffix=config["case_suffix"];candidate=config["candidate_id"]
-        approach_y=3.5
+        suffix=config["case_suffix"];candidate=config["candidate_id"]
+        engineering=parameters(suffix,candidate)
+        inbound_y=-engineering['inbound_start_y_authored_m']
         blueprint=world.get_blueprint_library().find("vehicle.lincoln.mkz_2020")
-        blueprint.set_attribute("role_name","c394300_3b_ego")
-        ego=world.spawn_actor(blueprint,carla.Transform(carla.Location(x=-95,y=approach_y,z=.5),carla.Rotation(yaw=0)))
+        blueprint.set_attribute("role_name","c394300_3c_ego")
+        ego=world.spawn_actor(blueprint,carla.Transform(carla.Location(x=-71.75,y=inbound_y,z=.5),carla.Rotation(yaw=90)))
         owned.append(ego)
         ego.apply_control(carla.VehicleControl(brake=1,hand_brake=True))
         for _ in range(40):world.tick()
         initial=body_xy(ego)
-        if not all(1.75<y<5.25 for x,y in initial):
-            raise RuntimeError("Actual Native vehicle footprint not contained in adjacent through lane at start")
+        if not all(-73.5<x<-70 and inbound_y-4<y<inbound_y+4 for x,y in initial):
+            raise RuntimeError("Actual Native vehicle footprint not contained in inbound left-turn lane at start")
         physics=ego.get_physics_control()
         wheels=physics.wheels
         if len(wheels)!=4:raise RuntimeError("Native blueprint wheel geometry unverified")
         wheelbase=(max(w.position.x for w in wheels)-min(w.position.x for w in wheels))/100
         max_steer=max(w.max_steer_angle for w in wheels)
-        engineering=parameters(suffix,candidate)
         native_route=engineering["native_route_xy_m"]
         knobs=engineering["controller_knobs"]
         controller=PathController(native_route,wheelbase,max_steer,knobs)
@@ -162,9 +166,9 @@ def execute(config, output, host, port):
             "case_id":config["case_id"],"candidate_id":candidate,"map_sha256":native_hash,
             "vehicle_blueprint":ego.type_id,"wheelbase_m":wheelbase,"max_steer_deg":max_steer,
             "initial_body_xy_native_m":initial,"controller_knobs":vars(knobs),
-            "authored_intent":"left turn from center lane; separate from observed motion",
-            "requested_nominal_center_lane_travel_ft":TARGET_FEET[suffix],
-            "requested_initial_through_lane_y_m":approach_y,
+            "authored_intent":"left turn onto highway center lane, then merge; separate from observed motion",
+            "requested_nominal_after_turn_travel_ft":TARGET_FEET[suffix],
+            "requested_initial_inbound_y_native_m":inbound_y,
             "native_route_points":len(native_route),"physical_success_claimed":False})
         for spec in camera_plan(candidate):
             camera_bp=world.get_blueprint_library().find("sensor.camera.rgb")
@@ -217,14 +221,17 @@ def execute(config, output, host, port):
                     "body_vertices_m":[[v.x,v.y,v.z] for v in ego.bounding_box.get_world_vertices(pose)]},
                     allow_nan=False)+"\n")
                 values={"st.intersection":survey,"st.lane_enters":survey,
-                    "st.turn_lane":survey,
-                    "st.lane_adjacency":{"observed_lane_id":lane.lane_id,
-                                         "center_turn_lane_id":survey['center_turn_lane_native_id']},
+                    "st.centre_turn_lane":survey,
                     "rel.occupies":body,"kin.position":sample["native_center_xy_m"],
                     "kin.heading":pose.rotation.yaw,
-                    "drv.turning":{"authored_intent":"left turn from center lane",
+                    "drv.turning":{"authored_intent":"left turn onto highway",
                                    "observed_forward":sample['native_forward_xy']},
-                    "st.lane_direction":survey["road_directions_native"],
+                    "kin.path_length":{"observed_route_station_m":command['route_station_m'],
+                                       "observed_native_center_xy_m":sample['native_center_xy_m']},
+                    "drv.lane_change":{"observed_road_id":lane.road_id,
+                                       "observed_lane_id":lane.lane_id,
+                                       "center_lane_id":survey['center_turn_lane_native_id'],
+                                       "through_lane_id":survey['through_lane_native_id']},
                     "native_body_pose_control":sample,
                     "camera_frame_join":{"native_frame":frame,"video_frame":index}}
                 for name,stream in channels.items():
@@ -266,7 +273,7 @@ def execute(config, output, host, port):
             "frames":frames,"expected_frames":config["duration_s"]*config["rate_hz"],
             "restoration":restored,"error":error,"accepted":False,
             "required_saved_checks":["actual original pixels","Native body and lane joins",
-                "exact full video/trace frame mapping","measured turn completion","independent audit"]})
+                "exact full video/trace frame mapping","measured turn completion and merge onset","independent audit"]})
     if error:raise RuntimeError("Native attempt failed; see native-capture-report.json: "+str(error))
 
 

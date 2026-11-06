@@ -96,19 +96,30 @@ def measure(samples_path, geometry_path):
                           (math.dist(centers[-1], center) if centers else 0))
         centers.append(center); bodies.append(body); headings.append(heading)
 
-    completion = None
+    transition = None
     for i in range(1, len(rows)):
         prev, row = rows[i-1], rows[i]
-        cross = headings[i-1][0]*headings[i][1] - headings[i-1][1]*headings[i][0]
         dot = headings[i][0]*forward[0] + headings[i][1]*forward[1]
         if (prev.get('native_road_id') == connector_road and row.get('native_road_id') == highway_road
             and row.get('native_lane_id') == center_lane
-            and all(_inside(p, center_box) for p in bodies[i])
-            and dot >= math.cos(math.radians(5)) and cross <= -math.sin(math.radians(30))):
-            completion = i
+            and dot >= math.cos(math.radians(5))
+            and any(rows[j].get('native_road_id')==connector_road and
+                    headings[j][0]*headings[i][1]-headings[j][1]*headings[i][0]
+                    <=-math.sin(math.radians(30)) for j in range(i))):
+            transition = i
             break
-    if completion is None:
+    if transition is None:
         raise ValueError('Observed left turn into center lane absent')
+    completion = next((i for i in range(transition,len(rows))
+                       if rows[i].get('native_road_id')==highway_road and
+                       rows[i].get('native_lane_id')==center_lane and
+                       all(_inside(p,center_box) for p in bodies[i]) and
+                       headings[i][0]*forward[0]+headings[i][1]*forward[1]
+                       >=math.cos(math.radians(5))),None)
+    if completion is None or not all(rows[i].get('native_road_id')==highway_road and
+                                  rows[i].get('native_lane_id')==center_lane
+                                  for i in range(transition,completion+1)):
+        raise ValueError('Continuous center-lane entry after left turn absent')
     onset = next((i for i in range(completion+1, len(rows))
                   if _body_overlaps_box(bodies[i], through_box)), None)
     if onset is None:
@@ -131,6 +142,7 @@ def measure(samples_path, geometry_path):
     return {'format': 'center-lane-after-left-turn-to-merge-v1',
             'threshold_m': THRESHOLD_M,
             'threshold_source': 'NRS 484B.223(3)(c): 50 feet',
+            'left_turn_road_transition_frame_bracket': [rows[transition-1]['native_frame'], rows[transition]['native_frame']],
             'turn_completion_frame_bracket': [rows[completion-1]['native_frame'], rows[completion]['native_frame']],
             'merge_onset_frame_bracket': [rows[onset-1]['native_frame'], rows[onset]['native_frame']],
             'full_merge_native_frame': rows[completed_merge]['native_frame'],

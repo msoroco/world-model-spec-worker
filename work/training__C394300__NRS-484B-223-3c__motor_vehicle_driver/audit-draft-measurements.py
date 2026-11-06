@@ -18,6 +18,7 @@ def audit():
     geometry = json.loads(geometry_path.read_text())
     assert geometry['native_center_lane_design_verified'] is False
     assert geometry['authored_map_sha256'] == digest(HERE/'draft-construction'/'scene.xodr')
+    assert geometry['center_turn_lane_native_xy_bounds_m'][0]==-66.5
     assert geometry['left_turn_connector_road_id'] != geometry['highway_road_id']
     expected = ['within_50_feet', 'unresolved_at_50_feet', 'exceeds_50_feet']
     traces = []
@@ -30,6 +31,7 @@ def audit():
         assert receipt['requested_setting_ft'] == case['requested_setting']
         assert receipt['draft_only'] is True and receipt['selected'] is False
         assert receipt['threshold_relation'] == relation
+        assert receipt['left_turn_road_transition_frame_bracket'][1]<receipt['turn_completion_frame_bracket'][1]
         assert receipt['source_hashes'] == {samples_path.name:digest(samples_path),
                                             geometry_path.name:digest(geometry_path)}
         assert receipt['source_assignment_sha256'] == next(

@@ -75,7 +75,7 @@ def route(case, merge_length_m=8.0, start_y_m=45.0):
     nominal=TARGET_FEET[case]*.3048
     # First body contact with the through lane precedes full center arrival.
     # This station is a command only; the saved Native event interval decides.
-    merge_start=TURN_END_X+nominal-.32*merge_length_m
+    merge_start=TURN_END_X+nominal+.19*merge_length_m
     for i in range(1,1501):
         x=TURN_END_X+i*STEP_M
         phase=max(0,min(1,(x-merge_start)/merge_length_m))
@@ -110,7 +110,7 @@ def check():
             assert surface.covers(body), 'Prospective body leaves pavement'
         results[case]={'nominal_commanded_after_turn_ft':feet,'route_points':len(points),
                        'maximum_sample_gap_m':round(max(gaps),5),
-                       'nominal_merge_start_x_m':round(TURN_END_X+feet*.3048-.32*8,5)}
+                       'nominal_merge_start_x_m':round(TURN_END_X+feet*.3048+.19*8,5)}
     assert len({v['nominal_merge_start_x_m'] for v in results.values()})==3
     return {'passed':True,'scope':'authored OpenDRIVE, route and body proxy only',
             'native_center_lane_design_verified':False,'native_connector_identity_verified':False,

@@ -8,8 +8,8 @@ from pathlib import Path
 from measure_after_turn import measure
 
 GEOMETRY = {
-    'center_turn_lane_native_xy_bounds_m': [-100, -1.75, 100, 1.75],
-    'through_lane_native_xy_bounds_m': [-100, 1.75, 100, 5.25],
+    'center_turn_lane_native_xy_bounds_m': [-66.5, -1.75, 100, 1.75],
+    'through_lane_native_xy_bounds_m': [-66.5, 1.75, 100, 5.25],
     'center_turn_lane_native_id': -1,
     'through_lane_native_id': -2,
     'left_turn_connector_road_id': 13,
@@ -32,10 +32,13 @@ def fixture(target_ft):
     # Keep all controls and Native context fixed. Vary only longitudinal
     # distance from turn completion to first contact with the through lane.
     rows = [row(0, -66.6, 0, road=13, heading=(0, 1)), row(1, -66.5, 0)]
+    for n in range(1,11):
+        rows.append(row(len(rows), -66.5+n*.1, 0))
+    completion_x=-65.5
     steps = round(target_m / .1)
     for n in range(1, steps + 1):
-        rows.append(row(len(rows), -66.5 + n * .1, 0))
-    x = -66.5 + steps * .1
+        rows.append(row(len(rows), completion_x + n * .1, 0))
+    x = completion_x + steps * .1
     rows.append(row(len(rows), x, 1.3))  # first body overlap of through lane
     rows.append(row(len(rows), x, 1.5))
     rows.append(row(len(rows), x, 3.5, lane=-2))
@@ -78,6 +81,11 @@ class MeasurementTests(unittest.TestCase):
         rows[0]['native_forward_xy'] = [0, -1]
         with self.assertRaisesRegex(ValueError, 'left turn'):
             self.run_rows(rows)
+
+    def test_turn_transition_precedes_full_body_completion(self):
+        result=self.run_rows(fixture(45))
+        self.assertEqual(result['left_turn_road_transition_frame_bracket'],[0,1])
+        self.assertGreater(result['turn_completion_frame_bracket'][1],1)
 
     def test_missing_merge_rejected(self):
         rows = fixture(45)[:-3]
