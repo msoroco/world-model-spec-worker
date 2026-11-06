@@ -124,7 +124,8 @@ def finalize(attempt,output):
             'measurements':{'signed_u_turn':{'method':'measure_signed_u_turn',
                 'value':value,'sources':{
                     name:value['source_hashes'][Path(name).name] for name in
-                    ('native_samples.jsonl','video_frames.jsonl','sign-review.json','approach.mkv')}}},
+                    ('native_samples.jsonl','video_frames.jsonl','sign-review.json',
+                     'pixel_review.jsonl','approach.mkv')}}},
             'original_joins':joined,'native_executed':False,'accepted':False,
             'legal_verdict_claimed':False}
     Path(output).write_text(json.dumps(report,indent=2)+'\n')

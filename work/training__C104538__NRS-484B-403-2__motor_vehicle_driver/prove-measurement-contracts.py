@@ -26,7 +26,8 @@ def run():
             'requirements':[{'disposition_index':0,'requirement':'NRS-484B-403-2',
                 'source':'NRS 484B.403(2)','output_key':'signed_u_turn',
                 'method':'measure_signed_u_turn','value_type':'object','kind':'measured',
-                'inputs':['native_samples.jsonl','video_frames.jsonl','sign-review.json','approach.mkv']}],
+                'inputs':['native_samples.jsonl','video_frames.jsonl','sign-review.json',
+                          'pixel_review.jsonl','approach.mkv']}],
             'negative':{'remove':['native_samples.jsonl'],
                 'error_contains':'Missing required source: native_samples.jsonl'}}
         contract_path=HERE/('draft-measurement-contract-'+suffix+'.json')
@@ -35,7 +36,7 @@ def run():
         with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c104538-u-turn-contract-') as temp:
             folder=Path(temp)
             source=HERE/'draft-u-turn-saved'/fixture_name
-            for name in ('native_samples.jsonl','video_frames.jsonl','sign-review.json'):
+            for name in ('native_samples.jsonl','video_frames.jsonl','sign-review.json','pixel_review.jsonl'):
                 shutil.copyfile(source/name,folder/name)
             shutil.copyfile(source/'approach-video-fixture.txt',folder/'approach.mkv')
             result=subprocess.run([sys.executable,str(HERE/'native/finalize.py'),

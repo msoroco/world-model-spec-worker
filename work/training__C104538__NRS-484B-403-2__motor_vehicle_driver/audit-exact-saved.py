@@ -44,6 +44,8 @@ def audit():
             fixed[suffix] = {'samples_sha256': digest(fixture / 'native_samples.jsonl'),
                              'frame_map_sha256': digest(fixture / 'video_frames.jsonl'),
                              'sign_review_sha256': digest(fixture / 'sign-review.json'),
+                             'pixel_review_sha256': digest(fixture / 'pixel_review.jsonl'),
+                             'reviewed_approach_frames': value['pixel_review']['approach_frames'],
                              'video_fixture_sha256': digest(video)}
         rows = [r for r in proof['rows'] if r['case_id'].endswith('__' + suffix)]
         if len(rows) != 4 or any(r['observed_in_synthetic_fixture'] is not observed or

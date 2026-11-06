@@ -45,6 +45,25 @@ def audit():
                 raise AssertionError('Pinned compatibility stages missing')
             if digest(tree(scratch/'source'))!=receipt['fixture_sha256']:
                 raise AssertionError('Positive source fixture changed')
+            fixture=scratch/'source'
+            native=[json.loads(line) for line in (fixture/'native_samples.jsonl').read_text().splitlines()]
+            mapping=[json.loads(line) for line in (fixture/'video_frames.jsonl').read_text().splitlines()]
+            marks=[json.loads(line) for line in (fixture/'pixel_review.jsonl').read_text().splitlines()]
+            review=json.loads((fixture/'sign-review.json').read_text())
+            approach=[i for i,row in enumerate(native) if -35<=row['native_center_xy_m'][0]<=-10]
+            if (len(native)!=480 or len(mapping)!=480 or len(marks)!=len(approach) or
+                review['approach_frames']!=len(approach) or
+                review['pixel_review_sha256']!=sha(fixture/'pixel_review.jsonl') or
+                review['video_sha256']!=sha(fixture/'approach.mkv')):
+                raise AssertionError('Exact package pixel source coverage differs')
+            for index,mark in zip(approach,marks):
+                if (mark['video_frame']!=index or
+                    mark['native_frame']!=native[index]['native_frame'] or
+                    mapping[index]['native_frame']!=native[index]['native_frame']):
+                    raise AssertionError('Exact package pixel frame join differs')
+            if review['full_body_and_sign_visible_frames']!=sum(
+                    mark['full_body_visible'] and mark['sign_visible'] for mark in marks):
+                raise AssertionError('Exact package pixel visibility count differs')
             if sha(scratch/'positive/compatibility-analysis.log')!=receipt['log_sha256']:
                 raise AssertionError('Positive analysis log changed')
             result=json.loads((scratch/'positive/result.json').read_text())
@@ -57,6 +76,7 @@ def audit():
             rows.append({'case':suffix,'candidate':candidate,
                          'construction_sha256':source['construction_sha256'],
                          'positive_receipt_sha256':sha(scratch/'positive/compatibility.json'),
+                         'reviewed_approach_frames':len(approach),
                          'missing_native_source_rejected':True})
     if seen!=set(expected):raise AssertionError('Eight-bundle compatibility inventory incomplete')
     return {'passed':True,'format':'c104538-unselected-v1-package-audit',

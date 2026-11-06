@@ -51,9 +51,13 @@ def check_pair(left, right):
         path = (left, right)[index]
         if (review['native_samples_sha256'] != sha(path/'native_samples.jsonl') or
             review['frame_map_sha256'] != sha(path/'video_frames.jsonl') or
-            review['video_sha256'] != sha(path/'approach.mkv')):
+            review['video_sha256'] != sha(path/'approach.mkv') or
+            review['pixel_review_sha256'] != sha(path/'pixel_review.jsonl') or
+            review['approach_frames'] != len(rows(path/'pixel_review.jsonl'))):
             raise AssertionError('Sign review lost source binding')
-    variable_hash_keys = {'native_samples_sha256', 'video_sha256'}
+    variable_hash_keys = {'native_samples_sha256', 'video_sha256',
+                          'pixel_review_sha256', 'approach_frames',
+                          'full_body_and_sign_visible_frames'}
     if ({k: v for k, v in reviews[0].items() if k not in variable_hash_keys} !=
         {k: v for k, v in reviews[1].items() if k not in variable_hash_keys}):
         raise AssertionError('Controlled sign review context differs')
