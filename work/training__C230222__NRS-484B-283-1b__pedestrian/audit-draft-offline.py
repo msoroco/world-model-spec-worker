@@ -22,7 +22,7 @@ def audit():
     receipts = {(r['case_id'], r['candidate_id']): r for r in summary['results']}
     if len(receipts) != 8 or len(manifest['cases']) != 2:
         raise ValueError('Curb exact bundle count differs')
-    source_names = {'runner.py', 'geometry.py', 'engineering.py', 'curb.py',
+    source_names = {'runner.py', 'geometry.py', 'engineering.py', 'vehicle_policy.py', 'curb.py',
                     'finalize.py', 'road.xodr', 'tests/test_offline.py', 'config.json'}
     pair_configs = {}
     for entry in manifest['cases']:
@@ -60,8 +60,8 @@ def audit():
                     raise ValueError('Curb offline log hash differs')
             command = (HERE / receipt['command_log']).read_text()
             unit = (HERE / receipt['unit_log']).read_text()
-            if '"offline_passed": true' not in command or 'Ran 4 tests' not in unit or 'OK' not in unit:
-                raise ValueError('Curb offline receipt lacks passing four-test proof')
+            if '"offline_passed": true' not in command or 'Ran 5 tests' not in unit or 'OK' not in unit:
+                raise ValueError('Curb offline receipt lacks passing five-test proof')
     for ident in ('primary', 'fallback1', 'fallback2', 'fallback3'):
         a = pair_configs[('probe_1', ident)]
         b = pair_configs[('probe_2', ident)]
@@ -69,7 +69,7 @@ def audit():
             if a[key] != b[key]:
                 raise ValueError('Curb controlled pair capture policy differs')
     return {'independent_audit': 'pass', 'exact_unselected_bundles': 8,
-            'pinned_offline_receipts': 8, 'four_test_logs': 8,
+            'pinned_offline_receipts': 8, 'five_test_logs': 8,
             'controlled_pairs': 4, 'native_attempts': 0, 'accepted_recordings': 0}
 
 

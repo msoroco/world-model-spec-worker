@@ -11,6 +11,7 @@ import traceback
 
 from engineering import candidate
 from geometry import check as geometry_check
+from vehicle_policy import BrakingPolicy, cpu_probe
 
 HERE = Path(__file__).resolve().parent
 RATE_HZ = 20
@@ -45,8 +46,11 @@ def check(config):
         raise ValueError('Curb camera contract differs')
     if plan['engineering']['pedestrian_departure_s'] not in (.5, 3.5):
         raise ValueError('Controlled curb departure differs')
+    if plan['engineering']['vehicle_reaction_s'] != .8 or plan['engineering']['vehicle_brake_command'] != 1:
+        raise ValueError('Common driver-response policy differs')
     return {'candidate': config['candidate_id'], 'geometry': geometry, 'frames': FRAMES,
             'cameras': [x['name'] for x in camera_specs(plan)], 'native_imported': False,
+            'driver_policy_cpu_probe': cpu_probe(plan['engineering']['pedestrian_departure_s']),
             'actual_driver_yield_measured': False, 'impossibility_to_yield_proven': False,
             'accepted_recording_claimed': False}
 
@@ -145,6 +149,7 @@ def execute(config, output, host, port):
         capture = PipelineCapture(client, walker, output, config['case_id'],
                                   visibility=False, required_observations=config.get('required_atoms', []))
         start = world.get_snapshot().timestamp.elapsed_seconds
+        policy = BrakingPolicy(reaction_s=e['vehicle_reaction_s'])
         with (output / 'curb-samples.jsonl').open('x') as samples, \
              (output / 'video_frames.jsonl').open('x') as frame_map:
             for index in range(FRAMES):
@@ -152,18 +157,27 @@ def execute(config, output, host, port):
                 if e['pedestrian_control'] == 'bounded_acceleration_to_target_velocity':
                     requested_speed = min(requested_speed, max(0, index/RATE_HZ-e['pedestrian_departure_s'])*4)
                 walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(x=1), speed=requested_speed))
-                vehicle.set_target_velocity(carla.Vector3D(y=e['vehicle_target_speed_mps']))
+                command = policy.command(index/RATE_HZ)
+                if command == 'hold_approach_speed':
+                    vehicle.set_target_velocity(carla.Vector3D(y=e['vehicle_target_speed_mps']))
+                else:
+                    vehicle.apply_control(carla.VehicleControl(throttle=0, brake=e['vehicle_brake_command']))
                 frame = world.tick()
                 time_s = world.get_snapshot().timestamp.elapsed_seconds-start
                 ped_pose, veh_pose = walker.get_transform(), vehicle.get_transform()
                 ped_velocity, veh_velocity = walker.get_velocity(), vehicle.get_velocity()
+                ped_speed = math.hypot(ped_velocity.x, ped_velocity.y)
+                policy.observe(time_s, ped_speed)
                 observed = {'native_frame': frame, 'time_s': time_s,
                     'pedestrian_id': walker.id, 'vehicle_id': vehicle.id,
                     'pedestrian_xy_m': [ped_pose.location.x, ped_pose.location.y],
                     'pedestrian_footprint_xy_m': footprint(walker),
-                    'pedestrian_speed_mps': math.hypot(ped_velocity.x, ped_velocity.y),
+                    'pedestrian_speed_mps': ped_speed,
                     'vehicle_xy_m': [veh_pose.location.x, veh_pose.location.y],
-                    'vehicle_speed_mps': math.hypot(veh_velocity.x, veh_velocity.y)}
+                    'vehicle_speed_mps': math.hypot(veh_velocity.x, veh_velocity.y),
+                    'vehicle_control_request': command,
+                    'pedestrian_departure_observed_s': policy.departure_observed_s,
+                    'vehicle_brake_command_onset_s': policy.brake_command_onset_s}
                 capture.capture(frame, time_s, extra={'curb_proposal': observed})
                 pixels = {}
                 for spec in camera_specs(plan):
@@ -194,7 +208,11 @@ def execute(config, output, host, port):
             'vehicle_body_half_width_m': 1.0,
             'assumed_driver_reaction_s': [.8, 1.2],
             'assumed_deceleration_mps2': [3.0, 5.0],
-            'driver_capability_measured': False, 'introductory_exceptions_reviewed': False})
+            'requested_vehicle_reaction_s': e['vehicle_reaction_s'],
+            'requested_vehicle_brake_command': e['vehicle_brake_command'],
+            'vehicle_control_policy': 'observed_pedestrian_speed_then_reaction_and_full_brake',
+            'driver_capability_measured': False, 'introductory_exceptions_reviewed': False,
+            'introductory_exceptions': 'unreviewed_native_context'})
     except BaseException as exc:
         error = {'type': type(exc).__name__, 'message': str(exc), 'traceback': traceback.format_exc()}
     finally:

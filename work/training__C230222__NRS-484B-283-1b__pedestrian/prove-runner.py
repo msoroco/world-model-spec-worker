@@ -42,6 +42,12 @@ def main():
             result = json.loads(positive.stdout)
             if result['native_imported'] or result['accepted_recording_claimed']:
                 raise ValueError('CPU preflight falsely claims Native execution')
+            policy = result['driver_policy_cpu_probe']
+            expected_departure = .5 if suffix == 'probe_1' else 3.5
+            if (policy['departure_observed_s'] != expected_departure or
+                abs(policy['brake_command_onset_s'] - (expected_departure + .8)) > 1e-9 or
+                policy['physical_braking_measured']):
+                raise ValueError('CPU driver policy is not the shared observed-departure response')
             with tempfile.TemporaryDirectory(prefix='curb-preflight-') as temporary:
                 bad = dict(config)
                 bad['case_id'] = bad['case_id'] + '-wrong'
@@ -52,6 +58,7 @@ def main():
                     raise RuntimeError('Wrong-case Native CPU negative did not reject')
             records.append({'case_id': plan['case_id'], 'candidate_id': ident,
                             'cpu_preflight': 'pass', 'wrong_case_negative': 'pass',
+                            'driver_policy_cpu_probe': policy,
                             'native_attempt_executed': False})
     summary = {'format': 'c230222-curb-runner-cpu-proof-v1', 'records': records,
                'native_attempts': 0, 'accepted_recordings': 0}

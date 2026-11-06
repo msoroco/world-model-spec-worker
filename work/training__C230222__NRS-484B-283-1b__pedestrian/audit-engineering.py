@@ -5,7 +5,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 IDS = ('primary', 'fallback1', 'fallback2', 'fallback3')
 FIXED = ('pedestrian_target_speed_mps', 'vehicle_start_y_m', 'vehicle_target_speed_mps',
-         'vehicle_control', 'camera_width', 'camera_height')
+         'vehicle_control', 'vehicle_reaction_s', 'vehicle_brake_command',
+         'camera_width', 'camera_height')
 
 
 def audit():
@@ -57,8 +58,20 @@ def audit():
         raise ValueError('Engineering summary claims unsupported progress')
     if summary['synthetic_trigger_metrics']['synthetic_spawn_clearance_m'] != .88:
         raise ValueError('Synthetic source clearance differs')
+    runner = json.loads((HERE / 'curb-runner-summary.json').read_text())
+    if len(runner['records']) != 8 or runner['native_attempts'] or runner['accepted_recordings']:
+        raise ValueError('Runner CPU proof claims unsupported execution')
+    for record in runner['records']:
+        suffix = record['case_id'].rsplit('__', 1)[-1]
+        expected = .5 if suffix == 'probe_1' else 3.5
+        policy = record['driver_policy_cpu_probe']
+        if (policy['departure_observed_s'] != expected or
+            abs(policy['brake_command_onset_s'] - (expected+.8)) > 1e-9 or
+            policy['physical_braking_measured']):
+            raise ValueError('Runner shared driver policy differs')
     return {'independent_audit': 'pass', 'controlled_pairs': 4,
-            'unselected_candidate_plans': 8, 'physical_triggers_measured': 0}
+            'unselected_candidate_plans': 8, 'driver_policy_cpu_probes': 8,
+            'physical_triggers_measured': 0}
 
 
 if __name__ == '__main__':

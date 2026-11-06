@@ -52,6 +52,8 @@ def measure(samples_path, context_path):
     entry = None
     vehicle_at_arrival = None
     pedestrian_speed_change = None
+    first_brake = None
+    stopped_before_conflict = None
     for index, row in enumerate(rows):
         frame, time = row.get('native_frame'), row.get('time_s')
         if type(frame) is not int or type(time) not in (int, float) or not math.isfinite(time):
@@ -73,8 +75,16 @@ def measure(samples_path, context_path):
         ped_speed = row.get('pedestrian_speed_mps')
         if type(speed) not in (int, float) or type(ped_speed) not in (int, float) or speed < 0 or ped_speed < 0:
             raise ValueError('Curb source speed invalid')
-        if kind == 'native_observation' and not row.get('original_frame_sha256'):
-            raise ValueError('Native curb original frame missing')
+        if kind == 'native_observation':
+            if not row.get('original_frame_sha256'):
+                raise ValueError('Native curb original frame missing')
+            if row.get('vehicle_control_request') not in ('hold_approach_speed', 'full_brake'):
+                raise ValueError('Native curb driver control source missing')
+            if first_brake is None and row['vehicle_control_request'] == 'full_brake':
+                first_brake = (previous, row)
+            if (first_brake is not None and stopped_before_conflict is None and
+                speed <= .2 and vehicle[1] < context['vehicle_conflict_y_m']):
+                stopped_before_conflict = row
         progress = [sum((v[i] - edge[i]) * direction[i] for i in (0, 1)) for v in vertices]
         if entry is None and max(progress) > 0:
             entry = (previous, row)
@@ -83,8 +93,10 @@ def measure(samples_path, context_path):
         if vehicle_at_arrival is None and vehicle[1] >= context['vehicle_conflict_y_m']:
             vehicle_at_arrival = row
         previous = row
-    if any(x is None for x in (entry, pedestrian_speed_change, vehicle_at_arrival)) or entry[0] is None:
+    if any(x is None for x in (entry, pedestrian_speed_change)) or entry[0] is None:
         raise ValueError('Curb departure, entry or vehicle arrival not bracketed')
+    if kind == 'synthetic_scene_request' and vehicle_at_arrival is None:
+        raise ValueError('Synthetic curb vehicle arrival not bracketed')
     entry_row = entry[1]
     distance = context['vehicle_conflict_y_m'] - entry_row['vehicle_xy_m'][1]
     v = float(entry_row['vehicle_speed_mps'])
@@ -96,9 +108,13 @@ def measure(samples_path, context_path):
     relation = ('conditional_yield_possible' if margin[0] > 0 else
                 'conditional_yield_impossible' if margin[1] < 0 else
                 'conditional_yield_indeterminate')
-    arrival = vehicle_at_arrival
-    pedestrian_x = arrival['pedestrian_xy_m'][0]
-    overlap = abs(pedestrian_x - context['vehicle_lane_center_x_m']) <= context['vehicle_body_half_width_m'] + .12
+    overlap = None
+    if vehicle_at_arrival is not None:
+        pedestrian_x = vehicle_at_arrival['pedestrian_xy_m'][0]
+        overlap = abs(pedestrian_x - context['vehicle_lane_center_x_m']) <= context['vehicle_body_half_width_m'] + .12
+    brake_bracket = None if first_brake is None or first_brake[0] is None else {
+        'first_frame': first_brake[1]['native_frame'],
+        'time_interval_s': [first_brake[0]['time_s'], first_brake[1]['time_s']]}
     return {'format': 'c230222-curb-source-observation-v1',
             'source_sha256': {path.name: sha(path) for path in (samples_path, context_path, road)},
             'source_kind': kind, 'original_frames': len(rows), 'rate_hz': 20,
@@ -112,6 +128,11 @@ def measure(samples_path, context_path):
             'conditional_stopping_margin_range_m': margin,
             'conditional_yield_relation': relation,
             'authored_overlap_at_vehicle_arrival': overlap,
+            'source_brake_command': brake_bracket,
+            'source_vehicle_stop_before_conflict': (None if kind != 'native_observation'
+                                                    else stopped_before_conflict is not None),
+            'source_vehicle_stop_frame': (None if stopped_before_conflict is None
+                                          else stopped_before_conflict['native_frame']),
             'actual_driver_yield_observed': False, 'driver_capability_measured': False,
             'impossibility_to_yield_proven': False, 'introductory_exceptions_reviewed': False,
             'legal_verdict_claimed': False}

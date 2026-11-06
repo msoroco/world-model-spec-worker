@@ -14,7 +14,9 @@ def candidate(suffix, ident):
     knobs = {'pedestrian_spawn_x_m': -4.5, 'pedestrian_pre_roll_s': 0.0,
              'pedestrian_departure_s': start, 'pedestrian_target_speed_mps': 3.0,
              'pedestrian_control': 'target_velocity', 'vehicle_start_y_m': -18.0,
-             'vehicle_target_speed_mps': 4.0, 'vehicle_control': 'target_velocity',
+             'vehicle_target_speed_mps': 4.0,
+             'vehicle_control': 'speed_until_observed_departure_then_brake',
+             'vehicle_reaction_s': 0.8, 'vehicle_brake_command': 1.0,
              'camera_distance_m': 8.0, 'camera_width': 1280, 'camera_height': 720}
     trigger = {'metric': 'initial', 'source': 'none', 'threshold': None,
                'physical_observation': None}
