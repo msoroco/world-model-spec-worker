@@ -12,10 +12,12 @@ NAMES=('primary','fallback1','fallback2','fallback3')
 SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','controller.py':'controller.py',
          'engineering.py':'engineering.py','measure_center_lane.py':'measure_center_lane.py',
          'measure_saved.py':'measure_saved.py','finalize.py':'finalize.py',
+         'fallback_triggers.py':'fallback_triggers.py',
          'cameras.py':'cameras.py',
          'tests/test_measure_center_lane.py':'test_measure_center_lane.py',
          'tests/test_controller.py':'test_controller.py',
          'tests/test_candidate_knobs.py':'test_candidate_knobs.py',
+         'tests/test_fallback_triggers.py':'test_fallback_triggers.py',
          'tests/test_cameras.py':'test_cameras.py'}
 
 

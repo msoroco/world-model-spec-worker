@@ -11,11 +11,13 @@ NAMES=('primary','fallback1','fallback2','fallback3')
 SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','base_geometry.py':'base_geometry.py','controller.py':'controller.py',
          'engineering.py':'engineering.py',
          'measure_exit.py':'measure_exit.py','finalize.py':'finalize.py','cameras.py':'cameras.py',
+         'fallback_triggers.py':'fallback_triggers.py',
          'tests/test_geometry_controller.py':'test_geometry_controller.py',
          'tests/test_controller.py':'test_controller.py',
          'tests/test_candidate_knobs.py':'test_candidate_knobs.py',
          'tests/test_measure_exit.py':'test_measure_exit.py',
          'tests/test_cameras.py':'test_cameras.py'}
+SOURCES['tests/test_fallback_triggers.py']='test_fallback_triggers.py'
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -104,12 +106,15 @@ def build():
             if candidate=='primary':entry.update(ref)
             else:
                 risk={
-                    'fallback1':('native route connectivity or turn completion','Native route has no connected lane link or full-body destination exit absent by 24 s','turn entry station -7 m to -10 m'),
-                    'fallback2':('destination exit lateral tracking','maximum recorded destination route error x=-5..5 m exceeds 0.35 m','pure-pursuit lookahead 4.0 m to 3.0 m'),
-                    'fallback3':('destination centerline camera framing','independent pixel audit cannot see body and destination centerline in 95% of exit frames','ego-following camera height 3.2 m to 4.5 m and FOV 90 to 105 degrees')
+                    'fallback1':('full-body destination exit completion','saved 480-frame Native source has no measured full-body exit after intersection entry','turn entry station -7 m to -10 m'),
+                    'fallback2':('destination turn route tracking','maximum saved controller route_error_m for y=-5..5 m exceeds 0.35 m','pure-pursuit lookahead 4.0 m to 3.0 m'),
+                    'fallback3':('destination centerline camera framing','source-video-bound pixel audit sees body and centerline jointly in fewer than 95% of contiguous exit frames','ego-following camera height 3.2 m to 4.5 m and FOV 90 to 105 degrees')
                 }[candidate]
-                ref.update(trigger={'source':'original Native capture or saved pixels','metric':risk[0],
-                                    'failure_condition':risk[1]},changed_knobs=[risk[2]])
+                ref.update(trigger={'source':'saved original Native rows or source-video-bound pixel audit',
+                                    'metric':risk[0],'failure_condition':risk[1],
+                                    'evaluator':'fallback_triggers.py:evaluate',
+                                    'synthetic_cpu_tests':'tests/test_fallback_triggers.py'},
+                           changed_knobs=[risk[2]])
                 entry['candidates'].append(ref)
         manifest['cases'].append(entry)
     write(FOLDER/'draft-execution-manifest.json',manifest)

@@ -41,8 +41,18 @@ def audit():
             raise ValueError('Frozen cross-reference content differs: ' + law_id)
         if not row['required_original_observations'] or row['current_curb_pair_proves_applicability'] or row['legal_applicability_conclusion'] is not None:
             raise ValueError('Curb cross-reference overclaims applicability')
-        if row['same_cell_construction_status'] != 'pending_physical_construction_and_review':
-            raise ValueError('Curb cross-reference falsely claims construction')
+        expected_status = ('authored_native_crosswalk_cpu_geometry_no_native_observation'
+                           if law_id == 'LVMC-11-30-060-A' else
+                           'pending_physical_construction_and_review')
+        if row['same_cell_construction_status'] != expected_status:
+            raise ValueError('Curb cross-reference construction status differs')
+        if law_id == 'LVMC-11-30-060-A':
+            branch = json.loads((HERE / 'crosswalk-branch-summary.json').read_text())
+            if (row.get('cpu_construction_summary') != 'crosswalk-branch-summary.json' or
+                branch['crossref_law_id'] != law_id or
+                branch['physical_crossref_cases_constructed'] or
+                branch['legal_applicability_conclusion'] is not None):
+                raise ValueError('Crosswalk CPU construction proof differs')
     if result['applicability_resolved'] or result['physical_crossref_cases_constructed'] or result['selected_crossref_cases']:
         raise ValueError('Curb statutory coverage falsely marked complete')
     return {'independent_audit': 'pass', 'exact_frozen_crossrefs': 7,

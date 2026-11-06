@@ -20,11 +20,13 @@
         {
           "id": "fallback1",
           "construction": "draft-candidates/witness_1/fallback1/construction.json",
-          "construction_sha256": "7a7bc1dfa745e79a82e002ebcaafdf59523f3ae6172eead21d680eba01bbae57",
+          "construction_sha256": "5698e910bc61dc021210a504ef0bfa64f7c52fb601542149f4a5b350da7379c3",
           "trigger": {
-            "source": "original Native capture or saved pixels",
-            "metric": "native route connectivity or turn completion",
-            "failure_condition": "Native route has no connected lane link or full-body destination exit absent by 24 s"
+            "source": "saved original Native rows or source-video-bound pixel audit",
+            "metric": "full-body destination exit completion",
+            "failure_condition": "saved 480-frame Native source has no measured full-body exit after intersection entry",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "synthetic_cpu_tests": "tests/test_fallback_triggers.py"
           },
           "changed_knobs": [
             "turn entry station -7 m to -10 m"
@@ -33,11 +35,13 @@
         {
           "id": "fallback2",
           "construction": "draft-candidates/witness_1/fallback2/construction.json",
-          "construction_sha256": "1bc8522f976de8f77ecaed0e667a867daa182117ab3946663ae34851040c7623",
+          "construction_sha256": "14c087c193e54e986204034fdc77973eef2e25817fac378109306ca81fa72ce8",
           "trigger": {
-            "source": "original Native capture or saved pixels",
-            "metric": "destination exit lateral tracking",
-            "failure_condition": "maximum recorded destination route error x=-5..5 m exceeds 0.35 m"
+            "source": "saved original Native rows or source-video-bound pixel audit",
+            "metric": "destination turn route tracking",
+            "failure_condition": "maximum saved controller route_error_m for y=-5..5 m exceeds 0.35 m",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "synthetic_cpu_tests": "tests/test_fallback_triggers.py"
           },
           "changed_knobs": [
             "pure-pursuit lookahead 4.0 m to 3.0 m"
@@ -46,11 +50,13 @@
         {
           "id": "fallback3",
           "construction": "draft-candidates/witness_1/fallback3/construction.json",
-          "construction_sha256": "84d8f555c263b1ddc4626a4b4031dea3a3f5fab04bf18002d4accea5c6688931",
+          "construction_sha256": "133a81cf168acc02dd5313448215435a19bd6833736a68cece4920aed9155649",
           "trigger": {
-            "source": "original Native capture or saved pixels",
+            "source": "saved original Native rows or source-video-bound pixel audit",
             "metric": "destination centerline camera framing",
-            "failure_condition": "independent pixel audit cannot see body and destination centerline in 95% of exit frames"
+            "failure_condition": "source-video-bound pixel audit sees body and centerline jointly in fewer than 95% of contiguous exit frames",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "synthetic_cpu_tests": "tests/test_fallback_triggers.py"
           },
           "changed_knobs": [
             "ego-following camera height 3.2 m to 4.5 m and FOV 90 to 105 degrees"
@@ -59,7 +65,7 @@
       ],
       "id": "primary",
       "construction": "draft-candidates/witness_1/primary/construction.json",
-      "construction_sha256": "cfebbbfa3a97b526fe155cd5eac2fb3fe74a2f29acbd135a259a3df4d2df3817"
+      "construction_sha256": "514908af7de6b427b3670b2e3842cbfe7a45e637621796cf5b2f36064d9d77b9"
     },
     {
       "case_id": "training__C329610__NRS-484B-400-2b__motor_vehicle_driver__witness_2",
@@ -77,11 +83,13 @@
         {
           "id": "fallback1",
           "construction": "draft-candidates/witness_2/fallback1/construction.json",
-          "construction_sha256": "f5c6c4257aa030caa21655450811da8e3072bec1a7299467481f257adb76d5d2",
+          "construction_sha256": "8c0e8d7473130a9d4ca92d3126ac51110d53bc8b7a49bada065697fe0eeb6061",
           "trigger": {
-            "source": "original Native capture or saved pixels",
-            "metric": "native route connectivity or turn completion",
-            "failure_condition": "Native route has no connected lane link or full-body destination exit absent by 24 s"
+            "source": "saved original Native rows or source-video-bound pixel audit",
+            "metric": "full-body destination exit completion",
+            "failure_condition": "saved 480-frame Native source has no measured full-body exit after intersection entry",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "synthetic_cpu_tests": "tests/test_fallback_triggers.py"
           },
           "changed_knobs": [
             "turn entry station -7 m to -10 m"
@@ -90,11 +98,13 @@
         {
           "id": "fallback2",
           "construction": "draft-candidates/witness_2/fallback2/construction.json",
-          "construction_sha256": "d42d967340485e064bbe0459eda75da845fe19f7357d59e8b5ca6c32910adc73",
+          "construction_sha256": "49c6c9fb8b31f08db68e94bfa406ae0f73e0b4a6aa4fae376fffd8c163a43e9b",
           "trigger": {
-            "source": "original Native capture or saved pixels",
-            "metric": "destination exit lateral tracking",
-            "failure_condition": "maximum recorded destination route error x=-5..5 m exceeds 0.35 m"
+            "source": "saved original Native rows or source-video-bound pixel audit",
+            "metric": "destination turn route tracking",
+            "failure_condition": "maximum saved controller route_error_m for y=-5..5 m exceeds 0.35 m",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "synthetic_cpu_tests": "tests/test_fallback_triggers.py"
           },
           "changed_knobs": [
             "pure-pursuit lookahead 4.0 m to 3.0 m"
@@ -103,11 +113,13 @@
         {
           "id": "fallback3",
           "construction": "draft-candidates/witness_2/fallback3/construction.json",
-          "construction_sha256": "144328766da707b25cec00ad20bd9af84423d6044497c0acce5410aaccd9f458",
+          "construction_sha256": "c7302e31e2ce25d6e99bc8c2159aa0eea2947acc9e793ff11c196d74089c1986",
           "trigger": {
-            "source": "original Native capture or saved pixels",
+            "source": "saved original Native rows or source-video-bound pixel audit",
             "metric": "destination centerline camera framing",
-            "failure_condition": "independent pixel audit cannot see body and destination centerline in 95% of exit frames"
+            "failure_condition": "source-video-bound pixel audit sees body and centerline jointly in fewer than 95% of contiguous exit frames",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "synthetic_cpu_tests": "tests/test_fallback_triggers.py"
           },
           "changed_knobs": [
             "ego-following camera height 3.2 m to 4.5 m and FOV 90 to 105 degrees"
@@ -116,7 +128,7 @@
       ],
       "id": "primary",
       "construction": "draft-candidates/witness_2/primary/construction.json",
-      "construction_sha256": "3a114b78a8e2e5f3ccd88eaba21a9bf7d53d6acbeaecf063781038ef9ca80df7"
+      "construction_sha256": "700b1434f2afde3d25275828229263b15f6705dca1662837c1e9f465e20a3e13"
     }
   ]
 }
