@@ -20,6 +20,8 @@ from controller import PathController
 from engineering import parameters
 from geometry import check as geometry_check, open_drive
 
+ROOT = Path(__file__).resolve().parent
+
 
 def frame_map_row(index, frame, time_s):
     if type(index) is not int or index < 0 or type(frame) is not int or frame < 0:
@@ -300,18 +302,24 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
-    parser.add_argument('--case', choices=('witness_1', 'witness_2'), required=True)
-    parser.add_argument('--candidate', choices=('primary', 'fallback1', 'fallback2', 'fallback3'), required=True)
+    parser.add_argument('--case', choices=('witness_1', 'witness_2'))
+    parser.add_argument('--candidate', choices=('primary', 'fallback1', 'fallback2', 'fallback3'))
     parser.add_argument('--output-dir')
     parser.add_argument('--host')
     parser.add_argument('--port', type=int)
     args = parser.parse_args()
+    config_path = ROOT / 'config.json'
+    config = json.loads(config_path.read_text()) if config_path.is_file() else {}
+    case_suffix = args.case or config.get('case_suffix')
+    candidate_id = args.candidate or config.get('candidate_id')
+    if not case_suffix or not candidate_id:
+        parser.error('Supply --case and --candidate or a materialized config.json')
     if args.check:
-        print(json.dumps(check(args.case, args.candidate), sort_keys=True))
+        print(json.dumps(check(case_suffix, candidate_id), sort_keys=True))
     else:
         if not args.output_dir or not args.host or not args.port:
             parser.error('Supply output directory, host and port for an owned Native attempt')
-        execute(args.case, args.candidate, args.output_dir, args.host, args.port)
+        execute(case_suffix, candidate_id, args.output_dir, args.host, args.port)
 
 
 if __name__ == '__main__':

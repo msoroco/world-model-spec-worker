@@ -1,0 +1,128 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C104538__NRS-484B-403-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "391baee19ccece687c5632aa2cc64ba3b958c8b492045b30e4bfc4caa131c235",
+  "status": "draft_not_selected",
+  "cases": [
+    {
+      "case_id": "training__C104538__NRS-484B-403-2__motor_vehicle_driver__witness_1",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native lane/sign readback, route tracking and original pixels require an actual attempt"
+      },
+      "measurement_contract": "draft-measurement-contract-witness_1.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "signed-u-turn-original-frame-measurement-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/witness_1/fallback1/construction.json",
+          "construction_sha256": "ad2a96f7926b37455e793c14eab4be2b37e560ba0eac622e73f2caa42341c027",
+          "trigger": {
+            "source": "source-hashed original Native samples, frame map, sign review and approach video",
+            "evaluator": "engineering.py:evaluate_fallbacks",
+            "metric": "maximum_approach_route_error_m",
+            "failure_condition": "Source-measured error >0.35 m"
+          },
+          "changed_knobs": [
+            "target_speed_mps 5.0 to 3.5"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/witness_1/fallback2/construction.json",
+          "construction_sha256": "98d95af86c2bf9711833b0be364ae1143b057b2bca00267e05c3e79449b426f2",
+          "trigger": {
+            "source": "source-hashed original Native samples, frame map, sign review and approach video",
+            "evaluator": "engineering.py:evaluate_fallbacks",
+            "metric": "requested_movement_completed",
+            "failure_condition": "Source-measured requested movement incomplete by frame 480"
+          },
+          "changed_knobs": [
+            "lookahead_m 4.0 to 5.5"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/witness_1/fallback3/construction.json",
+          "construction_sha256": "e539339314e30720d1cbec930a8d64cd74fd03858a8776beb02dee14e304f561",
+          "trigger": {
+            "source": "source-hashed original Native samples, frame map, sign review and approach video",
+            "evaluator": "engineering.py:evaluate_fallbacks",
+            "metric": "sign_and_body_visible_fraction",
+            "failure_condition": "Source-reviewed visibility <0.95"
+          },
+          "changed_knobs": [
+            "sign camera [-12,9,5] to [-12,11,6]"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/witness_1/primary/construction.json",
+      "construction_sha256": "d6fabde1952ebf11b9b7759109b512f6cd587a24f8f27107803115b3ad819acd"
+    },
+    {
+      "case_id": "training__C104538__NRS-484B-403-2__motor_vehicle_driver__witness_2",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native lane/sign readback, route tracking and original pixels require an actual attempt"
+      },
+      "measurement_contract": "draft-measurement-contract-witness_2.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "signed-u-turn-original-frame-measurement-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/witness_2/fallback1/construction.json",
+          "construction_sha256": "456c4908c7cf662ad7fb869d59437f07a1c8b4362a9fa36c8cc6debbf729a679",
+          "trigger": {
+            "source": "source-hashed original Native samples, frame map, sign review and approach video",
+            "evaluator": "engineering.py:evaluate_fallbacks",
+            "metric": "maximum_approach_route_error_m",
+            "failure_condition": "Source-measured error >0.35 m"
+          },
+          "changed_knobs": [
+            "target_speed_mps 5.0 to 3.5"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/witness_2/fallback2/construction.json",
+          "construction_sha256": "749f0944f66dc2a9260766a8aa29b83889fadb84bbbfcf2d9293b07f50449409",
+          "trigger": {
+            "source": "source-hashed original Native samples, frame map, sign review and approach video",
+            "evaluator": "engineering.py:evaluate_fallbacks",
+            "metric": "requested_movement_completed",
+            "failure_condition": "Source-measured requested movement incomplete by frame 480"
+          },
+          "changed_knobs": [
+            "lookahead_m 4.0 to 5.5"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/witness_2/fallback3/construction.json",
+          "construction_sha256": "7dff5d1b0b28cab9536322cbfe61034a658498750f6265c889af5e4242bdf3ed",
+          "trigger": {
+            "source": "source-hashed original Native samples, frame map, sign review and approach video",
+            "evaluator": "engineering.py:evaluate_fallbacks",
+            "metric": "sign_and_body_visible_fraction",
+            "failure_condition": "Source-reviewed visibility <0.95"
+          },
+          "changed_knobs": [
+            "sign camera [-12,9,5] to [-12,11,6]"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/witness_2/primary/construction.json",
+      "construction_sha256": "82b59648ba7f596dc93b381d71ddfca3b90364a89c4ccc347d470836cafdf01d"
+    }
+  ]
+}
