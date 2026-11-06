@@ -15,6 +15,13 @@ BODY_HALF_LENGTH_M = 2.6
 BODY_HALF_WIDTH_M = 1.1
 
 
+def open_drive() -> str:
+    path=HERE/'road.xodr'
+    if not path.is_file():
+        raise ValueError('Authored same-cell road is missing')
+    return path.read_text()
+
+
 def route(case: str) -> list[list[float]]:
     if case not in PARK_STATIONS_M:
         raise ValueError("Unknown parking probe")

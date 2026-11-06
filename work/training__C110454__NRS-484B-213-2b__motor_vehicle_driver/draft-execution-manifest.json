@@ -7,6 +7,10 @@
     {
       "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__reference",
       "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, parking stop and original camera framing require physical source checks"
+      },
       "measurement_contract": "draft-candidates/reference/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -21,7 +25,8 @@
             "metric": "max_route_cross_track_error_m",
             "op": ">",
             "threshold": 0.45,
-            "source": "original Native ego pose joined to authored route and map readback"
+            "source": "original Native ego pose joined to authored route and map readback",
+            "failure_condition": "max_route_cross_track_error_m > 0.45"
           },
           "changed_knobs": [
             "route_tracking_lookahead_m"
@@ -35,7 +40,8 @@
             "metric": "parking_endpoint_speed_m_s",
             "op": ">",
             "threshold": 0.3,
-            "source": "original Native velocity at surveyed parking endpoint"
+            "source": "original Native velocity at surveyed parking endpoint",
+            "failure_condition": "parking_endpoint_speed_m_s > 0.3"
           },
           "changed_knobs": [
             "parking_brake_start_m"
@@ -49,7 +55,8 @@
             "metric": "min_ego_pixel_margin_px",
             "op": "<",
             "threshold": 40,
-            "source": "decoded original overview video and original body-mask corners"
+            "source": "decoded original overview video and original body-mask corners",
+            "failure_condition": "min_ego_pixel_margin_px < 40"
           },
           "changed_knobs": [
             "overview_fov_deg"
@@ -63,6 +70,10 @@
     {
       "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__contrast",
       "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, parking stop and original camera framing require physical source checks"
+      },
       "measurement_contract": "draft-candidates/contrast/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -77,7 +88,8 @@
             "metric": "max_route_cross_track_error_m",
             "op": ">",
             "threshold": 0.45,
-            "source": "original Native ego pose joined to authored route and map readback"
+            "source": "original Native ego pose joined to authored route and map readback",
+            "failure_condition": "max_route_cross_track_error_m > 0.45"
           },
           "changed_knobs": [
             "route_tracking_lookahead_m"
@@ -91,7 +103,8 @@
             "metric": "parking_endpoint_speed_m_s",
             "op": ">",
             "threshold": 0.3,
-            "source": "original Native velocity at surveyed parking endpoint"
+            "source": "original Native velocity at surveyed parking endpoint",
+            "failure_condition": "parking_endpoint_speed_m_s > 0.3"
           },
           "changed_knobs": [
             "parking_brake_start_m"
@@ -105,7 +118,8 @@
             "metric": "min_ego_pixel_margin_px",
             "op": "<",
             "threshold": 40,
-            "source": "decoded original overview video and original body-mask corners"
+            "source": "decoded original overview video and original body-mask corners",
+            "failure_condition": "min_ego_pixel_margin_px < 40"
           },
           "changed_knobs": [
             "overview_fov_deg"

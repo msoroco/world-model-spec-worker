@@ -22,6 +22,19 @@ def plan(case,candidate):
             "measured_trigger":TRIGGERS.get(candidate),"physical_trigger_observed":False}
 
 
+def parameters(case,candidate):
+    return plan(case,candidate)
+
+
+def controller_parameters(case,candidate):
+    from controller import EngineeringKnobs
+    knobs=plan(case,candidate)['knobs']
+    return EngineeringKnobs(lookahead_base_m=knobs['route_lookahead_m'],
+                            target_speed_mps=5.5,
+                            final_brake_mps2=1.5,
+                            final_margin_m=knobs['parking_brake_start_m']-9.0)
+
+
 def evaluate(candidate,source:Path,expected_sha256:str):
     if candidate not in TRIGGERS:raise ValueError("No fallback trigger")
     if hashlib.sha256(source.read_bytes()).hexdigest()!=expected_sha256:

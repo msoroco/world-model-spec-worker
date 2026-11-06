@@ -1,0 +1,134 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C110454__NRS-484B-450-1c__motor_vehicle_driver",
+  "runtime_manifest_sha256": "0d9a74f44af88236ebed007ae6e020a134b420ad6fe8f2f87c8869184ebee555",
+  "status": "draft_not_selected",
+  "cases": [
+    {
+      "case_id": "training__C110454__NRS-484B-450-1c__motor_vehicle_driver__probe_a",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route/parking, original pixels and exceptions require original observations"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-450-1c-saved-measurement-v1"
+      },
+      "measurement_contract": "draft-candidates/probe_a/measurement-contract.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/probe_a/fallback1/construction.json",
+          "construction_sha256": "f1d9885f4a7a8eea47acf0dbb582ceb7d169dab31c1628984ecdf1b34d61ce85",
+          "trigger": {
+            "metric": "max_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "source": "original Native pose joined to surveyed lane and authored route",
+            "failure_condition": "max_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/probe_a/fallback2/construction.json",
+          "construction_sha256": "a79128ed10501a2721e7af2d198a9af8f2e74aba33e2b9e0e892850a484b2380",
+          "trigger": {
+            "metric": "mean_final_park_speed_m_s",
+            "op": ">",
+            "threshold": 0.2,
+            "source": "original Native velocity during final 2 s at the target footprint",
+            "failure_condition": "mean_final_park_speed_m_s > 0.2"
+          },
+          "changed_knobs": [
+            "parking_brake_margin_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/probe_a/fallback3/construction.json",
+          "construction_sha256": "05c04ad7b7aa99d976888181eb064a185ba4dd3355d56d0e5f0a1d0abfc2d6ef",
+          "trigger": {
+            "metric": "min_vehicle_pixel_margin_px",
+            "op": "<",
+            "threshold": 40,
+            "source": "decoded original synchronized overview video and body mask",
+            "failure_condition": "min_vehicle_pixel_margin_px < 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/probe_a/primary/construction.json",
+      "construction_sha256": "3f82b01a35538315dd7043cde65660052af0a964ee68b1d645ba7ac7e88a9dc3"
+    },
+    {
+      "case_id": "training__C110454__NRS-484B-450-1c__motor_vehicle_driver__probe_b",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route/parking, original pixels and exceptions require original observations"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-450-1c-saved-measurement-v1"
+      },
+      "measurement_contract": "draft-candidates/probe_b/measurement-contract.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/probe_b/fallback1/construction.json",
+          "construction_sha256": "1b74056c8dfdd56049bb85d09d9d4b308460be52c6af6cb0324e34143441405e",
+          "trigger": {
+            "metric": "max_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "source": "original Native pose joined to surveyed lane and authored route",
+            "failure_condition": "max_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/probe_b/fallback2/construction.json",
+          "construction_sha256": "f7eee5d66c0f237fcdbd92ac5be6d7a4141fdfa9611d0d995d418ae25bfdecaa",
+          "trigger": {
+            "metric": "mean_final_park_speed_m_s",
+            "op": ">",
+            "threshold": 0.2,
+            "source": "original Native velocity during final 2 s at the target footprint",
+            "failure_condition": "mean_final_park_speed_m_s > 0.2"
+          },
+          "changed_knobs": [
+            "parking_brake_margin_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/probe_b/fallback3/construction.json",
+          "construction_sha256": "b6f76c7f3108000f3fdbaa572662d5e0370d4f4e7d8f55314b395310eecc7958",
+          "trigger": {
+            "metric": "min_vehicle_pixel_margin_px",
+            "op": "<",
+            "threshold": 40,
+            "source": "decoded original synchronized overview video and body mask",
+            "failure_condition": "min_vehicle_pixel_margin_px < 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/probe_b/primary/construction.json",
+      "construction_sha256": "0f671702bd7c6a525c6bfceef325ead07661b6668f15f216629a894e4841d5a7"
+    }
+  ]
+}

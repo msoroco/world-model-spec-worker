@@ -58,6 +58,8 @@ def main():
     for suffix in ('reference', 'contrast'):
         case_id = ASSIGNMENT + '__' + suffix
         entry = {'case_id':case_id, 'kind':'draft_not_selected',
+                 'candidate_risk':{'status':'physical',
+                     'reason':'Native route tracking, parking stop and original camera framing require physical source checks'},
                  'measurement_contract':f'draft-candidates/{suffix}/measurement-contract.json',
                  'measurement_procedure':{'entrypoint':'finalize.py',
                                           'output_schema':'c110454-saved-analysis-v1'},
@@ -124,7 +126,11 @@ def main():
             if candidate == 'primary':
                 entry.update(ref)
             else:
-                ref['trigger'] = plan['fallback_trigger']
+                ref['trigger'] = plan['fallback_trigger'] | {
+                    'failure_condition':
+                    f"{plan['fallback_trigger']['metric']} {plan['fallback_trigger']['op']} "
+                    f"{plan['fallback_trigger']['threshold']}"
+                }
                 ref['changed_knobs'] = [k for k, v in plan['knobs'].items()
                                         if v != by_key[suffix,'primary']['knobs'][k]]
                 entry['candidates'].append(ref)

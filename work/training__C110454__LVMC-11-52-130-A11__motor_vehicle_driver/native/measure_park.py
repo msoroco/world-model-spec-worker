@@ -22,8 +22,12 @@ def measure(source: Path, expected_sha256: str) -> dict:
     if not isinstance(boundary, (int,float)) or not math.isfinite(boundary):
         raise ValueError("Missing surveyed intersection boundary")
     resting = []
+    first_frame=frames[0].get("native_frame")
+    first_time=frames[0].get("time_s")
+    if type(first_frame) is not int or not isinstance(first_time,(int,float)) or not math.isfinite(first_time):
+        raise ValueError("Original frame/time join differs")
     for i, row in enumerate(frames):
-        if row.get("video_frame") != i or row.get("native_frame") != i or abs(row.get("time_s",-1) - i*.05) > 1e-6:
+        if row.get("video_frame") != i or row.get("native_frame") != first_frame+i or abs(row.get("time_s",-1) - first_time-i*.05) > 1e-6:
             raise ValueError("Original frame/time join differs")
         body = row.get("body_xy_m")
         if not isinstance(body,list) or len(body)!=4 or any(not isinstance(p,list) or len(p)!=2 or any(not isinstance(v,(int,float)) or not math.isfinite(v) for v in p) for p in body):
