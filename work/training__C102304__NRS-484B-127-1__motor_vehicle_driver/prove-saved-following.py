@@ -31,7 +31,7 @@ def source_hashes(folder):
             if path.is_file() and path.name not in ('result.json','analysis-report.json')}
 
 
-def make_base(destination, suffix, env):
+def make_base(destination, suffix, env, full_resolution=False):
     destination.mkdir()
     (destination/'capture/native').mkdir(parents=True)
     (destination/'channels').mkdir()
@@ -96,8 +96,9 @@ def make_base(destination, suffix, env):
                     'road.xodr': sha(destination/'road.xodr')},
         'synthetic_diagnostic': True})+'\n')
     for camera in config['cameras']:
+        size = f"{camera['width']}x{camera['height']}" if full_resolution else '32x32'
         subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
-            '-f','lavfi','-i','color=c=black:s=32x32:r=20:d=45',
+            '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=45',
             '-frames:v','900','-c:v','ffv1',str(destination/(camera['name']+'.mkv'))],
             check=True,env=env,timeout=120)
     return construction, config

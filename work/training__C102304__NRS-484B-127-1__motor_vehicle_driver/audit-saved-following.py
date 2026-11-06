@@ -45,6 +45,7 @@ def inspect(record):
         assert m['video_frame'] == i and m['carla_frame'] == frame
         assert all(abs(row_time-time)<1e-9 for row_time in
                    (sample['time_s'],t['time_s'],e['recording_time_s'],m['time_s']))
+        assert e['synthetic_diagnostic'] is True and t['synthetic_diagnostic'] is True
         ego, lead = sample['ego'], sample['lead']
         assert ego['native_road_id'] == lead['native_road_id'] == 1
         assert ego['native_lane_id'] == lead['native_lane_id'] == -1
