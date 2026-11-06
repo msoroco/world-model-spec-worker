@@ -11,6 +11,7 @@ import json
 import math
 from pathlib import Path
 import queue
+import shutil
 import subprocess
 import sys
 import traceback
@@ -117,6 +118,8 @@ def execute(config, output, host, port):
     import carla
     import numpy as np
     from pipeline_capture import PipelineCapture
+    from worker_exchange.media import compose_four_views
+    from worker_exchange.native_output import seal_capture
     from worker_exchange.world_restore import snapshot,restore
     check(config)
     output=Path(output).resolve()
@@ -128,7 +131,7 @@ def execute(config, output, host, port):
     if saved["settings"].synchronous_mode or [a for a in prior_world.get_actors()
         if a.type_id.startswith(("vehicle.","walker.","sensor.","controller."))]:
         raise RuntimeError("Requires exclusive idle asynchronous world ownership")
-    owned=[];encoders={};encoder_logs={};camera_queues={};channels={}
+    owned=[];encoders={};encoder_logs={};encoder_exit_codes={};camera_queues={};channels={}
     capture=None;changed=False;error=None;frames=0;restored=None
     try:
         world=client.generate_opendrive_world(open_drive(),carla.OpendriveGenerationParameters(
@@ -249,13 +252,17 @@ def execute(config, output, host, port):
         error={"type":type(exc).__name__,"message":str(exc),"traceback":traceback.format_exc()}
     finally:
         for stream in channels.values():stream.close()
+        if error is None:
+            try:shutil.copytree(output/"channels",output/"source_channels")
+            except BaseException as exc:error={"source_channel_copy_error":str(exc)}
         if capture is not None:
             try:capture.close(confirmed=error is None)
             except BaseException as exc:error=error or {"capture_close_error":str(exc)}
         for name,encoder in encoders.items():
             try:
                 encoder.stdin.close()
-                if encoder.wait(timeout=180)!=0:raise RuntimeError("Lossless encoder failed: "+name)
+                encoder_exit_codes[name]=encoder.wait(timeout=180)
+                if encoder_exit_codes[name]!=0:raise RuntimeError("Lossless encoder failed: "+name)
             except BaseException as exc:error=error or {"encoder_error":str(exc)}
             encoder_logs[name].close()
         for actor in reversed(owned):
@@ -266,12 +273,29 @@ def execute(config, output, host, port):
         if changed:
             try:restored=restore(client,saved)
             except BaseException as exc:error=error or {"world_restore_error":str(exc)}
+        if error is None and frames==480:
+            try:
+                sources={name:output/(name+".mkv") for name in
+                    ("overview","approach","reference_corner","driver_reference")}
+                composed=compose_four_views(sources,output/"video_frames.jsonl",output/"raw.mkv")
+                write_new(output/"four-view-receipt.json",composed)
+            except BaseException as exc:error={"four_view_composition_error":str(exc)}
+        if error is None and frames==480:
+            try:
+                seal_capture(output,frames=frames,restoration=restored,errors=[],
+                    encoder_exit_codes=encoder_exit_codes,
+                    context={"case_id":config["case_id"],"candidate_id":config["candidate_id"],
+                             "physical_acceptance_claimed":False})
+            except BaseException as exc:error={"capture_seal_error":str(exc)}
         write_new(output/"native-capture-report.json",{
             "case_id":config["case_id"],"candidate_id":config["candidate_id"],
             "frames":frames,"expected_frames":config["duration_s"]*config["rate_hz"],
             "restoration":restored,"error":error,"accepted":False,
             "required_saved_checks":["actual original pixels","Native body and lane joins",
                 "exact full video/trace frame mapping","measured turn completion","independent audit"]})
+        write_new(output/"native-run-status.json",{
+            "errors":[] if error is None else [error],"frames":frames,
+            "restoration":restored,"accepted":False})
     if error:raise RuntimeError("Native attempt failed; see native-capture-report.json: "+str(error))
 
 
