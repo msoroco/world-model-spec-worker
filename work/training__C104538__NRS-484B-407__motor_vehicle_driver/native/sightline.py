@@ -2,8 +2,11 @@
 from __future__ import annotations
 
 import math
+import hashlib
+import json
+from pathlib import Path
 from geometry import (FT_M, OBSERVER_DISTANCES_FT, RADIUS_M, TURN_STATION_M,
-                      center_xy, check, obstruction_radius_for_limit,
+                      center_xy, check, obstruction_radius_for_limit, open_drive,
                       reference_limit_ft, road_height)
 
 
@@ -50,3 +53,32 @@ def measure_case(suffix: str) -> dict:
             "actual_vehicle_visibility_proven": False,
             "legal_verdict_claimed": False,
             "scope": "authored center-reference geometry; no Native body, driver-eye or pixel proof"}
+
+
+def measure_source(road_path: Path, obstruction_path: Path, suffix: str) -> dict:
+    road_path = Path(road_path)
+    obstruction_path = Path(obstruction_path)
+    for path in (road_path, obstruction_path):
+        if not path.is_file():
+            raise ValueError("Missing required source: " + path.name)
+    road_bytes = road_path.read_bytes()
+    if road_bytes != open_drive().encode():
+        raise ValueError("Authored road source differs")
+    obstruction = json.loads(obstruction_path.read_text())
+    if obstruction.get('road_xodr_sha256') != hashlib.sha256(road_bytes).hexdigest():
+        raise ValueError("Obstruction road source hash differs")
+    if obstruction.get('case_suffix') != suffix or suffix not in OBSERVER_DISTANCES_FT:
+        raise ValueError("Obstruction case identity differs")
+    radius = obstruction.get('inner_radius_m')
+    if isinstance(radius, bool) or not isinstance(radius, (int, float)):
+        raise ValueError("Invalid authored obstruction radius")
+    measured = reference_limit_ft(radius)
+    rays = [sight_ray(500, direction, radius) for direction in (-1, 1)]
+    return {'format': 'c104538-source-sightline-v1',
+            'case_suffix': suffix, 'authored_reference_limit_ft': measured,
+            'requested_reference_limit_ft': OBSERVER_DISTANCES_FT[suffix],
+            'statutory_probe_distance_ft': 500, 'rays_at_500_ft': rays,
+            'source_hashes': {road_path.name: hashlib.sha256(road_bytes).hexdigest(),
+                              obstruction_path.name: hashlib.sha256(obstruction_path.read_bytes()).hexdigest()},
+            'native_loaded': False, 'physical_visibility_measured': False,
+            'vehicle_body_visibility_proven': False, 'legal_verdict_claimed': False}
