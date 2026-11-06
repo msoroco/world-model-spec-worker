@@ -12,6 +12,11 @@ class CandidateKnobsTest(unittest.TestCase):
                 for key in common:
                     self.assertEqual({str(p[key]) for p in plans.values()},{str(plans["primary"][key])})
                 base=plans["primary"]
+                for plan in plans.values():
+                    self.assertEqual(plan['native_route_xy_m'],
+                                     [[x,-y] for x,y in plan['authored_route_xy_m']])
+                    self.assertEqual(plan['native_route_xy_m'][0][1],-plan['comparison_lateral_m'])
+                    self.assertLess(plan['native_route_xy_m'][-1][1],-7)
                 self.assertNotEqual(plans["fallback1"]["native_route_xy_m"],base["native_route_xy_m"])
                 self.assertEqual(plans["fallback1"]["controller_knobs"],base["controller_knobs"])
                 self.assertEqual(plans["fallback1"]["cameras"],base["cameras"])

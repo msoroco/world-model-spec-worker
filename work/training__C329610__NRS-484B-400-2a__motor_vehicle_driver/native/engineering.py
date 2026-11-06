@@ -11,7 +11,9 @@ def parameters(case_suffix, candidate_id):
         raise ValueError("Unknown candidate")
     turn_entry_x = -10 if candidate_id == "fallback1" else -7
     authored_route = route(CASE_PLACEMENTS[case_suffix], turn_entry_x_m=turn_entry_x)
-    native_route = [[x,-y] for x,y in authored_route]
+    # CARLA's OpenDRIVE lane transform reflects Y into its Native world frame.
+    # See https://carla.org/Doxygen/html/dc/d13/Lane_8cpp_source.html
+    native_route = [[x, -y] for x, y in authored_route]
     knobs = EngineeringKnobs(lookahead_base_m=3.0 if candidate_id == "fallback2" else 4.0)
     return {"authored_route_xy_m":authored_route,
             "native_route_xy_m":native_route,
