@@ -1,7 +1,10 @@
 """Check distinct unselected plans and measured-trigger rejection semantics."""
+import json
+from pathlib import Path
 import unittest
 
 from engineering import CANDIDATES, TRIGGERS, ego_velocity_request, parameters, trigger
+from runner import cameras, check
 
 
 class EngineeringTests(unittest.TestCase):
@@ -32,6 +35,16 @@ class EngineeringTests(unittest.TestCase):
         self.assertLess(ego_velocity_request(fallback, 8), ego_velocity_request(primary, 8))
         with self.assertRaises(ValueError):
             ego_velocity_request(primary, 0)
+
+    def test_exact_runner_preflight_and_camera_mount(self):
+        parent = Path(__file__).resolve().parent
+        source = parent/'config.json' if (parent/'config.json').is_file() else parent.parent/'config.json'
+        config = json.loads(source.read_text())
+        result = check(config)
+        self.assertFalse(result['native_imported'])
+        self.assertFalse(result['physical_success_claimed'])
+        self.assertEqual(len(result['camera_names']), 4)
+        self.assertGreater(cameras('fallback3')[0]['fov_deg'], cameras('primary')[0]['fov_deg'])
 
 
 if __name__ == '__main__':

@@ -32,8 +32,8 @@ def parameters(case_suffix, candidate):
 
 
 TRIGGERS = {
-    'fallback1': {'source': 'original Native actor spawn and full-body samples',
-                  'metric': 'minimum_spawn_body_clearance_m', 'threshold': 2.0},
+    'fallback1': {'source': 'original Native spawn body and surveyed crest location',
+                  'metric': 'spawn_to_crest_distance_m', 'threshold': 85.0},
     'fallback2': {'source': 'original Native body and route samples',
                   'metric': 'maximum_gap_tracking_error_m', 'threshold': 2.0},
     'fallback3': {'source': 'independent original-pixel lead-body visibility audit',

@@ -29,8 +29,9 @@ def recording():
               'reference_frame': 'Native map, actor bodies and original frame',
               'uncertainty': 'Frame interval 50 ms; original pose/body and pixel validation required'}
               for name, (unit, method) in methods.items()],
-            'context_inputs': [{'name': 'traffic_highway_surface_visibility', 'unit': 'structured',
-              'method': 'Native map/weather/actor inventory and independent legal/pixel review'}],
+            'context_inputs': [{'name': name, 'unit': 'structured',
+              'method': 'Native map/weather/actor inventory and independent legal/pixel review'}
+              for name in ('traffic','surface','visibility','highway_public_availability')],
             'limitations': ['Numeric gaps/headways are descriptive, never a reasonable/prudent cutoff',
                             'OpenDRIVE geometry does not prove public highway availability',
                             'Commanded velocities and camera mounts require physical and saved audit']}
@@ -88,8 +89,8 @@ def build():
                 entry.update(ref)
             else:
                 trigger = {
-                    'fallback1': ('original Native actor spawn and full-body samples',
-                        'minimum_spawn_body_clearance_m', 'clearance < 2.0 m',
+                    'fallback1': ('original Native spawn body and surveyed crest location',
+                        'spawn_to_crest_distance_m', 'distance < 85.0 m',
                         'ego spawn 15 m farther before crest'),
                     'fallback2': ('original Native body and route samples',
                         'maximum_gap_tracking_error_m', 'error > 2.0 m',

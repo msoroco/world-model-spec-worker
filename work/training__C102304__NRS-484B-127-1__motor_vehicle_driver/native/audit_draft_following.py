@@ -79,10 +79,10 @@ def main():
         for pa, pb in zip(a['lead']['native_body_xy_m'], b['lead']['native_body_xy_m']):
             assert abs(pb[0]-pa[0]-15) < 1e-9 and pa[1] == pb[1]
     summary = json.loads((SAVED/'summary.json').read_text())
-    assert len(summary['negatives']) == 4 and all(x['rejected'] for x in summary['negatives'])
+    assert len(summary['negatives']) == 6 and all(x['rejected'] for x in summary['negatives'])
     print(json.dumps({'audit': 'pass', 'paired_frames': len(first),
                       'fixed_ego_and_context': True, 'controlled_lead_shift_m': 15,
-                      'negative_rejections': 4}, sort_keys=True))
+                      'negative_rejections': 6}, sort_keys=True))
 
 
 if __name__ == '__main__':

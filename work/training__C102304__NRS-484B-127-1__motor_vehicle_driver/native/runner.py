@@ -47,6 +47,9 @@ def check(config):
     profile = cameras(candidate)
     if [(c['width'], c['height']) for c in profile] != [(1920,1080),(1280,720),(1280,720),(1280,720)]:
         raise ValueError('Four-view capture profile changed')
+    if [(c['name'],c['width'],c['height']) for c in config['cameras']] != [
+            (c['name'],c['width'],c['height']) for c in profile]:
+        raise ValueError('Declared and executed camera contracts differ')
     return {'authored_geometry': geometry, 'engineering': plan,
             'camera_names': [c['name'] for c in profile],
             'native_imported': False, 'physical_success_claimed': False}
@@ -101,7 +104,7 @@ def execute(config, output, host, port):
     if state['settings'].synchronous_mode or any(a.type_id.startswith(('vehicle.', 'walker.', 'sensor.'))
                                                    for a in prior.get_actors()):
         raise RuntimeError('Exclusive idle asynchronous world ownership required')
-    owned, encoders, encoder_logs, camera_queues = [], {}, {}, {}
+    owned, encoders, encoder_logs, camera_queues, channels = [], {}, {}, {}, {}
     capture = None
     changed = False
     error = None
@@ -175,6 +178,9 @@ def execute(config, output, host, port):
                 stderr=encoder_logs[spec['name']])
         capture = PipelineCapture(client, ego, output, config['case_id'],
                                   visibility=False, required_observations=config.get('required_atoms', []))
+        (output/'channels').mkdir()
+        for item in config['recording_description']['channels']:
+            channels[item['name']] = (output/'channels'/(item['name']+'.jsonl')).open('x')
         start = world.get_snapshot().timestamp.elapsed_seconds
         with (output/'native_samples.jsonl').open('x') as samples, \
              (output/'video_frames.jsonl').open('x') as video_frames:
@@ -192,6 +198,22 @@ def execute(config, output, host, port):
                                                        'lead': plan['lead_target_speed_mps']}}
                 samples.write(json.dumps(observed, allow_nan=False)+'\n')
                 capture.capture(frame, time_s, extra={'c102304_native': observed})
+                ego_sample, lead_sample = observed['ego'], observed['lead']
+                bumper_gap = min(v[0] for v in lead_sample['native_body_xy_m'])-max(
+                    v[0] for v in ego_sample['native_body_xy_m'])
+                values = {
+                    'kin.speed': {'ego_mps': ego_sample['speed_mps'], 'lead_mps': lead_sample['speed_mps']},
+                    'st.lane': {'ego': [ego_sample['native_road_id'], ego_sample['native_lane_id']],
+                                'lead': [lead_sample['native_road_id'], lead_sample['native_lane_id']]},
+                    'rel.surface_gap': {'longitudinal_bumper_gap_m': bumper_gap,
+                                        'source': 'original Native four-vertex bodies'},
+                    'rel.ahead_behind_in_lane': {'ego_behind_lead': bumper_gap > 0,
+                        'same_lane': ego_sample['native_road_id'] == lead_sample['native_road_id'] and
+                                     ego_sample['native_lane_id'] == lead_sample['native_lane_id']},
+                    'native_body_pose_control': observed,
+                    'camera_frame_join': {'native_frame': frame, 'video_frame': index}}
+                for name, stream in channels.items():
+                    stream.write(json.dumps({'time_s': time_s, 'value': values[name]}, allow_nan=False)+'\n')
                 for spec in cameras(config['candidate_id']):
                     image = camera_queues[spec['name']].get(timeout=30)
                     while image.frame < frame:
@@ -216,6 +238,8 @@ def execute(config, output, host, port):
     except BaseException as exc:
         error = {'type': type(exc).__name__, 'message': str(exc), 'traceback': traceback.format_exc()}
     finally:
+        for stream in channels.values():
+            stream.close()
         if capture is not None:
             try:
                 capture.close(confirmed=error is None)

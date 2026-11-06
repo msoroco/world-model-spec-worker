@@ -87,10 +87,14 @@ def main():
     bad_lane[10]['lead']['native_lane_id'] = 1
     missing_context = context()
     del missing_context['traffic']
+    native_without_provenance = context()
+    native_without_provenance['source_kind'] = 'native_observation'
     negatives = [rejected('missing_samples', None, context()),
                  rejected('stationary_lead', bad_lead, context()),
                  rejected('wrong_lead_lane', bad_lane, context()),
-                 rejected('missing_traffic_context', rows, missing_context)]
+                 rejected('missing_traffic_context', rows, missing_context),
+                 rejected('truncated_following_interval', rows[:100], context()),
+                 rejected('native_context_without_provenance', rows, native_without_provenance)]
     summary = {'scope': 'authored synthetic only; no Native realization or legal finding',
                'geometry': geometry, 'measurements': reports, 'negatives': negatives}
     (OUT/'summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True)+'\n')

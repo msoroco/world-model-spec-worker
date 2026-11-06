@@ -6,7 +6,7 @@ from pathlib import Path
 import statistics
 
 RATE_HZ = 20
-MIN_FOLLOW_FRAMES = 100
+MIN_FOLLOW_FRAMES = RATE_HZ*45
 
 
 def sha(path):
@@ -52,8 +52,8 @@ def measure(samples_path, context_path):
             type(context.get('observed_frame_count')) is not int):
         raise ValueError('Native context lacks original map/frame provenance')
     rows = [json.loads(line) for line in samples_path.read_text().splitlines() if line.strip()]
-    if len(rows) < MIN_FOLLOW_FRAMES:
-        raise ValueError('Too few original following samples')
+    if len(rows) != MIN_FOLLOW_FRAMES:
+        raise ValueError('Full 45-second original following source required')
     if context['source_kind'] == 'native_observation' and context['observed_frame_count'] != len(rows):
         raise ValueError('Native context frame count differs from original samples')
     frames, times, gaps, headways, speeds, lead_speeds = [], [], [], [], [], []
