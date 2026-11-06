@@ -12,6 +12,7 @@ SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','controller.py':'co
          'engineering.py':'engineering.py',
          'measure.py':'measure.py','finalize.py':'finalize.py','cameras.py':'cameras.py',
          'fallback_triggers.py':'fallback_triggers.py',
+         'pixel_visibility.py':'pixel_visibility.py',
          'native_route_link.py':'native_route_link.py',
          'tests/test_geometry.py':'test_geometry.py',
          'tests/test_controller.py':'test_controller.py',
@@ -20,7 +21,9 @@ SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','controller.py':'co
          'tests/test_finalize.py':'test_finalize.py',
          'tests/test_cameras.py':'test_cameras.py',
          'tests/test_fallback_triggers.py':'test_fallback_triggers.py',
-         'tests/test_native_route_link.py':'test_native_route_link.py'}
+         'tests/test_pixel_visibility.py':'test_pixel_visibility.py',
+         'tests/test_native_route_link.py':'test_native_route_link.py',
+         'tests/test_runner_survey.py':'test_runner_survey.py'}
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()

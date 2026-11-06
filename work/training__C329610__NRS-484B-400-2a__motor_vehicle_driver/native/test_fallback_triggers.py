@@ -1,87 +1,84 @@
-import json
+"""Synthetic source-bound fallback tests; no original pixel observations."""
 import hashlib
+import json
 import tempfile
 import unittest
 from pathlib import Path
 
 from fallback_triggers import evaluate
+from pixel_visibility import measure
+
+
+def write(path, value):
+    path.write_text(json.dumps(value) + '\n')
+
+
+def sealed_route(samples, geometry, **changes):
+    route = {'source_kind': 'native_map_readback', 'connected_lane_link': True,
+             'full_body_destination_exit_observed_by_24s': True,
+             'native_samples_sha256': hashlib.sha256(samples.read_bytes()).hexdigest(),
+             'road_geometry_sha256': hashlib.sha256(geometry.read_bytes()).hexdigest(),
+             'native_map_sha256': '0' * 64}
+    route.update(changes)
+    return route
 
 
 class TriggerTests(unittest.TestCase):
-    @staticmethod
-    def sealed_route(samples, geometry, **changes):
-        route = {"source_kind": "native_map_readback", "connected_lane_link": True,
-                 "full_body_destination_exit_observed_by_24s": True,
-                 "native_samples_sha256": hashlib.sha256(samples.read_bytes()).hexdigest(),
-                 "road_geometry_sha256": hashlib.sha256(geometry.read_bytes()).hexdigest(),
-                 "native_map_sha256": "0" * 64}
-        route.update(changes)
-        return route
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        folder = Path(temp.name)
+        self.samples = folder/'native_samples.jsonl'
+        self.geometry = folder/'road_geometry.json'
+        self.route = folder/'route_audit.json'
+        self.pixels = folder/'pixel_audit.json'
+        self.mapping = folder/'video_frames.jsonl'
+        self.video = folder/'approach.mkv'
+        self.review = folder/'pixel_review.jsonl'
+        write(self.samples, {'native_center_xy_m': [-20, -1.75], 'native_frame': 100, 'time_s': .05})
+        write(self.geometry, {'native_map_sha256': '0' * 64})
+        write(self.route, sealed_route(self.samples, self.geometry))
+        write(self.mapping, {'video_frame': 0, 'native_frame': 100, 'time_s': .05})
+        self.video.write_bytes(b'synthetic camera source; not decoded')
+        self.mark(True)
+
+    def mark(self, visible):
+        write(self.review, {'video_frame': 0, 'native_frame': 100,
+                            'body_visible': visible, 'centerline_visible': True})
+        write(self.pixels, measure(self.samples, self.mapping, self.video, self.review))
+
+    def trigger(self):
+        return evaluate(self.samples, self.geometry, self.route, self.pixels, -1.75)
 
     def test_thresholds_and_independent_failures(self):
-        with tempfile.TemporaryDirectory() as temp:
-            folder = Path(temp)
-            samples = folder / "native_samples.jsonl"
-            geometry = folder / "road_geometry.json"
-            route = folder / "native_route_audit.json"
-            pixels = folder / "original_pixel_audit.json"
-            samples.write_text(json.dumps({"native_center_xy_m": [-20, -1.75]}) + "\n")
-            geometry.write_text(json.dumps({"native_map_sha256": "0" * 64}))
-            good_route = self.sealed_route(samples, geometry)
-            good_pixels = {"source_kind": "original_camera_pixels",
-                           "body_and_centerline_visible_frames": 95, "approach_frames": 100}
-            route.write_text(json.dumps(good_route)); pixels.write_text(json.dumps(good_pixels))
-            self.assertEqual([evaluate(samples, geometry, route, pixels, -1.75)[key]
-                              for key in ("fallback1", "fallback2", "fallback3")],
-                             [False, False, False])
-            route.write_text(json.dumps(dict(good_route, connected_lane_link=False)))
-            self.assertTrue(evaluate(samples, geometry, route, pixels, -1.75)["fallback1"])
-            route.write_text(json.dumps(good_route))
-            samples.write_text(json.dumps({"native_center_xy_m": [-20, -2.11]}) + "\n")
-            route.write_text(json.dumps(self.sealed_route(samples, geometry)))
-            self.assertTrue(evaluate(samples, geometry, route, pixels, -1.75)["fallback2"])
-            samples.write_text(json.dumps({"native_center_xy_m": [-20, -1.75]}) + "\n")
-            route.write_text(json.dumps(self.sealed_route(samples, geometry)))
-            pixels.write_text(json.dumps(dict(good_pixels, body_and_centerline_visible_frames=94)))
-            self.assertTrue(evaluate(samples, geometry, route, pixels, -1.75)["fallback3"])
+        self.assertEqual([self.trigger()[key] for key in ('fallback1','fallback2','fallback3')],
+                         [False, False, False])
+        write(self.route, sealed_route(self.samples, self.geometry, connected_lane_link=False))
+        self.assertTrue(self.trigger()['fallback1'])
+        write(self.route, sealed_route(self.samples, self.geometry))
+        write(self.samples, {'native_center_xy_m': [-20, -2.11], 'native_frame': 100, 'time_s': .05})
+        write(self.route, sealed_route(self.samples, self.geometry))
+        self.mark(True)
+        self.assertTrue(self.trigger()['fallback2'])
+        write(self.samples, {'native_center_xy_m': [-20, -1.75], 'native_frame': 100, 'time_s': .05})
+        write(self.route, sealed_route(self.samples, self.geometry))
+        self.mark(False)
+        self.assertTrue(self.trigger()['fallback3'])
 
     def test_unobserved_source_rejected(self):
-        with tempfile.TemporaryDirectory() as temp:
-            folder = Path(temp)
-            samples = folder / "native_samples.jsonl"
-            geometry = folder / "road_geometry.json"
-            route = folder / "native_route_audit.json"
-            pixels = folder / "original_pixel_audit.json"
-            samples.write_text(json.dumps({"native_center_xy_m": [-20, -1.75]}) + "\n")
-            geometry.write_text(json.dumps({"native_map_sha256": "0" * 64}))
-            route.write_text(json.dumps(self.sealed_route(samples, geometry,
-                                          source_kind="authored_request")))
-            pixels.write_text(json.dumps({"source_kind": "original_camera_pixels",
-                                          "body_and_centerline_visible_frames": 1, "approach_frames": 1}))
-            with self.assertRaisesRegex(ValueError, "original-source"):
-                evaluate(samples, geometry, route, pixels, -1.75)
+        write(self.route, sealed_route(self.samples, self.geometry, source_kind='authored_request'))
+        with self.assertRaisesRegex(ValueError, 'original-source'):
+            self.trigger()
 
     def test_changed_sources_reject(self):
-        with tempfile.TemporaryDirectory() as temp:
-            folder = Path(temp)
-            samples = folder / "native_samples.jsonl"
-            geometry = folder / "road_geometry.json"
-            route = folder / "route_audit.json"
-            pixels = folder / "pixel_audit.json"
-            samples.write_text(json.dumps({"native_center_xy_m": [-20, -1.75]}) + "\n")
-            geometry.write_text(json.dumps({"native_map_sha256": "0" * 64}))
-            route.write_text(json.dumps(self.sealed_route(samples, geometry)))
-            pixels.write_text(json.dumps({"source_kind": "original_camera_pixels",
-                                          "body_and_centerline_visible_frames": 1,
-                                          "approach_frames": 1}))
-            samples.write_text(json.dumps({"native_center_xy_m": [-20, -2.0]}) + "\n")
-            with self.assertRaisesRegex(ValueError, "source hash mismatch"):
-                evaluate(samples, geometry, route, pixels, -1.75)
-            samples.write_text(json.dumps({"native_center_xy_m": [-20, -1.75]}) + "\n")
-            geometry.write_text(json.dumps({"native_map_sha256": "1" * 64}))
-            with self.assertRaisesRegex(ValueError, "source hash mismatch"):
-                evaluate(samples, geometry, route, pixels, -1.75)
+        write(self.samples, {'native_center_xy_m': [-20, -2.0], 'native_frame': 100, 'time_s': .05})
+        with self.assertRaisesRegex(ValueError, 'source or count mismatch'):
+            self.trigger()
+        write(self.samples, {'native_center_xy_m': [-20, -1.75], 'native_frame': 100, 'time_s': .05})
+        write(self.geometry, {'native_map_sha256': '1' * 64})
+        with self.assertRaisesRegex(ValueError, 'source hash mismatch'):
+            self.trigger()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

@@ -3,6 +3,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from pixel_visibility import verify as verify_pixel_review
 
 
 def rows(path):
@@ -24,7 +25,7 @@ def evaluate(samples_path, geometry_path, route_audit_path, pixel_audit_path,
     samples = rows(samples_path)
     geometry = json.loads(Path(geometry_path).read_text())
     route = json.loads(Path(route_audit_path).read_text())
-    pixels = json.loads(Path(pixel_audit_path).read_text())
+    pixels = verify_pixel_review(pixel_audit_path, samples_path)
     if route.get("source_kind") != "native_map_readback" or \
        pixels.get("source_kind") != "original_camera_pixels":
         raise ValueError("Trigger audits need declared original-source kinds")
