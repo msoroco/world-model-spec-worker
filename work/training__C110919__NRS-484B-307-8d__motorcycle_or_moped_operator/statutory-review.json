@@ -1,0 +1,80 @@
+{
+  "format": "worker-statutory-branch-review-v1",
+  "assignment_id": "training__C110919__NRS-484B-307-8d__motorcycle_or_moped_operator",
+  "source_refs": [
+    "inputs/training__C110919__NRS-484B-307-8d__motorcycle_or_moped_operator/assignment.json",
+    "inputs/coverage/branch-sources.json",
+    "inputs/training__C110919__NRS-484B-307-8d__motorcycle_or_moped_operator/witnesses.json"
+  ],
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "right_turn",
+    "control": "traffic_light",
+    "actor": "motorcycle_or_moped_operator"
+  },
+  "branches": [
+    {
+      "id": "governing_steady_red",
+      "source_topics": [
+        "text-0"
+      ],
+      "cell_fit": "selected_same_cell_right_turn",
+      "cpu_draft_evidence": "authored ego signal 601; synthetic 480 steady-red frames",
+      "remaining_exact_evidence": "Native governing direction, signal state and original pixels",
+      "status": "unproven"
+    },
+    {
+      "id": "qualified_motorcycle_stop_and_right_turn",
+      "source_topics": [
+        "text-1"
+      ],
+      "cell_fit": "selected_same_cell_right_turn",
+      "cpu_draft_evidence": "vehicle.kawasaki.ninja runner; synthetic full halt before y=-14 and right turn in both cases",
+      "remaining_exact_evidence": "Native two-wheel blueprint, full body stop and destination turn",
+      "status": "unproven"
+    },
+    {
+      "id": "two_complete_cycles_and_signal_nonresponse",
+      "source_topics": [
+        "text-2"
+      ],
+      "cell_fit": "selected_same_cell_right_turn",
+      "cpu_draft_evidence": "cross-signal 602; phase transitions count A two versus B one; held-red and detector-withhold command recorded",
+      "remaining_exact_evidence": "Native phase/source readback, actual nonresponse causal evidence and timing before turn",
+      "status": "unproven"
+    },
+    {
+      "id": "no_other_turn_prohibition",
+      "source_topics": [
+        "text-3"
+      ],
+      "cell_fit": "selected_same_cell_right_turn",
+      "cpu_draft_evidence": "authored no-turn-sign survey and synthetic per-frame negative",
+      "remaining_exact_evidence": "Native scene survey and original pixel verification of prohibiting devices",
+      "status": "unproven"
+    },
+    {
+      "id": "yield_to_pedestrians_and_other_traffic",
+      "source_topics": [
+        "text-4"
+      ],
+      "cell_fit": "selected_same_cell_right_turn",
+      "cpu_draft_evidence": "synthetic pedestrian and cross-traffic conflict windows fixed across pair",
+      "remaining_exact_evidence": "Native actor identities, directed movement, conflict occupancy and observed ego clearance",
+      "status": "unproven"
+    },
+    {
+      "id": "motorcycle_right_turn_failed_detection_witness",
+      "source_topics": [
+        "reviewed-scope-0"
+      ],
+      "cell_fit": "selected_same_cell_right_turn",
+      "cpu_draft_evidence": "frozen witness and same-cell A/B synthetic right turn with cycle-count variable",
+      "remaining_exact_evidence": "strict selected CPU proof and physical failure cause",
+      "status": "unproven"
+    }
+  ],
+  "scope_disposition": "Straight and left turns are statutory alternatives outside the frozen right_turn maneuver. This comparison covers only the failed-detection motorcycle right-turn witness; neither synthetic trace proves the malfunction or failure cause.",
+  "cpu_readiness": false,
+  "physical_observation_claimed": false
+}

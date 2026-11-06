@@ -13,12 +13,13 @@
     "actor": "motorcycle_or_moped_operator"
   },
   "law_conditions": {
-    "signal": "Governing steady red alone at approach and entry",
-    "full_halt": "Observed speed <= 0.05 m/s for at least 10 consecutive 20 Hz frames while the front remains before y=-14 m, before first line crossing",
-    "right_turn_permission": "Extreme right approach lane, intersecting two-way road, and full halt before turn",
-    "yield": "Ego does not enter pedestrian conflict before pedestrian clearance; original actor identity and clearance measurement required",
-    "excluded_alternative": "Left turn on red requires one-way-left topology and conflicts with frozen right-turn cell; no coverage claim",
-    "nearest_halt_reference": "Authored stop line at y=-14 m before nearest-side crosswalk at y=-11 m; original Native map readback and pixels required"
+    "signal": "Ego governing steady red held for all sampled frames; cross-signal observed green-yellow-red-green transitions count complete cycles",
+    "qualified_actor": "Native vehicle.kawasaki.ninja motorcycle type and two-wheel physics readback",
+    "full_halt": "At least 10 consecutive 20 Hz frames with speed <=0.05 m/s and motorcycle front before y=-14 m prior to crossing",
+    "failed_detection": "Explicit held-red and withheld-detector-request command recorded; physical causal malfunction remains unproven until Native run and independent review",
+    "conditional_permission": "Two complete cross-signal cycles while ego red before turn, no turn-prohibiting device, and yield to pedestrians and other traffic",
+    "controlled_negative": "Condition B stops and yields identically but enters after one complete cycle",
+    "nearest_halt_reference": "Authored stop line y=-14 m; Native map and body readback required"
   },
   "frame_contract": {
     "rate_hz": 20,
@@ -31,20 +32,24 @@
       "ego_speed_m_s",
       "signal_state",
       "signal_governs_ego",
-      "approach_lane",
-      "intersecting_road",
+      "cross_signal_state",
+      "declared_complete_cycles",
+      "fault_injection_command",
+      "actor_blueprint",
+      "turn_prohibition_present",
       "pedestrian_conflict_occupied",
+      "cross_traffic_conflict_occupied",
       "ego_turn_entered"
     ],
-    "body_front_offset_m": 2.6,
-    "body_offset_status": "Prospective blueprint proxy; original vehicle bounding box must replace it"
+    "body_front_offset_m": 1.25,
+    "body_offset_status": "Synthetic motorcycle proxy; Native body vertices replace it"
   },
   "controlled_pair": {
     "cases": [
       "condition_a",
       "condition_b"
     ],
-    "variable": "halt_before_right_turn_on_red",
+    "variable": "two_complete_signal_cycles_waited_before_right_turn",
     "fixed": [
       "cell",
       "actor",
@@ -53,14 +58,17 @@
       "pedestrian occupancy",
       "weather",
       "camera profile",
-      "turn and yield commands"
+      "turn and yield commands",
+      "complete halt",
+      "pedestrian and traffic yield",
+      "turn prohibition absence"
     ],
     "synthetic_condition_a_expected": true,
     "synthetic_condition_b_expected": false
   },
   "fallbacks": {
     "fallback1": "max route cross-track error > 0.45 m from original Native ego pose and map route",
-    "fallback2": "minimum pedestrian clearance < 1.0 s from original actor conflict times",
+    "fallback2": "second complete cross-signal cycle frame > 280 from original Native cross-signal phases joined to ego red",
     "fallback3": "minimum signal or body pixel margin < 40 px in decoded original overview video"
   },
   "scope": "Authored CPU construction and synthetic saved-path proof only; not Native readback, original pixels, physical trigger observations, statutory outcome, or accepted recording"

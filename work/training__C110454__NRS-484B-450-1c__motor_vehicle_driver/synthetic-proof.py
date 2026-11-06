@@ -27,6 +27,9 @@ def sample(suffix: str, index: int) -> dict:
             "time_s": index / 20, "body_xy_m": body(x),
             "speed_m_s": 4.0 if index < 240 else 0.0,
             "native_intersection_survey": True,
+            "exception_source": {"other_traffic_actor_count": 0,
+                                 "native_signal_count": 0,
+                                 "authored_law_direction_count": 0},
             "exceptions": {"traffic_conflict": False, "lawful_direction": False,
                            "police_direction": False, "traffic_device": False}}
 
@@ -59,9 +62,15 @@ def main() -> None:
             corrupt = [r.copy() for r in rows]
             corrupt[200] = corrupt[200] | {"native_frame": 1300}
             expect_reject(tmp / "frame-gap.jsonl", corrupt, "Native frame gap")
+            for exception in ("traffic_conflict", "lawful_direction",
+                              "police_direction", "traffic_device"):
+                corrupt = [r.copy() for r in rows]
+                corrupt[300] = corrupt[300] | {"exceptions": rows[300]["exceptions"] | {exception: True}}
+                expect_reject(tmp / (exception + ".jsonl"), corrupt, "Unexcluded exception")
             corrupt = [r.copy() for r in rows]
-            corrupt[300] = corrupt[300] | {"exceptions": rows[300]["exceptions"] | {"traffic_conflict": True}}
-            expect_reject(tmp / "exception.jsonl", corrupt, "Unexcluded exception")
+            corrupt[300] = corrupt[300] | {"exception_source": rows[300]["exception_source"] |
+                            {"other_traffic_actor_count": 1}}
+            expect_reject(tmp / "source-count.jsonl", corrupt, "Exception source counts")
             corrupt = [r.copy() for r in rows]
             corrupt[400] = corrupt[400] | {"native_intersection_survey": False}
             expect_reject(tmp / "survey.jsonl", corrupt, "Native intersection survey absent")
@@ -92,7 +101,7 @@ def main() -> None:
     print(json.dumps({"passed": True, "scope": "authored and synthetic CPU only",
                       "geometry": geometry, "saved_measurement": outcomes,
                       "fallback_triggers": triggers,
-                      "negative_tests_per_case": 4}, indent=2))
+                      "negative_tests_per_case": 8}, indent=2))
 
 
 if __name__ == "__main__": main()

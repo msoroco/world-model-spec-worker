@@ -17,6 +17,7 @@ fixture=importlib.util.module_from_spec(spec);spec.loader.exec_module(fixture)
 from geometry import open_drive
 from finalize import finalize
 from finalize_numeric import finalize as finalize_numeric
+from finalize_exception import finalize as finalize_exception
 from traffic_spec_adapter.adapter import load_graph
 from worker_exchange.runtime_cli import process,render
 from worker_exchange.media import audit
@@ -73,16 +74,40 @@ def enrich(attempt):
 def make_attempt(path,suffix,full_resolution=False):
     fixture.make_base(path,suffix,480,full_resolution=full_resolution)
     enrich(path)
+    if suffix.startswith('exception_'):
+        from exception_case import BRANCHES
+        branch,polarity=BRANCHES[suffix]
+        frames=[r['native_frame'] for r in rows(path/'video_frames.jsonl')]
+        packet={'source_kind':'native_context_schema','branch':branch,
+                'requested_polarity':polarity,'original_frames':frames,
+                'observed_exception_source_ids':[],'synthetic_diagnostic':True,
+                'physical_observation_claimed':False}
+        if polarity=='present':
+            packet['observed_exception_source_ids']=['synthetic-source']
+            if branch=='necessary_traffic_conflict':
+                packet.update(other_actor_frames=[220,221],ego_brake_frames=[221],
+                    intersection_boundary_source='native_map_readback')
+            elif branch=='compliance_with_law':
+                laws=json.loads((ROOT/'inputs/coverage/branch-sources.json').read_text())
+                law=laws['laws']['NRS-484B-300-1']['law']['text']
+                packet.update(cited_law_id='NRS-484B-300-1',
+                    cited_law_text_sha256=hashlib.sha256(law.encode()).hexdigest(),
+                    ego_action_frames=[221])
+            else:
+                packet.update(original_pixel_sha256=hashlib.sha256((path/'parking.mkv').read_bytes()).hexdigest(),
+                    direction_source_id='synthetic-device',direction_frame=221,
+                    ego_action_frames=[221])
+        (path/'exception_context.json').write_text(json.dumps(packet,indent=2)+'\n')
 
 
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument('--suffix',choices=['witness_1','witness_2','numeric_1_0','numeric_1_1','numeric_1_2'],default='witness_1')
+    parser.add_argument('--suffix',choices=['witness_1','witness_2','numeric_1_0','numeric_1_1','numeric_1_2','exception_1_1','exception_1_2','exception_2_1','exception_2_2','exception_3_1','exception_3_2'],default='witness_1')
     args=parser.parse_args()
     scratch=Path(tempfile.mkdtemp(dir=ROOT/'.runtime-work',prefix='c110454-lvmc-core-'))
     attempt=scratch/'attempt';make_attempt(attempt,args.suffix)
     print('scratch',scratch,flush=True)
-    (finalize_numeric if args.suffix.startswith('numeric_') else finalize)(attempt,attempt/'analysis-report.json')
+    (finalize_exception if args.suffix.startswith('exception_') else finalize_numeric if args.suffix.startswith('numeric_') else finalize)(attempt,attempt/'analysis-report.json')
     core=process(attempt,attempt/'converted',ROOT/'runtime/pipeline/library',
                  ROOT/'.runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck')
     config=json.loads((attempt/'config.json').read_text())

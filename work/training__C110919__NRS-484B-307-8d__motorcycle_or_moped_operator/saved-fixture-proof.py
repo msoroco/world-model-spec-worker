@@ -31,7 +31,8 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     construction=json.loads((FOLDER/'draft-candidates'/case/'primary/construction.json').read_text())
     config=json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
     (destination/'config.json').write_text(json.dumps(config))
-    geometry={'native_map_sha256':'a'*64,'signal_actor_id':601,
+    geometry={'native_map_sha256':'a'*64,'signal_actor_id':601,'cross_signal_actor_id':602,
+              'turn_prohibition_survey':{'authored_signs':[],'native_traffic_sign_actors':[]},
               'stop_line_y_m':-14.0,'nearest_crosswalk_y_m':-11.0,
               'destination_crosswalk_x_m':10.0,
               'lanes':{'approach_right':{'road_id':1,'lane_id':-1,'forward_xy':[0,1]},
@@ -45,12 +46,13 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     trace=[];evidence=[];mapping=[];native=[];body=[]
     for i,row in enumerate(frames):
         frame=100+i;time=(i+1)/20;x=row['ego_x_m'];y=row['ego_y_m']
-        if i<181:heading=90.0
-        elif i<=241:heading=90-(i-181)*1.5
+        turn=301 if case=='condition_a' else 181
+        if i<turn:heading=90.0
+        elif i<=turn+60:heading=90-(i-turn)*1.5
         else:heading=0.0
         angle=math.radians(heading);fx,fy=math.cos(angle),math.sin(angle);rx,ry=-fy,fx
-        corners=[[round(x+direction*2.6*fx+side*1.1*rx,5),
-                  round(y+direction*2.6*fy+side*1.1*ry,5)]
+        corners=[[round(x+direction*1.25*fx+side*.4*rx,5),
+                  round(y+direction*1.25*fy+side*.4*ry,5)]
                  for direction,side in ((-1,-1),(-1,1),(1,1),(1,-1))]
         vertices=[[a,b,z] for a,b in corners for z in (0,1.5)]
         speed=row['ego_speed_m_s']
@@ -66,7 +68,7 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
                                 'speed_provenance':'original_trace_actor_get_velocity'},
                          'world':{'weather':{'cloudiness':0,'precipitation':0,
                                              'wetness':0,'fog_density':0},
-                                  'road_projection':{'road_id':1 if i<181 else 13 if i<=241 else 2,
+                                  'road_projection':{'road_id':1 if i<turn else 13 if i<=turn+60 else 2,
                                                      'section_id':0,'lane_id':-1,'s_m':max(0,y+100)}}})
         mapping.append({'video_frame':i,'native_frame':frame,'carla_frame':frame,'time_s':time})
         native.append({'native_frame':frame,'time_s':time,'native_center_xy_m':[x,y],
@@ -74,6 +76,13 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
                        'walker_center_xy_m':[10,0 if row['pedestrian_conflict_occupied'] else 5],
                        'walker_conflict_occupied':row['pedestrian_conflict_occupied'],
                        'signal_state_observed':'Red',
+                       'cross_signal_state_observed':row['cross_signal_state'].title(),
+                       'complete_cross_signal_cycles':row['declared_complete_cycles'],
+                       'motorcycle_blueprint':'vehicle.kawasaki.ninja',
+                       'fault_injection_command':'withhold_motorcycle_detector_request',
+                       'turn_prohibition_present':False,
+                       'cross_traffic_conflict_occupied':row['cross_traffic_conflict_occupied'],
+                       'ego_turn_entered':row['ego_turn_entered'],
                        'controller_request':{'synthetic_diagnostic':True}})
         body.append({'frame':frame,'time_s':time,'body_vertices_m':vertices})
     for name,values in [('trace.jsonl',trace),('capture/evidence.jsonl',evidence),
@@ -81,12 +90,14 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
                         ('body_history.jsonl',body)]:write_rows(destination/name,values)
     (destination/'capture/manifest.json').write_text(json.dumps({'extraction_confirmed':True,'frames':480,
                                                                    'synthetic_diagnostic':True}))
-    (destination/'capture/recorder_info.txt').write_text('Create 107: vehicle.lincoln.mkz_2020\n')
+    (destination/'capture/recorder_info.txt').write_text('Create 107: vehicle.kawasaki.ninja\n')
     (destination/'channels').mkdir()
     for channel in config['recording_description']['channels']:
         name=channel['name'];values=[]
         for i,sample in enumerate(native):
-            if name=='dev.traffic_signal':value={'observed_state':'Red','native_actor_id':601}
+            if name=='dev.traffic_signal':value={'observed_state':'Red','native_actor_id':601,
+                'cross_signal_state':sample['cross_signal_state_observed'],
+                'complete_cross_signal_cycles':sample['complete_cross_signal_cycles']}
             elif name=='st.stop_line':value=-14.0
             elif name=='st.crosswalk':value=-11.0
             elif name=='drv.stopped':value=sample['speed_mps']<.05
@@ -96,6 +107,9 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
             elif name=='drv.yields_to':value={'walker_conflict_occupied':sample['walker_conflict_occupied']}
             elif name=='native_body_pose_control':value=sample
             elif name=='camera_frame_join':value=mapping[i]
+            elif name=='motorcycle_detector_request':value={
+                'command':'withhold_motorcycle_detector_request',
+                'physical_detector_nonresponse_proven':False}
             else:raise ValueError('Unknown channel: '+name)
             values.append({'time_s':sample['time_s'],'value':value})
         write_rows(destination/'channels'/(name+'.jsonl'),values)

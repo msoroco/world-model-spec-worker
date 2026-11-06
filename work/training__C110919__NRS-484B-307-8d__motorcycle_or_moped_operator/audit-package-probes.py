@@ -19,7 +19,7 @@ def audit():
     for item in summary['results']:
         case=item['case'];candidate=item['candidate']
         if item['exit_code']!=0:raise ValueError('Package probe failed: '+case+' '+candidate)
-        entry=next(e for e in manifest['cases'] if e['case_id']==HERE.name+'__'+case)
+        entry=next(e for e in manifest['cases'] if e['case_id']==HERE.name+'__selected_109a5dbc__'+case)
         selected=entry if candidate=='primary' else next(c for c in entry['candidates'] if c['id']==candidate)
         path=HERE/item['log']
         if sha(path)!=item['log_sha256']:raise ValueError('Package log changed')

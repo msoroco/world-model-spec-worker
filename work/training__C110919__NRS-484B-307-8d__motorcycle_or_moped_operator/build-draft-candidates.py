@@ -35,12 +35,14 @@ def build():
               'runtime_manifest_sha256':sha(ROOT/'runtime/pipeline/SOURCE-MANIFEST.json'),
               'cases':[]}
     dispositions=json.loads((FOLDER/'case-plan.json').read_text())['requirement_dispositions']
-    selected=(0,)
-    methods=('measure_right_turn_permission',)
-    outputs=('red_right_turn_permission',)
+    selected=(0,1,2,3,4,5)
+    methods=('measure_signal','measure_stop','measure_two_cycles',
+             'measure_no_prohibition','measure_turn_yield','measure_witness_branch')
+    outputs=('steady_red_activation','motorcycle_stop','two_cycle_fault_condition',
+             'no_turn_prohibition','pedestrian_and_traffic_yield','failed_detection_witness')
     proposals=[]
     for case in eng.CASES:
-        case_id=FOLDER.name+'__'+case
+        case_id=FOLDER.name+'__selected_109a5dbc__'+case
         contract={'format':'worker-measurement-contract-v1','case_id':case_id,
                   'requirements':[{'disposition_index':index,
                                    'requirement':dispositions[index]['requirement'],
@@ -73,8 +75,9 @@ def build():
             construction={'case_id':case_id,'cell_id':'C110919','law_id':'NRS-484B-307-8d',
                           'actor':'motorcycle_or_moped_operator','entrypoint':'runner.py','files':files,
                           'recording_description':recording,
-                          'mechanisms':['authored traffic-light right-turn OpenDRIVE',
-                                        'observed-pose vehicle controller with case stop policy',
+                          'mechanisms':['authored traffic-light right-turn OpenDRIVE with cross-signal phase source',
+                                        'qualified two-wheel motorcycle pose controller and complete halt',
+                                        'controlled two-cycle versus one-cycle wait before turn',
                                         'pedestrian yield actor and four synchronized lossless cameras'],
                           'termination_rules':['exact 480 original frames','capture and restoration errors retained'],
                           'status':'unselected_cpu_draft'}

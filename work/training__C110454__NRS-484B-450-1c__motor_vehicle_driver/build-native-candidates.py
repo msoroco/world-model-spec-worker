@@ -59,11 +59,22 @@ def main() -> None:
                  "candidates": []}
         write(HERE / entry["measurement_contract"], {
             "format": "worker-measurement-contract-v1", "case_id": case_id,
-            "requirements": [{"disposition_index": 0, "requirement": "NRS-484B-450-1c",
-                              "source": "inputs/training__C110454__NRS-484B-450-1c__motor_vehicle_driver/assignment.json",
-                              "output_key": "intersection_parking_footprint",
-                              "method": "measure_saved_footprint", "value_type": "object",
-                              "kind": "measured", "inputs": ["native_samples.jsonl"]}],
+            "requirements": [
+                {"disposition_index": 0, "requirement": "text-0",
+                 "source": "inputs/coverage/branch-sources.json",
+                 "output_key": "unexcepted_sustained_stop",
+                 "method": "measure_unexcepted_stop", "value_type": "boolean",
+                 "kind": "measured", "inputs": ["native_samples.jsonl", "road_geometry.json"]},
+                {"disposition_index": 1, "requirement": "text-1",
+                 "source": "inputs/coverage/branch-sources.json",
+                 "output_key": "intersection_parking_footprint",
+                 "method": "measure_park", "value_type": "object",
+                 "kind": "measured", "inputs": ["native_samples.jsonl", "road_geometry.json"]},
+                {"disposition_index": 2, "requirement": "reviewed-scope-0",
+                 "source": "inputs/coverage/branch-sources.json",
+                 "output_key": "parking_within_intersection_witness",
+                 "method": "measure_witness", "value_type": "boolean",
+                 "kind": "measured", "inputs": ["native_samples.jsonl", "road_geometry.json"]}],
             "negative": {"remove": ["native_samples.jsonl"],
                          "error_contains": "Missing required source: native_samples.jsonl"}})
         proposals.append({"case_id": case_id, "target_law_id": "NRS-484B-450-1c",

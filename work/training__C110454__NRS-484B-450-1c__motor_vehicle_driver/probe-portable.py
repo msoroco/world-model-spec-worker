@@ -146,9 +146,12 @@ def main():
     parser.add_argument("--candidate", choices=("primary", "fallback1", "fallback2", "fallback3"),
                         default="primary")
     parser.add_argument("--fixture-only", action="store_true")
+    parser.add_argument("--reuse-fixture", type=Path)
     args = parser.parse_args()
     scratch = Path(tempfile.mkdtemp(dir=ROOT / ".runtime-work", prefix="c110454-450-1c-portable-"))
-    source = scratch / "fixture"; fixture(source, args.suffix)
+    source = args.reuse_fixture.resolve() if args.reuse_fixture else scratch / "fixture"
+    if not args.reuse_fixture: fixture(source, args.suffix)
+    if not source.is_dir(): raise ValueError("Reusable synthetic source fixture absent")
     if args.fixture_only:
         print(json.dumps({"fixture": str(source), "scope": "synthetic Native-shaped CPU only"}))
         return
@@ -174,7 +177,7 @@ def main():
              "negative": {"exit_code": failed.returncode,
                           "removed": "native_samples.jsonl", "error_contains": expected,
                           "log_sha256": hashlib.sha256(failed.stdout.encode()).hexdigest()},
-             "scratch": str(scratch),
+             "scratch": str(scratch), "fixture": str(source),
              "scope": "synthetic diagnostic portable package; no CARLA or acceptance"}
     label = args.suffix + "-" + args.candidate
     (HERE / ("portable-proof-" + label + ".json")).write_text(json.dumps(proof, indent=2) + "\n")

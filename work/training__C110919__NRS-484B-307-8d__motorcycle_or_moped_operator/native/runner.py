@@ -30,7 +30,7 @@ def check(config: dict) -> dict:
     candidate=config.get('candidate_id')
     if suffix not in ('condition_a','condition_b') or candidate not in ('primary','fallback1','fallback2','fallback3'):
         raise ValueError('Unknown exact case or candidate')
-    if config.get('case_id')!='training__C110919__NRS-484B-307-8d__motorcycle_or_moped_operator__'+suffix:
+    if config.get('case_id')!='training__C110919__NRS-484B-307-8d__motorcycle_or_moped_operator__selected_109a5dbc__'+suffix:
         raise ValueError('Case identity differs')
     if config.get('cell_id')!='C110919' or config.get('law_id')!='NRS-484B-307-8d':
         raise ValueError('Cell or law differs')
@@ -122,13 +122,22 @@ def execute(config: dict,output: Path,host: str,port: int):
             raise RuntimeError('Authored OpenDRIVE signal has no Native traffic-light actor')
         signal_actor=min(traffic_lights,key=lambda actor:math.dist(
             (actor.get_location().x,actor.get_location().y),(0,-13)))
+        cross_actor=min((actor for actor in traffic_lights if actor.id!=signal_actor.id),
+            key=lambda actor:math.dist((actor.get_location().x,actor.get_location().y),(-13,0)))
+        if math.dist((cross_actor.get_location().x,cross_actor.get_location().y),(-13,0))>10:
+            raise RuntimeError('Native cross-signal phase actor absent')
         signal_actor.set_state(carla.TrafficLightState.Red)
         signal_actor.freeze(True)
         readback['signal_actor_id']=signal_actor.id
+        cross_actor.freeze(True)
+        readback['cross_signal_actor_id']=cross_actor.id
+        readback['turn_prohibition_survey']={'authored_signs':[],
+            'native_traffic_sign_actors':[a.type_id for a in world.get_actors()
+                if a.type_id.startswith('traffic.') and 'traffic_light' not in a.type_id]}
         write_new(output/'road_geometry.json',readback)
         write_new(output/'context.json',{'surveyed_right_turn':readback})
         library=world.get_blueprint_library()
-        blueprint=library.find('vehicle.lincoln.mkz_2020')
+        blueprint=library.find('vehicle.kawasaki.ninja')
         blueprint.set_attribute('role_name','c110919_ego')
         ego=world.spawn_actor(blueprint,carla.Transform(
             carla.Location(x=1.75,y=-40,z=.5),carla.Rotation(yaw=90)))
@@ -136,7 +145,7 @@ def execute(config: dict,output: Path,host: str,port: int):
         ego.apply_control(carla.VehicleControl(brake=1,hand_brake=True))
         for _ in range(40):world.tick()
         physics=ego.get_physics_control();wheels=physics.wheels
-        if len(wheels)!=4:raise RuntimeError('Native four-wheel geometry absent')
+        if len(wheels)!=2:raise RuntimeError('Native two-wheel motorcycle geometry absent')
         wheelbase=(max(w.position.x for w in wheels)-min(w.position.x for w in wheels))/100
         steer=max(w.max_steer_angle for w in wheels)
         knobs=config['knobs']
@@ -148,12 +157,19 @@ def execute(config: dict,output: Path,host: str,port: int):
         walker=world.spawn_actor(walker_bp,carla.Transform(
             carla.Location(x=10,y=5,z=.4),carla.Rotation(yaw=-90)))
         owned.append(walker)
+        traffic_bp=library.find('vehicle.tesla.model3')
+        traffic_bp.set_attribute('role_name','c110919_cross_traffic')
+        cross_traffic=world.spawn_actor(traffic_bp,carla.Transform(
+            carla.Location(x=-35,y=-1.75,z=.5),carla.Rotation(yaw=0)))
+        owned.append(cross_traffic)
+        cross_traffic.apply_control(carla.VehicleControl(brake=1,hand_brake=True))
         write_new(output/'native-construction-context.json',{
             'case_id':config['case_id'],'candidate_id':config['candidate_id'],
             'native_map_sha256':native_hash,'vehicle_blueprint':ego.type_id,
-            'walker_blueprint':walker.type_id,'wheelbase_m':wheelbase,'max_steer_deg':steer,
+            'walker_blueprint':walker.type_id,'cross_traffic_blueprint':cross_traffic.type_id,
+            'wheelbase_m':wheelbase,'max_steer_deg':steer,
             'initial_body_xy_m':body_xy(ego),'knobs':knobs,
-            'authored_intent':'right turn after red-signal stop; pedestrian yield',
+            'authored_intent':'qualified motorcycle stop, two complete cross-signal cycles, then conditional red-signal turn with yield',
             'physical_completion_claimed':False})
         for spec in camera_plan(config['candidate_id']):
             bp=library.find('sensor.camera.rgb')
@@ -177,7 +193,7 @@ def execute(config: dict,output: Path,host: str,port: int):
         for name in config['mandatory_channels']:
             channels[name]=(output/'channels'/(name+'.jsonl')).open('x')
         start=world.get_snapshot().timestamp.elapsed_seconds
-        held=0;yield_clear=0
+        held=0;yield_clear=0;complete_cycles=0;prior_cross_state=None
         with (output/'native_samples.jsonl').open('x') as native_file, \
              (output/'body_history.jsonl').open('x') as body_file, \
              (output/'video_frames.jsonl').open('x') as frame_file:
@@ -188,15 +204,32 @@ def execute(config: dict,output: Path,host: str,port: int):
                     yaw_rad=math.radians(pose.rotation.yaw),speed_mps=speed,dt_s=.05)
                 pedestrian=walker.get_transform().location
                 occupied=8<=pedestrian.x<=12 and -4<=pedestrian.y<=4
+                traffic_pose=cross_traffic.get_transform().location
+                traffic_occupied=-8<=traffic_pose.x<=8 and -4<=traffic_pose.y<=4
+                if 105<=index<=190:
+                    cross_traffic.apply_control(carla.VehicleControl(throttle=.45,brake=0,hand_brake=False))
+                else:
+                    cross_traffic.apply_control(carla.VehicleControl(throttle=0,brake=1,hand_brake=False))
                 if 115<=index<=195:
                     walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(0,-1,0),speed=3.0))
                 else:
                     walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(0,0,0),speed=0.0))
-                stop_needed=config['case_suffix']=='condition_a' and held<30 and pose.location.y>-25
+                cycle_length=knobs['cross_signal_green_frames']+knobs['cross_signal_yellow_frames']+knobs['cross_signal_all_red_frames']
+                phase=index%cycle_length
+                cross_state=('green' if phase<knobs['cross_signal_green_frames']
+                             else 'yellow' if phase<knobs['cross_signal_green_frames']+knobs['cross_signal_yellow_frames']
+                             else 'red')
+                cross_actor.set_state({'green':carla.TrafficLightState.Green,
+                    'yellow':carla.TrafficLightState.Yellow,'red':carla.TrafficLightState.Red}[cross_state])
+                if prior_cross_state=='red' and cross_state=='green':complete_cycles+=1
+                prior_cross_state=cross_state
+                target=2 if config['case_suffix']=='condition_a' else 1
+                stop_needed=(pose.location.y>-25 and
+                    (held<round(knobs['stop_hold_s']*20) or complete_cycles<target))
                 if stop_needed:
                     command.update(throttle=0.0,brake=1.0,hand_brake=speed<.05)
                     if speed<.05 and max(p[1] for p in body_xy(ego))<-14.0:held+=1
-                yield_needed=pose.location.y>-10 and pose.location.x<10 and occupied
+                yield_needed=pose.location.y>-10 and pose.location.x<10 and (occupied or traffic_occupied)
                 if yield_needed:
                     command.update(throttle=0.0,brake=1.0,hand_brake=speed<.05)
                     yield_clear=0
@@ -210,11 +243,22 @@ def execute(config: dict,output: Path,host: str,port: int):
                 pose=ego.get_transform();velocity=ego.get_velocity()
                 speed=math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
                 body=body_xy(ego);ped=walker.get_transform().location
+                traffic_pose=cross_traffic.get_transform().location
                 sample={'time_s':time_s,'native_frame':frame,'native_center_xy_m':[pose.location.x,pose.location.y],
                         'native_yaw_deg':pose.rotation.yaw,'native_body_xy_m':body,'speed_mps':speed,
                         'walker_center_xy_m':[ped.x,ped.y],
                         'walker_conflict_occupied':8<=ped.x<=12 and -4<=ped.y<=4,
+                        'cross_traffic_center_xy_m':[traffic_pose.x,traffic_pose.y],
+                        'cross_traffic_conflict_occupied':-8<=traffic_pose.x<=8 and -4<=traffic_pose.y<=4,
+                        'cross_traffic_actor_id':cross_traffic.id,
                         'signal_state_observed':str(signal_actor.get_state()),
+                        'cross_signal_state_observed':str(cross_actor.get_state()),
+                        'cross_signal_actor_id':cross_actor.id,
+                        'complete_cross_signal_cycles':complete_cycles,
+                        'motorcycle_blueprint':ego.type_id,
+                        'turn_prohibition_present':False,
+                        'ego_turn_entered':abs(pose.rotation.yaw-90)>5,
+                        'fault_injection_command':'withhold_motorcycle_detector_request',
                         'controller_request':command}
                 capture.capture(frame,time_s,extra={'c110919_native':sample})
                 native_file.write(json.dumps(sample,allow_nan=False)+'\n')
@@ -223,14 +267,22 @@ def execute(config: dict,output: Path,host: str,port: int):
                     allow_nan=False)+'\n')
                 values={'dev.traffic_signal':{'authored_request':'steady_red',
                                                'observed_state':sample['signal_state_observed'],
-                                               'native_actor_id':signal_actor.id},
+                                               'native_actor_id':signal_actor.id,
+                                               'cross_signal_state':sample['cross_signal_state_observed'],
+                                               'cross_signal_actor_id':cross_actor.id,
+                                               'complete_cross_signal_cycles':complete_cycles},
                         'st.stop_line':readback['stop_line_y_m'],'st.crosswalk':readback['nearest_crosswalk_y_m'],
                         'drv.stopped':speed<.05,'kin.velocity':speed,
                         'drv.extreme_lane':readback['lanes']['approach_right'],
                         'st.one_way_roadway':readback['lanes'],
                         'drv.yields_to':{'walker_xy_m':[ped.x,ped.y],
-                                         'conflict_occupied':sample['walker_conflict_occupied']},
+                                         'pedestrian_conflict_occupied':sample['walker_conflict_occupied'],
+                                         'cross_traffic_xy_m':[traffic_pose.x,traffic_pose.y],
+                                         'cross_traffic_conflict_occupied':sample['cross_traffic_conflict_occupied'],
+                                         'cross_traffic_actor_id':cross_traffic.id},
                         'native_body_pose_control':sample,
+                        'motorcycle_detector_request':{'command':'withhold_motorcycle_detector_request',
+                            'physical_detector_nonresponse_proven':False},
                         'camera_frame_join':{'native_frame':frame,'video_frame':index}}
                 for name,stream in channels.items():
                     stream.write(json.dumps({'time_s':time_s,'value':values[name]},allow_nan=False)+'\n')
@@ -269,7 +321,7 @@ def execute(config: dict,output: Path,host: str,port: int):
             'case_id':config['case_id'],'candidate_id':config['candidate_id'],
             'frames':frames,'expected_frames':480,'restoration':restored,
             'error':error,'accepted':False,
-            'required_saved_checks':['actual signal state and governing direction',
+            'required_saved_checks':['actual signal state, cross-phase cycles and governing direction',
                 'Native stop-line and crosswalk readback','original full body and walker conflict',
                 'full video/frame join and independent audit']})
     if error:raise RuntimeError('Native attempt failed; see native-capture-report.json: '+str(error))

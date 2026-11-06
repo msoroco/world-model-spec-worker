@@ -27,6 +27,10 @@ def main():
                 raise ValueError("Independent sample clock differs")
             if set(row["exceptions"].values()) != {False}:
                 raise ValueError("Exception observation differs")
+            if row.get("exception_source") != {"other_traffic_actor_count": 0,
+                                               "native_signal_count": 0,
+                                               "authored_law_direction_count": 0}:
+                raise ValueError("Independent exception source counts differ")
         parked = [row for row in rows if row["speed_m_s"] <= .05]
         if len(parked) != 240: raise ValueError("Sustained deliberate stop differs")
         footprint = parked[-1]["body_xy_m"]

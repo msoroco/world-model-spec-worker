@@ -83,6 +83,19 @@ def measure_park(attempt):
             'sources':{name:sha(attempt/name) for name in ('native_samples.jsonl','road_geometry.json')}}
 
 
+def measure_unexcepted_stop(attempt):
+    parked=measure_park(attempt)
+    return {'value':parked['value']['parked_frames']>=40 and
+            parked['value']['exception_flags_all_false'] is True,
+            'method':'measure_unexcepted_stop','sources':parked['sources']}
+
+
+def measure_witness(attempt):
+    parked=measure_park(attempt)
+    return {'value':parked['value']['parking_relation']=='within_intersection',
+            'method':'measure_witness','sources':parked['sources']}
+
+
 def finalize(attempt,output):
     attempt=Path(attempt).resolve();output=Path(output).resolve()
     if output.exists() or (attempt/'result.json').exists():
@@ -144,7 +157,9 @@ def finalize(attempt,output):
     validate_result(result)
     report={'format':'c110454-450-1c-saved-analysis-v1','case_id':config['case_id'],
             'candidate_id':config['candidate_id'],
-            'measurements':{'intersection_parking_footprint':measured},
+            'measurements':{'unexcepted_sustained_stop':measure_unexcepted_stop(attempt),
+                            'intersection_parking_footprint':measured,
+                            'parking_within_intersection_witness':measure_witness(attempt)},
             'original_joins':original,'video_frames':video_counts,
             'scope':'saved original Native sources and source video decode, not independent acceptance or legal verdict'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')

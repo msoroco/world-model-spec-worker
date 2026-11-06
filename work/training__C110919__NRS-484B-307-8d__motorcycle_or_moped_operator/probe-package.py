@@ -29,7 +29,7 @@ def main():
     source=scratch/'fixture';fixture.make_attempt(source,args.case,full_resolution=True)
     (source/'config.json').unlink()
     print('scratch',scratch,flush=True)
-    case=HERE.name+'__'+args.case
+    case=HERE.name+'__selected_109a5dbc__'+args.case
     manifest=HERE/'draft-execution-manifest.json'
     receipt=run(manifest,case,source,scratch/'output',ROOT/'runtime/pipeline/library',
         ROOT/'.runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck',args.candidate)

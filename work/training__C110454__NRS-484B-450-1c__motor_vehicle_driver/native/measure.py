@@ -46,6 +46,11 @@ def measure(source: Path, expected_sha256: str) -> dict:
             "traffic_conflict", "lawful_direction", "police_direction", "traffic_device"} or any(
                 type(v) is not bool for v in exceptions.values()):
             raise ValueError("Exception observations absent")
+        exception_source = row.get("exception_source")
+        if not isinstance(exception_source, dict) or set(exception_source) != {
+            "other_traffic_actor_count", "native_signal_count", "authored_law_direction_count"} or any(
+                type(v) is not int or v != 0 for v in exception_source.values()):
+            raise ValueError("Exception source counts absent or nonzero")
         if speed <= .05:
             parked.append(i)
             if any(exceptions.values()):
