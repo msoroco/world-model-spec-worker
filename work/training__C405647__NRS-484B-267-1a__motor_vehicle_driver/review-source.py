@@ -69,9 +69,10 @@ def main():
 
     for case in plan['cases']:
         if case['source_branch'] == 'when otherwise directed by a law enforcement officer':
-            case['world_setup']['activation_conditions_to_verify'].append(
-                'the officer identity, direction content, recipient and time must be observed; officer presence alone does not establish the exception'
-            )
+            officer_evidence = 'the officer identity, direction content, recipient and time must be observed; officer presence alone does not establish the exception'
+            conditions = case['world_setup']['activation_conditions_to_verify']
+            if officer_evidence not in conditions:
+                conditions.append(officer_evidence)
             if case['case_id'].endswith('__exception_1_2'):
                 case['physical_target'] = 'hold the same immediate approach while an identified law enforcement officer directs this driver otherwise, recording direction content and timing'
                 case['controller']['requested_behavior'] = case['physical_target']
@@ -92,7 +93,7 @@ def main():
     plan['statutory_branch_review'] = {
         'source_path': str(SOURCE),
         'source_sha256': hashlib.sha256(source_bytes).hexdigest(),
-        'law_text_sha256': plan['source_law']['sha256'],
+        'law_record_sha256': plan['source_law']['sha256'],
         'alternatives': [
             {'name': 'authorized_emergency_vehicle_approach', 'basis': 'an authorized emergency vehicle', 'status': 'unselected_cpu_unproven'},
             {'name': official_branch, 'basis': 'or an official vehicle of a regulatory agency', 'status': 'unselected_cpu_unproven'},
