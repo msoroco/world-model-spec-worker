@@ -3,7 +3,7 @@
   "law_id": "NRS-484B-283-1d2",
   "cell_id": "C10316",
   "actor": "pedestrian",
-  "source_law_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words \u201cWalk,\u201d \u201cDon\u2019t Walk,\u201d \u201cWait\u201d or similar symbols are in place, such signals indicate as follows: While the \u201cDon\u2019t Walk\u201d or \u201cWait\u201d indication or an upraised hand symbol is illuminated, is flashing and is accompanied by a countdown timer, a pedestrian may proceed across the highway in the direction of the signal, but must complete the crossing before the countdown timer gets to zero.",
+  "source_law_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place, such signals indicate as follows: While the “Don’t Walk” or “Wait” indication or an upraised hand symbol is illuminated, is flashing and is accompanied by a countdown timer, a pedestrian may proceed across the highway in the direction of the signal, but must complete the crossing before the countdown timer gets to zero.",
   "source_law_citation": "NRS 484B.283(1)(d)(2)",
   "summary_status": "recovered_requires_source_review",
   "selected_branch": "flashing countdown crossing",
@@ -226,12 +226,52 @@
       "NRS 484B.350"
     ],
     "boundary_and_governance_unresolved": "The authored highway edges and signal-facing assertions are synthetic requests; Native map status, physical device governance, displayed pixels and legal completion boundary require original evidence and review.",
-    "legal_verdict_from_cpu_fixture": false
+    "legal_verdict_from_cpu_fixture": false,
+    "exception_source_review": "statutory-context-review.json",
+    "summary_conflict": "The recovered summary has an empty exceptions list while the exact clause begins with exceptions referring to NRS 484B.287, 484B.290, and 484B.350.",
+    "cross_reference_limit": "Bracketed IDs in the frozen text include LVMC rules. Their precise legal relationship to the cited NRS sections is not established by these source packets; do not treat the mapped LVMC texts as interchangeable statutory provisions.",
+    "exception_context_observations": [
+      {
+        "law_id": "NRS-484B-287-1c",
+        "needed": "Record whether crossing is between adjacent device-controlled intersections and whether the crossing is marked."
+      },
+      {
+        "law_id": "NRS-484B-287-1d",
+        "needed": "Record whether the pedestrian crosses an intersection diagonally and any official authorization."
+      },
+      {
+        "law_id": "NRS-484B-287-1e",
+        "needed": "If diagonal crossing is authorized, record the governing device and whether the movement follows it."
+      },
+      {
+        "law_id": "LVMC-11-30-060-A",
+        "needed": "Record crossing location, marked/unmarked crosswalk status, vehicles present, and any designated crossing prohibition."
+      },
+      {
+        "law_id": "LVMC-11-30-060-B",
+        "needed": "Record any pedestrian tunnel or overhead crossing and designated crossing prohibition."
+      },
+      {
+        "law_id": "LVMC-11-30-140-B",
+        "needed": "Record any wholly or partially blind pedestrian and cane/assistance context; the frozen source is a separate blind-pedestrian rule."
+      },
+      {
+        "law_id": "LVMC-11-46-030",
+        "needed": "Record whether the crossing is a school pedestrian lane with a warning device or person and children crossing; the frozen source addresses vehicle stopping."
+      }
+    ]
   },
   "measurement_prototype": {
     "method": "native/finalize.py:countdown_clearance",
-    "source_files": ["countdown_samples.jsonl", "countdown-context.json", "road.xodr"],
-    "contract_paths": ["draft-countdown/probe_01/measurement-contract.json", "draft-countdown/probe_02/measurement-contract.json"],
+    "source_files": [
+      "countdown_samples.jsonl",
+      "countdown-context.json",
+      "road.xodr"
+    ],
+    "contract_paths": [
+      "draft-countdown/probe_01/measurement-contract.json",
+      "draft-countdown/probe_02/measurement-contract.json"
+    ],
     "proof_summary": "draft-countdown-measurement-summary.json",
     "controlled_comparison": "Identical pedestrian position, footprint and time; requested displayed zero at 10 s versus 7 s with full-body clearance at 8 s.",
     "status": "synthetic_unselected_not_delivery_evidence"
@@ -249,7 +289,12 @@
   "candidate_plans": {
     "source": "native/engineering.py",
     "cases": 2,
-    "alternatives_per_case": ["primary", "fallback1", "fallback2", "fallback3"],
+    "alternatives_per_case": [
+      "primary",
+      "fallback1",
+      "fallback2",
+      "fallback3"
+    ],
     "status": "unselected_exact_offline_and_synthetic_v1_package_passed_without_native_or_v2_proof",
     "exact_bundle_manifest": "draft-execution-manifest.json",
     "offline_summary": "draft-offline-summary.json",

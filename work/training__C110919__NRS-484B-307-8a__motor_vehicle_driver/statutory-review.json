@@ -1,0 +1,98 @@
+{
+  "format": "worker-statutory-branch-review-v1",
+  "assignment_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver",
+  "source_refs": [
+    "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json",
+    "inputs/coverage/branch-sources.json"
+  ],
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "right_turn",
+    "control": "traffic_light",
+    "actor": "motor_vehicle_driver"
+  },
+  "branches": [
+    {
+      "id": "steady_red_activation",
+      "source_topics": [
+        "text-0"
+      ],
+      "cell_fit": "requires_observed_signal_state",
+      "needed_evidence": [
+        "original signal identity",
+        "signal facing direction and steady red state at ego approach"
+      ],
+      "status": "unproven"
+    },
+    {
+      "id": "stop_before_nearest_crosswalk_or_indicated_marking",
+      "source_topics": [
+        "text-1"
+      ],
+      "cell_fit": "context_possible",
+      "needed_evidence": [
+        "crosswalk, stop-sign and pavement-marking hierarchy",
+        "original body footprint and speed before applicable boundary"
+      ],
+      "status": "unproven"
+    },
+    {
+      "id": "stop_before_intersection_when_other_references_absent",
+      "source_topics": [
+        "text-1"
+      ],
+      "cell_fit": "requires_absence_evidence",
+      "needed_evidence": [
+        "source-grounded absence of crosswalk, sign and marking",
+        "original intersection boundary",
+        "stationary body trace before boundary"
+      ],
+      "status": "unproven"
+    },
+    {
+      "id": "remain_stopped_until_green",
+      "source_topics": [
+        "text-1"
+      ],
+      "cell_fit": "context_possible",
+      "needed_evidence": [
+        "time-aligned signal states and ego speed until green",
+        "paragraphs c/d exception disposition"
+      ],
+      "status": "unproven"
+    },
+    {
+      "id": "right_turn_after_stop",
+      "source_topics": [
+        "text-2",
+        "reviewed-scope-0"
+      ],
+      "cell_fit": "matches_frozen_maneuver_with_added_context",
+      "needed_evidence": [
+        "completed stop",
+        "extreme-right approach placement",
+        "intersecting road two-way or one-way-right direction",
+        "observed turn and body passage",
+        "pedestrian and cross-traffic identities, movements and yield window"
+      ],
+      "status": "unproven"
+    },
+    {
+      "id": "left_turn_after_stop",
+      "source_topics": [
+        "text-2"
+      ],
+      "cell_fit": "outside_frozen_right_turn_maneuver",
+      "needed_evidence": [
+        "same-cell left-turn maneuver support or explicit unsupported disposition",
+        "one-way approach and one-way-left intersection topology",
+        "extreme-left placement and yield"
+      ],
+      "status": "unproven"
+    }
+  ],
+  "current_draft_gap": "The generic two-case distance plan does not prove the stop-boundary hierarchy, steady red activation, right-turn road directions, completed stop, or yield. A commanded turn is not an observed exception. The left-turn alternative conflicts with the frozen right-turn maneuver and needs an explicit scope disposition.",
+  "external_cross_reference": "The supplied text refers to paragraphs (c) and (d). Their exact application needs reviewed source packets before a remain-stopped branch can be closed; this review does not infer their content.",
+  "cpu_readiness": false,
+  "physical_observation_claimed": false
+}

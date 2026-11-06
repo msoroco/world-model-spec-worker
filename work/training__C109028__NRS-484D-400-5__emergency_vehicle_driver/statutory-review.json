@@ -1,0 +1,55 @@
+{
+  "format": "c109028-exact-law-review-v1",
+  "assignment_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver",
+  "source": "inputs/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/assignment.json",
+  "law_id": "NRS-484D-400-5",
+  "cell_id": "C109028",
+  "actor": "emergency_vehicle_driver",
+  "frozen_cell": "intersection / emergency_response / other_vehicle",
+  "historical_witness": "Emergency-call response with optional approach-warning siren",
+  "source_review": [
+    {
+      "id": "authorized_vehicle",
+      "text": "An authorized emergency vehicle",
+      "required_evidence": "Source-bound authorization and vehicle identity; an emergency paint scheme or actor type alone is not legal authorization.",
+      "status": "unverified"
+    },
+    {
+      "id": "permitted_equipment",
+      "text": "may be equipped with a siren, whistle or bell",
+      "required_evidence": "Identify installed device and original output channel separately from whether it is used.",
+      "status": "unverified"
+    },
+    {
+      "id": "audibility_capability",
+      "text": "capable of emitting sound audible under normal conditions from a distance of not less than 500 feet",
+      "required_evidence": "An acoustic source and validated normal-condition audibility measurement at 500 feet; a CARLA siren state, video waveform, or authored device label alone cannot prove this physical capacity.",
+      "status": "pending_capability_review"
+    },
+    {
+      "id": "siren_use_constraint",
+      "text": "the siren must not be used except when the vehicle is operated in response to an emergency call or in the immediate pursuit of an actual or suspected violator of the law",
+      "required_evidence": "Time-bound source for call response or immediate pursuit, vehicle operation and observed siren state; compare to a matched nonqualifying operation.",
+      "status": "pending_cpu_cases"
+    },
+    {
+      "id": "approach_warning",
+      "text": "in which event the driver of the vehicle may sound the siren to warn pedestrians and other drivers of his or her approach",
+      "required_evidence": "Approach geometry, original siren output and receiving participant identities; permissive may does not require sounding or prove a recipient heard it.",
+      "status": "pending_cpu_case"
+    },
+    {
+      "id": "warning_lamps_without_siren",
+      "text": "may operate the vehicle's warning lamps without sounding the siren",
+      "required_evidence": "Original lamp and siren states must be captured as independent channels; a lamps-on/siren-off response is an express allowed branch.",
+      "status": "pending_cpu_case"
+    }
+  ],
+  "controlled_comparison_plan": {
+    "fixed": "same frozen intersection, authorized vehicle identity, route, approach, counterpart roles, rate, duration and camera channels",
+    "vary": "source-grounded emergency-call or immediate-pursuit condition and observed siren use; keep warning lamp state as a separately measured variable",
+    "warning": "A requested emergency flag is not evidence of a call or pursuit. Original CARLA pixels and audio are later GPU checks, while CPU fixtures must test source joins and saved logic."
+  },
+  "candidate_and_proof_status": "Two historical probes remain unselected planning definitions; no exact four-candidate offline/compatibility, saved audit, comparison audit or queue proof exists.",
+  "status": "source_review_only_unselected"
+}

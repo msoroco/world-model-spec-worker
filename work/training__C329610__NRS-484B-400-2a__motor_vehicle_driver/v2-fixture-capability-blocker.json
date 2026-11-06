@@ -1,0 +1,15 @@
+{
+  "format": "worker-tested-capability-blocker-v1",
+  "assignment_id": "training__C329610__NRS-484B-400-2a__motor_vehicle_driver",
+  "capability": "Pinned strict v2 portable recipe for the required 480-frame, 20 Hz, 24 s case",
+  "tested_limitation": "The only pinned runtime fixture base contains three trace, video-map, evidence, and Native-frame rows. The frozen fixture_recipe.inspect contract allows only portable text additions and rejects any addition that shadows a base file. It therefore cannot provide a 480-frame trace, evidence stream, Native frame stream, or video map while retaining the selected case duration and rate. The generated full-length synthetic v1 fixture cannot be used by the strict v2 recipe without changing the frozen runtime fixture or recipe implementation.",
+  "reproducer": "python3.11 work/training__C329610__NRS-484B-400-2a__motor_vehicle_driver/reproduce-v2-fixture-blocker.py",
+  "exit_code": 0,
+  "log": "v2-fixture-blocker.log",
+  "log_sha256": "ad7b7bfce09a7529deacbb713ef630e2b7488b5f001a1f6e5ef27aac1d2bf16b",
+  "case_required_rows": 480,
+  "base_rows": 3,
+  "base": "runtime/pipeline/fixtures/retained-speed",
+  "remedy_required_outside_worker_owned_files": "Provide a pinned 480-frame base with the case's Native-shaped capture and source video, or update the frozen v2 fixture contract to permit a source-hashed complete worker-generated fixture. After either change, rebuild runtime-bound proofs and rerun exact positive/negative compatibility for all four constructions of both cases.",
+  "physical_scope": "No CARLA run, original pixel observation, physical route completion, or accepted recording is inferred."
+}

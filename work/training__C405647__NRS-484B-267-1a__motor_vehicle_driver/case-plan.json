@@ -44,12 +44,24 @@
         "training__C405647__NRS-484B-267-1a__motor_vehicle_driver__exception_1_2"
       ],
       "evidence_or_gap": "Exact cited-law scope, actor eligibility, construction and observed evidence of this exception remain unverified; these are planning targets only."
+    },
+    {
+      "requirement": "NRS-484B-267-1a",
+      "source": "NRS 484B.267(1)(a)",
+      "branch": "official_regulatory_vehicle_approach",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C405647__NRS-484B-267-1a__motor_vehicle_driver__official_1",
+        "training__C405647__NRS-484B-267-1a__motor_vehicle_driver__official_2"
+      ],
+      "evidence_or_gap": "The official vehicle alternative appears in the exact clause but has no verified agency status, qualifying lamps, immediate approach, Native construction, saved measurement, or CPU delivery proof. These cases remain unselected planning targets."
     }
   ],
   "activation_conditions": [
-    "an authorized emergency vehicle or regulatory-agency official vehicle is on immediate approach",
-    "it is using flashing lights of the required kind",
-    "the subject is the driver of another vehicle"
+    "an authorized emergency vehicle or an official vehicle of a regulatory agency immediately approaches the subject vehicle",
+    "the approaching vehicle actually uses flashing lights satisfying incorporated NRS 484A.480(3)",
+    "the subject drives a different vehicle",
+    "a contrary law enforcement officer direction, if any, is distinguished by officer authority, content, recipient and timing"
   ],
   "timing_requirements": [
     {
@@ -62,8 +74,8 @@
     }
   ],
   "unresolved_judgment_calls": [
-    "'immediate approach' bounds the distance or time at which the duty starts and must be declared",
-    "whether the lamps meet the statutory specification is an equipment fact; the observable is a flashing red or blue lamp"
+    "'immediate approach' remains a value-free physical observation and later legal interpretation; do not impose an authored distance or time threshold",
+    "NRS 484A.480(3) is incorporated by reference; exact lamp qualification requires the incorporated source and operation evidence. Lamp color alone does not prove it."
   ],
   "neutral_baseline": {
     "kind": "unselected_baseline",
@@ -103,8 +115,8 @@
       },
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
-        "'immediate approach' bounds the distance or time at which the duty starts and must be declared",
-        "whether the lamps meet the statutory specification is an equipment fact; the observable is a flashing red or blue lamp"
+        "'immediate approach' remains a value-free physical observation and later legal interpretation; do not impose an authored distance or time threshold",
+        "NRS 484A.480(3) is incorporated by reference; exact lamp qualification requires the incorporated source and operation evidence. Lamp color alone does not prove it."
       ]
     },
     {
@@ -140,8 +152,8 @@
       },
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
-        "'immediate approach' bounds the distance or time at which the duty starts and must be declared",
-        "whether the lamps meet the statutory specification is an equipment fact; the observable is a flashing red or blue lamp"
+        "'immediate approach' remains a value-free physical observation and later legal interpretation; do not impose an authored distance or time threshold",
+        "NRS 484A.480(3) is incorporated by reference; exact lamp qualification requires the incorporated source and operation evidence. Lamp color alone does not prove it."
       ]
     },
     {
@@ -165,7 +177,8 @@
         "activation_conditions_to_verify": [
           "an authorized emergency vehicle or regulatory-agency official vehicle is on immediate approach",
           "it is using flashing lights of the required kind",
-          "the subject is the driver of another vehicle"
+          "the subject is the driver of another vehicle",
+          "the officer identity, direction content, recipient and time must be observed; officer presence alone does not establish the exception"
         ]
       },
       "controller": {
@@ -177,8 +190,8 @@
       },
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
-        "'immediate approach' bounds the distance or time at which the duty starts and must be declared",
-        "whether the lamps meet the statutory specification is an equipment fact; the observable is a flashing red or blue lamp"
+        "'immediate approach' remains a value-free physical observation and later legal interpretation; do not impose an authored distance or time threshold",
+        "NRS 484A.480(3) is incorporated by reference; exact lamp qualification requires the incorporated source and operation evidence. Lamp color alone does not prove it."
       ]
     },
     {
@@ -186,7 +199,7 @@
       "target_law_id": "NRS-484B-267-1a",
       "kind": "planned_only",
       "target_type": "controlled_attempt",
-      "physical_target": "hold selected activation with when otherwise directed by a law enforcement officer present",
+      "physical_target": "hold the same immediate approach while an identified law enforcement officer directs this driver otherwise, recording direction content and timing",
       "comparison_variable": "exception_1_applicability",
       "source_branch": "when otherwise directed by a law enforcement officer",
       "requested_not_measured": true,
@@ -202,11 +215,12 @@
         "activation_conditions_to_verify": [
           "an authorized emergency vehicle or regulatory-agency official vehicle is on immediate approach",
           "it is using flashing lights of the required kind",
-          "the subject is the driver of another vehicle"
+          "the subject is the driver of another vehicle",
+          "the officer identity, direction content, recipient and time must be observed; officer presence alone does not establish the exception"
         ]
       },
       "controller": {
-        "requested_behavior": "hold selected activation with when otherwise directed by a law enforcement officer present"
+        "requested_behavior": "hold the same immediate approach while an identified law enforcement officer directs this driver otherwise, recording direction content and timing"
       },
       "subject_behavior": {
         "value": null,
@@ -214,8 +228,86 @@
       },
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
-        "'immediate approach' bounds the distance or time at which the duty starts and must be declared",
-        "whether the lamps meet the statutory specification is an equipment fact; the observable is a flashing red or blue lamp"
+        "'immediate approach' remains a value-free physical observation and later legal interpretation; do not impose an authored distance or time threshold",
+        "NRS 484A.480(3) is incorporated by reference; exact lamp qualification requires the incorporated source and operation evidence. Lamp color alone does not prove it."
+      ]
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-1a__motor_vehicle_driver__official_1",
+      "target_law_id": "NRS-484B-267-1a",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "yield to the immediately approaching official regulatory vehicle",
+      "comparison_variable": "official_vehicle_yield",
+      "source_branch": "official_regulatory_vehicle_approach",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "road",
+          "maneuver": "travel",
+          "control": "emergency_vehicle"
+        },
+        "activation_conditions_to_verify": [
+          "the approaching vehicle is an official vehicle of a regulatory agency",
+          "its immediate approach to the subject vehicle is established from saved relative motion",
+          "its actual flashing lights meet the incorporated NRS 484A.480(3) requirements",
+          "the subject is the driver of a different vehicle",
+          "absence or content and timing of any contrary law enforcement officer direction is established"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "yield to the immediately approaching official regulatory vehicle"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "'immediate approach' remains a value-free physical observation and later legal interpretation; do not impose an authored distance or time threshold",
+        "NRS 484A.480(3) is incorporated by reference; exact lamp qualification requires the incorporated source and operation evidence. Lamp color alone does not prove it."
+      ]
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-1a__motor_vehicle_driver__official_2",
+      "target_law_id": "NRS-484B-267-1a",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "maintain a conflicting course during the same immediate approach",
+      "comparison_variable": "official_vehicle_yield",
+      "source_branch": "official_regulatory_vehicle_approach",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "road",
+          "maneuver": "travel",
+          "control": "emergency_vehicle"
+        },
+        "activation_conditions_to_verify": [
+          "the approaching vehicle is an official vehicle of a regulatory agency",
+          "its immediate approach to the subject vehicle is established from saved relative motion",
+          "its actual flashing lights meet the incorporated NRS 484A.480(3) requirements",
+          "the subject is the driver of a different vehicle",
+          "absence or content and timing of any contrary law enforcement officer direction is established"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "maintain a conflicting course during the same immediate approach"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "'immediate approach' remains a value-free physical observation and later legal interpretation; do not impose an authored distance or time threshold",
+        "NRS 484A.480(3) is incorporated by reference; exact lamp qualification requires the incorporated source and operation evidence. Lamp color alone does not prove it."
       ]
     }
   ],
@@ -248,6 +340,21 @@
         "frozen cell and actor",
         "same map geometry except named comparison variable",
         "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+      ]
+    },
+    {
+      "comparison_id": "training__C405647__NRS-484B-267-1a__motor_vehicle_driver__official_comparison",
+      "case_ids": [
+        "training__C405647__NRS-484B-267-1a__motor_vehicle_driver__official_1",
+        "training__C405647__NRS-484B-267-1a__motor_vehicle_driver__official_2"
+      ],
+      "deliberate_differences": [
+        "official_vehicle_yield"
+      ],
+      "fixed_conditions": [
+        "frozen road/travel/emergency_vehicle cell and motor_vehicle_driver actor",
+        "same official regulatory vehicle, agency status, lamp operation and approach trace",
+        "same map, non-target actors, rate, cameras and observation windows; exact sameness pending construction"
       ]
     }
   ],
@@ -350,11 +457,40 @@
     "Legal context and exceptions can be represented without substituting authored targets for measurements"
   ],
   "blockers": [
-    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+    "Exact clause review now includes the official regulatory vehicle alternative and officer-direction evidence. Incorporated NRS 484A.480(3) source, executable Native construction, four candidates per case, exact offline and compatibility proofs, saved fixtures and independent audits remain absent."
   ],
   "runtime_uncertainties": [
     "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
     "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
   ],
-  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+  "readiness_limitation": "Source-reviewed planning only. All cases remain unselected; no physical activation or legal outcome is measured.",
+  "statutory_branch_review": {
+    "source_path": "inputs/training__C405647__NRS-484B-267-1a__motor_vehicle_driver/assignment.json",
+    "source_sha256": "6dc3695c7f8abc42a0b767de7ce9ba838cec12595acf16cdde8d34aa7833c05e",
+    "law_text_sha256": "05acca6d9cdbea0707963bae635458009d558500a8d40a96ce4fa9d8ca5a8d86",
+    "alternatives": [
+      {
+        "name": "authorized_emergency_vehicle_approach",
+        "basis": "an authorized emergency vehicle",
+        "status": "unselected_cpu_unproven"
+      },
+      {
+        "name": "official_regulatory_vehicle_approach",
+        "basis": "or an official vehicle of a regulatory agency",
+        "status": "unselected_cpu_unproven"
+      }
+    ],
+    "common_activation": "immediate approach and actual qualifying flashing-light use; subject is the driver of every other vehicle",
+    "exception": "when otherwise directed by a law enforcement officer",
+    "obligation": "Yield the right-of-way.",
+    "summary_conflicts": [
+      "The recovered summary treats red or blue lamp color as the observable for statutory qualification, but the frozen clause incorporates NRS 484A.480(3). Color alone is insufficient; the referenced definition and operation must be sourced.",
+      "The recovered summary describes continuous yield throughout the approach; the exact clause states the duty upon immediate approach without a separately stated duration or numerical onset threshold."
+    ],
+    "unresolved": [
+      "The incorporated NRS 484A.480(3) definition is not supplied as an exact frozen source in this assignment.",
+      "Official regulatory agency vehicle status and officer authority need source-backed setup and saved evidence.",
+      "Immediate approach and right-of-way outcomes require Native motion and control observations; no legal verdict follows from requested behavior."
+    ]
+  }
 }

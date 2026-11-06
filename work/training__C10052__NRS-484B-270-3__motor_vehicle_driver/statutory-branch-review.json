@@ -1,0 +1,126 @@
+{
+  "format": "c10052-source-branch-review-v1",
+  "assignment_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver",
+  "source": "inputs/training__C10052__NRS-484B-270-3__motor_vehicle_driver/assignment.json",
+  "source_sha256": "3963795deb8c8fed620665c3cf3f31cfc983e373be7be931a81e8755ec068d30",
+  "law_id": "NRS-484B-270-3",
+  "cell_id": "C10052",
+  "actor": "motor_vehicle_driver",
+  "review_scope": "Exact clause, not the narrower historical witness label. A statutory condition is not established by a requested controller or scene flag.",
+  "common_activation": {
+    "text": "pathway or lane provided for bicycles, electric bicycles or electric scooters",
+    "cpu_plan": "Keep authored facility geometry and Native road/lane readback as separate evidence. An independent designation packet must identify that the sampled polygon is a provided bicycle pathway or lane. The current authored bounds do not establish statutory designation.",
+    "status": "unresolved"
+  },
+  "branches": [
+    {
+      "id": "prohibition_enter",
+      "exact_text": "shall not enter",
+      "controlled_variable": "full body crossing into provided facility with entrance context fixed",
+      "cpu_plan": "Saved boundary-crossing measurement using original 20 Hz body vertices, Native lane identity, and time-scoped exception packet; compare entry absent versus present on the same alley cell.",
+      "current_evidence": "not implemented",
+      "status": "pending_cpu_case"
+    },
+    {
+      "id": "prohibition_stop_stand",
+      "exact_text": "stop, stand",
+      "controlled_variable": "stopped full-body facility overlap area",
+      "cpu_plan": "Existing probe_a/probe_b saved diagnostics measure 0.0 versus 9.36 square meters in synthetic 480-frame histories. Add designation, time-scoped exception proof, strict compatibility and independent delivery audit before selection.",
+      "current_evidence": "unselected synthetic v1 diagnostic",
+      "status": "pending_cpu_proofs"
+    },
+    {
+      "id": "prohibition_park",
+      "exact_text": "park",
+      "controlled_variable": "parked full-body facility overlap with parking act established separately from a transient stop",
+      "cpu_plan": "A distinct saved act packet must establish parking behavior and duration; speed zero alone cannot distinguish parking from stopping or standing.",
+      "current_evidence": "not implemented",
+      "status": "pending_cpu_case"
+    },
+    {
+      "id": "prohibition_drive",
+      "exact_text": "drive within",
+      "controlled_variable": "moving body occupancy of the provided facility",
+      "cpu_plan": "Measure moving original Native body overlap across a bounded interval with the same facility designation and exception checks.",
+      "current_evidence": "not implemented",
+      "status": "pending_cpu_case"
+    },
+    {
+      "id": "yield_riders",
+      "exact_text": "shall yield the right-of-way to any person riding a bicycle, an electric bicycle or an electric scooter ... on the pathway or lane",
+      "controlled_variable": "qualifying rider path and observed ego response at a shared conflict region",
+      "cpu_plan": "Separate same-cell controlled interactions for bicycle, electric bicycle and electric scooter identities; saved original trajectories and controls must measure arrival, conflict and response without inferring a legal verdict from a model metric.",
+      "current_evidence": "not implemented",
+      "status": "pending_cpu_cases"
+    },
+    {
+      "id": "yield_qualifying_pedestrian",
+      "exact_text": "or a pedestrian as provided in subsection 6 of NRS 484B.297 on the pathway or lane",
+      "controlled_variable": "NRS 484B.297(6) qualifying pedestrian entry and observed ego response",
+      "cpu_plan": "Source-bound sidewalk obstruction, impassable area between sidewalk and bicycle lane, due-care path, and return-as-soon-as-practicable evidence must accompany a crossing/yield interaction. Current stationary synthetic pedestrian does not qualify.",
+      "current_evidence": "not implemented",
+      "status": "pending_cpu_case"
+    },
+    {
+      "id": "exception_a",
+      "exact_text": "When entering or exiting an alley or driveway",
+      "controlled_variable": "time-bounded facility crossing during actual alley or driveway entry/exit",
+      "cpu_plan": "Compare crossing and stationary occupancy with the same entrance geometry; original body trajectory and entrance bounds must show entry/exit timing.",
+      "current_evidence": "requested false only",
+      "status": "pending_cpu_case"
+    },
+    {
+      "id": "exception_b",
+      "exact_text": "When operating or parking a disabled vehicle",
+      "controlled_variable": "observed disabled-vehicle state during facility occupancy",
+      "cpu_plan": "Require a source packet for actual disabled state and its interval; a hazard signal or a requested flag alone is insufficient.",
+      "current_evidence": "requested false only",
+      "status": "pending_capability_review"
+    },
+    {
+      "id": "exception_c",
+      "exact_text": "To avoid conflict with other traffic",
+      "controlled_variable": "observed conflicting traffic and avoidance path into facility",
+      "cpu_plan": "Retain original counterpart trajectory and control history; compare a genuine conflict setup with a matched nonconflict setup.",
+      "current_evidence": "requested false only",
+      "status": "pending_cpu_case"
+    },
+    {
+      "id": "exception_d",
+      "exact_text": "In the performance of official duties",
+      "controlled_variable": "documented official-duty context, body occupancy and timing",
+      "cpu_plan": "An authoritative duty packet is needed; vehicle paint, lights or an engineering request do not establish purpose. Same-cell physical representability remains to be reviewed.",
+      "current_evidence": "requested false only",
+      "status": "pending_capability_review"
+    },
+    {
+      "id": "exception_e",
+      "exact_text": "In compliance with the directions of a police officer",
+      "controlled_variable": "source-visible officer direction and matching driver action",
+      "cpu_plan": "Bind officer identity, actual direction, timing and driver response. A controller command without the officer event cannot establish compliance.",
+      "current_evidence": "requested false only",
+      "status": "pending_capability_review"
+    },
+    {
+      "id": "exception_f",
+      "exact_text": "In an emergency",
+      "controlled_variable": "source-grounded emergency context during occupancy",
+      "cpu_plan": "Require an emergency event packet with independent provenance and temporal relation to the occupancy. Requested scene flags are not observations.",
+      "current_evidence": "requested false only",
+      "status": "pending_capability_review"
+    }
+  ],
+  "compatibility_blocker": {
+    "status": "tested_shared_frozen_recipe_limitation",
+    "cause": "Pinned worker-fixture-recipe-v1 retains the runtime capture base except case.json, config.json and result.json; it rejects additions that shadow existing source files. The sole pinned base has three frames, while exact C10052 attempts and saved finalization require 480 frames.",
+    "effect": "No strict v2 positive/negative compatibility receipt can be claimed for either current exact case using the frozen recipe. Existing v1 probes remain diagnostics.",
+    "owned_follow_up": "Continue independent branch construction and audits while the shared frozen limitation is recorded by the lead. Do not relabel v1 receipts as v2."
+  },
+  "physical_checks_later": [
+    "actual CARLA route and stop behavior",
+    "Native facility designation and full-body occupancy",
+    "source-based physical fallback trigger observations",
+    "original camera pixels and accepted recording"
+  ],
+  "delivery_status": "blocked_unselected"
+}

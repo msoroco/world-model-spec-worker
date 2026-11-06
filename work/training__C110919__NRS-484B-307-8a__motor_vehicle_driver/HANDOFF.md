@@ -13,3 +13,7 @@ halt before legally applicable boundary versus entry without halt; right-turn yi
 ## Blocker and resumption
 
 Executable Native package and all four candidate offline/compatibility proofs absent; exact statutory exceptions and historical equivalence remain unverified. Build and validate semantic stages, exact Native construction, four distinct candidates per selected case, full mandatory capture, saved positive/negative fixtures, independent audits, and comparison audit. Keep unsupported exception branches explicit. Only then set `ready`/`delivery_prepared` and add the exact GPU queue commands. Do not infer legal verdicts from CPU fixtures.
+
+## Statutory branch review continuation
+
+`statutory-review.json` distinguishes steady-red activation, the crosswalk/marking stop reference, the absent-reference intersection boundary, continued-stop duty, the frozen right-turn exception and the left-turn alternative. It keeps the paragraph (c)/(d) cross-reference unresolved. Source identity and topic coverage are checked by `audit-statutory-review.py`; all branches remain unproven and both case drafts remain unselected. The next package needs exact signal, body, road-direction and pedestrian/traffic yield sources.

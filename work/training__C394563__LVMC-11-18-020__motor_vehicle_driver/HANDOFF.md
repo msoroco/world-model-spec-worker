@@ -12,6 +12,6 @@ Blocker: Native physical mechanism, four distinct candidate constructions, exact
 
 Resume: validate source alternatives and exceptions against the exact law; implement the selected comparison and each additional runnable source branch with semantic proposals, four distinct candidate plans, native and camera configuration, offline and compatibility proofs, saved positive/negative audit, and comparison audit. Reuse a historical original only with an exact source-hashed equivalence receipt. Set ready only after all CPU proofs pass.
 
-Physical prerequisites: Establish the city-authorized marked school crosswalk and any advance words/sign, then observe vehicle crossing and schoolchildren context.
+Physical prerequisites: Establish the physically marked school-area crossing and displayed School-Xing sign. Observe a person attempting to cross on the approach-side half of that crosswalk and measure the vehicle front footprint entering it. Retain original pixels and source geometry; synthetic labels cannot establish official marking.
 
-Legal limit: The exact operative prohibition must be reviewed in the full statute; do not infer it solely from the section heading.
+Legal limit: The exact text-1 vehicle prohibition has been reviewed. City Traffic Engineer marking authority in text-0 supplies context, not the driver offense. The offense requires a displayed School-Xing sign, a person attempting to cross on the approach side, and entry into that crosswalk; the source says person, not only schoolchild. These predicates remain physically unverified.

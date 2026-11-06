@@ -138,94 +138,145 @@
       "unit": "m",
       "mandatory": true,
       "purpose": "Measure roadway sight distance, oncoming trajectories, pass completion and interference over the full pass."
+    },
+    {
+      "name": "roadway_geometry",
+      "unit": "lane_count,direction,highway_status,centerline,crest_profile",
+      "mandatory": true,
+      "purpose": "Qualify the two-lane two-directional highway and left-side centerline geometry."
+    },
+    {
+      "name": "ego_and_overtaken_trajectories",
+      "unit": "m,s",
+      "mandatory": true,
+      "purpose": "Observe entry left of center, abreast phase, return or abandonment, and completion relative to the overtaken vehicle."
+    },
+    {
+      "name": "driver_eye_sightline",
+      "unit": "m,visibility_flag",
+      "mandatory": true,
+      "purpose": "Measure unobstructed left-side roadway distance from the driver eye through the crest at pass entry and throughout the pass."
+    },
+    {
+      "name": "oncoming_trajectories",
+      "unit": "m,s",
+      "mandatory": true,
+      "purpose": "Record nearest opposing vehicle trajectories and clear-ahead envelope through completion."
+    },
+    {
+      "name": "approaching_vehicle_response",
+      "unit": "m/s,m/s^2",
+      "mandatory": true,
+      "purpose": "Measure speed and deceleration of each approaching vehicle before and during the pass."
+    },
+    {
+      "name": "overtaken_vehicle_response",
+      "unit": "m/s,m/s^2",
+      "mandatory": true,
+      "purpose": "Measure speed and deceleration of the overtaken vehicle before and during the pass."
+    },
+    {
+      "name": "pass_completion_and_interference",
+      "unit": "s,m,flag",
+      "mandatory": true,
+      "purpose": "Record pass completion, return to right side, minimum gaps and observed interference with approaching or overtaken vehicles."
     }
   ],
   "source_observation_mapping": {
     "drv.overtaking": {
-      "evidence": "Proposed capture only: the subject is passing a vehicle going the same way. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed source-grounded capture only; no Native measurement, pinned Core atom, saved processing or physical proof exists.",
       "channels": [
-        "measured_clear_oncoming_distance"
+        "ego_and_overtaken_trajectories"
       ],
       "source_refs": [
         "inputs/training__C102951__NRS-484B-213-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.centre_line": {
-      "evidence": "Proposed capture only: the centre of a two-lane, two-directional highway. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed source-grounded capture only; no Native measurement, pinned Core atom, saved processing or physical proof exists.",
       "channels": [
-        "measured_clear_oncoming_distance"
+        "roadway_geometry",
+        "ego_and_overtaken_trajectories"
       ],
       "source_refs": [
         "inputs/training__C102951__NRS-484B-213-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Proposed capture only: the footprint on the left of centre. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed source-grounded capture only; no Native measurement, pinned Core atom, saved processing or physical proof exists.",
       "channels": [
-        "measured_clear_oncoming_distance"
+        "roadway_geometry",
+        "ego_and_overtaken_trajectories"
       ],
       "source_refs": [
         "inputs/training__C102951__NRS-484B-213-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.sight_distance": {
-      "evidence": "Proposed capture only: 'clearly visible … for a sufficient distance ahead'. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed source-grounded capture only; no Native measurement, pinned Core atom, saved processing or physical proof exists.",
       "channels": [
-        "measured_clear_oncoming_distance"
+        "roadway_geometry",
+        "driver_eye_sightline"
       ],
       "source_refs": [
         "inputs/training__C102951__NRS-484B-213-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.visible": {
-      "evidence": "Proposed capture only: 'clearly visible': the oncoming vehicles within the passing distance are in the subject's line of sight. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed source-grounded capture only; no Native measurement, pinned Core atom, saved processing or physical proof exists.",
       "channels": [
-        "measured_clear_oncoming_distance"
+        "driver_eye_sightline",
+        "oncoming_trajectories"
       ],
       "source_refs": [
         "inputs/training__C102951__NRS-484B-213-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.sight_distance_adequate": {
-      "evidence": "Proposed capture only: operationalizes it against the passing-distance model. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed source-grounded capture only; no Native measurement, pinned Core atom, saved processing or physical proof exists.",
       "channels": [
-        "measured_clear_oncoming_distance"
+        "driver_eye_sightline",
+        "oncoming_trajectories",
+        "pass_completion_and_interference"
       ],
       "source_refs": [
         "inputs/training__C102951__NRS-484B-213-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.oncoming": {
-      "evidence": "Proposed capture only: traffic approaching from the opposite direction. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed source-grounded capture only; no Native measurement, pinned Core atom, saved processing or physical proof exists.",
       "channels": [
-        "measured_clear_oncoming_distance"
+        "oncoming_trajectories"
       ],
       "source_refs": [
         "inputs/training__C102951__NRS-484B-213-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.meeting": {
-      "evidence": "Proposed capture only: whether an oncoming vehicle is within the passing envelope. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed source-grounded capture only; no Native measurement, pinned Core atom, saved processing or physical proof exists.",
       "channels": [
-        "measured_clear_oncoming_distance"
+        "oncoming_trajectories",
+        "ego_and_overtaken_trajectories"
       ],
       "source_refs": [
         "inputs/training__C102951__NRS-484B-213-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.speed": {
-      "evidence": "Proposed capture only: the speeds that set the distance needed. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed source-grounded capture only; no Native measurement, pinned Core atom, saved processing or physical proof exists.",
       "channels": [
-        "measured_clear_oncoming_distance"
+        "ego_and_overtaken_trajectories",
+        "oncoming_trajectories"
       ],
       "source_refs": [
         "inputs/training__C102951__NRS-484B-213-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.hard_deceleration": {
-      "evidence": "Proposed capture only: 'without interfering with the safe operation' of the oncoming or overtaken vehicle. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed source-grounded capture only; no Native measurement, pinned Core atom, saved processing or physical proof exists.",
       "channels": [
-        "measured_clear_oncoming_distance"
+        "approaching_vehicle_response",
+        "overtaken_vehicle_response"
       ],
       "source_refs": [
         "inputs/training__C102951__NRS-484B-213-1__motor_vehicle_driver/assignment.json"
@@ -259,7 +310,8 @@
     "No saved-only processing, semantic-stage validation, independent audit or comparison audit has passed.",
     "Membership rows do not prove statutory coverage or accepted equivalence; no source-hashed reuse receipt was verified.",
     "CARLA execution, physical realization, camera framing and legal judgments are unverified.",
-    "Sufficient distance and safe operation remain unresolved judgments; visibility from actual ego eye and crest occluder needed."
+    "Sufficient distance and safe operation remain unresolved judgments; visibility from actual ego eye and crest occluder needed.",
+    "Draft observation repair identifies missing highway geometry, driver-eye visibility, full passing trajectory and separate approaching/overtaken responses; channels are proposed, not implemented or measured."
   ],
   "selection_targets": [
     "full-train"

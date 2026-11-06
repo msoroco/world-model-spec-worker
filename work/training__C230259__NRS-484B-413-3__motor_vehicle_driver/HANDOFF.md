@@ -2,9 +2,11 @@
 
 Actor: `motor_vehicle_driver`. Frozen cell: `road` / `travel` / `other_vehicle`.
 
-Exact statutory source: NRS 484B.413(3). The law text is retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branches: Source text branch requires exact review.
+Exact statutory source: NRS 484B.413(3). The law text is retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Historical witness label: Source text branch requires exact review. Exact-source reviewed selected branch: sudden decrease in speed with a vehicle immediately to the rear. The separate stop alternative is still pending.
 
 Controlled planning variable: `signal_before_sudden_deceleration`. Proposed requests: driver signals immediately trailing driver before sudden slowing; driver suddenly slows without prior signal to same follower. These are scene/controller targets, not observed conduct or legal verdicts.
+
+Prior signal must be measured before deceleration onset; a brake lamp first illuminated by the same deceleration does not itself prove prior warning. The frozen clause supplies no numeric lead time, so appropriateness remains for independent review.
 
 Statutory alternatives and exceptions still to cover or disposition: stop alternative; appropriate signal modality; immediately to rear.
 

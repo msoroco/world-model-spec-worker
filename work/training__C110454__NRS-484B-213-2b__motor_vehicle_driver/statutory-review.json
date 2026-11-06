@@ -1,0 +1,55 @@
+{
+  "format": "worker-statutory-branch-review-v1",
+  "assignment_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver",
+  "source_refs": [
+    "inputs/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/assignment.json",
+    "inputs/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/witnesses.json",
+    "inputs/coverage/branch-sources.json"
+  ],
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "park",
+    "control": "intersection_boundary",
+    "actor": "motor_vehicle_driver"
+  },
+  "source_rule": {
+    "activation": "Approaching within 100 feet of, or traversing, an intersection or railroad grade crossing on a highway that is not one-way.",
+    "obligation": "A vehicle must not be driven to the left side of the highway during the activated interval.",
+    "exception": "Subsection 2 does not apply upon a one-way highway.",
+    "boundary": "100 feet is measured to the relevant intersection or railroad grade crossing boundary; requested lane-change stations cannot establish the observed distance."
+  },
+  "branches": [
+    {
+      "id": "intersection_approach_two_way",
+      "source_topics": ["text-0", "text-1"],
+      "cell_fit": "context_possible",
+      "needed_evidence": ["original intersection boundary geometry", "road direction and centerline", "ego body footprint and time joined to the boundary", "observed first left-side body contact and continuous distance during approach", "proof that the vehicle was driven rather than stationary"],
+      "status": "unproven"
+    },
+    {
+      "id": "intersection_traversal_two_way",
+      "source_topics": ["text-0", "text-1"],
+      "cell_fit": "context_possible",
+      "needed_evidence": ["original intersection polygon", "road direction and centerline", "ego body footprint and motion through the intersection", "left-side occupancy over the traversal interval"],
+      "status": "unproven"
+    },
+    {
+      "id": "railroad_crossing_approach_or_traversal_two_way",
+      "source_topics": ["text-0", "text-1"],
+      "cell_fit": "requires_added_same_cell_crossing_context",
+      "needed_evidence": ["authored and Native realized grade-crossing boundary", "two-way road direction", "ego body motion, footprint, and distance"],
+      "status": "unproven"
+    },
+    {
+      "id": "one_way_highway_exception",
+      "source_topics": ["text-2"],
+      "cell_fit": "requires_added_same_cell_one_way_context",
+      "needed_evidence": ["original highway direction and lane topology", "vehicle road and time scope", "source-grounded exception disposition"],
+      "status": "unproven"
+    }
+  ],
+  "current_draft_gap": "The two generic case definitions vary a requested left-side entry distance but do not resolve the parking maneuver against actual driven left-side motion, the intersection versus grade-crossing alternatives, or the one-way exception. No case is selected.",
+  "membership_limit": "Three preserved accepted recording IDs provide membership only; no source-hashed current-requirement equivalence receipt is available in this assignment.",
+  "cpu_readiness": false,
+  "physical_observation_claimed": false
+}
