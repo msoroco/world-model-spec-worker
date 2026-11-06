@@ -33,7 +33,7 @@ def validate(folder, assignment, manifest):
         return deepcopy(read(path))
 
     law_id, cell_id, actor = (assignment[key] for key in ('law_id', 'cell_id', 'actor'))
-    law = assignment.get('law')
+    law = assignment.get('law_record', assignment.get('law'))
     if not isinstance(law, dict) or law.get('id') != law_id or not law.get('text'):
         raise ValueError('Assignment lacks exact law text')
     cell = assignment.get('cell')
