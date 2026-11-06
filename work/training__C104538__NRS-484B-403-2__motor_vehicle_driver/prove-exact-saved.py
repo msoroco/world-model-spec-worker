@@ -31,7 +31,7 @@ def prove():
                 output = scratch / (suffix + '-' + candidate)
                 materialize(manifest, case_id, output, candidate)
                 source = FOLDER / 'draft-u-turn-saved' / fixture_name
-                for name in ('native_samples.jsonl','video_frames.jsonl','sign-review.json'):
+                for name in ('native_samples.jsonl','video_frames.jsonl','sign-review.json','pixel_review.jsonl'):
                     shutil.copyfile(source / name, output / name)
                 shutil.copyfile(source / 'approach-video-fixture.txt', output / 'approach.mkv')
                 before = {name: digest(output / name) for name in

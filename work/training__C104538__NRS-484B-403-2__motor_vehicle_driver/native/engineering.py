@@ -40,11 +40,7 @@ def evaluate_fallbacks(folder,case_suffix):
     if not pre:raise ValueError('Approach source missing')
     maximum=max(error(row['native_center_xy_m']) for row in pre)
     review=json.loads(review_path.read_text())
-    count=review.get('full_body_and_sign_visible_frames')
-    total=review.get('approach_frames')
-    if type(count)!=int or type(total)!=int or not 0<=count<=total or total<20:
-        raise ValueError('Original pixel visibility review incomplete')
-    visibility=count/total
+    visibility=measured['pixel_review']['visible_fraction']
     completed=(measured['u_turn_within_governed_region_observed'] if case_suffix=='witness_2'
                else rows[-1]['native_center_xy_m'][0]>=10 and
                     rows[-1]['native_lane_id']==review['governed_approach_lane_id'])

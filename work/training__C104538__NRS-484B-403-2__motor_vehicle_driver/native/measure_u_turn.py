@@ -7,6 +7,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from pixel_review import verify as verify_pixel_review
 
 
 def sha(path):
@@ -38,6 +39,7 @@ def measure(samples_path, frame_map_path, sign_review_path, video_path):
         raise ValueError('Sign review source hash or provenance mismatch')
     if review.get('sign_code')!='no_u_turn' or review.get('governs_approach') is not True:
         raise ValueError('Applicable official no-U-turn device unverified')
+    pixels=verify_pixel_review(paths[0],paths[1],paths[2],paths[3],paths[2].parent/'pixel_review.jsonl')
     region=review.get('governed_native_xy_bounds_m')
     if not isinstance(region,list) or len(region)!=4 or not all(isinstance(v,(int,float)) and math.isfinite(v) for v in region) or region[0]>=region[2] or region[1]>=region[3]:
         raise ValueError('Invalid sign-governed Native region')
@@ -89,6 +91,9 @@ def measure(samples_path, frame_map_path, sign_review_path, video_path):
             'maximum_heading_change_deg':max(abs(math.degrees(a)) for a in angles),
             'complete_body_inside_governed_region_at_reversal':inside[reversal] if reversal is not None else False,
             'opposing_lane_exit_observed':samples[-1].get('native_lane_id')==opposing,
-            'source_hashes':{p.name:sha(p) for p in paths},
+            'pixel_review':{'visible_frames':pixels['visible_frames'],
+                            'approach_frames':pixels['approach_frames'],
+                            'visible_fraction':pixels['visible_fraction']},
+            'source_hashes':{p.name:sha(p) for p in paths+[paths[2].parent/'pixel_review.jsonl']},
             'physical_success_claimed':False,
             'legal_verdict_claimed':False}

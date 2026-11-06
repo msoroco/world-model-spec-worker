@@ -26,7 +26,7 @@ def main():
     seeded=fixture.make_attempt(scratch/'seeded',args.case,args.candidate)
     source=scratch/'source';source.mkdir()
     files=('native_samples.jsonl','video_frames.jsonl','body_history.jsonl','trace.jsonl',
-           'context.json','road.xodr','sign-review.json','overview.mkv','approach.mkv',
+           'context.json','road.xodr','sign-review.json','pixel_review.jsonl','overview.mkv','approach.mkv',
            'sign_reference.mkv','driver_reference.mkv')
     for name in files:shutil.copyfile(seeded/name,source/name)
     for name in ('capture','channels','source_channels'):

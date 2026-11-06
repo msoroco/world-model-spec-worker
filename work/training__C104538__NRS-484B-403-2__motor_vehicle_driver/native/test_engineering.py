@@ -30,6 +30,7 @@ class EngineeringTests(unittest.TestCase):
         packet['native_samples_sha256']=sha(folder/'native_samples.jsonl')
         packet['frame_map_sha256']=sha(folder/'video_frames.jsonl')
         packet['video_sha256']=sha(folder/'approach.mkv')
+        packet['pixel_review_sha256']=sha(folder/'pixel_review.jsonl')
         review.write_text(json.dumps(packet))
 
     def test_four_distinct_policies_hold_law_and_route(self):
@@ -67,8 +68,13 @@ class EngineeringTests(unittest.TestCase):
                 self.assertEqual([evaluate_fallbacks(folder,suffix)[f'fallback{i}'] for i in (1,2,3)],
                                  [False,True,False])
                 samples.write_text(original);self.refresh(folder)
+                marks=folder/'pixel_review.jsonl';labels=[json.loads(line) for line in marks.read_text().splitlines()]
+                visible=(95*len(labels)-1)//100
+                for label in labels[visible:]:label['sign_visible']=False
+                marks.write_text(''.join(json.dumps(label)+'\n' for label in labels))
+                self.refresh(folder)
                 review=folder/'sign-review.json';packet=json.loads(review.read_text())
-                packet['full_body_and_sign_visible_frames']=113;review.write_text(json.dumps(packet))
+                packet['full_body_and_sign_visible_frames']=visible;review.write_text(json.dumps(packet))
                 self.assertEqual([evaluate_fallbacks(folder,suffix)[f'fallback{i}'] for i in (1,2,3)],
                                  [False,False,True])
 

@@ -23,7 +23,7 @@ def run():
         actual=measure(source,mapping,review,video)
         if actual!=receipt or len(rows(source))!=480 or len(rows(mapping))!=480:
             raise ValueError('Saved receipt or frame count mismatch: '+name)
-        if receipt['source_hashes']!={p.name:sha(p) for p in (source,mapping,review,video)}:
+        if receipt['source_hashes']!={p.name:sha(p) for p in (source,mapping,review,video,folder/'pixel_review.jsonl')}:
             raise ValueError('Source hash mismatch: '+name)
         saved.append((name,rows(source),receipt))
     left,right=saved

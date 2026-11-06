@@ -9,7 +9,7 @@ ASSIGNMENT = FOLDER.name
 RUNTIME_MANIFEST = '391baee19ccece687c5632aa2cc64ba3b958c8b492045b30e4bfc4caa131c235'
 NAMES = ('primary', 'fallback1', 'fallback2', 'fallback3')
 FILES = ('runner.py', 'geometry.py', 'controller.py', 'engineering.py',
-         'measure_u_turn.py', 'finalize.py', 'cameras.py')
+         'measure_u_turn.py', 'pixel_review.py', 'finalize.py', 'cameras.py')
 TESTS = ('test_geometry.py', 'test_measure_u_turn.py', 'test_engineering.py', 'test_runner.py')
 
 

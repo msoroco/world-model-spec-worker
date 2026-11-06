@@ -29,7 +29,7 @@ def make_attempt(destination,suffix,candidate='primary'):
     case=FOLDER.name+'__'+suffix
     materialize(FOLDER/'draft-execution-manifest.json',case,destination,candidate)
     source=FOLDER/'draft-u-turn-saved'/('straight' if suffix=='witness_1' else 'u_turn')
-    for name in ('native_samples.jsonl','video_frames.jsonl'):
+    for name in ('native_samples.jsonl','video_frames.jsonl','pixel_review.jsonl'):
         shutil.copyfile(source/name,destination/name)
     samples=rows(destination/'native_samples.jsonl')
     mapping=rows(destination/'video_frames.jsonl')

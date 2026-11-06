@@ -20,7 +20,7 @@ def run():
         try:
             fixture.write(turn=turn)
             destination=root/name;destination.mkdir(exist_ok=True)
-            for source in (fixture.samples,fixture.mapping,fixture.review,fixture.video):
+            for source in (fixture.samples,fixture.mapping,fixture.review,fixture.pixel_review,fixture.video):
                 shutil.copyfile(source,destination/source.name)
             receipt=measure(destination/'native_samples.jsonl',destination/'video_frames.jsonl',
                             destination/'sign-review.json',destination/'approach-video-fixture.txt')

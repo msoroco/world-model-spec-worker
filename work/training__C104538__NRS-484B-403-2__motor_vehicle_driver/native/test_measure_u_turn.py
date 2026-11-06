@@ -17,6 +17,7 @@ class UTurnMeasurementTests(unittest.TestCase):
         self.samples=self.root/'native_samples.jsonl'
         self.mapping=self.root/'video_frames.jsonl'
         self.review=self.root/'sign-review.json'
+        self.pixel_review=self.root/'pixel_review.jsonl'
         self.video=self.root/'approach-video-fixture.txt'
         self.video.write_bytes(b'synthetic 480-frame camera placeholder')
 
@@ -41,13 +42,17 @@ class UTurnMeasurementTests(unittest.TestCase):
             mapping.append({'video_frame':i,'native_frame':frame,'carla_frame':frame,'time_s':time})
         self.samples.write_text(''.join(json.dumps(row)+'\n' for row in samples))
         self.mapping.write_text(''.join(json.dumps(row)+'\n' for row in mapping))
+        approach=[i for i,row in enumerate(samples) if -35<=row['native_center_xy_m'][0]<=-10]
+        self.pixel_review.write_text(''.join(json.dumps({
+            'video_frame':i,'native_frame':mapping[i]['native_frame'],
+            'full_body_visible':True,'sign_visible':True})+'\n' for i in approach))
         self.review.write_text(json.dumps({'source_kind':'original_camera_sign_review',
             'sign_code':'no_u_turn','governs_approach':governed,
             'governed_approach_lane_id':-1,'opposing_lane_id':1,
-            'full_body_and_sign_visible_frames':120,'approach_frames':120,
+            'full_body_and_sign_visible_frames':len(approach),'approach_frames':len(approach),
             'governed_native_xy_bounds_m':[-10,-8,10,8],
             'native_samples_sha256':sha(self.samples),'frame_map_sha256':sha(self.mapping),
-            'video_sha256':sha(self.video)}))
+            'video_sha256':sha(self.video),'pixel_review_sha256':sha(self.pixel_review)}))
 
     def test_controlled_signed_pair(self):
         self.write(turn=False)
@@ -91,7 +96,25 @@ class UTurnMeasurementTests(unittest.TestCase):
         self.mapping.write_text('\n'.join(rows)+'\n')
         review=json.loads(self.review.read_text());review['frame_map_sha256']=sha(self.mapping)
         self.review.write_text(json.dumps(review))
-        with self.assertRaisesRegex(ValueError,'frame join'):
+        with self.assertRaisesRegex(ValueError,'frame join|frame identity'):
+            measure(self.samples,self.mapping,self.review,self.video)
+
+    def test_changed_pixel_mark_rejected(self):
+        self.write()
+        marks=self.pixel_review.read_text().splitlines()
+        mark=json.loads(marks[10]);mark['sign_visible']=False;marks[10]=json.dumps(mark)
+        self.pixel_review.write_text('\n'.join(marks)+'\n')
+        with self.assertRaisesRegex(ValueError,'Pixel review source hash'):
+            measure(self.samples,self.mapping,self.review,self.video)
+
+    def test_rehashed_pixel_count_mismatch_rejected(self):
+        self.write()
+        marks=self.pixel_review.read_text().splitlines()
+        mark=json.loads(marks[10]);mark['sign_visible']=False;marks[10]=json.dumps(mark)
+        self.pixel_review.write_text('\n'.join(marks)+'\n')
+        review=json.loads(self.review.read_text());review['pixel_review_sha256']=sha(self.pixel_review)
+        self.review.write_text(json.dumps(review))
+        with self.assertRaisesRegex(ValueError,'count differs'):
             measure(self.samples,self.mapping,self.review,self.video)
 
 

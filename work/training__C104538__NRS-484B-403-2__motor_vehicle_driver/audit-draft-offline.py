@@ -49,7 +49,7 @@ def audit():
                 else:
                     native = FOLDER / ('native/' + Path(item['path']).name) if item['path'].startswith('tests/') else FOLDER / item['path']
                     if item['path'] in ('runner.py', 'geometry.py', 'controller.py', 'engineering.py',
-                                        'measure_u_turn.py', 'finalize.py', 'cameras.py'):
+                                        'measure_u_turn.py', 'pixel_review.py', 'finalize.py', 'cameras.py'):
                         native = FOLDER / 'native' / item['path']
                     if native.read_text() != item['content']:
                         raise AssertionError('Embedded source differs: ' + item['path'])
@@ -77,12 +77,12 @@ def audit():
             if digest(FOLDER / receipt[path_key]) != receipt[hash_key]:
                 raise AssertionError('Offline log hash changed')
         unit = (FOLDER / receipt['unit_log']).read_text()
-        if 'Ran 15 tests' not in unit or '\nOK\n' not in unit:
+        if 'Ran 17 tests' not in unit or '\nOK\n' not in unit:
             raise AssertionError('Exact bundle tests did not pass')
     if observed != expected:
         raise AssertionError('Exact bundle inventory incomplete')
     return {'passed': True, 'cases': 2, 'unselected_candidates': 8,
-            'offline_tests_per_bundle': 15, 'native_executed': False,
+            'offline_tests_per_bundle': 17, 'native_executed': False,
             'selected_delivery_cases': 0}
 
 
