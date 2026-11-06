@@ -20,7 +20,7 @@ def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
 def build():
-    parent=REPO/'.runtime-work/c104538/full-saved-v1'
+    parent=REPO/'.runtime-work/c104538/full-saved-v2'
     if parent.exists():raise ValueError('Retain prior full-duration diagnostic; choose a new version')
     summary=json.loads((ROOT/'pinned-contract-summary.json').read_text())
     binary=REPO/'.runtime-work/linux_arm64/ffmpeg'
@@ -34,6 +34,12 @@ def build():
     subprocess.run([str(binary),'-nostdin','-hide_banner','-loglevel','error','-n',
         '-f','lavfi','-i','color=c=black:s=16x16:r=20:d=24',
         '-frames:v','480','-c:v','ffv1',str(video)],check=True,timeout=120)
+    decoded=subprocess.check_output([str(binary),'-nostdin','-hide_banner','-loglevel','error',
+        '-i',str(video),'-vsync','0','-f','rawvideo','-pix_fmt','rgb24','pipe:1'],timeout=120)
+    frame_bytes=16*16*3
+    assert len(decoded)==480*frame_bytes
+    frame_hashes=[hashlib.sha256(decoded[i*frame_bytes:(i+1)*frame_bytes]).hexdigest()
+                  for i in range(480)]
     results=[]
     for item in summary['cases']:
         case_id=item['case_id'];suffix=case_id.split('__')[-1]
@@ -65,7 +71,7 @@ def build():
                 'ego_center_xyz_m':[x,0,0]})
             viewpoints.append({'native_frame':frame,'time_s':time,'views':views})
             mapping.append({'video_frame':i,'native_frame':frame,'carla_frame':frame,
-                'time_s':time,'original_rgb_sha256':{name:'a'*64 for name in CAMERAS}})
+                'time_s':time,'original_rgb_sha256':{name:frame_hashes[i] for name in CAMERAS}})
         for name,values in [('trace.jsonl',trace),('capture/evidence.jsonl',evidence),
                 ('native_body_history.jsonl',history),('driver_eye_rays.jsonl',viewpoints),
                 ('video_frames.jsonl',mapping)]:put_rows(positive/name,values)
@@ -79,9 +85,14 @@ def build():
             path=positive/(name+'.mkv');path.unlink();shutil.copyfile(video,path)
         negative=parent/suffix/'negative_missing_body';shutil.copytree(positive,negative)
         (negative/'native_body_history.jsonl').unlink()
+        bad_hash=parent/suffix/'negative_bad_rgb_hash';shutil.copytree(positive,bad_hash)
+        damaged=[json.loads(line) for line in (bad_hash/'video_frames.jsonl').read_text().splitlines()]
+        damaged[239]['original_rgb_sha256']['reference_left']='0'*64
+        put_rows(bad_hash/'video_frames.jsonl',damaged)
         receipts=[]
         contract=json.loads((ROOT/item['contract']).read_text())
-        for label,attempt in [('positive',positive),('negative_missing_body',negative)]:
+        for label,attempt in [('positive',positive),('negative_missing_body',negative),
+                              ('negative_bad_rgb_hash',bad_hash)]:
             command=['python3.11',str(ROOT/'native/finalize.py'),'--attempt',str(attempt),
                      '--output',str(attempt/'analysis-report.json')]
             run=subprocess.run(command,capture_output=True,text=True,env=env,timeout=120)
@@ -97,7 +108,9 @@ def build():
                 assert not result['setup_confirmed'] and not result['legal_verdict_claimed']
                 assert not result['target_checks'][0]['matched']
             else:
-                assert run.returncode!=0 and contract['negative']['error_contains'] in run.stderr,(case_id,run.stderr)
+                expected=(contract['negative']['error_contains'] if label=='negative_missing_body'
+                          else 'Original source RGB frame hash differs: reference_left.mkv 239')
+                assert run.returncode!=0 and expected in run.stderr,(case_id,run.stderr)
             receipts.append({'label':label,'exit_code':run.returncode,
                 'log':str(log.relative_to(ROOT)),'log_sha256':sha(log)})
         results.append({'case_id':case_id,'contract_sha256':sha(ROOT/item['contract']),
@@ -106,8 +119,8 @@ def build():
             'positive_trace_sha256':sha(positive/'trace.jsonl'),
             'positive_video_sha256':sha(positive/'ego.mkv'),
             'receipts':receipts})
-    output={'format':'c104538-full-duration-synthetic-saved-v1','cases':results,
-        'frames_per_case':480,'positive_count':3,'negative_count':3,
+    output={'format':'c104538-full-duration-synthetic-saved-v2','cases':results,
+        'frames_per_case':480,'positive_count':3,'negative_count':6,
         'contract_values_verified_per_case':4,'original_native_measurement_count':0,
         'selected_case_count':0,'recording_accepted':False,
         'scope':'full-duration synthetic saved finalizer/contract proof; no physical visibility or Core package proof'}

@@ -17,6 +17,7 @@ def sha(path):
 def main():
     env = dict(os.environ)
     env['PATH'] = str(ROOT / '.runtime-work/linux_arm64') + os.pathsep + env.get('PATH', '')
+    env['LD_LIBRARY_PATH'] = str(ROOT / '.runtime-work/geos-wheel/shapely.libs') + os.pathsep + env.get('LD_LIBRARY_PATH', '')
     records = []
     for suffix in ('probe_1', 'probe_2'):
         for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):

@@ -38,7 +38,7 @@ def audit():
                 assert all(item['trigger'].get(key) for key in ('source','metric','failure_condition'))
                 assert len(item['changed_knobs'])==1
             passed+=1
-        source=ROOT/'draft-offline-v9'/suffix/'primary'
+        source=ROOT/'draft-offline-v10'/suffix/'primary'
         for name,damage,expected in (
             ('authored_road.xodr','damaged road','Materialized authored road differs'),
             ('obstruction.json','{}','Materialized obstruction differs')):

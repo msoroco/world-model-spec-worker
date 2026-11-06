@@ -8,13 +8,21 @@ from engineering import candidate
 from geometry import check as check_geometry
 from runner import check as check_runner
 from vehicle_policy import BrakingPolicy, cpu_probe
+from triggers import decide
 
 HERE = Path(__file__).resolve().parent.parent
 
 
+def package_config():
+    path = HERE / 'config.json'
+    if not path.is_file():
+        path = HERE / 'draft-candidates/probe_1/primary/cpu-config.json'
+    return json.loads(path.read_text())
+
+
 class CurbOffline(unittest.TestCase):
     def test_exact_runner_preflight(self):
-        config = json.loads((HERE / 'config.json').read_text())
+        config = package_config()
         result = check_runner(config)
         self.assertEqual(result['frames'], 240)
         self.assertEqual(len(result['cameras']), 4)
@@ -22,12 +30,15 @@ class CurbOffline(unittest.TestCase):
         self.assertFalse(result['impossibility_to_yield_proven'])
 
     def test_authored_curb_and_vehicle_path(self):
-        geometry = check_geometry(HERE / 'road.xodr')
+        road = HERE / 'road.xodr'
+        if not road.is_file():
+            road = HERE / 'native/road.xodr'
+        geometry = check_geometry(road)
         self.assertEqual((geometry['curb_edge_x_m'], geometry['vehicle_lane_center_x_m']), (-3.5, -1.75))
         self.assertFalse(geometry['legal_road_and_safety_place_status_verified'])
 
     def test_controlled_departure_request(self):
-        config = json.loads((HERE / 'config.json').read_text())
+        config = package_config()
         plan = candidate(config['case_suffix'], config['candidate_id'])
         self.assertEqual(plan['engineering']['pedestrian_departure_s'],
                          .5 if config['case_suffix'] == 'probe_1' else 3.5)
@@ -51,6 +62,22 @@ class CurbOffline(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             with self.assertRaisesRegex(ValueError, 'Missing required source: curb-samples.jsonl'):
                 measure(Path(folder) / 'curb-samples.jsonl', Path(folder) / 'curb-context.json')
+
+    def test_fallback_trigger_boundaries(self):
+        metrics = {'initial_footprint_clearance_m': .88,
+                   'first_departure_acceleration_mps2': 60,
+                   'curb_and_vehicle_visibility_fraction': 200/240}
+        suffix = package_config()['case_suffix']
+        self.assertEqual(decide(suffix, metrics)['activated_fallbacks'],
+                         ['fallback1', 'fallback2', 'fallback3'])
+        for key, boundary in (('initial_footprint_clearance_m', 1.25),
+                              ('first_departure_acceleration_mps2', 4),
+                              ('curb_and_vehicle_visibility_fraction', .95)):
+            changed = {**metrics, key: boundary}
+            self.assertNotIn({'initial_footprint_clearance_m': 'fallback1',
+                              'first_departure_acceleration_mps2': 'fallback2',
+                              'curb_and_vehicle_visibility_fraction': 'fallback3'}[key],
+                             decide(suffix, changed)['activated_fallbacks'])
 
 
 if __name__ == '__main__':

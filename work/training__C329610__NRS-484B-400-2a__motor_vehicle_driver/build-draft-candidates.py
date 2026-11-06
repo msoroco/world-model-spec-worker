@@ -11,12 +11,14 @@ NAMES=('primary','fallback1','fallback2','fallback3')
 SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','controller.py':'controller.py',
          'engineering.py':'engineering.py',
          'measure.py':'measure.py','finalize.py':'finalize.py','cameras.py':'cameras.py',
+         'fallback_triggers.py':'fallback_triggers.py',
          'tests/test_geometry.py':'test_geometry.py',
          'tests/test_controller.py':'test_controller.py',
          'tests/test_candidate_knobs.py':'test_candidate_knobs.py',
          'tests/test_measure.py':'test_measure.py',
          'tests/test_finalize.py':'test_finalize.py',
-         'tests/test_cameras.py':'test_cameras.py'}
+         'tests/test_cameras.py':'test_cameras.py',
+         'tests/test_fallback_triggers.py':'test_fallback_triggers.py'}
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()

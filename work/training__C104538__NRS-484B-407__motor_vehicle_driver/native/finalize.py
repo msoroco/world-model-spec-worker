@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -32,15 +33,40 @@ def source_hashes(attempt,key):
     return {name:sha(Path(attempt)/name) for name in MEASUREMENT_INPUTS[key]}
 
 
-def video_frames(path):
+def video_frames(path, expected_hashes=None):
     if not path.is_file():raise ValueError('Missing required source: '+path.name)
     result=subprocess.run(['ffprobe','-v','error','-count_frames','-select_streams','v:0',
-        '-show_entries','stream=nb_read_frames',
-        '-of','default=noprint_wrappers=1:nokey=1',str(path)],
+        '-show_entries','stream=width,height,nb_read_frames',
+        '-of','json',str(path)],
         capture_output=True,text=True,timeout=120)
-    if result.returncode or not result.stdout.strip().isdigit():
+    if result.returncode:
         raise ValueError('Source video decode failed: '+path.name)
-    return int(result.stdout.strip())
+    try:
+        stream=json.loads(result.stdout)['streams'][0]
+        count=int(stream['nb_read_frames'])
+        width=int(stream['width']);height=int(stream['height'])
+        if count<1 or width<1 or height<1:raise ValueError()
+    except (ValueError,KeyError,IndexError,TypeError) as exc:
+        raise ValueError('Source video decode failed: '+path.name) from exc
+    if expected_hashes is None:return count
+    if count!=len(expected_hashes):raise ValueError('Original source video frame count differs')
+    frame_bytes=width*height*3
+    process=subprocess.Popen(['ffmpeg','-nostdin','-hide_banner','-loglevel','error',
+        '-i',str(path),'-vsync','0','-f','rawvideo','-pix_fmt','rgb24','pipe:1'],
+        stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    try:
+        for index,expected in enumerate(expected_hashes):
+            pixels=process.stdout.read(frame_bytes)
+            if len(pixels)!=frame_bytes or hashlib.sha256(pixels).hexdigest()!=expected:
+                raise ValueError('Original source RGB frame hash differs: '+path.name+' '+str(index))
+        if process.stdout.read(1):raise ValueError('Original source video frame count differs')
+        if process.wait(timeout=120):raise ValueError('Source video decode failed: '+path.name)
+    finally:
+        process.stdout.close()
+        if process.poll() is None:
+            process.kill();process.wait()
+        process.stderr.close()
+    return count
 
 
 def finalize(attempt,output):
@@ -55,14 +81,17 @@ def finalize(attempt,output):
         capture.get('frames')!=count or capture.get('extraction_confirmed') is not True):
         raise ValueError('Original capture extraction incomplete')
     mapping=rows(attempt/'video_frames.jsonl')
-    video_counts={name:video_frames(attempt/(name+'.mkv')) for name in CAMERAS}
-    if any(value!=count for value in video_counts.values()):
-        raise ValueError('Original source video frame count differs')
     for frame in mapping:
         pixel_hashes=frame.get('original_rgb_sha256')
         if not isinstance(pixel_hashes,dict) or set(pixel_hashes)!=set(CAMERAS) or any(
-            not isinstance(value,str) or len(value)!=64 for value in pixel_hashes.values()):
+            not isinstance(value,str) or len(value)!=64 or
+            any(character not in '0123456789abcdef' for character in value)
+            for value in pixel_hashes.values()):
             raise ValueError('Missing original camera RGB frame hash')
+    video_counts={name:video_frames(attempt/(name+'.mkv'),
+        [frame['original_rgb_sha256'][name] for frame in mapping]) for name in CAMERAS}
+    if any(value!=count for value in video_counts.values()):
+        raise ValueError('Original source video frame count differs')
     recording_evidence=[]
     for name in CHANNELS:
         reference='channels/'+name+'.jsonl';source=rows(attempt/reference)

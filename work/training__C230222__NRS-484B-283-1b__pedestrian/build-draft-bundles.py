@@ -9,7 +9,7 @@ NATIVE = HERE / 'native'
 IDS = ('primary', 'fallback1', 'fallback2', 'fallback3')
 SOURCES = {'runner.py': 'runner.py', 'geometry.py': 'geometry.py',
            'engineering.py': 'engineering.py', 'vehicle_policy.py': 'vehicle_policy.py',
-           'curb.py': 'curb.py',
+           'curb.py': 'curb.py', 'triggers.py': 'triggers.py',
            'finalize.py': 'finalize.py', 'road.xodr': 'road.xodr',
            'tests/test_offline.py': 'test_offline.py'}
 
