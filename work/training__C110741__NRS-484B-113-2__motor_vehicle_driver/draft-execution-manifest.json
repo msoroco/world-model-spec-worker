@@ -1,0 +1,134 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C110741__NRS-484B-113-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "0d9a74f44af88236ebed007ae6e020a134b420ad6fe8f2f87c8869184ebee555",
+  "status": "draft_not_selected",
+  "cases": [
+    {
+      "case_id": "training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native reverse tracking, crosswalk map readback and original pixels require physical observations"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110741-113-2-saved-analysis-v1"
+      },
+      "measurement_contract": "draft-candidates/condition_a/measurement-contract.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/condition_a/fallback1/construction.json",
+          "construction_sha256": "818a663f4f308bde80bb5a49b3125b587673dec050a961a471fa83e2ada9bc45",
+          "trigger": {
+            "metric": "max_reverse_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.25,
+            "source": "original Native pose and surveyed approach lane center",
+            "failure_condition": "max_reverse_cross_track_error_m > 0.25"
+          },
+          "changed_knobs": [
+            "lateral_gain"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/condition_a/fallback2/construction.json",
+          "construction_sha256": "8fc6f08e32dbc383c513ee0303f6ce9483a274a1b20108e75cd908753e92de4c",
+          "trigger": {
+            "metric": "reverse_endpoint_overshoot_m",
+            "op": ">",
+            "threshold": 0.2,
+            "source": "original Native body/center positions at reversed endpoint",
+            "failure_condition": "reverse_endpoint_overshoot_m > 0.2"
+          },
+          "changed_knobs": [
+            "brake_margin_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/condition_a/fallback3/construction.json",
+          "construction_sha256": "2e5a84ec10b0b9585a03702f106eac64a50f1744a6c494f308b834b9d8d4c634",
+          "trigger": {
+            "metric": "min_reverse_body_pixel_margin_px",
+            "op": "<",
+            "threshold": 40,
+            "source": "decoded original overview video and reverse-body mask",
+            "failure_condition": "min_reverse_body_pixel_margin_px < 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/condition_a/primary/construction.json",
+      "construction_sha256": "892ff86fd81c7c832b0a225f1ae99471fd11d7a6c5877cca8392474dff000bef"
+    },
+    {
+      "case_id": "training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_b",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native reverse tracking, crosswalk map readback and original pixels require physical observations"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110741-113-2-saved-analysis-v1"
+      },
+      "measurement_contract": "draft-candidates/condition_b/measurement-contract.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/condition_b/fallback1/construction.json",
+          "construction_sha256": "c4449e9de57e5cbd1748688cc836d175d6de2c8b81a6c7242f6dcdc7f4b18951",
+          "trigger": {
+            "metric": "max_reverse_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.25,
+            "source": "original Native pose and surveyed approach lane center",
+            "failure_condition": "max_reverse_cross_track_error_m > 0.25"
+          },
+          "changed_knobs": [
+            "lateral_gain"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/condition_b/fallback2/construction.json",
+          "construction_sha256": "8f74793fd74092ab1ea32a25e05df9382eea184e409ff999f695f9114652882f",
+          "trigger": {
+            "metric": "reverse_endpoint_overshoot_m",
+            "op": ">",
+            "threshold": 0.2,
+            "source": "original Native body/center positions at reversed endpoint",
+            "failure_condition": "reverse_endpoint_overshoot_m > 0.2"
+          },
+          "changed_knobs": [
+            "brake_margin_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/condition_b/fallback3/construction.json",
+          "construction_sha256": "24712e645871efdaea939a85d941145e8aa007c2d70efdb72cc833ec350964ab",
+          "trigger": {
+            "metric": "min_reverse_body_pixel_margin_px",
+            "op": "<",
+            "threshold": 40,
+            "source": "decoded original overview video and reverse-body mask",
+            "failure_condition": "min_reverse_body_pixel_margin_px < 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/condition_b/primary/construction.json",
+      "construction_sha256": "c8598a065a89eea5b25984335d427cab33cc44151f9f44656c5d37dc30c7a8d9"
+    }
+  ]
+}

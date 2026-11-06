@@ -1,0 +1,77 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "case_id": "training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.113(2)",
+      "output_key": "reverse_motion_frames",
+      "method": "measure_backing",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484B.113(2)",
+      "output_key": "backing_crosswalk_relation",
+      "method": "measure_crosswalk",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "crosswalk_witness_relation",
+      "method": "measure_witness",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "reviewed-scope-1",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "crosswalk_event_frames",
+      "method": "measure_event_count",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "reviewed-scope-2",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "crosswalk_overlap_area_m2",
+      "method": "measure_overlap_area",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native_samples.jsonl"
+    ],
+    "error_contains": "Missing required source: native_samples.jsonl"
+  }
+}

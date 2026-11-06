@@ -85,6 +85,7 @@ def make_attempt(path,suffix,full_resolution=False):
         if polarity=='present':
             packet['observed_exception_source_ids']=['synthetic-source']
             if branch=='necessary_traffic_conflict':
+                write_rows(path/'other_actor_history.jsonl',[{'native_frame':frame,'conflict_occupancy':frame==320,'synthetic_diagnostic':True} for frame in frames])
                 packet.update(other_actor_frames=[220,221],ego_brake_frames=[221],
                     intersection_boundary_source='native_map_readback')
             elif branch=='compliance_with_law':

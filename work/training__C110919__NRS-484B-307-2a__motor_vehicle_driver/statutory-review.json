@@ -1,0 +1,60 @@
+{
+  "format": "worker-statutory-branch-review-v1",
+  "assignment_id": "training__C110919__NRS-484B-307-2a__motor_vehicle_driver",
+  "source_refs": [
+    "inputs/training__C110919__NRS-484B-307-2a__motor_vehicle_driver/assignment.json",
+    "inputs/training__C110919__NRS-484B-307-2a__motor_vehicle_driver/witnesses.json",
+    "inputs/coverage/branch-sources.json"
+  ],
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "right_turn",
+    "control": "traffic_light",
+    "actor": "motor_vehicle_driver"
+  },
+  "branches": [
+    {
+      "id": "circular_green_governing_signal",
+      "source_topics": [
+        "text-0"
+      ],
+      "cell_fit": "selected_same_cell_right_turn",
+      "cpu_draft_evidence": "authored circular-green signal 601 and 480-frame synthetic source",
+      "remaining_exact_evidence": "Native governing direction/state and original pixels",
+      "status": "unproven"
+    },
+    {
+      "id": "right_turn_unless_prohibited",
+      "source_topics": [
+        "text-1"
+      ],
+      "cell_fit": "selected_same_cell_right_turn",
+      "cpu_draft_evidence": "same-cell right-turn route plus authored no-turn-sign survey",
+      "remaining_exact_evidence": "Native traffic-device survey and original pixels",
+      "status": "unproven"
+    },
+    {
+      "id": "yield_to_lawful_pedestrians_and_vehicles",
+      "source_topics": [
+        "text-2"
+      ],
+      "cell_fit": "selected_same_cell_right_turn",
+      "cpu_draft_evidence": "synthetic pedestrian/cross-traffic windows 140-160, controlled turn entries 181/145",
+      "remaining_exact_evidence": "Native lawful-user identity, intersection/crosswalk status and ego yield",
+      "status": "unproven"
+    },
+    {
+      "id": "right_turn_under_circular_green_witness",
+      "source_topics": [
+        "reviewed-scope-0"
+      ],
+      "cell_fit": "selected_same_cell_right_turn",
+      "cpu_draft_evidence": "frozen witness and same-cell CPU comparison",
+      "remaining_exact_evidence": "strict selected CPU delivery proof and accepted physical observations",
+      "status": "unproven"
+    }
+  ],
+  "scope_disposition": "Straight and left turns are statutory alternatives outside the frozen right_turn maneuver. The no-prohibiting-device qualifier applies to the selected right turn and is measured separately.",
+  "cpu_readiness": false,
+  "physical_observation_claimed": false
+}

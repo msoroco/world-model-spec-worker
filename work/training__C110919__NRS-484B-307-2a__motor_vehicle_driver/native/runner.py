@@ -1,0 +1,317 @@
+"""C110919 Native construction proposal; capture runs only with an owned endpoint.
+
+The offline --check path never imports CARLA or starts a server. A later capture
+must be audited from original Native and pixel sources before selection.
+"""
+from __future__ import annotations
+import argparse
+import hashlib
+import json
+import math
+from pathlib import Path
+import queue
+import subprocess
+import traceback
+
+from cameras import camera_plan
+from controller import EngineeringKnobs, PathController
+from engineering import parameters
+from geometry import check as geometry_check, open_drive, route
+
+ROOT=Path(__file__).resolve().parent
+
+def write_new(path: Path, value: object):
+    with path.open('x') as stream:
+        json.dump(value,stream,indent=2,allow_nan=False)
+        stream.write('\n')
+
+def check(config: dict) -> dict:
+    suffix=config.get('case_suffix')
+    candidate=config.get('candidate_id')
+    if suffix not in ('controlled_1','controlled_2') or candidate not in ('primary','fallback1','fallback2','fallback3'):
+        raise ValueError('Unknown exact case or candidate')
+    if config.get('case_id')!='training__C110919__NRS-484B-307-2a__motor_vehicle_driver__'+suffix:
+        raise ValueError('Case identity differs')
+    if config.get('cell_id')!='C110919' or config.get('law_id')!='NRS-484B-307-2a':
+        raise ValueError('Cell or law differs')
+    if config.get('rate_hz')!=20 or config.get('duration_s')!=24:
+        raise ValueError('Capture profile differs')
+    if config.get('actor')!='motor_vehicle_driver':
+        raise ValueError('Actor differs')
+    settings=parameters(suffix,candidate)
+    if config.get('knobs')!=settings['knobs']:
+        raise ValueError('Candidate knobs differ')
+    geom=geometry_check()
+    cameras=camera_plan(candidate)
+    if len(cameras)!=4 or cameras[0]['width']!=1920 or cameras[0]['height']!=1080:
+        raise ValueError('Original camera profile differs')
+    EngineeringKnobs(lookahead_base_m=settings['knobs']['route_tracking_lookahead_m']).validate()
+    PathController(route(),2.8,70.0,EngineeringKnobs(
+        lookahead_base_m=settings['knobs']['route_tracking_lookahead_m']))
+    return {'offline_geometry':geom,'candidate':candidate,'case':suffix,
+            'camera_count':4,'route_samples':len(route()),
+            'native_imported':False,'physical_success_claimed':False}
+
+def body_xy(actor):
+    vertices=actor.bounding_box.get_world_vertices(actor.get_transform())
+    points=sorted({(round(v.x,5),round(v.y,5)) for v in vertices})
+    if len(points)!=4:raise RuntimeError('Native body has no four-corner horizontal footprint')
+    return [list(point) for point in points]
+
+def camera_transform(carla,spec):
+    x,y,z=spec['xyz_m']
+    if spec['attachment']=='world':
+        yaw=math.degrees(math.atan2(-y,-x))
+        pitch=math.degrees(math.atan2(-z,math.hypot(x,y)))
+    else:
+        yaw=0;pitch=-5
+    return carla.Transform(carla.Location(x=x,y=y,z=z),carla.Rotation(yaw=yaw,pitch=pitch))
+
+def survey(carla,mapping,native_hash):
+    requests={'approach_right':(1.75,-30,1),
+              'approach_left':(-1.75,-30,1),
+              'destination_right':(30,-1.75,2),
+              'destination_left':(30,1.75,2)}
+    observed={}
+    for name,(x,y,road) in requests.items():
+        waypoint=mapping.get_waypoint(carla.Location(x=x,y=y,z=.2),project_to_road=False,
+                                      lane_type=carla.LaneType.Driving)
+        if waypoint is None or waypoint.road_id!=road:
+            raise RuntimeError('Native road/lane readback failed: '+name)
+        vec=waypoint.transform.get_forward_vector()
+        observed[name]={'road_id':waypoint.road_id,'lane_id':waypoint.lane_id,
+                        'forward_xy':[vec.x,vec.y]}
+    if observed['approach_right']['lane_id']!=-1 or observed['destination_right']['lane_id']!=-1:
+        raise RuntimeError('Extreme-right Native lane mapping differs')
+    return {'native_map_sha256':native_hash,'lanes':observed,
+            'stop_line_y_m':-14.0,'nearest_crosswalk_y_m':-11.0,
+            'destination_crosswalk_x_m':10.0,
+            'authored_reference_only':True,'pixels_verified':False}
+
+def execute(config: dict,output: Path,host: str,port: int):
+    import carla
+    import numpy as np
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.world_restore import snapshot,restore
+    check(config)
+    output=output.resolve()
+    if not output.is_dir() or not (output/'config.json').is_file():
+        raise ValueError('Use exact materialized case directory')
+    client=carla.Client(host,port);client.set_timeout(180)
+    saved=snapshot(client)
+    old=client.get_world()
+    if saved['settings'].synchronous_mode or [a for a in old.get_actors()
+        if a.type_id.startswith(('vehicle.','walker.','sensor.','controller.'))]:
+        raise RuntimeError('Requires exclusive idle asynchronous Native world')
+    owned=[];camera_queues={};encoders={};encoder_logs={};channels={}
+    capture=None;changed=False;restored=None;error=None;frames=0
+    try:
+        world=client.generate_opendrive_world(open_drive(),carla.OpendriveGenerationParameters(
+            vertex_distance=.25,max_road_length=50,wall_height=0,additional_width=0,
+            smooth_junctions=False,enable_mesh_visibility=True,
+            enable_pedestrian_navigation=False))
+        changed=True
+        settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=.05
+        settings.substepping=True;settings.max_substep_delta_time=.01;settings.max_substeps=10
+        world.apply_settings(settings);world.set_weather(carla.WeatherParameters.ClearNoon)
+        mapping=world.get_map();native_xml=mapping.to_opendrive()
+        native_hash=hashlib.sha256(native_xml.encode()).hexdigest()
+        readback=survey(carla,mapping,native_hash)
+        traffic_lights=list(world.get_actors().filter('traffic.traffic_light*'))
+        if not traffic_lights:
+            raise RuntimeError('Authored OpenDRIVE signal has no Native traffic-light actor')
+        signal_actor=min(traffic_lights,key=lambda actor:math.dist(
+            (actor.get_location().x,actor.get_location().y),(0,-13)))
+        signal_actor.set_state(carla.TrafficLightState.Green)
+        signal_actor.freeze(True)
+        readback['signal_actor_id']=signal_actor.id
+        readback['turn_prohibition_survey']={'authored_signs':[],
+            'native_traffic_sign_actors':[a.type_id for a in world.get_actors()
+                if a.type_id.startswith('traffic.') and 'traffic_light' not in a.type_id]}
+        write_new(output/'road_geometry.json',readback)
+        write_new(output/'context.json',{'surveyed_right_turn':readback})
+        library=world.get_blueprint_library()
+        blueprint=library.find('vehicle.lincoln.mkz_2020')
+        blueprint.set_attribute('role_name','c110919_ego')
+        ego=world.spawn_actor(blueprint,carla.Transform(
+            carla.Location(x=1.75,y=-40,z=.5),carla.Rotation(yaw=90)))
+        owned.append(ego)
+        ego.apply_control(carla.VehicleControl(brake=1,hand_brake=True))
+        for _ in range(40):world.tick()
+        physics=ego.get_physics_control();wheels=physics.wheels
+        if len(wheels)!=4:raise RuntimeError('Native four-wheel geometry absent')
+        wheelbase=(max(w.position.x for w in wheels)-min(w.position.x for w in wheels))/100
+        steer=max(w.max_steer_angle for w in wheels)
+        knobs=config['knobs']
+        controller=PathController(route(),wheelbase,steer,EngineeringKnobs(
+            lookahead_base_m=knobs['route_tracking_lookahead_m']))
+        # A destination-crosswalk walker is an actor proposal. Observed conflict
+        # occupancy and clearance are measured from saved actor history later.
+        walker_bp=next(bp for bp in library.filter('walker.pedestrian.*'))
+        walker=world.spawn_actor(walker_bp,carla.Transform(
+            carla.Location(x=10,y=5,z=.4),carla.Rotation(yaw=-90)))
+        owned.append(walker)
+        traffic_bp=library.find('vehicle.tesla.model3')
+        traffic_bp.set_attribute('role_name','c110919_cross_traffic')
+        cross_traffic=world.spawn_actor(traffic_bp,carla.Transform(
+            carla.Location(x=-35,y=-1.75,z=.5),carla.Rotation(yaw=0)))
+        owned.append(cross_traffic)
+        cross_traffic.apply_control(carla.VehicleControl(brake=1,hand_brake=True))
+        write_new(output/'native-construction-context.json',{
+            'case_id':config['case_id'],'candidate_id':config['candidate_id'],
+            'native_map_sha256':native_hash,'vehicle_blueprint':ego.type_id,
+            'walker_blueprint':walker.type_id,'cross_traffic_blueprint':cross_traffic.type_id,
+            'wheelbase_m':wheelbase,'max_steer_deg':steer,
+            'initial_body_xy_m':body_xy(ego),'knobs':knobs,
+            'authored_intent':'circular-green right turn with controlled lawful-user yield timing',
+            'physical_completion_claimed':False})
+        for spec in camera_plan(config['candidate_id']):
+            bp=library.find('sensor.camera.rgb')
+            for key,value in (('image_size_x',spec['width']),('image_size_y',spec['height']),
+                              ('fov',spec['fov_deg']),('sensor_tick',0)):
+                bp.set_attribute(key,str(value))
+            sensor=world.spawn_actor(bp,camera_transform(carla,spec),
+                attach_to=ego if spec['attachment']=='ego' else None)
+            owned.append(sensor);camera_queues[spec['name']]=queue.Queue()
+            sensor.listen(camera_queues[spec['name']].put)
+            encoder_logs[spec['name']]=(output/(spec['name']+'.encoder.log')).open('x')
+            encoders[spec['name']]=subprocess.Popen([
+                'ffmpeg','-nostdin','-hide_banner','-loglevel','error','-n',
+                '-f','rawvideo','-pix_fmt','rgb24','-s',f"{spec['width']}x{spec['height']}",
+                '-r','20','-i','pipe:0','-an','-c:v','ffv1','-level','1',
+                str(output/(spec['name']+'.mkv'))],stdin=subprocess.PIPE,
+                stderr=encoder_logs[spec['name']])
+        capture=PipelineCapture(client,ego,output,config['case_id'],visibility=False,
+                                required_observations=config.get('required_atoms',[]))
+        (output/'channels').mkdir()
+        for name in config['mandatory_channels']:
+            channels[name]=(output/'channels'/(name+'.jsonl')).open('x')
+        start=world.get_snapshot().timestamp.elapsed_seconds
+        yield_clear=0
+        with (output/'native_samples.jsonl').open('x') as native_file, \
+             (output/'body_history.jsonl').open('x') as body_file, \
+             (output/'video_frames.jsonl').open('x') as frame_file:
+            for index in range(config['rate_hz']*config['duration_s']):
+                pose=ego.get_transform();velocity=ego.get_velocity()
+                speed=math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
+                command=controller.step(position_xy_m=(pose.location.x,pose.location.y),
+                    yaw_rad=math.radians(pose.rotation.yaw),speed_mps=speed,dt_s=.05)
+                pedestrian=walker.get_transform().location
+                occupied=8<=pedestrian.x<=12 and -4<=pedestrian.y<=4
+                traffic_pose=cross_traffic.get_transform().location
+                traffic_occupied=-8<=traffic_pose.x<=8 and -4<=traffic_pose.y<=4
+                if 105<=index<=190:
+                    cross_traffic.apply_control(carla.VehicleControl(throttle=.45,brake=0,hand_brake=False))
+                else:
+                    cross_traffic.apply_control(carla.VehicleControl(throttle=0,brake=1,hand_brake=False))
+                if 115<=index<=195:
+                    walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(0,-1,0),speed=3.0))
+                else:
+                    walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(0,0,0),speed=0.0))
+                release_frame=170 if config['case_suffix']=='controlled_1' else 135
+                if index<release_frame and pose.location.y>-20:
+                    command.update(throttle=0.0,brake=1.0,hand_brake=speed<.05)
+                yield_needed=(config['case_suffix']=='controlled_1' and
+                    pose.location.y>-10 and pose.location.x<10 and (occupied or traffic_occupied))
+                if yield_needed:
+                    command.update(throttle=0.0,brake=1.0,hand_brake=speed<.05)
+                    yield_clear=0
+                elif config['case_suffix']=='controlled_1' and pose.location.y>-10 and pose.location.x<10:
+                    yield_clear+=1
+                    if yield_clear<round(knobs['yield_clearance_margin_s']*20):
+                        command.update(throttle=0.0,brake=1.0,hand_brake=speed<.05)
+                ego.apply_control(carla.VehicleControl(throttle=command['throttle'],
+                    brake=command['brake'],steer=command['steer'],hand_brake=command['hand_brake']))
+                frame=world.tick();time_s=world.get_snapshot().timestamp.elapsed_seconds-start
+                pose=ego.get_transform();velocity=ego.get_velocity()
+                speed=math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
+                body=body_xy(ego);ped=walker.get_transform().location
+                traffic_pose=cross_traffic.get_transform().location
+                sample={'time_s':time_s,'native_frame':frame,'native_center_xy_m':[pose.location.x,pose.location.y],
+                        'native_yaw_deg':pose.rotation.yaw,'native_body_xy_m':body,'speed_mps':speed,
+                        'walker_center_xy_m':[ped.x,ped.y],
+                        'walker_conflict_occupied':8<=ped.x<=12 and -4<=ped.y<=4,
+                        'cross_traffic_center_xy_m':[traffic_pose.x,traffic_pose.y],
+                        'cross_traffic_conflict_occupied':-8<=traffic_pose.x<=8 and -4<=traffic_pose.y<=4,
+                        'cross_traffic_actor_id':cross_traffic.id,
+                        'signal_state_observed':str(signal_actor.get_state()),
+                        'turn_prohibition_present':False,
+                        'ego_turn_entered':abs(pose.rotation.yaw-90)>5,
+                        'controller_request':command}
+                capture.capture(frame,time_s,extra={'c110919_native':sample})
+                native_file.write(json.dumps(sample,allow_nan=False)+'\n')
+                body_file.write(json.dumps({'frame':frame,'time_s':time_s,
+                    'body_vertices_m':[[v.x,v.y,v.z] for v in ego.bounding_box.get_world_vertices(pose)]},
+                    allow_nan=False)+'\n')
+                values={'dev.traffic_signal':{'authored_request':'circular_green',
+                                               'observed_state':sample['signal_state_observed'],
+                                               'native_actor_id':signal_actor.id},
+                        'st.stop_line':readback['stop_line_y_m'],'st.crosswalk':readback['nearest_crosswalk_y_m'],
+                        'drv.stopped':speed<.05,'kin.velocity':speed,
+                        'drv.extreme_lane':readback['lanes']['approach_right'],
+                        'st.one_way_roadway':readback['lanes'],
+                        'drv.yields_to':{'walker_xy_m':[ped.x,ped.y],
+                                         'pedestrian_conflict_occupied':sample['walker_conflict_occupied'],
+                                         'cross_traffic_xy_m':[traffic_pose.x,traffic_pose.y],
+                                         'cross_traffic_conflict_occupied':sample['cross_traffic_conflict_occupied'],
+                                         'cross_traffic_actor_id':cross_traffic.id},
+                        'native_body_pose_control':sample,
+                        'camera_frame_join':{'native_frame':frame,'video_frame':index}}
+                for name,stream in channels.items():
+                    stream.write(json.dumps({'time_s':time_s,'value':values[name]},allow_nan=False)+'\n')
+                for spec in camera_plan(config['candidate_id']):
+                    image=camera_queues[spec['name']].get(timeout=30)
+                    while image.frame<frame:image=camera_queues[spec['name']].get(timeout=30)
+                    if image.frame!=frame:raise RuntimeError('Camera/Native frame join failed')
+                    rgb=np.frombuffer(image.raw_data,dtype=np.uint8).reshape(spec['height'],spec['width'],4)[:,:,:3][:,:,::-1]
+                    encoders[spec['name']].stdin.write(rgb.tobytes())
+                frame_file.write(json.dumps({'video_frame':index,'native_frame':frame,
+                                             'carla_frame':frame,'time_s':time_s})+'\n')
+                frames+=1
+        if frames!=480:raise RuntimeError('Incomplete original capture frame count')
+    except BaseException as exc:
+        error={'type':type(exc).__name__,'message':str(exc),'traceback':traceback.format_exc()}
+    finally:
+        for stream in channels.values():stream.close()
+        if capture is not None:
+            try:capture.close(confirmed=error is None)
+            except BaseException as exc:error=error or {'capture_close_error':str(exc)}
+        for name,encoder in encoders.items():
+            try:
+                encoder.stdin.close()
+                if encoder.wait(timeout=180)!=0:raise RuntimeError('Lossless encoder failed: '+name)
+            except BaseException as exc:error=error or {'encoder_error':str(exc)}
+            encoder_logs[name].close()
+        for actor in reversed(owned):
+            try:
+                if actor.type_id.startswith('sensor.') and actor.is_listening:actor.stop()
+                actor.destroy()
+            except BaseException as exc:error=error or {'owned_actor_cleanup_error':str(exc)}
+        if changed:
+            try:restored=restore(client,saved)
+            except BaseException as exc:error=error or {'world_restore_error':str(exc)}
+        write_new(output/'native-capture-report.json',{
+            'case_id':config['case_id'],'candidate_id':config['candidate_id'],
+            'frames':frames,'expected_frames':480,'restoration':restored,
+            'error':error,'accepted':False,
+            'required_saved_checks':['actual signal state and governing direction',
+                'Native stop-line and crosswalk readback','original full body and walker conflict',
+                'full video/frame join and independent audit']})
+    if error:raise RuntimeError('Native attempt failed; see native-capture-report.json: '+str(error))
+
+def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--check',action='store_true')
+    parser.add_argument('--output-dir',type=Path)
+    parser.add_argument('--host')
+    parser.add_argument('--port',type=int)
+    args=parser.parse_args()
+    config=json.loads((ROOT/'config.json').read_text())
+    if args.check:
+        print(json.dumps(check(config),allow_nan=False))
+    else:
+        if not args.output_dir or not args.host or not args.port:
+            parser.error('Supply materialized output directory, host and port')
+        execute(config,args.output_dir,args.host,args.port)
+
+if __name__=='__main__':main()

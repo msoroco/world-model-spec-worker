@@ -152,6 +152,14 @@ def execute(config, output, host, port):
         blueprint.set_attribute("role_name","c110454_lvmc_ego")
         ego=world.spawn_actor(blueprint,carla.Transform(carla.Location(x=-70,y=-1.75,z=.5),carla.Rotation(yaw=0)))
         owned.append(ego)
+        conflict_actor=None
+        if config['exception_branch']=='necessary_traffic_conflict' and config['requested_polarity']=='present':
+            actor_blueprint=world.get_blueprint_library().find('vehicle.lincoln.mkz_2020')
+            actor_blueprint.set_attribute('role_name','c110454_lvmc_cross_traffic')
+            conflict_actor=world.spawn_actor(actor_blueprint,carla.Transform(
+                carla.Location(x=1.75,y=-25.0,z=.5),carla.Rotation(yaw=90)))
+            owned.append(conflict_actor)
+            conflict_actor.apply_control(carla.VehicleControl(brake=1,hand_brake=True))
         ego.apply_control(carla.VehicleControl(brake=1,hand_brake=True))
         for _ in range(40):world.tick()
         initial=body_xy(ego)
@@ -197,6 +205,7 @@ def execute(config, output, host, port):
             channels[name]=(output/"channels"/(name+".jsonl")).open("x")
         start=world.get_snapshot().timestamp.elapsed_seconds
         parked_history=[]
+        other_actor_history=[]
         with (output/"native_samples.jsonl").open("x") as native_file, \
              (output/"body_history.jsonl").open("x") as body_file, \
              (output/"video_frames.jsonl").open("x") as frame_file:
@@ -205,6 +214,11 @@ def execute(config, output, host, port):
                 speed=math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
                 command=controller.step(position_xy_m=(before.location.x,before.location.y),
                     yaw_rad=math.radians(before.rotation.yaw),speed_mps=speed,dt_s=.05)
+                if conflict_actor is not None:
+                    cross_pose=conflict_actor.get_transform()
+                    cross_command=(carla.VehicleControl(throttle=.24) if cross_pose.location.y < -8.0
+                        else carla.VehicleControl(brake=1.0))
+                    conflict_actor.apply_control(cross_command)
                 ego.apply_control(carla.VehicleControl(throttle=command["throttle"],
                     brake=command["brake"],steer=command["steer"],
                     hand_brake=command["hand_brake"]))
@@ -219,6 +233,14 @@ def execute(config, output, host, port):
                     "two_way_native_survey":True,
                     "controller_request":command}
                 capture.capture(frame,time_s,extra={"c110454_lvmc_native":sample})
+                if conflict_actor is not None:
+                    cross_pose=conflict_actor.get_transform()
+                    cross_body=body_xy(conflict_actor)
+                    other_actor_history.append({'native_frame':frame,'time_s':time_s,
+                        'center_xy_m':[cross_pose.location.x,cross_pose.location.y],
+                        'body_xy_m':cross_body,
+                        'conflict_occupancy':any(-7<=vertex[0]<=7 and -7<=vertex[1]<=7 for vertex in cross_body),
+                        'physical_conflict_necessity_claimed':False})
                 parked_history.append({"video_frame":index,"native_frame":frame,
                     "time_s":time_s,"body_xy_m":body,"speed_m_s":speed})
                 native_file.write(json.dumps(sample,allow_nan=False)+"\n")
@@ -244,6 +266,10 @@ def execute(config, output, host, port):
                 frames+=1
         if frames!=config["duration_s"]*config["rate_hz"]:
             raise RuntimeError("Original frame count incomplete")
+        if conflict_actor is not None:
+            with (output/'other_actor_history.jsonl').open('x') as stream:
+                for row in other_actor_history:
+                    stream.write(json.dumps(row,allow_nan=False)+'\n')
         write_new(output/"exception_context_capture.json",{
             "source_kind":"native_exception_capture_index",
             "branch":config["exception_branch"],

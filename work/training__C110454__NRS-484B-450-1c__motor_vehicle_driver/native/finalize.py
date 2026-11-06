@@ -79,7 +79,7 @@ def measure_park(attempt):
         raise ValueError('Unexpected original Native signal in no-device probe')
     result=measure(source,sha(source))
     return {'value':result,
-            'method':'measure_saved_footprint',
+            'method':'measure_park',
             'sources':{name:sha(attempt/name) for name in ('native_samples.jsonl','road_geometry.json')}}
 
 

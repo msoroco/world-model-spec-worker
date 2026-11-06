@@ -17,30 +17,55 @@
     "sha256": "6b1c99ca9fdfbe061a32942eb0aa026ea3bb2e7c27979ef34b6de95de9d34d7a",
     "text_sha256": "6b1c99ca9fdfbe061a32942eb0aa026ea3bb2e7c27979ef34b6de95de9d34d7a"
   },
-  "summary_status": "recovered_requires_source_review",
+  "summary_status": "exact_source_reviewed_cpu_draft_unselected",
   "selected_branch": "Right turn under circular green alone",
   "witness_branches": [
     "Right turn under circular green alone"
   ],
   "requirement_dispositions": [
     {
-      "requirement": "NRS-484B-307-2a",
+      "requirement": "text-0",
       "source": "NRS 484B.307(2)(a)",
-      "branch": "Right turn under circular green alone",
+      "source_text": "When the signal is circular green alone:",
       "status": "selected_required",
       "case_ids": [
         "training__C110919__NRS-484B-307-2a__motor_vehicle_driver__controlled_1",
         "training__C110919__NRS-484B-307-2a__motor_vehicle_driver__controlled_2"
       ],
-      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+      "evidence_or_gap": "Exact source topic selected in same-cell circular-green right-turn CPU pair; original Native, pixel and strict selected proofs remain unverified."
     },
     {
-      "requirement": "NRS-484B-307-2a",
+      "requirement": "text-1",
       "source": "NRS 484B.307(2)(a)",
-      "branch": "Textual exceptions, alternatives, or dependencies: unless",
-      "status": "exception_pending",
-      "case_ids": [],
-      "evidence_or_gap": "Each applicable statutory qualifier requires a separately controlled construction or an explicit unsupported-physical finding; source language must be retained in audit."
+      "source_text": "Vehicular traffic facing the signal may proceed straight through or turn right or left unless another device at the place prohibits either or both such turns.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C110919__NRS-484B-307-2a__motor_vehicle_driver__controlled_1",
+        "training__C110919__NRS-484B-307-2a__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "Exact source topic selected in same-cell circular-green right-turn CPU pair; original Native, pixel and strict selected proofs remain unverified."
+    },
+    {
+      "requirement": "text-2",
+      "source": "NRS 484B.307(2)(a)",
+      "source_text": "Such vehicular traffic, including vehicles turning right or left, must yield the right-of-way to other vehicles and to pedestrians lawfully within the intersection or an adjacent crosswalk at the time the signal is exhibited.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C110919__NRS-484B-307-2a__motor_vehicle_driver__controlled_1",
+        "training__C110919__NRS-484B-307-2a__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "Exact source topic selected in same-cell circular-green right-turn CPU pair; original Native, pixel and strict selected proofs remain unverified."
+    },
+    {
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_text": "Right turn under circular green alone",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C110919__NRS-484B-307-2a__motor_vehicle_driver__controlled_1",
+        "training__C110919__NRS-484B-307-2a__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "Exact source topic selected in same-cell circular-green right-turn CPU pair; original Native, pixel and strict selected proofs remain unverified."
     }
   ],
   "neutral_baseline": {
@@ -51,26 +76,28 @@
     {
       "case_id": "training__C110919__NRS-484B-307-2a__motor_vehicle_driver__controlled_1",
       "target_law_id": "NRS-484B-307-2a",
-      "kind": "planned_only",
+      "kind": "unselected_cpu_draft",
       "source_branch": "Right turn under circular green alone",
-      "physical_target": "turn right on circular green after conflicting users clear",
-      "comparison_variable": "yield timing relative to lawful user",
-      "requested_not_measured": true,
+      "physical_target": "turn right on circular green after pedestrian and cross traffic clear",
+      "comparison_variable": "yielded_to_lawful_users",
+      "requested_not_measured": false,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "evidence_scope": "synthetic CPU measurement only; physical target not observed"
     },
     {
       "case_id": "training__C110919__NRS-484B-307-2a__motor_vehicle_driver__controlled_2",
       "target_law_id": "NRS-484B-307-2a",
-      "kind": "planned_only",
+      "kind": "unselected_cpu_draft",
       "source_branch": "Right turn under circular green alone",
-      "physical_target": "turn right on circular green while conflicting lawful user remains",
-      "comparison_variable": "yield timing relative to lawful user",
-      "requested_not_measured": true,
+      "physical_target": "turn right on circular green while lawful pedestrian and cross traffic remain",
+      "comparison_variable": "yielded_to_lawful_users",
+      "requested_not_measured": false,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "evidence_scope": "synthetic CPU measurement only; physical target not observed"
     }
   ],
   "comparisons": [
@@ -81,7 +108,7 @@
         "training__C110919__NRS-484B-307-2a__motor_vehicle_driver__controlled_2"
       ],
       "deliberate_differences": [
-        "yield timing relative to lawful user"
+        "yielded_to_lawful_users"
       ],
       "fixed_conditions": [
         "frozen cell, actor, legal jurisdiction, relevant devices and participants",
@@ -207,18 +234,17 @@
   "existing_evidence": [],
   "reuse_count": 0,
   "runtime_uncertainties": [
-    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
-    "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
-    "No CARLA execution or accepted recording is claimed.",
-    "Circular green alone permits straight, left and right movements unless another device prohibits a turn; yielding must include vehicles and pedestrians lawfully within intersection or adjacent crosswalk at display time."
+    "Native signal facing direction and exact circular-green readback are unobserved.",
+    "Cross-traffic actor timing, pedestrian lawfulness and original pixel visibility are unobserved."
   ],
   "unverified_physical_assumptions": [
-    "Frozen cell can physically realize required law context",
-    "Actor blueprint and route can realize each requested behavior",
-    "Decisive physical distinction can be seen by retained cameras"
+    "Green signal governs ego approach and entry.",
+    "Authored no-turn-sign survey matches loaded Native scene.",
+    "Pedestrian and cross traffic are lawfully in the relevant intersection or adjacent crosswalk."
   ],
   "blockers": [
-    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+    "Strict selected v2 CPU delivery proof and independent delivery acceptance remain absent.",
+    "Native green signal, lawful-user status and yield, original pixels and accepted recordings require later GPU execution."
   ],
   "source_context_review": "Circular green alone permits straight, left and right movements unless another device prohibits a turn; yielding must include vehicles and pedestrians lawfully within intersection or adjacent crosswalk at display time."
 }
