@@ -53,7 +53,7 @@ def measure_lane_use(samples_path,geometry_path):
             intersection.append(sample)
         elif sample['native_road_id']==2 and min(point[0] for point in body)>7:
             exit_rows.append(sample)
-        elif sample['native_road_id']==4 and max(point[1] for point in body)<-7:
+        elif sample['native_road_id']==4 and min(point[1] for point in body)>7:
             exit_rows.append(sample)
     if len(approach)<2 or not intersection or not exit_rows:
         raise ValueError('Approach, intersection and completed exit not all observed')
@@ -62,7 +62,7 @@ def measure_lane_use(samples_path,geometry_path):
     if approach[0]['native_forward_xy'][0]<.95:
         raise ValueError('Approach heading not eastbound')
     last=exit_rows[-1];road=last['native_road_id'];forward=last['native_forward_xy']
-    if road==4 and forward[1]<-.95:movement='right_turn_follows'
+    if road==4 and forward[1]>.95:movement='right_turn_follows'
     elif road==2 and forward[0]>.95:movement='straight_follows'
     else:raise ValueError('Completed exit movement not measurable')
     connectors={row['native_road_id'] for row in intersection}
@@ -71,7 +71,7 @@ def measure_lane_use(samples_path,geometry_path):
         raise ValueError('Connector and completed movement disagree')
     body_inside=[];ids=[]
     for sample in approach:
-        body_inside.append(all(-7.0<=point[1]<=-3.5 for point in sample['native_body_xy_m']))
+        body_inside.append(all(3.5<=point[1]<=7.0 for point in sample['native_body_xy_m']))
         ids.append(sample['native_road_id']==1 and sample['native_lane_id']==-2)
     return {'format':'c382355-right-only-lane-use-v1',
             'approach_window_s':[approach[0]['time_s'],approach[-1]['time_s']],

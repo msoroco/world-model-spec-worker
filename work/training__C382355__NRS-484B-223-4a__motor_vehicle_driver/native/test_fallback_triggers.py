@@ -24,15 +24,15 @@ class FallbackTriggerTests(unittest.TestCase):
 
     def write(self,movement,deviation=0,complete=True,link=True,visible=19):
         if movement=='right_turn':
-            final=row(4,-5,-12 if complete else -6,4 if complete else 13,[0,-1])
-            route=[[-20,-5.25],[-5,-5.25],[-5,-12]]
+            final=row(4,-5,12 if complete else 6,4 if complete else 13,[0,1])
+            route=[[-20,5.25],[-5,5.25],[-5,12]]
             connector=13
         else:
-            final=row(4,15 if complete else 6,-5.25,2 if complete else 14,[1,0])
-            route=[[-20,-5.25],[20,-5.25]]
+            final=row(4,15 if complete else 6,5.25,2 if complete else 14,[1,0])
+            route=[[-20,5.25],[20,5.25]]
             connector=14
-        rows=[row(1,-20,-5.25,1,[1,0]),row(2,-8,-5.25+deviation,1,[1,0]),
-              row(3,-5,-5.25,connector,[1,0]),final]
+        rows=[row(1,-20,5.25,1,[1,0]),row(2,-8,5.25+deviation,1,[1,0]),
+              row(3,-5,5.25,connector,[1,0]),final]
         self.samples.write_text(''.join(json.dumps(value)+'\n' for value in rows))
         self.mapping.write_text(json.dumps({'source_kind':'native_map_readback',
             'connected_requested_lane_link':link,'native_map_sha256':'a'*64,

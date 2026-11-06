@@ -8,6 +8,10 @@ class CandidateKnobsTest(unittest.TestCase):
             plans={name:parameters(suffix,name) for name in
                    ('primary','fallback1','fallback2','fallback3')}
             base=plans['primary']
+            for plan in plans.values():
+                self.assertEqual(plan['native_route_xy_m'],
+                                 [[x,-y] for x,y in plan['authored_route_xy_m']])
+                self.assertEqual(plan['native_route_xy_m'][0][1],5.25)
             for name,plan in plans.items():
                 for key in ('law_id','cell_id','actor','duration_s','rate_hz','comparison_approach_y_m'):
                     self.assertEqual(plan[key],base[key],(suffix,name,key))

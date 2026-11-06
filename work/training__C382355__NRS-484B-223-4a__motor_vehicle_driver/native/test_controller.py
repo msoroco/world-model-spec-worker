@@ -16,7 +16,7 @@ class ControllerTest(unittest.TestCase):
                     path=plan['native_route_xy_m'];knobs=plan['controller_knobs']
                     controller = PathController(path, wheelbase_m=2.7,
                                                 max_steer_deg=35, knobs=knobs)
-                    x, y, yaw, speed = -50.0, lateral, 0.0, 0.0
+                    x, y, yaw, speed = -50.0, -lateral, 0.0, 0.0
                     maximum_error = 0.0
                     for _ in range(600):
                         command = controller.step(position_xy_m=(x,y), yaw_rad=yaw,
@@ -32,11 +32,11 @@ class ControllerTest(unittest.TestCase):
                         x += speed*math.cos(yaw)*.05
                         y += speed*math.sin(yaw)*.05
                     if suffix=='controlled_1':
-                        self.assertLess(y, -7, "Synthetic route did not reach turn destination")
+                        self.assertGreater(y, 7, "Synthetic route did not reach turn destination")
                         self.assertLess(abs(x+5.25), 1.0)
                     else:
                         self.assertGreater(x,7,"Synthetic route did not travel straight through")
-                        self.assertLess(abs(y+5.25),1.0)
+                        self.assertLess(abs(y-5.25),1.0)
                     self.assertLess(maximum_error, 2.0)
 
     def test_rejects_discontinuous_route_and_nonfinite_pose(self):

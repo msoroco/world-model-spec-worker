@@ -28,11 +28,12 @@ def run():
             video.write_bytes(b'480-frame synthetic camera audit placeholder')
             geometry.write_text(json.dumps({'native_map_sha256':'a'*64}))
             authored=route(-5.25) if suffix=='controlled_1' else straight_route(-5.25)
+            native=[[x,-y] for x,y in authored]
             rows=[]
             for index in range(480):
-                x,y=authored[round(index*(len(authored)-1)/479)]
+                x,y=native[round(index*(len(native)-1)/479)]
                 road=1 if index<160 else connector if index<320 else destination
-                heading=[0,-1] if road==4 else [1,0]
+                heading=[0,1] if road==4 else [1,0]
                 rows.append({'native_frame':100+index,'time_s':(index+1)/20,
                     'native_center_xy_m':[x,y],'native_forward_xy':heading,
                     'native_body_xy_m':[[x-1,y-1],[x-1,y+1],[x+1,y+1],[x+1,y-1]],
@@ -45,7 +46,7 @@ def run():
                 pixels.write_text(json.dumps({'source_kind':'original_camera_pixels',
                     'native_samples_sha256':sha(samples),'video_sha256':sha(video),
                     'full_body_and_lane_marking_visible_frames':visible,'approach_frames':480}))
-            def check():return evaluate(samples,geometry,mapping,pixels,video,authored,movement)
+            def check():return evaluate(samples,geometry,mapping,pixels,video,native,movement)
             write_sources();base=check()
             assert [base[f'fallback{i}'] for i in (1,2,3)]==[False,False,False],base
             write_sources(link=False);assert [check()[f'fallback{i}'] for i in (1,2,3)]==[True,False,False]

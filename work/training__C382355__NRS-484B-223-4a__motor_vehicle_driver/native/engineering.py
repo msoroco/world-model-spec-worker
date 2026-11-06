@@ -10,10 +10,11 @@ def parameters(case_suffix,candidate_id):
         raise ValueError('Unknown candidate')
     station=-10 if candidate_id=='fallback1' else -7
     authored=route(-5.25,station) if case_suffix=='controlled_1' else straight_route(-5.25,station)
+    native=[[x,-y] for x,y in authored]
     knobs=EngineeringKnobs(lookahead_base_m=3 if candidate_id=='fallback2' else 4,
                            max_steer_fraction=1.0)
     return {'case_suffix':case_suffix,'candidate_id':candidate_id,
-            'authored_route_xy_m':authored,'native_route_xy_m':authored,
+            'authored_route_xy_m':authored,'native_route_xy_m':native,
             'turn_entry_x_m':station,'controller_knobs':knobs,
             'cameras':camera_plan(candidate_id),
             'comparison_approach_y_m':-5.25,

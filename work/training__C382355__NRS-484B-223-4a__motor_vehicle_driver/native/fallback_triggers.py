@@ -70,7 +70,7 @@ def evaluate(samples_path,geometry_path,map_audit_path,pixel_audit_path,video_pa
         if -10<=center[0]<=7:
             errors.append(min(distance(center,a,b) for a,b in zip(route,route[1:])))
         if time<=24 and row.get('native_lane_id')==-2:
-            if requested_movement=='right_turn' and row.get('native_road_id')==4 and max(p[1] for p in body)<-7 and forward[1]<-.95:
+            if requested_movement=='right_turn' and row.get('native_road_id')==4 and min(p[1] for p in body)>7 and forward[1]>.95:
                 completed=True
             if requested_movement=='straight_through' and row.get('native_road_id')==2 and min(p[0] for p in body)>7 and forward[0]>.95:
                 completed=True

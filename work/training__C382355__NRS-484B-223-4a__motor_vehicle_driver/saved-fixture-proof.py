@@ -40,7 +40,7 @@ def make_base(destination,suffix,approach_y,frame_count=4,full_resolution=False)
     geometry={'native_map_sha256':'a'*64,'approach_road_id':1,
               'right_turn_connector_road_id':13,'straight_connector_road_id':14,
               'right_turn_destination_road_id':4,'straight_destination_road_id':2,
-              'right_only_lane_id':-2,'right_only_lane_native_y_bounds_m':[-7.0,-3.5],
+              'right_only_lane_id':-2,'right_only_lane_native_y_bounds_m':[3.5,7.0],
               'intersection_native_xy_bounds_m':[-7,-7,7,7],
               'right_only_lane_design_native_verified':False}
     (destination/'road_geometry.json').write_text(json.dumps(geometry))
@@ -50,9 +50,9 @@ def make_base(destination,suffix,approach_y,frame_count=4,full_resolution=False)
     if frame_count==4:
         states=[(-20,approach_y,(1,0),1,lane),(-12,approach_y,(1,0),1,lane)]
         if suffix=='controlled_1':
-            states += [(-3,-5.25,(.7,-.714142842),13,-2),(-5.25,-12,(0,-1),4,-2)]
+            states += [(-3,5.25,(.7,.714142842),13,-2),(-5.25,12,(0,1),4,-2)]
         else:
-            states += [(0,-5.25,(1,0),14,-2),(15,-5.25,(1,0),2,-2)]
+            states += [(0,5.25,(1,0),14,-2),(15,5.25,(1,0),2,-2)]
     else:
         states=[]
         for index in range(frame_count):
@@ -61,13 +61,13 @@ def make_base(destination,suffix,approach_y,frame_count=4,full_resolution=False)
             elif index<320:
                 progress=(index-160)/159
                 if suffix=='controlled_1':
-                    x=-9.5+4.25*progress;y=approach_y+(-12-approach_y)*progress
-                    angle=-math.pi*progress/2;road_id=13;lane_id=-2
+                    x=-9.5+4.25*progress;y=approach_y+(12-approach_y)*progress
+                    angle=math.pi*progress/2;road_id=13;lane_id=-2
                 else:
                     x=-9.5+16.8*progress;y=approach_y;angle=0;road_id=14;lane_id=-2
             else:
                 if suffix=='controlled_1':
-                    x=-5.25;y=-12-18*(index-320)/159;angle=-math.pi/2;road_id=4;lane_id=-2
+                    x=-5.25;y=12+18*(index-320)/159;angle=math.pi/2;road_id=4;lane_id=-2
                 else:
                     x=7.3+32.7*(index-320)/159;y=approach_y;angle=0;road_id=2;lane_id=-2
             states.append((x,y,(math.cos(angle),math.sin(angle)),road_id,lane_id))
@@ -125,7 +125,7 @@ def run(frame_count=4):
     records=[]
     with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c382355-saved-') as temp:
         scratch=Path(temp)
-        for suffix,lateral in (('controlled_1',-5.25),('controlled_2',-5.25)):
+        for suffix,lateral in (('controlled_1',5.25),('controlled_2',5.25)):
             base=scratch/(suffix+'-base');make_base(base,suffix,lateral,frame_count)
             positive=scratch/(suffix+'-positive');negative=scratch/(suffix+'-negative')
             shutil.copytree(base,positive);shutil.copytree(base,negative)
