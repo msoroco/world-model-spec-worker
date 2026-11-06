@@ -16,7 +16,7 @@
 | full-train-08 | 31 | 31 | 141 | 66 |
 | **Total** | **253** | **253** | **624** | **288** |
 
-The 624 definitions are unverified drafts, not selected GPU jobs. Selected delivery cases, fully proven candidate sets, strict v2 compatibility receipts, independent saved acceptance audits, equivalence reuses, and accepted recordings: **0** each. All eight unselected bundles each for C329610 (2)(a)/(2)(b), C382355 NRS 484B.400(1)/NRS 484B.223(4)(a), C382389 NRS 484B.223(4)(b), and twelve for C394300 (3)(c), have diagnostic v1 exact-package positive and negative proofs, described below. The 221-law, 776-topic branch inventory remains pending statutory and physical review; no runnable branch is certified. The GPU queue has no dispatchable row. C329610 (2)(a), C329610 (2)(b), C382355 NRS 484B.400(1), C382355 NRS 484B.223(4)(a), and C382389 NRS 484B.223(4)(b) each have **eight unselected exact construction drafts with passing offline CPU checks**. C394300 NRS 484B.223(3)(b) has **20** such drafts across five planned cases; C394300 NRS 484B.223(3)(c) has **12** across three. These are not delivery-ready candidates.
+The 624 definitions are unverified drafts, not selected GPU jobs. Selected delivery cases, fully proven candidate sets, strict v2 compatibility receipts, independent saved acceptance audits, equivalence reuses, and accepted recordings: **0** each. Diagnostic v1 exact-package positive and negative proofs cover eight unselected bundles each for C329610 (2)(a)/(2)(b), C382355 NRS 484B.400(1)/NRS 484B.223(4)(a), and C382389 NRS 484B.223(4)(b); twenty for C394300 (3)(b); and twelve for C394300 (3)(c), as described below. The 221-law, 776-topic branch inventory remains pending statutory and physical review; no runnable branch is certified. The GPU queue has no dispatchable row. C329610 (2)(a), C329610 (2)(b), C382355 NRS 484B.400(1), C382355 NRS 484B.223(4)(a), and C382389 NRS 484B.223(4)(b) each have **eight unselected exact construction drafts with passing offline CPU checks**. C394300 NRS 484B.223(3)(b) has **20** such drafts across five planned cases; C394300 NRS 484B.223(3)(c) has **12** across three. These are not delivery-ready candidates.
 
 ## Work completed in this continuation
 
@@ -250,6 +250,36 @@ Both 480-frame synthetic captures pass pinned Core conversion, decoder, render a
 | Contrast Core/decoder/render synthetic integration | 0 | `58392be94df0ff7b9273e826f2dfe3791f07728f733bb4cbeba04aad4a34b59c` |
 | Eight exact v1 package positives and eight packaged negatives | 0 | See `draft-package-probe-summary.json` for all command log hashes |
 | Independent eight-receipt/source/negative audit | 0 | `d57f24ee10e37daba9cbf0a5503987f0bcfb72c9c3592a86cd07359df9896d29` |
+
+## Latest C394300 NRS 484B.223(3)(b) continuation, 2026-11-05
+
+The five planned 180/199/200/201/220-foot cases and all 20 primary/fallback bundles remain unselected; the assignment remains `blocked`. Added five source-bound draft proposal rows and a reproducible proposal builder after the exact package command exposed their absence. That first attempt failed with `FileNotFoundError: proposals/cases.json`, a repaired worker-owned input. Added full-resolution synthetic source-video generation and a Native-shaped Core fixture. The 480-frame witness probe passes pinned Core conversion, decoder, render and final decode. The five 480-frame saved positives, case-source negatives and independent comparison pass after the fixture change.
+
+All **20** unselected bundles now pass exact pinned **v1 package compatibility** positives with full-resolution 480-frame source videos and exact packaged missing-`native_samples.jsonl` negatives. The independent 20-row audit verifies current construction/runtime and fixture/finalizer hashes, four 480-frame video audits, final decode, rejected negatives and no physical-success or acceptance claim. The synthetic graph template and motion do not establish bidirectional turn-only Native designation, physical 200-foot event distances, fallback behavior, camera coverage or legal outcome. Strict v2 recipe-backed receipts, scenario-specific physical evidence, independent delivery acceptance, branch closure and dispatchable GPU queue remain worker-owned unfinished work. No readiness was promoted. After these twenty package proofs, the static checker and return audit exit 0; the strict `python3.11 worker_check.py --complete --require-delivery-ready` still exits 1 at `branch_coverage.py:59` with `ValueError: Branch cannot be left pending` (log SHA-256 `d2da876474dfa6ffe7c23286eef51bf03f1eefeff39a9db5dca5fdd06835f6e4`). This is worker-owned unfinished branch review, not an external blocker.
+
+| C394300 NRS 484B.223(3)(b) latest check | Exit | SHA-256 of log |
+| --- | ---: | --- |
+| Five draft proposal rows built | 0 | `f71e6ca36cde83b1eec04b1e7e0a292329142bb13aedee98f9ece5929b75ee1e` |
+| Five 480-frame saved positives and case-source negatives | 0 | `d94227571c7b81e5d0b9975e5a3a787eaa23c2b66a16b9970df87b86d5e25243` |
+| Independent five-case saved comparison | 0 | `85a277728d31eea1032767c4c994bfe3a8ad9fdcb787afb00e3373fe8d437c79` |
+| Witness Core/decoder/render synthetic integration | 0 | `aecb9892e47a1aeeab5899945726b38c5b28f502ede7ec1b03dc14209a8cbb47` |
+| Twenty exact v1 package positives and twenty packaged negatives | 0 | See `draft-package-probe-summary.json` for all command log hashes |
+| Independent twenty-receipt/source/negative audit | 0 | `7af778e5be676ef6536710f9bcb4bfe4aab37948e3f3f4d4c174674cfdcbade3` |
+
+## Latest C10014 NRS 484B.477(2) construction, 2026-11-05
+
+Started the next incomplete assignment from its exact local statute: a person shall not stop, stand or park within an alley in a position that blocks an abutting property's driveway or entrance. The current two unselected case definitions compare an alley stop without and with geometric entrance overlap; the parked-vehicle and broader statutory branches have not been closed. Authored a straight alley plus abutting driveway OpenDRIVE proposal with two controlled stop stations and a longer-approach fallback route. The pinned OpenDRIVE parser accepts five road regions. Four work-owned engineering variants now have distinct proposed changes and measured triggers: longer approach clearance, earlier braking for stop error, and wider/elevated cameras for body/entrance visibility. These remain proposals without exact materialized offline bundles.
+
+Added an original-frame measurement that requires a two-second stationary interval in the authored alley road/lane, checks full body polygons and frame/time order, and clips the observed footprint to the entrance corridor. Two 480-frame synthetic source fixtures measure **0.0 m** reference and **5.2 m** contrast overlap; missing Native samples and wrong-lane samples are rejected. The independent audit verifies original source hashes, the common 132-frame approach prefix, exact geometry, body/pose/speed joins, and both overlaps. Two case-specific contracts cover both selected-required clause/scope dispositions and pass the pinned validator and source-hash report verifier. Five adversarial candidate/geometry/overlap CPU tests pass. The measurement is descriptive geometry, not a legal determination that access was blocked. Native alley/driveway designation, physical stop tracking, source pixels, full saved processing, four exact candidate bundles with offline and v2 compatibility proofs, statutory closure, independent delivery acceptance and GPU dispatchability remain worker-owned. C10014 stays `blocked`; neither case is selected.
+
+| C10014 NRS 484B.477(2) latest check | Exit | SHA-256 of log |
+| --- | ---: | --- |
+| Authored geometry and controlled routes | 0 | `88bc97af41c99ff5fd9e75ad266e2eaaae2d71f6246c609c717dfa9c02909458` |
+| Pinned OpenDRIVE parser, five regions | 0 | `89e6abe4ec91f042964ad2fc4d47626092f358e96c080c07055ed4938d9670d1` |
+| Two 480-frame source-bound synthetic positives and source/lane negatives | 0 | `8c9be5838c8b5e034cb18a26ccd25a59b9aee11ae8d8bfdb3424da3b25b4b7a9` |
+| Two pinned requirement contract validations and saved-value verifications | 0 | `4b5a5bc9d94faf57fd3b4d63dfc8aea8ea0b329d66f817e6d1b87fcf028ebcaa` |
+| Independent controlled-pair/source audit | 0 | `4521f66d6b21aaba7539de7dca13b8a74f2827353ccf48e556672554ad42dc32` |
+| Five CPU geometry, candidate and overlap tests | 0 | `302eecc2e89b3d5c2107dc912b0e6ddf78d6cce8fc4f123859c5fcea965db18d` |
 
 ## Remaining worker-owned work
 
