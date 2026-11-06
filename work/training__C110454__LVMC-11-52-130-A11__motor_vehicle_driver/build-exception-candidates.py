@@ -104,7 +104,17 @@ def main():
                                   ('intersection',1280,720),('parking',1280,720)]],
                       'engineering_knobs':plan['knobs'],
                       'status':'unselected_native_runner_prototype'}
-            files = shared + [{'path':'config.json',
+            if suffix in ('exception_2_2','exception_3_2'):
+                config.update(authored_device_source_id='620',physical_device_observed=False)
+                variant_shared=[{'path':f['path'],'content':
+                    (NATIVE/'runner_device.py').read_text() if f['path']=='runner.py' else
+                    (NATIVE/'road_exception_device.xodr').read_text() if f['path']=='road.xodr' else f['content']}
+                    for f in shared]
+                variant_shared.append({'path':'tests/test_bundle_device_scene.py',
+                    'content':(NATIVE/'test_bundle_device_scene.py').read_text()})
+            else:
+                variant_shared=shared
+            files = variant_shared + [{'path':'config.json',
                                'content':json.dumps(config, indent=2)+'\n'}]
             construction = {'case_id':case_id, 'cell_id':'C110454',
                             'law_id':'LVMC-11-52-130-A11',
@@ -126,6 +136,8 @@ def main():
                                           plan['scene']['control'],
                                           'four synchronized lossless cameras'],
                             'status':'unselected_cpu_draft'}
+            if suffix in ('exception_2_2','exception_3_2'):
+                construction['authored_device_asset']='road.xodr signal 620; Native map readback required'
             path = HERE / 'draft-candidates' / suffix / candidate / 'construction.json'
             write(path, construction)
             ref = {'id':candidate,

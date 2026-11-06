@@ -4,6 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+from xml.etree import ElementTree as ET
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
@@ -53,13 +54,22 @@ def main():
                 trigger=selected['trigger']
                 if trigger['metric']!=TRIGGERS[candidate] or trigger['source']!='original Native pose and decoded source video':
                     raise ValueError('Exception fallback trigger is not source based')
+            road=ET.fromstring(next(f['content'] for f in construction['files'] if f['path']=='road.xodr'))
+            destination=next(r for r in road.findall('road') if r.attrib['id']=='2')
+            signal_ids=[s.attrib['id'] for s in destination.find('signals').findall('signal')]
+            expected_signal=['620'] if suffix in ('exception_2_2','exception_3_2') else []
+            if signal_ids!=expected_signal:
+                raise ValueError('Controlled device contrast differs from authored road')
+            if bool(cfg.get('authored_device_source_id'))!=bool(expected_signal):
+                raise ValueError('Device source ID differs from authored road')
             held={k:cfg[k] for k in ('cell_id','law_id','actor','rate_hz','duration_s',
                   'required_atoms','source_packets','mandatory_channels','recording_description','cameras')}
             held_by_candidate[candidate].append(held)
             offline=json.loads((folder/'command-offline.log').read_text())
             if not offline['offline_passed'] or offline['case_id']!=entry['case_id'] or offline['candidate_id']!=candidate:
                 raise ValueError('Exact exception offline proof differs')
-            if 'Ran 10 tests' not in (folder/'offline.log').read_text():
+            expected_tests=11 if suffix in ('exception_2_2','exception_3_2') else 10
+            if f'Ran {expected_tests} tests' not in (folder/'offline.log').read_text():
                 raise ValueError('Exception bundle tests incomplete')
             receipt=json.loads((folder/'diagnostic-compatibility.json').read_text())
             if receipt['format']!='worker-package-compatibility-v1' or not receipt['passed'] or (
@@ -72,6 +82,12 @@ def main():
             rows.append({'case_id':entry['case_id'],'candidate':candidate,
                 'construction_sha256':selected['construction_sha256'],
                 'receipt_sha256':sha(folder/'diagnostic-compatibility.json')})
+    laws=json.loads((ROOT/'inputs/coverage/branch-sources.json').read_text())
+    law_text=laws['laws']['NRS-484B-300-1']['law']['text']
+    expected_digest=hashlib.sha256(law_text.encode()).hexdigest()
+    source=(HERE/'native/exception_case.py').read_text()
+    if expected_digest not in source:
+        raise ValueError('Compliance source digest differs from frozen law')
     for candidate,values in held_by_candidate.items():
         if values[1:]!=values[:-1]:
             raise ValueError('Controlled exception comparison changed a held setting: '+candidate)
@@ -80,7 +96,7 @@ def main():
     return {'format':'lvmc-exception-independent-package-comparison-v1','passed':True,
         'manifest_sha256':sha(manifest_path),'candidate_count':24,'rows':rows,
         'source_binding':{'compliance_cited_law':'NRS-484B-300-1',
-          'device_video_sha_checked':True,'conflict_actor_frame_join_checked':True},
+          'device_video_sha_checked':True,'authored_device_road_signal_id':'620','conflict_actor_frame_join_checked':True},
         'scope':'source-bound synthetic CPU comparison; no CARLA behavior, physical trigger, legal applicability or accepted recording'}
 
 if __name__=='__main__':

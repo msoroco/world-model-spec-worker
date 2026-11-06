@@ -1,0 +1,70 @@
+{
+  "format": "c110919-307-3a-cpu-measurement-draft-v1",
+  "assignment_id": "training__C110919__NRS-484B-307-3a__motor_vehicle_driver",
+  "source_refs": [
+    "inputs/training__C110919__NRS-484B-307-3a__motor_vehicle_driver/assignment.json",
+    "inputs/training__C110919__NRS-484B-307-3a__motor_vehicle_driver/witnesses.json",
+    "inputs/coverage/branch-sources.json"
+  ],
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "right_turn",
+    "control": "traffic_light",
+    "actor": "motor_vehicle_driver"
+  },
+  "law_conditions": {
+    "signal": "Ego facing circular green simultaneously with right-turn green arrow, both Native actor states and original arrow glyph required",
+    "right_turn": "Right-turn route matches indicated arrow direction",
+    "yield": "Yield to lawful pedestrian in adjacent crosswalk and other traffic lawfully using intersection",
+    "opposing_advisory": "While the arrow is illuminated, oncoming or opposing traffic simultaneously faces steady red; measure opposing actor state",
+    "controlled_negative": "Witness 2 enters while pedestrian remains; other-traffic conflict clears before both entries"
+  },
+  "frame_contract": {
+    "rate_hz": 20,
+    "frames": 480,
+    "duration_s": 24,
+    "join": "video_frame == native_frame == sequential frame and time_s == frame/20",
+    "required_channels": [
+      "ego_x_m",
+      "ego_y_m",
+      "ego_speed_m_s",
+      "signal_state",
+      "signal_governs_ego",
+      "right_turn_arrow_state",
+      "arrow_governs_right_turn",
+      "opposing_signal_state",
+      "pedestrian_conflict_occupied",
+      "cross_traffic_conflict_occupied",
+      "ego_turn_entered"
+    ],
+    "body_front_offset_m": 2.6,
+    "body_offset_status": "Prospective blueprint proxy; original vehicle bounding box must replace it"
+  },
+  "controlled_pair": {
+    "cases": [
+      "witness_1",
+      "witness_2"
+    ],
+    "variable": "yielded_to_pedestrian",
+    "fixed": [
+      "cell",
+      "actor",
+      "road",
+      "circular green plus right arrow",
+      "opposing steady red",
+      "cross-traffic occupancy and yield",
+      "pedestrian occupancy",
+      "weather",
+      "camera profile",
+      "right-turn route"
+    ],
+    "synthetic_witness_1_expected": true,
+    "synthetic_witness_2_expected": false
+  },
+  "fallbacks": {
+    "fallback1": "max route cross-track error > 0.45 m from original Native ego pose and map route",
+    "fallback2": "minimum adjacent-crosswalk pedestrian clearance <1.0 s from original Native pedestrian occupancy joined to ego turn entry",
+    "fallback3": "minimum signal or body pixel margin < 40 px in decoded original overview video"
+  },
+  "scope": "Authored CPU construction and synthetic saved-path proof only; not Native readback, original pixels, physical trigger observations, statutory outcome, or accepted recording"
+}

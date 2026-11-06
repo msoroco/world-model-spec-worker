@@ -1,0 +1,134 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C110763__NRS-484B-113-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "0d9a74f44af88236ebed007ae6e020a134b420ad6fe8f2f87c8869184ebee555",
+  "status": "draft_not_selected",
+  "cases": [
+    {
+      "case_id": "training__C110763__NRS-484B-113-2__motor_vehicle_driver__probe_1",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native reverse tracking, intersection map readback and original pixels require physical observations"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110763-113-2-saved-analysis-v1"
+      },
+      "measurement_contract": "draft-candidates/condition_a/measurement-contract.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/condition_a/fallback1/construction.json",
+          "construction_sha256": "a1f6bcd6e4ae4724404c8da29260989e9e0d936c36cfc7d4353b72e02aec5684",
+          "trigger": {
+            "metric": "max_reverse_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.25,
+            "source": "original Native pose and surveyed approach lane center",
+            "failure_condition": "max_reverse_cross_track_error_m > 0.25"
+          },
+          "changed_knobs": [
+            "lateral_gain"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/condition_a/fallback2/construction.json",
+          "construction_sha256": "543acb8df0e8060237a48571264545f293c42099568e3f8960fb996a493a5022",
+          "trigger": {
+            "metric": "reverse_endpoint_overshoot_m",
+            "op": ">",
+            "threshold": 0.2,
+            "source": "original Native body/center positions at reversed endpoint",
+            "failure_condition": "reverse_endpoint_overshoot_m > 0.2"
+          },
+          "changed_knobs": [
+            "brake_margin_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/condition_a/fallback3/construction.json",
+          "construction_sha256": "5b285db3b1914e3e7cc08bd3d1583cbd1c505cae0ca47b15546937243428edd1",
+          "trigger": {
+            "metric": "min_reverse_body_pixel_margin_px",
+            "op": "<",
+            "threshold": 40,
+            "source": "decoded original overview video and reverse-body mask",
+            "failure_condition": "min_reverse_body_pixel_margin_px < 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/condition_a/primary/construction.json",
+      "construction_sha256": "33174b964582a1ec4b388fa635b06061bb1607ed624d372d326887a6df5378b4"
+    },
+    {
+      "case_id": "training__C110763__NRS-484B-113-2__motor_vehicle_driver__probe_2",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native reverse tracking, intersection map readback and original pixels require physical observations"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110763-113-2-saved-analysis-v1"
+      },
+      "measurement_contract": "draft-candidates/condition_b/measurement-contract.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/condition_b/fallback1/construction.json",
+          "construction_sha256": "ebfb95a4b8af91228322dc963bbee8d645fad8d564d4186ef0ed99f4d80cb0ef",
+          "trigger": {
+            "metric": "max_reverse_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.25,
+            "source": "original Native pose and surveyed approach lane center",
+            "failure_condition": "max_reverse_cross_track_error_m > 0.25"
+          },
+          "changed_knobs": [
+            "lateral_gain"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/condition_b/fallback2/construction.json",
+          "construction_sha256": "0eb372df52f7003a3072ac464c60160d36b54ed0adbefd9adaaf780070c6a74f",
+          "trigger": {
+            "metric": "reverse_endpoint_overshoot_m",
+            "op": ">",
+            "threshold": 0.2,
+            "source": "original Native body/center positions at reversed endpoint",
+            "failure_condition": "reverse_endpoint_overshoot_m > 0.2"
+          },
+          "changed_knobs": [
+            "brake_margin_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/condition_b/fallback3/construction.json",
+          "construction_sha256": "c1ee6ef71ece4aaa6cd9c83b35860a7fe407e339c7bd823f6b5e45cab1476623",
+          "trigger": {
+            "metric": "min_reverse_body_pixel_margin_px",
+            "op": "<",
+            "threshold": 40,
+            "source": "decoded original overview video and reverse-body mask",
+            "failure_condition": "min_reverse_body_pixel_margin_px < 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/condition_b/primary/construction.json",
+      "construction_sha256": "477f1f7da770b47766b21271286fcf89e515d4928ad924d795de2e18e6bd2ccd"
+    }
+  ]
+}

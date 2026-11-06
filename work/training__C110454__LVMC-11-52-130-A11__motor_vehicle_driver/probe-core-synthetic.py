@@ -74,6 +74,12 @@ def enrich(attempt):
 def make_attempt(path,suffix,full_resolution=False):
     fixture.make_base(path,suffix,480,full_resolution=full_resolution)
     enrich(path)
+    if suffix in ('exception_2_2','exception_3_2'):
+        road=(HERE/'native/road_exception_device.xodr').read_text()
+        (path/'road.xodr').write_text(road)
+        meta_path=path/'capture/manifest.json';meta=json.loads(meta_path.read_text())
+        meta['sources']['road.xodr']=hashlib.sha256(road.encode()).hexdigest()
+        meta_path.write_text(json.dumps(meta))
     if suffix.startswith('exception_'):
         from exception_case import BRANCHES
         branch,polarity=BRANCHES[suffix]

@@ -1,21 +1,15 @@
-# NRS-484B-307-3a at C110919
+# C110919 NRS 484B.307(3)(a) green-arrow right-turn handoff
 
-Actor: `motor_vehicle_driver`. Frozen cell: `intersection` / `right_turn` / `traffic_light`.
+Status: blocked and unselected. This is a same-cell Native construction proposal and synthetic v1 software diagnostic, not a strict selected v2 delivery package or accepted physical recording.
 
-Exact statutory source: NRS 484B.307(3)(a). Source text and hash are in `case-plan.json`. Historical summary status: `recovered_requires_source_review`.
+The frozen actor is `motor_vehicle_driver`; the cell is intersection / right_turn / traffic_light. `statutory-review.json` maps all four exact source topics: `text-0` circular green with a green turn arrow; `text-1` permitted arrow-direction movement with mandatory pedestrian and other-traffic yield; `text-2` the advisory that opposing traffic simultaneously faces steady red while the arrow is illuminated; and `reviewed-scope-0` the right-turn-in-arrow-direction witness. Straight/left circular-green alternatives fall outside this right-turn cell. The opposing-red advisory does not waive yield.
 
-Selected witness: Right turn in arrow direction. Planned comparison variable: `turn_yield_to_crossing_pedestrian`. Requests: right-turning driver holds before the occupied adjacent crosswalk; right-turning driver enters the pedestrian conflict area without waiting. These are proposed targets, never measured behavior or legal verdicts.
+`native/road.xodr` proposes separate circular-green, right-arrow and opposing-red signal heads (IDs 601, 603 and 604). `native/runner.py` requires three distinct Native traffic-light actors, records their states and IDs, and marks the arrow glyph as physically unverified. The OpenDRIVE subtype proposal does not establish that CARLA renders a right arrow. Later original pixels and Native readback must prove this. The runner also proposes a right-turn route, pedestrian in an adjacent destination crosswalk, other traffic, 480 original frames, Core evidence and four lossless cameras.
 
-Activation to verify: the signal facing the subject shows circular green with a green turn arrow; the subject proceeds.
+The synthetic pair fixes the circular-green plus right-arrow state, opposing steady red, actor, geometry, other-traffic conflict at frames 110–130, pedestrian conflict at frames 140–160 and recording profile. Witness 1 enters the turn at frame 181, 1.05 s after the pedestrian clears. Witness 2 enters at frame 145 while the pedestrian remains, −0.75 s clearance. Both enter after other traffic clears. `native/measure.py`, `audit-native-cpu.py` and `audit-synthetic-comparison.py` check the source-bound comparison and negative signal/hash inputs; no legal verdict is inferred from synthetic data.
 
-Timing to retain: the protection lasts only while the arrow is illuminated; the indication must be tracked through the manoeuvre; pedestrians and traffic lawfully in the intersection when the signal was exhibited go first.
+Each case has one primary and three single-knob fallback constructions: route lookahead 5→3 m if original cross-track error exceeds 0.45 m; pedestrian clearance margin 1→2 s if original adjacent-crosswalk clearance falls below 1 s; overview FOV 90→105° if original signal/body pixel margin falls below 40 px. Trigger evaluation requires exact source-hashed Native/video metrics. CPU metric values are synthetic tests, not actual observations.
 
-Exceptions and numeric alternatives planned: none in supplied clause.
+`native/finalize.py` joins saved Native samples, full body, trace, capture evidence, 480-frame map and decoded video. It outputs four source-topic measurements and rejects missing geometry. Two synthetic saved positives and two missing-geometry negatives pass. Eight exact pinned offline bundle checks and eight portable v1 Core/Lean/video positive/negative package diagnostics pass. `result.json` keeps zero selected cases.
 
-Unresolved judgment or rule composition: 'lawfully within' is rule composition. No judgment bound is set by this plan.
-
-Accepted membership: 0 membership rows; exact source-hashed equivalence and reuse are unverified.
-
-Blocker: No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.
-
-Resume: reconcile each branch against the exact law and cited provisions; establish compatible Native construction and measurement channels; produce four distinct candidate plans and exact offline, compatibility, saved-only, semantic and audit proofs; then evaluate readiness.
+Remaining work is strict selected v2 CPU delivery proof, independent acceptance and ordered GPU queue binding. Later GPU checks must establish distinct Native signal heads, the actual green right-arrow glyph and facing direction, simultaneous opposing red, lawful pedestrian/other-traffic status, original conflict and yield timing, and accepted recordings. None is claimed here.

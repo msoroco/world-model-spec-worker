@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import hashlib
 from pathlib import Path
 import shutil
 import subprocess
@@ -27,6 +28,11 @@ def prove(suffix):
     scratch=Path(tempfile.mkdtemp(dir=ROOT/'.runtime-work',prefix='c110454-lvmc-excase-'))
     source=scratch/'fixture'
     fixture.make_attempt(source,suffix,full_resolution=True)
+    if suffix in ('exception_2_2','exception_3_2'):
+        capture_manifest=source/'capture/manifest.json'
+        meta=json.loads(capture_manifest.read_text())
+        meta['sources']['road.xodr']=hashlib.sha256((HERE/'native/road_exception_device.xodr').read_bytes()).hexdigest()
+        capture_manifest.write_text(json.dumps(meta))
     (source/'config.json').unlink()
     (source/'road.xodr').unlink()
     outcomes=[]
