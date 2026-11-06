@@ -1,0 +1,122 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C102304__NRS-484B-127-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "391baee19ccece687c5632aa2cc64ba3b958c8b492045b30e4bfc4caa131c235",
+  "status": "draft_not_selected",
+  "cases": [
+    {
+      "case_id": "training__C102304__NRS-484B-127-1__motor_vehicle_driver__selected_ccee258c__condition_a",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native spawn, hill tracking, gap control and original-pixel framing are unverified"
+      },
+      "measurement_contract": "draft-following/condition_a/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c102304-following-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/condition_a/fallback1/construction.json",
+          "construction_sha256": "538d69ba712021995a1528bb185b929a7f4d93c492d31fbba4f4a4d5c93cfe4d",
+          "trigger": {
+            "source": "original Native actor spawn and full-body samples",
+            "metric": "minimum_spawn_body_clearance_m",
+            "failure_condition": "clearance < 2.0 m"
+          },
+          "changed_knobs": [
+            "ego spawn 15 m farther before crest"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/condition_a/fallback2/construction.json",
+          "construction_sha256": "6ae2819aa74774de8838d23132f24cb77fbb5a687cdb9cd0a0e3996076611b13",
+          "trigger": {
+            "source": "original Native body and route samples",
+            "metric": "maximum_gap_tracking_error_m",
+            "failure_condition": "error > 2.0 m"
+          },
+          "changed_knobs": [
+            "gap-controller lookahead 8 m to 5 m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/condition_a/fallback3/construction.json",
+          "construction_sha256": "1751eb5a95ad445ce4a062cb29d3fbd01c835f233b7e677e20a9c1f703060e7b",
+          "trigger": {
+            "source": "independent original-pixel lead-body visibility audit",
+            "metric": "lead_body_visible_fraction",
+            "failure_condition": "fraction < 0.95"
+          },
+          "changed_knobs": [
+            "four camera FOVs 90 to 110 degrees and mounts 1.65 to 2.0 m"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/condition_a/primary/construction.json",
+      "construction_sha256": "a285c8c9de15c39ff04d7497e37ebe566a71678281dde05320c20df1394dd670"
+    },
+    {
+      "case_id": "training__C102304__NRS-484B-127-1__motor_vehicle_driver__selected_ccee258c__condition_b",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native spawn, hill tracking, gap control and original-pixel framing are unverified"
+      },
+      "measurement_contract": "draft-following/condition_b/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c102304-following-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/condition_b/fallback1/construction.json",
+          "construction_sha256": "ce27d09e51d2c88f1652ea119d3d6fcc204d1a13a0784d728369c46b7b95da8f",
+          "trigger": {
+            "source": "original Native actor spawn and full-body samples",
+            "metric": "minimum_spawn_body_clearance_m",
+            "failure_condition": "clearance < 2.0 m"
+          },
+          "changed_knobs": [
+            "ego spawn 15 m farther before crest"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/condition_b/fallback2/construction.json",
+          "construction_sha256": "62e9cad990232c2247bff566859fce00abd7b62a7ade8b3260c030cf181719f7",
+          "trigger": {
+            "source": "original Native body and route samples",
+            "metric": "maximum_gap_tracking_error_m",
+            "failure_condition": "error > 2.0 m"
+          },
+          "changed_knobs": [
+            "gap-controller lookahead 8 m to 5 m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/condition_b/fallback3/construction.json",
+          "construction_sha256": "53f04aa6b1abc7ce1644c3bec34e359ce9ae312e60479a2b0d4c62d623652034",
+          "trigger": {
+            "source": "independent original-pixel lead-body visibility audit",
+            "metric": "lead_body_visible_fraction",
+            "failure_condition": "fraction < 0.95"
+          },
+          "changed_knobs": [
+            "four camera FOVs 90 to 110 degrees and mounts 1.65 to 2.0 m"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/condition_b/primary/construction.json",
+      "construction_sha256": "cb5e42421d1bba1eca2cf90961cf0e0040e7a78e637d68bee83bd358bb40658e"
+    }
+  ]
+}
