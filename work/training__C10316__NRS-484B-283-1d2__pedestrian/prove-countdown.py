@@ -6,6 +6,7 @@ import math
 from pathlib import Path
 import sys
 import tempfile
+import shutil
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -24,6 +25,7 @@ def write_rows(path, rows):
 
 def case(folder, zero_time_s):
     folder.mkdir(parents=True)
+    shutil.copyfile(HERE / 'native/road.xodr', folder / 'road.xodr')
     context = {
         'source_kind': 'synthetic_scene_request',
         'crosswalk_id': 'C10316-authored-alley-crosswalk',
@@ -32,6 +34,7 @@ def case(folder, zero_time_s):
         'near_highway_edge_xy_m': [-3.5, -.65], 'crossing_forward_xy': [1, 0],
         'highway_span_m': 7.0,
         'highway_boundary_source': 'authored C10316 crosswalk and highway polygon request',
+        'authored_map_sha256': sha(folder / 'road.xodr'),
         'exception_context': 'unverified synthetic request',
     }
     (folder / 'countdown-context.json').write_text(json.dumps(context, indent=2) + '\n')
@@ -61,6 +64,7 @@ def case(folder, zero_time_s):
 def rejected(root, name, rows, context, expected):
     folder = root / name
     folder.mkdir()
+    shutil.copyfile(HERE / 'native/road.xodr', folder / 'road.xodr')
     if rows is not None:
         write_rows(folder / 'countdown_samples.jsonl', rows)
     (folder / 'countdown-context.json').write_text(json.dumps(context) + '\n')

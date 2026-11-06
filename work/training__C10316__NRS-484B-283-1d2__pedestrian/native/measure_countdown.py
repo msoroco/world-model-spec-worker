@@ -7,6 +7,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from geometry import check as check_geometry
 
 RATE_HZ = 20
 FRAMES = 240
@@ -28,6 +29,14 @@ def measure(samples_path, context_path):
         if not path.is_file():
             raise ValueError('Missing required source: ' + path.name)
     context = json.loads(context_path.read_text())
+    road_path = context_path.parent / 'road.xodr'
+    if not road_path.is_file():
+        raise ValueError('Missing required source: road.xodr')
+    if context.get('authored_map_sha256') != sha(road_path):
+        raise ValueError('Authored crossing map source hash differs')
+    geometry = check_geometry(road_path)
+    if geometry['near_edge_x_m'] != -3.5 or geometry['far_edge_x_m'] != 3.5:
+        raise ValueError('Authored crossing edge geometry differs')
     kind = context.get('source_kind')
     if kind not in ('synthetic_scene_request', 'native_observation'):
         raise ValueError('Unrecognized countdown source provenance')
@@ -120,7 +129,8 @@ def measure(samples_path, context_path):
     relation = 'before_zero' if c1 < z0 else 'at_or_after_zero' if c0 >= z1 else 'sampling_overlap_unresolved'
     return {
         'format': 'c10316-flashing-countdown-observation-v1',
-        'source_sha256': {samples_path.name: sha(samples_path), context_path.name: sha(context_path)},
+        'source_sha256': {samples_path.name: sha(samples_path), context_path.name: sha(context_path),
+                          road_path.name: sha(road_path)},
         'source_kind': kind, 'original_frames': len(rows), 'rate_hz': RATE_HZ,
         'entry': bracket(first_entry), 'full_body_clearance': clearance, 'displayed_zero': zero_event,
         'clearance_relative_to_displayed_zero': relation,

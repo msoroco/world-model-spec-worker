@@ -24,6 +24,7 @@ def main():
         folder = root / suffix
         context_path = folder / 'countdown-context.json'
         samples_path = folder / 'countdown_samples.jsonl'
+        road_path = folder / 'road.xodr'
         context = json.loads(context_path.read_text())
         data = rows(samples_path)
         observation = summary['positive'][suffix]
@@ -31,7 +32,9 @@ def main():
         assert observation['source_sha256'] == {
             'countdown-context.json': sha(context_path),
             'countdown_samples.jsonl': sha(samples_path),
+            'road.xodr': sha(road_path),
         }
+        assert context['authored_map_sha256'] == sha(road_path) == sha(HERE / 'native/road.xodr')
         assert context['source_kind'] == 'synthetic_scene_request'
         assert context['near_highway_edge_xy_m'] == [-3.5, -.65]
         assert context['highway_span_m'] == 7.0 and context['crossing_forward_xy'] == [1, 0]

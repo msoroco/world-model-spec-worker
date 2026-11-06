@@ -1,0 +1,73 @@
+"""Unselected C10316 countdown capture alternatives and source-bound triggers."""
+import json
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent.parent
+BASE = 'training__C10316__NRS-484B-283-1d2__pedestrian'
+IDS = ('primary', 'fallback1', 'fallback2', 'fallback3')
+
+
+def candidate(suffix, ident):
+    if suffix not in ('probe_01', 'probe_02') or ident not in IDS:
+        raise ValueError('Unknown countdown case or candidate')
+    zero = 10.0 if suffix == 'probe_01' else 7.0
+    common = {'spawn_start_x_m': -4.5, 'capture_start_x_m': -4.5,
+              'pre_roll_s': 0.0, 'walker_speed_mps': 8.14/8,
+              'countdown_zero_s': zero, 'clock_mode': 'frame_index_20hz',
+              'display_camera_distance_m': 6.0, 'display_camera_width': 1280,
+              'display_camera_height': 720}
+    knobs = dict(common)
+    trigger = {'metric': 'initial', 'source': 'none', 'threshold': None}
+    if ident == 'fallback1':
+        knobs.update(spawn_start_x_m=-6.5, pre_roll_s=round(2/(8.14/8), 6))
+        trigger = {'metric': 'native_spawn_clearance_m_below',
+                   'source': 'original_native_footprint_and_authored_road_edge', 'threshold': 1.25}
+    elif ident == 'fallback2':
+        knobs.update(clock_mode='snapshot_timestamp_20hz')
+        trigger = {'metric': 'original_display_phase_skew_ms_above',
+                   'source': 'original_display_pixels_and_native_timestamp', 'threshold': 25}
+    elif ident == 'fallback3':
+        knobs.update(display_camera_distance_m=3.5)
+        trigger = {'metric': 'original_countdown_legibility_fraction_below',
+                   'source': 'independent_original_display_pixel_audit', 'threshold': .95}
+    return {'case_id': BASE + '__' + suffix, 'candidate_id': ident,
+            'law_id': 'NRS-484B-283-1d2', 'cell_id': 'C10316', 'actor': 'pedestrian',
+            'duration_s': 12, 'rate_hz': 20, 'road_source': 'native/road.xodr',
+            'crosswalk_id': 'C10316-authored-alley-crosswalk',
+            'comparison_variable': 'displayed_zero_time_s',
+            'engineering': knobs, 'trigger': trigger,
+            'status': 'unselected_cpu_construction_plan_no_native_display_proof'}
+
+
+def synthetic_trigger_metrics(folder):
+    folder = Path(folder)
+    rows = [json.loads(line) for line in (folder / 'countdown_samples.jsonl').read_text().splitlines() if line.strip()]
+    front = max(vertex[0] for vertex in rows[0]['pedestrian_footprint_xy_m'])
+    clearance = -3.5-front
+    return {'spawn_clearance_m': round(clearance, 3),
+            'spawn_clearance_below_1_25_m': clearance < 1.25,
+            'original_display_phase_skew_ms': None,
+            'original_countdown_legibility_fraction': None,
+            'scope': 'synthetic geometry only; original display pixels absent'}
+
+
+def check():
+    paths = []
+    for suffix in ('probe_01', 'probe_02'):
+        plans = [candidate(suffix, ident) for ident in IDS]
+        assert len({json.dumps(p['engineering'], sort_keys=True) for p in plans}) == 4
+        assert len({(p['case_id'], p['law_id'], p['cell_id'], p['actor'], p['duration_s'], p['rate_hz']) for p in plans}) == 1
+        assert len({p['engineering']['countdown_zero_s'] for p in plans}) == 1
+        for plan in plans:
+            out = HERE / 'draft-candidates' / suffix / plan['candidate_id'] / 'construction.json'
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(json.dumps(plan, indent=2) + '\n')
+            paths.append(str(out.relative_to(HERE)))
+    assert candidate('probe_01', 'primary')['engineering']['countdown_zero_s'] == 10.0
+    assert candidate('probe_02', 'primary')['engineering']['countdown_zero_s'] == 7.0
+    return {'unselected_candidate_plans': len(paths), 'paths': paths,
+            'physically_measured_triggers': 0, 'selected_cases': 0}
+
+
+if __name__ == '__main__':
+    print(json.dumps(check(), sort_keys=True))

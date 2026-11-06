@@ -31,7 +31,7 @@ def main():
                 'source': plan['requirement_dispositions'][0]['source'],
                 'output_key': 'flashing_countdown_clearance', 'method': 'countdown_clearance',
                 'value_type': 'object', 'kind': 'measured',
-                'inputs': ['countdown_samples.jsonl', 'countdown-context.json'],
+                'inputs': ['countdown_samples.jsonl', 'countdown-context.json', 'road.xodr'],
             }],
             'negative': {'remove': ['countdown_samples.jsonl'],
                          'error_contains': 'Missing required source: countdown_samples.jsonl'},
@@ -46,6 +46,7 @@ def main():
         (folder / 'analysis-report.json').write_text(json.dumps(report, indent=2) + '\n')
         negative = Path(tempfile.mkdtemp(dir=ROOT / '.runtime-work', prefix='c10316-countdown-negative-'))
         shutil.copyfile(fixture / 'countdown-context.json', negative / 'countdown-context.json')
+        shutil.copyfile(fixture / 'road.xodr', negative / 'road.xodr')
         try:
             finalizer.report(negative, case_id)
         except ValueError as error:

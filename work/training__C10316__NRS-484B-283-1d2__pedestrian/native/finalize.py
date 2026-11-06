@@ -14,7 +14,7 @@ def countdown_clearance(folder):
 def report(folder, case_id):
     folder = Path(folder)
     value = countdown_clearance(folder)
-    sources = {name: sha(folder / name) for name in ('countdown_samples.jsonl', 'countdown-context.json')}
+    sources = {name: sha(folder / name) for name in ('countdown_samples.jsonl', 'countdown-context.json', 'road.xodr')}
     return {'format': 'worker-analysis-report-v1', 'case_id': case_id,
             'measurements': {'flashing_countdown_clearance': {
                 'method': 'countdown_clearance', 'value': value, 'sources': sources}},
