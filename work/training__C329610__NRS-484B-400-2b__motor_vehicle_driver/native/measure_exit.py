@@ -46,9 +46,11 @@ def measure(samples_path,geometry_path):
         raise ValueError('Destination right axis differs from Native lane direction')
     center=point(geometry['destination_centerline_point_native_m'],'destination_centerline_point_native_m')
     boundary=point(geometry['destination_exit_point_native_m'],'destination_exit_point_native_m')
+    entry=point(geometry['intersection_entry_point_native_m'],'intersection_entry_point_native_m')
+    approach=vector(directions['approach_forward'],'approach_forward')
     rows=[json.loads(line) for line in samples_path.read_text().splitlines() if line.strip()]
     if len(rows)<2:raise ValueError('Too few Native motion samples')
-    previous=-math.inf;first=None;prior_time=None
+    previous=-math.inf;first=None;prior_time=None;before_entry=False;entered=False;entry_bracket=None
     for row in rows:
         time=float(row['time_s'])
         if not math.isfinite(time) or time<=previous:raise ValueError('Native times not strictly increasing')
@@ -57,11 +59,18 @@ def measure(samples_path,geometry_path):
         if not isinstance(vertices,list) or len(vertices)!=4:raise ValueError('Full Native footprint missing')
         vertices=[point(v,'body vertex') for v in vertices]
         forward=vector(row['native_forward_xy'],'actor forward')
+        offsets=[dot(relative(v,entry),approach) for v in vertices]
+        if not entered and max(offsets)<0:
+            before_entry=True
+        if before_entry and not entered and max(offsets)>=0:
+            entered=True
+            entry_bracket=[prior_time,time]
         fully_beyond=all(dot(relative(v,boundary),dest)>0 for v in vertices)
-        if fully_beyond and dot(forward,dest)>=math.cos(math.radians(20)):
+        if entered and fully_beyond and dot(forward,dest)>=math.cos(math.radians(20)):
             first=(prior_time,time,vertices)
             break
         prior_time=time
+    if not entered:raise ValueError('No sampled intersection entry after pre-entry approach')
     if first is None:raise ValueError('No full-body destination exit with observed turn completion')
     low=min(dot(relative(v,center),right) for v in first[2])
     high=max(dot(relative(v,center),right) for v in first[2])
@@ -69,7 +78,8 @@ def measure(samples_path,geometry_path):
     return {'format':'c329610-exit-side-measurement-v1',
             'native_map_sha256':geometry['native_map_sha256'],
             'first_full_body_exit_time_bracket_s':[first[0],first[1]],
+            'first_intersection_entry_time_bracket_s':entry_bracket,
             'body_right_offset_interval_m':[low,high],
-            'geometric_side':side,'full_body_exit_observed':True,
+            'geometric_side':side,'intersection_entry_observed':True,'full_body_exit_observed':True,
             'sources':{samples_path.name:sha(samples_path),geometry_path.name:sha(geometry_path)},
             'scope':'sampled Native geometry only; no legal verdict or intersample claim'}

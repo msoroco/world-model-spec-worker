@@ -49,6 +49,11 @@ def run():
         assert all(v==480 for report in (left,right) for v in report['video_frames'].values())
         assert (lv['geometric_side'],rv['geometric_side'])==('right','left')
         assert lv['full_body_exit_observed'] and rv['full_body_exit_observed']
+        for value in (lv,rv):
+            assert value['intersection_entry_observed']
+            entry=value['first_intersection_entry_time_bracket_s']
+            exit_window=value['first_full_body_exit_time_bracket_s']
+            assert entry[0] is not None and entry[0]<entry[1]<=exit_window[0]<exit_window[1]
         motion=[rows(source/'native_samples.jsonl') for source in (a,b)]
         assert len(motion[0])==len(motion[1])==480
         for index,(first,second) in enumerate(zip(*motion)):
@@ -63,6 +68,7 @@ def run():
             'fixed':'cell, actor, law, road geometry, first 160 approach frames, frame/time/y/heading trace, rate, cameras and channels',
             'deliberate_difference':'destination lateral exit x=1.75 m versus -1.75 m',
             'measured_full_body_exit_sides':['right','left'],
+            'sampled_entry_before_exit_both_cases':True,
             'scope':'synthetic saved controlled comparison only; no Native physical or legal outcome proof'}
 
 

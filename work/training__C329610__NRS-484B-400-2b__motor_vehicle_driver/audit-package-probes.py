@@ -59,6 +59,13 @@ def audit():
             if not json.loads((scratch/'output/final-decode.json').read_text())['passed']:
                 raise ValueError('Final render decode failed')
             native_result=json.loads((scratch/'output/result.json').read_text())
+            measured=native_result['measured_values']
+            entry_window=measured['first_intersection_entry_time_bracket_s']
+            exit_window=measured['first_full_body_exit_time_bracket_s']
+            if (measured['intersection_entry_observed'] is not True or
+                entry_window[0] is None or not
+                entry_window[0]<entry_window[1]<=exit_window[0]<exit_window[1]):
+                raise ValueError('Packaged saved entry does not precede complete exit')
             if native_result['accepted'] or native_result['legal_verdict_claimed'] or any(
                 check.get('physical_cause_confirmed') for check in native_result['target_checks']):
                 raise ValueError('Synthetic diagnostic claimed physical success or acceptance')
@@ -69,7 +76,9 @@ def audit():
             rows.append({'case_suffix':suffix,'candidate':candidate,
                          'positive_receipt_sha256':sha(scratch/'output/compatibility.json'),
                          'negative_log_sha256':sha(scratch/'negative-analysis.log'),
-                         'command_log_sha256':sha(log),'scope':'synthetic diagnostic v1, unselected'})
+                         'command_log_sha256':sha(log),
+                         'sampled_entry_before_exit':True,
+                         'scope':'synthetic diagnostic v1, unselected'})
     output={'format':'c329610-2b-diagnostic-package-audit-v1','count':len(rows),'rows':rows,
             'ready':False,'strict_v2_compatibility':False}
     (HERE/'draft-package-probe-summary.json').write_text(json.dumps(output,indent=2)+'\n')

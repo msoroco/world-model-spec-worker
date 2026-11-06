@@ -71,6 +71,8 @@ def measure_exit_side(attempt):
     result=measure(attempt/'native_samples.jsonl',attempt/'road_geometry.json')
     return {'value':{'body_right_offset_interval_m':result['body_right_offset_interval_m'],
                      'geometric_side':result['geometric_side'],
+                     'first_intersection_entry_time_bracket_s':result['first_intersection_entry_time_bracket_s'],
+                     'intersection_entry_observed':result['intersection_entry_observed'],
                      'first_full_body_exit_time_bracket_s':result['first_full_body_exit_time_bracket_s'],
                      'full_body_exit_observed':result['full_body_exit_observed']},
             'method':'measure_exit_side',

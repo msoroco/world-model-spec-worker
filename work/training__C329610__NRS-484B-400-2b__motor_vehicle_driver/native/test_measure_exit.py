@@ -23,6 +23,7 @@ class ExitMeasurementTest(unittest.TestCase):
             'destination_opposing':[0,1]},
           'destination_right_normal_native':[1,0],
           'destination_centerline_point_native_m':[0,0],
+          'intersection_entry_point_native_m':[-7,0],
           'destination_exit_point_native_m':[0,-7]}))
 
     def write(self,x):
@@ -58,6 +59,18 @@ class ExitMeasurementTest(unittest.TestCase):
         data[-1]['native_forward_xy']=[1,0]
         self.samples.write_text('\n'.join(json.dumps(r) for r in data)+'\n')
         with self.assertRaisesRegex(ValueError,'No full-body destination exit'):
+            measure(self.samples,self.geometry)
+
+    def test_exit_without_prior_entry_rejected(self):
+        self.samples.write_text('\n'.join(json.dumps(r) for r in
+          [row(.05,1.75,-5,(0,-1)),row(.10,1.75,-11,(0,-1))])+'\n')
+        with self.assertRaisesRegex(ValueError,'No sampled intersection entry'):
+            measure(self.samples,self.geometry)
+
+    def test_approach_without_entry_rejected(self):
+        self.samples.write_text('\n'.join(json.dumps(r) for r in
+          [row(.05,-20,1.75),row(.10,-11,1.75)])+'\n')
+        with self.assertRaisesRegex(ValueError,'No sampled intersection entry'):
             measure(self.samples,self.geometry)
 
 
