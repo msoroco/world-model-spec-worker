@@ -4,6 +4,7 @@ import tempfile
 import unittest
 
 from engineering import candidate
+from fallback_triggers import measure as measure_fallback
 from geometry import check as geometry_check
 from measure_crosswalk import measure
 from runner import cameras,check
@@ -37,6 +38,13 @@ class CrosswalkOffline(unittest.TestCase):
             (path/'crosswalk-context.json').write_text('{}')
             with self.assertRaisesRegex(ValueError,'Missing required source: native_samples.jsonl'):
                 measure(path/'native_samples.jsonl',path/'crosswalk-context.json')
+
+    def test_fallback_source_digest_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)/'observations.jsonl'
+            path.write_text('{"source_kind":"synthetic_cpu_fixture"}\n')
+            with self.assertRaisesRegex(ValueError,'Changed fallback observation source'):
+                measure_fallback(path,'0'*64)
 
 
 if __name__=='__main__':unittest.main()

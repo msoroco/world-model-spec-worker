@@ -44,8 +44,10 @@ def audit():
         assert sha(HERE/receipt['command_log']) == receipt['command_log_sha256']
         assert sha(HERE/receipt['unit_log']) == receipt['unit_log_sha256']
         unit = (HERE/receipt['unit_log']).read_text()
-        assert 'Ran 4 tests' in unit and '\nOK\n' in unit
+        assert 'Ran 6 tests' in unit and '\nOK\n' in unit
         construction = json.loads((HERE/selected['construction']).read_text())
+        bundled = {item['path'] for item in construction['files']}
+        assert {'runner.py', 'finalize.py', 'measure_park_act.py'} <= bundled
         for item in construction['files']:
             if item['path'] == 'config.json':
                 continue

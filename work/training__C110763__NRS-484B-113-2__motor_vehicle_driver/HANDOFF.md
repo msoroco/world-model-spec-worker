@@ -1,15 +1,11 @@
-# NRS-484B-113-2 at C110763
+# training__C110763__NRS-484B-113-2__motor_vehicle_driver
 
-Actor: `motor_vehicle_driver`. Frozen cell: `intersection` / `reverse` / `intersection_boundary`.
+Status: blocked and unselected. Exact law: NRS 484B.113(2), “The driver of a vehicle: Shall not back into an intersection, on or over a crosswalk, or around a street corner.” Frozen cell: intersection / reverse / intersection_boundary.
 
-Exact statutory source: NRS 484B.113(2). The law text is retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branches: into an intersection.
+The authored pair isolates the “back into an intersection” clause. A common east-approach start at x=12 m backs to x=10 m in probe_1 (full body clear of intersection) or x=8 m in probe_2 (3.52 m² prospective body overlap). The OpenDRIVE junction has no marked crosswalk. The source-bound 480-frame synthetic samples measure signed backing velocity at the same frames as full-body junction overlap: 0 versus 80 event frames. This is CPU construction and saved-path validation, not physical CARLA conduct or a legal verdict. Crosswalk and corner clauses are separate frozen cells C110741 and C110812.
 
-Controlled planning variable: `reverse_path_intersection_occupancy`. Proposed requests: reverse along approach and stop before intersection boundary; reverse into intersection. These are scene/controller targets, not observed conduct or legal verdicts.
+`draft-execution-manifest.json` contains two unselected cases, each with primary plus three distinct alternatives. Fallback 1 increases lateral correction if source-measured reverse cross-track error exceeds 0.25 m; fallback 2 increases braking margin if measured endpoint overshoot exceeds 0.20 m; fallback 3 increases overview FOV if decoded original body margin falls below 40 px. These trigger sources have not been physically observed.
 
-Statutory alternatives and exceptions still to cover or disposition: crosswalk crossing; backing around street corner.
+`synthetic-proof.log` and `synthetic-pair-audit.log` pass source-hashed 480-frame positive cases, four adversarial negatives per case and an independent controlled comparison. `pinned-offline-proof.log` records 8/8 exact `runtime.py offline` bundles. `portable-proof-*` and `portable-matrix-audit.log` record 8/8 exact synthetic positive/removed-source negative compatibility checks through saved finalization, Native result validation, Core/Lean, video render and decode. `measurement-contract-audit.log` verifies the source-specific selected requirement and two primary saved reports; `draft-package-audit.log` verifies hashes and candidate knobs.
 
-Accepted membership: 4 distinct recording IDs. Their contents and exact source-hashed equivalence are unavailable in this checkout, so reuse is not claimed.
-
-Blocker: No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified.
-
-Resume: reconcile every branch against exact text and physical cell; construct Native routes and controllers, mandatory measurement mapping, four distinct plans per selected case, and execute pinned-runtime offline, compatibility, saved-only and independent audit proofs. Mark `ready` only after all CPU proofs pass.
+The accepted-membership snapshot lists four IDs; their content and exact equivalence receipts are unavailable, so no reuse is claimed. Strict v2 recipe compatibility, selected delivery audit, statutory branch completion, ordered GPU queue and physical original observations remain unproven. `v2-recipe-diagnostic.json` reproduces the pinned fixture constraint: its trace, evidence and frame map have three rows while the exact case requires 480, and the frozen recipe inspector rejects replacing the pinned trace with “Fixture addition shadows pinned source.” This is a tested proof limitation, not an acceptance claim. Keep blocked/unselected.

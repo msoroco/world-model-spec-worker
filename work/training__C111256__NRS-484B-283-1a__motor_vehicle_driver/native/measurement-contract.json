@@ -8,16 +8,16 @@
   ],
   "frozen_cell": {
     "layout": "intersection",
-    "maneuver": "right_turn",
-    "control": "traffic_light",
+    "maneuver": "travel",
+    "control": "crosswalk",
     "actor": "motor_vehicle_driver"
   },
   "law_conditions": {
-    "signal": "Governing circular green alone at right-turn entry",
-    "permission": "Vehicle may turn right unless another device prohibits the turn",
-    "no_prohibition": "Authored no-turn-sign survey and original Native scene verification required",
-    "yield": "Ego must enter right turn after lawful pedestrians and other traffic clear; comparison holds their occupancy fixed",
-    "alternatives": "Straight and left turns are statutory alternatives outside frozen right_turn maneuver"
+    "activation": "No official devices in place or operating at marked crosswalk",
+    "yield": "Driver slows or stops as needed to yield to a crossing pedestrian on ego directional highway half",
+    "half_definition": "All traffic lanes designated for one travel direction; entire highway if one-way",
+    "selected_exception": "Blind pedestrian with white cane under cited NRS 484B.290 [LVMC-11-30-140-B], declared synthetic only",
+    "other_cited_exceptions": "NRS 484B.287 and .350 inventoried separately; no physical coverage claim"
   },
   "frame_contract": {
     "rate_hz": 20,
@@ -28,42 +28,56 @@
       "ego_x_m",
       "ego_y_m",
       "ego_speed_m_s",
-      "signal_state",
-      "signal_governs_ego",
-      "turn_prohibition_present",
-      "approach_lane",
-      "intersecting_road",
+      "official_device_actors_present",
+      "crosswalk_marked",
+      "pedestrian_on_ego_highway_half",
+      "road_one_way",
+      "ego_directional_lanes",
       "pedestrian_conflict_occupied",
-      "cross_traffic_conflict_occupied",
-      "ego_turn_entered"
+      "pedestrian_blind_declared",
+      "white_cane_declared"
     ],
     "body_front_offset_m": 2.6,
     "body_offset_status": "Prospective blueprint proxy; original vehicle bounding box must replace it"
   },
   "controlled_pair": {
-    "cases": [
-      "witness_1",
-      "witness_2"
+    "comparisons": [
+      {
+        "cases": [
+          "witness_1",
+          "witness_2"
+        ],
+        "variable": "crosswalk_pedestrian_yield",
+        "fixed": [
+          "road",
+          "actor",
+          "crosswalk",
+          "pedestrian ego-half occupancy",
+          "device absence"
+        ]
+      },
+      {
+        "cases": [
+          "exception_1_1",
+          "exception_1_2"
+        ],
+        "variable": "blind_white_cane_exception_applicability",
+        "fixed": [
+          "road",
+          "actor",
+          "crosswalk",
+          "ego and pedestrian trajectories",
+          "device absence"
+        ]
+      }
     ],
-    "variable": "yielded_to_lawful_users",
-    "fixed": [
-      "cell",
-      "actor",
-      "road",
-      "circular-green signal",
-      "no turn prohibition",
-      "pedestrian and cross-traffic occupancy",
-      "weather",
-      "camera profile",
-      "right-turn route"
-    ],
-    "synthetic_witness_1_expected": true,
-    "synthetic_witness_2_expected": false
+    "rate_hz": 20,
+    "frames": 480
   },
   "fallbacks": {
     "fallback1": "max route cross-track error > 0.45 m from original Native ego pose and map route",
-    "fallback2": "minimum lawful-user clearance <1.0 s from original pedestrian and cross-traffic occupancy joined to ego entry",
-    "fallback3": "minimum signal or body pixel margin < 40 px in decoded original overview video"
+    "fallback2": "minimum ego-half pedestrian clearance <1.0 s from original Native marked crosswalk occupancy joined to full ego body crossing",
+    "fallback3": "minimum crosswalk or body pixel margin < 40 px in decoded original overview video"
   },
   "scope": "Authored CPU construction and synthetic saved-path proof only; not Native readback, original pixels, physical trigger observations, statutory outcome, or accepted recording"
 }

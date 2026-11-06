@@ -63,6 +63,30 @@ def analyze(attempt):
         raise ValueError('Missing declared assumed driver-eye mount')
     if context['native_road_sha256']!=sha(attempt/'native_road_readback.xodr'):
         raise ValueError('Native map readback hash differs')
+    authored_road=attempt/'authored_road.xodr'
+    if not authored_road.is_file():authored_road=attempt/'road.xodr'
+    authored_road_hash=context.get('authored_road_sha256')
+    if authored_road_hash is not None:
+        if not authored_road.is_file() or sha(authored_road)!=authored_road_hash:
+            raise ValueError('Authored road source hash differs')
+    authored_reference=None
+    authored_path=attempt/'obstruction.json'
+    authored_hash=context.get('authored_obstruction_sha256')
+    if authored_hash is not None:
+        if not authored_path.is_file() or sha(authored_path)!=authored_hash:
+            raise ValueError('Authored obstruction source hash differs')
+        authored=json.loads(authored_path.read_text())
+        if (authored.get('case_suffix')!=config['case_suffix'] or
+            authored.get('road_xodr_sha256')!=sha(authored_road) or
+            authored.get('native_actor_spawned') is not False or
+            authored.get('physical_opacity_measured') is not False):
+            raise ValueError('Authored obstruction source identity differs')
+        radius=authored.get('inner_radius_m')
+        if not finite(radius) or not 0<radius<500:
+            raise ValueError('Invalid authored obstruction radius')
+        authored_reference=1000*math.acos(radius/500)/.3048
+        if abs(authored_reference-authored['requested_reference_limit_ft'])>1e-6:
+            raise ValueError('Authored obstruction limit differs')
     trace=rows(attempt/'trace.jsonl');evidence=rows(attempt/'capture/evidence.jsonl')
     history=rows(attempt/'native_body_history.jsonl')
     viewpoints=rows(attempt/'driver_eye_rays.jsonl')
@@ -131,9 +155,16 @@ def analyze(attempt):
                 role:{'minimum':min(values),'maximum':max(values)}
                 for role,values in direction_distances.items()},
             'actual_body_visibility_proven':False,'original_pixel_visibility_proven':False,
+            'authored_center_reference_limit_ft':authored_reference,
+            'authored_road_source_sha256':authored_road_hash,
+            'authored_obstruction_source_sha256':authored_hash,
             'legal_verdict_claimed':False,'accepted':False,
             'source_sha256':{name:sha(attempt/name) for name in (
                 'config.json','native-construction-context.json','native_road_readback.xodr',
                 'trace.jsonl','capture/evidence.jsonl','native_body_history.jsonl',
                 'driver_eye_rays.jsonl','video_frames.jsonl')}}
+    if authored_hash is not None:
+        result['source_sha256']['obstruction.json']=authored_hash
+    if authored_road_hash is not None:
+        result['source_sha256'][authored_road.name]=authored_road_hash
     return result

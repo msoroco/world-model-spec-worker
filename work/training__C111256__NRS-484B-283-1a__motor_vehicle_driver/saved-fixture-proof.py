@@ -31,25 +31,21 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     construction=json.loads((FOLDER/'draft-candidates'/case/'primary/construction.json').read_text())
     config=json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
     (destination/'config.json').write_text(json.dumps(config))
-    geometry={'native_map_sha256':'a'*64,'signal_actor_id':601,
-              'turn_prohibition_survey':{'authored_signs':[],'native_traffic_sign_actors':[]},
+    geometry={'native_map_sha256':'a'*64,'official_signal_actors_present':False,
               'stop_line_y_m':-14.0,'nearest_crosswalk_y_m':-11.0,
-              'destination_crosswalk_x_m':10.0,
-              'lanes':{'approach_right':{'road_id':1,'lane_id':-1,'forward_xy':[0,1]},
-                       'approach_left':{'road_id':1,'lane_id':1,'forward_xy':[0,-1]},
-                       'destination_right':{'road_id':2,'lane_id':-1,'forward_xy':[1,0]},
-                       'destination_left':{'road_id':2,'lane_id':1,'forward_xy':[-1,0]}},
+              'crosswalk_x_range_m':[0,3.5],
+              'lanes':{'approach_ego_half':{'road_id':1,'lane_id':-1,'forward_xy':[0,1]},
+                       'approach_opposite_half':{'road_id':1,'lane_id':1,'forward_xy':[0,-1]},
+                       'departure_ego_half':{'road_id':4,'lane_id':-1,'forward_xy':[0,1]},
+                       'departure_opposite_half':{'road_id':4,'lane_id':1,'forward_xy':[0,-1]}},
               'synthetic_diagnostic':True}
     (destination/'road_geometry.json').write_text(json.dumps(geometry))
-    (destination/'context.json').write_text(json.dumps({'surveyed_right_turn':geometry}))
+    (destination/'context.json').write_text(json.dumps({'surveyed_crosswalk':geometry}))
     frames=synthetic(case)['frames']
     trace=[];evidence=[];mapping=[];native=[];body=[]
     for i,row in enumerate(frames):
         frame=100+i;time=(i+1)/20;x=row['ego_x_m'];y=row['ego_y_m']
-        turn=181 if case=='witness_1' else 145
-        if i<turn:heading=90.0
-        elif i<=turn+60:heading=90-(i-turn)*1.5
-        else:heading=0.0
+        heading=90.0
         angle=math.radians(heading);fx,fy=math.cos(angle),math.sin(angle);rx,ry=-fy,fx
         corners=[[round(x+direction*2.6*fx+side*1.1*rx,5),
                   round(y+direction*2.6*fy+side*1.1*ry,5)]
@@ -68,17 +64,19 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
                                 'speed_provenance':'original_trace_actor_get_velocity'},
                          'world':{'weather':{'cloudiness':0,'precipitation':0,
                                              'wetness':0,'fog_density':0},
-                                  'road_projection':{'road_id':1 if i<turn else 13 if i<=turn+60 else 2,
+                                  'road_projection':{'road_id':1 if y<-7 else 13 if y<=7 else 4,
                                                      'section_id':0,'lane_id':-1,'s_m':max(0,y+100)}}})
         mapping.append({'video_frame':i,'native_frame':frame,'carla_frame':frame,'time_s':time})
         native.append({'native_frame':frame,'time_s':time,'native_center_xy_m':[x,y],
                        'native_yaw_deg':heading,'native_body_xy_m':corners,'speed_mps':speed,
-                       'walker_center_xy_m':[10,0 if row['pedestrian_conflict_occupied'] else 5],
+                       'walker_center_xy_m':[1.75 if row['pedestrian_conflict_occupied'] else -2.5,-11],
                        'walker_conflict_occupied':row['pedestrian_conflict_occupied'],
-                       'cross_traffic_conflict_occupied':row['cross_traffic_conflict_occupied'],
-                       'turn_prohibition_present':False,
-                       'ego_turn_entered':row['ego_turn_entered'],
-                       'signal_state_observed':'Green',
+                       'pedestrian_on_ego_highway_half':row['pedestrian_on_ego_highway_half'],
+                       'crosswalk_marked':True,'official_device_actors_present':False,
+                       'road_one_way':False,'ego_directional_lanes':[-1],
+                       'pedestrian_blind_declared':row['pedestrian_blind_declared'],
+                       'white_cane_declared':row['white_cane_declared'],
+                       'white_cane_visual_prop_physically_verified':False,
                        'controller_request':{'synthetic_diagnostic':True}})
         body.append({'frame':frame,'time_s':time,'body_vertices_m':vertices})
     for name,values in [('trace.jsonl',trace),('capture/evidence.jsonl',evidence),
@@ -91,15 +89,18 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     for channel in config['recording_description']['channels']:
         name=channel['name'];values=[]
         for i,sample in enumerate(native):
-            if name=='dev.traffic_signal':value={'observed_state':'Green','native_actor_id':601}
+            if name=='dev.traffic_signal':value={'official_devices_present':False,'native_actor_count':0}
             elif name=='st.stop_line':value=-14.0
             elif name=='st.crosswalk':value=-11.0
             elif name=='drv.stopped':value=sample['speed_mps']<.05
             elif name=='kin.velocity':value=sample['speed_mps']
-            elif name=='drv.extreme_lane':value=geometry['lanes']['approach_right']
+            elif name=='drv.extreme_lane':value=geometry['lanes']['approach_ego_half']
             elif name=='st.one_way_roadway':value=geometry['lanes']
             elif name=='drv.yields_to':value={'walker_conflict_occupied':sample['walker_conflict_occupied'],
-                'cross_traffic_conflict_occupied':sample['cross_traffic_conflict_occupied']}
+                'pedestrian_on_ego_highway_half':sample['pedestrian_on_ego_highway_half']}
+            elif name=='crosswalk_exception':value={'pedestrian_blind_declared':sample['pedestrian_blind_declared'],
+                'white_cane_declared':sample['white_cane_declared'],
+                'white_cane_visual_prop_physically_verified':False}
             elif name=='native_body_pose_control':value=sample
             elif name=='camera_frame_join':value=mapping[i]
             else:raise ValueError('Unknown channel: '+name)
@@ -142,8 +143,8 @@ def run():
     env['PYTHONPATH']=os.pathsep.join((str(ROOT/'runtime/pipeline/scenario_pipeline'),
         str(ROOT/'runtime/pipeline/python'),str(ROOT/'runtime/pipeline'),env.get('PYTHONPATH','')))
     records=[]
-    with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c111256-8c-saved-') as tmp:
-        for case in ('witness_1','witness_2'):
+    with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c111256-crosswalk-saved-') as tmp:
+        for case in ('witness_1','witness_2','exception_1_1','exception_1_2'):
             base=Path(tmp)/(case+'-base');make_attempt(base,case)
             positive=Path(tmp)/(case+'-positive');negative=Path(tmp)/(case+'-negative')
             shutil.copytree(base,positive);shutil.copytree(base,negative)

@@ -20,7 +20,7 @@ def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
 def build():
-    parent=REPO/'.runtime-work/c104538/full-saved-v2'
+    parent=REPO/'.runtime-work/c104538/full-saved-v3'
     if parent.exists():raise ValueError('Retain prior full-duration diagnostic; choose a new version')
     summary=json.loads((ROOT/'pinned-contract-summary.json').read_text())
     binary=REPO/'.runtime-work/linux_arm64/ffmpeg'
@@ -96,7 +96,7 @@ def build():
             command=['python3.11',str(ROOT/'native/finalize.py'),'--attempt',str(attempt),
                      '--output',str(attempt/'analysis-report.json')]
             run=subprocess.run(command,capture_output=True,text=True,env=env,timeout=120)
-            log=ROOT/'full-saved-logs'/suffix/(label+'.log');log.parent.mkdir(parents=True,exist_ok=True)
+            log=ROOT/'full-saved-v3-logs'/suffix/(label+'.log');log.parent.mkdir(parents=True,exist_ok=True)
             log.write_text(run.stdout+run.stderr)
             if label=='positive':
                 assert run.returncode==0,(case_id,run.stderr)
@@ -119,7 +119,7 @@ def build():
             'positive_trace_sha256':sha(positive/'trace.jsonl'),
             'positive_video_sha256':sha(positive/'ego.mkv'),
             'receipts':receipts})
-    output={'format':'c104538-full-duration-synthetic-saved-v2','cases':results,
+    output={'format':'c104538-full-duration-synthetic-saved-v3','cases':results,
         'frames_per_case':480,'positive_count':3,'negative_count':6,
         'contract_values_verified_per_case':4,'original_native_measurement_count':0,
         'selected_case_count':0,'recording_accepted':False,

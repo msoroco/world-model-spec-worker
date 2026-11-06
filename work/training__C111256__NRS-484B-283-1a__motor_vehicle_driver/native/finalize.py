@@ -50,95 +50,67 @@ def joins(attempt: Path,count: int):
                              ('trace.jsonl','capture/evidence.jsonl','video_frames.jsonl',
                               'native_samples.jsonl','body_history.jsonl','capture/manifest.json')}}
 
-def measure_signal(attempt: Path,native: list[dict],geometry: dict):
-    states=[sample.get('signal_state_observed') for sample in native]
-    if not states or any(state not in ('Green','TrafficLightState.Green','circular_green') for state in states):
-        raise ValueError('Original governing circular-green state absent')
-    if not geometry.get('signal_actor_id') or geometry.get('stop_line_y_m')!=-14.0:
-        raise ValueError('Original signal and lane readback absent')
-    return {'value':{'circular_green_frames':len(states),'native_signal_actor_id':geometry['signal_actor_id'],
-                     'stop_line_y_m':geometry['stop_line_y_m']},
-            'method':'measure_signal','sources':{name:sha(source(attempt,name))
-                for name in ('native_samples.jsonl','road_geometry.json')}}
+def measure_cited_exception(attempt: Path,native: list[dict],geometry: dict):
+    flags={(r.get('pedestrian_blind_declared'),r.get('white_cane_declared')) for r in native}
+    if len(flags)!=1 or next(iter(flags)) not in ((False,False),(True,True)):
+        raise ValueError('Cited blind-white-cane exception source differs')
+    present=next(iter(flags))[0]
+    if any(r.get('white_cane_visual_prop_physically_verified') is not False for r in native):
+        raise ValueError('Unreviewed cane physical claim')
+    return {'value':{'blind_white_cane_exception_declared':present,
+                     'physical_cane_and_eligibility_verified':False,
+                     'cited_source':'NRS 484B.290 [LVMC-11-30-140-B]'},
+            'method':'measure_cited_exception','sources':{n:sha(source(attempt,n))
+                for n in ('native_samples.jsonl','road_geometry.json')}}
 
-def measure_stop(attempt: Path,native: list[dict],geometry: dict):
-    boundary=geometry['stop_line_y_m']
-    crossing=None;halt=[];previous=None
-    for index,sample in enumerate(native):
-        front=max(v[1] for v in sample['native_body_xy_m'])
-        speed=sample['speed_mps']
-        if type(speed) not in (int,float) or not math.isfinite(speed) or speed<0:
-            raise ValueError('Original speed absent')
-        if crossing is None and previous is not None and previous<boundary<=front:
-            crossing=index
-        previous=front
-        if speed<=.05 and front<boundary:halt.append(index)
-    if crossing is None:raise ValueError('Original stop-line crossing absent')
-    longest=0;span=0;prior=-2
-    for index in (f for f in halt if f<crossing):
-        span=span+1 if index==prior+1 else 1;longest=max(longest,span);prior=index
-    return {'value':{'full_halt_before_line_incidental':longest>=10,
-                     'stationary_pre_crossing_frames':longest,
-                     'first_front_crossing_frame':crossing},
-            'method':'measure_stop','sources':{name:sha(source(attempt,name))
-                for name in ('native_samples.jsonl','road_geometry.json')}}
+def measure_crosswalk_yield(attempt: Path,native: list[dict],geometry: dict):
+    if geometry.get('official_signal_actors_present') is not False or geometry.get('nearest_crosswalk_y_m')!=-11.0:
+        raise ValueError('Uncontrolled marked-crosswalk survey absent')
+    if any(r.get('official_device_actors_present') is not False or r.get('crosswalk_marked') is not True or
+           r.get('pedestrian_on_ego_highway_half') is not True for r in native):
+        raise ValueError('Uncontrolled ego-half crosswalk source differs')
+    occupied=[i for i,r in enumerate(native) if r.get('walker_conflict_occupied') is True]
+    overlap=[i for i,r in enumerate(native) if max(v[1] for v in r['native_body_xy_m'])>=-12 and
+             min(v[1] for v in r['native_body_xy_m'])<=-10]
+    if not occupied or not overlap:raise ValueError('Pedestrian or full-body crosswalk source absent')
+    conflict=sorted(set(occupied)&set(overlap))
+    first=overlap[0]
+    stationary=[]
+    for i,r in enumerate(native[:first]):
+        if r['speed_mps']<=.05 and max(v[1] for v in r['native_body_xy_m'])<-12:stationary.append(i)
+    longest=0;run=0;prior=-2
+    for i in stationary:
+        run=run+1 if i==prior+1 else 1;longest=max(longest,run);prior=i
+    return {'value':{'first_ego_crosswalk_overlap_frame':first,
+                     'last_pedestrian_ego_half_frame':occupied[-1],
+                     'ego_pedestrian_overlap_frames':conflict,
+                     'yielded_to_crosswalk_pedestrian':not conflict,
+                     'full_halt_before_crosswalk':longest>=10,
+                     'pre_crosswalk_stationary_frames_contiguous':longest,
+                     'departure_observed':native[-1]['native_center_xy_m'][1]>13},
+            'method':'measure_crosswalk_yield','sources':{n:sha(source(attempt,n))
+                for n in ('native_samples.jsonl','road_geometry.json')}}
 
-def measure_turn_yield(attempt: Path,native: list[dict],geometry: dict):
-    if 'destination_crosswalk_x_m' not in geometry:
-        raise ValueError('Original destination conflict readback absent')
-    pedestrians=[i for i,row in enumerate(native) if row.get('walker_conflict_occupied') is True]
-    traffic=[i for i,row in enumerate(native) if row.get('cross_traffic_conflict_occupied') is True]
-    entered=[i for i,row in enumerate(native) if row.get('ego_turn_entered') is True]
-    if not pedestrians or not traffic or not entered:
-        raise ValueError('Original lawful-user conflict or turn entry absent')
-    first=entered[0];last=max(pedestrians[-1],traffic[-1])
-    end=native[-1]['native_center_xy_m']
-    return {'value':{'turn_entry_frame':first,'last_walker_conflict_frame':pedestrians[-1],
-                     'last_cross_traffic_conflict_frame':traffic[-1],
-                     'yielded_to_lawful_users':first>last,
-                     'sampled_clearance_s':round((first-last)/20,3),
-                     'destination_exit_observed':end[0]>13 and abs(end[1]+1.75)<2},
-            'method':'measure_turn_yield','sources':{name:sha(source(attempt,name))
-                for name in ('native_samples.jsonl','road_geometry.json')}}
-
-def measure_right_turn_permission(attempt: Path,signal: dict,stop: dict,turn: dict,geometry: dict):
+def measure_directional_half(attempt: Path,native: list[dict],geometry: dict):
     lanes=geometry.get('lanes',{})
-    approach=lanes.get('approach_right',{})
-    destination=lanes.get('destination_right',{})
-    if approach.get('lane_id')!=-1 or destination.get('lane_id')!=-1:
-        raise ValueError('Extreme-right Native lane context absent')
-    prohibition=measure_no_turn_prohibition(attempt,rows(source(attempt,'native_samples.jsonl')),geometry)
-    value={'circular_green_frames':signal['value']['circular_green_frames'],
-           'extreme_right_approach_lane':approach,
-           'two_way_destination':lanes.get('destination_left',{}).get('lane_id')==1,
-           'lawful_user_clearance_s':turn['value']['sampled_clearance_s'],
-           'yielded_to_lawful_users':turn['value']['yielded_to_lawful_users'],
-           'no_turn_prohibition':prohibition['value']['authored_turn_prohibition_absent'],
-           'destination_exit_observed':turn['value']['destination_exit_observed']}
-    return {'value':value,'method':'measure_right_turn_permission',
-            'sources':{name:sha(source(attempt,name))
-                       for name in ('native_samples.jsonl','road_geometry.json')}}
-
-def measure_no_turn_prohibition(attempt: Path,native: list[dict],geometry: dict):
-    survey=geometry.get('turn_prohibition_survey')
-    if not isinstance(survey,dict) or survey.get('authored_signs')!=[]:
-        raise ValueError('Turn prohibition survey absent')
-    if any(row.get('turn_prohibition_present') is not False for row in native):
-        raise ValueError('Turn prohibition source absent')
-    return {'value':{'authored_turn_prohibition_absent':True,
-                     'native_sign_actors':survey.get('native_traffic_sign_actors',[]),
-                     'original_pixels_independently_reviewed':False},
-            'method':'measure_no_turn_prohibition','sources':{name:sha(source(attempt,name))
-                for name in ('native_samples.jsonl','road_geometry.json')}}
+    if lanes.get('approach_ego_half',{}).get('lane_id')!=-1 or lanes.get('departure_ego_half',{}).get('lane_id')!=-1:
+        raise ValueError('Native directional highway-half lane survey absent')
+    if any(r.get('road_one_way') is not False or r.get('ego_directional_lanes')!=[-1] for r in native):
+        raise ValueError('Directional highway-half source differs')
+    return {'value':{'road_one_way':False,'ego_directional_lane_ids':[-1],
+                     'pedestrian_on_ego_half_frames':sum(r['pedestrian_on_ego_highway_half'] is True for r in native),
+                     'half_definition':'all lanes designated for ego travel direction'},
+            'method':'measure_directional_half','sources':{n:sha(source(attempt,n))
+                for n in ('native_samples.jsonl','road_geometry.json')}}
 
 def measure_witness_branch(attempt: Path,native: list[dict],geometry: dict):
-    signal=measure_signal(attempt,native,geometry)
-    turn=measure_turn_yield(attempt,native,geometry)
-    return {'value':{'right_turn_under_circular_green_alone':True,
-                     'yielded_to_lawful_users':turn['value']['yielded_to_lawful_users'],
-                     'no_turn_prohibition':measure_no_turn_prohibition(attempt,native,geometry)['value']['authored_turn_prohibition_absent']},
-            'method':'measure_witness_branch','sources':{name:sha(source(attempt,name))
-                for name in ('native_samples.jsonl','road_geometry.json')}}
+    crossing=measure_crosswalk_yield(attempt,native,geometry)
+    exception=measure_cited_exception(attempt,native,geometry)
+    return {'value':{'crosswalk_on_ego_highway_half':True,
+                     'yielded_to_crosswalk_pedestrian':crossing['value']['yielded_to_crosswalk_pedestrian'],
+                     'blind_white_cane_exception_declared':exception['value']['blind_white_cane_exception_declared'],
+                     'physical_exception_verified':False},
+            'method':'measure_witness_branch','sources':crossing['sources']}
 
 def video_frames(path: Path):
     source(path.parent,path.name)
@@ -158,44 +130,42 @@ def finalize(attempt: Path,output: Path):
     if count!=480:raise ValueError('Exact 480-frame contract differs')
     native,mapping,original=joins(attempt,count)
     geometry=json.loads(source(attempt,'road_geometry.json').read_text())
-    signal=measure_signal(attempt,native,geometry)
-    stop=measure_stop(attempt,native,geometry)
-    turn=measure_turn_yield(attempt,native,geometry)
-    prohibition=measure_no_turn_prohibition(attempt,native,geometry)
+    exception=measure_cited_exception(attempt,native,geometry)
+    crossing=measure_crosswalk_yield(attempt,native,geometry)
+    half=measure_directional_half(attempt,native,geometry)
     witness=measure_witness_branch(attempt,native,geometry)
-    permission=measure_right_turn_permission(attempt,signal,stop,turn,geometry)
     videos=[f'{name}.mkv' for name in ('overview','approach','signal','destination')]
     counts={name:video_frames(attempt/name) for name in videos}
-    if any(value!=count for value in counts.values()):
-        raise ValueError('Original source video frame count differs')
-    expected=config['case_suffix']=='witness_1'
-    observed=turn['value']['yielded_to_lawful_users']
+    if any(v!=count for v in counts.values()):raise ValueError('Original video frame count differs')
+    suffix=config['case_suffix']
+    if suffix in ('witness_1','witness_2'):
+        target='crosswalk_pedestrian_yield';expected=suffix=='witness_1'
+        observed=crossing['value']['yielded_to_crosswalk_pedestrian']
+    else:
+        target='blind_white_cane_exception_applicability';expected=suffix=='exception_1_2'
+        observed=exception['value']['blind_white_cane_exception_declared']
     recording=[]
     for channel in config['recording_description']['channels']:
-        name=channel['name'];relative='channels/'+name+'.jsonl'
-        source(attempt,relative)
+        name=channel['name'];relative='channels/'+name+'.jsonl';source(attempt,relative)
         recording.append({'name':name,'unit':channel['unit'],'reference':relative})
     result={'case_id':config['case_id'],
-        'measured_values':{'signal':signal['value'],'stop':stop['value'],
-                           'turn_yield':turn['value'],'right_turn_permission':permission['value'],
-                           'no_turn_prohibition':prohibition['value']},
-        'target_checks':[{'target':'yielded to lawful pedestrian and cross traffic before right turn',
-            'requested':expected,'measured':observed,'method':'saved original actor conflict occupancy and ego turn entry',
+        'measured_values':{'exception':exception['value'],'crosswalk_yield':crossing['value'],
+                           'directional_half':half['value'],'witness':witness['value']},
+        'target_checks':[{'target':target,'requested':expected,'measured':observed,
+            'method':'saved source-hashed original full body, pedestrian occupancy and exception declaration',
             'tolerance':0,'matched':observed==expected,'physical_cause_confirmed':False,
             'cause_evidence':['native_samples.jsonl','road_geometry.json']}],
         'setup_confirmed':True,'behavior_attempted':True,
-        'maneuver_completed':turn['value']['destination_exit_observed'],
+        'maneuver_completed':crossing['value']['departure_observed'],
         'termination_reason':'full original duration retained',
-        'physical_failure_flags':['original_signal_direction_and_pixels_require_independent_review']+
-            ([] if observed==expected and turn['value']['destination_exit_observed']
-             else ['controlled_behavior_or_turn_unconfirmed']),
+        'physical_failure_flags':['pedestrian_eligibility_cane_pixels_and_device_absence_require_independent_review']+
+            ([] if observed==expected and crossing['value']['departure_observed'] else ['controlled_behavior_unconfirmed']),
         'trace_reference':'trace.jsonl','video_references':videos,
         'video_frame_map_reference':'video_frames.jsonl',
-        'recording_description':config['recording_description'],
-        'recording_evidence':recording,
-        'realized_observables':{'first_front_stop_line_crossing_frame':{
-            'value':stop['value']['first_front_crossing_frame'],'unit':'frame',
-            'method':'source-hashed sampled full-body stop-line crossing',
+        'recording_description':config['recording_description'],'recording_evidence':recording,
+        'realized_observables':{'first_ego_crosswalk_overlap_frame':{
+            'value':crossing['value']['first_ego_crosswalk_overlap_frame'],'unit':'frame',
+            'method':'source-hashed original full-body crosswalk overlap',
             'time_window':'entire original 24 s attempt','statistic':'first',
             'reference':'native_samples.jsonl'}},
         'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
@@ -203,12 +173,12 @@ def finalize(attempt: Path,output: Path):
     validate_result(result)
     report={'format':'c111256-saved-analysis-v1','case_id':config['case_id'],
             'candidate_id':config['candidate_id'],
-            'measurements':{'circular_green_activation':signal,
-                            'right_turn_no_prohibition':permission,
-                            'lawful_user_yield':turn,
-                            'right_turn_green_witness':witness},
+            'measurements':{'cited_exception_condition':exception,
+                            'uncontrolled_crosswalk_yield':crossing,
+                            'directional_highway_half':half,
+                            'ego_half_crosswalk_witness':witness},
             'original_joins':original,'video_frames':counts,
-            'scope':'saved original Native sources and decoded original video; not independent acceptance or legal verdict'}
+            'scope':'saved Native sources and decoded video; no independent acceptance or legal verdict'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     with (attempt/'result.json').open('x') as stream:
         json.dump(result,stream,indent=2,allow_nan=False);stream.write('\n')

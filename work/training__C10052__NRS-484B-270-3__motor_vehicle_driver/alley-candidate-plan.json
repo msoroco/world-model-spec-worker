@@ -1,0 +1,122 @@
+{
+  "format": "c10052-exception-a-candidate-plan-v1",
+  "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_c_alley_entry",
+  "assignment_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver",
+  "cell_id": "C10052",
+  "law_id": "NRS-484B-270-3",
+  "actor": "motor_vehicle_driver",
+  "statutory_branch": "exception_a_entering_or_exiting_alley_or_driveway",
+  "controlled_comparison": "near alley turn versus matched away-from-alley crossing",
+  "synthetic_crossing_proof_sha256": "a6c2ab2d79b523e7d157e8f08b59f132545a7076797dd4f1dd9fe37884c506f0",
+  "candidates": [
+    {
+      "id": "primary",
+      "native_parameters": {
+        "approach_start_x_m": -45.0,
+        "turn_speed_mps": 2.5,
+        "turn_radius_m": 5.0,
+        "camera_profile": "standard"
+      },
+      "route_source": "native/alley_geometry.py",
+      "source_sha256": {
+        "alley_geometry.py": "766da0fe092bfa5230a868f86c0da561d299f18eb64a226c5e9e4e3fbdee8ccc",
+        "alley_engineering.py": "c1492ae9c33d46086cc67595ea1123a77d42d82c760d3a739fce9d3db101e3b1",
+        "measure_alley_transition.py": "ca7f7ce6c233b37c16b8d9f22d6b3e7ac5ef2d35f08baa9ef659d82ae0dfb4cc",
+        "measure_alley_triggers.py": "bbcad0d9074b097bcefdbd5a011c0200e0f568dcfc1982e821360bc99e3d9102",
+        "alley_runner.py": "b7d064fd0e3fa5ee5b52209e659eddc4dcdb5331f4cb4e0d0554eff45abbf88e",
+        "alley-native-config.json": "c61fc9c31f4942ccc9c7fbdeb46d81c9be29d822ba638e5bd675f9409f498ea0"
+      },
+      "status": "runner_cpu_preflight_only"
+    },
+    {
+      "id": "fallback1",
+      "native_parameters": {
+        "approach_start_x_m": -55.0,
+        "turn_speed_mps": 2.5,
+        "turn_radius_m": 5.0,
+        "camera_profile": "standard"
+      },
+      "route_source": "native/alley_geometry.py",
+      "source_sha256": {
+        "alley_geometry.py": "766da0fe092bfa5230a868f86c0da561d299f18eb64a226c5e9e4e3fbdee8ccc",
+        "alley_engineering.py": "c1492ae9c33d46086cc67595ea1123a77d42d82c760d3a739fce9d3db101e3b1",
+        "measure_alley_transition.py": "ca7f7ce6c233b37c16b8d9f22d6b3e7ac5ef2d35f08baa9ef659d82ae0dfb4cc",
+        "measure_alley_triggers.py": "bbcad0d9074b097bcefdbd5a011c0200e0f568dcfc1982e821360bc99e3d9102",
+        "alley_runner.py": "b7d064fd0e3fa5ee5b52209e659eddc4dcdb5331f4cb4e0d0554eff45abbf88e",
+        "alley-native-config.json": "c61fc9c31f4942ccc9c7fbdeb46d81c9be29d822ba638e5bd675f9409f498ea0"
+      },
+      "status": "runner_cpu_preflight_only",
+      "measured_trigger": {
+        "source": "original Native pose and authored turn station",
+        "metric": "approach runway before turn (m)",
+        "failure_condition": "measured runway < 35 m",
+        "changed_knobs": [
+          "approach start x -45 m to -55 m"
+        ]
+      },
+      "synthetic_trigger_proof_sha256": "ab0875833552cceabd2ae27666233f92dda64f52c69740ec73b2566835141b74"
+    },
+    {
+      "id": "fallback2",
+      "native_parameters": {
+        "approach_start_x_m": -45.0,
+        "turn_speed_mps": 1.8,
+        "turn_radius_m": 5.0,
+        "camera_profile": "standard"
+      },
+      "route_source": "native/alley_geometry.py",
+      "source_sha256": {
+        "alley_geometry.py": "766da0fe092bfa5230a868f86c0da561d299f18eb64a226c5e9e4e3fbdee8ccc",
+        "alley_engineering.py": "c1492ae9c33d46086cc67595ea1123a77d42d82c760d3a739fce9d3db101e3b1",
+        "measure_alley_transition.py": "ca7f7ce6c233b37c16b8d9f22d6b3e7ac5ef2d35f08baa9ef659d82ae0dfb4cc",
+        "measure_alley_triggers.py": "bbcad0d9074b097bcefdbd5a011c0200e0f568dcfc1982e821360bc99e3d9102",
+        "alley_runner.py": "b7d064fd0e3fa5ee5b52209e659eddc4dcdb5331f4cb4e0d0554eff45abbf88e",
+        "alley-native-config.json": "c61fc9c31f4942ccc9c7fbdeb46d81c9be29d822ba638e5bd675f9409f498ea0"
+      },
+      "status": "runner_cpu_preflight_only",
+      "measured_trigger": {
+        "source": "original Native turn velocity and route radius",
+        "metric": "peak v squared / radius (m/s2) during turn",
+        "failure_condition": "measured lateral acceleration proxy > 1.5 m/s2",
+        "changed_knobs": [
+          "turn target speed 2.5 to 1.8 m/s"
+        ]
+      },
+      "synthetic_trigger_proof_sha256": "ab0875833552cceabd2ae27666233f92dda64f52c69740ec73b2566835141b74"
+    },
+    {
+      "id": "fallback3",
+      "native_parameters": {
+        "approach_start_x_m": -45.0,
+        "turn_speed_mps": 2.5,
+        "turn_radius_m": 5.0,
+        "camera_profile": "wide_alley_view"
+      },
+      "route_source": "native/alley_geometry.py",
+      "source_sha256": {
+        "alley_geometry.py": "766da0fe092bfa5230a868f86c0da561d299f18eb64a226c5e9e4e3fbdee8ccc",
+        "alley_engineering.py": "c1492ae9c33d46086cc67595ea1123a77d42d82c760d3a739fce9d3db101e3b1",
+        "measure_alley_transition.py": "ca7f7ce6c233b37c16b8d9f22d6b3e7ac5ef2d35f08baa9ef659d82ae0dfb4cc",
+        "measure_alley_triggers.py": "bbcad0d9074b097bcefdbd5a011c0200e0f568dcfc1982e821360bc99e3d9102",
+        "alley_runner.py": "b7d064fd0e3fa5ee5b52209e659eddc4dcdb5331f4cb4e0d0554eff45abbf88e",
+        "alley-native-config.json": "c61fc9c31f4942ccc9c7fbdeb46d81c9be29d822ba638e5bd675f9409f498ea0"
+      },
+      "status": "runner_cpu_preflight_only",
+      "measured_trigger": {
+        "source": "original facility and alley camera frames joined to Native turn interval",
+        "metric": "visible turn frames / all turn frames",
+        "failure_condition": "measured visible fraction < 0.95",
+        "changed_knobs": [
+          "facility camera to wide elevated alley view"
+        ]
+      },
+      "synthetic_trigger_proof_sha256": "ab0875833552cceabd2ae27666233f92dda64f52c69740ec73b2566835141b74"
+    }
+  ],
+  "selected": false,
+  "ready": false,
+  "native_execution_proven": false,
+  "exact_offline_proven": false,
+  "portable_compatibility_proven": false,
+  "physical_success_claimed": false
+}

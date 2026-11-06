@@ -1,21 +1,25 @@
-# NRS-484B-283-1a at C111256
+# NRS 484B.283(1)(a), C111256 CPU draft
 
-Actor: `motor_vehicle_driver`. Frozen cell: `intersection` / `travel` / `crosswalk`.
+Actor: `motor_vehicle_driver`; frozen cell: intersection / travel / crosswalk. The exact frozen source and case bindings are in `case-plan.json`; seven source-topic branches are inventoried in `statutory-review.json` and remain pending in the shared matrix.
 
-Exact statutory source: NRS 484B.283(1)(a); with 484B.283(4). Source text and hash are in `case-plan.json`. Historical summary status: `recovered_requires_source_review`.
+The Native proposal authors a marked uncontrolled crosswalk, northbound ego route, directional-half pedestrian crossing, capture channels and four-candidate engineering plan. `witness_1` yields before the ego-half crossing; `witness_2` overlaps the pedestrian conflict. `exception_1_1` and `exception_1_2` share ego/pedestrian trajectories and vary only a synthetic blind-person/white-cane declaration. This declaration is not a physical cane or legal eligibility proof.
 
-Selected witness: Crosswalk crossing on ego's highway half.. Planned comparison variable: `crosswalk_pedestrian_yield`. Requests: driver waits for pedestrian occupying the governed highway half; driver proceeds through pedestrian conflict while crossing remains active. These are proposed targets, never measured behavior or legal verdicts.
+The primary plus three distinct fallbacks change lookahead after measured cross-track error >0.45 m, increase yield-clearance margin after measured clearance <1 s, and widen overview FOV after measured body/crosswalk pixel margin <40 px. Trigger values and exact source hashes are bound in `native/engineering-plan.json`.
 
-Activation to verify: official traffic-control devices are not in place or not in operation at the crossing; a pedestrian is crossing the highway within a crosswalk; the pedestrian is on the half of the highway the subject travels on or is turning onto, or is approaching so closely from the other half as to be in danger.
+Proofs: 5 Native unit tests; independent Native CPU and statutory audits; 480-frame saved processing for all four cases with four decoded videos each and missing-road-geometry negatives; 16/16 exact pinned offline bundles; 16/16 synthetic v1 positive/negative portable package diagnostics; independent package and controlled comparison audits; four case measurement contracts validated against selected source dispositions and finalizer methods. These are CPU synthetic diagnostics only.
 
-Timing to retain: the yield is owed while the pedestrian is in the protected half and until the conflict passes; the pedestrian completes the crossing of the subject's path first.
+Audit hashes:
+- `draft-execution-manifest.json` SHA-256 `11a4a47ad2e7d3fe4ed23c9d520834bdb5088e06fdf409c2648d99dac155f8c3`
+- `draft-offline-summary.json` SHA-256 `d8e5d0530f43258ecc3af3fc0f66bbc71ceb2d22747895395f05b54416fe7595`
+- `package-probes-summary.json` SHA-256 `299efd65eabcb8bbb7402a11f827f349be725eef5a6674871a0897f65eafca23`
+- `package-probes-audit.json` SHA-256 `d244d79ddf10577c1683051224c8546305e7ef94e19de8655adbdc7304912d05`
+- `synthetic-comparison-audit.json` SHA-256 `e3847cefbaec014caafc5317dace8bc627c2f3ece44cd390daf99245a9e80ac1`
+- `native/cpu-audit.json` SHA-256 `837dc75bc180473c643e1bd61ff4153c0fcfc8b5d45af78d7814aad2d63a87e7`
+- `native/saved-fixture-proof.log` SHA-256 `a44c798cffc53aa00571429f406b453090feda677c1950ad56d927b2d3f9c1e6`
+- `statutory-review.json` SHA-256 `bc5debb1fc5e468ca9b2856c916791fccd54492e4c5987ec6161328259650d78`
 
-Exceptions and numeric alternatives planned: the crossing rules the text cites for pedestrians outside crosswalks, the white-cane rule, and the school-crossing rule govern instead where they apply.
+Unclaimed source alternatives: cited NRS 484B.287 crossing restrictions, NRS 484B.350 school pedestrian lane, opposite-half near-danger crossing and one-way highway-half definition. Exact NRS 484B.290 physical cane/eligibility construction, original camera pixels and real pedestrian behavior are also unverified.
 
-Unresolved judgment or rule composition: 'in danger' is a judgement element bounding the approach from the far half. No judgment bound is set by this plan.
+Status: blocked, unselected, zero delivery cases prepared, zero accepted recordings. Strict selected v2 CPU delivery proof, independent selected delivery audit, canonical selected commands and ordered GPU queue row remain to be built. The physical white-cane and eligibility gap is worker-owned; the synthetic declaration does not resolve it.
 
-Accepted membership: 0 membership rows; exact source-hashed equivalence and reuse are unverified.
-
-Blocker: No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.
-
-Resume: reconcile each branch against the exact law and cited provisions; establish compatible Native construction and measurement channels; produce four distinct candidate plans and exact offline, compatibility, saved-only, semantic and audit proofs; then evaluate readiness.
+Reproduce from this assignment directory: `python3.11 native/test_native.py` from `native/`; `python3.11 build-draft-candidates.py`; `python3.11 run-draft-offline.py`; `python3.11 saved-fixture-proof.py`; `python3.11 run-package-probes.py`; then `python3.11 audit-native-cpu.py`, `python3.11 audit-statutory-review.py`, `python3.11 audit-package-probes.py`, `python3.11 audit-synthetic-comparison.py`. The Native runner is a proposal; no CARLA run was made.

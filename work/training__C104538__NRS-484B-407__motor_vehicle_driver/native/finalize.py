@@ -99,9 +99,9 @@ def finalize(attempt,output):
                                     for index,row in enumerate(source)):
             raise ValueError('Original observation channel join differs: '+name)
         recording_evidence.append({'name':name,'unit':'structured','reference':reference})
-    target={'target':'two-direction original vehicle-body visibility within 500 ft',
-            'requested':500,'measured':None,
-            'method':'independent driver-eye/body/pixel audit required; saved geometry alone insufficient',
+    target={'target':'independently verified two-direction original-pixel frames within 500 ft',
+            'requested':count,'measured':0,
+            'method':'count of independently verified original-pixel frame pairs; no such audit is present in this saved source',
             'tolerance':0,'matched':False,'physical_cause_confirmed':False,
             'cause_evidence':['driver_eye_rays.jsonl','video_frames.jsonl',
                               'reference_left.mkv','reference_right.mkv']}

@@ -1,0 +1,65 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver",
+  "runtime_manifest_sha256": "391baee19ccece687c5632aa2cc64ba3b958c8b492045b30e4bfc4caa131c235",
+  "status": "draft_not_selected",
+  "cases": [
+    {
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_c_alley_entry",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Runway, turn dynamics, camera visibility and statutory exception observations need original Native evidence"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_alley.py",
+        "output_schema": "c10052-alley-saved-diagnostic-v1"
+      },
+      "measurement_contract": "draft-alley-measurement-contract.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-alley-candidates/probe_c_alley_entry/fallback1/construction.json",
+          "construction_sha256": "7bae32ac1229007fb7566b872c649b2700d941be1b6c156d1114327a2a141d9f",
+          "trigger": {
+            "source": "original Native pose and authored turn station",
+            "metric": "approach runway before turn (m)",
+            "failure_condition": "measured runway < 35 m"
+          },
+          "changed_knobs": [
+            "approach start x -45 m to -55 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-alley-candidates/probe_c_alley_entry/fallback2/construction.json",
+          "construction_sha256": "166946244e5582040cb010dc2f02490783ecffd23e93f383a3f1cc9af3447908",
+          "trigger": {
+            "source": "original Native turn velocity and route radius",
+            "metric": "peak v squared / radius (m/s2) during turn",
+            "failure_condition": "measured lateral acceleration proxy > 1.5 m/s2"
+          },
+          "changed_knobs": [
+            "turn target speed 2.5 to 1.8 m/s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-alley-candidates/probe_c_alley_entry/fallback3/construction.json",
+          "construction_sha256": "aef227520cda334b68d35640bbd3cad94905277d585660865ede44b7280fcce5",
+          "trigger": {
+            "source": "original facility and alley camera frames joined to Native turn interval",
+            "metric": "visible turn frames / all turn frames",
+            "failure_condition": "measured visible fraction < 0.95"
+          },
+          "changed_knobs": [
+            "facility camera to wide elevated alley view"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-alley-candidates/probe_c_alley_entry/primary/construction.json",
+      "construction_sha256": "555298974214a6eced3cdf4e5d99cf7402931302dad807a298adda404e5efcd6"
+    }
+  ]
+}

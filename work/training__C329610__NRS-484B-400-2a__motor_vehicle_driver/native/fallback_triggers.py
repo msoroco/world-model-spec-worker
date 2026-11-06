@@ -1,4 +1,5 @@
 """Evaluate candidate triggers from saved source measurements, without selection."""
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -14,13 +15,23 @@ def rows(path):
     return result
 
 
-def evaluate(samples_path, route_audit_path, pixel_audit_path, requested_offset_m):
+def digest(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def evaluate(samples_path, geometry_path, route_audit_path, pixel_audit_path,
+             requested_offset_m):
     samples = rows(samples_path)
+    geometry = json.loads(Path(geometry_path).read_text())
     route = json.loads(Path(route_audit_path).read_text())
     pixels = json.loads(Path(pixel_audit_path).read_text())
     if route.get("source_kind") != "native_map_readback" or \
        pixels.get("source_kind") != "original_camera_pixels":
         raise ValueError("Trigger audits need declared original-source kinds")
+    if (route.get("native_samples_sha256") != digest(samples_path) or
+        route.get("road_geometry_sha256") != digest(geometry_path) or
+        route.get("native_map_sha256") != geometry.get("native_map_sha256")):
+        raise ValueError("Route audit source hash mismatch")
     if not isinstance(route.get("connected_lane_link"), bool):
         raise ValueError("Missing Native lane-link observation")
     approach = [r for r in samples if -35 <= float(r["native_center_xy_m"][0]) <= -10]

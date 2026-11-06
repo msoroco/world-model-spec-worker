@@ -7,7 +7,7 @@ import subprocess
 
 ROOT=Path(__file__).resolve().parent
 REPO=ROOT.parents[1]
-PARENT=REPO/'.runtime-work/c104538/full-saved-v2'
+PARENT=REPO/'.runtime-work/c104538/full-saved-v3'
 CAMERAS=('overview','reference_left','reference_right','ego')
 CHANNELS=('drv.u_turn','st.curvature','st.grade','st.crest',
           'st.sight_distance','rel.oncoming','drv.approaching','kin.position')
@@ -21,7 +21,7 @@ def read(path):return json.loads(Path(path).read_text())
 
 def audit():
     summary=read(ROOT/'full-saved-summary.json')
-    assert summary['format']=='c104538-full-duration-synthetic-saved-v2'
+    assert summary['format']=='c104538-full-duration-synthetic-saved-v3'
     assert summary['positive_count']==3 and summary['negative_count']==6
     assert summary['frames_per_case']==480 and summary['recording_accepted'] is False
     seen=set();probe=REPO/'.runtime-work/linux_arm64/ffprobe'
@@ -45,6 +45,7 @@ def audit():
         assert result['provenance_kind']=='synthetic'
         assert not any((result['accepted'],result['legal_verdict_claimed'],
                         result['setup_confirmed'],result['target_checks'][0]['matched']))
+        assert result['target_checks'][0]['measured']==0
         measured=result['measured_values']
         assert measured['original_frames']==480
         assert measured['actual_body_visibility_proven'] is False

@@ -10,7 +10,9 @@ ASSIGNMENT = HERE.name
 NAMES = ('primary', 'fallback1', 'fallback2', 'fallback3')
 RUNTIME_MANIFEST = '391baee19ccece687c5632aa2cc64ba3b958c8b492045b30e4bfc4caa131c235'
 SOURCES = ('runner.py', 'geometry.py', 'controller.py', 'engineering.py',
-           'cameras.py', 'measure_facility.py', 'finalize.py')
+           'cameras.py', 'measure_facility.py', 'measure_entry.py',
+           'measure_park_act.py',
+           'fallback_triggers.py', 'finalize.py')
 
 
 def sha(path):

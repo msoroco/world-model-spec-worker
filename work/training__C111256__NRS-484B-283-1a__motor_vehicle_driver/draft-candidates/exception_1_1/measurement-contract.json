@@ -1,0 +1,64 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "case_id": "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__exception_1_1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.283(1)(a); with 484B.283(4)",
+      "output_key": "cited_exception_condition",
+      "method": "measure_cited_exception",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484B.283(1)(a); with 484B.283(4)",
+      "output_key": "uncontrolled_crosswalk_yield",
+      "method": "measure_crosswalk_yield",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "text-2",
+      "source": "NRS 484B.283(1)(a); with 484B.283(4)",
+      "output_key": "directional_highway_half",
+      "method": "measure_directional_half",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "ego_half_crosswalk_witness",
+      "method": "measure_witness_branch",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "road_geometry.json"
+    ],
+    "error_contains": "Missing required source: road_geometry.json"
+  }
+}

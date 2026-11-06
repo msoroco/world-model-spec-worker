@@ -11,6 +11,7 @@ import json
 import math
 from pathlib import Path
 import queue
+import shutil
 import subprocess
 import sys
 import traceback
@@ -19,6 +20,7 @@ from cameras import camera_plan
 from controller import EngineeringKnobs, PathController
 from engineering import parameters
 from geometry import CASE_PLACEMENTS, check as geometry_check, open_drive, route
+from native_route_link import survey as survey_lane_link, full_body_destination_exit
 
 ROOT = Path(__file__).resolve().parent
 
@@ -80,6 +82,7 @@ def map_survey(carla, mapping, native_hash):
               "destination_forward":(1.75,-30,4,[0,-1]),
               "destination_opposing":(-1.75,-30,4,[0,1])}
     observed={}
+    approach_waypoint=None
     for name,(x,y,road_id,expected) in requests.items():
         wp=mapping.get_waypoint(carla.Location(x=x,y=y,z=.2),project_to_road=False,lane_type=carla.LaneType.Driving)
         if wp is None or wp.road_id!=road_id:
@@ -88,7 +91,10 @@ def map_survey(carla, mapping, native_hash):
         if sum(a*b for a,b in zip(vector,expected))<.98:
             raise RuntimeError("Native lane direction differs from authored road: "+name)
         observed[name]=vector
+        if name=="approach_forward":approach_waypoint=wp
+    lane_link=survey_lane_link(approach_waypoint)
     return {"native_map_sha256":native_hash,"road_directions_native":observed,
+            "native_lane_link_readback":lane_link,
             "approach_centerline_point_native_m":[0,0],
             "approach_right_normal_native":[0,1],"right_half_width_m":7,
             "intersection_entry_point_native_m":[-7,0],
@@ -116,6 +122,8 @@ def execute(config, output, host, port):
     import numpy as np
     from pipeline_capture import PipelineCapture
     from worker_exchange.world_restore import snapshot,restore
+    from worker_exchange.media import compose_four_views
+    from worker_exchange.native_output import seal_capture
     check(config)
     output=Path(output).resolve()
     if not output.is_dir() or not (output/"config.json").is_file():
@@ -128,6 +136,7 @@ def execute(config, output, host, port):
         raise RuntimeError("Requires exclusive idle asynchronous world ownership")
     owned=[];encoders={};encoder_logs={};camera_queues={};channels={}
     capture=None;changed=False;error=None;frames=0;restored=None
+    encoder_exit_codes={}
     try:
         world=client.generate_opendrive_world(open_drive(),carla.OpendriveGenerationParameters(
             vertex_distance=.25,max_road_length=50,wall_height=0,additional_width=0,
@@ -234,17 +243,35 @@ def execute(config, output, host, port):
                 frames+=1
         if frames!=config["duration_s"]*config["rate_hz"]:
             raise RuntimeError("Original frame count incomplete")
+        sample_path=output/"native_samples.jsonl"
+        geometry_path=output/"road_geometry.json"
+        rows=[json.loads(line) for line in sample_path.read_text().splitlines() if line.strip()]
+        if len(rows)!=frames:raise RuntimeError("Native route audit frame count differs")
+        link=survey["native_lane_link_readback"]
+        write_new(output/"route_audit.json",{
+            "source_kind":"native_map_readback",
+            "connected_lane_link":link["connected_lane_link"],
+            "visited_waypoints":link["visited_waypoints"],
+            "full_body_destination_exit_observed_by_24s":full_body_destination_exit(rows,survey),
+            "native_map_sha256":native_hash,
+            "road_geometry_sha256":hashlib.sha256(geometry_path.read_bytes()).hexdigest(),
+            "native_samples_sha256":hashlib.sha256(sample_path.read_bytes()).hexdigest(),
+            "physical_success_claimed":False})
     except BaseException as exc:
         error={"type":type(exc).__name__,"message":str(exc),"traceback":traceback.format_exc()}
     finally:
         for stream in channels.values():stream.close()
+        if error is None:
+            try:shutil.copytree(output/"channels",output/"source_channels")
+            except BaseException as exc:error={"source_channel_copy_error":str(exc)}
         if capture is not None:
             try:capture.close(confirmed=error is None)
             except BaseException as exc:error=error or {"capture_close_error":str(exc)}
         for name,encoder in encoders.items():
             try:
                 encoder.stdin.close()
-                if encoder.wait(timeout=180)!=0:raise RuntimeError("Lossless encoder failed: "+name)
+                encoder_exit_codes[name]=encoder.wait(timeout=180)
+                if encoder_exit_codes[name]!=0:raise RuntimeError("Lossless encoder failed: "+name)
             except BaseException as exc:error=error or {"encoder_error":str(exc)}
             encoder_logs[name].close()
         for actor in reversed(owned):
@@ -255,12 +282,29 @@ def execute(config, output, host, port):
         if changed:
             try:restored=restore(client,saved)
             except BaseException as exc:error=error or {"world_restore_error":str(exc)}
+        if error is None and frames==480:
+            try:
+                sources={name:output/(name+".mkv") for name in
+                    ("overview","approach","reference_corner","driver_reference")}
+                composed=compose_four_views(sources,output/"video_frames.jsonl",output/"raw.mkv")
+                write_new(output/"four-view-receipt.json",composed)
+            except BaseException as exc:error={"four_view_composition_error":str(exc)}
+        if error is None and frames==480:
+            try:
+                seal_capture(output,frames=frames,restoration=restored,errors=[],
+                    encoder_exit_codes=encoder_exit_codes,
+                    context={"case_id":config["case_id"],"candidate_id":config["candidate_id"],
+                             "physical_acceptance_claimed":False})
+            except BaseException as exc:error={"capture_seal_error":str(exc)}
         write_new(output/"native-capture-report.json",{
             "case_id":config["case_id"],"candidate_id":config["candidate_id"],
             "frames":frames,"expected_frames":config["duration_s"]*config["rate_hz"],
             "restoration":restored,"error":error,"accepted":False,
             "required_saved_checks":["actual original pixels","Native body and lane joins",
                 "exact full video/trace frame mapping","measured turn completion","independent audit"]})
+        write_new(output/"native-run-status.json",{
+            "errors":[] if error is None else [error],"frames":frames,
+            "restoration":restored,"accepted":False})
     if error:raise RuntimeError("Native attempt failed; see native-capture-report.json: "+str(error))
 
 

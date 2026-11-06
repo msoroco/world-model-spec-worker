@@ -1,4 +1,4 @@
-"""Exercise all eight exact synthetic positive/negative v1 packages."""
+"""Exercise all sixteen exact synthetic positive/negative v1 packages."""
 from __future__ import annotations
 import hashlib
 import json
@@ -16,7 +16,7 @@ def run():
     env=dict(os.environ)
     env['LD_LIBRARY_PATH']=str(ROOT/'.runtime-work/geos-wheel/shapely.libs')+os.pathsep+env.get('LD_LIBRARY_PATH','')
     results=[]
-    for case in ('witness_1','witness_2'):
+    for case in ('witness_1','witness_2','exception_1_1','exception_1_2'):
         for candidate in ('primary','fallback1','fallback2','fallback3'):
             log=HERE/'native'/f'package-{case}-{candidate}.log'
             command=[str(PYTHON),str(HERE/'probe-package.py'),
@@ -35,6 +35,6 @@ def run():
             break
     (HERE/'package-probes-summary.json').write_text(json.dumps({
         'format':'c111256-unselected-v1-package-diagnostics','results':results},indent=2)+'\n')
-    if len(results)!=8 or any(item['exit_code'] for item in results):raise SystemExit(1)
+    if len(results)!=16 or any(item['exit_code'] for item in results):raise SystemExit(1)
 
 if __name__=='__main__':run()

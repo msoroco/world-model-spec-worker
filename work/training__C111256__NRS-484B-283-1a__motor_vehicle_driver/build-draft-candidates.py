@@ -1,4 +1,4 @@
-"""Build eight exact unselected Native bundles for the right-turn pair."""
+"""Build sixteen exact unselected Native bundles for two crosswalk comparisons."""
 from __future__ import annotations
 import hashlib
 import json
@@ -36,10 +36,10 @@ def build():
               'cases':[]}
     dispositions=json.loads((FOLDER/'case-plan.json').read_text())['requirement_dispositions']
     selected=(0,1,2,3)
-    methods=('measure_signal','measure_right_turn_permission',
-             'measure_turn_yield','measure_witness_branch')
-    outputs=('circular_green_activation','right_turn_no_prohibition',
-             'lawful_user_yield','right_turn_green_witness')
+    methods=('measure_cited_exception','measure_crosswalk_yield',
+             'measure_directional_half','measure_witness_branch')
+    outputs=('cited_exception_condition','uncontrolled_crosswalk_yield',
+             'directional_highway_half','ego_half_crosswalk_witness')
     proposals=[]
     for case in eng.CASES:
         case_id=FOLDER.name+'__'+case
@@ -75,9 +75,10 @@ def build():
             construction={'case_id':case_id,'cell_id':'C111256','law_id':'NRS-484B-283-1a',
                           'actor':'motor_vehicle_driver','entrypoint':'runner.py','files':files,
                           'recording_description':recording,
-                          'mechanisms':['authored circular-green right-turn OpenDRIVE and no-turn-sign survey',
-                                        'observed-pose vehicle controller with controlled lawful-user yield timing',
-                                        'pedestrian and cross-traffic actors with four synchronized lossless cameras'],
+                          'mechanisms':['authored uncontrolled marked-crosswalk straight travel route',
+                                        'observed-pose controller with pedestrian ego-half conflict and yield timing',
+                                        'declared blind-white-cane exception contrast pending physical verification',
+                                        'pedestrian actor and four synchronized lossless cameras'],
                           'termination_rules':['exact 480 original frames','capture and restoration errors retained'],
                           'status':'unselected_cpu_draft'}
             path=FOLDER/'draft-candidates'/case/candidate/'construction.json'

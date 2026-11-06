@@ -33,6 +33,7 @@ class FinalizerTest(unittest.TestCase):
             self.assertEqual(report['format'],'c104538-saved-analysis-v1')
             self.assertFalse(result['setup_confirmed'])
             self.assertFalse(result['target_checks'][0]['matched'])
+            self.assertEqual(result['target_checks'][0]['measured'], 0)
             self.assertFalse(result['accepted'])
             self.assertFalse(result['legal_verdict_claimed'])
             self.assertEqual(len(result['recording_evidence']),8)

@@ -28,7 +28,7 @@ def write_new(path: Path, value: object):
 def check(config: dict) -> dict:
     suffix=config.get('case_suffix')
     candidate=config.get('candidate_id')
-    if suffix not in ('witness_1','witness_2') or candidate not in ('primary','fallback1','fallback2','fallback3'):
+    if suffix not in ('witness_1','witness_2','exception_1_1','exception_1_2') or candidate not in ('primary','fallback1','fallback2','fallback3'):
         raise ValueError('Unknown exact case or candidate')
     if config.get('case_id')!='training__C111256__NRS-484B-283-1a__motor_vehicle_driver__'+suffix:
         raise ValueError('Case identity differs')
@@ -68,10 +68,10 @@ def camera_transform(carla,spec):
     return carla.Transform(carla.Location(x=x,y=y,z=z),carla.Rotation(yaw=yaw,pitch=pitch))
 
 def survey(carla,mapping,native_hash):
-    requests={'approach_right':(1.75,-30,1),
-              'approach_left':(-1.75,-30,1),
-              'destination_right':(30,-1.75,2),
-              'destination_left':(30,1.75,2)}
+    requests={'approach_ego_half':(1.75,-30,1),
+              'approach_opposite_half':(-1.75,-30,1),
+              'departure_ego_half':(1.75,30,4),
+              'departure_opposite_half':(-1.75,30,4)}
     observed={}
     for name,(x,y,road) in requests.items():
         waypoint=mapping.get_waypoint(carla.Location(x=x,y=y,z=.2),project_to_road=False,
@@ -81,11 +81,12 @@ def survey(carla,mapping,native_hash):
         vec=waypoint.transform.get_forward_vector()
         observed[name]={'road_id':waypoint.road_id,'lane_id':waypoint.lane_id,
                         'forward_xy':[vec.x,vec.y]}
-    if observed['approach_right']['lane_id']!=-1 or observed['destination_right']['lane_id']!=-1:
-        raise RuntimeError('Extreme-right Native lane mapping differs')
+    if observed['approach_ego_half']['lane_id']!=-1 or observed['departure_ego_half']['lane_id']!=-1:
+        raise RuntimeError('Ego directional highway-half mapping differs')
     return {'native_map_sha256':native_hash,'lanes':observed,
             'stop_line_y_m':-14.0,'nearest_crosswalk_y_m':-11.0,
-            'destination_crosswalk_x_m':10.0,
+            'crosswalk_x_range_m':[0,3.5],
+            'official_signal_actors_present':False,
             'authored_reference_only':True,'pixels_verified':False}
 
 def execute(config: dict,output: Path,host: str,port: int):
@@ -118,18 +119,12 @@ def execute(config: dict,output: Path,host: str,port: int):
         native_hash=hashlib.sha256(native_xml.encode()).hexdigest()
         readback=survey(carla,mapping,native_hash)
         traffic_lights=list(world.get_actors().filter('traffic.traffic_light*'))
-        if not traffic_lights:
-            raise RuntimeError('Authored OpenDRIVE signal has no Native traffic-light actor')
-        signal_actor=min(traffic_lights,key=lambda actor:math.dist(
-            (actor.get_location().x,actor.get_location().y),(0,-13)))
-        signal_actor.set_state(carla.TrafficLightState.Green)
-        signal_actor.freeze(True)
-        readback['signal_actor_id']=signal_actor.id
-        readback['turn_prohibition_survey']={'authored_signs':[],
-            'native_traffic_sign_actors':[a.type_id for a in world.get_actors()
-                if a.type_id.startswith('traffic.') and 'traffic_light' not in a.type_id]}
+        if traffic_lights:
+            raise RuntimeError('Uncontrolled crosswalk has unexpected Native traffic-light actor')
+        if list(world.get_actors().filter('traffic.stop*')):
+            raise RuntimeError('Uncontrolled crosswalk has unexpected stop device')
         write_new(output/'road_geometry.json',readback)
-        write_new(output/'context.json',{'surveyed_right_turn':readback})
+        write_new(output/'context.json',{'surveyed_crosswalk':readback})
         library=world.get_blueprint_library()
         blueprint=library.find('vehicle.lincoln.mkz_2020')
         blueprint.set_attribute('role_name','c111256_ego')
@@ -145,11 +140,11 @@ def execute(config: dict,output: Path,host: str,port: int):
         knobs=config['knobs']
         controller=PathController(route(),wheelbase,steer,EngineeringKnobs(
             lookahead_base_m=knobs['route_tracking_lookahead_m']))
-        # A destination-crosswalk walker is an actor proposal. Observed conflict
-        # occupancy and clearance are measured from saved actor history later.
+        # Pedestrian crosses the marked highway-half crosswalk. White-cane
+        # visual and eligibility are separate later physical verification.
         walker_bp=next(bp for bp in library.filter('walker.pedestrian.*'))
         walker=world.spawn_actor(walker_bp,carla.Transform(
-            carla.Location(x=10,y=5,z=.4),carla.Rotation(yaw=-90)))
+            carla.Location(x=-2.5,y=-11,z=.4),carla.Rotation(yaw=0)))
         owned.append(walker)
         traffic_bp=library.find('vehicle.tesla.model3')
         traffic_bp.set_attribute('role_name','c111256_cross_traffic')
@@ -163,7 +158,8 @@ def execute(config: dict,output: Path,host: str,port: int):
             'walker_blueprint':walker.type_id,'cross_traffic_blueprint':cross_traffic.type_id,
             'wheelbase_m':wheelbase,'max_steer_deg':steer,
             'initial_body_xy_m':body_xy(ego),'knobs':knobs,
-            'authored_intent':'circular-green right turn with controlled lawful-user yield timing',
+            'authored_intent':'uncontrolled marked crosswalk, ego-half pedestrian yield and cited white-cane exception contrast',
+            'white_cane_visual_prop_physically_verified':False,
             'physical_completion_claimed':False})
         for spec in camera_plan(config['candidate_id']):
             bp=library.find('sensor.camera.rgb')
@@ -197,7 +193,7 @@ def execute(config: dict,output: Path,host: str,port: int):
                 command=controller.step(position_xy_m=(pose.location.x,pose.location.y),
                     yaw_rad=math.radians(pose.rotation.yaw),speed_mps=speed,dt_s=.05)
                 pedestrian=walker.get_transform().location
-                occupied=8<=pedestrian.x<=12 and -4<=pedestrian.y<=4
+                occupied=0<=pedestrian.x<=3.5 and -12<=pedestrian.y<=-10
                 traffic_pose=cross_traffic.get_transform().location
                 traffic_occupied=-8<=traffic_pose.x<=8 and -4<=traffic_pose.y<=4
                 if 105<=index<=190:
@@ -205,18 +201,18 @@ def execute(config: dict,output: Path,host: str,port: int):
                 else:
                     cross_traffic.apply_control(carla.VehicleControl(throttle=0,brake=1,hand_brake=False))
                 if 115<=index<=195:
-                    walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(0,-1,0),speed=3.0))
+                    walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(1,0,0),speed=3.0))
                 else:
                     walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(0,0,0),speed=0.0))
-                release_frame=170 if config['case_suffix']=='witness_1' else 135
+                release_frame=135 if config['case_suffix']=='witness_2' else 170
                 if index<release_frame and pose.location.y>-20:
                     command.update(throttle=0.0,brake=1.0,hand_brake=speed<.05)
-                yield_needed=(config['case_suffix']=='witness_1' and
-                    pose.location.y>-10 and pose.location.x<10 and (occupied or traffic_occupied))
+                yield_needed=(config['case_suffix']!='witness_2' and
+                    pose.location.y>-18 and pose.location.y<-10 and occupied)
                 if yield_needed:
                     command.update(throttle=0.0,brake=1.0,hand_brake=speed<.05)
                     yield_clear=0
-                elif config['case_suffix']=='witness_1' and pose.location.y>-10 and pose.location.x<10:
+                elif config['case_suffix']!='witness_2' and pose.location.y>-18 and pose.location.y<-10:
                     yield_clear+=1
                     if yield_clear<round(knobs['yield_clearance_margin_s']*20):
                         command.update(throttle=0.0,brake=1.0,hand_brake=speed<.05)
@@ -230,31 +226,38 @@ def execute(config: dict,output: Path,host: str,port: int):
                 sample={'time_s':time_s,'native_frame':frame,'native_center_xy_m':[pose.location.x,pose.location.y],
                         'native_yaw_deg':pose.rotation.yaw,'native_body_xy_m':body,'speed_mps':speed,
                         'walker_center_xy_m':[ped.x,ped.y],
-                        'walker_conflict_occupied':8<=ped.x<=12 and -4<=ped.y<=4,
+                        'walker_conflict_occupied':0<=ped.x<=3.5 and -12<=ped.y<=-10,
+                        'pedestrian_on_ego_highway_half':0<=ped.x<=3.5,
+                        'crosswalk_marked':True,
+                        'pedestrian_blind_declared':config['case_suffix']=='exception_1_2',
+                        'white_cane_declared':config['case_suffix']=='exception_1_2',
+                        'white_cane_visual_prop_physically_verified':False,
+                        'road_one_way':False,'ego_directional_lanes':[-1],
                         'cross_traffic_center_xy_m':[traffic_pose.x,traffic_pose.y],
                         'cross_traffic_conflict_occupied':-8<=traffic_pose.x<=8 and -4<=traffic_pose.y<=4,
                         'cross_traffic_actor_id':cross_traffic.id,
-                        'signal_state_observed':str(signal_actor.get_state()),
-                        'turn_prohibition_present':False,
-                        'ego_turn_entered':abs(pose.rotation.yaw-90)>5,
+                        'official_device_actors_present':False,
+                        'ego_crosswalk_entered':max(v[1] for v in body)>=-12,
                         'controller_request':command}
                 capture.capture(frame,time_s,extra={'c111256_native':sample})
                 native_file.write(json.dumps(sample,allow_nan=False)+'\n')
                 body_file.write(json.dumps({'frame':frame,'time_s':time_s,
                     'body_vertices_m':[[v.x,v.y,v.z] for v in ego.bounding_box.get_world_vertices(pose)]},
                     allow_nan=False)+'\n')
-                values={'dev.traffic_signal':{'authored_request':'circular_green',
-                                               'observed_state':sample['signal_state_observed'],
-                                               'native_actor_id':signal_actor.id},
+                values={'dev.traffic_signal':{'official_devices_present':False,
+                                               'native_actor_count':0},
                         'st.stop_line':readback['stop_line_y_m'],'st.crosswalk':readback['nearest_crosswalk_y_m'],
                         'drv.stopped':speed<.05,'kin.velocity':speed,
-                        'drv.extreme_lane':readback['lanes']['approach_right'],
+                        'drv.extreme_lane':readback['lanes']['approach_ego_half'],
                         'st.one_way_roadway':readback['lanes'],
                         'drv.yields_to':{'walker_xy_m':[ped.x,ped.y],
                                          'pedestrian_conflict_occupied':sample['walker_conflict_occupied'],
                                          'cross_traffic_xy_m':[traffic_pose.x,traffic_pose.y],
                                          'cross_traffic_conflict_occupied':sample['cross_traffic_conflict_occupied'],
                                          'cross_traffic_actor_id':cross_traffic.id},
+                        'crosswalk_exception':{'pedestrian_blind_declared':sample['pedestrian_blind_declared'],
+                            'white_cane_declared':sample['white_cane_declared'],
+                            'white_cane_visual_prop_physically_verified':False},
                         'native_body_pose_control':sample,
                         'camera_frame_join':{'native_frame':frame,'video_frame':index}}
                 for name,stream in channels.items():

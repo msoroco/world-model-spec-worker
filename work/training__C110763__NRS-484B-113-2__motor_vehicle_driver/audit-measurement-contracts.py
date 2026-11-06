@@ -24,7 +24,7 @@ def main():
         scratch = Path(proof["scratch"]); fixture = Path(proof["fixture"])
         report = json.loads((scratch / "output/analysis-report.json").read_text())
         values = verify_report(contract, report, fixture)
-        if values["reverse_motion_frames"]["value"] != 200 or \
+        if values["backing_intersection_relation"]["value"]["backing_frames"] != 200 or \
            (values["backing_intersection_relation"]["value"]["relation"]=="backing_into_intersection") is not \
            (suffix == "condition_b"):
             raise ValueError("Per-topic source-bound measured result differs")

@@ -1,4 +1,4 @@
-"""Pinned runtime offline proof for eight exact, unselected Native bundles."""
+"""Pinned runtime offline proof for sixteen exact, unselected Native bundles."""
 from __future__ import annotations
 import hashlib
 import json
@@ -17,13 +17,13 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def run():
     data=json.loads(MANIFEST.read_text())
-    if data['status']!='draft_not_selected' or len(data['cases'])!=2:
-        raise ValueError('Only the two-case unselected draft may run')
+    if data['status']!='draft_not_selected' or len(data['cases'])!=4:
+        raise ValueError('Only the four-case unselected draft may run')
     env=dict(os.environ)
     geos=ROOT/'.runtime-work/geos-wheel/shapely.libs'
     if geos.is_dir():
         env['LD_LIBRARY_PATH']=str(geos)+os.pathsep+env.get('LD_LIBRARY_PATH','')
-    scratch=Path(tempfile.mkdtemp(dir=ROOT/'.runtime-work',prefix='c111256-8c-offline-'))
+    scratch=Path(tempfile.mkdtemp(dir=ROOT/'.runtime-work',prefix='c111256-crosswalk-draft-'))
     receipts=[]
     for entry in data['cases']:
         case=entry['case_id'];suffix=case.split('__')[-1]

@@ -182,6 +182,9 @@ def execute(config,output,host,port):
         write_new(output/'native-construction-context.json',{
             'case_id':config['case_id'],'candidate_id':candidate,
             'authored_road_sha256':hashlib.sha256(xml.encode()).hexdigest(),
+            'authored_obstruction_sha256':hashlib.sha256(
+                (ROOT/'obstruction.json').read_bytes()).hexdigest()
+                if (ROOT/'obstruction.json').is_file() else None,
             'native_road_sha256':native_hash,
             'authored_limit_ft':OBSERVABILITY_LIMIT(suffix),
             'barrier_blueprint':barrier_bp.id,'barrier_inventory':barrier_inventory,

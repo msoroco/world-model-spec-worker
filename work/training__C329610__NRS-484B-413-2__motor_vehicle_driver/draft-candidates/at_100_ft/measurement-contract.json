@@ -1,0 +1,43 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "case_id": "training__C329610__NRS-484B-413-2__motor_vehicle_driver__at_100_ft",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "continuous_signal_distance_ft",
+      "method": "measure_signal_distance",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "weather_context",
+      "method": "measure_weather_context",
+      "value_type": "text",
+      "kind": "sourced_context",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native_samples.jsonl"
+    ],
+    "error_contains": "Missing required source: native_samples.jsonl"
+  },
+  "target_distance_ft": 100,
+  "area": "business_or_residential",
+  "rate_hz": 20,
+  "duration_s": 40,
+  "status": "unselected_contract_draft"
+}

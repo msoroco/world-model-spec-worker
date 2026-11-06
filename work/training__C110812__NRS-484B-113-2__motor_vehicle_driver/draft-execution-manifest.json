@@ -1,0 +1,134 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C110812__NRS-484B-113-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "0d9a74f44af88236ebed007ae6e020a134b420ad6fe8f2f87c8869184ebee555",
+  "status": "draft_not_selected",
+  "cases": [
+    {
+      "case_id": "training__C110812__NRS-484B-113-2__motor_vehicle_driver__false",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native reverse tracking, corner map readback and original pixels require physical observations"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110812-113-2-saved-analysis-v1"
+      },
+      "measurement_contract": "draft-candidates/condition_a/measurement-contract.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/condition_a/fallback1/construction.json",
+          "construction_sha256": "d64500dc36291e117c158b7db074f8a61c408f18a0055d32ee8e9b283bb88bce",
+          "trigger": {
+            "metric": "max_reverse_corner_heading_error_deg",
+            "op": ">",
+            "threshold": 12,
+            "source": "original Native pose and surveyed corner-route heading",
+            "failure_condition": "max_reverse_corner_heading_error_deg > 12"
+          },
+          "changed_knobs": [
+            "steering_gain"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/condition_a/fallback2/construction.json",
+          "construction_sha256": "cec5ee26fc1bec74a75604a180971fdb585c5ffeaf076cdb132829af9a258224",
+          "trigger": {
+            "metric": "reverse_endpoint_overshoot_m",
+            "op": ">",
+            "threshold": 0.2,
+            "source": "original Native center/body relative to route endpoint",
+            "failure_condition": "reverse_endpoint_overshoot_m > 0.2"
+          },
+          "changed_knobs": [
+            "brake_margin_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/condition_a/fallback3/construction.json",
+          "construction_sha256": "9a1f99421fc8eec158d685c9fadc0643655852f2083c0ed2bb754a203b53149c",
+          "trigger": {
+            "metric": "min_reverse_body_pixel_margin_px",
+            "op": "<",
+            "threshold": 40,
+            "source": "decoded original overview video and body mask",
+            "failure_condition": "min_reverse_body_pixel_margin_px < 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/condition_a/primary/construction.json",
+      "construction_sha256": "c16d248b6eeb1f251b0c4147d0920f3d306f1b563bc00bf19893bc8cbe046128"
+    },
+    {
+      "case_id": "training__C110812__NRS-484B-113-2__motor_vehicle_driver__true",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native reverse tracking, corner map readback and original pixels require physical observations"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110812-113-2-saved-analysis-v1"
+      },
+      "measurement_contract": "draft-candidates/condition_b/measurement-contract.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/condition_b/fallback1/construction.json",
+          "construction_sha256": "e1b583829993bb3711da5ba7260db52b238e4a6aa83b678d2a5364ed908b46c8",
+          "trigger": {
+            "metric": "max_reverse_corner_heading_error_deg",
+            "op": ">",
+            "threshold": 12,
+            "source": "original Native pose and surveyed corner-route heading",
+            "failure_condition": "max_reverse_corner_heading_error_deg > 12"
+          },
+          "changed_knobs": [
+            "steering_gain"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/condition_b/fallback2/construction.json",
+          "construction_sha256": "245e5f85ffd10b98f32e0762f9a93726396bd3c363f736219b279797a7deeaaa",
+          "trigger": {
+            "metric": "reverse_endpoint_overshoot_m",
+            "op": ">",
+            "threshold": 0.2,
+            "source": "original Native center/body relative to route endpoint",
+            "failure_condition": "reverse_endpoint_overshoot_m > 0.2"
+          },
+          "changed_knobs": [
+            "brake_margin_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/condition_b/fallback3/construction.json",
+          "construction_sha256": "5c7a8d2ef7af20a3b3be976c0348fe26387ff21895e3a9afd03a3f48238f7024",
+          "trigger": {
+            "metric": "min_reverse_body_pixel_margin_px",
+            "op": "<",
+            "threshold": 40,
+            "source": "decoded original overview video and body mask",
+            "failure_condition": "min_reverse_body_pixel_margin_px < 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/condition_b/primary/construction.json",
+      "construction_sha256": "d1321b6be521d738e0a371a7fc467f016b0abfa2479c0008edbb4da6c0497044"
+    }
+  ]
+}

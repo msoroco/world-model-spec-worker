@@ -20,7 +20,7 @@ fixture=importlib.util.module_from_spec(spec);spec.loader.exec_module(fixture)
 
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument('--case',choices=('witness_1','witness_2'),required=True)
+    parser.add_argument('--case',choices=('witness_1','witness_2','exception_1_1','exception_1_2'),required=True)
     parser.add_argument('--candidate',choices=('primary','fallback1','fallback2','fallback3'),required=True)
     args=parser.parse_args()
     os.environ['PATH']=str(ROOT/'.runtime-work/linux_arm64')+os.pathsep+os.environ.get('PATH','')

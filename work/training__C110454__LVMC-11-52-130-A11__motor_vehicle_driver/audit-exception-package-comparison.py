@@ -82,6 +82,14 @@ def main():
             rows.append({'case_id':entry['case_id'],'candidate':candidate,
                 'construction_sha256':selected['construction_sha256'],
                 'receipt_sha256':sha(folder/'diagnostic-compatibility.json')})
+    polarity=json.loads((HERE/'exception-absence-proof.json').read_text())
+    if not polarity.get('passed') or len(polarity.get('rows',[]))!=6:
+        raise ValueError('Six controlled exception polarity source proofs required')
+    for row in polarity['rows']:
+        if row['case_suffix'] not in BRANCHES or row['physical_observation_claimed'] is not False or row['legal_verdict'] is not None:
+            raise ValueError('Exception polarity source proof claims physical or legal conclusion')
+        if not row['controlled_negative_error'] or 'not joined' not in row['truncated_frame_negative_error']:
+            raise ValueError('Exception polarity negatives incomplete')
     laws=json.loads((ROOT/'inputs/coverage/branch-sources.json').read_text())
     law_text=laws['laws']['NRS-484B-300-1']['law']['text']
     expected_digest=hashlib.sha256(law_text.encode()).hexdigest()
@@ -94,7 +102,7 @@ def main():
     if len(rows)!=24 or len({r['construction_sha256'] for r in rows})!=24:
         raise ValueError('Twenty-four distinct exact exception bundles required')
     return {'format':'lvmc-exception-independent-package-comparison-v1','passed':True,
-        'manifest_sha256':sha(manifest_path),'candidate_count':24,'rows':rows,
+        'manifest_sha256':sha(manifest_path),'candidate_count':24,'polarity_source_proofs':6,'rows':rows,
         'source_binding':{'compliance_cited_law':'NRS-484B-300-1',
           'device_video_sha_checked':True,'authored_device_road_signal_id':'620','conflict_actor_frame_join_checked':True},
         'scope':'source-bound synthetic CPU comparison; no CARLA behavior, physical trigger, legal applicability or accepted recording'}

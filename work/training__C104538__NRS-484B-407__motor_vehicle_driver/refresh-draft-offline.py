@@ -6,7 +6,7 @@ import subprocess
 
 ROOT=Path(__file__).resolve().parent
 REPO=ROOT.parents[1]
-VERSION='v10'
+VERSION='v13'
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 

@@ -198,6 +198,7 @@ def execute(config,output,host,port):
             channels[name]=(output/'channels'/(name+'.jsonl')).open('x')
         start_time=world.get_snapshot().timestamp.elapsed_seconds
         with (output/'native_samples.jsonl').open('x') as native_file, \
+             (output/'native_controls.jsonl').open('x') as control_file, \
              (output/'body_history.jsonl').open('x') as body_file, \
              (output/'video_frames.jsonl').open('x') as frame_file:
             for index in range(config['duration_s']*config['rate_hz']):
@@ -223,6 +224,12 @@ def execute(config,output,host,port):
                     'native_body_xy_m':body,'speed_mps':speed,
                     'native_road_id':lane.road_id,'native_lane_id':lane.lane_id,
                     'controller_request':command}
+                actual_control=ego.get_control()
+                control_file.write(json.dumps({
+                    'native_frame':frame,'time_s':time_s,
+                    'throttle':actual_control.throttle,'brake':actual_control.brake,
+                    'hand_brake':actual_control.hand_brake,
+                    'control_source':'native_readback'},allow_nan=False)+'\n')
                 capture.capture(frame,time_s,extra={'c10052_native':sample})
                 native_file.write(json.dumps(sample,allow_nan=False)+'\n')
                 vertices=ego.bounding_box.get_world_vertices(pose)
@@ -253,6 +260,15 @@ def execute(config,output,host,port):
                 frame_file.write(json.dumps(frame_map_row(index,frame,time_s))+'\n')
                 frames+=1
         if frames!=480:raise RuntimeError('Original frame count incomplete')
+        write_new(output/'entry-sources.json',{'format':'c10052-entry-sources-v1',
+            'source_kind':'original_native',
+            'sha256':{name:hashlib.sha256((output/name).read_bytes()).hexdigest()
+                      for name in ('native_samples.jsonl','road_geometry.json')}})
+        write_new(output/'park-act-sources.json',{'format':'c10052-park-act-sources-v1',
+            'source_kind':'original_native',
+            'sha256':{name:hashlib.sha256((output/name).read_bytes()).hexdigest()
+                      for name in ('native_samples.jsonl','native_controls.jsonl',
+                                   'road_geometry.json')}})
     except BaseException as exc:
         error={'type':type(exc).__name__,'message':str(exc),'traceback':traceback.format_exc()}
     finally:

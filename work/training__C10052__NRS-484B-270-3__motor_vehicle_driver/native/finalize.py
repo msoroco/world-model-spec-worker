@@ -7,6 +7,8 @@ from pathlib import Path
 import subprocess
 
 from measure_facility import measure
+from measure_entry import measure as measure_entry
+from measure_park_act import measure as measure_park_act
 
 
 def facility_stop_observation(attempt):
@@ -98,7 +100,33 @@ def finalize_full_attempt(attempt, output):
     original = verify_original_joins(attempt, count)
     observed = measure(attempt/'native_samples.jsonl', attempt/'road_geometry.json',
                        attempt/'exception_context.json')
+    entry = measure_entry(attempt)
     measurements = {'facility_stop_observation': facility_stop_observation(attempt)}
+    measurements['moving_entry_observation'] = {
+        'method':'moving_full_body_facility_boundary_crossing',
+        'value':{'moving_entry_measured':entry['moving_entry_measured'],
+                 'first_moving_entry_native_frame':entry['first_moving_entry_native_frame'],
+                 'moving_occupied_frames':entry['moving_occupied_frames'],
+                 'maximum_moving_overlap_m2':entry['maximum_moving_overlap_m2'],
+                 'first_entry_alley_footprint_gap_m':entry['first_entry_alley_footprint_gap_m'],
+                 'minimum_moving_facility_alley_footprint_gap_m':entry['minimum_moving_facility_alley_footprint_gap_m'],
+                 'moving_facility_alley_footprint_overlap_frames':entry['moving_facility_alley_footprint_overlap_frames'],
+                 'facility_designation_verified':entry['facility_designation_verified'],
+                 'exception_a_observed':entry['exception_a_observed'],
+                 'legal_verdict_claimed':False},
+        'sources':entry['source_sha256']}
+    if (attempt/'park-act-sources.json').is_file():
+        park = measure_park_act(attempt)
+        measurements['parking_control_observation'] = {
+            'method':'original_native_pose_and_applied_control_join',
+            'value':{'park_control_candidate':park['park_control_candidate'],
+                     'first_held_native_frame':park['first_held_native_frame'],
+                     'held_duration_s':park['held_duration_s'],
+                     'max_held_facility_overlap_m2':park['max_held_facility_overlap_m2'],
+                     'facility_designation_verified':False,
+                     'statutory_exceptions_verified':False,
+                     'legal_park_verdict_claimed':False},
+            'sources':park['source_sha256']}
     videos = [f'{name}.mkv' for name in
               ('overview', 'approach', 'facility', 'driver_reference')]
     counts = {name: video_frames(attempt/name) for name in videos}
@@ -124,7 +152,8 @@ def finalize_full_attempt(attempt, output):
     matched = abs(overlap-requested) <= .25 and observed['stop_duration_s'] >= 2.0
     result = {'case_id': config['case_id'],
         'measured_values': {'max_stopped_overlap_m2': overlap,
-                            'stop_duration_s': observed['stop_duration_s']},
+                            'stop_duration_s': observed['stop_duration_s'],
+                            'moving_occupied_frames':entry['moving_occupied_frames']},
         'target_checks': [{'target': 'stationary full-body occupancy of proposed bicycle facility',
             'requested': requested, 'measured': overlap,
             'method': 'original Native body/road/lane/speed and surveyed facility polygon',

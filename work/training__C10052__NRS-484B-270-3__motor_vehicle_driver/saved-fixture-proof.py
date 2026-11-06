@@ -42,6 +42,10 @@ def make_base(destination,suffix,full_resolution=False):
     shutil.copyfile(source/'native_samples.jsonl',destination/'native_samples.jsonl')
     shutil.copyfile(source/'road_geometry.json',destination/'road_geometry.json')
     shutil.copyfile(source/'exception_context.json',destination/'exception_context.json')
+    (destination/'entry-sources.json').write_text(json.dumps({
+        'format':'c10052-entry-sources-v1','source_kind':'synthetic_cpu_fixture',
+        'sha256':{name:sha(destination/name) for name in
+                  ('native_samples.jsonl','road_geometry.json')}}))
     exception=json.loads((destination/'exception_context.json').read_text())
     exception['requested_exception_context']={key:exception[key] for key in
         ('source_kind','exceptions','note')}
@@ -118,6 +122,16 @@ def run():
             if source_hashes(positive)!=before:raise RuntimeError('Saved finalizer rewrote acquisition')
             report=json.loads((positive/'analysis-report.json').read_text())
             result=json.loads((positive/'result.json').read_text())
+            entry=report['measurements']['moving_entry_observation']['value']
+            if suffix=='probe_a':
+                assert entry['moving_entry_measured'] is False and entry['moving_occupied_frames']==0
+            else:
+                assert entry['moving_entry_measured'] is True
+                assert entry['first_moving_entry_native_frame']==162
+                assert entry['moving_occupied_frames']==71
+            assert entry['facility_designation_verified'] is False
+            assert entry['exception_a_observed']=='unresolved'
+            assert result['measured_values']['moving_occupied_frames']==entry['moving_occupied_frames']
             contract=json.loads((HERE/'draft-facility'/suffix/'measurement-contract.json').read_text())
             verify_report(contract,report,positive)
             config=json.loads((positive/'config.json').read_text())

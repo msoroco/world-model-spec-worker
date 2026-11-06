@@ -13,8 +13,8 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def audit():
     summary=json.loads((HERE/'package-probes-summary.json').read_text())
     manifest=json.loads((HERE/'draft-execution-manifest.json').read_text())
-    if summary['format']!='c111256-unselected-v1-package-diagnostics' or len(summary['results'])!=8:
-        raise ValueError('Eight exact package diagnostics missing')
+    if summary['format']!='c111256-unselected-v1-package-diagnostics' or len(summary['results'])!=16:
+        raise ValueError('Sixteen exact package diagnostics missing')
     checked=[]
     for item in summary['results']:
         case=item['case'];candidate=item['candidate']
@@ -45,9 +45,9 @@ def audit():
                         'positive_checks':sorted(REQUIRED),
                         'negative_removed':'road_geometry.json'})
     if {(x['case'],x['candidate']) for x in checked}!={(case,candidate)
-       for case in ('witness_1','witness_2') for candidate in ('primary','fallback1','fallback2','fallback3')}:
+       for case in ('witness_1','witness_2','exception_1_1','exception_1_2') for candidate in ('primary','fallback1','fallback2','fallback3')}:
         raise ValueError('Package matrix incomplete')
-    return {'passed':True,'assignment_id':HERE.name,'package_count':8,
+    return {'passed':True,'assignment_id':HERE.name,'package_count':16,
             'scope':'unselected synthetic pinned v1 software diagnostics only',
             'physical_observations':False,'accepted_recordings':False,'checked':checked}
 
