@@ -13,3 +13,7 @@ Next: survey Native lane and connector identities, finish exact positive/negativ
 ## Canonical original frame identity continuation
 
 The proposed Native runner now writes `video_frame`, `native_frame`, canonical `carla_frame` and `time_s` together for every source camera frame. An independent CPU audit checks this row against the pinned frame-map writer and rejects invalid identities. All eight exact unselected primary/fallback bundles were rebuilt and passed pinned offline checks and source/controlled-input audits after this source change. No CARLA run, Core/render compatibility receipt or delivery acceptance is inferred; this assignment remains blocked.
+
+## Exact package synthetic diagnostic continuation
+
+The authored curved connector lane `-2` initially failed the pinned OpenDRIVE polygon parser; the work-owned 3.3 m connector repair parses into 31 road regions. All eight rebuilt bundles pass pinned offline and independent construction audits. Both 480-frame synthetic saved cases pass their positive, missing-source negative, pair comparison, Core/decoder/render and final decode checks. Eight full-resolution, exact pinned v1 package positives and matching missing-`native_samples.jsonl` negatives pass; `audit-package-probes.py` independently verifies receipt, source, current construction/runtime hashes and the absence of acceptance claims. This remains an unselected, blocked assignment. Strict v2, physical Native evidence and independent delivery acceptance are still worker-owned. See the latest RETURN-REPORT section for log hashes.

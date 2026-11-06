@@ -16,7 +16,7 @@
 | full-train-08 | 31 | 31 | 141 | 66 |
 | **Total** | **253** | **253** | **624** | **288** |
 
-The 624 definitions are unverified drafts, not selected GPU jobs. Selected delivery cases, fully proven candidate sets, strict v2 compatibility receipts, independent saved acceptance audits, equivalence reuses, and accepted recordings: **0** each. All eight unselected bundles each for C329610 (2)(a) and (2)(b), and twelve for C394300 (3)(c), have diagnostic v1 exact-package positive and negative proofs, described below. The 221-law, 776-topic branch inventory remains pending statutory and physical review; no runnable branch is certified. The GPU queue has no dispatchable row. C329610 (2)(a), C329610 (2)(b), C382355 NRS 484B.400(1), C382355 NRS 484B.223(4)(a), and C382389 NRS 484B.223(4)(b) each have **eight unselected exact construction drafts with passing offline CPU checks**. C394300 NRS 484B.223(3)(b) has **20** such drafts across five planned cases; C394300 NRS 484B.223(3)(c) has **12** across three. These are not delivery-ready candidates.
+The 624 definitions are unverified drafts, not selected GPU jobs. Selected delivery cases, fully proven candidate sets, strict v2 compatibility receipts, independent saved acceptance audits, equivalence reuses, and accepted recordings: **0** each. All eight unselected bundles each for C329610 (2)(a)/(2)(b), C382355 NRS 484B.400(1)/NRS 484B.223(4)(a), C382389 NRS 484B.223(4)(b), and twelve for C394300 (3)(c), have diagnostic v1 exact-package positive and negative proofs, described below. The 221-law, 776-topic branch inventory remains pending statutory and physical review; no runnable branch is certified. The GPU queue has no dispatchable row. C329610 (2)(a), C329610 (2)(b), C382355 NRS 484B.400(1), C382355 NRS 484B.223(4)(a), and C382389 NRS 484B.223(4)(b) each have **eight unselected exact construction drafts with passing offline CPU checks**. C394300 NRS 484B.223(3)(b) has **20** such drafts across five planned cases; C394300 NRS 484B.223(3)(c) has **12** across three. These are not delivery-ready candidates.
 
 ## Work completed in this continuation
 
@@ -53,7 +53,7 @@ The 624 definitions are unverified drafts, not selected GPU jobs. Selected deliv
 | Independent audit | `python3.11 work/_shared/audit-return.py` | 0 | `ec1b6933e6c5f33046a9c125ec445267623b04360f3efa6d7ccb4aaabf5feabd` (`work/_shared/audit-return-refresh.log`) |
 | Strict gate | `python3.11 worker_check.py --complete --require-delivery-ready` | 1 | `d2da876474dfa6ffe7c23286eef51bf03f1eefeff39a9db5dca5fdd06835f6e4` (`work/_shared/strict-gate-refresh.log`) |
 
-Strict gate failure: `runtime/pipeline/scenario_pipeline/worker_exchange/branch_coverage.py:59` raises `ValueError: Branch cannot be left pending`. This is accurate: all 221 law rows remain `pending_review` across 776 inventoried source topics. The `--complete` nonstrict gate fails at the same check. The gate was rerun after both C329610 eight-bundle and C394300 (3)(c) twelve-bundle exact v1 package diagnostics and report refresh; `work/_shared/strict-gate-latest.log` has SHA-256 `d2da876474dfa6ffe7c23286eef51bf03f1eefeff39a9db5dca5fdd06835f6e4` and the same failure. The static checker passed (`work/_shared/static-check-latest.log`, SHA-256 `f1217f0dd145369ec9166735381c99ca2cae46c9146986af41d9c982c59f92ec`). This is worker-owned unfinished review, not an external blocker or frozen checker defect.
+Strict gate failure: `runtime/pipeline/scenario_pipeline/worker_exchange/branch_coverage.py:59` raises `ValueError: Branch cannot be left pending`. This is accurate: all 221 law rows remain `pending_review` across 776 inventoried source topics. The `--complete` nonstrict gate fails at the same check. The gate was rerun after both C329610 eight-bundle assignments, both C382355 eight-bundle assignments and C394300 (3)(c) twelve-bundle exact v1 package diagnostics and report refresh; `work/_shared/strict-gate-latest.log` has SHA-256 `d2da876474dfa6ffe7c23286eef51bf03f1eefeff39a9db5dca5fdd06835f6e4` and the same failure. The static checker passed (`work/_shared/static-check-latest.log`, SHA-256 `f1217f0dd145369ec9166735381c99ca2cae46c9146986af41d9c982c59f92ec`). This is worker-owned unfinished review, not an external blocker or frozen checker defect.
 
 ## Native frame-map repair across five earlier assignments
 
@@ -194,6 +194,62 @@ A 480-frame Native-shaped synthetic fixture passes pinned Core conversion, decod
 | Pinned Core/decoder/render synthetic integration | 0 | `368beccefddf9c0aa7dde4da66799a8806cf590b5f30c7b406b38611f2d57177` |
 | Eight exact v1 package positives and eight packaged negatives | 0 | See `draft-package-probe-summary.json` for all command log hashes |
 | Independent eight-receipt/source/negative audit | 0 | `9dc494c817d5d35d08d5e141b522887491c90ca3411a704c61dc3ab7ba5db267` |
+
+## Latest C382355 NRS 484B.400(1) continuation, 2026-11-05
+
+The third independent assignment remains `blocked` with two unselected right-turn-lane witness cases and eight primary/fallback bundles. The pinned OpenDRIVE parser rejected connector lane `-2` as an invalid polygon. Narrowing only the seven-meter turn connector's lanes to 3.3 m fixed that worker-owned map construction; the parser accepts 26 regions. All eight exact bundles were rebuilt and pass pinned offline (eight tests each), independent source/receipt and controlled-input audits. The two 480-frame synthetic saved positives, missing-Native-source negatives and independent lane-identity comparison pass again.
+
+A complete 480-frame Native-shaped synthetic capture passes pinned Core conversion, decoder, render and final decode. All eight unselected bundles pass exact pinned **v1 package compatibility** positives with full-resolution source videos and exact packaged negatives removing `native_samples.jsonl`. An independent audit verifies current construction/runtime hashes, source fixture and packaged finalizer hashes, four 480-frame video audits, final decode, negative logs and absence of physical-success/acceptance claims. Retained graph templates and shared synthetic motion do not prove qualifying right-only lane design, Native connector identity, fallback behavior or camera coverage. Strict v2 recipe-backed compatibility, physical preparation, statutory branch closure and independent delivery acceptance remain worker-owned. No case or GPU job was selected.
+
+| C382355 NRS 484B.400(1) latest check | Exit | SHA-256 of log |
+| --- | ---: | --- |
+| Repaired connector geometry CPU check | 0 | `f6e8542f24288c3d0022a5c31cd344414e6d6e661f73a6f6b90003273176c9f7` |
+| Eight rebuilt exact bundles, pinned offline | 0 | `2d879c8977583a71fe41898931de6daf7b01985e427be57d53083dc45d1ef872` |
+| Independent eight-bundle source/receipt audit | 0 | `73c58f204a6e5636be02473fdae939f2f14919b341e37966efba0d83b63243c9` |
+| Controlled-input construction audit | 0 | `8327ffd7e20372a2280de1d34f6e7ffd7f89b4e2a96e8bdbee971a457d7b623c` |
+| Two 480-frame saved positives and missing-source negatives | 0 | `f037ca91c52a433d4ce6b2b7d3d4cd6e3019f424f266555e49379ecded073af6` |
+| Independent 480-frame saved comparison | 0 | `9de5f880d341ae79b619588f6b00738a6f606a5fc419427a5ba59d990740f399` |
+| Pinned Core/decoder/render synthetic integration | 0 | `29bb0cf4721778ea9add13f626af2f58ef0c4ebbf644058a43121fd2a7b9b114` |
+| Eight exact v1 package positives and eight packaged negatives | 0 | See `draft-package-probe-summary.json` for all command log hashes |
+| Independent eight-receipt/source/negative audit | 0 | `bfc6423a9b1feafe2f4e2ffd6264e0ef76729088c3174f91e5c9547961306f58` |
+
+## Latest C382355 NRS 484B.223(4)(a) continuation, 2026-11-05
+
+The fourth independent assignment remains `blocked`: its right-turn and straight controlled probes, each with primary plus three fallbacks, are still unselected. The pinned OpenDRIVE parser initially rejected the authored turn connector's lane `-2` polygon. Narrowing only that connector to 3.3 m lanes fixed the work-owned map defect; the parser accepts 31 regions including the separate straight connector. All eight bundles were rebuilt and pass pinned offline (nine tests each), independent source/receipt and controlled-input audits. The two 480-frame saved positives, missing-Native-source negatives and independent same-approach right/straight comparison pass again.
+
+Both turn and straight 480-frame synthetic captures pass pinned Core conversion, decoder, render and final decode. All eight unselected bundles pass exact pinned **v1 package compatibility** positives with full-resolution videos and exact packaged negatives removing `native_samples.jsonl`. An independent eight-row audit checks current construction/runtime and fixture/analysis hashes, four 480-frame source audits, final decode, rejected negatives and absence of acceptance claims. Retained graph templates and shared synthetic motion do not prove physical Native lane designation, connector tracking, camera coverage, statutory purpose or legal outcome. The straight probe's fit with the frozen `right_turn` cell is still unresolved. Strict v2 recipe-backed receipts, independent delivery acceptance, branch closure and GPU dispatchability remain worker-owned unfinished work.
+
+| C382355 NRS 484B.223(4)(a) latest check | Exit | SHA-256 of log |
+| --- | ---: | --- |
+| Repaired right/straight connector geometry check | 0 | `4bd55118dee6217089db59f8afbda7f8ad697923e65fb034f0eb14385b3aaf35` |
+| Eight rebuilt exact bundles, pinned offline | 0 | `4c46c68b21a1fe9631ad257f288301bb70d8402d5cb14db90f012e70ff4e25a3` |
+| Independent eight-bundle source/receipt audit | 0 | `f13896a5130ccdafbda331442676ddf327d1600548727a093a0878e4098b74dd` |
+| Controlled-input construction audit | 0 | `b566c40849b625fad305591f306501205e77b01cc7f1c04e67b9d21dbb459e61` |
+| Two 480-frame saved positives and missing-source negatives | 0 | `075ec5a3dd583a2a7481b1309d020a72b61e45423c7af9a26648d2db8ad65749` |
+| Independent 480-frame saved turn/straight comparison | 0 | `6b2301fe1fc930ccd24505bd0d74e6f70d00e6fdbf06b4a63386bc99eb9e7db7` |
+| Turn Core/decoder/render synthetic integration | 0 | `36850b8be3831d1f92c20d9a576817626532934fdb4eb2f303d7978b5a72879a` |
+| Straight Core/decoder/render synthetic integration | 0 | `385a65be9284b800871d8a20386473517b9b5547dd7df4f57fc7bd36d4c16c15` |
+| Eight exact v1 package positives and eight packaged negatives | 0 | See `draft-package-probe-summary.json` for all command log hashes |
+| Independent eight-receipt/source/negative audit | 0 | `b53d4e5e2929682932a16ef58fe089ea1f8fbd65e2277ae947a997730feca62e` |
+
+## Latest C382389 NRS 484B.223(4)(b) continuation, 2026-11-05
+
+The fifth independent assignment remains `blocked` with two unselected straight-through lane-identity cases and eight primary/fallback bundles. The pinned OpenDRIVE parser initially rejected the curved right-turn connector lane `-2` as an invalid polygon. Narrowing only that seven-meter connector to 3.3 m lanes repaired the work-owned map; the parser now accepts 31 regions. All eight bundles were rebuilt and pass pinned offline (nine tests each), independent source/receipt and controlled-input audits. The two 480-frame saved positives, missing-Native-source negatives and independent lane-identity comparison pass after rebuilding.
+
+Both 480-frame synthetic captures pass pinned Core conversion, decoder, render and final decode. All eight unselected bundles pass exact pinned **v1 package compatibility** positives with full-resolution source videos and exact packaged negatives removing `native_samples.jsonl`. An independent eight-row audit verifies current construction/runtime and fixture/analysis hashes, four 480-frame source video audits, final decode, rejected negatives and absence of physical-success or acceptance claims. Retained graph templates and synthetic motion do not establish physical Native right-only designation, connector identity, fallback behavior, camera coverage or legal outcome. Strict v2 recipe-backed compatibility, independent delivery acceptance, statutory branch closure and GPU dispatchability remain worker-owned unfinished work. No status was promoted. The refreshed static checker exits 0 (log SHA-256 `f1217f0dd145369ec9166735381c99ca2cae46c9146986af41d9c982c59f92ec`), and the return audit exits 0 (log SHA-256 `ec1b6933e6c5f33046a9c125ec445267623b04360f3efa6d7ccb4aaabf5feabd`). The strict command `python3.11 worker_check.py --complete --require-delivery-ready` exits 1 at `branch_coverage.py:59` with `ValueError: Branch cannot be left pending` (log SHA-256 `d2da876474dfa6ffe7c23286eef51bf03f1eefeff39a9db5dca5fdd06835f6e4`); pending statutory/physical branch review is worker-owned.
+
+| C382389 NRS 484B.223(4)(b) latest check | Exit | SHA-256 of log |
+| --- | ---: | --- |
+| Repaired two-lane connector geometry check | 0 | `63babd1df6d102da9db26ae467bc2e350c35a92d1550de27c9a02e1e602e31d8` |
+| Eight rebuilt exact bundles, pinned offline | 0 | `ed85afc8cb2e8c6d70c60c242ce749e99fa6895d049ecf7df2c0ef020a0830b6` |
+| Independent eight-bundle source/receipt audit | 0 | `f13896a5130ccdafbda331442676ddf327d1600548727a093a0878e4098b74dd` |
+| Controlled-input construction audit | 0 | `e98bd279fa949e3ee3058b751e443a9fbe3ef90f5ff42ff0be8865bbf5892b0b` |
+| Two 480-frame saved positives and missing-source negatives | 0 | `43f7e69d1ef01ce12f2779f394692539623abfc3ad8d37a684241f04e73c8345` |
+| Independent 480-frame saved lane comparison | 0 | `d50de48114b080ad9da4f150dd3fc1f60b121ccea76a0c3ee7891ba43565f236` |
+| Reference Core/decoder/render synthetic integration | 0 | `729f71cb15e877ef70e3bdff315f5236763b0a3da720436f2d75c70138575098` |
+| Contrast Core/decoder/render synthetic integration | 0 | `58392be94df0ff7b9273e826f2dfe3791f07728f733bb4cbeba04aad4a34b59c` |
+| Eight exact v1 package positives and eight packaged negatives | 0 | See `draft-package-probe-summary.json` for all command log hashes |
+| Independent eight-receipt/source/negative audit | 0 | `d57f24ee10e37daba9cbf0a5503987f0bcfb72c9c3592a86cd07359df9896d29` |
 
 ## Remaining worker-owned work
 

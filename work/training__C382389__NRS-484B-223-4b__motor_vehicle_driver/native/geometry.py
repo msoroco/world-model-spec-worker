@@ -45,7 +45,8 @@ def open_drive():
                         lane_link=ET.SubElement(lane,'link')
                         ET.SubElement(lane_link,'predecessor',id=str(lane_id))
                         ET.SubElement(lane_link,'successor',id=str(lane_id))
-                    ET.SubElement(lane,'width',sOffset='0',a=str(LANE_WIDTH_M),b='0',c='0',d='0')
+                    connector_width=3.3 if ident==13 else LANE_WIDTH_M
+                    ET.SubElement(lane,'width',sOffset='0',a=str(connector_width),b='0',c='0',d='0')
                 mark='solid' if lane_id==0 else 'broken'
                 ET.SubElement(lane,'roadMark',sOffset='0',type=mark,
                               color='yellow' if lane_id==0 else 'white',width='0.12')

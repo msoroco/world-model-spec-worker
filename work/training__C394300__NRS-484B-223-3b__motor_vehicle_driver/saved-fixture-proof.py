@@ -30,7 +30,7 @@ def original_hashes(root):
     return {str(p.relative_to(root)):sha(p) for p in root.rglob('*') if p.is_file() and p.name not in ('result.json','analysis-report.json')}
 
 
-def make_base(destination,suffix):
+def make_base(destination,suffix,full_resolution=False):
     destination.mkdir();(destination/'capture').mkdir();(destination/'channels').mkdir()
     construction=json.loads((FOLDER/'draft-candidates'/suffix/'primary/construction.json').read_text())
     config=json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
@@ -87,9 +87,11 @@ def make_base(destination,suffix):
             else:raise ValueError('Unknown channel '+name)
             values.append({'time_s':sample['time_s'],'value':value})
         write_rows(destination/'channels'/(name+'.jsonl'),values)
+    camera_sizes={camera['name']:f"{camera['width']}x{camera['height']}" for camera in config['cameras']}
     for name in ('overview','approach','reference_corner','driver_reference'):
+        size=camera_sizes[name] if full_resolution else '32x32'
         subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
-            '-f','lavfi','-i','color=c=black:s=32x32:r=20:d=24',
+            '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=24',
             '-frames:v','480','-c:v','ffv1',str(destination/(name+'.mkv'))],
             check=True,timeout=60)
 
