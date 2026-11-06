@@ -18,9 +18,9 @@ class LanePurposeMeasurementTests(unittest.TestCase):
         (self.root/'road_geometry.json').write_text(json.dumps(self.geometry))
 
     def write(self,movement):
-        states=[(-20,5.25,(1,0),1,-2),(-12,5.25,(1,0),1,-2)]
-        if movement=='turn':states += [(-3,5.25,(.7,.714142842),13,-2),(-5.25,12,(0,1),4,-2)]
-        else:states += [(0,5.25,(1,0),14,-2),(15,5.25,(1,0),2,-2)]
+        states=[(-20,-5.25,(1,0),1,-2),(-12,-5.25,(1,0),1,-2)]
+        if movement=='turn':states += [(-3,-5.25,(.7,-.714142842),13,-2),(-5.25,-12,(0,-1),4,-2)]
+        else:states += [(0,-5.25,(1,0),14,-2),(15,-5.25,(1,0),2,-2)]
         samples=[]
         for i,(x,y,forward,road,lane) in enumerate(states):
             half_x,half_y=(2.6,1.1) if road in (1,2,14) else (1.1,2.6)

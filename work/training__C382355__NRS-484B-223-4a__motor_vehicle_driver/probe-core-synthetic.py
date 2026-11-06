@@ -71,7 +71,7 @@ def enrich(attempt):
 
 
 def make_attempt(path,suffix,full_resolution=False):
-    approach_y={'controlled_1':5.25,'controlled_2':5.25}[suffix]
+    approach_y={'controlled_1':-5.25,'controlled_2':-5.25}[suffix]
     fixture.make_base(path,suffix,approach_y,480,full_resolution=full_resolution)
     enrich(path)
 

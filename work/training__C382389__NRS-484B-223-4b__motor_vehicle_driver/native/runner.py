@@ -75,10 +75,10 @@ def direction(waypoint):
 
 
 def map_survey(carla, mapping, native_hash):
-    requests={"right_only_approach_lane":(-30,5.25,1,-2,[1,0]),
-              "adjacent_approach_lane":(-30,1.75,1,-1,[1,0]),
-              "right_only_straight_destination":(30,5.25,2,-2,[1,0]),
-              "adjacent_straight_destination":(30,1.75,2,-1,[1,0])}
+    requests={"right_only_approach_lane":(-30,-5.25,1,-2,[1,0]),
+              "adjacent_approach_lane":(-30,-1.75,1,-1,[1,0]),
+              "right_only_straight_destination":(30,-5.25,2,-2,[1,0]),
+              "adjacent_straight_destination":(30,-1.75,2,-1,[1,0])}
     observed={};waypoints={}
     for name,(x,y,road_id,lane_id,expected) in requests.items():
         wp=mapping.get_waypoint(carla.Location(x=x,y=y,z=.2),project_to_road=False,lane_type=carla.LaneType.Driving)
@@ -91,13 +91,13 @@ def map_survey(carla, mapping, native_hash):
     right=waypoints['right_only_approach_lane']
     low=right.transform.location.y-right.lane_width/2
     high=right.transform.location.y+right.lane_width/2
-    if abs(low-3.5)>.15 or abs(high-7.0)>.15:
+    if abs(low+7.0)>.15 or abs(high+3.5)>.15:
         raise RuntimeError('Native right-turn-lane boundaries differ from authored map')
     return {"native_map_sha256":native_hash,"road_directions_native":observed,
             "approach_road_id":1,"straight_connector_road_id":14,
             "straight_destination_road_id":2,"right_only_lane_id":-2,
             "adjacent_through_lane_id":-1,
-            "right_only_lane_native_y_bounds_m":[3.5,7.0],
+            "right_only_lane_native_y_bounds_m":[-7.0,-3.5],
             "right_only_lane_design_native_verified":False,
             "intersection_native_xy_bounds_m":[-7,-7,7,7],
             "intersection_polygon_xy_m":[[-7,-7],[7,-7],[7,7],[-7,7]],
@@ -151,7 +151,7 @@ def execute(config, output, host, port):
         approach_y=CASE_APPROACH_Y_M[suffix]
         blueprint=world.get_blueprint_library().find("vehicle.lincoln.mkz_2020")
         blueprint.set_attribute("role_name","c382389_4b_ego")
-        ego=world.spawn_actor(blueprint,carla.Transform(carla.Location(x=-50,y=-approach_y,z=.5),carla.Rotation(yaw=0)))
+        ego=world.spawn_actor(blueprint,carla.Transform(carla.Location(x=-50,y=approach_y,z=.5),carla.Rotation(yaw=0)))
         owned.append(ego)
         ego.apply_control(carla.VehicleControl(brake=1,hand_brake=True))
         for _ in range(40):world.tick()

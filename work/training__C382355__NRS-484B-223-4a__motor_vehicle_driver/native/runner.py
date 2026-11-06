@@ -11,6 +11,7 @@ import json
 import math
 from pathlib import Path
 import queue
+import shutil
 import subprocess
 import sys
 import traceback
@@ -75,9 +76,9 @@ def direction(waypoint):
 
 
 def map_survey(carla, mapping, native_hash):
-    requests={"right_only_approach_lane":(-30,5.25,1,-2,[1,0]),
-              "right_turn_destination_lane":(-5.25,30,4,-2,[0,1]),
-              "straight_destination_lane":(30,5.25,2,-2,[1,0])}
+    requests={"right_only_approach_lane":(-30,-5.25,1,-2,[1,0]),
+              "right_turn_destination_lane":(-5.25,-30,4,-2,[0,-1]),
+              "straight_destination_lane":(30,-5.25,2,-2,[1,0])}
     observed={};waypoints={}
     for name,(x,y,road_id,lane_id,expected) in requests.items():
         wp=mapping.get_waypoint(carla.Location(x=x,y=y,z=.2),project_to_road=False,lane_type=carla.LaneType.Driving)
@@ -90,13 +91,13 @@ def map_survey(carla, mapping, native_hash):
     right=waypoints['right_only_approach_lane']
     low=right.transform.location.y-right.lane_width/2
     high=right.transform.location.y+right.lane_width/2
-    if abs(low-3.5)>.15 or abs(high-7.0)>.15:
+    if abs(low+7.0)>.15 or abs(high+3.5)>.15:
         raise RuntimeError('Native right-turn-lane boundaries differ from authored map')
     return {"native_map_sha256":native_hash,"road_directions_native":observed,
             "approach_road_id":1,"right_turn_connector_road_id":13,
             "straight_connector_road_id":14,"right_turn_destination_road_id":4,
             "straight_destination_road_id":2,"right_only_lane_id":-2,
-            "right_only_lane_native_y_bounds_m":[3.5,7.0],
+            "right_only_lane_native_y_bounds_m":[-7.0,-3.5],
             "right_only_lane_design_native_verified":False,
             "intersection_native_xy_bounds_m":[-7,-7,7,7],
             "intersection_polygon_xy_m":[[-7,-7],[7,-7],[7,7],[-7,7]],
@@ -119,6 +120,8 @@ def execute(config, output, host, port):
     import carla
     import numpy as np
     from pipeline_capture import PipelineCapture
+    from worker_exchange.media import compose_four_views
+    from worker_exchange.native_output import seal_capture
     from worker_exchange.world_restore import snapshot,restore
     check(config)
     output=Path(output).resolve()
@@ -130,7 +133,7 @@ def execute(config, output, host, port):
     if saved["settings"].synchronous_mode or [a for a in prior_world.get_actors()
         if a.type_id.startswith(("vehicle.","walker.","sensor.","controller."))]:
         raise RuntimeError("Requires exclusive idle asynchronous world ownership")
-    owned=[];encoders={};encoder_logs={};camera_queues={};channels={}
+    owned=[];encoders={};encoder_logs={};encoder_exit_codes={};camera_queues={};channels={}
     capture=None;changed=False;error=None;frames=0;restored=None
     try:
         world=client.generate_opendrive_world(open_drive(),carla.OpendriveGenerationParameters(
@@ -150,12 +153,12 @@ def execute(config, output, host, port):
         approach_y=CASE_APPROACH_Y_M[suffix]
         blueprint=world.get_blueprint_library().find("vehicle.lincoln.mkz_2020")
         blueprint.set_attribute("role_name","c382355_4a_ego")
-        ego=world.spawn_actor(blueprint,carla.Transform(carla.Location(x=-50,y=-approach_y,z=.5),carla.Rotation(yaw=0)))
+        ego=world.spawn_actor(blueprint,carla.Transform(carla.Location(x=-50,y=approach_y,z=.5),carla.Rotation(yaw=0)))
         owned.append(ego)
         ego.apply_control(carla.VehicleControl(brake=1,hand_brake=True))
         for _ in range(40):world.tick()
         initial=body_xy(ego)
-        if not all(0<y<7 for x,y in initial):
+        if not all(-7<y<0 for x,y in initial):
             raise RuntimeError("Actual Native vehicle footprint not contained in right half at start")
         physics=ego.get_physics_control()
         wheels=physics.wheels
@@ -249,13 +252,17 @@ def execute(config, output, host, port):
         error={"type":type(exc).__name__,"message":str(exc),"traceback":traceback.format_exc()}
     finally:
         for stream in channels.values():stream.close()
+        if error is None:
+            try:shutil.copytree(output/"channels",output/"source_channels")
+            except BaseException as exc:error={"source_channel_copy_error":str(exc)}
         if capture is not None:
             try:capture.close(confirmed=error is None)
             except BaseException as exc:error=error or {"capture_close_error":str(exc)}
         for name,encoder in encoders.items():
             try:
                 encoder.stdin.close()
-                if encoder.wait(timeout=180)!=0:raise RuntimeError("Lossless encoder failed: "+name)
+                encoder_exit_codes[name]=encoder.wait(timeout=180)
+                if encoder_exit_codes[name]!=0:raise RuntimeError("Lossless encoder failed: "+name)
             except BaseException as exc:error=error or {"encoder_error":str(exc)}
             encoder_logs[name].close()
         for actor in reversed(owned):
@@ -266,12 +273,29 @@ def execute(config, output, host, port):
         if changed:
             try:restored=restore(client,saved)
             except BaseException as exc:error=error or {"world_restore_error":str(exc)}
+        if error is None and frames==480:
+            try:
+                sources={name:output/(name+".mkv") for name in
+                    ("overview","approach","reference_corner","driver_reference")}
+                composed=compose_four_views(sources,output/"video_frames.jsonl",output/"raw.mkv")
+                write_new(output/"four-view-receipt.json",composed)
+            except BaseException as exc:error={"four_view_composition_error":str(exc)}
+        if error is None and frames==480:
+            try:
+                seal_capture(output,frames=frames,restoration=restored,errors=[],
+                    encoder_exit_codes=encoder_exit_codes,
+                    context={"case_id":config["case_id"],"candidate_id":config["candidate_id"],
+                             "physical_acceptance_claimed":False})
+            except BaseException as exc:error={"capture_seal_error":str(exc)}
         write_new(output/"native-capture-report.json",{
             "case_id":config["case_id"],"candidate_id":config["candidate_id"],
             "frames":frames,"expected_frames":config["duration_s"]*config["rate_hz"],
             "restoration":restored,"error":error,"accepted":False,
             "required_saved_checks":["actual original pixels","Native body and lane joins",
                 "exact full video/trace frame mapping","measured turn completion","independent audit"]})
+        write_new(output/"native-run-status.json",{
+            "errors":[] if error is None else [error],"frames":frames,
+            "restoration":restored,"accepted":False})
     if error:raise RuntimeError("Native attempt failed; see native-capture-report.json: "+str(error))
 
 

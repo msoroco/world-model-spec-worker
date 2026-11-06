@@ -11,9 +11,11 @@ NAMES=('primary','fallback1','fallback2','fallback3')
 SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','controller.py':'controller.py',
          'engineering.py':'engineering.py',
          'measure_purpose.py':'measure_purpose.py','finalize.py':'finalize.py','cameras.py':'cameras.py',
+         'fallback_triggers.py':'fallback_triggers.py',
          'tests/test_measure_purpose.py':'test_measure_purpose.py',
          'tests/test_controller.py':'test_controller.py',
          'tests/test_candidate_knobs.py':'test_candidate_knobs.py',
+         'tests/test_fallback_triggers.py':'test_fallback_triggers.py',
          'tests/test_cameras.py':'test_cameras.py'}
 
 
@@ -103,7 +105,8 @@ def build():
                     'fallback2':('requested path tracking','maximum recorded route error on x=-10..7 m exceeds 0.35 m','pure-pursuit lookahead 4.0 m to 3.0 m'),
                     'fallback3':('right-only-lane camera framing','independent pixel audit cannot see full body and right-only lane cue in 95% of approach frames','ego-following camera height 3.2 m to 4.5 m and FOV 90 to 105 degrees')
                 }[candidate]
-                ref.update(trigger={'source':'original Native capture or saved pixels','metric':risk[0],
+                ref.update(trigger={'source':'source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits',
+                                    'evaluator':'fallback_triggers.py:evaluate','metric':risk[0],
                                     'failure_condition':risk[1]},changed_knobs=[risk[2]])
                 entry['candidates'].append(ref)
         manifest['cases'].append(entry)

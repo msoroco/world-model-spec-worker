@@ -32,8 +32,8 @@ def run():
     with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work', prefix='c382389-pair-') as tmp:
         base = Path(tmp)
         a,b = base/'reference',base/'contrast'
-        fixture.make_base(a,'reference',1.75,480)
-        fixture.make_base(b,'contrast',5.25,480)
+        fixture.make_base(a,'reference',-1.75,480)
+        fixture.make_base(b,'contrast',-5.25,480)
         assert config(a/'config.json') == config(b/'config.json')
         assert (a/'road_geometry.json').read_bytes() == (b/'road_geometry.json').read_bytes()
         for source in (a,b):
