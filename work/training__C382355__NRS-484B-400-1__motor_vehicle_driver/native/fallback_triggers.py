@@ -72,7 +72,7 @@ def evaluate(samples_path, map_audit_path, pixel_audit_path, video_path, request
         body = [_point(p) for p in body]
         if -10 <= center[0] <= 0:
             errors.append(min(_distance(center, a, b) for a, b in zip(route, route[1:])))
-        if (time <= 24 and min(p[1] for p in body) > 7 and
+        if (time <= 24 and max(p[1] for p in body) < -7 and
             row.get('native_road_id') == 4 and row.get('native_lane_id') == -2):
             completed = True
     if not errors:

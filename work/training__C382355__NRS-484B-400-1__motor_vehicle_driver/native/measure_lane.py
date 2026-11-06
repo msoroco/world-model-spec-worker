@@ -35,7 +35,7 @@ def measure(samples_path,geometry_path):
         raise ValueError('Native map hash missing')
     if geometry.get('approach_road_id')!=1 or geometry.get('turn_connector_road_id')!=13:
         raise ValueError('Approach/turn Native road survey missing')
-    if geometry.get('right_turn_lane_id')!=-2 or geometry.get('right_turn_lane_native_y_bounds_m')!=[3.5,7.0]:
+    if geometry.get('right_turn_lane_id')!=-2 or geometry.get('right_turn_lane_native_y_bounds_m')!=[-7.0,-3.5]:
         raise ValueError('Right-turn-lane Native survey missing')
     if geometry.get('intersection_native_xy_bounds_m')!=[-7,-7,7,7]:
         raise ValueError('Intersection Native bounds missing')
@@ -55,11 +55,11 @@ def measure(samples_path,geometry_path):
         inside=_overlap(body,[-7,-7,7,7])
         if not inside and max(p[0] for p in body)<-7:approach.append((row,body))
         elif inside:turn.append((row,body))
-        elif min(p[1] for p in body)>7:exit_rows.append((row,body))
+        elif max(p[1] for p in body)<-7:exit_rows.append((row,body))
     if len(approach)<2 or not turn or not exit_rows:
         raise ValueError('Approach, turn and complete exit not all observed')
     first=approach[0][0];last=exit_rows[-1][0]
-    if first['native_forward_xy'][0]<.95 or last['native_forward_xy'][1]<.95:
+    if first['native_forward_xy'][0]<.95 or last['native_forward_xy'][1]>-.95:
         raise ValueError('Observed right-turn heading change missing')
     low_y,high_y=geometry['right_turn_lane_native_y_bounds_m']
     full_body=[all(low_y<=p[1]<=high_y for p in body) for _,body in approach]
