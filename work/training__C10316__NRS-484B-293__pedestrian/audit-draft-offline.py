@@ -31,7 +31,7 @@ def main():
             assert sha(path)==selected['construction_sha256']
             construction=json.loads(path.read_text())
             files={item['path']:item['content'] for item in construction['files']}
-            for name in ('runner.py','geometry.py','engineering.py','measure_crosswalk.py','road.xodr'):
+            for name in ('runner.py','geometry.py','engineering.py','measure_crosswalk.py','finalize.py','road.xodr'):
                 assert files[name]==(HERE/'native'/name).read_text()
             assert files['tests/test_offline.py']==(HERE/'native/test_offline.py').read_text()
             config=json.loads(files['config.json'])

@@ -9,6 +9,7 @@ NATIVE=HERE/'native'
 NAMES=('primary','fallback1','fallback2','fallback3')
 SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py',
          'engineering.py':'engineering.py','measure_crosswalk.py':'measure_crosswalk.py',
+         'finalize.py':'finalize.py',
          'road.xodr':'road.xodr','tests/test_offline.py':'test_offline.py'}
 
 
@@ -50,8 +51,8 @@ def build():
         entry={'case_id':case_id,'kind':'draft_not_selected',
                'candidate_risk':{'status':'physical','reason':'Native walker path, crosswalk inventory, camera framing and practicability facts remain unverified'},
                'measurement_contract':str(contract.relative_to(HERE)),
-               'measurement_procedure':{'entrypoint':'measure_crosswalk.py',
-                                        'output_schema':'c10316-crosswalk-half-observation-v1'},
+               'measurement_procedure':{'entrypoint':'finalize.py',
+                                        'output_schema':'c10316-saved-crosswalk-analysis-v1'},
                'candidates':[]}
         for ident in NAMES:
             source_plan=json.loads((HERE/'draft-candidates'/suffix/ident/'construction.json').read_text())

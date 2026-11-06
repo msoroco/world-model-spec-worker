@@ -12,7 +12,7 @@ from native.measure_crosswalk import measure,sha
 
 def main():
     plan=json.loads((HERE/'case-plan.json').read_text())
-    analysis_code=(HERE/'native/measure_crosswalk.py').read_text()
+    analysis_code=(HERE/'native/finalize.py').read_text()
     summaries=[]
     for label in ('reference','contrast'):
         case_id=f'training__C10316__NRS-484B-293__pedestrian__{label}'
@@ -22,7 +22,7 @@ def main():
             'requirements':[
                 {'disposition_index':i,'requirement':item['requirement'],'source':item['source'],
                  'output_key':('right_half_passage' if i==0 else 'marked_crosswalk_passage'),
-                 'method':'measure','value_type':'object','kind':'measured',
+                 'method':'crosswalk_passage','value_type':'object','kind':'measured',
                  'inputs':['native_samples.jsonl','crosswalk-context.json']}
                 for i,item in enumerate(plan['requirement_dispositions'])
                 if item['status']=='selected_required' and case_id in item['case_ids']
@@ -35,7 +35,7 @@ def main():
         rows=validate(contract,plan['requirement_dispositions'],analysis_code,case_id)
         observation=measure(fixture/'native_samples.jsonl',fixture/'crosswalk-context.json')
         sources=observation['source_sha256']
-        report={'measurements':{row['output_key']:{'method':'measure','value':observation,
+        report={'measurements':{row['output_key']:{'method':'crosswalk_passage','value':observation,
                                                  'sources':sources} for row in rows}}
         verify_report(contract,report,fixture)
         missing=fixture/'does-not-exist/native_samples.jsonl'
