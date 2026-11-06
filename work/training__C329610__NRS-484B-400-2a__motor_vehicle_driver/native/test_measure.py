@@ -22,16 +22,16 @@ class SavedGeometryTest(unittest.TestCase):
         self.samples = self.root / "native_samples.jsonl"
         self.geometry = self.root / "road_geometry.json"
         self.samples.write_text("\n".join(json.dumps(item) for item in
-                                [row(0,-20,1.75),row(.05,-10,1.75),
-                                 row(.1,-8,1.75),row(.15,1.75,-12,(0,-1))]) + "\n")
+                                [row(0,-20,-1.75),row(.05,-10,-1.75),
+                                 row(.1,-8,-1.75),row(.15,1.75,12,(0,1))]) + "\n")
         self.geometry.write_text(json.dumps({
             "road_directions_native":{"approach_forward":[1,0],"approach_opposing":[-1,0],
-                                      "destination_forward":[0,-1],"destination_opposing":[0,1]},
+                                      "destination_forward":[0,1],"destination_opposing":[0,-1]},
             "native_map_sha256":"a"*64,
             "approach_centerline_point_native_m":[0,0],
-            "approach_right_normal_native":[0,1],"right_half_width_m":7,
+            "approach_right_normal_native":[0,-1],"right_half_width_m":7,
             "intersection_entry_point_native_m":[-7,0],"approach_forward_native":[1,0],
-            "destination_exit_point_native_m":[0,-7],"destination_forward_native":[0,-1]}))
+            "destination_exit_point_native_m":[0,7],"destination_forward_native":[0,1]}))
 
     def test_positive_reflected_native_measurement(self):
         result = measure(self.samples,self.geometry)
@@ -53,14 +53,14 @@ class SavedGeometryTest(unittest.TestCase):
             measure(self.samples,self.geometry)
 
     def test_mismatched_turn_direction_rejected(self):
-        data=json.loads(self.geometry.read_text());data["destination_forward_native"]=[0,1]
+        data=json.loads(self.geometry.read_text());data["destination_forward_native"]=[0,-1]
         self.geometry.write_text(json.dumps(data))
         with self.assertRaisesRegex(ValueError,"Native direction survey differs"):
             measure(self.samples,self.geometry)
 
     def test_no_turn_entry_rejected(self):
         self.samples.write_text("\n".join(json.dumps(item) for item in
-                                [row(0,-20,1.75),row(.05,-19,1.75)]) + "\n")
+                                [row(0,-20,-1.75),row(.05,-19,-1.75)]) + "\n")
         with self.assertRaisesRegex(ValueError,"No observed approach and intersection entry bracket"):
             measure(self.samples,self.geometry)
 

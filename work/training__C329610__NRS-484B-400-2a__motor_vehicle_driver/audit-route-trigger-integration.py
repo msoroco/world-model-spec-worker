@@ -25,7 +25,7 @@ def main():
         geometry = folder / 'road_geometry.json'
         route = folder / 'route_audit.json'
         pixels = folder / 'pixel_audit.json'
-        rows = [{'native_center_xy_m': [-35 + 25*i/479, 1.75],
+        rows = [{'native_center_xy_m': [-35 + 25*i/479, -1.75],
                  'native_frame': i, 'time_s': (i+1)/20} for i in range(480)]
         samples.write_text(''.join(json.dumps(row, sort_keys=True)+'\n' for row in rows))
         write(geometry, {'native_map_sha256': 'a'*64})
@@ -39,23 +39,23 @@ def main():
                        'body_and_centerline_visible_frames': 95,
                        'approach_frames': 100})
         def trigger():
-            return evaluate(samples, geometry, route, pixels, 1.75)
+            return evaluate(samples, geometry, route, pixels, -1.75)
         assert [trigger()[key] for key in ('fallback1','fallback2','fallback3')] == [False]*3
         write(route, {**base, 'connected_lane_link': False})
         assert trigger()['fallback1'] is True
         write(route, base)
-        rows[200]['native_center_xy_m'][1] = 2.11
+        rows[200]['native_center_xy_m'][1] = -2.11
         samples.write_text(''.join(json.dumps(row, sort_keys=True)+'\n' for row in rows))
         write(route, {**base, 'native_samples_sha256': sha(samples)})
         assert trigger()['fallback2'] is True
-        rows[200]['native_center_xy_m'][1] = 1.75
+        rows[200]['native_center_xy_m'][1] = -1.75
         samples.write_text(''.join(json.dumps(row, sort_keys=True)+'\n' for row in rows))
         write(route, base)
         write(pixels, {'source_kind': 'original_camera_pixels',
                        'body_and_centerline_visible_frames': 94,
                        'approach_frames': 100})
         assert trigger()['fallback3'] is True
-        rows[200]['native_center_xy_m'][1] = 2.11
+        rows[200]['native_center_xy_m'][1] = -2.11
         samples.write_text(''.join(json.dumps(row, sort_keys=True)+'\n' for row in rows))
         try:
             trigger()

@@ -2,7 +2,7 @@
 import math
 
 
-def survey(start, *, destination_road_id=4, destination_forward=(0.0, -1.0),
+def survey(start, *, destination_road_id=4, destination_forward=(0.0, 1.0),
            step_m=1.0, max_waypoints=160):
     if start is None or not 0 < step_m <= 3 or max_waypoints < 1:
         raise ValueError('Invalid Native lane-link survey input')

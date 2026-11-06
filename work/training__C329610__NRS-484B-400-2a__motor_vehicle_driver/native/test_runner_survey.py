@@ -1,0 +1,61 @@
+"""Check that the runner surveys the same lanes used by the authored route."""
+import types
+import unittest
+
+from geometry import CASE_PLACEMENTS, route
+from runner import map_survey
+
+
+class Direction:
+    def __init__(self, x, y):
+        self.x, self.y = x, y
+
+
+class Waypoint:
+    def __init__(self, road_id, vector):
+        self.id = road_id
+        self.road_id = road_id
+        self.transform = types.SimpleNamespace(get_forward_vector=lambda: Direction(*vector))
+        self.successors = []
+
+    def next(self, step):
+        self._step = step
+        return self.successors
+
+
+class Map:
+    def __init__(self):
+        self.queries = []
+        self.lanes = {
+            (-30, -1.75): Waypoint(1, (1, 0)),
+            (-30, 1.75): Waypoint(1, (-1, 0)),
+            (1.75, 30): Waypoint(4, (0, 1)),
+            (-1.75, 30): Waypoint(4, (0, -1)),
+        }
+        self.lanes[(-30, -1.75)].successors = [self.lanes[(1.75, 30)]]
+
+    def get_waypoint(self, location, *, project_to_road, lane_type):
+        self.queries.append((location.x, location.y, project_to_road, lane_type))
+        return self.lanes.get((location.x, location.y))
+
+
+class RunnerSurveyTest(unittest.TestCase):
+    def test_survey_and_route_share_approach_and_northbound_exit(self):
+        carla = types.SimpleNamespace(Location=lambda **kw: types.SimpleNamespace(**kw),
+                                      LaneType=types.SimpleNamespace(Driving='driving'))
+        mapping = Map()
+        survey = map_survey(carla, mapping, 'a' * 64)
+        self.assertTrue(survey['native_lane_link_readback']['connected_lane_link'])
+        self.assertEqual(survey['approach_right_normal_native'], [0, -1])
+        self.assertEqual(survey['destination_forward_native'], [0.0, 1.0])
+        self.assertEqual(survey['destination_exit_point_native_m'], [0, 7])
+        self.assertEqual([(x, y) for x, y, _, _ in mapping.queries],
+                         [(-30, -1.75), (-30, 1.75), (1.75, 30), (-1.75, 30)])
+        for lateral in CASE_PLACEMENTS.values():
+            points = route(lateral)
+            self.assertTrue(all(-7 < y < 0 for x, y in points if x <= -7))
+            self.assertGreater(points[-1][1], survey['destination_exit_point_native_m'][1])
+
+
+if __name__ == '__main__':
+    unittest.main()

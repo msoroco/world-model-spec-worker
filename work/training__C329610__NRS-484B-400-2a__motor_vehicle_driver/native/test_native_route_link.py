@@ -32,8 +32,8 @@ class LinkSurveyTests(unittest.TestCase):
     def test_connected_branch(self):
         approach = Waypoint(1, 1, (1, 0))
         wrong = Waypoint(2, 3, (1, 0))
-        turn = Waypoint(3, 3, (0, -1))
-        exit_lane = Waypoint(4, 4, (0, -1))
+        turn = Waypoint(3, 3, (0, 1))
+        exit_lane = Waypoint(4, 4, (0, 1))
         approach.successors = [wrong, turn]
         turn.successors = [exit_lane]
         result = survey(approach)
@@ -42,7 +42,7 @@ class LinkSurveyTests(unittest.TestCase):
 
     def test_disconnected_and_cycle(self):
         start = Waypoint(10, 1, (1, 0))
-        loop = Waypoint(11, 3, (0, -1))
+        loop = Waypoint(11, 3, (0, 1))
         start.successors = [loop]
         loop.successors = [start]
         result = survey(start)
@@ -51,18 +51,18 @@ class LinkSurveyTests(unittest.TestCase):
 
     def test_wrong_direction_does_not_pass(self):
         start = Waypoint(20, 1, (1, 0))
-        opposing = Waypoint(21, 4, (0, 1))
+        opposing = Waypoint(21, 4, (0, -1))
         start.successors = [opposing]
         self.assertFalse(survey(start)['connected_lane_link'])
 
     def test_saved_full_body_exit_requires_all_vertices_and_heading(self):
-        geometry = {'destination_exit_point_native_m': [0, -7],
-                    'destination_forward_native': [0, -1]}
-        body = [[0,-8],[1,-8],[1,-9],[0,-9]]
-        row = {'native_body_xy_m': body, 'native_forward_xy': [0,-1]}
+        geometry = {'destination_exit_point_native_m': [0, 7],
+                    'destination_forward_native': [0, 1]}
+        body = [[0,8],[1,8],[1,9],[0,9]]
+        row = {'native_body_xy_m': body, 'native_forward_xy': [0,1]}
         self.assertTrue(full_body_destination_exit([row], geometry))
         self.assertFalse(full_body_destination_exit([
-            {**row, 'native_body_xy_m': [[0,-6],*body[1:]]}], geometry))
+            {**row, 'native_body_xy_m': [[0,6],*body[1:]]}], geometry))
         self.assertFalse(full_body_destination_exit([
             {**row, 'native_forward_xy': [1,0]}], geometry))
 

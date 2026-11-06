@@ -77,10 +77,10 @@ def direction(waypoint):
 
 
 def map_survey(carla, mapping, native_hash):
-    requests={"approach_forward":(-30,1.75,1,[1,0]),
-              "approach_opposing":(-30,-1.75,1,[-1,0]),
-              "destination_forward":(1.75,-30,4,[0,-1]),
-              "destination_opposing":(-1.75,-30,4,[0,1])}
+    requests={"approach_forward":(-30,-1.75,1,[1,0]),
+              "approach_opposing":(-30,1.75,1,[-1,0]),
+              "destination_forward":(1.75,30,4,[0,1]),
+              "destination_opposing":(-1.75,30,4,[0,-1])}
     observed={}
     approach_waypoint=None
     for name,(x,y,road_id,expected) in requests.items():
@@ -96,10 +96,10 @@ def map_survey(carla, mapping, native_hash):
     return {"native_map_sha256":native_hash,"road_directions_native":observed,
             "native_lane_link_readback":lane_link,
             "approach_centerline_point_native_m":[0,0],
-            "approach_right_normal_native":[0,1],"right_half_width_m":7,
+            "approach_right_normal_native":[0,-1],"right_half_width_m":7,
             "intersection_entry_point_native_m":[-7,0],
             "approach_forward_native":observed["approach_forward"],
-            "destination_exit_point_native_m":[0,-7],
+            "destination_exit_point_native_m":[0,7],
             "destination_forward_native":observed["destination_forward"],
             "intersection_polygon_xy_m":[[-7,-7],[7,-7],[7,7],[-7,7]],
             "boundary_provenance":"Authored roadway edge/centerline from Native map readback; visual and physical survey still required"}
@@ -155,12 +155,12 @@ def execute(config, output, host, port):
         lateral=CASE_PLACEMENTS[suffix]
         blueprint=world.get_blueprint_library().find("vehicle.lincoln.mkz_2020")
         blueprint.set_attribute("role_name","c329610_ego")
-        ego=world.spawn_actor(blueprint,carla.Transform(carla.Location(x=-50,y=-lateral,z=.5),carla.Rotation(yaw=0)))
+        ego=world.spawn_actor(blueprint,carla.Transform(carla.Location(x=-50,y=lateral,z=.5),carla.Rotation(yaw=0)))
         owned.append(ego)
         ego.apply_control(carla.VehicleControl(brake=1,hand_brake=True))
         for _ in range(40):world.tick()
         initial=body_xy(ego)
-        if not all(0<y<7 for x,y in initial):
+        if not all(-7<y<0 for x,y in initial):
             raise RuntimeError("Actual Native vehicle footprint not contained in right half at start")
         physics=ego.get_physics_control()
         wheels=physics.wheels
