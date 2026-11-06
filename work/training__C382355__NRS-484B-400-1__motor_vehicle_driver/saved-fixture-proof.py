@@ -39,7 +39,7 @@ def make_base(destination,suffix,approach_y,frame_count=4,full_resolution=False)
     (destination/'config.json').write_text(json.dumps(config))
     geometry={'native_map_sha256':'a'*64,'approach_road_id':1,
               'turn_connector_road_id':13,'right_turn_lane_id':-2,
-              'right_turn_lane_native_y_bounds_m':[-7.0,-3.5],
+              'right_turn_lane_native_y_bounds_m':[3.5,7.0],
               'intersection_native_xy_bounds_m':[-7,-7,7,7],
               'right_turn_lane_design_native_verified':False}
     (destination/'road_geometry.json').write_text(json.dumps(geometry))
@@ -48,7 +48,7 @@ def make_base(destination,suffix,approach_y,frame_count=4,full_resolution=False)
     lane=-2 if suffix=='witness_1' else -1
     if frame_count==4:
         states=[(-20,approach_y,(1,0),1,lane),(-12,approach_y,(1,0),1,lane),
-                (-3,-2,(.7,-.714142842),13,-2),(-5.25,-12,(0,-1),4,-2)]
+                (-3,2,(.7,.714142842),13,-2),(-5.25,12,(0,1),4,-2)]
     else:
         states=[]
         for index in range(frame_count):
@@ -56,10 +56,10 @@ def make_base(destination,suffix,approach_y,frame_count=4,full_resolution=False)
                 x=-40+30*index/159;y=approach_y;angle=0;road_id=1;lane_id=lane
             elif index<320:
                 progress=(index-160)/159
-                x=-9.5+4.25*progress;y=approach_y+(-12-approach_y)*progress
-                angle=-math.pi*progress/2;road_id=13;lane_id=-2
+                x=-9.5+4.25*progress;y=approach_y+(12-approach_y)*progress
+                angle=math.pi*progress/2;road_id=13;lane_id=-2
             else:
-                x=-5.25;y=-12-18*(index-320)/159;angle=-math.pi/2;road_id=4;lane_id=-2
+                x=-5.25;y=12+18*(index-320)/159;angle=math.pi/2;road_id=4;lane_id=-2
             states.append((x,y,(math.cos(angle),math.sin(angle)),road_id,lane_id))
     for i,(x,y,forward,road_id,lane_id) in enumerate(states):
         frame=100+i;t=.05*(i+1)
@@ -114,7 +114,7 @@ def run(frame_count=4):
     records=[]
     with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c382355-saved-') as temp:
         scratch=Path(temp)
-        for suffix,lateral in (('witness_1',-5.25),('witness_2',-1.75)):
+        for suffix,lateral in (('witness_1',5.25),('witness_2',1.75)):
             base=scratch/(suffix+'-base');make_base(base,suffix,lateral,frame_count)
             positive=scratch/(suffix+'-positive');negative=scratch/(suffix+'-negative')
             shutil.copytree(base,positive);shutil.copytree(base,negative)

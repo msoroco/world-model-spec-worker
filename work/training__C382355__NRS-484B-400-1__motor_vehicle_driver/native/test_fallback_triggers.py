@@ -26,12 +26,12 @@ class FallbackTriggersTest(unittest.TestCase):
         self.pixels = root/'pixel-audit.json'
         self.video = root/'overview.mkv'
         self.video.write_bytes(b'synthetic camera fixture')
-        self.route = [[-20,-5.25],[-5,-5.25],[-5,-12]]
+        self.route = [[-20,5.25],[-5,5.25],[-5,12]]
         self.write()
 
     def write(self, deviation=0, exit=True, link=True, visible=19, total=20):
-        rows = [row(1,-20,-5.25,1,-2), row(2,-8,-5.25+deviation,1,-2),
-                row(3,-5,-5.25,13,-2),row(4,-5,-12 if exit else -6,4 if exit else 13,-2)]
+        rows = [row(1,-20,5.25,1,-2), row(2,-8,5.25+deviation,1,-2),
+                row(3,-5,5.25,13,-2),row(4,-5,12 if exit else 6,4 if exit else 13,-2)]
         self.samples.write_text(''.join(json.dumps(r)+'\n' for r in rows))
         self.mapping.write_text(json.dumps({'source_kind':'native_map_readback',
             'native_samples_sha256':sha(self.samples),'connected_right_turn_lane_link':link}))

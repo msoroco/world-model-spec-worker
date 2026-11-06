@@ -16,7 +16,8 @@ SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','controller.py':'co
          'tests/test_controller.py':'test_controller.py',
          'tests/test_candidate_knobs.py':'test_candidate_knobs.py',
          'tests/test_fallback_triggers.py':'test_fallback_triggers.py',
-         'tests/test_cameras.py':'test_cameras.py'}
+         'tests/test_cameras.py':'test_cameras.py',
+         'tests/test_runner_survey.py':'test_runner_survey.py'}
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()

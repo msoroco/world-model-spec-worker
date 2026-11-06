@@ -29,7 +29,7 @@ def rows(path):
 def main():
     with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work', prefix='c329610-pixel-path-') as temporary:
         attempt = Path(temporary)/'attempt'
-        fixture.make_base(attempt, 'controlled_1', -1.75, 480)
+        fixture.make_base(attempt, 'controlled_1', 1.75, 480)
         finalizer = HERE/'native/finalize.py'
         env = dict(os.environ)
         env['PYTHONPATH'] = str(ROOT/'runtime/pipeline/scenario_pipeline')
@@ -58,7 +58,7 @@ def main():
         (attempt/'route_audit.json').write_text(json.dumps(route)+'\n')
         def trigger():
             return evaluate(attempt/'native_samples.jsonl', attempt/'road_geometry.json',
-                            attempt/'route_audit.json', attempt/'pixel_audit.json', -1.75)
+                            attempt/'route_audit.json', attempt/'pixel_audit.json', 1.75)
         baseline = trigger()
         if any(baseline[key] for key in ('fallback1','fallback2','fallback3')):
             raise RuntimeError('Synthetic baseline selected a fallback')

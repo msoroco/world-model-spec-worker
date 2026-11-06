@@ -30,7 +30,7 @@ def main():
                                      ('native_samples.jsonl','road_geometry.json','route_audit.json'))
         pixels, mapping, video, review = (folder/name for name in
             ('pixel_audit.json','video_frames.jsonl','approach.mkv','pixel_review.jsonl'))
-        rows = [{'native_center_xy_m': [-35+25*i/479, -1.75],
+        rows = [{'native_center_xy_m': [-35+25*i/479, 1.75],
                  'native_frame': 100+i, 'time_s': (i+1)/20} for i in range(480)]
         frame_rows = [{'video_frame': i, 'native_frame': 100+i,
                        'time_s': (i+1)/20} for i in range(480)]
@@ -51,17 +51,17 @@ def main():
             write(pixels, measure_pixels(samples, mapping, video, review))
         review_visibility(456)
         def trigger():
-            return evaluate(samples, geometry, route, pixels, -1.75)
+            return evaluate(samples, geometry, route, pixels, 1.75)
         assert [trigger()[key] for key in ('fallback1','fallback2','fallback3')] == [False]*3
         write(route, {**base, 'connected_lane_link': False})
         assert trigger()['fallback1'] is True
         write(route, base)
-        rows[200]['native_center_xy_m'][1] = -2.11
+        rows[200]['native_center_xy_m'][1] = 2.11
         write_rows(samples, rows)
         write(route, {**base, 'native_samples_sha256': sha(samples)})
         review_visibility(456)
         assert trigger()['fallback2'] is True
-        rows[200]['native_center_xy_m'][1] = -1.75
+        rows[200]['native_center_xy_m'][1] = 1.75
         write_rows(samples, rows)
         write(route, base)
         review_visibility(455)

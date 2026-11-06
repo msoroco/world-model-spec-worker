@@ -38,20 +38,20 @@ def make_base(destination,suffix,lateral,frame_count=4,full_resolution=False):
     config['duration_s']=frame_count/20;config['rate_hz']=20
     (destination/'config.json').write_text(json.dumps(config))
     directions={'approach_forward':[1,0],'approach_opposing':[-1,0],
-                'destination_forward':[0,1],'destination_opposing':[0,-1]}
+                'destination_forward':[0,-1],'destination_opposing':[0,1]}
     geometry={'native_map_sha256':'a'*64,'road_directions_native':directions,
               'approach_centerline_point_native_m':[0,0],
-              'approach_right_normal_native':[0,-1], 'right_half_width_m':7,
+              'approach_right_normal_native':[0,1], 'right_half_width_m':7,
               'intersection_entry_point_native_m':[-7,0],
               'approach_forward_native':[1,0],
-              'destination_exit_point_native_m':[0,7],
-              'destination_forward_native':[0,1]}
+              'destination_exit_point_native_m':[0,-7],
+              'destination_forward_native':[0,-1]}
     (destination/'road_geometry.json').write_text(json.dumps(geometry))
     (destination/'context.json').write_text(json.dumps({'surveyed_two_way_intersection':geometry}))
     trace=[];evidence=[];mapping=[];motion=[];history=[]
     if frame_count==4:
         states=[(-20,lateral,(1,0)),(-10,lateral,(1,0)),
-                (-8,lateral,(1,0)),(1.75,12,(0,1))]
+                (-8,lateral,(1,0)),(1.75,-12,(0,-1))]
     else:
         states=[]
         for index in range(frame_count):
@@ -59,10 +59,10 @@ def make_base(destination,suffix,lateral,frame_count=4,full_resolution=False):
                 x=-40+30*index/159;y=lateral;angle=0
             elif index<320:
                 progress=(index-160)/159
-                x=-9.5+11.25*progress;y=lateral+(10-lateral)*progress
-                angle=math.pi*progress/2
+                x=-9.5+11.25*progress;y=lateral+(-10-lateral)*progress
+                angle=-math.pi*progress/2
             else:
-                x=1.75;y=10+30*(index-320)/159;angle=math.pi/2
+                x=1.75;y=-10-30*(index-320)/159;angle=-math.pi/2
             states.append((x,y,(math.cos(angle),math.sin(angle))))
     for i,(x,y,forward) in enumerate(states):
         frame=100+i;t=.05*(i+1)
@@ -115,7 +115,7 @@ def run(frame_count=4):
     records=[]
     with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c329610-saved-') as temp:
         scratch=Path(temp)
-        for suffix,lateral in (('controlled_1',-1.75),('controlled_2',-5.25)):
+        for suffix,lateral in (('controlled_1',1.75),('controlled_2',5.25)):
             base=scratch/(suffix+'-base');make_base(base,suffix,lateral,frame_count)
             positive=scratch/(suffix+'-positive');negative=scratch/(suffix+'-negative')
             shutil.copytree(base,positive);shutil.copytree(base,negative)

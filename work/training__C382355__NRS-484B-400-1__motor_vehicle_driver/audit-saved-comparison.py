@@ -31,8 +31,8 @@ def run():
     with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c382355-pair-') as temporary:
         root=Path(temporary)
         left=root/'witness_1';right=root/'witness_2'
-        fixture.make_base(left,'witness_1',-5.25,480)
-        fixture.make_base(right,'witness_2',-1.75,480)
+        fixture.make_base(left,'witness_1',5.25,480)
+        fixture.make_base(right,'witness_2',1.75,480)
         assert checked_config(left/'config.json')==checked_config(right/'config.json')
         assert (left/'road_geometry.json').read_bytes()==(right/'road_geometry.json').read_bytes()
         for source in (left,right):

@@ -70,7 +70,7 @@ def enrich(attempt):
 
 
 def make_attempt(path,suffix,full_resolution=False):
-    lateral={'controlled_1':-1.75,'controlled_2':-5.25}[suffix]
+    lateral={'controlled_1':1.75,'controlled_2':5.25}[suffix]
     fixture.make_base(path,suffix,lateral,480,full_resolution=full_resolution)
     enrich(path)
 

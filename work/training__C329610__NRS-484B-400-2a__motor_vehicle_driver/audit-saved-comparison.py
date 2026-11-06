@@ -31,8 +31,8 @@ def run():
        str(ROOT/'runtime/pipeline/python'),str(ROOT/'runtime/pipeline'),env.get('PYTHONPATH','')))
     with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c329610-offset-pair-') as temporary:
         a=Path(temporary)/'controlled_1';b=Path(temporary)/'controlled_2'
-        fixture.make_base(a,'controlled_1',-1.75,480)
-        fixture.make_base(b,'controlled_2',-5.25,480)
+        fixture.make_base(a,'controlled_1',1.75,480)
+        fixture.make_base(b,'controlled_2',5.25,480)
         assert config(a/'config.json')==config(b/'config.json')
         assert (a/'road_geometry.json').read_bytes()==(b/'road_geometry.json').read_bytes()
         for source in (a,b):
@@ -56,7 +56,7 @@ def run():
             for key in ('native_frame','time_s','native_forward_xy'):
                 assert first[key]==second[key],key
             assert math.isclose(first['native_center_xy_m'][0],second['native_center_xy_m'][0],abs_tol=1e-10)
-            expected=-3.5 if index<160 else -3.5*(1-(index-160)/159) if index<320 else 0
+            expected=3.5 if index<160 else 3.5*(1-(index-160)/159) if index<320 else 0
             assert math.isclose(second['native_center_xy_m'][1]-first['native_center_xy_m'][1],expected,abs_tol=1e-10)
         return {'format':'c329610-2a-synthetic-saved-pair-audit-v1',
             'frames_per_case':480,'source_unchanged':True,

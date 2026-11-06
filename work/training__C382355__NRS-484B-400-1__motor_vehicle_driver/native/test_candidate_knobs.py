@@ -9,6 +9,11 @@ class CandidateKnobsTest(unittest.TestCase):
                    ('primary','fallback1','fallback2','fallback3')}
             base=plans['primary']
             for name,plan in plans.items():
+                self.assertEqual(plan['native_route_xy_m'],
+                                 [[x,-y] for x,y in plan['authored_route_xy_m']])
+                self.assertEqual(plan['native_route_xy_m'][0][1],
+                                 -plan['comparison_approach_y_m'])
+                self.assertGreater(plan['native_route_xy_m'][-1][1],7)
                 for key in ('law_id','cell_id','actor','duration_s','rate_hz','comparison_approach_y_m'):
                     self.assertEqual(plan[key],base[key],(suffix,name,key))
             self.assertNotEqual(plans['fallback1']['native_route_xy_m'],base['native_route_xy_m'])

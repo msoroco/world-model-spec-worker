@@ -35,7 +35,7 @@ class TriggerTests(unittest.TestCase):
         self.mapping = folder/'video_frames.jsonl'
         self.video = folder/'approach.mkv'
         self.review = folder/'pixel_review.jsonl'
-        write(self.samples, {'native_center_xy_m': [-20, -1.75], 'native_frame': 100, 'time_s': .05})
+        write(self.samples, {'native_center_xy_m': [-20, 1.75], 'native_frame': 100, 'time_s': .05})
         write(self.geometry, {'native_map_sha256': '0' * 64})
         write(self.route, sealed_route(self.samples, self.geometry))
         write(self.mapping, {'video_frame': 0, 'native_frame': 100, 'time_s': .05})
@@ -48,7 +48,7 @@ class TriggerTests(unittest.TestCase):
         write(self.pixels, measure(self.samples, self.mapping, self.video, self.review))
 
     def trigger(self):
-        return evaluate(self.samples, self.geometry, self.route, self.pixels, -1.75)
+        return evaluate(self.samples, self.geometry, self.route, self.pixels, 1.75)
 
     def test_thresholds_and_independent_failures(self):
         self.assertEqual([self.trigger()[key] for key in ('fallback1','fallback2','fallback3')],
@@ -56,11 +56,11 @@ class TriggerTests(unittest.TestCase):
         write(self.route, sealed_route(self.samples, self.geometry, connected_lane_link=False))
         self.assertTrue(self.trigger()['fallback1'])
         write(self.route, sealed_route(self.samples, self.geometry))
-        write(self.samples, {'native_center_xy_m': [-20, -2.11], 'native_frame': 100, 'time_s': .05})
+        write(self.samples, {'native_center_xy_m': [-20, 2.11], 'native_frame': 100, 'time_s': .05})
         write(self.route, sealed_route(self.samples, self.geometry))
         self.mark(True)
         self.assertTrue(self.trigger()['fallback2'])
-        write(self.samples, {'native_center_xy_m': [-20, -1.75], 'native_frame': 100, 'time_s': .05})
+        write(self.samples, {'native_center_xy_m': [-20, 1.75], 'native_frame': 100, 'time_s': .05})
         write(self.route, sealed_route(self.samples, self.geometry))
         self.mark(False)
         self.assertTrue(self.trigger()['fallback3'])
@@ -71,10 +71,10 @@ class TriggerTests(unittest.TestCase):
             self.trigger()
 
     def test_changed_sources_reject(self):
-        write(self.samples, {'native_center_xy_m': [-20, -2.0], 'native_frame': 100, 'time_s': .05})
+        write(self.samples, {'native_center_xy_m': [-20, 2.0], 'native_frame': 100, 'time_s': .05})
         with self.assertRaisesRegex(ValueError, 'source or count mismatch'):
             self.trigger()
-        write(self.samples, {'native_center_xy_m': [-20, -1.75], 'native_frame': 100, 'time_s': .05})
+        write(self.samples, {'native_center_xy_m': [-20, 1.75], 'native_frame': 100, 'time_s': .05})
         write(self.geometry, {'native_map_sha256': '1' * 64})
         with self.assertRaisesRegex(ValueError, 'source hash mismatch'):
             self.trigger()
