@@ -11,6 +11,25 @@ from measure_native import analyze,rows,sha
 CAMERAS=('overview','reference_left','reference_right','ego')
 CHANNELS=('drv.u_turn','st.curvature','st.grade','st.crest',
           'st.sight_distance','rel.oncoming','drv.approaching','kin.position')
+MEASUREMENT_INPUTS={
+    'turn_and_two_direction_visibility':(
+        'native_body_history.jsonl','driver_eye_rays.jsonl','video_frames.jsonl',
+        'trace.jsonl','capture/evidence.jsonl'),
+    'crest_or_curve_at_turn':(
+        'native-construction-context.json','native_road_readback.xodr',
+        'native_body_history.jsonl'),
+    'multi_movement_reversal_history':('native_body_history.jsonl','trace.jsonl'),
+    'sightline_boundary_and_pixels':(
+        'driver_eye_rays.jsonl','video_frames.jsonl',
+        'reference_left.mkv','reference_right.mkv')}
+
+
+def measure_case_sources(attempt):
+    return analyze(attempt)
+
+
+def source_hashes(attempt,key):
+    return {name:sha(Path(attempt)/name) for name in MEASUREMENT_INPUTS[key]}
 
 
 def video_frames(path):
@@ -29,7 +48,7 @@ def finalize(attempt,output):
     if output.exists() or (attempt/'result.json').exists():
         raise ValueError('Retain prior finalization; use a fresh attempt')
     config=json.loads((attempt/'config.json').read_text())
-    measurement=analyze(attempt)
+    measurement=measure_case_sources(attempt)
     count=measurement['original_frames']
     capture=json.loads((attempt/'capture/manifest.json').read_text())
     if (capture.get('case_id')!=config['case_id'] or
@@ -92,20 +111,23 @@ def finalize(attempt,output):
                 'turn_and_two_direction_visibility':{'value':{
                     'engineering_reversal_observed':measurement['engineering_reversal_observed'],
                     'two_direction_visibility_proven':False},
-                    'method':'analyze','sources':measurement['source_sha256']},
+                    'method':'measure_case_sources',
+                    'sources':source_hashes(attempt,'turn_and_two_direction_visibility')},
                 'crest_or_curve_at_turn':{'value':{
                     'maximum_native_crest_height_error_m':measurement['maximum_native_crest_height_error_m'],
                     'turn_location_on_authored_curve':False},
-                    'method':'analyze','sources':measurement['source_sha256']},
+                    'method':'measure_case_sources',
+                    'sources':source_hashes(attempt,'crest_or_curve_at_turn')},
                 'multi_movement_reversal_history':{'value':{
                     'reverse_motion_observed':measurement['reverse_motion_observed'],
                     'engineering_reversal_observed':measurement['engineering_reversal_observed']},
-                    'method':'analyze','sources':measurement['source_sha256']},
+                    'method':'measure_case_sources',
+                    'sources':source_hashes(attempt,'multi_movement_reversal_history')},
                 'sightline_boundary_and_pixels':{'value':{
                     'original_pixel_visibility_proven':False,
                     'actual_body_visibility_proven':False},
-                    'method':'pending_independent_original_pixel_audit',
-                    'sources':measurement['source_sha256']}},
+                    'method':'measure_case_sources',
+                    'sources':source_hashes(attempt,'sightline_boundary_and_pixels')}},
             'video_frames':video_counts,'capture_manifest_sha256':sha(attempt/'capture/manifest.json'),
             'scope':'saved original Native motion/map/actor evidence; no sightline pixel or legal verdict'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')

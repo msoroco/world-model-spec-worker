@@ -17,7 +17,7 @@ def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
 def build():
-    base=ROOT/'draft-saved-v2'/'base'
+    base=REPO/'.runtime-work/c104538/draft-saved-v4'/'base'
     if base.exists():raise ValueError('Retain prior synthetic diagnostic; use a new version')
     base.mkdir(parents=True)
     prepare(base)
@@ -41,23 +41,25 @@ def build():
         ('positive',None,None),
         ('negative_missing_evidence','capture/evidence.jsonl','Missing required source'),
         ('negative_missing_video','reference_left.mkv','Missing required source')):
-        attempt=ROOT/'draft-saved-v2'/label
+        attempt=REPO/'.runtime-work/c104538/draft-saved-v4'/label
         shutil.copytree(base,attempt)
         if removed:(attempt/removed).unlink()
         command=['python3.11',str(ROOT/'native/finalize.py'),
                  '--attempt',str(attempt),'--output',str(attempt/'analysis-report.json')]
         result=subprocess.run(command,capture_output=True,text=True,env=env,timeout=120)
-        log=ROOT/'draft-saved-v2'/(label+'.log');log.write_text(result.stdout+result.stderr)
+        log=ROOT/'draft-saved-logs-v4'/(label+'.log')
+        log.parent.mkdir(parents=True,exist_ok=True)
+        log.write_text(result.stdout+result.stderr)
         if expected is None:
             assert result.returncode==0,(label,result.stderr)
         else:
             assert result.returncode!=0 and expected in result.stderr,(label,result.stderr)
         rows.append({'label':label,'removed':removed,'exit_code':result.returncode,
                      'log':str(log.relative_to(ROOT)),'log_sha256':sha(log)})
-    summary={'format':'c104538-synthetic-saved-diagnostic-v2',
+    summary={'format':'c104538-synthetic-saved-diagnostic-v4',
         'positive_count':1,'negative_count':2,'rows':rows,
-        'positive_result_sha256':sha(ROOT/'draft-saved-v2/positive/result.json'),
-        'positive_analysis_sha256':sha(ROOT/'draft-saved-v2/positive/analysis-report.json'),
+        'positive_result_sha256':sha(REPO/'.runtime-work/c104538/draft-saved-v4/positive/result.json'),
+        'positive_analysis_sha256':sha(REPO/'.runtime-work/c104538/draft-saved-v4/positive/analysis-report.json'),
         'native_executed':False,'recording_accepted':False,
         'scope':'three-frame synthetic saved finalizer diagnostic; not exact 480-frame package compatibility'}
     (ROOT/'draft-saved-summary.json').write_text(json.dumps(summary,indent=2)+'\n')

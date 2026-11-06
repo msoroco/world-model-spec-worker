@@ -5,6 +5,7 @@ from pathlib import Path
 import subprocess
 
 ROOT=Path(__file__).resolve().parent
+REPO=ROOT.parents[1]
 SHA=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
 
@@ -15,7 +16,7 @@ def audit():
     for row in summary['rows']:
         assert SHA(ROOT/row['log'])==row['log_sha256']
         assert (row['exit_code']==0)==(row['label']=='positive')
-    positive=ROOT/'draft-saved-v2/positive'
+    positive=REPO/'.runtime-work/c104538/draft-saved-v4/positive'
     result=json.loads((positive/'result.json').read_text())
     report=json.loads((positive/'analysis-report.json').read_text())
     assert SHA(positive/'result.json')==summary['positive_result_sha256']
@@ -30,7 +31,7 @@ def audit():
     for source_name,digest in result['measured_values']['source_sha256'].items():
         assert SHA(positive/source_name)==digest
     for row in summary['rows'][1:]:
-        assert row['removed'] and not (ROOT/'draft-saved-v2'/row['label']/row['removed']).exists()
+        assert row['removed'] and not (REPO/'.runtime-work/c104538/draft-saved-v4'/row['label']/row['removed']).exists()
     return {'positive':1,'negatives':2,'source_hashes_verified':8,
             'actual_native_evidence_claimed':False,'recording_accepted':False}
 

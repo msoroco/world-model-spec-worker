@@ -1,0 +1,70 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "turn_and_two_direction_visibility",
+      "method": "measure_case_sources",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_body_history.jsonl",
+        "driver_eye_rays.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "crest_or_curve_at_turn",
+      "method": "measure_case_sources",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-construction-context.json",
+        "native_road_readback.xodr",
+        "native_body_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "multi_movement_reversal_history",
+      "method": "measure_case_sources",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_body_history.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "reviewed-scope-2",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "sightline_boundary_and_pixels",
+      "method": "measure_case_sources",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "driver_eye_rays.jsonl",
+        "video_frames.jsonl",
+        "reference_left.mkv",
+        "reference_right.mkv"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native_body_history.jsonl"
+    ],
+    "error_contains": "Missing required source: native_body_history.jsonl"
+  }
+}
