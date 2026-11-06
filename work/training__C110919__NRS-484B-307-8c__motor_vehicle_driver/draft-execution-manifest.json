@@ -1,0 +1,120 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C110919__NRS-484B-307-8c__motor_vehicle_driver",
+  "status": "draft_not_selected",
+  "runtime_manifest_sha256": "0d9a74f44af88236ebed007ae6e020a134b420ad6fe8f2f87c8869184ebee555",
+  "cases": [
+    {
+      "case_id": "training__C110919__NRS-484B-307-8c__motor_vehicle_driver__probe_a",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Signal mapping, actor behavior, frame coverage and pixels need original Native evidence"
+      },
+      "measurement_contract": "draft-candidates/probe_a/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110919-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/probe_a/fallback1/construction.json",
+          "construction_sha256": "dd32270089fa90da4db475b2e897e8ebcec81be7d26efc5243b546203d5dde5e",
+          "trigger": {
+            "source": "original Native ego pose joined to authored route and map readback",
+            "metric": "max_route_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/probe_a/fallback2/construction.json",
+          "construction_sha256": "3f863f16106a377fb45bb52fb856116ae51e2f5b2a244657c50ac6b37976c9d1",
+          "trigger": {
+            "source": "original Native pedestrian and ego conflict-zone crossing times",
+            "metric": "min_pedestrian_clearance_s",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "yield_clearance_margin_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/probe_a/fallback3/construction.json",
+          "construction_sha256": "1028f3363f0fd3f11825d645f3f4f7ade54fb0081f67bf96cee9fd019848d714",
+          "trigger": {
+            "source": "decoded original signal and body mask corners in overview video",
+            "metric": "min_signal_or_body_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "construction": "draft-candidates/probe_a/primary/construction.json",
+      "construction_sha256": "d114e8ebb0c227bd6b86b02efd9007e1c34cac0eedb6815922949c4c10b94257"
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8c__motor_vehicle_driver__probe_b",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Signal mapping, actor behavior, frame coverage and pixels need original Native evidence"
+      },
+      "measurement_contract": "draft-candidates/probe_b/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110919-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/probe_b/fallback1/construction.json",
+          "construction_sha256": "589a254399b0cbd0a81a107ef19649009e40233bc00b90345593fbe6adef676c",
+          "trigger": {
+            "source": "original Native ego pose joined to authored route and map readback",
+            "metric": "max_route_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/probe_b/fallback2/construction.json",
+          "construction_sha256": "c7cdd6442d592592e37871e6f00d6e0cd8dc8cc4c65d833552e3e45086fe341f",
+          "trigger": {
+            "source": "original Native pedestrian and ego conflict-zone crossing times",
+            "metric": "min_pedestrian_clearance_s",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "yield_clearance_margin_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/probe_b/fallback3/construction.json",
+          "construction_sha256": "e4f356f01642f875f2bed3804043fd10c3867e0d8eb0dde359c1fc9a9599a874",
+          "trigger": {
+            "source": "decoded original signal and body mask corners in overview video",
+            "metric": "min_signal_or_body_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "construction": "draft-candidates/probe_b/primary/construction.json",
+      "construction_sha256": "ba33f166f57b6555ec6cb74c64c114dde3e042d64f091b668b7c748fdfb04714"
+    }
+  ]
+}

@@ -147,7 +147,7 @@ def execute(config, output, host, port):
         survey=map_survey(carla,mapping,native_hash)
         survey['native_signal_count']=signal_count
         write_new(output/"road_geometry.json",survey)
-        write_new(output/"context.json",{'surveyed_two_way_intersection':survey})
+        write_new(output/"context.json",{'surveyed_intersection':survey})
         suffix=config["case_suffix"];candidate=config["candidate_id"]
         blueprint=world.get_blueprint_library().find("vehicle.lincoln.mkz_2020")
         blueprint.set_attribute("role_name","c110454_ego")

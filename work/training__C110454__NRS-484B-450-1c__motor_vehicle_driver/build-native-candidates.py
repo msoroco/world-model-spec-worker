@@ -9,7 +9,8 @@ REPO = HERE.parents[1]
 NATIVE = HERE / "native"
 ASSIGNMENT = HERE.name
 FILES = ("runner.py", "geometry.py", "controller.py", "engineering.py",
-         "cameras.py", "measure.py", "finalize.py", "road.xodr")
+         "cameras.py", "measure.py", "finalize.py", "finalize-measure.py", "road.xodr")
+TESTS = ("test_native.py",)
 CHANNELS = ("drv.standing_or_parked", "st.intersection", "rel.occupies",
             "drv.forced_halt", "dev.human_direction", "dev.traffic_signal",
             "kin.velocity", "native_body_pose_control", "camera_frame_join")
@@ -30,6 +31,8 @@ def main() -> None:
     from engineering import CANDIDATES, TRIGGERS, parameters
     batch = json.loads((REPO / "batch.json").read_text())
     shared = [{"path": name, "content": (NATIVE / name).read_text()} for name in FILES]
+    shared += [{"path": "tests/" + name, "content": (NATIVE / name).read_text()}
+               for name in TESTS]
     description = {"channels": [{"name": name, "unit": "structured",
                                 "sampling_rate_hz": 20,
                                 "method": "original Native body, map and controller sample",

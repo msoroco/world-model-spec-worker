@@ -1,0 +1,53 @@
+{
+  "format": "worker-statutory-branch-review-v1",
+  "assignment_id": "training__C110919__NRS-484B-307-8c__motor_vehicle_driver",
+  "source_refs": [
+    "inputs/training__C110919__NRS-484B-307-8c__motor_vehicle_driver/assignment.json",
+    "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json",
+    "inputs/coverage/branch-sources.json"
+  ],
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "right_turn",
+    "control": "traffic_light",
+    "actor": "motor_vehicle_driver"
+  },
+  "branches": [
+    {
+      "id": "governing_steady_red",
+      "source_topics": ["text-0"],
+      "cell_fit": "authored_signal_requires_native_governing_and_pixel_readback",
+      "cpu_draft_evidence": "Authored signal id 601 and 480-frame synthetic steady-red source; pinned offline and v1 software path",
+      "remaining_exact_evidence": "Original Native signal actor identity, governing direction, state and decoded original pixels",
+      "status": "unproven"
+    },
+    {
+      "id": "right_turn_after_stop_from_extreme_right_to_two_way",
+      "source_topics": ["text-1", "reviewed-scope-0"],
+      "cell_fit": "matches_frozen_right_turn_with_two_way_destination",
+      "cpu_draft_evidence": "Authored extreme-right incoming lane and two-way destination; source-hashed synthetic full halt/rolling pair and 480-frame turn route",
+      "remaining_exact_evidence": "Original full body and speed before stop line, Native lane directions and lane link, observed right turn and destination exit",
+      "status": "unproven"
+    },
+    {
+      "id": "yield_to_pedestrians_and_other_traffic",
+      "source_topics": ["text-1"],
+      "cell_fit": "destination_pedestrian_crosswalk_authored",
+      "cpu_draft_evidence": "Pedestrian conflict window and 1.05 s synthetic clearance held fixed across pair; later Native runner records walker actor and body",
+      "remaining_exact_evidence": "Original pedestrian and cross-traffic actor identities, directions, conflict overlap and ego yield; original pixels",
+      "status": "unproven"
+    },
+    {
+      "id": "left_turn_from_extreme_left_one_way_to_one_way_left",
+      "source_topics": ["text-1"],
+      "cell_fit": "outside_frozen_right_turn_maneuver_and_two_way_approach",
+      "cpu_draft_evidence": "Exact statutory alternative identified; no left-turn case selected in C110919",
+      "remaining_exact_evidence": "A separate source-grounded one-way-left cell would be needed to claim this alternative",
+      "status": "unproven"
+    }
+  ],
+  "scope_disposition": "The selected witness branch is right_turn. Left turn on red is a statutory alternative whose antecedent conflicts with the frozen right-turn cell and authored two-way approach; no same-cell delivery claim is made.",
+  "upstream_stop_reference": "The supplied 8c text says 'After complying with the requirement to stop'; the separate frozen 8a text specifies the stop-reference hierarchy. This package authors a nearest-side stop line and crosswalk and measures the pre-crossing full halt as a prerequisite.",
+  "cpu_readiness": false,
+  "physical_observation_claimed": false
+}

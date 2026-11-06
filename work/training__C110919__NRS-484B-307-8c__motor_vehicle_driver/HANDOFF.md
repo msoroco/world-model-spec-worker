@@ -1,15 +1,27 @@
 # NRS-484B-307-8c at C110919
 
-Actor: `motor_vehicle_driver`. Frozen cell: `intersection` / `right_turn` / `traffic_light`.
+Status: **blocked, unselected**. Actor `motor_vehicle_driver`; frozen cell `intersection` / `right_turn` / `traffic_light`. No CARLA run, original pixels, accepted recording, or legal verdict is claimed.
 
-Witness branch: right_turn.
+## Exact source and branch scope
 
-Comparison variable: `red_turn_stop_and_yield`. Proposed physical probes: stop and yield before permitted right turn; turn on red without the required stop. These are proposed controller and scene targets, not observed behavior or legal verdicts.
+Frozen source: `inputs/training__C110919__NRS-484B-307-8c__motor_vehicle_driver/assignment.json`, SHA-256 `2bf619a7cceca5f1accd93842918b59b3d4236862b138d4b997c2a8d85914775`. The reviewed witness branch is `right_turn`. `statutory-review.json` maps governing steady red, the after-stop extreme-right turn to a two-way destination, pedestrian/other-traffic yield, and the one-way-left alternative. The latter conflicts with the frozen right-turn maneuver and is not claimed. The separate 8a frozen text supplies the stop-reference hierarchy used as the 8c prerequisite. All four branch statuses remain unproven for delivery. Review SHA-256 `34d5fc17a307c32fa4cf4b09f550005b4354856d352857acbce7d457c58a1a20`; exact source audit passed.
 
-Source: `inputs/training__C110919__NRS-484B-307-8c__motor_vehicle_driver/assignment.json`, SHA-256 `2bf619a7cceca5f1accd93842918b59b3d4236862b138d4b997c2a8d85914775`. Summary status: `recovered_requires_source_review`; exact law text and witness take precedence.
+No accepted membership ID or source-hashed equivalence receipt was supplied. No accepted original is replayed or claimed.
 
-Accepted membership IDs: none. No source-hashed equivalence receipt or accepted recording contents are available locally, so no reuse is claimed.
+## Native CPU construction
 
-Blocker: Delivery package incomplete: two controlled branches are planning definitions only; no four distinct CARLA constructions, offline and compatibility proofs, saved measurement fixtures, or independent audit. Physical realization and legal outcome remain unverified.
+`native/geometry.py` authors a same-cell two-way intersection, connected extreme-right approach/right-turn lane, governing signal proposal, stop line, nearest-side and destination pedestrian crosswalks. `native/runner.py --check` verifies the authored route and exact case/candidate configuration without importing CARLA. Its later explicit owned-endpoint path contains Native map/signal readback, observed-pose vehicle control, pedestrian actor, four synchronized lossless cameras, joined body/actor channels and world restoration. No physical execution occurred.
 
-Resume by resolving every statutory branch and exception against the law text; construct physical Native routes and controllers in the frozen cell; define measured channels and four distinct plans per selected case; run offline, compatibility, saved-only, comparison and independent audit proofs; set ready only after those proofs pass.
+`probe_a` and `probe_b` compare the one deliberate variable `halt_before_right_turn_on_red`; signal, road, route, pedestrian timing, yield command, weather and camera policy stay fixed. Each has primary plus three distinct fallback constructions: route lookahead after source-bound original cross-track error >0.45 m; yield clearance after original actor conflict clearance <1.0 s; overview FOV after decoded original signal/body pixel margin <40 px. `native/engineering.py` rejects unbound or non-original trigger metrics. All fallback triggers await real source measurements.
+
+`native/measurement-contract.json` describes the full 20 Hz / 480-frame source join, stop predicate, red-turn permission and physical limits. Exact selected-requirement contracts for both cases pass the pinned measurement-contract validator (audit log SHA-256 `5e3179560201811d59a5eaf2f38944fde920091d8da44a7e7661c6647ec1f238`). The contracts are draft until strict v2 fixture and selected delivery proofs pass.
+
+## Saved and portable diagnostics
+
+The 480-frame synthetic pair measures a pre-crossing full halt in `probe_a` and none in `probe_b`; both have the same turn entry and 1.05 s pedestrian-clearance window. `native/finalize.py` reads joined saved Native body, speed, signal, road and actor sources, verifies four decoded videos, and emits source-hashed 8c right-turn permission measurements. `saved-fixture-proof.py` passed positive and missing-`road_geometry.json` negatives for both cases, verified source immutability and both exact measurement contracts. Log SHA-256 `0baba20c2f59ee7e7cc0eb4ff51f0d46b74477426a52e63e92387c84e1a26b48`.
+
+`draft-execution-manifest.json` binds eight exact unselected candidate bundles (SHA-256 `0e46a6697f559617bdc1dc79d5367951fbfefcb06181642889738222e5a550bf`). The pinned `runtime.py offline` command passed all eight, with five tests per bundle (summary SHA-256 `129a67d7f3974f1f6c530df73e27c718735e2064226871bc4a8f0bc8318db02d`). All eight pinned **v1** synthetic package probes passed saved analysis, Native result validation, mandatory channels, Core conversion, Lean decoder, render/final decode and a missing-source negative (summary SHA-256 `1cad30470501920e2a691fb4cb71e96529ef084f65e930156b0f665a0b0b2328`). Independent package audit passed (log SHA-256 `0e30e02d84613f11838cc37b647226b4f1f1c01c8d7d6a84a238c36f90192886`). Independent controlled synthetic comparison audit passed (log SHA-256 `d9a367b2d9d2544d4c6bc1e370cb4ffd43a22adb701dbf0a910b9c7897931b32`). These diagnostics are software/CPU evidence only.
+
+## Remaining delivery work
+
+Strict selected **v2** positive/negative fixture recipe, original Native signal/governing direction, road/lane/stop readback, full-body stop and turn, pedestrian and cross-traffic yield, original pixel review, independent delivery audit, statutory branch closure, controlled physical comparison and ordered GPU queue proof are incomplete. Keep `result.json` blocked, with zero selected cases and zero accepted recordings, until those CPU delivery proofs pass. Physical CARLA behavior and accepted recordings are later GPU checks.

@@ -1,0 +1,67 @@
+{
+  "format": "c110919-307-8d-cpu-measurement-draft-v1",
+  "assignment_id": "training__C110919__NRS-484B-307-8d__motorcycle_or_moped_operator",
+  "source_refs": [
+    "inputs/training__C110919__NRS-484B-307-8d__motorcycle_or_moped_operator/assignment.json",
+    "inputs/training__C110919__NRS-484B-307-8d__motorcycle_or_moped_operator/witnesses.json",
+    "inputs/coverage/branch-sources.json"
+  ],
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "right_turn",
+    "control": "traffic_light",
+    "actor": "motorcycle_or_moped_operator"
+  },
+  "law_conditions": {
+    "signal": "Governing steady red alone at approach and entry",
+    "full_halt": "Observed speed <= 0.05 m/s for at least 10 consecutive 20 Hz frames while the front remains before y=-14 m, before first line crossing",
+    "right_turn_permission": "Extreme right approach lane, intersecting two-way road, and full halt before turn",
+    "yield": "Ego does not enter pedestrian conflict before pedestrian clearance; original actor identity and clearance measurement required",
+    "excluded_alternative": "Left turn on red requires one-way-left topology and conflicts with frozen right-turn cell; no coverage claim",
+    "nearest_halt_reference": "Authored stop line at y=-14 m before nearest-side crosswalk at y=-11 m; original Native map readback and pixels required"
+  },
+  "frame_contract": {
+    "rate_hz": 20,
+    "frames": 480,
+    "duration_s": 24,
+    "join": "video_frame == native_frame == sequential frame and time_s == frame/20",
+    "required_channels": [
+      "ego_x_m",
+      "ego_y_m",
+      "ego_speed_m_s",
+      "signal_state",
+      "signal_governs_ego",
+      "approach_lane",
+      "intersecting_road",
+      "pedestrian_conflict_occupied",
+      "ego_turn_entered"
+    ],
+    "body_front_offset_m": 2.6,
+    "body_offset_status": "Prospective blueprint proxy; original vehicle bounding box must replace it"
+  },
+  "controlled_pair": {
+    "cases": [
+      "condition_a",
+      "condition_b"
+    ],
+    "variable": "halt_before_right_turn_on_red",
+    "fixed": [
+      "cell",
+      "actor",
+      "road",
+      "signal",
+      "pedestrian occupancy",
+      "weather",
+      "camera profile",
+      "turn and yield commands"
+    ],
+    "synthetic_condition_a_expected": true,
+    "synthetic_condition_b_expected": false
+  },
+  "fallbacks": {
+    "fallback1": "max route cross-track error > 0.45 m from original Native ego pose and map route",
+    "fallback2": "minimum pedestrian clearance < 1.0 s from original actor conflict times",
+    "fallback3": "minimum signal or body pixel margin < 40 px in decoded original overview video"
+  },
+  "scope": "Authored CPU construction and synthetic saved-path proof only; not Native readback, original pixels, physical trigger observations, statutory outcome, or accepted recording"
+}

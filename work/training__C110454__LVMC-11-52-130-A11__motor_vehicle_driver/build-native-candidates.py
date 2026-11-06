@@ -10,8 +10,10 @@ REPO = HERE.parents[1]
 ASSIGNMENT = HERE.name
 NATIVE = HERE / 'native'
 FILES = ('runner.py', 'geometry.py', 'controller.py', 'engineering.py',
-         'cameras.py', 'measure_park.py', 'finalize.py', 'road.xodr')
-TESTS = ('test_runner.py', 'test_bundle_proofs.py', 'test_bundle_finalize.py')
+         'cameras.py', 'measure_park.py', 'finalize.py', 'road.xodr',
+         'exception_evidence.py')
+TESTS = ('test_runner.py', 'test_bundle_proofs.py', 'test_bundle_finalize.py',
+         'test_bundle_exception_evidence.py')
 
 
 def write(path, value):

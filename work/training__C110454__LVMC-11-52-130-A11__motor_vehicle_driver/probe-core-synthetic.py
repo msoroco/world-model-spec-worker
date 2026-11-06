@@ -16,6 +16,7 @@ spec=importlib.util.spec_from_file_location('saved_fixture',HERE/'saved-fixture-
 fixture=importlib.util.module_from_spec(spec);spec.loader.exec_module(fixture)
 from geometry import open_drive
 from finalize import finalize
+from finalize_numeric import finalize as finalize_numeric
 from traffic_spec_adapter.adapter import load_graph
 from worker_exchange.runtime_cli import process,render
 from worker_exchange.media import audit
@@ -76,12 +77,12 @@ def make_attempt(path,suffix,full_resolution=False):
 
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument('--suffix',choices=['witness_1','witness_2'],default='witness_1')
+    parser.add_argument('--suffix',choices=['witness_1','witness_2','numeric_1_0','numeric_1_1','numeric_1_2'],default='witness_1')
     args=parser.parse_args()
     scratch=Path(tempfile.mkdtemp(dir=ROOT/'.runtime-work',prefix='c110454-lvmc-core-'))
     attempt=scratch/'attempt';make_attempt(attempt,args.suffix)
     print('scratch',scratch,flush=True)
-    finalize(attempt,attempt/'analysis-report.json')
+    (finalize_numeric if args.suffix.startswith('numeric_') else finalize)(attempt,attempt/'analysis-report.json')
     core=process(attempt,attempt/'converted',ROOT/'runtime/pipeline/library',
                  ROOT/'.runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck')
     config=json.loads((attempt/'config.json').read_text())

@@ -37,7 +37,7 @@ def main():
                     raise RuntimeError("Exact bundle omitted authored geometry")
                 fixture = HERE / "fixtures" / suffix / "native_samples.jsonl"
                 shutil.copyfile(fixture, output / fixture.name)
-                positive = run_command(output / "finalize.py", "--attempt", output,
+                positive = run_command(output / "finalize-measure.py", "--attempt", output,
                                        "--output", output / "analysis-report.json", cwd=output)
                 if positive.returncode != 0:
                     raise RuntimeError("Saved positive failed: " + positive.stdout)
@@ -46,7 +46,7 @@ def main():
                 expected = "outside_intersection" if suffix == "probe_a" else "within_intersection"
                 if relation != expected: raise RuntimeError("Saved relation differs")
                 (output / "native_samples.jsonl").unlink()
-                negative = run_command(output / "finalize.py", "--attempt", output,
+                negative = run_command(output / "finalize-measure.py", "--attempt", output,
                                        "--output", output / "negative-report.json", cwd=output)
                 if negative.returncode == 0 or "Missing required source: native_samples.jsonl" not in negative.stdout:
                     raise RuntimeError("Missing-source negative failed: " + negative.stdout)

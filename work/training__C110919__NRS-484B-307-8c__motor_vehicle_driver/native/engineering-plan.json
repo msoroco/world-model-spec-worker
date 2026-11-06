@@ -1,0 +1,237 @@
+{
+  "format": "c110919-307-8c-unselected-engineering-draft-v1",
+  "assignment_id": "training__C110919__NRS-484B-307-8c__motor_vehicle_driver",
+  "candidates": [
+    {
+      "case": "probe_a",
+      "candidate": "primary",
+      "knobs": {
+        "stop_hold_s": 1.5,
+        "route_tracking_lookahead_m": 5.0,
+        "yield_clearance_margin_s": 1.0,
+        "overview_fov_deg": 90.0,
+        "rate_hz": 20,
+        "duration_s": 24.0,
+        "camera_profile": [
+          "overview",
+          "approach",
+          "signal",
+          "destination"
+        ]
+      },
+      "fallback_trigger": null,
+      "source_status": "planned_original_native_or_video_not_observed",
+      "law_id": "NRS-484B-307-8c",
+      "cell_id": "C110919",
+      "comparison_variable": "halt_before_right_turn_on_red",
+      "stop_command": "complete_halt",
+      "yield_command": "wait_for_pedestrian_clearance"
+    },
+    {
+      "case": "probe_a",
+      "candidate": "fallback1",
+      "knobs": {
+        "stop_hold_s": 1.5,
+        "route_tracking_lookahead_m": 3.0,
+        "yield_clearance_margin_s": 1.0,
+        "overview_fov_deg": 90.0,
+        "rate_hz": 20,
+        "duration_s": 24.0,
+        "camera_profile": [
+          "overview",
+          "approach",
+          "signal",
+          "destination"
+        ]
+      },
+      "fallback_trigger": {
+        "metric": "max_route_cross_track_error_m",
+        "op": ">",
+        "threshold": 0.45,
+        "source": "original Native ego pose joined to authored route and map readback"
+      },
+      "source_status": "planned_original_native_or_video_not_observed",
+      "law_id": "NRS-484B-307-8c",
+      "cell_id": "C110919",
+      "comparison_variable": "halt_before_right_turn_on_red",
+      "stop_command": "complete_halt",
+      "yield_command": "wait_for_pedestrian_clearance"
+    },
+    {
+      "case": "probe_a",
+      "candidate": "fallback2",
+      "knobs": {
+        "stop_hold_s": 1.5,
+        "route_tracking_lookahead_m": 5.0,
+        "yield_clearance_margin_s": 2.0,
+        "overview_fov_deg": 90.0,
+        "rate_hz": 20,
+        "duration_s": 24.0,
+        "camera_profile": [
+          "overview",
+          "approach",
+          "signal",
+          "destination"
+        ]
+      },
+      "fallback_trigger": {
+        "metric": "min_pedestrian_clearance_s",
+        "op": "<",
+        "threshold": 1.0,
+        "source": "original Native pedestrian and ego conflict-zone crossing times"
+      },
+      "source_status": "planned_original_native_or_video_not_observed",
+      "law_id": "NRS-484B-307-8c",
+      "cell_id": "C110919",
+      "comparison_variable": "halt_before_right_turn_on_red",
+      "stop_command": "complete_halt",
+      "yield_command": "wait_for_pedestrian_clearance"
+    },
+    {
+      "case": "probe_a",
+      "candidate": "fallback3",
+      "knobs": {
+        "stop_hold_s": 1.5,
+        "route_tracking_lookahead_m": 5.0,
+        "yield_clearance_margin_s": 1.0,
+        "overview_fov_deg": 105.0,
+        "rate_hz": 20,
+        "duration_s": 24.0,
+        "camera_profile": [
+          "overview",
+          "approach",
+          "signal",
+          "destination"
+        ]
+      },
+      "fallback_trigger": {
+        "metric": "min_signal_or_body_pixel_margin_px",
+        "op": "<",
+        "threshold": 40,
+        "source": "decoded original signal and body mask corners in overview video"
+      },
+      "source_status": "planned_original_native_or_video_not_observed",
+      "law_id": "NRS-484B-307-8c",
+      "cell_id": "C110919",
+      "comparison_variable": "halt_before_right_turn_on_red",
+      "stop_command": "complete_halt",
+      "yield_command": "wait_for_pedestrian_clearance"
+    },
+    {
+      "case": "probe_b",
+      "candidate": "primary",
+      "knobs": {
+        "stop_hold_s": 1.5,
+        "route_tracking_lookahead_m": 5.0,
+        "yield_clearance_margin_s": 1.0,
+        "overview_fov_deg": 90.0,
+        "rate_hz": 20,
+        "duration_s": 24.0,
+        "camera_profile": [
+          "overview",
+          "approach",
+          "signal",
+          "destination"
+        ]
+      },
+      "fallback_trigger": null,
+      "source_status": "planned_original_native_or_video_not_observed",
+      "law_id": "NRS-484B-307-8c",
+      "cell_id": "C110919",
+      "comparison_variable": "halt_before_right_turn_on_red",
+      "stop_command": "rolling_entry",
+      "yield_command": "wait_for_pedestrian_clearance"
+    },
+    {
+      "case": "probe_b",
+      "candidate": "fallback1",
+      "knobs": {
+        "stop_hold_s": 1.5,
+        "route_tracking_lookahead_m": 3.0,
+        "yield_clearance_margin_s": 1.0,
+        "overview_fov_deg": 90.0,
+        "rate_hz": 20,
+        "duration_s": 24.0,
+        "camera_profile": [
+          "overview",
+          "approach",
+          "signal",
+          "destination"
+        ]
+      },
+      "fallback_trigger": {
+        "metric": "max_route_cross_track_error_m",
+        "op": ">",
+        "threshold": 0.45,
+        "source": "original Native ego pose joined to authored route and map readback"
+      },
+      "source_status": "planned_original_native_or_video_not_observed",
+      "law_id": "NRS-484B-307-8c",
+      "cell_id": "C110919",
+      "comparison_variable": "halt_before_right_turn_on_red",
+      "stop_command": "rolling_entry",
+      "yield_command": "wait_for_pedestrian_clearance"
+    },
+    {
+      "case": "probe_b",
+      "candidate": "fallback2",
+      "knobs": {
+        "stop_hold_s": 1.5,
+        "route_tracking_lookahead_m": 5.0,
+        "yield_clearance_margin_s": 2.0,
+        "overview_fov_deg": 90.0,
+        "rate_hz": 20,
+        "duration_s": 24.0,
+        "camera_profile": [
+          "overview",
+          "approach",
+          "signal",
+          "destination"
+        ]
+      },
+      "fallback_trigger": {
+        "metric": "min_pedestrian_clearance_s",
+        "op": "<",
+        "threshold": 1.0,
+        "source": "original Native pedestrian and ego conflict-zone crossing times"
+      },
+      "source_status": "planned_original_native_or_video_not_observed",
+      "law_id": "NRS-484B-307-8c",
+      "cell_id": "C110919",
+      "comparison_variable": "halt_before_right_turn_on_red",
+      "stop_command": "rolling_entry",
+      "yield_command": "wait_for_pedestrian_clearance"
+    },
+    {
+      "case": "probe_b",
+      "candidate": "fallback3",
+      "knobs": {
+        "stop_hold_s": 1.5,
+        "route_tracking_lookahead_m": 5.0,
+        "yield_clearance_margin_s": 1.0,
+        "overview_fov_deg": 105.0,
+        "rate_hz": 20,
+        "duration_s": 24.0,
+        "camera_profile": [
+          "overview",
+          "approach",
+          "signal",
+          "destination"
+        ]
+      },
+      "fallback_trigger": {
+        "metric": "min_signal_or_body_pixel_margin_px",
+        "op": "<",
+        "threshold": 40,
+        "source": "decoded original signal and body mask corners in overview video"
+      },
+      "source_status": "planned_original_native_or_video_not_observed",
+      "law_id": "NRS-484B-307-8c",
+      "cell_id": "C110919",
+      "comparison_variable": "halt_before_right_turn_on_red",
+      "stop_command": "rolling_entry",
+      "yield_command": "wait_for_pedestrian_clearance"
+    }
+  ],
+  "source_scope": "Authored CPU proposal; physical trigger metrics have not been observed"
+}

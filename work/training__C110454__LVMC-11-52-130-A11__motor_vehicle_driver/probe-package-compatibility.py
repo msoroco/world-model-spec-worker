@@ -18,7 +18,7 @@ from worker_exchange.runtime_cli import execution_env
 
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument('--suffix',choices=['witness_1','witness_2'],default='witness_1')
+    parser.add_argument('--suffix',choices=['witness_1','witness_2','numeric_1_0','numeric_1_1','numeric_1_2'],default='witness_1')
     parser.add_argument('--candidate',choices=['primary','fallback1','fallback2','fallback3'],default='primary')
     args=parser.parse_args()
     scratch=Path(tempfile.mkdtemp(dir=ROOT/'.runtime-work',prefix='c110454-lvmc-exact-'))
@@ -27,7 +27,8 @@ def main():
     (source/'road.xodr').unlink()  # Exact construction already supplies this authored source.
     output=scratch/'output'
     print('scratch',scratch,flush=True)
-    manifest=HERE/'draft-execution-manifest.json'
+    manifest=HERE/('draft-numeric-execution-manifest.json' if args.suffix.startswith('numeric_')
+                   else 'draft-execution-manifest.json')
     case='training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__'+args.suffix
     receipt=run(manifest,case,source,output,ROOT/'runtime/pipeline/library',
         ROOT/'.runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck',args.candidate)
