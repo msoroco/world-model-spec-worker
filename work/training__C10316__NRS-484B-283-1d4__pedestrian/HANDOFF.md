@@ -19,3 +19,7 @@ Accepted membership: 0 membership rows; exact source-hashed equivalence and reus
 Blocker: No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.
 
 Resume: reconcile each branch against the exact law and cited provisions; establish compatible Native construction and measurement channels; produce four distinct candidate plans and exact offline, compatibility, saved-only, semantic and audit proofs; then evaluate readiness.
+
+## Steady witness CPU continuation
+
+Two unselected 240-frame synthetic witness sources now measure first entry before versus at/after steady illumination on the same pedestrian path, with a 4 s versus 0.5 s requested steady transition. Eight malformed sources reject; independent row audit and two pinned measurement contracts plus missing-source negatives pass. Eight primary/fallback engineering plans cover the two witness cases; their physical triggers remain unmeasured. The exception pair is still planning-only. Native construction, exact offline and package proofs, saved processing, qualifying physical signal, statutory exceptions, and independent delivery acceptance remain worker-owned. Status remains blocked. See steady-summary.json, steady-contract-summary.json, audit-steady.py and audit-engineering.py.
