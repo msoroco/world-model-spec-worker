@@ -1,0 +1,189 @@
+{
+  "case_id": "training__C10014__NRS-484B-477-2__motor_vehicle_driver__contrast",
+  "measured_values": {
+    "max_entrance_overlap_m": 5.2,
+    "stop_duration_s": 14.95
+  },
+  "target_checks": [
+    {
+      "target": "stationary alley vehicle at requested geometric entrance overlap",
+      "requested": 5.2,
+      "measured": 5.2,
+      "method": "original Native body/road/lane/speed and surveyed entrance corridor",
+      "tolerance": "absolute overlap difference <= 0.25 m, with at least 2 s sampled stop",
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": [
+        "road_geometry.json",
+        "native_samples.jsonl"
+      ]
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": true,
+  "maneuver_completed": true,
+  "termination_reason": "full original duration retained",
+  "physical_failure_flags": [
+    "alley_access_design_and_pixels_unverified"
+  ],
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "overview.mkv",
+    "approach.mkv",
+    "entrance.mkv",
+    "driver_reference.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "st.alley",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native road/lane ID and source-backed alley designation",
+        "time_window": "entire original 24 s / 480 frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+      },
+      {
+        "name": "st.driveway_or_alley_entrance",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Native map readback and independent abutting property access boundary source",
+        "time_window": "entire original 24 s / 480 frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+      },
+      {
+        "name": "rel.occupies",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Full ordered original Native vehicle footprint in alley and entrance corridor",
+        "time_window": "entire original 24 s / 480 frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+      },
+      {
+        "name": "kin.extent",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native vehicle body footprint dimensions and vertices",
+        "time_window": "entire original 24 s / 480 frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+      },
+      {
+        "name": "kin.position",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native actor pose and center",
+        "time_window": "entire original 24 s / 480 frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+      },
+      {
+        "name": "ego_speed",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native actor velocity and sampled stationary interval",
+        "time_window": "entire original 24 s / 480 frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+      },
+      {
+        "name": "native_body_pose_control",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native pose, lane, velocity, body and applied controller request",
+        "time_window": "entire original 24 s / 480 frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+      },
+      {
+        "name": "camera_frame_join",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Each original source camera frame joined to Native frame and time",
+        "time_window": "entire original 24 s / 480 frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "surveyed_alley_entrance",
+        "unit": "structured",
+        "method": "Native alley/driveway lane readback and independent property access designation"
+      }
+    ],
+    "limitations": [
+      "Authored map and waypoint IDs do not establish legal abutting-property access",
+      "Entrance footprint overlap is descriptive and does not itself decide legal blocking",
+      "Physical stopping and original camera coverage remain unverified"
+    ]
+  },
+  "recording_evidence": [
+    {
+      "name": "st.alley",
+      "unit": "structured",
+      "reference": "channels/st.alley.jsonl"
+    },
+    {
+      "name": "st.driveway_or_alley_entrance",
+      "unit": "structured",
+      "reference": "channels/st.driveway_or_alley_entrance.jsonl"
+    },
+    {
+      "name": "rel.occupies",
+      "unit": "structured",
+      "reference": "channels/rel.occupies.jsonl"
+    },
+    {
+      "name": "kin.extent",
+      "unit": "structured",
+      "reference": "channels/kin.extent.jsonl"
+    },
+    {
+      "name": "kin.position",
+      "unit": "structured",
+      "reference": "channels/kin.position.jsonl"
+    },
+    {
+      "name": "ego_speed",
+      "unit": "structured",
+      "reference": "channels/ego_speed.jsonl"
+    },
+    {
+      "name": "native_body_pose_control",
+      "unit": "structured",
+      "reference": "channels/native_body_pose_control.jsonl"
+    },
+    {
+      "name": "camera_frame_join",
+      "unit": "structured",
+      "reference": "channels/camera_frame_join.jsonl"
+    },
+    {
+      "name": "surveyed_alley_entrance",
+      "unit": "structured",
+      "reference": "context.json"
+    }
+  ],
+  "realized_observables": {
+    "sampled_stopped_entrance_overlap": {
+      "value": 5.2,
+      "unit": "m",
+      "method": "maximum original sampled stationary body projection inside entrance corridor",
+      "time_window": "observed stationary alley interval",
+      "statistic": "maximum",
+      "reference": "native_samples.jsonl",
+      "sample_window_s": [
+        14.05,
+        28.95
+      ]
+    }
+  },
+  "provenance_kind": "native",
+  "accepted": false,
+  "legal_verdict_claimed": false
+}

@@ -11,7 +11,7 @@ from worker_exchange.measurement_contract import validate,verify_report
 
 def build():
     plan=json.loads((HERE/'case-plan.json').read_text())
-    code=(HERE/'native/measure_entrance.py').read_text()
+    code=(HERE/'native/finalize.py').read_text()
     output=[]
     for draft in plan['cases']:
         suffix=draft['case_id'].rsplit('__',1)[-1]
@@ -24,7 +24,8 @@ def build():
             requirements.append({'disposition_index':index,
                 'requirement':disposition['requirement'],'source':disposition['source'],
                 'output_key':'entrance_overlap_observation' if index==0 else 'alley_stop_context',
-                'method':'measure','value_type':'object',
+                'method':'entrance_overlap_observation' if index==0 else 'alley_stop_context',
+                'value_type':'object',
                 'kind':'measured' if index==0 else 'sourced_context',
                 'inputs':['native_samples.jsonl','road_geometry.json']})
         contract={'format':'worker-measurement-contract-v1','case_id':draft['case_id'],
@@ -34,11 +35,11 @@ def build():
         validate(contract,plan['requirement_dispositions'],code,draft['case_id'])
         sources=receipt['source_sha256']
         report={'measurements':{
-            'entrance_overlap_observation':{'method':'measure',
+            'entrance_overlap_observation':{'method':'entrance_overlap_observation',
                 'value':{'max_entrance_overlap_m':receipt['max_entrance_overlap_m'],
                          'mean_entrance_overlap_m':receipt['mean_entrance_overlap_m']},
                 'sources':sources},
-            'alley_stop_context':{'method':'measure',
+            'alley_stop_context':{'method':'alley_stop_context',
                 'value':{'first_frame':receipt['stop_first_frame'],
                          'last_frame':receipt['stop_last_frame'],
                          'duration_s':receipt['stop_duration_s'],
