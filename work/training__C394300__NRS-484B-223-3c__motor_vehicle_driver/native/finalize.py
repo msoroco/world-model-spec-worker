@@ -82,8 +82,10 @@ def verify_original_joins(folder,count):
         if any(item!=frame for item in (t.get('frame'),e.get('original_frame'),n.get('native_frame'),b.get('frame'),f.get('frame'))):
             raise ValueError('Original Native frame join differs')
         if any(abs(float(item)-time)>1e-4 for item in
-               (t['time_s'],e['recording_time_s'],n['time_s'],b['time_s'],f['time_s'])):
+               (t['time_s'],e['recording_time_s'],n['time_s'],b['time_s'])):
             raise ValueError('Original Native timestamp join differs')
+        if abs(float(f['simulation_time'])-float(e['replay_simulation_time_s']))>1e-4:
+            raise ValueError('Original replay simulation timestamp join differs')
         captured={(round(v[0],5),round(v[1],5)) for v in e['ego']['body_vertices_m']}
         measured={(round(v[0],5),round(v[1],5)) for v in n['native_body_xy_m']}
         historical={(round(v[0],5),round(v[1],5)) for v in b['body_vertices_m']}

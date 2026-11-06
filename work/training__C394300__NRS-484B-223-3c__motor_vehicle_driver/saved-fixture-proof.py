@@ -31,7 +31,7 @@ def source_hashes(folder):
             if p.is_file() and p.name not in ('result.json','analysis-report.json')}
 
 
-def make_base(destination,suffix):
+def make_base(destination,suffix,full_resolution=False):
     destination.mkdir();(destination/'capture/native').mkdir(parents=True)
     (destination/'channels').mkdir()
     construction=json.loads((FOLDER/'draft-candidates'/suffix/'primary/construction.json').read_text())
@@ -66,18 +66,40 @@ def make_base(destination,suffix):
             'controller_request':{'synthetic_diagnostic':True}}
         samples.append(sample)
         trace.append({'frame':frame,'time_s':time_s,'position':{'x':x,'y':y,'z':.5},
-                      'heading_deg':math.degrees(math.atan2(fy,fx)),'speed_mps':speed})
-        evidence.append({'original_frame':frame,'recording_time_s':time_s,
-                         'ego':{'body_vertices_m':vertices}})
+                      'position_m':[x,y,.5],'heading_deg':math.degrees(math.atan2(fy,fx)),
+                      'speed_mps':speed,'speed_mph':speed/.44704,
+                      'control':{'throttle':0,'brake':0,'hand_brake':False},
+                      'synthetic_diagnostic':True})
+        evidence.append({'original_frame':frame,'replay_frame':frame,'actor_id':107,
+                         'recording_time_s':time_s,'replay_simulation_time_s':time_s,
+                         'ego':{'position_m':[x,y,.5],
+                                'heading_deg':math.degrees(math.atan2(fy,fx)),
+                                'speed_mps':speed,
+                                'speed_provenance':'original_trace_actor_get_velocity',
+                                'body_vertices_m':vertices},
+                         'world':{'weather':{'cloudiness':0,'precipitation':0,
+                                            'wetness':0,'fog_density':0},
+                                  'road_projection':{'road_id':road,'section_id':0,
+                                                     'lane_id':lane,'s_m':x+66.5}}})
         mapping.append({'video_frame':i,'native_frame':frame,'carla_frame':frame,'time_s':time_s})
         body_history.append({'frame':frame,'time_s':time_s,'body_vertices_m':vertices})
-        capture_frames.append({'frame':frame,'time_s':time_s,'synthetic_diagnostic':True})
+        capture_frames.append({'frame':frame,'time_s':time_s,'simulation_time':time_s,
+                               'base':f'graphs/base/{frame:08d}.pkl',
+                               'abstract':f'graphs/abstract/{frame:08d}.pkl',
+                               'synthetic_diagnostic':True})
     for name,records in [('native_samples.jsonl',samples),('trace.jsonl',trace),
                          ('capture/evidence.jsonl',evidence),('video_frames.jsonl',mapping),
                          ('body_history.jsonl',body_history),
                          ('capture/native/frames.jsonl',capture_frames)]:
         write_rows(destination/name,records)
-    (destination/'capture/manifest.json').write_text(json.dumps({'extraction_confirmed':True,'frames':480}))
+    road=FOLDER/'draft-construction/scene.xodr'
+    shutil.copyfile(road,destination/'road.xodr')
+    (destination/'capture/recorder_info.txt').write_text('Create 107: vehicle.lincoln.mkz_2020\n')
+    (destination/'capture/manifest.json').write_text(json.dumps({
+        'extraction_confirmed':True,'frames':480,'required_observations':[],
+        'sources':{'road.xodr':sha(destination/'road.xodr'),
+                   'trace.jsonl':sha(destination/'trace.jsonl')},
+        'synthetic_diagnostic':True}))
     for channel in config['recording_description']['channels']:
         name=channel['name'];values=[]
         for index,sample in enumerate(samples):
@@ -92,9 +114,11 @@ def make_base(destination,suffix):
             else:raise ValueError('Unknown channel '+name)
             values.append({'time_s':sample['time_s'],'value':value})
         write_rows(destination/'channels'/(name+'.jsonl'),values)
-    for name in ('overview','approach','reference_corner','driver_reference'):
+    for camera in config['cameras']:
+        name=camera['name']
+        size=f'{camera["width"]}x{camera["height"]}' if full_resolution else '32x32'
         subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
-            '-f','lavfi','-i','color=c=black:s=32x32:r=20:d=24',
+            '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=24',
             '-frames:v','480','-c:v','ffv1',str(destination/(name+'.mkv'))],
             check=True,timeout=60)
 
