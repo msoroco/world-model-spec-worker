@@ -15,8 +15,8 @@ def parameters(case_suffix,candidate_id):
                            max_steer_fraction=.7,target_speed_mps=5.0)
     return {'case_suffix':case_suffix,'candidate_id':candidate_id,
             'authored_route_xy_m':authored,
-            'native_route_xy_m':authored,
-            'inbound_start_y_authored_m':start,'controller_knobs':knobs,
+            'native_route_xy_m':[[x,-y] for x,y in authored],
+            'inbound_start_y_authored_m':-start,'controller_knobs':knobs,
             'cameras':camera_plan(candidate_id),
             'comparison_commanded_distance_ft':TARGET_FEET[case_suffix],
             'requested_movement':'left_turn_onto_highway_then_merge',

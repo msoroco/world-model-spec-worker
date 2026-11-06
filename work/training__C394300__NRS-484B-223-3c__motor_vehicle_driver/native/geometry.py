@@ -19,8 +19,10 @@ def open_drive():
     ET.SubElement(root, 'header', revMajor='1', revMinor='4', name='C394300-after-left-turn-draft',
                   version='1', date='2026-11-05', north='100', south='-100',
                   east='100', west='-100', vendor='full-train-worker')
-    roads = [(4,-70,50,-math.pi/2,44.75,-1),
-             (13,-70,5.25,-math.pi/2,3.5*math.pi/2,100),
+    # CARLA reflects OpenDRIVE y on import. Author northbound/right-curving
+    # coordinates so the observed Native movement is southbound then left/east.
+    roads = [(4,-73.5,-50,math.pi/2,44.75,-1),
+             (13,-73.5,-5.25,math.pi/2,7*math.pi/2,100),
              (1,-66.5,1.75,0,166.5,-1)]
     for ident,x,y,heading,length,junction in roads:
         road = ET.SubElement(root,'road',id=str(ident),name=f'C394300_3c_{ident}',
@@ -33,13 +35,14 @@ def open_drive():
         if ident == 1: ET.SubElement(link,'predecessor',elementType='junction',elementId='100')
         geom = ET.SubElement(ET.SubElement(road,'planView'),'geometry',s='0',x=str(x),y=str(y),
                              hdg=str(heading),length=str(length))
-        if ident == 13: ET.SubElement(geom,'arc',curvature=str(1/3.5))
+        if ident == 13: ET.SubElement(geom,'arc',curvature=str(-1/7))
         else: ET.SubElement(geom,'line')
         ET.SubElement(ET.SubElement(road,'elevationProfile'),'elevation',s='0',a='0',b='0',c='0',d='0')
         lanes = ET.SubElement(road,'lanes')
         ET.SubElement(lanes,'laneOffset',s='0',a='0',b='0',c='0',d='0')
         section = ET.SubElement(lanes,'laneSection',s='0')
-        for side, ids in (('left',(1,)),('center',(0,)),('right',(-1,-2))):
+        for side, ids in (('left',(1,)),('center',(0,)),
+                          ('right',(-1,) if ident==13 else (-1,-2))):
             group = ET.SubElement(section,side)
             for lane_id in ids:
                 lane = ET.SubElement(group,'lane',id=str(lane_id),
@@ -65,13 +68,13 @@ def route(case, merge_length_m=8.0, start_y_m=45.0):
     if start_y_m not in (42.0,45.0): raise ValueError('Unsupported inbound start')
     points=[]
     for i in range(round((start_y_m-5.1)/STEP_M)+1):
-        points.append([-71.75,round(start_y_m-i*STEP_M,5)])
-    # Right-offset lane-center radius is 5.25 m. The OpenDRIVE reference
-    # curve is radius 3.5 m, so both end at the corresponding lane centers.
+        points.append([-71.75,round(-start_y_m+i*STEP_M,5)])
+    # The authored -1 lane center turns clockwise at radius 5.25 m;
+    # reflection on import makes this a Native left turn.
     for i in range(1,151):
-        theta=math.pi+i*(math.pi/2)/150
+        theta=math.pi-i*(math.pi/2)/150
         points.append([round(TURN_END_X+5.25*math.cos(theta),5),
-                       round(5.25+5.25*math.sin(theta),5)])
+                       round(-5.25+5.25*math.sin(theta),5)])
     nominal=TARGET_FEET[case]*.3048
     # First body contact with the through lane precedes full center arrival.
     # This station is a command only; the saved Native event interval decides.
@@ -94,7 +97,7 @@ def check():
     assert roads[1].find('link/predecessor').attrib['elementId']=='100'
     assert [(x.attrib['from'],x.attrib['to']) for x in root.findall('junction/connection/laneLink')]==[('-1','-1')]
     # Exact rectangle-union coverage without a nonportable geometry dependency.
-    pavement=((-75,-5.25,100,5.25),(-76,0,-66.5,50))
+    pavement=((-76,-5.25,100,5.25),(-76,-50,-66.5,0))
     def covered(point):
         x,y=point
         return any(a-1e-8<=x<=c+1e-8 and b-1e-8<=y<=d+1e-8

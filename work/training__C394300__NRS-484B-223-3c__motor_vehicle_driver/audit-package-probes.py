@@ -22,8 +22,7 @@ def audit():
     for suffix in SUFFIXES:
         entry=next(row for row in manifest['cases'] if row['case_id'].endswith('__'+suffix))
         for candidate in CANDIDATES:
-            filename=('package-compatibility-probe.log' if suffix=='below_50_ft' and candidate=='primary'
-                      else 'package-compatibility-'+suffix+('' if candidate=='primary' else '-'+candidate)+'.log')
+            filename='package-compatibility-'+suffix+'-'+candidate+'.log'
             log=HERE/filename
             lines=log.read_text().splitlines()
             if len(lines)!=2 or not lines[0].startswith('scratch '):
@@ -32,7 +31,7 @@ def audit():
             if ROOT/'.runtime-work' not in scratch.parents:
                 raise ValueError('Unexpected scratch location')
             result=json.loads(lines[1]);positive=result['positive'];negative=result['negative']
-            if result.get('case_suffix',suffix if suffix=='below_50_ft' and candidate=='primary' else None)!=suffix or result.get('candidate',candidate if suffix=='below_50_ft' and candidate=='primary' else None)!=candidate:
+            if result.get('case_suffix')!=suffix or result.get('candidate')!=candidate:
                 raise ValueError('Wrong diagnostic identity')
             selected=entry if candidate=='primary' else next(c for c in entry['candidates'] if c['id']==candidate)
             if (positive['format']!='worker-package-compatibility-v1' or positive['passed'] is not True

@@ -13,7 +13,8 @@ ROOT=Path(__file__).resolve().parents[2]
 FOLDER=Path(__file__).resolve().parent
 sys.path.insert(0,str(FOLDER/'native'))
 sys.path.insert(0,str(ROOT/'runtime/pipeline/scenario_pipeline'))
-from geometry import TARGET_FEET,route
+from geometry import TARGET_FEET
+from engineering import parameters
 from worker_exchange.measurement_contract import verify_report
 from batch_pipeline.carla import validate_attempt
 
@@ -42,7 +43,7 @@ def make_base(destination,suffix,full_resolution=False):
                     scope='synthetic local software fixture; no Native map readback')
     (destination/'road_geometry.json').write_text(json.dumps(geometry))
     (destination/'context.json').write_text(json.dumps({'surveyed_center_turn_lane':geometry}))
-    path=route(suffix)
+    path=parameters(suffix,'primary')['native_route_xy_m']
     samples=[];trace=[];evidence=[];mapping=[];body_history=[];capture_frames=[]
     for i in range(480):
         station=i*(len(path)-1)/479
@@ -58,7 +59,7 @@ def make_base(destination,suffix,full_resolution=False):
         vertices=[[v[0],v[1],z] for v in corners for z in (0,1.5)]
         frame=100+i;time_s=(i+1)/20
         road=4 if j<400 else 13 if j<550 else 1
-        lane=-2 if all(v[1]<=-1.75 for v in corners) else -1
+        lane=-2 if road==1 and all(v[1]>=1.75 for v in corners) else -1
         speed=math.dist([x,y],samples[-1]['native_center_xy_m'])/.05 if samples else 0
         sample={'native_frame':frame,'time_s':time_s,'native_center_xy_m':[x,y],
             'native_forward_xy':[fx,fy],'native_body_xy_m':corners,
