@@ -9,7 +9,9 @@ from measure_after_turn import measure
 
 GEOMETRY = {
     'center_turn_lane_native_xy_bounds_m': [-66.5, -1.75, 100, 1.75],
-    'through_lane_native_xy_bounds_m': [-66.5, 1.75, 100, 5.25],
+    'through_lane_native_xy_bounds_m': [-66.5, -5.25, 100, -1.75],
+    'inbound_road_id': 4,
+    'inbound_lane_native_xy_bounds_m': [-73.5, 0, -70, 50],
     'center_turn_lane_native_id': -1,
     'through_lane_native_id': -2,
     'left_turn_connector_road_id': 13,
@@ -31,7 +33,7 @@ def fixture(target_ft):
     target_m = target_ft * .3048
     # Keep all controls and Native context fixed. Vary only longitudinal
     # distance from turn completion to first contact with the through lane.
-    rows = [row(0, -66.6, 0, road=13, heading=(0, 1)), row(1, -66.5, 0)]
+    rows = [row(0, -66.6, 0, road=13, heading=(0, -1)), row(1, -66.5, 0)]
     for n in range(1,11):
         rows.append(row(len(rows), -66.5+n*.1, 0))
     completion_x=-65.5
@@ -39,9 +41,9 @@ def fixture(target_ft):
     for n in range(1, steps + 1):
         rows.append(row(len(rows), completion_x + n * .1, 0))
     x = completion_x + steps * .1
-    rows.append(row(len(rows), x, 1.3))  # first body overlap of through lane
-    rows.append(row(len(rows), x, 1.5))
-    rows.append(row(len(rows), x, 3.5, lane=-2))
+    rows.append(row(len(rows), x, -1.3))  # first body overlap of through lane
+    rows.append(row(len(rows), x, -1.5))
+    rows.append(row(len(rows), x, -3.5, lane=-2))
     return rows
 
 
@@ -78,7 +80,7 @@ class MeasurementTests(unittest.TestCase):
 
     def test_wrong_turn_direction_rejected(self):
         rows = fixture(45)
-        rows[0]['native_forward_xy'] = [0, -1]
+        rows[0]['native_forward_xy'] = [0, 1]
         with self.assertRaisesRegex(ValueError, 'left turn'):
             self.run_rows(rows)
 

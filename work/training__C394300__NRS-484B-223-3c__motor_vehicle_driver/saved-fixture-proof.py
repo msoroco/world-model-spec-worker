@@ -49,16 +49,16 @@ def make_base(destination,suffix,full_resolution=False):
         j=min(int(station),len(path)-2);fraction=station-j
         a,b=path[j],path[j+1]
         x=a[0]*(1-fraction)+b[0]*fraction
-        y=-(a[1]*(1-fraction)+b[1]*fraction)
+        y=a[1]*(1-fraction)+b[1]*fraction
         before=path[max(0,j-1)];after=path[min(len(path)-1,j+2)]
-        dx=after[0]-before[0];dy=-(after[1]-before[1]);length=math.hypot(dx,dy)
+        dx=after[0]-before[0];dy=after[1]-before[1];length=math.hypot(dx,dy)
         fx,fy=dx/length,dy/length;rx,ry=-fy,fx
         corners=[[x+d*2.5*fx+s*rx,y+d*2.5*fy+s*ry]
                  for d,s in ((-1,-1),(-1,1),(1,1),(1,-1))]
         vertices=[[v[0],v[1],z] for v in corners for z in (0,1.5)]
         frame=100+i;time_s=(i+1)/20
         road=4 if j<400 else 13 if j<550 else 1
-        lane=-2 if all(v[1]>=1.75 for v in corners) else -1
+        lane=-2 if all(v[1]<=-1.75 for v in corners) else -1
         speed=math.dist([x,y],samples[-1]['native_center_xy_m'])/.05 if samples else 0
         sample={'native_frame':frame,'time_s':time_s,'native_center_xy_m':[x,y],
             'native_forward_xy':[fx,fy],'native_body_xy_m':corners,

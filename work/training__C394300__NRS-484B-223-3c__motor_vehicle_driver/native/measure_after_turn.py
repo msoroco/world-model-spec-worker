@@ -105,7 +105,7 @@ def measure(samples_path, geometry_path):
             and dot >= math.cos(math.radians(5))
             and any(rows[j].get('native_road_id')==connector_road and
                     headings[j][0]*headings[i][1]-headings[j][1]*headings[i][0]
-                    <=-math.sin(math.radians(30)) for j in range(i))):
+                    >=math.sin(math.radians(30)) for j in range(i))):
             transition = i
             break
     if transition is None:

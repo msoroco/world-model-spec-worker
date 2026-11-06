@@ -11,9 +11,11 @@ NAMES=('primary','fallback1','fallback2','fallback3')
 SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','controller.py':'controller.py',
          'engineering.py':'engineering.py',
          'measure_lane.py':'measure_lane.py','finalize.py':'finalize.py','cameras.py':'cameras.py',
+         'fallback_triggers.py':'fallback_triggers.py',
          'tests/test_geometry_measure.py':'test_geometry_measure.py',
          'tests/test_controller.py':'test_controller.py',
          'tests/test_candidate_knobs.py':'test_candidate_knobs.py',
+         'tests/test_fallback_triggers.py':'test_fallback_triggers.py',
          'tests/test_cameras.py':'test_cameras.py'}
 
 
@@ -101,11 +103,12 @@ def build():
             if candidate=='primary':entry.update(ref)
             else:
                 risk={
-                    'fallback1':('right-turn connector clearance or completion','Native route lacks the right-turn connector or full-body destination exit absent by 24 s','turn entry station -7 m to -10 m'),
-                    'fallback2':('right-turn path tracking','maximum recorded turn route error x=-10..0 m exceeds 0.35 m','pure-pursuit lookahead 4.0 m to 3.0 m'),
-                    'fallback3':('right-turn-lane camera framing','independent pixel audit cannot see full body and right-only lane marking in 95% of approach frames','ego-following camera height 3.2 m to 4.5 m and FOV 90 to 105 degrees')
+                    'fallback1':('right-turn connector and completion','Native map readback lacks a connected right-turn-lane link or original full-body destination exit is absent by 24 s','turn entry station -7 m to -10 m'),
+                    'fallback2':('right-turn path tracking','maximum original Native turn-entry route error for x=-10..0 m exceeds 0.35 m','pure-pursuit lookahead 4.0 m to 3.0 m'),
+                    'fallback3':('right-turn-lane camera framing','independent original-pixel audit sees full body and right-only lane marking in less than 95% of approach frames','ego-following camera height 3.2 m to 4.5 m and FOV 90 to 105 degrees')
                 }[candidate]
-                ref.update(trigger={'source':'original Native capture or saved pixels','metric':risk[0],
+                ref.update(trigger={'source':'original Native samples, Native map readback, or saved video pixels with source hashes',
+                                    'evaluator':'fallback_triggers.py:evaluate','metric':risk[0],
                                     'failure_condition':risk[1]},changed_knobs=[risk[2]])
                 entry['candidates'].append(ref)
         manifest['cases'].append(entry)

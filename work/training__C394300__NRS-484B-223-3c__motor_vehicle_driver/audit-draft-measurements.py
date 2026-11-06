@@ -51,7 +51,7 @@ def audit():
         assert all(math.isclose(r['time_s'], i/20, abs_tol=1e-9) for i, r in enumerate(rows))
         assert all(r['native_road_id'] == 1 for r in rows[1:])
         assert all(r['native_forward_xy'] == [1,0] for r in rows[1:])
-        assert rows[0]['native_road_id'] == 13 and rows[0]['native_forward_xy'] == [0,1]
+        assert rows[0]['native_road_id'] == 13 and rows[0]['native_forward_xy'] == [0,-1]
         assert rows[-1]['native_lane_id'] == -2
         assert rows[1]['native_center_xy_m'] == [-66.5,0]
         lower, upper = receipt['distance_interval_m']

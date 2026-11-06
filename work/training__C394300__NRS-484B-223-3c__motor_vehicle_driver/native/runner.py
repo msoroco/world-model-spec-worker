@@ -68,9 +68,9 @@ def direction(waypoint):
 
 
 def map_survey(carla, mapping, native_hash):
-    requests={"inbound_left_turn_lane":(-71.75,-25,4,-1,[0,1]),
+    requests={"inbound_left_turn_lane":(-71.75,25,4,-1,[0,-1]),
               "center_turn_highway_lane":(-40,0,1,-1,[1,0]),
-              "adjacent_through_highway_lane":(-40,3.5,1,-2,[1,0])}
+              "adjacent_through_highway_lane":(-40,-3.5,1,-2,[1,0])}
     observed={};waypoints={}
     for name,(x,y,road_id,lane_id,expected) in requests.items():
         wp=mapping.get_waypoint(carla.Location(x=x,y=y,z=.2),project_to_road=False,lane_type=carla.LaneType.Driving)
@@ -85,6 +85,14 @@ def map_survey(carla, mapping, native_hash):
     high=center.transform.location.y+center.lane_width/2
     if abs(low+1.75)>.15 or abs(high-1.75)>.15:
         raise RuntimeError('Native center lane boundaries differ from authored map')
+    inbound=waypoints['inbound_left_turn_lane']
+    inbound_low=inbound.transform.location.x-inbound.lane_width/2
+    inbound_high=inbound.transform.location.x+inbound.lane_width/2
+    if abs(inbound_low+73.5)>.15 or abs(inbound_high+70)>.15:
+        raise RuntimeError('Native inbound lane boundaries differ from authored map')
+    through=waypoints['adjacent_through_highway_lane']
+    if abs(through.transform.location.y+3.5)>.15:
+        raise RuntimeError('Native through-lane center differs from authored map')
     return {"native_map_sha256":native_hash,
             "authored_map_sha256":hashlib.sha256(open_drive().encode()).hexdigest(),
             "road_directions_native":observed,
@@ -92,7 +100,8 @@ def map_survey(carla, mapping, native_hash):
             "highway_road_id":1,
             "center_turn_lane_native_id":-1,"through_lane_native_id":-2,
             "center_turn_lane_native_xy_bounds_m":[-66.5,-1.75,90,1.75],
-            "through_lane_native_xy_bounds_m":[-66.5,1.75,90,5.25],
+            "through_lane_native_xy_bounds_m":[-66.5,-5.25,90,-1.75],
+            "inbound_lane_native_xy_bounds_m":[inbound_low,0,inbound_high,50],
             "highway_forward_native_xy":[1,0],
             "native_center_lane_design_verified":False,
             "boundary_provenance":"Native road/lane readback at survey points; dual-direction turn-only designation, connector lane link and traffic merge require independent saved review"}
@@ -142,9 +151,8 @@ def execute(config, output, host, port):
         write_new(output/"road_geometry.json",survey)
         write_new(output/"context.json",{'surveyed_center_turn_lane':survey})
         suffix=config["case_suffix"];candidate=config["candidate_id"]
-        suffix=config["case_suffix"];candidate=config["candidate_id"]
         engineering=parameters(suffix,candidate)
-        inbound_y=-engineering['inbound_start_y_authored_m']
+        inbound_y=engineering['inbound_start_y_authored_m']
         blueprint=world.get_blueprint_library().find("vehicle.lincoln.mkz_2020")
         blueprint.set_attribute("role_name","c394300_3c_ego")
         ego=world.spawn_actor(blueprint,carla.Transform(carla.Location(x=-71.75,y=inbound_y,z=.5),carla.Rotation(yaw=90)))

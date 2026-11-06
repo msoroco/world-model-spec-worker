@@ -93,21 +93,37 @@ def check():
     assert roads[13].find('link/successor').attrib['elementId']=='1'
     assert roads[1].find('link/predecessor').attrib['elementId']=='100'
     assert [(x.attrib['from'],x.attrib['to']) for x in root.findall('junction/connection/laneLink')]==[('-1','-1')]
-    from shapely.geometry import Point, Polygon, box
-    from shapely.ops import unary_union
-    surface=unary_union([box(-75,0,100,5.25),box(-75,-5.25,100,5.25),
-                         box(-76,0,-66.5,50)])
+    # Exact rectangle-union coverage without a nonportable geometry dependency.
+    pavement=((-75,-5.25,100,5.25),(-76,0,-66.5,50))
+    def covered(point):
+        x,y=point
+        return any(a-1e-8<=x<=c+1e-8 and b-1e-8<=y<=d+1e-8
+                   for a,b,c,d in pavement)
+    def segment_covered(a,b):
+        cuts={0.0,1.0}
+        for axis in (0,1):
+            delta=b[axis]-a[axis]
+            if abs(delta)>1e-12:
+                for rectangle in pavement:
+                    for boundary in (rectangle[axis],rectangle[axis+2]):
+                        t=(boundary-a[axis])/delta
+                        if 0<t<1:cuts.add(t)
+        times=sorted(cuts)
+        return all(covered((a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t))
+                   for left,right in zip(times,times[1:])
+                   for t in (left,(left+right)/2,right))
     results={}
     for case, feet in TARGET_FEET.items():
         points=route(case)
         gaps=[math.dist(a,b) for a,b in zip(points,points[1:])]
         assert max(gaps)<.15, 'Route discontinuity'
         for a,b in zip(points,points[1:]):
-            assert surface.covers(Point(*a)), 'Route leaves pavement'
+            assert covered(a), 'Route leaves pavement'
             angle=math.atan2(b[1]-a[1],b[0]-a[0]);c=math.cos(angle);s=math.sin(angle)
-            body=Polygon([(a[0]+c*u-s*v,a[1]+s*u+c*v) for u,v in
-                          ((-2.5,-1),(-2.5,1),(2.5,1),(2.5,-1))])
-            assert surface.covers(body), 'Prospective body leaves pavement'
+            body=[(a[0]+c*u-s*v,a[1]+s*u+c*v) for u,v in
+                  ((-2.5,-1),(-2.5,1),(2.5,1),(2.5,-1))]
+            assert all(segment_covered(p,body[(i+1)%4]) for i,p in enumerate(body)), \
+                'Prospective body leaves pavement'
         results[case]={'nominal_commanded_after_turn_ft':feet,'route_points':len(points),
                        'maximum_sample_gap_m':round(max(gaps),5),
                        'nominal_merge_start_x_m':round(TURN_END_X+feet*.3048+.19*8,5)}
