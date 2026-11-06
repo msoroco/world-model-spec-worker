@@ -17,10 +17,11 @@ import traceback
 from cameras import camera_plan
 from engineering import CANDIDATES, plan
 from geometry import (FT_M, OBSERVER_DISTANCES_FT, TURN_STATION_M,
-                      check as geometry_check, open_drive)
+                      check as geometry_check, open_drive, road_height)
 from obstruction import check as obstruction_check, placements
 
 ROOT=Path(__file__).resolve().parent
+ASSUMED_DRIVER_EYE_OFFSET_M=1.15
 
 
 def write_new(path,value):
@@ -48,7 +49,7 @@ def check(config):
     if config['duration_s']!=24 or config['rate_hz']!=20:
         raise ValueError('Original capture timing changed')
     construction=plan(suffix,candidate)
-    authored_road=ROOT/'road.xodr'
+    authored_road=ROOT/'authored_road.xodr'
     if authored_road.exists() and authored_road.read_text()!=open_drive():
         raise ValueError('Materialized authored road differs from exact construction')
     authored_obstruction=ROOT/'obstruction.json'
@@ -73,6 +74,10 @@ def check(config):
 
 def body_vertices(actor):
     return [[v.x,v.y,v.z] for v in actor.bounding_box.get_world_vertices(actor.get_transform())]
+
+
+def assumed_driver_viewpoint(location):
+    return [location.x,location.y,location.z+ASSUMED_DRIVER_EYE_OFFSET_M]
 
 
 def camera_pose(carla,spec,ego):
@@ -115,12 +120,12 @@ def execute(config,output,host,port):
         if actor.type_id.startswith(('vehicle.','walker.','sensor.','controller.'))]:
         raise RuntimeError('Requires exclusive idle asynchronous world ownership')
     owned=[];queues={};encoders={};encoder_logs={};capture=None;channels={}
-    changed=False;error=None;frames=0;restoration=None;recording_started=False
+    changed=False;error=None;frames=0;restoration=None
     try:
         suffix=config['case_suffix'];candidate=config['candidate_id']
         construction=plan(suffix,candidate)
         xml=open_drive()
-        authored_road=output/'road.xodr'
+        authored_road=output/'authored_road.xodr'
         if authored_road.exists():
             if authored_road.read_text()!=xml:
                 raise ValueError('Materialized authored road differs from exact construction')
@@ -136,8 +141,6 @@ def execute(config,output,host,port):
         settings.fixed_delta_seconds=.05;settings.substepping=True
         settings.max_substep_delta_time=.01;settings.max_substeps=10
         world.apply_settings(settings);world.set_weather(carla.WeatherParameters.ClearNoon)
-        client.start_recorder(str(output/'carla_recorder.log'),additional_data=True)
-        recording_started=True
         mapping=world.get_map();native_xml=mapping.to_opendrive()
         native_hash=hashlib.sha256(native_xml.encode()).hexdigest()
         with (output/'native_road_readback.xodr').open('x') as stream:stream.write(native_xml)
@@ -154,6 +157,13 @@ def execute(config,output,host,port):
             barrier_inventory.append({'id':actor.id,'type_id':actor.type_id,
                 'requested':row,'world_vertices_m':body_vertices(actor)})
         actors={}
+        elevation_samples=[]
+        for station in range(100,301,5):
+            waypoint=mapping.get_waypoint_xodr(1,-1,float(station))
+            if waypoint is None:raise RuntimeError('Native crest elevation readback missing')
+            elevation_samples.append({'station_m':station,
+                'native_waypoint_z_m':waypoint.transform.location.z,
+                'authored_road_height_m':road_height(station)})
         stations={'ego':TURN_STATION_M-24,
                   'reference_left':TURN_STATION_M-500*FT_M,
                   'reference_right':TURN_STATION_M+500*FT_M}
@@ -175,8 +185,10 @@ def execute(config,output,host,port):
             'native_road_sha256':native_hash,
             'authored_limit_ft':OBSERVABILITY_LIMIT(suffix),
             'barrier_blueprint':barrier_bp.id,'barrier_inventory':barrier_inventory,
+            'waypoint_elevation_samples':elevation_samples,
             'vehicle_ids':{role:actor.id for role,actor in actors.items()},
             'planned_view_stations_m':stations,
+            'driver_eye_offset_assumed_m':ASSUMED_DRIVER_EYE_OFFSET_M,
             'physical_visibility_verified':False,
             'legal_verdict_claimed':False})
         for spec in camera_plan(suffix,candidate):
@@ -223,8 +235,8 @@ def execute(config,output,host,port):
                 for role in ('reference_left','reference_right'):
                     actor=actors[role];pose=actor.get_transform()
                     views[role]={'actor_id':actor.id,
-                        'driver_viewpoint_xyz_m':[pose.location.x,pose.location.y,
-                                                  pose.location.z+construction['knobs']['reference_camera_height_m']],
+                        'driver_viewpoint_xyz_m':assumed_driver_viewpoint(pose.location),
+                        'driver_eye_point_is_assumed':True,
                         'approach_heading_deg':pose.rotation.yaw,
                         'vehicle_body_vertices_m':body_vertices(actor)}
                 capture.capture(frame,time_s,extra={'c104538_native':motion,
@@ -272,9 +284,6 @@ def execute(config,output,host,port):
         if capture is not None:
             try:capture.close(confirmed=error is None)
             except BaseException as exc:error=error or {'capture_close_error':str(exc)}
-        if recording_started:
-            try:client.stop_recorder()
-            except BaseException as exc:error=error or {'recorder_stop_error':str(exc)}
         for name,encoder in encoders.items():
             try:
                 encoder.stdin.close()

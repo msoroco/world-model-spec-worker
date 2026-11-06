@@ -8,8 +8,8 @@ NATIVE=FOLDER/'native'
 ASSIGNMENT=FOLDER.name
 SUFFIXES=('below_500_ft','at_500_ft','above_500_ft')
 CANDIDATES=('primary','fallback1','fallback2','fallback3')
-MODULES=('runner.py','engineering.py','geometry.py','obstruction.py','cameras.py','sightline.py')
-TESTS=('test_runner.py','test_engineering.py','test_sightline.py','test_obstruction.py')
+MODULES=('runner.py','engineering.py','geometry.py','obstruction.py','cameras.py','sightline.py','measure_native.py','finalize.py')
+TESTS=('test_runner.py','test_engineering.py','test_sightline.py','test_obstruction.py','test_measure_native.py','test_finalize.py')
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -21,18 +21,23 @@ def write(path,value):
 
 
 def build():
+    runtime_proof=json.loads((FOLDER.parents[1]/'work/_shared/runtime-proof.json').read_text())
     manifest={'format':'worker-unselected-draft-construction-manifest-v1',
-              'assignment_id':ASSIGNMENT,'status':'draft_not_selected','cases':[]}
+              'assignment_id':ASSIGNMENT,'status':'draft_not_selected',
+              'runtime_manifest_sha256':runtime_proof['runtime_manifest_sha256'],'cases':[]}
     common=[{'path':name,'content':(NATIVE/name).read_text()} for name in MODULES]
     common += [{'path':'tests/'+name,'content':(NATIVE/name).read_text()} for name in TESTS]
     for suffix in SUFFIXES:
         case_id=ASSIGNMENT+'__'+suffix
         source=FOLDER/'draft-sightline'/suffix
-        sources=[{'path':name,'content':(source/name).read_text()}
-                 for name in ('road.xodr','obstruction.json','measurement.json')]
+        sources=[{'path':'authored_road.xodr','content':(source/'road.xodr').read_text()}]
+        sources += [{'path':name,'content':(source/name).read_text()}
+                    for name in ('obstruction.json','measurement.json')]
         entry={'case_id':case_id,'kind':'draft_not_selected',
                'candidate_risk':{'status':'physical',
                  'reason':'Native crest, obstruction geometry, physical opacity, driver-eye pixels and turn completion remain unmeasured'},
+               'measurement_procedure':{'entrypoint':'finalize.py',
+                  'output_schema':'c104538-saved-analysis-v1'},
                'candidates':[]}
         for candidate in CANDIDATES:
             plan=json.loads((FOLDER/'draft-candidates'/suffix/candidate/'plan.json').read_text())
@@ -44,13 +49,19 @@ def build():
                           cameras=[{'name':name,'width':width,'height':height}
                              for name,width,height in (('overview',1920,1080),
                                  ('reference_left',1280,720),('reference_right',1280,720),('ego',1280,720))])
+            description={'channels':[{'name':name,'unit':'structured',
+                'sampling_rate_hz':20,'method':'original Native actor/map/channel source',
+                'time_window':'entire original 24 s / 480-frame attempt',
+                'reference_frame':'original Native frame and map readback',
+                'uncertainty':'physical visibility and pixels require independent audit'}
+                for name in ('drv.u_turn','st.curvature','st.grade','st.crest',
+                    'st.sight_distance','rel.oncoming','drv.approaching','kin.position')],
+                'context_inputs':[],
+                'limitations':['Physical and legal conditions require original Native measurement and independent pixel audit']}
+            config['recording_description']=description
             files=common+sources+[
                 {'path':'config.json','content':json.dumps(config,indent=2)+'\n'},
                 {'path':'construction-plan.json','content':json.dumps(plan,indent=2)+'\n'}]
-            description={'channels':['drv.u_turn','st.curvature','st.grade','st.crest',
-                'st.sight_distance','rel.oncoming','drv.approaching','kin.position'],
-                'sampling_rate_hz':20,'duration_s':24,'original_views':4,
-                'limitation':'Physical and legal conditions require original Native measurement'}
             construction={'case_id':case_id,'cell_id':'C104538','law_id':'NRS-484B-407',
                 'actor':'motor_vehicle_driver','entrypoint':'runner.py','files':files,
                 'recording_description':description,

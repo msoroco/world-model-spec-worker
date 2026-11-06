@@ -1,7 +1,8 @@
 import json
 import unittest
 from pathlib import Path
-from runner import check,control_for_time,frame_map_row
+from runner import ASSUMED_DRIVER_EYE_OFFSET_M,assumed_driver_viewpoint,check,control_for_time,frame_map_row
+from cameras import camera_plan
 
 ROOT=Path(__file__).resolve().parent
 if not (ROOT/'config.json').exists():ROOT=ROOT.parent
@@ -11,7 +12,9 @@ class RunnerPreflightTest(unittest.TestCase):
     def setUp(self):self.base=json.loads((ROOT/'config.json').read_text())
 
     def test_all_twelve_unselected_native_preflights(self):
-        for suffix in ('below_500_ft','at_500_ft','above_500_ft'):
+        suffixes=(self.base['case_suffix'],) if (ROOT/'obstruction.json').exists() else (
+            'below_500_ft','at_500_ft','above_500_ft')
+        for suffix in suffixes:
             for candidate in ('primary','fallback1','fallback2','fallback3'):
                 with self.subTest(suffix=suffix,candidate=candidate):
                     config=dict(self.base,case_suffix=suffix,candidate_id=candidate,
@@ -40,6 +43,20 @@ class RunnerPreflightTest(unittest.TestCase):
         self.assertFalse(control_for_time(Stub,5)['reverse'] if 'reverse' in control_for_time(Stub,5) else False)
         self.assertTrue(control_for_time(Stub,12)['reverse'])
         self.assertGreater(control_for_time(Stub,20)['brake'],0)
+
+    def test_camera_attachments_have_spawned_actor_roles(self):
+        for suffix in ('below_500_ft','at_500_ft','above_500_ft'):
+            for candidate in ('primary','fallback1','fallback2','fallback3'):
+                mounts={view['attachment'] for view in camera_plan(suffix,candidate)}
+                self.assertEqual(mounts,{'world','ego','reference_left','reference_right'})
+
+    def test_driver_eye_assumption_is_independent_of_camera_fallback(self):
+        class Location:
+            x=10;y=20;z=3
+        self.assertEqual(assumed_driver_viewpoint(Location()),
+                         [10,20,3+ASSUMED_DRIVER_EYE_OFFSET_M])
+        assert camera_plan('below_500_ft','fallback3')[1]['native_xyz_m'][2]!=\
+            camera_plan('below_500_ft','primary')[1]['native_xyz_m'][2]
 
 
 if __name__=='__main__':unittest.main()
