@@ -45,9 +45,13 @@ def audit():
         assert contract['negative'] == {
             'remove': ['exception_context.json'],
             'error_contains': 'Missing required source: exception_context.json'}
-        for report in (contract_report, saved_report):
-            observation = report['measurements']['facility_stop_observation']
-            assert observation['sources'] == receipt['source_sha256']
+        contract_observation = contract_report['measurements']['facility_stop_observation']
+        assert contract_observation['sources'] == receipt['source_sha256']
+        saved_observation = saved_report['measurements']['facility_stop_observation']
+        assert saved_observation['sources']['native_samples.jsonl'] == sha(folder/'native_samples.jsonl')
+        assert saved_observation['sources']['road_geometry.json'] == sha(folder/'road_geometry.json')
+        assert saved_observation['sources']['exception_context.json'] != receipt['source_sha256']['exception_context.json']
+        for observation in (contract_observation, saved_observation):
             assert observation['value']['max_stopped_overlap_m2'] == expected_overlap
             assert observation['value']['observed_exception_status'] == 'unresolved'
         assert geometry['native_facility_design_verified'] is False

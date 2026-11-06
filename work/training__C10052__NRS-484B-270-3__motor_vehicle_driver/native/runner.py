@@ -128,13 +128,16 @@ def execute(config,output,host,port):
         survey=map_survey(carla,mapping,native_hash)
         write_new(output/'road_geometry.json',survey)
         write_new(output/'context.json',{'surveyed_bicycle_facility_and_alley':survey})
-        write_new(output/'exception_context.json',{
+        requested_exception_context={
             'source_kind':'synthetic_scene_request',
             'exceptions':{key:False for key in (
                 'entering_or_exiting_alley_or_driveway','disabled_vehicle',
                 'avoiding_traffic_conflict','official_duties','police_direction',
                 'emergency')},
-            'note':'requested control context only; absence requires original evidence and independent review'})
+            'note':'requested control context only; absence requires original evidence and independent review'}
+        write_new(output/'exception_context.json',{
+            **requested_exception_context,
+            'requested_exception_context':requested_exception_context})
         suffix=config['case_suffix'];candidate=config['candidate_id']
         engineering=parameters(suffix,candidate)
         start=engineering['start_x_m']

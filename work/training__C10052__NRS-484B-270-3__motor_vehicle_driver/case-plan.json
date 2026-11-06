@@ -32,22 +32,22 @@
       "candidate_plans": [
         {
           "id": "primary",
-          "status": "unselected_parameter_plan",
+          "status": "unselected_exact_offline_passed_v1_compatibility_diagnostic_only",
           "measured_trigger": "initial authored route, occupancy and capture check"
         },
         {
           "id": "fallback1",
-          "status": "unselected_parameter_plan",
+          "status": "unselected_exact_offline_passed_v1_compatibility_diagnostic_only",
           "measured_trigger": "less than 15 m approach before lateral shift or route survey failure"
         },
         {
           "id": "fallback2",
-          "status": "unselected_parameter_plan",
+          "status": "unselected_exact_offline_passed_v1_compatibility_diagnostic_only",
           "measured_trigger": "stop target error over 0.25 m or stationary duration under 2.0 s"
         },
         {
           "id": "fallback3",
-          "status": "unselected_parameter_plan",
+          "status": "unselected_exact_offline_passed_v1_compatibility_diagnostic_only",
           "measured_trigger": "full body and facility edge visible in under 95% of stopped frames"
         }
       ]
@@ -66,22 +66,22 @@
       "candidate_plans": [
         {
           "id": "primary",
-          "status": "unselected_parameter_plan",
+          "status": "unselected_exact_offline_passed_v1_compatibility_diagnostic_only",
           "measured_trigger": "initial authored route, occupancy and capture check"
         },
         {
           "id": "fallback1",
-          "status": "unselected_parameter_plan",
+          "status": "unselected_exact_offline_passed_v1_compatibility_diagnostic_only",
           "measured_trigger": "less than 15 m approach before lateral shift or route survey failure"
         },
         {
           "id": "fallback2",
-          "status": "unselected_parameter_plan",
+          "status": "unselected_exact_offline_passed_v1_compatibility_diagnostic_only",
           "measured_trigger": "stop target error over 0.25 m or stationary duration under 2.0 s"
         },
         {
           "id": "fallback3",
-          "status": "unselected_parameter_plan",
+          "status": "unselected_exact_offline_passed_v1_compatibility_diagnostic_only",
           "measured_trigger": "full body and facility edge visible in under 95% of stopped frames"
         }
       ]
@@ -173,13 +173,18 @@
     {
       "path": "inputs/training__C10052__NRS-484B-270-3__motor_vehicle_driver/assignment.json",
       "sha256": "3963795deb8c8fed620665c3cf3f31cfc983e373be7be931a81e8755ec068d30"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
     }
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Authored map and 480-frame synthetic occupancy diagnostics exist; Native facility designation, lane identity, route tracking, stop and camera capture require physical proof.",
-    "All six exception branches are requested false in the fixture but not observed or independently verified; yield duty and NRS 484B.297(6) remain unproven.",
-    "Four candidate parameter plans are unselected; exact pinned offline/compatibility receipts, saved full-attempt processing, independent acceptance and ordered GPU queue remain worker-owned."
+    "Two 480-frame synthetic saved positives/negatives, Core/render probes and eight exact v1 package diagnostics pass; strict recipe-backed v2 receipts and independent acceptance remain worker-owned.",
+    "Native bicycle-facility designation, vehicle lateral tracking, stop location, pedestrian control and camera pixels require physical proof.",
+    "All six exception branches remain requested false, not observed or independently verified; NRS 484B.297(6) qualifying pedestrian/yield interaction remains unproven.",
+    "Remaining statutory acts and shared branch matrix, ordered GPU queue and scenario-specific graph evidence remain worker-owned."
   ],
   "statutory_text": "The driver of a motor vehicle shall yield the right-of-way to any person riding a bicycle, an electric bicycle or an electric scooter or a pedestrian as provided in subsection 6 of NRS 484B.297 [NRS-484B-297-6] on the pathway or lane. The driver of a motor vehicle shall not enter, stop, stand, park or drive within a pathway or lane provided for bicycles, electric bicycles or electric scooters except: (a) When entering or exiting an alley or driveway; (b) When operating or parking a disabled vehicle; (c) To avoid conflict with other traffic; (d) In the performance of official duties; (e) In compliance with the directions of a police officer; or (f) In an emergency.",
   "activation_conditions_from_unreviewed_summary": [
@@ -262,6 +267,73 @@
       }
     ],
     "exception_evidence_status": "synthetic request records all false; original observation and independent verification absent; no exception-absence finding",
-    "cross_reference": "NRS 484B.297(6) [NRS-484B-297-6] named in frozen text; content and pedestrian scope not yet proven"
-  }
+    "cross_reference": {
+      "law_id": "NRS-484B-297-6",
+      "source": "NRS 484B.297(6)",
+      "exact_text": "A pedestrian walking or otherwise traveling on a sidewalk who encounters an obstruction to his or her mobility on the sidewalk, including, without limitation, a short section of the sidewalk that is missing or impassable, may proceed with due care on the immediately adjacent highway to move around such an obstruction. Such a pedestrian: (a) Must walk or otherwise travel as far to the side of the highway near the sidewalk as possible; (b) May walk or otherwise travel on the highway in the direction he or she was walking or traveling on the sidewalk, regardless of the direction of traffic; (c) May walk or otherwise travel in a lane provided for bicycles, electric bicycles or electric scooters if the area between the lane and the sidewalk is impassable; and (d) Must return to the sidewalk as soon as practicable.",
+      "qualifying_pedestrian_conditions": [
+        "sidewalk obstruction to mobility",
+        "due care on immediately adjacent highway",
+        "bicycle lane only when area between lane and sidewalk is impassable",
+        "return to sidewalk as soon as practicable"
+      ],
+      "current_probe_status": "synthetic pedestrian control is stationary at x=8 m, y=-4 m; no sidewalk obstruction, qualifying lane-entry conditions, interaction or yield event is proven"
+    }
+  },
+  "statutory_topic_review": [
+    {
+      "topic_id": "text-0",
+      "source_text": "The driver of a motor vehicle shall yield the right-of-way to any person riding a bicycle, an electric bicycle or an electric scooter or a pedestrian as provided in subsection 6 of NRS 484B.297 [NRS-484B-297-6] on the pathway or lane.",
+      "status": "pending_original_evidence",
+      "current_cpu_evidence": "exact text reviewed; no qualifying original interaction or exception proof"
+    },
+    {
+      "topic_id": "text-1",
+      "source_text": "The driver of a motor vehicle shall not enter, stop, stand, park or drive within a pathway or lane provided for bicycles, electric bicycles or electric scooters except:",
+      "status": "pending_original_evidence",
+      "current_cpu_evidence": "source-bound stopped-body overlap only; Native designation and exception findings unresolved"
+    },
+    {
+      "topic_id": "text-2",
+      "source_text": "(a) When entering or exiting an alley or driveway;",
+      "status": "pending_original_evidence",
+      "current_cpu_evidence": "exact text reviewed; no qualifying original interaction or exception proof"
+    },
+    {
+      "topic_id": "text-3",
+      "source_text": "(b) When operating or parking a disabled vehicle;",
+      "status": "pending_original_evidence",
+      "current_cpu_evidence": "exact text reviewed; no qualifying original interaction or exception proof"
+    },
+    {
+      "topic_id": "text-4",
+      "source_text": "(c) To avoid conflict with other traffic;",
+      "status": "pending_original_evidence",
+      "current_cpu_evidence": "exact text reviewed; no qualifying original interaction or exception proof"
+    },
+    {
+      "topic_id": "text-5",
+      "source_text": "(d) In the performance of official duties;",
+      "status": "pending_original_evidence",
+      "current_cpu_evidence": "exact text reviewed; no qualifying original interaction or exception proof"
+    },
+    {
+      "topic_id": "text-6",
+      "source_text": "(e) In compliance with the directions of a police officer;",
+      "status": "pending_original_evidence",
+      "current_cpu_evidence": "exact text reviewed; no qualifying original interaction or exception proof"
+    },
+    {
+      "topic_id": "text-7",
+      "source_text": "or (f) In an emergency.",
+      "status": "pending_original_evidence",
+      "current_cpu_evidence": "exact text reviewed; no qualifying original interaction or exception proof"
+    },
+    {
+      "topic_id": "reviewed-scope-0",
+      "source_text": "Stopping or standing within a designated facility, with alley exception context",
+      "status": "pending_original_evidence",
+      "current_cpu_evidence": "exact text reviewed; no qualifying original interaction or exception proof"
+    }
+  ]
 }
