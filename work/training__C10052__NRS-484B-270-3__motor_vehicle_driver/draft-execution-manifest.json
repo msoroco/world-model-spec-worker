@@ -1,0 +1,122 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver",
+  "runtime_manifest_sha256": "391baee19ccece687c5632aa2cc64ba3b958c8b492045b30e4bfc4caa131c235",
+  "status": "draft_not_selected",
+  "cases": [
+    {
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_a",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native bicycle designation, lateral route tracking, stop placement, exception observations and source framing require original evidence"
+      },
+      "measurement_contract": "draft-facility/probe_a/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10052-synthetic-saved-occupancy-diagnostic-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/probe_a/fallback1/construction.json",
+          "construction_sha256": "acf319d832f5e2d1d550b135521284f0c0bde1bac6a2ef284281d4abb15815eb",
+          "trigger": {
+            "source": "original Native pose and route start survey",
+            "metric": "usable approach distance before lateral shift",
+            "failure_condition": "primary has less than 15 m before shift or spawn/route survey fails"
+          },
+          "changed_knobs": [
+            "approach start x -45 m to -55 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/probe_a/fallback2/construction.json",
+          "construction_sha256": "bea1d9a94767ee185bfe9bc7215cbe01b14113c47c4bf8839058b5fa4b5a507a",
+          "trigger": {
+            "source": "original Native pose, velocity and full-body trace",
+            "metric": "stopped-body target error and stationary duration",
+            "failure_condition": "target center error exceeds 0.25 m or 2.0 s under 0.1 m/s is absent"
+          },
+          "changed_knobs": [
+            "braking onset 6 m to 9 m before stop"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/probe_a/fallback3/construction.json",
+          "construction_sha256": "61be015cfa20b074b77700a21e0bbe644cd4e2a8e21a27793dbcd6e0f0c2e7ef",
+          "trigger": {
+            "source": "four original source videos joined to Native frames",
+            "metric": "fraction of stopped frames showing full body and facility edge",
+            "failure_condition": "fraction falls below 0.95 in any required view"
+          },
+          "changed_knobs": [
+            "facility/overview camera FOV 90 to 105 degrees and elevated mount"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/probe_a/primary/construction.json",
+      "construction_sha256": "707f0b417d5335507e13fabbb373cb56c815fb37c678362d22172311f1e44756"
+    },
+    {
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_b",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native bicycle designation, lateral route tracking, stop placement, exception observations and source framing require original evidence"
+      },
+      "measurement_contract": "draft-facility/probe_b/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10052-synthetic-saved-occupancy-diagnostic-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/probe_b/fallback1/construction.json",
+          "construction_sha256": "29b1bb47b92bb307f2b98bc5deb24f429727ab71b14f5abc211a5f9c46319c99",
+          "trigger": {
+            "source": "original Native pose and route start survey",
+            "metric": "usable approach distance before lateral shift",
+            "failure_condition": "primary has less than 15 m before shift or spawn/route survey fails"
+          },
+          "changed_knobs": [
+            "approach start x -45 m to -55 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/probe_b/fallback2/construction.json",
+          "construction_sha256": "47b60928438b0c0ccbbe67bc7233ca6fc2a9de176707676bef6b2d168fbfa122",
+          "trigger": {
+            "source": "original Native pose, velocity and full-body trace",
+            "metric": "stopped-body target error and stationary duration",
+            "failure_condition": "target center error exceeds 0.25 m or 2.0 s under 0.1 m/s is absent"
+          },
+          "changed_knobs": [
+            "braking onset 6 m to 9 m before stop"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/probe_b/fallback3/construction.json",
+          "construction_sha256": "a95d94e0516a13d74a3d0c2902303a9dca41f72bb57f241cbedd4969bdef8be7",
+          "trigger": {
+            "source": "four original source videos joined to Native frames",
+            "metric": "fraction of stopped frames showing full body and facility edge",
+            "failure_condition": "fraction falls below 0.95 in any required view"
+          },
+          "changed_knobs": [
+            "facility/overview camera FOV 90 to 105 degrees and elevated mount"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/probe_b/primary/construction.json",
+      "construction_sha256": "8cff527cc9d0605d8c186a88c0312db5c322090fc928be7117d5d431795dbe6f"
+    }
+  ]
+}

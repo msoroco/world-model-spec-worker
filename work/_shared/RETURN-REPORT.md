@@ -291,6 +291,23 @@ Added an original-frame measurement that requires a two-second stationary interv
 | Eight exact v1 package positives and eight packaged negatives | 0 | See `draft-package-probe-summary.json` for all command log hashes |
 | Independent eight-receipt/source/negative audit | 0 | `fb2bccc37f43b1ca845453f619cdd9041a57806608339be45f165269a8681fcc` |
 
+### C10052 NRS 484B.270(3) continuation, 2026-11-06T01:53:55Z
+
+Continued the next incomplete assignment, `training__C10052__NRS-484B-270-3__motor_vehicle_driver`, from its exact frozen law record. The clause separately covers yielding to bicycle, electric bicycle, electric scooter and cross-referenced pedestrian users; entry, stopping, standing, parking and driving within a provided facility; and six exceptions. The work-owned case plan now records all six exception branches and the unresolved NRS 484B.297(6) pedestrian cross-reference. Neither of its two probes is selected, and the assignment remains `blocked`.
+
+Authored an OpenDRIVE alley and proposed bicycle lane, with controlled outside/inside stop routes. Added a 20 Hz original-sample polygon overlap procedure that verifies source files, frame/time order, road/lane identity, full-body winding and a two-second stopped interval. Two 480-frame **synthetic diagnostics** measure 0.0 and 9.36 m² of stopped body overlap. They share 61 original frames before the lateral shift. A saved-only finalizer and two pinned measurement contracts pass source-hash value verification; removing `exception_context.json` is rejected for both cases. The independent audit checks frozen-law/source hashes, map and exception-context identity, source hashes, body/pose/frame joins, saved report values, contract inputs and the controlled prefix. Seven adversarial CPU tests pass. Four distinct primary/fallback **parameter plans** have source-measurable route-clearance, stop-error and camera-framing triggers; exact construction/offline and compatibility receipts have **not** yet been made. The synthetic six false exception flags are requested scene conditions, **not observed exception absence**. Native bicycle designation, pedestrian yield, physical tracking, source cameras, full saved/Core integration and independent delivery acceptance remain worker-owned. No legal verdict or readiness promotion is claimed.
+
+The authored XML/route check passes within the seven tests. A separate pinned `static_map` parse attempt exited 1 at `ModuleNotFoundError: No module named 'shapely'` under `python3.11` (log SHA-256 `e5073eeeb7b6a0dbadd509eebf5d94be588770727d35bac7b6e1c734a4a3fe4d`); this is a local verification gap and does not excuse the unfinished construction. The batch static checker exits 0 (log SHA-256 `f1217f0dd145369ec9166735381c99ca2cae46c9146986af41d9c982c59f92ec`). The strict `python3.11 worker_check.py --complete --require-delivery-ready` exits 1 at `runtime/pipeline/scenario_pipeline/worker_exchange/branch_coverage.py:59`, `ValueError: Branch cannot be left pending` (log SHA-256 `d2da876474dfa6ffe7c23286eef51bf03f1eefeff39a9db5dca5fdd06835f6e4`). Pending branch construction/review is worker-owned, not an external blocker. No frozen input, runtime or batch file changed; no agent Git commit or push occurred.
+
+| C10052 CPU diagnostic | Exit | SHA-256 of log |
+| --- | ---: | --- |
+| Two 480-frame source-bound synthetic occupancy positives and three adversarial negatives each | 0 | `22ac09b3ccf1a3763777b787afa95f93fce8b1cae75c75678dc5527041948692` |
+| Seven geometry, polygon, candidate and source tests | 0 | `3baf5bca7fac01d39d7bd30c6f4e11c221fb1e1e3a7720d43b1b5e4772506553` |
+| Two pinned measurement-contract validations and saved-value verifications | 0 | `5729f4c170d3815553a029223a15f61bb651dae1ffcceea2434b3aa87ce8ea29` |
+| Two saved-only positives and missing-exception-source negatives | 0 | `1afa9651d13baca239800229ffad974c0f21f23fbc43c90a2bedc8ecff5047e7` |
+| Independent source/contract/controlled-pair audit | 0 | `c04bba4e5ad4de94e51c0eb83df9c8a378bc3f31dd84c7859f42d3cde81a6217` |
+| Pinned static-map parse, missing local `shapely` | 1 | `e5073eeeb7b6a0dbadd509eebf5d94be588770727d35bac7b6e1c734a4a3fe4d` |
+
 ## Remaining worker-owned work
 
 ### Latest C394300 NRS 484B.223(3)(c) continuation, 2026-11-05

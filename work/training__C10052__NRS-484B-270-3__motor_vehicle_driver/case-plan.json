@@ -24,7 +24,33 @@
       "kind": "planned_only",
       "target_type": "compliant_attempt",
       "physical_target": "stop outside the designated facility",
-      "comparison_variable": "bicycle_lane_occupancy_and_exception"
+      "comparison_variable": "bicycle_lane_occupancy_and_exception",
+      "planning_status": "unverified_definition",
+      "recorded_value": null,
+      "comparison_unit": "m2 of stopped full-body overlap with designated facility",
+      "measurement_status": "source-bound synthetic diagnostic only; Native facility designation and exceptions unresolved",
+      "candidate_plans": [
+        {
+          "id": "primary",
+          "status": "unselected_parameter_plan",
+          "measured_trigger": "initial authored route, occupancy and capture check"
+        },
+        {
+          "id": "fallback1",
+          "status": "unselected_parameter_plan",
+          "measured_trigger": "less than 15 m approach before lateral shift or route survey failure"
+        },
+        {
+          "id": "fallback2",
+          "status": "unselected_parameter_plan",
+          "measured_trigger": "stop target error over 0.25 m or stationary duration under 2.0 s"
+        },
+        {
+          "id": "fallback3",
+          "status": "unselected_parameter_plan",
+          "measured_trigger": "full body and facility edge visible in under 95% of stopped frames"
+        }
+      ]
     },
     {
       "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_b",
@@ -32,7 +58,33 @@
       "kind": "planned_only",
       "target_type": "violating_attempt",
       "physical_target": "stop inside it without an exception",
-      "comparison_variable": "bicycle_lane_occupancy_and_exception"
+      "comparison_variable": "bicycle_lane_occupancy_and_exception",
+      "planning_status": "unverified_definition",
+      "recorded_value": null,
+      "comparison_unit": "m2 of stopped full-body overlap with designated facility",
+      "measurement_status": "source-bound synthetic diagnostic only; Native facility designation and exceptions unresolved",
+      "candidate_plans": [
+        {
+          "id": "primary",
+          "status": "unselected_parameter_plan",
+          "measured_trigger": "initial authored route, occupancy and capture check"
+        },
+        {
+          "id": "fallback1",
+          "status": "unselected_parameter_plan",
+          "measured_trigger": "less than 15 m approach before lateral shift or route survey failure"
+        },
+        {
+          "id": "fallback2",
+          "status": "unselected_parameter_plan",
+          "measured_trigger": "stop target error over 0.25 m or stationary duration under 2.0 s"
+        },
+        {
+          "id": "fallback3",
+          "status": "unselected_parameter_plan",
+          "measured_trigger": "full body and facility edge visible in under 95% of stopped frames"
+        }
+      ]
     }
   ],
   "comparisons": [
@@ -125,8 +177,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
+    "Authored map and 480-frame synthetic occupancy diagnostics exist; Native facility designation, lane identity, route tracking, stop and camera capture require physical proof.",
+    "All six exception branches are requested false in the fixture but not observed or independently verified; yield duty and NRS 484B.297(6) remain unproven.",
+    "Four candidate parameter plans are unselected; exact pinned offline/compatibility receipts, saved full-attempt processing, independent acceptance and ordered GPU queue remain worker-owned."
   ],
   "statutory_text": "The driver of a motor vehicle shall yield the right-of-way to any person riding a bicycle, an electric bicycle or an electric scooter or a pedestrian as provided in subsection 6 of NRS 484B.297 [NRS-484B-297-6] on the pathway or lane. The driver of a motor vehicle shall not enter, stop, stand, park or drive within a pathway or lane provided for bicycles, electric bicycles or electric scooters except: (a) When entering or exiting an alley or driveway; (b) When operating or parking a disabled vehicle; (c) To avoid conflict with other traffic; (d) In the performance of official duties; (e) In compliance with the directions of a police officer; or (f) In an emergency.",
   "activation_conditions_from_unreviewed_summary": [
@@ -151,5 +204,64 @@
     "drv.time_to_conflict",
     "dev.human_direction",
     "drv.responding_emergency"
-  ]
+  ],
+  "source_law_text": "The driver of a motor vehicle shall yield the right-of-way to any person riding a bicycle, an electric bicycle or an electric scooter or a pedestrian as provided in subsection 6 of NRS 484B.297 [NRS-484B-297-6] on the pathway or lane. The driver of a motor vehicle shall not enter, stop, stand, park or drive within a pathway or lane provided for bicycles, electric bicycles or electric scooters except: (a) When entering or exiting an alley or driveway; (b) When operating or parking a disabled vehicle; (c) To avoid conflict with other traffic; (d) In the performance of official duties; (e) In compliance with the directions of a police officer; or (f) In an emergency.",
+  "source_law_citation": "NRS 484B.270(3)",
+  "statutory_review": {
+    "source": "frozen assignment law_record, exact text reviewed",
+    "prohibition": {
+      "acts": [
+        "enter",
+        "stop",
+        "stand",
+        "park",
+        "drive"
+      ],
+      "facility": "pathway or lane provided for bicycles, electric bicycles or electric scooters",
+      "current_probes": "stop or stand; synthetic occupancy only; Native designation pending"
+    },
+    "yield_duty": {
+      "beneficiaries": [
+        "bicycle rider",
+        "electric bicycle rider",
+        "electric scooter rider",
+        "pedestrian as provided in NRS 484B.297(6)"
+      ],
+      "status": "unresolved; participant interaction and cross-reference require separate source-bound proof"
+    },
+    "exception_branches": [
+      {
+        "clause": "a",
+        "condition": "entering or exiting an alley or driveway",
+        "source_field": "entering_or_exiting_alley_or_driveway"
+      },
+      {
+        "clause": "b",
+        "condition": "operating or parking a disabled vehicle",
+        "source_field": "disabled_vehicle"
+      },
+      {
+        "clause": "c",
+        "condition": "avoiding conflict with other traffic",
+        "source_field": "avoiding_traffic_conflict"
+      },
+      {
+        "clause": "d",
+        "condition": "performance of official duties",
+        "source_field": "official_duties"
+      },
+      {
+        "clause": "e",
+        "condition": "directions of a police officer",
+        "source_field": "police_direction"
+      },
+      {
+        "clause": "f",
+        "condition": "emergency",
+        "source_field": "emergency"
+      }
+    ],
+    "exception_evidence_status": "synthetic request records all false; original observation and independent verification absent; no exception-absence finding",
+    "cross_reference": "NRS 484B.297(6) [NRS-484B-297-6] named in frozen text; content and pedestrian scope not yet proven"
+  }
 }
