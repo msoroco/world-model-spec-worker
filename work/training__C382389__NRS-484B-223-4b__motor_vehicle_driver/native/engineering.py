@@ -14,7 +14,7 @@ def parameters(case_suffix,candidate_id):
     knobs=EngineeringKnobs(lookahead_base_m=3 if candidate_id=='fallback2' else 4,
                            max_steer_fraction=1.0)
     return {'case_suffix':case_suffix,'candidate_id':candidate_id,
-            'authored_route_xy_m':authored,'native_route_xy_m':authored,
+            'authored_route_xy_m':authored,'native_route_xy_m':[[x,-y] for x,y in authored],
             'route_start_variant_m':station,'controller_knobs':knobs,
             'cameras':camera_plan(candidate_id),
             'comparison_approach_y_m':lateral,

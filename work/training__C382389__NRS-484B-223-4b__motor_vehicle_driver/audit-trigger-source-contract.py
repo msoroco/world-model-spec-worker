@@ -19,13 +19,13 @@ def run():
     records=[]
     with tempfile.TemporaryDirectory(prefix='c382389-4b-trigger-',dir=ROOT/'.runtime-work') as temp:
         root=Path(temp)
-        for suffix,lateral,lane in (('reference',-1.75,-1),('contrast',-5.25,-2)):
+        for suffix,lateral,lane in (('reference',1.75,-1),('contrast',5.25,-2)):
             folder=root/suffix;folder.mkdir()
             samples=folder/'native_samples.jsonl';geometry=folder/'road_geometry.json'
             mapping=folder/'map-audit.json';pixels=folder/'pixel-audit.json';video=folder/'overview.mkv'
             video.write_bytes(b'480-frame synthetic camera audit placeholder')
             geometry.write_text(json.dumps({'native_map_sha256':'a'*64}))
-            authored=route(lateral)
+            authored=[[x,-y] for x,y in route(-lateral)]
             rows=[]
             for index in range(480):
                 x,y=authored[round(index*(len(authored)-1)/479)]

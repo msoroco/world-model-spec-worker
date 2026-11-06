@@ -32,8 +32,8 @@ def run():
     with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work', prefix='c382389-pair-') as tmp:
         base = Path(tmp)
         a,b = base/'reference',base/'contrast'
-        fixture.make_base(a,'reference',-1.75,480)
-        fixture.make_base(b,'contrast',-5.25,480)
+        fixture.make_base(a,'reference',1.75,480)
+        fixture.make_base(b,'contrast',5.25,480)
         assert config(a/'config.json') == config(b/'config.json')
         assert (a/'road_geometry.json').read_bytes() == (b/'road_geometry.json').read_bytes()
         for source in (a,b):
@@ -57,7 +57,7 @@ def run():
             for key in ('native_frame','time_s','native_road_id','native_forward_xy'):
                 assert first[key] == second[key], key
             assert first['native_center_xy_m'][0] == second['native_center_xy_m'][0]
-            assert first['native_center_xy_m'][1] - 3.5 == second['native_center_xy_m'][1]
+            assert first['native_center_xy_m'][1] + 3.5 == second['native_center_xy_m'][1]
             assert (first['native_lane_id'],second['native_lane_id']) == (-1,-2)
         return {'format':'c382389-4b-synthetic-saved-pair-audit-v1',
             'frames_per_case':480,'source_unchanged':True,

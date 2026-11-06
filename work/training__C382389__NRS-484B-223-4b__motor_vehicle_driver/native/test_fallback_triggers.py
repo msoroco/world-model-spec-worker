@@ -23,7 +23,7 @@ class FallbackTriggerTests(unittest.TestCase):
         self.geometry.write_text(json.dumps({'native_map_sha256':'a'*64}))
 
     def write(self,lane,deviation=0,complete=True,link=True,visible=19):
-        y=-5.25 if lane==-2 else -1.75
+        y=5.25 if lane==-2 else 1.75
         route=[[-20,y],[20,y]]
         rows=[row(1,-20,y,1,lane),row(2,-8,y+deviation,1,lane),
               row(3,-5,y,14,lane),row(4,15 if complete else 6,y,2 if complete else 14,lane)]

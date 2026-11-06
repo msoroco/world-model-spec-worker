@@ -1,0 +1,53 @@
+"""CPU survey of both straight lanes in CARLA's reflected OpenDRIVE frame."""
+import types
+import unittest
+
+from engineering import parameters
+from runner import map_survey
+
+
+class Waypoint:
+    def __init__(self, road_id, lane_id, x, y):
+        self.road_id=road_id
+        self.lane_id=lane_id
+        self.lane_width=3.5
+        self.transform=types.SimpleNamespace(
+            location=types.SimpleNamespace(x=x,y=y),
+            get_forward_vector=lambda:types.SimpleNamespace(x=1,y=0))
+
+
+class Map:
+    def __init__(self):
+        self.queries=[]
+        self.lanes={
+            (-30,5.25):Waypoint(1,-2,-30,5.25),
+            (-30,1.75):Waypoint(1,-1,-30,1.75),
+            (30,5.25):Waypoint(2,-2,30,5.25),
+            (30,1.75):Waypoint(2,-1,30,1.75),
+        }
+
+    def get_waypoint(self,location,*,project_to_road,lane_type):
+        self.queries.append((location.x,location.y,project_to_road,lane_type))
+        return self.lanes.get((location.x,location.y))
+
+
+class RunnerSurveyTest(unittest.TestCase):
+    def test_both_lanes_and_all_reflected_routes(self):
+        carla=types.SimpleNamespace(
+            Location=lambda **kw:types.SimpleNamespace(**kw),
+            LaneType=types.SimpleNamespace(Driving='driving'))
+        mapping=Map()
+        survey=map_survey(carla,mapping,'a'*64)
+        self.assertEqual([(x,y) for x,y,_,_ in mapping.queries],
+                         [(-30,5.25),(-30,1.75),(30,5.25),(30,1.75)])
+        self.assertEqual(survey['right_only_lane_native_y_bounds_m'],[3.5,7.0])
+        for suffix,y in (('reference',1.75),('contrast',5.25)):
+            for candidate in ('primary','fallback1','fallback2','fallback3'):
+                plan=parameters(suffix,candidate)
+                self.assertEqual(plan['native_route_xy_m'],
+                                 [[x,-authored_y] for x,authored_y in plan['authored_route_xy_m']])
+                self.assertEqual(plan['native_route_xy_m'][0][1],y)
+                self.assertGreater(plan['native_route_xy_m'][-1][0],7)
+
+
+if __name__=='__main__':unittest.main()

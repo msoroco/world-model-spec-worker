@@ -15,6 +15,7 @@ SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','controller.py':'co
          'tests/test_measure_crossing.py':'test_measure_crossing.py',
          'tests/test_controller.py':'test_controller.py',
          'tests/test_candidate_knobs.py':'test_candidate_knobs.py',
+         'tests/test_runner_survey.py':'test_runner_survey.py',
          'tests/test_fallback_triggers.py':'test_fallback_triggers.py',
          'tests/test_cameras.py':'test_cameras.py'}
 

@@ -18,7 +18,7 @@ class CrossingMeasurementTests(unittest.TestCase):
         (self.root/'road_geometry.json').write_text(json.dumps(self.geometry))
 
     def write(self,lane):
-        y=-5.25 if lane==-2 else -1.75
+        y=5.25 if lane==-2 else 1.75
         states=[(-20,1),(-12,1),(0,14),(15,2)]
         records=[]
         for index,(x,road) in enumerate(states):
@@ -55,8 +55,8 @@ class CrossingMeasurementTests(unittest.TestCase):
             measure_crossing(path,self.root/'road_geometry.json')
 
     def test_incomplete_exit_rejected(self):
-        path,records=self.write(-2);records[3]['native_center_xy_m']=[8,-5.25]
-        records[3]['native_body_xy_m']=[[5.4,-6.35],[5.4,-4.15],[10.6,-4.15],[10.6,-6.35]]
+        path,records=self.write(-2);records[3]['native_center_xy_m']=[8,5.25]
+        records[3]['native_body_xy_m']=[[5.4,4.15],[5.4,6.35],[10.6,6.35],[10.6,4.15]]
         path.write_text(''.join(json.dumps(row)+'\n' for row in records))
         with self.assertRaisesRegex(ValueError,'complete exit not all observed'):
             measure_crossing(path,self.root/'road_geometry.json')

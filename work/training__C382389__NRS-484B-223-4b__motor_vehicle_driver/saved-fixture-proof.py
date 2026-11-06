@@ -40,7 +40,7 @@ def make_base(destination,suffix,approach_y,frame_count=4,full_resolution=False)
     geometry={'native_map_sha256':'a'*64,'approach_road_id':1,
               'straight_connector_road_id':14,'straight_destination_road_id':2,
               'right_only_lane_id':-2,'adjacent_through_lane_id':-1,
-              'right_only_lane_native_y_bounds_m':[-7.0,-3.5],
+              'right_only_lane_native_y_bounds_m':[3.5,7.0],
               'intersection_native_xy_bounds_m':[-7,-7,7,7],
               'right_only_lane_design_native_verified':False}
     (destination/'road_geometry.json').write_text(json.dumps(geometry))
@@ -115,7 +115,7 @@ def run(frame_count=4):
     records=[]
     with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c382389-saved-') as temp:
         scratch=Path(temp)
-        for suffix,lateral in (('reference',-1.75),('contrast',-5.25)):
+        for suffix,lateral in (('reference',1.75),('contrast',5.25)):
             base=scratch/(suffix+'-base');make_base(base,suffix,lateral,frame_count)
             positive=scratch/(suffix+'-positive');negative=scratch/(suffix+'-negative')
             shutil.copytree(base,positive);shutil.copytree(base,negative)
