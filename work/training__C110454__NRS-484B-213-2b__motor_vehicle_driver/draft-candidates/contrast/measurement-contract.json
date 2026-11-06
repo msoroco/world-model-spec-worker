@@ -1,0 +1,38 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__contrast",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "left_side_driving",
+      "method": "measure_left_side",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "intersection_approach_relation",
+      "method": "measure_approach",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native_samples.jsonl"
+    ],
+    "error_contains": "Missing required source: native_samples.jsonl"
+  }
+}

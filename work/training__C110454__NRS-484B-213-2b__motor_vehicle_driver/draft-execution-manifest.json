@@ -1,0 +1,120 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "0d9a74f44af88236ebed007ae6e020a134b420ad6fe8f2f87c8869184ebee555",
+  "status": "draft_not_selected",
+  "cases": [
+    {
+      "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__reference",
+      "kind": "draft_not_selected",
+      "measurement_contract": "draft-candidates/reference/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/reference/fallback1/construction.json",
+          "construction_sha256": "76a3485ae44a8e60897c6bbd91263feb47d8b0ce4ec6048f8ddb4d805fda2d70",
+          "trigger": {
+            "metric": "max_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "source": "original Native ego pose joined to authored route and map readback"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/reference/fallback2/construction.json",
+          "construction_sha256": "d296d8f83f04ee7cb9e2313f6ecbaad958f23688deb1061d95ca78c183617818",
+          "trigger": {
+            "metric": "parking_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "source": "original Native velocity at surveyed parking endpoint"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/reference/fallback3/construction.json",
+          "construction_sha256": "3bc0847e3078a951ed03e78cc96cd03a9d0797dced175517dcfe7aea56381394",
+          "trigger": {
+            "metric": "min_ego_pixel_margin_px",
+            "op": "<",
+            "threshold": 40,
+            "source": "decoded original overview video and original body-mask corners"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/reference/primary/construction.json",
+      "construction_sha256": "dfb59485a89bb98feb2b2b5d4d51062c40c5d78c6128d6735f74ed9a81e98f65"
+    },
+    {
+      "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__contrast",
+      "kind": "draft_not_selected",
+      "measurement_contract": "draft-candidates/contrast/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/contrast/fallback1/construction.json",
+          "construction_sha256": "1c4ef4b7a4db88e7a0f109fa9c4532a5b14a27bf32c3e08c0944972c66a906c6",
+          "trigger": {
+            "metric": "max_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "source": "original Native ego pose joined to authored route and map readback"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/contrast/fallback2/construction.json",
+          "construction_sha256": "760ee1d8464134efe5a55b0b4b7075e7fc775976f7910a2d5028841d55564494",
+          "trigger": {
+            "metric": "parking_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "source": "original Native velocity at surveyed parking endpoint"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/contrast/fallback3/construction.json",
+          "construction_sha256": "431d67b56c1cd5495cff4da4be427c3b0924c8419c97e4bcd8d3e6aae657547a",
+          "trigger": {
+            "metric": "min_ego_pixel_margin_px",
+            "op": "<",
+            "threshold": 40,
+            "source": "decoded original overview video and original body-mask corners"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/contrast/primary/construction.json",
+      "construction_sha256": "15db8c2df77f950da99c05f235922f147273a2fcd567b50638fc25beaaa9fd9b"
+    }
+  ]
+}

@@ -37,6 +37,18 @@ def parameters(case: str, candidate: str) -> dict:
             "source_status": "planned_original_native_or_video_not_observed"}
 
 
+def controller_parameters(case: str, candidate: str):
+    """Concrete controller knobs for one authored route and candidate."""
+    from controller import EngineeringKnobs
+    spec = parameters(case, candidate)["knobs"]
+    return EngineeringKnobs(
+        lookahead_base_m=spec["route_tracking_lookahead_m"],
+        target_speed_mps=5.5,
+        final_brake_mps2=1.5,
+        final_margin_m=spec["parking_brake_start_m"] - 9.0,
+    )
+
+
 def evaluate_trigger(candidate: str, metrics: dict, source: Path,
                      expected_sha256: str) -> bool:
     if candidate not in TRIGGERS:

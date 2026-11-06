@@ -24,9 +24,14 @@ def measure(samples: list[dict], source_path: Path, expected_sha256: str) -> dic
         raise ValueError("Insufficient original Native samples")
     left = []
     previous = None
+    previous_native = None
     for index, sample in enumerate(samples):
-        if sample.get("video_frame") != index or sample.get("native_frame") != index:
+        native_frame = sample.get("native_frame")
+        if sample.get("video_frame") != index or type(native_frame) is not int or (
+            previous_native is not None and native_frame != previous_native + 1
+        ):
             raise ValueError("Original video/Native frame join differs")
+        previous_native = native_frame
         t = sample.get("time_s")
         if not isinstance(t, (int, float)) or not math.isfinite(t):
             raise ValueError("Invalid original Native timestamp")

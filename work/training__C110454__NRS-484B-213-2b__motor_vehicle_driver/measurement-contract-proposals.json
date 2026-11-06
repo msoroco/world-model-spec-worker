@@ -1,0 +1,30 @@
+{
+  "format": "unselected-c110454-measurement-proposals-v1",
+  "status": "draft_not_runtime_validated",
+  "case_ids": [
+    "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__reference",
+    "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__contrast"
+  ],
+  "source_boundary": "Native map readback intersection entry polygon and two-way lane directions; the authored x=-7 m boundary is only a CPU proposal",
+  "required_sources": [
+    "original Native map readback SHA-256",
+    "original Native ego pose, speed and four horizontal body vertices per 20 Hz frame",
+    "original video frame to Native frame and timestamp join for each camera",
+    "decoded original overview and intersection pixels"
+  ],
+  "channels": [
+    {"name": "body_front_distance_to_intersection_entry", "unit": "m", "rate_hz": 20, "method": "minimum along incoming roadway from actual front corner to surveyed entry boundary"},
+    {"name": "full_body_left_of_center", "unit": "boolean", "rate_hz": 20, "method": "all original body corners across surveyed two-way road centerline"},
+    {"name": "ego_speed", "unit": "m/s", "rate_hz": 20, "method": "observed Native body velocity"},
+    {"name": "road_direction", "unit": "Native lane vector", "rate_hz": 20, "method": "surveyed opposing lane vectors and lane IDs"},
+    {"name": "ego_pixel_margin", "unit": "px", "rate_hz": 20, "method": "minimum original body-mask distance to decoded image edge"}
+  ],
+  "comparison": {
+    "variable": "left_side_entry_distance_to_intersection",
+    "unit": "ft",
+    "held": ["cell", "two-way intersection", "park destination", "actor", "rate", "duration", "camera identities", "controller knobs within a candidate"],
+    "uncertainty": "50 ms samples and original map/body precision; bracket crossings and leave exact-boundary cases unresolved"
+  },
+  "physical_observations_present": false,
+  "legal_verdict": null
+}
