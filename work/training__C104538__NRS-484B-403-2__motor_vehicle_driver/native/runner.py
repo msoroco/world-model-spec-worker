@@ -11,6 +11,7 @@ import json
 import math
 from pathlib import Path
 import queue
+import shutil
 import subprocess
 import sys
 import traceback
@@ -135,14 +136,23 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
     """
     import carla
     import numpy as np
-    runtime_package = Path(__file__).resolve().parents[3] / 'runtime' / 'pipeline' / 'scenario_pipeline'
-    if runtime_package.is_dir():
-        sys.path.insert(0, str(runtime_package))
+    for parent in Path(__file__).resolve().parents:
+        runtime_package = parent / 'runtime' / 'pipeline' / 'scenario_pipeline'
+        if runtime_package.is_dir():
+            sys.path.insert(0, str(runtime_package))
+            break
     from worker_exchange.world_restore import snapshot, restore
+    from worker_exchange.media import compose_four_views
+    from worker_exchange.native_output import seal_capture
+    from pipeline_capture import PipelineCapture
 
     preflight = check(case_suffix, candidate_id)
     output = Path(output_dir).resolve()
-    output.mkdir(parents=True, exist_ok=False)
+    if not output.is_dir() or not (output / 'config.json').is_file():
+        raise ValueError('Use a newly materialized exact-case output directory')
+    config = json.loads((output / 'config.json').read_text())
+    if config.get('case_suffix') != case_suffix or config.get('candidate_id') != candidate_id:
+        raise ValueError('Materialized exact case/candidate differs from runner request')
     client = carla.Client(host, int(port))
     client.set_timeout(180)
     saved = snapshot(client)
@@ -150,7 +160,8 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
     if saved['settings'].synchronous_mode or [actor for actor in prior.get_actors()
             if actor.type_id.startswith(('vehicle.', 'walker.', 'sensor.', 'controller.'))]:
         raise RuntimeError('Requires exclusive idle asynchronous CARLA world')
-    actors, encoders, encoder_logs, camera_queues = [], {}, {}, {}
+    actors, encoders, encoder_logs, camera_queues, channels = [], {}, {}, {}, {}
+    capture = None
     changed, restored, error, frames = False, None, None, 0
     try:
         world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
@@ -171,6 +182,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
         native_xml = mapping.to_opendrive()
         survey['native_map_sha256'] = hashlib.sha256(native_xml.encode()).hexdigest()
         _write_json_new(output / 'road_geometry.json', survey)
+        _write_json_new(output / 'context.json', {'signed_hill_crest': survey})
         engineering = parameters(case_suffix, candidate_id)
         blueprint = world.get_blueprint_library().find('vehicle.lincoln.mkz_2020')
         blueprint.set_attribute('role_name', 'c104538_4032_ego')
@@ -215,9 +227,16 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                 f"{spec['width']}x{spec['height']}", '-r', '20', '-i', 'pipe:0',
                 '-an', '-c:v', 'ffv1', '-level', '1', str(output / (spec['name'] + '.mkv'))],
                 stdin=subprocess.PIPE, stderr=log)
+        capture = PipelineCapture(client, ego, output, config['case_id'],
+            visibility=False, required_observations=config.get('required_atoms', []))
+        (output / 'channels').mkdir()
+        for channel in config['recording_description']['channels']:
+            name = channel['name']
+            channels[name] = (output / 'channels' / (name + '.jsonl')).open('x')
         start = world.get_snapshot().timestamp.elapsed_seconds
         with (output / 'native_samples.jsonl').open('x') as native_file, \
-             (output / 'video_frames.jsonl').open('x') as frame_file:
+             (output / 'video_frames.jsonl').open('x') as frame_file, \
+             (output / 'body_history.jsonl').open('x') as body_file:
             for index in range(480):
                 before = ego.get_transform()
                 velocity = ego.get_velocity()
@@ -248,7 +267,28 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                     'native_body_xy_m': body,
                     'native_road_id': lane.road_id, 'native_lane_id': lane.lane_id,
                     'speed_mps': speed, 'controller_request': command}
+                capture.capture(frame, time_s, extra={'c104538_native': sample})
                 native_file.write(json.dumps(sample, allow_nan=False) + '\n')
+                body_file.write(json.dumps({'frame': frame, 'time_s': time_s,
+                    'body_vertices_m': [[v.x, v.y, v.z] for v in
+                        ego.bounding_box.get_world_vertices(pose)]}, allow_nan=False) + '\n')
+                frame_identity = frame_map_row(index, frame, time_s)
+                values = {
+                    'dev.regulatory_sign': {'native_landmark_readback': survey['landmark_readback'],
+                                            'official_sign_review': 'pending'},
+                    'dev.governs': {'native_lane': lane.lane_id,
+                                    'original_pixel_applicability_review': 'pending'},
+                    'dev.position': survey['landmark_readback'],
+                    'drv.u_turn': {'requested': case_suffix == 'witness_2',
+                                   'observed_from_saved_measurement': None},
+                    'kin.heading': sample['native_forward_xy'],
+                    'rel.occupies': body,
+                    'native_body_pose_control': sample,
+                    'camera_frame_join': frame_identity,
+                }
+                for name, stream in channels.items():
+                    stream.write(json.dumps({'time_s': time_s, 'value': values[name]},
+                                            allow_nan=False) + '\n')
                 for spec in camera_plan(candidate_id):
                     image = camera_queues[spec['name']].get(timeout=30)
                     while image.frame < frame:
@@ -258,7 +298,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                     rgb = np.frombuffer(image.raw_data, dtype=np.uint8).reshape(
                         spec['height'], spec['width'], 4)[:, :, :3][:, :, ::-1]
                     encoders[spec['name']].stdin.write(rgb.tobytes())
-                frame_file.write(json.dumps(frame_map_row(index, frame, time_s)) + '\n')
+                frame_file.write(json.dumps(frame_identity) + '\n')
                 frames += 1
         if frames != 480:
             raise RuntimeError('Original capture frame count incomplete')
@@ -266,6 +306,18 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
         error = {'type': type(exc).__name__, 'message': str(exc),
                  'traceback': traceback.format_exc()}
     finally:
+        for stream in channels.values():
+            stream.close()
+        if error is None and channels:
+            try:
+                shutil.copytree(output / 'channels', output / 'source_channels')
+            except BaseException as exc:
+                error = {'source_channel_copy_error': str(exc)}
+        if capture is not None:
+            try:
+                capture.close(confirmed=error is None)
+            except BaseException as exc:
+                error = error or {'capture_close_error': str(exc)}
         encoder_exit_codes = {}
         for name, encoder in encoders.items():
             try:
@@ -288,6 +340,23 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                 restored = restore(client, saved)
             except BaseException as exc:
                 error = error or {'world_restore_error': str(exc)}
+        if error is None and frames == 480:
+            try:
+                sources = {name: output / (name + '.mkv') for name in
+                    ('overview','approach','sign_reference','driver_reference')}
+                composed = compose_four_views(sources, output / 'video_frames.jsonl',
+                                              output / 'raw.mkv')
+                _write_json_new(output / 'four-view-receipt.json', composed)
+            except BaseException as exc:
+                error = {'four_view_composition_error': str(exc)}
+        if error is None and frames == 480:
+            try:
+                seal_capture(output, frames=frames, restoration=restored, errors=[],
+                    encoder_exit_codes=encoder_exit_codes,
+                    context={'case_id': config['case_id'], 'candidate_id': candidate_id,
+                             'physical_acceptance_claimed': False})
+            except BaseException as exc:
+                error = {'capture_seal_error': str(exc)}
         _write_json_new(output / 'native-capture-report.json', {
             'case_suffix': case_suffix, 'candidate_id': candidate_id,
             'frames': frames, 'expected_frames': 480,
