@@ -1,0 +1,120 @@
+"""Materialize exact unselected no-countdown construction bundles for pinned offline."""
+import hashlib
+import json
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+NATIVE = HERE / 'native'
+IDS = ('primary', 'fallback1', 'fallback2', 'fallback3')
+SOURCES = {'runner.py': 'runner.py', 'geometry.py': 'geometry.py',
+           'engineering.py': 'engineering.py', 'no_countdown.py': 'no_countdown.py',
+           'finalize.py': 'finalize.py',
+           'road.xodr': 'road.xodr', 'tests/test_offline.py': 'test_offline.py'}
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def recording_description():
+    channels = []
+    for name, unit, method in (
+        ('kin.position', 'm', 'Original Native pedestrian pose and footprint'),
+        ('kin.heading', 'unit vector', 'Original Native pedestrian transform'),
+        ('rel.occupies', 'structured', 'Full original body versus authored highway edges'),
+        ('native_display_program', 'structured', 'Requested frame-synchronized Walk, flashing and steady indication without countdown'),
+        ('display_camera_frame_join', 'structured', 'Original RGB frame hash joined to Native frame and no-countdown source'),
+    ):
+        channels.append({'name': name, 'unit': unit, 'sampling_rate_hz': 20,
+                         'method': method, 'time_window': 'entire 240-frame 12-second crossing',
+                         'reference_frame': 'Native source frame/time and authored crossing coordinates',
+                         'uncertainty': '50 ms event brackets; original pixel, device governance and highway status unverified'})
+    return {'channels': channels,
+            'context_inputs': [{'name': 'introductory_exceptions', 'unit': 'structured',
+                                'method': 'Independent statutory and original context review'}],
+            'limitations': ['Requested debug display is not a verified physical pedestrian signal',
+                            'Original display pixels and signal governance require independent saved audit',
+                            'Walk entry, no-countdown flashing and steady timing alone do not assign a legal verdict']}
+
+
+def build():
+    batch = json.loads((ROOT / 'batch.json').read_text())
+    plan = json.loads((HERE / 'case-plan.json').read_text())
+    common = {name: (NATIVE / source).read_text() for name, source in SOURCES.items()}
+    description = recording_description()
+    manifest = {'format': 'worker-unselected-draft-construction-manifest-v1',
+                'assignment_id': HERE.name,
+                'runtime_manifest_sha256': batch['runtime']['source_manifest_sha256'],
+                'status': 'draft_not_selected', 'cases': []}
+    for case in plan['cases']:
+        case_id = case['case_id']
+        suffix = case_id.rsplit('__', 1)[-1]
+        contract = HERE / 'draft-no-countdown' / suffix / 'measurement-contract.json'
+        if json.loads(contract.read_text())['case_id'] != case_id:
+            raise ValueError('No-countdown contract identity differs')
+        entry = {'case_id': case_id, 'kind': 'draft_not_selected',
+                 'candidate_risk': {'status': 'physical',
+                                    'reason': 'Native no-countdown device, display pixels, governance, walker crossing and highway status remain unverified'},
+                 'measurement_contract': str(contract.relative_to(HERE)),
+                 'measurement_procedure': {'entrypoint': 'finalize.py',
+                                           'output_schema': 'worker-analysis-report-v1'},
+                 'candidates': []}
+        for ident in IDS:
+            source_plan = json.loads((HERE / 'draft-candidates' / suffix / ident / 'construction.json').read_text())
+            e = source_plan['engineering']
+            config = {'case_id': case_id, 'selected_case_id': case_id,
+                      'case_suffix': suffix, 'candidate_id': ident,
+                      'case': {'case_id': case_id}, 'cell_id': 'C10316',
+                      'law_id': 'NRS-484B-283-1d3', 'actor': 'pedestrian',
+                      'duration_s': 12, 'rate_hz': 20,
+                      'required_atoms': ['ru.pedestrian', 'kin.position', 'kin.heading',
+                                         'st.crosswalk', 'rel.occupies'],
+                      'source_packets': [],
+                      'cameras': [{'name': name, 'width': width, 'height': height} for name, width, height in (
+                          ('overview', 1920, 1080), ('approach', 1280, 720),
+                          ('crosswalk_side', 1280, 720), ('display_close', 1280, 720))],
+                      'recording_description': description,
+                      'status': 'unselected_no_countdown_native_capture_proposal'}
+            assert (e['display_camera_width'], e['display_camera_height']) == (1280, 720)
+            files = [{'path': name, 'content': content} for name, content in common.items()]
+            files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})
+            construction = {'case_id': case_id, 'cell_id': 'C10316',
+                            'law_id': 'NRS-484B-283-1d3', 'actor': 'pedestrian',
+                            'entrypoint': 'runner.py', 'files': files,
+                            'recording_description': description,
+                            'measurement_plan': {'method': 'Original Walk/flash entry, steady and full-body-clearance brackets',
+                                                 'status': 'synthetic_cpu_prototype'},
+                            'static_checks': ['full-width authored crosswalk geometry',
+                                              '20 Hz no-countdown display program', 'four original RGB cameras'],
+                            'termination_rules': ['240 original frames',
+                                                  'retain failure, encoder and world restoration evidence'],
+                            'mechanisms': ['same-cell alley crossing', 'moving Native pedestrian',
+                                           'frame-synchronized diagnostic no-countdown rendering',
+                                           'original-pixel source hashes with independent audit required'],
+                            'status': 'unselected_cpu_draft_physical_display_unverified'}
+            path = HERE / 'draft-bundles' / suffix / ident / 'construction.json'
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(construction, indent=2) + '\n')
+            ref = {'id': ident, 'construction': str(path.relative_to(HERE)),
+                   'construction_sha256': sha(path)}
+            if ident == 'primary':
+                entry.update(ref)
+            else:
+                rule = source_plan['trigger']
+                ref.update(trigger={'source': rule['source'], 'metric': rule['metric'],
+                                    'failure_condition': f"{rule['metric']} {rule['threshold']}"},
+                           changed_knobs=[{
+                               'fallback1': 'spawn -6.5 m with two-meter pre-roll to capture start',
+                               'fallback2': 'snapshot-timestamp display clock instead of frame-index clock',
+                               'fallback3': 'display camera 3.5 m rather than 6 m from requested head',
+                           }[ident]])
+                entry['candidates'].append(ref)
+        manifest['cases'].append(entry)
+    (HERE / 'draft-execution-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    print(json.dumps({'unselected_exact_bundles': 8, 'cases': 2,
+                      'runtime_manifest_sha256': manifest['runtime_manifest_sha256']}))
+
+
+if __name__ == '__main__':
+    build()
