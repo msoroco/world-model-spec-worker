@@ -93,7 +93,9 @@ def run():
             base=scratch/(case+'-base');build(base,case)
             positive=scratch/(case+'-positive');negative=scratch/(case+'-negative')
             wrong_join=scratch/(case+'-wrong-join')
-            for destination in (positive,negative,wrong_join):shutil.copytree(base,destination)
+            wrong_replay=scratch/(case+'-wrong-replay')
+            for destination in (positive,negative,wrong_join,wrong_replay):
+                shutil.copytree(base,destination)
             originals={str(p.relative_to(positive)):sha(p) for p in positive.rglob('*') if p.is_file()}
             command=[sys.executable,str(FOLDER/'native/finalize.py'),'--attempt',str(positive),
                      '--output',str(positive/'analysis-report.json')]
@@ -124,9 +126,22 @@ def run():
                 env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=180)
             if join_failure.returncode==0 or 'Original frame/time mapping invalid' not in join_failure.stdout:
                 raise RuntimeError('Frame-join negative did not reject: '+join_failure.stdout)
+            replay_rows=[json.loads(row) for row in
+                (wrong_replay/'capture/native/frames.jsonl').read_text().splitlines()]
+            replay_rows[100]['simulation_time']+=.05
+            write_rows(wrong_replay/'capture/native/frames.jsonl',replay_rows)
+            replay_failure=subprocess.run([sys.executable,str(FOLDER/'native/finalize.py'),
+                '--attempt',str(wrong_replay),
+                '--output',str(wrong_replay/'analysis-report.json')],
+                env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=180)
+            if replay_failure.returncode==0 or \
+                    'Original replay simulation timestamp join differs' not in replay_failure.stdout:
+                raise RuntimeError('Replay-time negative did not reject: '+replay_failure.stdout)
             records.append({'case':case,'frames':report['original_joins']['frames'],
                 'source_videos':report['video_frames'],'positive_exit':0,
-                'missing_purpose_exit':failure.returncode,'wrong_frame_join_exit':join_failure.returncode,
+                'missing_purpose_exit':failure.returncode,
+                'wrong_frame_join_exit':join_failure.returncode,
+                'wrong_replay_time_exit':replay_failure.returncode,
                 'acquisition_unchanged':True,'physical_flags_false':True,
                 'result_sha256':sha(positive/'result.json'),
                 'analysis_sha256':sha(positive/'analysis-report.json'),

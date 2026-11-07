@@ -63,8 +63,12 @@ def original_joins(folder,count):
                 (sample,'native_frame'),(body,'frame'),(capture,'frame'))):
             raise ValueError('Original Native frame join differs')
         if any(abs(float(row[key])-time)>1e-4 for row,key in ((trace,'time_s'),
-                (evidence,'recording_time_s'),(sample,'time_s'),(body,'time_s'))):
+                (evidence,'recording_time_s'),(sample,'time_s'),(body,'time_s'),
+                (capture,'time_s'))):
             raise ValueError('Original Native timestamp join differs')
+        if abs(float(capture['simulation_time'])-
+               float(evidence['replay_simulation_time_s']))>1e-4:
+            raise ValueError('Original replay simulation timestamp join differs')
         captured={(round(v[0],5),round(v[1],5)) for v in evidence['ego']['body_vertices_m']}
         measured={(round(v[0],5),round(v[1],5)) for v in sample['native_body_xy_m']}
         historical={(round(v[0],5),round(v[1],5)) for v in body['body_vertices_m']}
