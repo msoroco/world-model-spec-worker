@@ -17,7 +17,13 @@ def audit():
     assert plan['actor']=='motor_vehicle_driver'
     assert plan['statutory_branch']=='exception_a_entering_or_exiting_alley_or_driveway'
     assert plan['selected'] is False and plan['ready'] is False
-    assert plan['exact_offline_proven'] is False and plan['portable_compatibility_proven'] is False
+    assert plan['exact_offline_proven'] is True and plan['portable_v1_diagnostic_proven'] is True
+    assert plan['portable_compatibility_proven'] is False and plan['native_execution_proven'] is False
+    assert plan['offline_summary_sha256']==sha(HERE/'draft-alley-offline-summary.json')
+    assert plan['manifest_sha256']==sha(HERE/'draft-alley-execution-manifest.json')
+    manifest=json.loads((HERE/'draft-alley-execution-manifest.json').read_text())
+    offline=json.loads((HERE/'draft-alley-offline-summary.json').read_text())
+    entry=manifest['cases'][0]
     assert plan['synthetic_crossing_proof_sha256']==sha(HERE/'alley-transition-summary.json')
     candidates=plan['candidates']
     assert [row['id'] for row in candidates]==['primary','fallback1','fallback2','fallback3']
@@ -26,9 +32,19 @@ def audit():
               'fallback2':('turn_speed_mps',1.8),
               'fallback3':('camera_profile','wide_alley_view')}
     for row in candidates:
-        assert row['status']=='runner_cpu_preflight_only'
+        assert row['status']=='unselected_exact_cpu_diagnostic_proven'
         assert row['route_source']=='native/alley_geometry.py'
         assert all(sha(HERE/'native'/name)==digest for name,digest in row['source_sha256'].items())
+        selected=entry if row['id']=='primary' else next(c for c in entry['candidates'] if c['id']==row['id'])
+        offline_row=next(r for r in offline['results'] if r['candidate_id']==row['id'])
+        package_path=HERE/('alley-package-'+row['id']+'-summary.json')
+        package=json.loads(package_path.read_text())
+        assert row['construction_sha256']==selected['construction_sha256']==offline_row['construction_sha256']
+        assert sha(HERE/selected['construction'])==row['construction_sha256']
+        assert row['offline_command_log_sha256']==offline_row['command_log_sha256']
+        assert sha(HERE/offline_row['command_log'])==row['offline_command_log_sha256']
+        assert row['portable_v1_summary_sha256']==sha(package_path)
+        assert package['positive_receipt_sha256'] and package['negative_exit_code']!=0
         assert row['native_parameters']['turn_radius_m']==5.0
         if row['id']=='primary':
             assert row['native_parameters']=={'approach_start_x_m':-45.0,

@@ -55,7 +55,7 @@ def audit():
             assert item['content'] == path.read_text(), item['path']
     assert seen == expected
     result = {'passed': True, 'cases': 2, 'unselected_draft_candidates': 8,
-              'offline_tests_per_bundle': 4, 'physical_verified': False}
+              'offline_tests_per_bundle': 6, 'physical_verified': False}
     print(json.dumps(result))
     return result
 

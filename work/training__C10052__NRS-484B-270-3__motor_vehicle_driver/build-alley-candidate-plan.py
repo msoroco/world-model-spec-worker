@@ -19,11 +19,27 @@ def main():
     sources={name:sha(HERE/'native'/name) for name in source_names}
     trigger_summary=sha(HERE/'alley-trigger-summary.json')
     crossing_summary=sha(HERE/'alley-transition-summary.json')
+    offline=json.loads((HERE/'draft-alley-offline-summary.json').read_text())
+    assert len(offline['results'])==4
+    offline_rows={row['candidate_id']:row for row in offline['results']}
+    assert set(offline_rows)==set(names)
+    assert all(row['exit_code']==0 for row in offline_rows.values())
+    manifest=json.loads((HERE/'draft-alley-execution-manifest.json').read_text())
+    entry=manifest['cases'][0]
     candidates=[]
     for name in names:
+        selected=entry if name=='primary' else next(c for c in entry['candidates'] if c['id']==name)
+        assert selected['construction_sha256']==offline_rows[name]['construction_sha256']
+        package_path=HERE/('alley-package-'+name+'-summary.json')
+        package=json.loads(package_path.read_text())
+        assert package['candidate_id']==name and package['construction_sha256']==selected['construction_sha256']
+        assert package['negative_exit_code']!=0 and package['selected'] is False and package['accepted'] is False
         candidate={'id':name,'native_parameters':parameters(name),
             'route_source':'native/alley_geometry.py',
-            'source_sha256':sources,'status':'runner_cpu_preflight_only'}
+            'source_sha256':sources,'status':'unselected_exact_cpu_diagnostic_proven',
+            'construction_sha256':selected['construction_sha256'],
+            'offline_command_log_sha256':offline_rows[name]['command_log_sha256'],
+            'portable_v1_summary_sha256':sha(package_path)}
         if name!='primary':
             candidate['measured_trigger']=TRIGGERS[name]
             candidate['synthetic_trigger_proof_sha256']=trigger_summary
@@ -36,8 +52,11 @@ def main():
         'controlled_comparison':'near alley turn versus matched away-from-alley crossing',
         'synthetic_crossing_proof_sha256':crossing_summary,
         'candidates':candidates,'selected':False,'ready':False,
-        'native_execution_proven':False,'exact_offline_proven':False,
+        'native_execution_proven':False,'exact_offline_proven':True,
+        'portable_v1_diagnostic_proven':True,
         'portable_compatibility_proven':False,
+        'offline_summary_sha256':sha(HERE/'draft-alley-offline-summary.json'),
+        'manifest_sha256':sha(HERE/'draft-alley-execution-manifest.json'),
         'physical_success_claimed':False}
     (HERE/'alley-candidate-plan.json').write_text(json.dumps(plan,indent=2)+'\n')
     print(json.dumps({'case_id':plan['case_id'],'candidates':len(candidates),
