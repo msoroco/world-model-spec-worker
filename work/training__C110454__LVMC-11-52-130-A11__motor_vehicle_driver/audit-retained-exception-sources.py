@@ -72,6 +72,24 @@ def main():
             altered['original_frames'].pop()
             write(negative,altered)
             assert rejected(negative,suffix,frames,row['truncated_frame_negative_error'])
+            if polarity=='present' and branch=='necessary_traffic_conflict':
+                actor=scratch/'case/other_actor_history.jsonl'
+                shutil.copy2(path.parent/'other_actor_history.jsonl',actor)
+                ego=scratch/'case/ego_response_history.jsonl'
+                source_rows=[json.loads(line) for line in (path.parent/'ego_response_history.jsonl').read_text().splitlines()]
+                assert len(source_rows)==len(frames)
+                assert [r['native_frame'] for r in source_rows]==frames
+                assert [i for i,r in enumerate(source_rows) if r['brake_applied']]==packet['ego_brake_frames']
+                assert source_rows[221]['speed_mps']<source_rows[220]['speed_mps']
+                write(negative,packet)
+                for index,mutation,expected in (
+                    (221,{'brake_applied':False},'Ego brake source does not match'),
+                    (221,{'speed_mps':4.0},'Ego brake has no measured deceleration'),
+                    (221,{'native_frame':9999},'Ego response original frame join differs')):
+                    altered_rows=json.loads(json.dumps(source_rows))
+                    altered_rows[index].update(mutation)
+                    ego.write_text(''.join(json.dumps(r)+'\n' for r in altered_rows))
+                    assert rejected(negative,suffix,frames,expected)
         checked.append({'case_suffix':suffix,'branch':branch,'polarity':polarity,
                         'source_sha256':sha(path),'positive':True,
                         'controlled_negative':True,'truncated_join_negative':True})

@@ -23,6 +23,14 @@ from geometry import PARK_STATIONS_M, check as geometry_check, open_drive, route
 ROOT = Path(__file__).resolve().parent
 
 
+def observed_speed_mps(actor):
+    velocity=actor.get_velocity()
+    components=(velocity.x,velocity.y,velocity.z)
+    if any(not math.isfinite(component) for component in components):
+        raise ValueError("Nonfinite observed Native velocity")
+    return math.sqrt(sum(component*component for component in components))
+
+
 def frame_map_row(index,frame,time_s):
     """Preserve both Native and canonical CARLA identities for saved/Core joins."""
     if type(index) is not int or index<0 or type(frame) is not int or frame<0:
@@ -206,6 +214,7 @@ def execute(config, output, host, port):
         start=world.get_snapshot().timestamp.elapsed_seconds
         parked_history=[]
         other_actor_history=[]
+        ego_response_history=[]
         with (output/"native_samples.jsonl").open("x") as native_file, \
              (output/"body_history.jsonl").open("x") as body_file, \
              (output/"video_frames.jsonl").open("x") as frame_file:
@@ -241,6 +250,10 @@ def execute(config, output, host, port):
                         'body_xy_m':cross_body,
                         'conflict_occupancy':any(-7<=vertex[0]<=7 and -7<=vertex[1]<=7 for vertex in cross_body),
                         'physical_conflict_necessity_claimed':False})
+                    observed_velocity=ego.get_velocity()
+                    ego_response_history.append({'native_frame':frame,'time_s':time_s,
+                        'brake_applied':command['brake']>0,
+                        'speed_mps':math.sqrt(observed_velocity.x**2+observed_velocity.y**2+observed_velocity.z**2)})
                 parked_history.append({"video_frame":index,"native_frame":frame,
                     "time_s":time_s,"body_xy_m":body,"speed_m_s":speed})
                 native_file.write(json.dumps(sample,allow_nan=False)+"\n")
@@ -269,6 +282,9 @@ def execute(config, output, host, port):
         if conflict_actor is not None:
             with (output/'other_actor_history.jsonl').open('x') as stream:
                 for row in other_actor_history:
+                    stream.write(json.dumps(row,allow_nan=False)+'\n')
+            with (output/'ego_response_history.jsonl').open('x') as stream:
+                for row in ego_response_history:
                     stream.write(json.dumps(row,allow_nan=False)+'\n')
         write_new(output/"exception_context_capture.json",{
             "source_kind":"native_exception_capture_index",

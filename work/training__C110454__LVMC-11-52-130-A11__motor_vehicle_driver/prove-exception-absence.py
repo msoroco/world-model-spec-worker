@@ -35,6 +35,10 @@ def main():
         actor=[{'native_frame':frame,'conflict_occupancy':index==220}
                for index,frame in enumerate(frames)]
         (root/'other_actor_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in actor))
+        ego=[{'native_frame':frame,'brake_applied':index==221,
+              'speed_mps':4.0 if index<221 else 3.0}
+             for index,frame in enumerate(frames)]
+        (root/'ego_response_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in ego))
         for suffix,(branch,polarity) in BRANCHES.items():
             packet={'source_kind':'native_context_schema','branch':branch,
                 'requested_polarity':polarity,'original_frames':frames,
@@ -61,6 +65,7 @@ def main():
             shutil.copy2(source,retained/'exception_context.json')
             if polarity=='present' and branch=='necessary_traffic_conflict':
                 shutil.copy2(root/'other_actor_history.jsonl',retained/'other_actor_history.jsonl')
+                shutil.copy2(root/'ego_response_history.jsonl',retained/'ego_response_history.jsonl')
             if polarity=='present' and branch=='police_or_device_direction':
                 (retained/'parking-pixels.hex').write_text((root/'parking.mkv').read_bytes().hex()+'\n')
             retained_sha=hashlib.sha256((retained/'exception_context.json').read_bytes()).hexdigest()
@@ -78,6 +83,14 @@ def main():
                     error=str(problem)
                 else:raise ValueError('Conflict history negative passed')
                 actor_file.write_text(original)
+                ego_file=root/'ego_response_history.jsonl';ego_original=ego_file.read_text()
+                ego_file.write_text(''.join(json.dumps({**row,'brake_applied':False})+'\n' for row in ego))
+                try:
+                    inspect_case(source,suffix,frames)
+                except ValueError as problem:
+                    if 'Ego brake source does not match' not in str(problem):raise
+                else:raise ValueError('Ego brake negative passed')
+                ego_file.write_text(ego_original)
             elif branch=='compliance_with_law':
                 error=negative(source,suffix,frames,packet,
                     lambda p:p.update(cited_law_text_sha256='0'*64),

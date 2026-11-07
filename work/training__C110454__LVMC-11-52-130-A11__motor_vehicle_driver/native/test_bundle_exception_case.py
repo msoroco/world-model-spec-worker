@@ -12,6 +12,9 @@ class ExceptionCaseProofs(unittest.TestCase):
             root=Path(directory);path=root/'exception_context.json'
             (root/'parking.mkv').write_bytes(b'synthetic pixel source')
             (root/'other_actor_history.jsonl').write_text(''.join(json.dumps({'native_frame':frame,'conflict_occupancy':frame==320})+'\n' for frame in frames))
+            (root/'ego_response_history.jsonl').write_text(''.join(json.dumps({'native_frame':frame,
+                'brake_applied':index==221,'speed_mps':4.0 if index<221 else 3.0})+'\n'
+                for index,frame in enumerate(frames)))
             for suffix,(branch,polarity) in BRANCHES.items():
                 packet={'source_kind':'native_context_schema','branch':branch,
                     'requested_polarity':polarity,'original_frames':list(frames),

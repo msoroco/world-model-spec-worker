@@ -45,14 +45,28 @@ def inspect_case(path: Path, suffix: str, original_frames: list[int]):
                 raise ValueError('Direction original video hash differs')
         if branch == 'necessary_traffic_conflict':
             actor_source=path.parent/'other_actor_history.jsonl'
+            ego_source=path.parent/'ego_response_history.jsonl'
             if not actor_source.is_file():
                 raise ValueError('Missing required source: other_actor_history.jsonl')
+            if not ego_source.is_file():
+                raise ValueError('Missing required source: ego_response_history.jsonl')
             actor_rows=[json.loads(line) for line in actor_source.read_text().splitlines() if line.strip()]
+            ego_rows=[json.loads(line) for line in ego_source.read_text().splitlines() if line.strip()]
             if len(actor_rows)!=len(original_frames) or [r.get('native_frame') for r in actor_rows]!=original_frames:
                 raise ValueError('Other actor original frame join differs')
+            if len(ego_rows)!=len(original_frames) or [r.get('native_frame') for r in ego_rows]!=original_frames:
+                raise ValueError('Ego response original frame join differs')
             active={index for index,r in enumerate(actor_rows) if r.get('conflict_occupancy') is True}
             if not active.intersection(packet.get('other_actor_frames',[])):
                 raise ValueError('Conflict source does not match original actor history')
+            braking={index for index,r in enumerate(ego_rows) if r.get('brake_applied') is True}
+            if braking != set(packet.get('ego_brake_frames',[])):
+                raise ValueError('Ego brake source does not match exception context')
+            if not braking or not any(any(abs(a-b)<=1 for a in active) for b in braking):
+                raise ValueError('Ego brake does not overlap the source conflict window')
+            for index in braking:
+                if index==0 or not isinstance(ego_rows[index]['speed_mps'],(int,float)) or not isinstance(ego_rows[index-1]['speed_mps'],(int,float)) or ego_rows[index]['speed_mps']>=ego_rows[index-1]['speed_mps']:
+                    raise ValueError('Ego brake has no measured deceleration')
         source = inspect_present(path, digest, branch)
         return {'source': source, 'requested_polarity': polarity,
                 'source_sha256': digest, 'physical_observation_claimed': False}

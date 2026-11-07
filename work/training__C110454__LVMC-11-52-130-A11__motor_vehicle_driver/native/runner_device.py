@@ -23,6 +23,14 @@ from geometry import PARK_STATIONS_M, check as geometry_check, open_drive, route
 ROOT = Path(__file__).resolve().parent
 
 
+def observed_speed_mps(actor):
+    velocity=actor.get_velocity()
+    components=(velocity.x,velocity.y,velocity.z)
+    if any(not math.isfinite(component) for component in components):
+        raise ValueError("Nonfinite observed Native velocity")
+    return math.sqrt(sum(component*component for component in components))
+
+
 def frame_map_row(index,frame,time_s):
     """Preserve both Native and canonical CARLA identities for saved/Core joins."""
     if type(index) is not int or index<0 or type(frame) is not int or frame<0:

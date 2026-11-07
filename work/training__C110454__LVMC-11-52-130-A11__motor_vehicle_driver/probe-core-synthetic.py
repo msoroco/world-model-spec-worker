@@ -92,6 +92,9 @@ def make_attempt(path,suffix,full_resolution=False):
             packet['observed_exception_source_ids']=['synthetic-source']
             if branch=='necessary_traffic_conflict':
                 write_rows(path/'other_actor_history.jsonl',[{'native_frame':frame,'conflict_occupancy':frame==320,'synthetic_diagnostic':True} for frame in frames])
+                write_rows(path/'ego_response_history.jsonl',[{'native_frame':frame,
+                    'brake_applied':index==221,'speed_mps':4.0 if index<221 else 3.0,
+                    'synthetic_diagnostic':True} for index,frame in enumerate(frames)])
                 packet.update(other_actor_frames=[220,221],ego_brake_frames=[221],
                     intersection_boundary_source='native_map_readback')
             elif branch=='compliance_with_law':
