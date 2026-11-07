@@ -12,7 +12,7 @@ LAW = 'NRS-484B-307-3a'
 FILES = ('draft-execution-manifest.json', 'draft-offline-summary.json',
          'fallback-trigger-summary.json',
          'package-probes-summary.json', 'native/synthetic-comparison-audit.log',
-         'native/statutory-review-audit.log')
+         'native/statutory-review-audit.log', 'arrow-signal-source-proof.json')
 
 
 def sha(path):
@@ -27,21 +27,19 @@ def main():
     source = read(ROOT/'inputs/coverage/branch-sources.json')['laws'][LAW]
     plan = read(HERE/'case-plan.json')
     matrix_path = ROOT/'work/_shared/branch-coverage.json'
-    branches = [row for row in read(matrix_path)['laws'][LAW]['branches']
-                if row['branch_id'].startswith(('right_turn_in_arrow_direction_and_yield__',
-                                                'right_turn_arrow_witness__'))]
+    branches = read(matrix_path)['laws'][LAW]['branches']
     review = read(ROOT/'work/_shared/branch-review.json')
     assert source['law']['text'] == plan['source_law']['text']
-    assert len(branches) == 2
-    assert {tuple(row['topic_ids']) for row in branches} == {('text-1',), ('reviewed-scope-0',)}
-    assert {'text-1', 'reviewed-scope-0'} <= set(source['topics'])
+    assert len(branches) == 4
+    assert {tuple(row['topic_ids']) for row in branches} == {('text-0',), ('text-1',), ('text-2',), ('reviewed-scope-0',)}
+    assert {'text-0', 'text-1', 'text-2', 'reviewed-scope-0'} <= set(source['topics'])
     for branch in branches:
         assert branch['status'] == 'runnable' and branch['assignment_id'] == HERE.name
         assert set(branch['case_ids']) == {case['case_id'] for case in plan['cases']}
         assert branch['comparison_ids'] == [plan['comparisons'][0]['comparison_id']]
         assert branch['cpu_proofs'] == {name: sha(HERE/name) for name in FILES}
     assert review['coverage_sha256'] == sha(matrix_path)
-    assert LAW in review['missing_branches']  # Two other green-arrow clauses remain pending.
+    assert LAW not in review['missing_branches']
     manifest = read(HERE/'draft-execution-manifest.json')
     offline = read(HERE/'draft-offline-summary.json')
     package = read(HERE/'package-probes-summary.json')
@@ -68,14 +66,14 @@ def main():
     env['PATH'] = str(ROOT/'.runtime-work/linux_arm64') + os.pathsep + env.get('PATH', '')
     audits = ('audit-native-cpu.py', 'audit-statutory-review.py',
               'audit-synthetic-comparison.py', 'audit-fallback-triggers.py',
-              'audit-package-probes.py')
+              'audit-package-probes.py', 'audit-arrow-signal-source.py')
     for name in audits:
         subprocess.run([sys.executable, str(HERE/name)], cwd=ROOT, env=env,
                        check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     assert read(HERE/'result.json')['status'] == 'blocked'
     receipt = {'passed': True, 'law_id': LAW,
                'branch_ids': [row['branch_id'] for row in branches],
-               'source_topics': 2, 'exact_offline_bundles': 8,
+               'source_topics': 4, 'exact_offline_bundles': 8,
                'portable_positive_negative_pairs': 8,
                'selected': False, 'original_native_or_strict_v2_verified': False,
                'proof_sha256': branches[0]['cpu_proofs'], 'independent_audits': list(audits)}

@@ -15,10 +15,15 @@ def sha(path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--numeric', action='store_true')
+    parser.add_argument('--exceptions', action='store_true')
     args = parser.parse_args()
-    source_path = HERE / ('numeric-fallback-source.json' if args.numeric else 'witness-fallback-source.json')
+    assert not (args.numeric and args.exceptions)
+    source_path = HERE / ('exception-fallback-source.json' if args.exceptions else
+                          'numeric-fallback-source.json' if args.numeric else 'witness-fallback-source.json')
     source = json.loads(source_path.read_text())
-    manifest = json.loads((HERE / ('draft-numeric-execution-manifest.json' if args.numeric else 'draft-execution-manifest.json')).read_text())
+    manifest = json.loads((HERE / ('draft-exception-execution-manifest.json' if args.exceptions else
+                                   'draft-numeric-execution-manifest.json' if args.numeric else
+                                   'draft-execution-manifest.json')).read_text())
     assert source['format'] == 'c110454-parking-trigger-source-v1'
     assert source['source_kind'] == 'synthetic_cpu'
     assert manifest['status'] == 'draft_not_selected'
@@ -26,7 +31,10 @@ def main():
     for entry in manifest['cases']:
         case = entry['case_id'].rsplit('__', 1)[-1]
         evidence = source['cases'][case]
-        assert sha(ROOT / '.runtime-work/c110454-lvmc-synthetic' / (case+'-native.json')) == evidence['saved_source_sha256']
+        if args.exceptions:
+            assert sha(HERE/'exception-polarity-sources'/case/'exception_context.json') == evidence['context_source_sha256']
+        else:
+            assert sha(ROOT / '.runtime-work/c110454-lvmc-synthetic' / (case+'-native.json')) == evidence['saved_source_sha256']
         assert sha(HERE / 'native/routes' / (case+'.json')) == evidence['route_sha256']
         assert len(entry['candidates']) == 3
         assert {c['id'] for c in entry['candidates']} == {'fallback1','fallback2','fallback3'}
@@ -59,11 +67,13 @@ def main():
                          'baseline':values['baseline'][metric],
                          'crossing':values[crossing][metric],
                          'crossing_scenario':crossing})
-    assert len(rows) == (9 if args.numeric else 6)
+    assert len(rows) == (18 if args.exceptions else 9 if args.numeric else 6)
     receipt = {'format':'c110454-parking-trigger-audit-v1','passed':True,
                'source_sha256':sha(source_path),'source_kind':'synthetic_cpu',
                'original_native_or_pixels_observed':False,'rows':rows}
-    (HERE/('numeric-fallback-audit.json' if args.numeric else 'witness-fallback-audit.json')).write_text(json.dumps(receipt,indent=2)+'\n')
+    (HERE/('exception-fallback-audit.json' if args.exceptions else
+           'numeric-fallback-audit.json' if args.numeric else
+           'witness-fallback-audit.json')).write_text(json.dumps(receipt,indent=2)+'\n')
     print(json.dumps(receipt,sort_keys=True))
 
 
