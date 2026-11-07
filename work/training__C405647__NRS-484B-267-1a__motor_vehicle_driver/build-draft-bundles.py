@@ -75,8 +75,10 @@ def build():
                       'supported_case_ids': [case_id], 'case': {'case_id': case_id},
                       'cell_id': 'C405647', 'law_id': 'NRS-484B-267-1a',
                       'actor': 'motor_vehicle_driver', 'duration_s': 24, 'rate_hz': 20,
-                      'required_atoms': ['veh.emergency_approach', 'drv.yield'],
-                      'source_packets': ['source-scope.json'],
+                      'required_atoms': ['ru.emergency_vehicle', 'sig.warning_lamp',
+                                         'rel.same_direction', 'rel.surface_gap',
+                                         'kin.position', 'rel.occupies'],
+                      'source_packets': [],
                       'cameras': [{'name': name, 'width': width, 'height': height,
                                    'pose_strategy': 'candidate-specific candidates.py'}
                                   for name, width, height in (

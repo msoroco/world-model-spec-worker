@@ -35,6 +35,7 @@ def audit():
         measured = item['value']
         rows = [json.loads(line) for line in (folder / 'actor-frames.jsonl').read_text().splitlines()]
         assert scope['assignment_law_text_sha256'] == LAW_SHA256
+        assert scope['coordinate_frame'] == 'authored_opendrive_xy'
         assert scope['case_suffix'] == measured['case_suffix'] == case
         assert measured['source_hashes'] == {
             'source-scope.json': _sha(folder / 'source-scope.json'),
@@ -45,14 +46,20 @@ def audit():
         assert measured['lamp_qualification_verified'] is False
         assert measured['legal_immediacy_or_yield_verdict'] is None
         assert all(row['frame'] == i and abs(row['time_s'] - i / 20) < 1e-8
-                   and row['source_kind'] == 'synthetic_cpu' for i, row in enumerate(rows))
+                   and row['source_kind'] == 'synthetic_cpu'
+                   and row['coordinate_frame'] == 'authored_opendrive_xy'
+                   and len(row['subject_body_xy_m']) == 4
+                   and len({tuple(vertex) for vertex in row['subject_body_xy_m']}) == 4
+                   for i, row in enumerate(rows))
         lamps = [row['front_red_flash_on'] for row in rows]
         assert measured['observed_lamp_transitions'] == sum(
             a != b for a, b in zip(lamps, lamps[1:]))
         gaps = [row['subject']['x_m'] - row['approach']['x_m'] for row in rows]
         catchup = next(i for i, gap in enumerate(gaps) if gap <= 4.5)
         clearance = next((i for i, row in enumerate(rows)
-                          if row['subject']['y_m'] + .9 < -3.5), None)
+                          if max(vertex[1] for vertex in row['subject_body_xy_m']) < -3.5), None)
+        assert measured['body_footprint_source'] == 'four retained vertices per saved frame'
+        assert measured['coordinate_frame'] == 'authored_opendrive_xy'
         assert measured['initial_longitudinal_gap_m'] == gaps[0] == 50
         assert measured['catchup_frame'] == catchup == 182
         assert measured['first_full_body_inner_lane_clearance_frame'] == clearance

@@ -5,12 +5,14 @@ an approach is legally immediate or whether a lamp or vehicle is qualified.
 """
 import hashlib
 import json
+import math
 from pathlib import Path
 
 LAW_SHA256 = '05acca6d9cdbea0707963bae635458009d558500a8d40a96ce4fa9d8ca5a8d86'
 SUBJECT_LENGTH_M = 4.5
 SUBJECT_WIDTH_M = 1.8
 INNER_LANE_OUTER_EDGE_Y_M = -3.5
+COORDINATE_FRAME = 'authored_opendrive_xy'
 
 
 def _hash(path):
@@ -32,6 +34,8 @@ def measure(folder):
     case = scope.get('case_suffix')
     if case not in ('witness_1', 'witness_2'):
         raise ValueError('Unknown controlled case')
+    if scope.get('coordinate_frame') != COORDINATE_FRAME:
+        raise ValueError('Saved coordinate frame differs')
     rows = _rows(folder / 'actor-frames.jsonl')
     if len(rows) != 480:
         raise ValueError('Saved frame count differs')
@@ -43,6 +47,8 @@ def measure(folder):
             raise ValueError('Saved frame/time order differs')
         if row.get('source_kind') not in ('synthetic_cpu', 'original_native'):
             raise ValueError('Unknown saved provenance')
+        if row.get('coordinate_frame') != COORDINATE_FRAME:
+            raise ValueError('Saved coordinate frame differs')
         subject = row.get('subject')
         approach = row.get('approach')
         lamp = row.get('front_red_flash_on')
@@ -55,9 +61,21 @@ def measure(folder):
             raise ValueError('Saved participant position absent') from error
         if abs(ay + 1.75) > 1e-4:
             raise ValueError('Approach lane changed')
+        body = row.get('subject_body_xy_m')
+        if not isinstance(body, list) or len(body) != 4:
+            raise ValueError('Saved subject body footprint absent')
+        try:
+            vertices = [tuple(float(value) for value in vertex) for vertex in body]
+        except (TypeError, ValueError) as error:
+            raise ValueError('Saved subject body footprint invalid') from error
+        if (any(len(vertex) != 2 or not all(math.isfinite(value) for value in vertex)
+                for vertex in vertices) or len(set(vertices)) != 4):
+            raise ValueError('Saved subject body footprint invalid')
+        if (abs(sum(x for x, _ in vertices) / 4 - sx) > .1 or
+                abs(sum(y for _, y in vertices) / 4 - sy) > .1):
+            raise ValueError('Saved subject body center differs')
         gaps.append(sx - ax)
-        # A full body clearance measurement uses a declared footprint width.
-        cleared.append(sy + SUBJECT_WIDTH_M / 2 < INNER_LANE_OUTER_EDGE_Y_M)
+        cleared.append(max(y for _, y in vertices) < INNER_LANE_OUTER_EDGE_Y_M)
         lamps.append(lamp)
     if not lamps[0] or not any(a != b for a, b in zip(lamps, lamps[1:])):
         raise ValueError('Flashing lamp sequence absent')
@@ -75,6 +93,8 @@ def measure(folder):
         'catchup_frame': catchup,
         'first_full_body_inner_lane_clearance_frame': clearance,
         'full_body_cleared_before_catchup': clearance is not None and clearance < catchup,
+        'body_footprint_source': 'four retained vertices per saved frame',
+        'coordinate_frame': COORDINATE_FRAME,
         'provenance_kinds': sorted({row['source_kind'] for row in rows}),
         'vehicle_authority_verified': False, 'lamp_qualification_verified': False,
         'legal_immediacy_or_yield_verdict': None,

@@ -8,7 +8,7 @@ import sys
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / 'native'))
 from candidates import CANDIDATES, construction
-from geometry import CASES, native_track_requests, open_drive, requested_tracks
+from geometry import CASES, native_track_requests, open_drive, requested_tracks, synthetic_subject_body_xy
 from trigger_evidence import decide
 
 
@@ -26,6 +26,7 @@ def _mutate_motion(folder, case, fallback):
     if fallback == 'fallback1':
         for row in rows:
             row['subject']['y_m'] = -1.75 if case == 'witness_1' else -5.25
+            row['subject_body_xy_m'] = synthetic_subject_body_xy(row['subject'])
     elif fallback == 'fallback2':
         for row in rows:
             row['approach']['x_m'] = -20 + 4 * row['time_s']

@@ -14,6 +14,13 @@ ROAD_LENGTH_M = 260
 LANE_WIDTH_M = 3.5
 
 
+def synthetic_subject_body_xy(center):
+    """Axis-aligned 4.5 x 1.8 m authored CPU footprint, never Native body evidence."""
+    x, y = center['x_m'], center['y_m']
+    return [[round(x + dx, 4), round(y + dy, 4)]
+            for dx, dy in ((-2.25, -.9), (-2.25, .9), (2.25, -.9), (2.25, .9))]
+
+
 def open_drive():
     root = ET.Element('OpenDRIVE')
     ET.SubElement(root, 'header', revMajor='1', revMinor='4', name='C405647-1a-approach',

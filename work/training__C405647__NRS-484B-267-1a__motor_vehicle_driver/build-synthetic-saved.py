@@ -5,7 +5,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / 'native'))
-from geometry import CASES, requested_tracks
+from geometry import CASES, requested_tracks, synthetic_subject_body_xy
 from finalize import analysis_report
 
 
@@ -18,12 +18,15 @@ def build():
         folder.mkdir(exist_ok=True)
         scope = json.loads((ROOT / 'native/source-scope.json').read_text())
         scope['case_suffix'] = case
+        scope['coordinate_frame'] = 'authored_opendrive_xy'
         (folder / 'source-scope.json').write_text(json.dumps(scope, sort_keys=True) + '\n')
         rows = []
         for request in requested_tracks(case):
             rows.append({'frame': request['frame'], 'time_s': request['time_s'],
                          'subject': request['subject_request'],
+                         'subject_body_xy_m': synthetic_subject_body_xy(request['subject_request']),
                          'approach': request['approach_request'],
+                         'coordinate_frame': 'authored_opendrive_xy',
                          'front_red_flash_on': request['lamp_request']['front_red_flash_on'],
                          'source_kind': 'synthetic_cpu'})
         (folder / 'actor-frames.jsonl').write_text(''.join(

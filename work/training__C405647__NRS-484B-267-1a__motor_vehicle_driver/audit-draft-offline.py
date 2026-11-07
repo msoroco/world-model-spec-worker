@@ -54,6 +54,10 @@ def audit():
             assert config['candidate_id'] == ref['id']
             assert (config['duration_s'], config['rate_hz']) == (24, 20)
             assert config['status'] == 'unselected_native_runner_prototype'
+            assert config['source_packets'] == []
+            assert set(config['required_atoms']) == {
+                'ru.emergency_vehicle', 'sig.warning_lamp', 'rel.same_direction',
+                'rel.surface_gap', 'kin.position', 'rel.occupies'}
             assert bundle['measurement_plan']['status'] == 'prototype_not_runtime_compatible'
             if ref['id'] != 'primary':
                 target = next(row for row in policy['cases'] if
