@@ -2,9 +2,12 @@
 import hashlib
 import json
 from pathlib import Path
+import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
+sys.path.insert(0, str(ROOT/'runtime'/'pipeline'))
+from scenario_pipeline.worker_exchange.preparation import runtime_for
 NATIVE = HERE/'native'
 NAMES = ('primary', 'fallback1', 'fallback2', 'fallback3')
 SOURCES = {'runner.py': 'runner.py', 'geometry.py': 'geometry.py',
@@ -40,8 +43,9 @@ def recording():
 def build():
     batch = json.loads((ROOT/'batch.json').read_text())
     plan = json.loads((HERE/'case-plan.json').read_text())
+    runtime = runtime_for(ROOT, batch)
     manifest = {'format': 'worker-unselected-draft-construction-manifest-v1',
-        'assignment_id': HERE.name, 'runtime_manifest_sha256': batch['runtime']['source_manifest_sha256'],
+        'assignment_id': HERE.name, 'runtime_manifest_sha256': sha(runtime/'SOURCE-MANIFEST.json'),
         'status': 'draft_not_selected', 'cases': []}
     common = {name: (NATIVE/source).read_text() for name, source in SOURCES.items()}
     description = recording()

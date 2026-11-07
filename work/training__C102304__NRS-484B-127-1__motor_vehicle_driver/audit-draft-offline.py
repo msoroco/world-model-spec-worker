@@ -8,6 +8,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT/'runtime'/'pipeline'))
 from scenario_pipeline.worker_exchange.candidate_constructions import validate
+from scenario_pipeline.worker_exchange.preparation import runtime_for
 
 
 def sha(path):
@@ -17,10 +18,12 @@ def sha(path):
 def main():
     manifest = json.loads((HERE/'draft-execution-manifest.json').read_text())
     batch = json.loads((ROOT/'batch.json').read_text())
-    assert manifest['runtime_manifest_sha256'] == batch['runtime']['source_manifest_sha256']
+    runtime = runtime_for(ROOT, batch)
+    assert manifest['runtime_manifest_sha256'] == sha(runtime/'SOURCE-MANIFEST.json')
     assert manifest['status'] == 'draft_not_selected'
     assert len(manifest['cases']) == 2
     summary = json.loads((HERE/'draft-offline-summary.json').read_text())
+    assert summary['runtime_manifest_sha256'] == manifest['runtime_manifest_sha256']
     assert len(summary['results']) == 8
     seen = set()
     for case in manifest['cases']:
