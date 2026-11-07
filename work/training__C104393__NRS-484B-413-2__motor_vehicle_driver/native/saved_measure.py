@@ -5,7 +5,7 @@ import math
 from pathlib import Path
 
 
-def measure(source, expected_sha256, *, expected_frames=840):
+def measure(source, expected_sha256, *, expected_frames=840, expected_weather="clear_noon"):
     source=Path(source)
     if not source.is_file():raise ValueError("Missing required source: native_samples.jsonl")
     raw=source.read_bytes()
@@ -25,7 +25,7 @@ def measure(source, expected_sha256, *, expected_frames=840):
         if type(time) not in (int,float) or not math.isfinite(time) or \
                 abs(time-first_time-index/20)>1e-3:
             raise ValueError("Native time discontinuity")
-        if row.get("area")!="any_other_area" or row.get("weather")!="clear_noon":
+        if row.get("area")!="any_other_area" or row.get("weather")!=expected_weather:
             raise ValueError("saved area/weather context differs")
         if row.get("signal") not in ("left","off") or type(row.get("course_change")) is not bool:
             raise ValueError("observed signal or course-change state missing")
@@ -51,7 +51,7 @@ def measure(source, expected_sha256, *, expected_frames=840):
     return {"format":"c104393-saved-signal-v1","source_sha256":digest,
         "sample_count":len(rows),"onset_frame":start,"course_change_frame":turn,
         "continuous_signal_distance_ft":distance/.3048,"threshold_ft":300,
-        "area":"any_other_area","weather":"clear_noon",
+        "area":"any_other_area","weather":expected_weather,
         "physical_success_claimed":False,"legal_verdict_claimed":False}
 
 
@@ -61,7 +61,8 @@ def process(attempt, config):
     if not source.is_file():raise ValueError("Missing required source: native_samples.jsonl")
     config=json.loads(Path(config).read_text())
     measured=measure(source,hashlib.sha256(source.read_bytes()).hexdigest(),
-        expected_frames=config["duration_s"]*config["rate_hz"])
+        expected_frames=config["duration_s"]*config["rate_hz"],
+        expected_weather=config["native_request"]["weather"])
     if config["native_request"]["area"]!="any_other_area":
         raise ValueError("exact area request differs")
     geometry=attempt/"road_geometry.json"

@@ -102,7 +102,9 @@ def execute(config, output_dir, host, port):
         settings.fixed_delta_seconds=.05; settings.substepping=True
         settings.max_substep_delta_time=.01; settings.max_substeps=10
         world.apply_settings(settings)
-        world.set_weather(carla.WeatherParameters.ClearNoon)
+        weather = {"clear_noon": carla.WeatherParameters.ClearNoon,
+                   "heavy_rain_noon": carla.WeatherParameters.HardRainNoon}[p["weather"]]
+        world.set_weather(weather)
         mapping=world.get_map()
         native_hash=hashlib.sha256(mapping.to_opendrive().encode()).hexdigest()
         survey=map_survey(carla,mapping,p["radius_m"])

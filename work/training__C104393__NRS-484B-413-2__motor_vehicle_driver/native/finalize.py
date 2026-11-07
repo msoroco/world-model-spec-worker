@@ -73,7 +73,8 @@ def measure_signal_distance(attempt, config):
             not isinstance(geometry.get('native_map_sha256'),str) or len(geometry['native_map_sha256'])!=64:
         raise ValueError('Authored or Native map identity differs from exact request')
     source=attempt/'native_samples.jsonl'
-    measured=measure(source,expected_sha256=sha(source),expected_frames=840)
+    measured=measure(source,expected_sha256=sha(source),expected_frames=840,
+        expected_weather=config['native_request']['weather'])
     return {'value':measured['continuous_signal_distance_ft'],
             'method':'measure_signal_distance',
             'sources':{name:sha(attempt/name) for name in ('native_samples.jsonl','road_geometry.json')},

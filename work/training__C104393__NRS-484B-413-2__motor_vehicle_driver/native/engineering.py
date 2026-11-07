@@ -23,6 +23,8 @@ def parameters(config):
         raise ValueError("Candidate engineering knobs changed")
     if request["signal_start_ft"] not in (90, 100, 110, 290, 300, 310):
         raise ValueError("Unplanned signal distance")
+    if request["area"] != "any_other_area" or request["weather"] not in ("clear_noon", "heavy_rain_noon"):
+        raise ValueError("Unplanned area or weather context")
     if config["case_id"].split("__")[-1] != str(request["signal_start_ft"]):
         raise ValueError("Case suffix differs from signal request")
     if request["signal_start_station_m"] != signal_start(request["signal_start_ft"]):
