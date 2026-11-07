@@ -100,12 +100,21 @@ def prove():
             rejected = invoke(negative)
             if rejected.returncode == 0 or 'Missing required source: native_samples.jsonl' not in rejected.stdout:
                 raise AssertionError('Exact missing-source negative accepted: ' + rejected.stdout[-800:])
+            wrong_video = scratch / (key + '-wrong-video')
+            attempt(case, candidate, wrong_video)
+            other_case = 'contrast' if case == 'reference' else 'reference'
+            shutil.copy2(MEDIA / other_case / candidate / 'signal_reference.mkv',
+                         wrong_video / 'signal_reference.mkv')
+            mismatched = invoke(wrong_video)
+            if mismatched.returncode == 0 or 'Decoded signal color disagrees with saved Native phase' not in mismatched.stdout:
+                raise AssertionError('Exact wrong-signal-video negative accepted: ' + mismatched.stdout[-800:])
             target = retained / case / candidate
             target.mkdir(parents=True, exist_ok=True)
             for name in ('analysis-report.json', 'result.json'):
                 shutil.copy2(positive / name, target / name)
             (target / 'positive-analysis.log').write_text(passed.stdout)
             (target / 'negative-analysis.log').write_text(rejected.stdout)
+            (target / 'wrong-video-analysis.log').write_text(mismatched.stdout)
             results.append({'case': case, 'candidate': candidate, 'case_id': case_id,
                 'manifest_sha256': sha(HERE / 'package-manifest.json'),
                 'construction_sha256': sha(HERE / 'package-candidates' / case / candidate / 'construction.json'),
@@ -114,7 +123,9 @@ def prove():
                 'result_sha256': sha(target / 'result.json'),
                 'positive_log_sha256': sha(target / 'positive-analysis.log'),
                 'negative_log_sha256': sha(target / 'negative-analysis.log'),
+                'wrong_video_log_sha256': sha(target / 'wrong-video-analysis.log'),
                 'negative_error': 'Missing required source: native_samples.jsonl',
+                'wrong_video_error': 'Decoded signal color disagrees with saved Native phase',
                 'measurement_contract_sha256': sha(HERE / 'measurement-contracts' / (case + '.json')),
                 'measurement_keys': sorted(verified_measurements),
                 'physical_success_claimed': False})
@@ -122,7 +133,7 @@ def prove():
                'manifest_sha256': sha(HERE / 'package-manifest.json'),
                'rows': results, 'accepted_recording_claimed': False}
     (HERE / 'saved-finalizer-summary.json').write_text(json.dumps(summary, indent=2) + '\n')
-    return {'passed': True, 'bundles': len(results), 'negative_rejections': len(results),
+    return {'passed': True, 'bundles': len(results), 'negative_rejections': 2 * len(results),
             'summary_sha256': sha(HERE / 'saved-finalizer-summary.json')}
 
 

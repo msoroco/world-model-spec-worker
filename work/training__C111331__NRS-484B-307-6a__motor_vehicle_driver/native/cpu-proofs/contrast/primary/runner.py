@@ -88,6 +88,32 @@ def _body_xy(actor):
     return [list(p) for p in points]
 
 
+def saved_capture_rows(sample, video_frame):
+    """Build the three synchronized saved sources from one observed tick."""
+    if video_frame != sample['request_index'] or len(sample['native_body_xy_m']) != 4:
+        raise ValueError('Observed capture frame or body differs')
+    sample = dict(sample, source_kind='original_native_observation')
+    x, y = sample['native_center_xy_m']
+    trace = {'frame': sample['native_frame'], 'time_s': sample['time_s'],
+             'position': {'x': x, 'y': y, 'z': sample['native_z_m']},
+             'position_m': [x, y, sample['native_z_m']],
+             'heading_deg': sample['native_yaw_deg'], 'speed_mps': sample['speed_mps']}
+    video = {'video_frame': video_frame, 'native_frame': sample['native_frame'],
+             'time_s': sample['time_s']}
+    return sample, trace, video
+
+
+def signal_camera_plan(config):
+    camera_xy = config['camera_plan']['authored_xy_m']
+    head_xy = config['camera_plan']['signal_head_authored_xy_m']
+    dx, dy = head_xy[0] - camera_xy[0], head_xy[1] - camera_xy[1]
+    if math.hypot(dx, dy) < 1 or not 1 <= config['camera_plan']['horizontal_fov_deg'] <= 120:
+        raise ValueError('Authored signal camera geometry differs')
+    return {'x': camera_xy[0], 'y': camera_xy[1],
+            'yaw_deg': math.degrees(math.atan2(dy, dx)),
+            'horizontal_fov_deg': config['camera_plan']['horizontal_fov_deg']}
+
+
 def execute(output, host, port):
     """Capture an original 480-frame attempt on an explicitly owned idle server.
 
@@ -139,8 +165,9 @@ def execute(output, host, port):
         signals = list(world.get_actors().filter('traffic.traffic_light*'))
         if not signals:
             raise RuntimeError('OpenDRIVE signal did not instantiate a Native traffic light')
-        signal = min(signals, key=lambda a: math.dist((a.get_location().x, a.get_location().y), (3.5, 13)))
-        if math.dist((signal.get_location().x, signal.get_location().y), (3.5, 13)) > 10:
+        head_xy = config['camera_plan']['signal_head_authored_xy_m']
+        signal = min(signals, key=lambda a: math.dist((a.get_location().x, a.get_location().y), head_xy))
+        if math.dist((signal.get_location().x, signal.get_location().y), head_xy) > 10:
             raise RuntimeError('Native signal location does not match authored approach')
         signal.freeze(True)
         blueprint = world.get_blueprint_library().find('vehicle.lincoln.mkz_2020')
@@ -151,10 +178,12 @@ def execute(output, host, port):
         camera_bp = world.get_blueprint_library().find('sensor.camera.rgb')
         camera_bp.set_attribute('image_size_x', '1280')
         camera_bp.set_attribute('image_size_y', '720')
-        camera_bp.set_attribute('fov', str(config['camera_plan']['horizontal_fov_deg']))
+        camera = signal_camera_plan(config)
+        camera_bp.set_attribute('fov', str(camera['horizontal_fov_deg']))
         camera_bp.set_attribute('sensor_tick', '0')
         sensor = world.spawn_actor(camera_bp, carla.Transform(
-            carla.Location(x=1.75, y=17, z=3), carla.Rotation(pitch=-8, yaw=-67)), attach_to=None)
+            carla.Location(x=camera['x'], y=camera['y'], z=3),
+            carla.Rotation(pitch=8, yaw=camera['yaw_deg'])), attach_to=None)
         owned.append(sensor)
         sensor.listen(camera_queue.put)
         encoder_log = (output / 'signal_reference.encoder.log').open('x')
@@ -162,7 +191,9 @@ def execute(output, host, port):
             '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '1280x720', '-r', '20', '-i', 'pipe:0',
             '-an', '-c:v', 'ffv1', '-level', '1', str(output / 'signal_reference.mkv')],
             stdin=subprocess.PIPE, stderr=encoder_log)
-        with (output / 'native_samples.jsonl').open('x') as sample_file, (output / 'video_frames.jsonl').open('x') as frame_file:
+        with (output / 'native_samples.jsonl').open('x') as sample_file, \
+                (output / 'video_frames.jsonl').open('x') as frame_file, \
+                (output / 'trace.jsonl').open('x') as trace_file:
             start = world.get_snapshot().timestamp.elapsed_seconds
             for index, request in enumerate(requested):
                 phase = request['signal_phase_requested']
@@ -185,13 +216,13 @@ def execute(output, host, port):
                 pose = ego.get_transform()
                 body = _body_xy(ego)
                 native_sample = {'request_index': index, 'native_frame': frame, 'time_s': now,
-                    'native_center_xy_m': [pose.location.x, pose.location.y], 'native_body_xy_m': body,
+                    'native_center_xy_m': [pose.location.x, pose.location.y], 'native_z_m': pose.location.z,
+                    'native_body_xy_m': body,
                     'native_yaw_deg': pose.rotation.yaw, 'speed_mps': speed,
                     'requested_signal_phase': phase, 'observed_signal_state': str(signal.get_state()),
                     'signal_actor_id': signal.id, 'approach_road_id': waypoint.road_id,
                     'approach_lane_id': waypoint.lane_id, 'controller_request': control,
                     'body_entered_junction_observed': min(p[1] for p in body) <= 7.0}
-                sample_file.write(json.dumps(native_sample, allow_nan=False) + '\n')
                 image = camera_queue.get(timeout=30)
                 while image.frame < frame:
                     image = camera_queue.get(timeout=30)
@@ -199,7 +230,10 @@ def execute(output, host, port):
                     raise RuntimeError('Original camera and Native frame join failed')
                 rgb = np.frombuffer(image.raw_data, dtype=np.uint8).reshape(720, 1280, 4)[:, :, :3][:, :, ::-1]
                 encoder.stdin.write(rgb.tobytes())
-                frame_file.write(json.dumps({'video_frame': index, 'native_frame': frame, 'time_s': now}) + '\n')
+                sample_row, trace_row, frame_row = saved_capture_rows(native_sample, index)
+                sample_file.write(json.dumps(sample_row, allow_nan=False) + '\n')
+                trace_file.write(json.dumps(trace_row, allow_nan=False) + '\n')
+                frame_file.write(json.dumps(frame_row, allow_nan=False) + '\n')
                 count += 1
         if count != 480:
             raise RuntimeError('Original capture frame count differs')

@@ -46,6 +46,27 @@ class ExactRequestTests(unittest.TestCase):
         finally:
             path.write_text(original)
 
+    def test_observed_tick_saved_handoff(self):
+        sample = {'request_index': 7, 'native_frame': 107, 'time_s': .35,
+                  'native_center_xy_m': [1.75, 8.5], 'native_z_m': .5,
+                  'native_body_xy_m': [[1, 8], [2, 8], [2, 9], [1, 9]],
+                  'native_yaw_deg': -90, 'speed_mps': 4.0}
+        native, trace, video = runner.saved_capture_rows(sample, 7)
+        self.assertEqual(native['source_kind'], 'original_native_observation')
+        self.assertEqual(trace['frame'], video['native_frame'])
+        self.assertEqual(trace['position_m'], [1.75, 8.5, .5])
+        self.assertNotIn('source_kind', sample)
+        with self.assertRaisesRegex(ValueError, 'frame or body differs'):
+            runner.saved_capture_rows(sample, 8)
+
+    def test_signal_camera_uses_authored_geometry(self):
+        config = json.loads(Path('config.json').read_text())
+        camera = runner.signal_camera_plan(config)
+        self.assertEqual([camera['x'], camera['y']], config['camera_plan']['authored_xy_m'])
+        self.assertGreater(camera['yaw_deg'], 0)
+        self.assertLess(camera['yaw_deg'], 90)
+        self.assertEqual(camera['horizontal_fov_deg'], config['camera_plan']['horizontal_fov_deg'])
+
 if __name__ == '__main__': unittest.main()
 '''
 
@@ -145,6 +166,15 @@ def build():
                 entry['candidates'].append(ref)
         manifest['cases'].append(entry)
     write(HERE / 'package-manifest.json', manifest)
+    proposals = {'cell_id': 'C111331', 'actor': 'motor_vehicle_driver',
+                 'status': 'unselected_cpu_draft', 'cases': []}
+    for entry in manifest['cases']:
+        construction = json.loads((HERE / entry['construction']).read_text())
+        proposals['cases'].append({
+            'case_id': entry['case_id'], 'target_law_id': 'NRS-484B-307-6a',
+            'target_type': 'attempt',
+            'recording_description': construction['recording_description']})
+    write(HERE / 'proposals/cases.json', proposals)
     return {'case_count': len(CASES), 'candidate_count': 8,
             'manifest_sha256': sha(HERE / 'package-manifest.json')}
 

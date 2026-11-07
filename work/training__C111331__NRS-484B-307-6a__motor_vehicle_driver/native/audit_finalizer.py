@@ -36,9 +36,9 @@ def audit():
             construction = HERE / 'package-candidates' / case / candidate / 'construction.json'
             if item['manifest_sha256'] != sha(manifest) or item['construction_sha256'] != sha(construction) or item['measurement_contract_sha256'] != sha(contract):
                 raise ValueError('Saved result construction/contract hash differs')
-            if item['analysis_report_sha256'] != sha(retained / 'analysis-report.json') or item['result_sha256'] != sha(retained / 'result.json') or item['positive_log_sha256'] != sha(retained / 'positive-analysis.log') or item['negative_log_sha256'] != sha(retained / 'negative-analysis.log'):
+            if item['analysis_report_sha256'] != sha(retained / 'analysis-report.json') or item['result_sha256'] != sha(retained / 'result.json') or item['positive_log_sha256'] != sha(retained / 'positive-analysis.log') or item['negative_log_sha256'] != sha(retained / 'negative-analysis.log') or item['wrong_video_log_sha256'] != sha(retained / 'wrong-video-analysis.log'):
                 raise ValueError('Saved result/log hash differs')
-            if item['negative_error'] not in (retained / 'negative-analysis.log').read_text() or item['physical_success_claimed']:
+            if item['negative_error'] not in (retained / 'negative-analysis.log').read_text() or item['wrong_video_error'] not in (retained / 'wrong-video-analysis.log').read_text() or item['physical_success_claimed']:
                 raise ValueError('Missing-source negative or physical scope differs')
             if report['selected'] or report['physical_acceptance_claimed'] or report['legal_verdict_claimed'] or result['accepted'] or result['setup_confirmed'] or result['behavior_attempted'] or result['maneuver_completed']:
                 raise ValueError('Synthetic result promoted to physical or legal evidence')
@@ -67,7 +67,8 @@ def audit():
             if report['synthetic_video_proof']['video_sha256'] != source_hashes['signal_reference.mkv'] or report['synthetic_video_proof']['decoded_frames'] != 480 or report['synthetic_video_proof']['original_carla_pixels_verified']:
                 raise ValueError('Decoded synthetic pixel source differs')
     return {'passed': True, 'audited_bundles': 8, 'contract_outputs_per_bundle': 5,
-            'missing_source_negatives': 8, 'synthetic_only': True,
+            'missing_source_negatives': 8, 'wrong_video_negatives': 8,
+            'synthetic_only': True,
             'summary_sha256': sha(summary_path)}
 
 
