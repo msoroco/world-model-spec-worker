@@ -1,0 +1,29 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "case_id": "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__reference",
+  "requirements": [
+    {
+      "disposition_index": 1,
+      "requirement": "NRS-484B-307-6a",
+      "source": "NRS 484B.307(6)(a)",
+      "output_key": "observed_signal_phase_at_entry",
+      "method": "first_full_body_junction_entry_joined_to_observed_native_signal",
+      "value_type": "string",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native_samples.jsonl"
+    ],
+    "error_contains": "Missing required source: native_samples.jsonl"
+  },
+  "uncertainty": {
+    "frame_bracket_s": 0.05,
+    "original_pixel_visibility": "requires later GPU capture and review"
+  }
+}

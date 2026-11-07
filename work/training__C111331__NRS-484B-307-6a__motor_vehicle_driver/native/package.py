@@ -1,0 +1,142 @@
+"""Build the eight exact unselected C111331 CPU construction bundles."""
+import hashlib
+import json
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+REPO = HERE.parents[2]
+AID = HERE.parent.name
+CASES = ('reference', 'contrast')
+CANDIDATES = ('primary', 'fallback1', 'fallback2', 'fallback3')
+TEST = '''import copy
+import json
+from pathlib import Path
+import unittest
+import runner
+
+class ExactRequestTests(unittest.TestCase):
+    def test_exact_request(self):
+        result = runner.check()
+        self.assertTrue(result['passed'])
+        self.assertEqual(result['request_rows'], 480)
+        self.assertFalse(result['carla_imported'])
+        self.assertFalse(result['physical_success_claimed'])
+
+    def test_request_corruption_rejected(self):
+        path = Path('native-requests.jsonl')
+        original = path.read_text()
+        try:
+            rows = [json.loads(line) for line in original.splitlines()]
+            rows[200]['signal_phase_requested'] = 'green'
+            path.write_text(''.join(json.dumps(row) + '\\n' for row in rows))
+            with self.assertRaisesRegex(ValueError, 'hash differs'):
+                runner.check()
+        finally:
+            path.write_text(original)
+
+    def test_observation_claim_rejected(self):
+        path = Path('config.json')
+        original = path.read_text()
+        try:
+            config = json.loads(original)
+            config['no_native_or_original_observation_claimed'] = False
+            path.write_text(json.dumps(config))
+            with self.assertRaisesRegex(ValueError, 'Physical evidence claimed'):
+                runner.check()
+        finally:
+            path.write_text(original)
+
+if __name__ == '__main__': unittest.main()
+'''
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def write(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, indent=2) + '\n')
+
+
+def build():
+    summary = json.loads((HERE / 'request-summary.json').read_text())
+    assert summary['assignment_id'] == AID and len(summary['cases']) == 8
+    batch = json.loads((REPO / 'batch.json').read_text())
+    manifest = {'format': 'worker-unselected-draft-construction-manifest-v1',
+                'assignment_id': AID, 'status': 'draft_not_selected',
+                'runtime_manifest_sha256': batch['runtime']['source_manifest_sha256'],
+                'source_branch': 'yellow_warning_red_entry', 'cases': []}
+    fixed_files = [{'path': name, 'content': (HERE / name).read_text()}
+                   for name in ('runner.py', 'road.xodr', 'measure_saved.py')]
+    fixed_files.append({'path': 'tests/test_construction.py', 'content': TEST})
+    for case in CASES:
+        case_id = AID + '__' + case
+        entry = {'case_id': case_id, 'kind': 'draft_not_selected', 'candidates': [],
+                 'measurement_contract': f'measurement-contracts/{case}.json',
+                 'measurement_procedure': {'entrypoint': 'measure_saved.py',
+                                           'output_schema': 'c111331-saved-signal-entry-measurement-v1'},
+                 'candidate_risk': {'status': 'native_and_original_pixels_unverified',
+                                    'reason': 'Requested signal phase and junction entry require observed Native actor and pixel evidence'}}
+        write(HERE / 'measurement-contracts' / (case + '.json'), {
+            'format': 'worker-measurement-contract-v1', 'case_id': case_id,
+            'requirements': [{'disposition_index': 1, 'requirement': 'NRS-484B-307-6a',
+                              'source': 'NRS 484B.307(6)(a)',
+                              'output_key': 'observed_signal_phase_at_entry',
+                              'method': 'first_full_body_junction_entry_joined_to_observed_native_signal',
+                              'value_type': 'string', 'kind': 'measured',
+                              'inputs': ['native_samples.jsonl', 'video_frames.jsonl']}],
+            'negative': {'remove': ['native_samples.jsonl'],
+                         'error_contains': 'Missing required source: native_samples.jsonl'},
+            'uncertainty': {'frame_bracket_s': .05,
+                            'original_pixel_visibility': 'requires later GPU capture and review'}})
+        for candidate in CANDIDATES:
+            folder = HERE / 'drafts' / case / candidate
+            authored = json.loads((folder / 'config.json').read_text())
+            request = folder / 'native-requests.jsonl'
+            assert authored['case_id'] == case_id and authored['candidate_id'] == candidate
+            config = dict(authored)
+            config.update({'case_suffix': case, 'cell_id': 'C111331', 'law_id': 'NRS-484B-307-6a',
+                           'actor': 'motor_vehicle_driver', 'rate_hz': 20, 'duration_s': 24,
+                           'native_requests_sha256': sha(request),
+                           'authored_config_sha256': sha(folder / 'config.json'),
+                           'physical_success_claimed': False})
+            files = fixed_files + [
+                {'path': 'native-requests.jsonl', 'content': request.read_text()},
+                {'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'}]
+            construction = {'case_id': case_id, 'cell_id': 'C111331',
+                            'law_id': 'NRS-484B-307-6a', 'actor': 'motor_vehicle_driver',
+                            'entrypoint': 'runner.py', 'files': files,
+                            'recording_description': {'channels': [
+                                {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
+                                 'method': 'original Native frame join', 'time_window': '480 frames',
+                                 'reference_frame': 'Native imported OpenDRIVE', 'uncertainty': '50 ms frame bracket'}
+                                for name in ('native_body_pose', 'observed_signal_state', 'signal_camera_frame_join')],
+                                'context_inputs': ['road.xodr', 'native-requests.jsonl'],
+                                'limitations': ['Native signal behavior and original pixels unverified']},
+                            'static_checks': ['480 frame request identity', 'OpenDRIVE signal ID and source hashes',
+                                              'requested phase and body entry recomputation'],
+                            'termination_rules': ['retain capture and restoration error', 'require 480 synchronized frames'],
+                            'mechanisms': ['same-cell yellow/red controlled pair', 'observed-pose actor control',
+                                           'lossless signal reference camera'],
+                            'status': 'unselected_cpu_draft'}
+            relative = f'package-candidates/{case}/{candidate}/construction.json'
+            target = HERE / relative
+            write(target, construction)
+            ref = {'id': candidate, 'construction': relative, 'construction_sha256': sha(target)}
+            if candidate == 'primary':
+                entry.update(ref)
+            else:
+                ref['trigger'] = authored['measured_trigger']
+                ref['changed_knobs'] = {'fallback1': ['reference_red_frame', 'contrast_red_frame'],
+                                        'fallback2': ['speed_m_per_frame'],
+                                        'fallback3': ['signal_camera_fov_deg']}[candidate]
+                entry['candidates'].append(ref)
+        manifest['cases'].append(entry)
+    write(HERE / 'package-manifest.json', manifest)
+    return {'case_count': len(CASES), 'candidate_count': 8,
+            'manifest_sha256': sha(HERE / 'package-manifest.json')}
+
+
+if __name__ == '__main__':
+    print(json.dumps(build(), sort_keys=True))
