@@ -56,7 +56,7 @@ def audit():
             if package['status'] != 'unselected_cpu_draft' or config['physical_success_claimed'] or not config['no_native_or_original_observation_claimed']:
                 raise ValueError('Draft status or observation boundary differs')
             log = (folder / 'offline.log').read_text()
-            if receipt['exit_code'] != 0 or 'Ran 5 tests' not in log or '\nOK\n' not in log or '"carla_imported": false' not in log:
+            if receipt['exit_code'] != 0 or 'Ran 6 tests' not in log or '\nOK\n' not in log or '"carla_imported": false' not in log:
                 raise ValueError('Pinned offline and adversarial CPU tests did not pass')
             if candidate != 'primary':
                 trigger = ref['trigger']

@@ -58,4 +58,14 @@ class ExactRequestTests(unittest.TestCase):
         self.assertLess(camera['yaw_deg'], 90)
         self.assertEqual(camera['horizontal_fov_deg'], config['camera_plan']['horizontal_fov_deg'])
 
+    def test_four_original_camera_sources(self):
+        config = json.loads(Path('config.json').read_text())
+        plans = runner.original_camera_plans(config)
+        self.assertEqual(set(plans), {'overview', 'approach', 'reference_corner', 'driver_reference'})
+        self.assertEqual(plans['overview']['size'], (1920, 1080))
+        self.assertTrue(all(plan['size'] == (1280, 720) for name, plan in plans.items() if name != 'overview'))
+        self.assertEqual(plans['reference_corner']['fov_deg'], config['camera_plan']['horizontal_fov_deg'])
+        self.assertEqual(plans['reference_corner']['y'], config['camera_plan']['authored_xy_m'][1])
+        self.assertTrue(plans['driver_reference']['attach_to_ego'])
+
 if __name__ == '__main__': unittest.main()

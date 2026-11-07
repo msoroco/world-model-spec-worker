@@ -8,7 +8,7 @@ from pathlib import Path
 import shutil
 
 from measure_saved import measure
-from signal_video_cpu import inspect as inspect_signal_video
+from signal_video_cpu import inspect as inspect_signal_video, inspect_original_format
 
 
 def measure_yellow_onset(measurement):
@@ -48,7 +48,7 @@ def finalize(attempt, output):
     if output.exists() or (attempt / 'result.json').exists() or (attempt / 'channels').exists():
         raise ValueError('Retain prior finalization; choose a fresh attempt')
     for name in ('construction.json', 'config.json', 'native_samples.jsonl',
-                 'video_frames.jsonl', 'trace.jsonl', 'signal_reference.mkv'):
+                 'video_frames.jsonl', 'trace.jsonl'):
         if not (attempt / name).is_file():
             raise ValueError('Missing required source: ' + name)
     config = json.loads((attempt / 'config.json').read_text())
@@ -67,14 +67,23 @@ def finalize(attempt, output):
                 abs(frame['time_s'] - point['time_s']) > .001):
             raise ValueError('Saved Native/trace/video frame join differs')
     measurement = measure(attempt, config['case_id'], config['candidate_id'])
-    if measurement['physical_native_evidence']:
-        raise ValueError('Physical Native source needs independent original-source review')
     ffmpeg = shutil.which('ffmpeg')
     if not ffmpeg:
-        raise ValueError('Pinned FFmpeg executable is required for synthetic video proof')
-    video = inspect_signal_video(attempt, attempt / 'signal_reference.mkv', ffmpeg)
+        raise ValueError('Pinned FFmpeg executable is required for saved video proof')
+    original = measurement['physical_native_evidence']
+    signal_name = 'reference_corner.mkv' if original else 'signal_reference.mkv'
+    if not (attempt / signal_name).is_file():
+        raise ValueError('Missing required source: ' + signal_name)
+    if original:
+        for name in ('overview.mkv', 'approach.mkv', 'driver_reference.mkv',
+                     'raw.mkv', 'four-view-source.json'):
+            if not (attempt / name).is_file():
+                raise ValueError('Missing required source: ' + name)
+        video = inspect_original_format(attempt, attempt / signal_name, ffmpeg)
+    else:
+        video = inspect_signal_video(attempt, attempt / signal_name, ffmpeg)
     source_hashes = dict(measurement['sources'])
-    source_hashes['signal_reference.mkv'] = video['video_sha256']
+    source_hashes[signal_name] = video['video_sha256']
     report = {'format': 'c111331-saved-signal-entry-report-v1', 'case_id': config['case_id'],
               'selected': False, 'draft_only': True,
               'measurements': {
@@ -87,7 +96,9 @@ def finalize(attempt, output):
                       ('full_body_intersection_entry_frame', measure_body_entry),
                       ('entry_to_red_margin_frames', measure_entry_red_margin))},
               'measurement_detail': measurement,
-              'synthetic_video_proof': video,
+              'signal_video_decode': video,
+              'synthetic_video_proof': video if not original else None,
+              'original_source_review_pending': original,
               'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
     channels = attempt / 'channels'
     channels.mkdir()
@@ -130,19 +141,20 @@ def finalize(attempt, output):
                                  'cause_evidence': ['native_samples.jsonl', 'video_frames.jsonl']}],
               'setup_confirmed': False, 'behavior_attempted': False,
               'maneuver_completed': False,
-              'termination_reason': 'full 480-frame synthetic saved window',
-              'physical_failure_flags': ['Native signal/body behavior and original pixels unverified'],
+              'termination_reason': 'full 480-frame saved window; independent acceptance pending',
+              'physical_failure_flags': ['Original pixel and physical behavior review pending'] if original else ['Native signal/body behavior and original pixels unverified'],
               'trace_reference': 'trace.jsonl',
-              'video_references': ['signal_reference.mkv'],
+              'video_references': [signal_name, 'raw.mkv'] if original else [signal_name],
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': construction['recording_description'],
               'recording_evidence': evidence,
               'realized_observables': {'full_body_entry_frame': {
                   'value': measurement['observed_full_body_entry_frame'], 'unit': 'frame',
-                  'method': 'saved 480-frame synthetic Native signal/body join',
-                  'time_window': '24 s diagnostic', 'statistic': 'first body entry',
+                  'method': 'saved 480-frame Native signal/body join',
+                  'time_window': '24 s saved window', 'statistic': 'first body entry',
                   'reference': 'native_samples.jsonl'}},
-              'provenance_kind': 'synthetic_local_diagnostic', 'accepted': False}
+              'provenance_kind': 'original_native_unreviewed' if original else 'synthetic_local_diagnostic',
+              'accepted': False}
     from worker_exchange.native_output import validate_result
     validate_result(result)
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')

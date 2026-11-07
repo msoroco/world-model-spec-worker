@@ -66,6 +66,44 @@ def inspect(source_dir, video_path, ffmpeg):
             'physical_signal_state_verified': False}
 
 
+def inspect_original_format(source_dir, video_path, ffmpeg):
+    """Decode an original-size source and retain frame hashes without a color claim."""
+    source_dir = Path(source_dir)
+    video_path = Path(video_path)
+    native = rows(source_dir / 'native_samples.jsonl')
+    mapping = rows(source_dir / 'video_frames.jsonl')
+    if len(native) != 480 or len(mapping) != 480:
+        raise ValueError('Original signal video requires 480 source rows')
+    for i, (sample, join) in enumerate(zip(native, mapping)):
+        if (sample['request_index'] != i or join['video_frame'] != i or
+                join['native_frame'] != sample['native_frame'] or
+                join['carla_frame'] != sample['native_frame']):
+            raise ValueError('Original signal video Native frame join differs')
+    probe = subprocess.run([str(Path(ffmpeg).with_name('ffprobe')), '-v', 'error',
+                            '-count_frames', '-select_streams', 'v:0', '-show_entries',
+                            'stream=width,height,nb_read_frames,r_frame_rate', '-of',
+                            'json', str(video_path)], capture_output=True, text=True,
+                           timeout=120, check=True)
+    stream = json.loads(probe.stdout)['streams'][0]
+    if [stream['width'], stream['height']] != [1280, 720] or int(stream['nb_read_frames']) != 480 or stream['r_frame_rate'] != '20/1':
+        raise ValueError('Original signal video dimensions, rate or frame count differ')
+    decoded = subprocess.run([str(ffmpeg), '-nostdin', '-hide_banner', '-loglevel', 'error',
+                              '-i', str(video_path), '-f', 'framemd5', 'pipe:1'],
+                             capture_output=True, text=True, timeout=300, check=True)
+    frames = [line for line in decoded.stdout.splitlines() if line and not line.startswith('#')]
+    if len(frames) != 480:
+        raise ValueError('Original signal video decoded frame count differs')
+    return {'format': 'c111331-original-size-video-decode-v1',
+            'source_kind': 'original_size_unreviewed',
+            'video_sha256': sha(video_path),
+            'native_samples_sha256': sha(source_dir / 'native_samples.jsonl'),
+            'video_frames_sha256': sha(source_dir / 'video_frames.jsonl'),
+            'decoded_frame_line_sha256': [hashlib.sha256(line.encode()).hexdigest() for line in frames],
+            'decoded_frames': 480, 'original_carla_pixels_verified': False,
+            'physical_signal_state_verified': False,
+            'color_readout_pending_independent_review': True}
+
+
 if __name__ == '__main__':
     import argparse
     p = argparse.ArgumentParser()

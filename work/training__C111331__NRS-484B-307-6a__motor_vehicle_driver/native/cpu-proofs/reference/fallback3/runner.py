@@ -119,6 +119,26 @@ def signal_camera_plan(config):
             'horizontal_fov_deg': config['camera_plan']['horizontal_fov_deg']}
 
 
+def original_camera_plans(config):
+    """Four source-road views plus a dedicated signal crop for later review."""
+    reference = signal_camera_plan(config)
+    plans = {
+        'overview': {'x': 4.0, 'y': -7.0, 'z': 32.0, 'yaw_deg': 0.0,
+                     'pitch_deg': -90.0, 'fov_deg': 90.0, 'size': (1920, 1080)},
+        'approach': {'x': 1.75, 'y': -25.0, 'z': 7.0, 'yaw_deg': 90.0,
+                     'pitch_deg': -14.0, 'fov_deg': 90.0, 'size': (1280, 720)},
+        'reference_corner': {'x': reference['x'], 'y': reference['y'], 'z': 3.0,
+                     'yaw_deg': reference['yaw_deg'], 'pitch_deg': 8.0,
+                     'fov_deg': reference['horizontal_fov_deg'], 'size': (1280, 720)},
+        'driver_reference': {'x': 0.45, 'y': 0.0, 'z': 1.55,
+                     'yaw_deg': 0.0, 'pitch_deg': 0.0,
+                     'fov_deg': 90.0, 'size': (1280, 720), 'attach_to_ego': True},
+    }
+    if set(plans) != {'overview', 'approach', 'reference_corner', 'driver_reference'}:
+        raise ValueError('Four original camera views required')
+    return plans
+
+
 def execute(output, host, port):
     """Capture an original 480-frame attempt on an explicitly owned idle server.
 
@@ -128,6 +148,7 @@ def execute(output, host, port):
     import carla
     import numpy as np
     from worker_exchange.world_restore import snapshot, restore
+    from worker_exchange.media import compose_four_views
 
     check()
     output = Path(output).resolve()
@@ -142,9 +163,10 @@ def execute(output, host, port):
     if saved['settings'].synchronous_mode or any(a.type_id.startswith(('vehicle.', 'walker.', 'sensor.', 'controller.')) for a in old_world.get_actors()):
         raise RuntimeError('Requires an exclusive idle asynchronous Native world')
     owned = []
-    camera_queue = queue.Queue()
-    encoder = None
-    encoder_log = None
+    camera_queues = {}
+    encoders = {}
+    encoder_logs = {}
+    camera_sources = {}
     changed = False
     error = None
     restored = None
@@ -180,22 +202,29 @@ def execute(output, host, port):
         ego = world.spawn_actor(blueprint, carla.Transform(
             carla.Location(x=first[0], y=first[1], z=.5), carla.Rotation(yaw=90)))
         owned.append(ego)
-        camera_bp = world.get_blueprint_library().find('sensor.camera.rgb')
-        camera_bp.set_attribute('image_size_x', '1280')
-        camera_bp.set_attribute('image_size_y', '720')
-        camera = signal_camera_plan(config)
-        camera_bp.set_attribute('fov', str(camera['horizontal_fov_deg']))
-        camera_bp.set_attribute('sensor_tick', '0')
-        sensor = world.spawn_actor(camera_bp, carla.Transform(
-            carla.Location(x=camera['x'], y=camera['y'], z=3),
-            carla.Rotation(pitch=8, yaw=camera['yaw_deg'])), attach_to=None)
-        owned.append(sensor)
-        sensor.listen(camera_queue.put)
-        encoder_log = (output / 'signal_reference.encoder.log').open('x')
-        encoder = subprocess.Popen(['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-n',
-            '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '1280x720', '-r', '20', '-i', 'pipe:0',
-            '-an', '-c:v', 'ffv1', '-level', '1', str(output / 'signal_reference.mkv')],
-            stdin=subprocess.PIPE, stderr=encoder_log)
+        for name, plan in original_camera_plans(config).items():
+            camera_bp = world.get_blueprint_library().find('sensor.camera.rgb')
+            width, height = plan['size']
+            camera_bp.set_attribute('image_size_x', str(width))
+            camera_bp.set_attribute('image_size_y', str(height))
+            camera_bp.set_attribute('fov', str(plan['fov_deg']))
+            camera_bp.set_attribute('sensor_tick', '0')
+            transform = carla.Transform(
+                carla.Location(x=plan['x'], y=plan['y'], z=plan['z']),
+                carla.Rotation(pitch=plan['pitch_deg'], yaw=plan['yaw_deg']))
+            sensor = world.spawn_actor(camera_bp, transform,
+                                       attach_to=ego if plan.get('attach_to_ego') else None)
+            owned.append(sensor)
+            camera_queues[name] = queue.Queue()
+            sensor.listen(camera_queues[name].put)
+            camera_sources[name] = output / (name + '.mkv')
+            encoder_logs[name] = (output / (name + '.encoder.log')).open('x')
+            encoders[name] = subprocess.Popen([
+                'ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-n',
+                '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{width}x{height}',
+                '-r', '20', '-i', 'pipe:0', '-an', '-c:v', 'ffv1', '-level', '1',
+                str(camera_sources[name])], stdin=subprocess.PIPE,
+                stderr=encoder_logs[name])
         with (output / 'native_samples.jsonl').open('x') as sample_file, \
                 (output / 'video_frames.jsonl').open('x') as frame_file, \
                 (output / 'trace.jsonl').open('x') as trace_file:
@@ -229,13 +258,15 @@ def execute(output, host, port):
                     'signal_actor_id': signal.id, 'approach_road_id': waypoint.road_id,
                     'approach_lane_id': waypoint.lane_id, 'controller_request': control,
                     'body_entered_junction_observed': max(p[1] for p in body) >= -7.0}
-                image = camera_queue.get(timeout=30)
-                while image.frame < frame:
-                    image = camera_queue.get(timeout=30)
-                if image.frame != frame:
-                    raise RuntimeError('Original camera and Native frame join failed')
-                rgb = np.frombuffer(image.raw_data, dtype=np.uint8).reshape(720, 1280, 4)[:, :, :3][:, :, ::-1]
-                encoder.stdin.write(rgb.tobytes())
+                for name, plan in original_camera_plans(config).items():
+                    image = camera_queues[name].get(timeout=30)
+                    while image.frame < frame:
+                        image = camera_queues[name].get(timeout=30)
+                    if image.frame != frame:
+                        raise RuntimeError('Original camera and Native frame join failed: ' + name)
+                    width, height = plan['size']
+                    rgb = np.frombuffer(image.raw_data, dtype=np.uint8).reshape(height, width, 4)[:, :, :3][:, :, ::-1]
+                    encoders[name].stdin.write(rgb.tobytes())
                 sample_row, trace_row, frame_row = saved_capture_rows(native_sample, index)
                 sample_file.write(json.dumps(sample_row, allow_nan=False) + '\n')
                 trace_file.write(json.dumps(trace_row, allow_nan=False) + '\n')
@@ -246,15 +277,22 @@ def execute(output, host, port):
     except BaseException as exc:
         error = {'type': type(exc).__name__, 'message': str(exc), 'traceback': traceback.format_exc()}
     finally:
-        if encoder is not None:
+        for name, encoder in encoders.items():
             try:
                 encoder.stdin.close()
                 if encoder.wait(timeout=180):
-                    raise RuntimeError('Original lossless encoder failed')
+                    raise RuntimeError('Original lossless encoder failed: ' + name)
             except BaseException as exc:
                 error = error or {'encoder_error': str(exc)}
-        if encoder_log is not None:
+        for encoder_log in encoder_logs.values():
             encoder_log.close()
+        if error is None and count == 480:
+            try:
+                composed = compose_four_views(camera_sources, output / 'video_frames.jsonl',
+                                              output / 'raw.mkv')
+                (output / 'four-view-source.json').write_text(json.dumps(composed, indent=2) + '\n')
+            except BaseException as exc:
+                error = {'four_view_composition_error': str(exc)}
         for actor in reversed(owned):
             try:
                 if actor.type_id.startswith('sensor.'):
