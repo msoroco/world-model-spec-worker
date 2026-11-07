@@ -1,10 +1,11 @@
 """Check that the runner surveys the same lanes used by the authored route."""
 import types
+import math
 import unittest
 
 from geometry import CASE_PLACEMENTS, route
 from engineering import parameters
-from runner import map_survey
+from runner import map_survey, observed_speed_mps
 
 
 class Direction:
@@ -41,6 +42,15 @@ class Map:
 
 
 class RunnerSurveyTest(unittest.TestCase):
+    def test_observed_speed_reads_current_native_velocity(self):
+        actor = types.SimpleNamespace(get_velocity=lambda: types.SimpleNamespace(x=3.0, y=4.0, z=0.0))
+        self.assertEqual(observed_speed_mps(actor), 5.0)
+        actor.get_velocity = lambda: types.SimpleNamespace(x=0.0, y=0.0, z=0.0)
+        self.assertEqual(observed_speed_mps(actor), 0.0)
+        actor.get_velocity = lambda: types.SimpleNamespace(x=math.nan, y=0.0, z=0.0)
+        with self.assertRaisesRegex(ValueError, 'nonfinite'):
+            observed_speed_mps(actor)
+
     def test_survey_and_reflected_route_share_approach_and_southbound_exit(self):
         carla = types.SimpleNamespace(Location=lambda **kw: types.SimpleNamespace(**kw),
                                       LaneType=types.SimpleNamespace(Driving='driving'))

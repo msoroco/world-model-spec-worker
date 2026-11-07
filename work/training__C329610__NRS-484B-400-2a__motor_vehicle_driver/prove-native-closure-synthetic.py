@@ -64,7 +64,9 @@ def main():
         result = json.loads((attempt/'result.json').read_text())
         assert analysis['acquisition_provenance']['diagnostic_fixture'] is True
         assert analysis['acquisition_provenance']['native_executed'] is False
-        assert result['provenance_kind']=='synthetic_local_diagnostic'
+        assert analysis['effective_provenance_kind']=='synthetic_fixture'
+        assert analysis['scope'].startswith('synthetic CPU saved sources')
+        assert result['provenance_kind']=='synthetic_fixture'
         assert not any(result[key] for key in ('setup_confirmed','behavior_attempted',
                                                'maneuver_completed','accepted','legal_verdict_claimed'))
         with (attempt/'native_samples.jsonl').open('a') as stream:

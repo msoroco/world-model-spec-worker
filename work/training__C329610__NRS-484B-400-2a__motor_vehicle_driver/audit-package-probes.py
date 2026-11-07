@@ -59,6 +59,11 @@ def audit():
             if not json.loads((scratch/'output/final-decode.json').read_text())['passed']:
                 raise ValueError('Final render decode failed')
             native_result=json.loads((scratch/'output/result.json').read_text())
+            analysis_report=json.loads((scratch/'output/analysis-report.json').read_text())
+            if (native_result.get('provenance_kind')!='synthetic_fixture'
+                or analysis_report.get('effective_provenance_kind')!='synthetic_fixture'
+                or not analysis_report.get('scope','').startswith('synthetic CPU saved sources')):
+                raise ValueError('Synthetic diagnostic provenance or scope mislabeled')
             if native_result['accepted'] or native_result['legal_verdict_claimed'] or any(
                 check.get('physical_cause_confirmed') for check in native_result['target_checks']):
                 raise ValueError('Synthetic diagnostic claimed physical success or acceptance')

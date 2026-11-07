@@ -167,14 +167,17 @@ def finalize(attempt,output):
            'time_window':'before first front-body intersection entry',
            'statistic':'mean','reference':'native_samples.jsonl',
            'sample_window_s':measured['value']['approach_window_s']}},
-      'provenance_kind':'native' if native else 'synthetic_local_diagnostic',
+      'provenance_kind':'native' if native else 'synthetic_fixture',
       'accepted':False,'legal_verdict_claimed':False}
     validate_result(result)
     report={'format':'c329610-saved-analysis-v1','case_id':config['case_id'],
             'candidate_id':config['candidate_id'],'measurements':{'approach_placement_geometry':measured},
             'original_joins':original,'video_frames':video_counts,
       'acquisition_provenance':provenance,
-            'scope':'saved original Native sources and source video decode, not independent acceptance or legal verdict'}
+            'effective_provenance_kind':result['provenance_kind'],
+            'scope':('saved original Native sources and source video decode' if native else
+                     'synthetic CPU saved sources and source video decode')+
+                    '; not independent acceptance or legal verdict'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     with (attempt/'result.json').open('x') as stream:
         json.dump(result,stream,indent=2,allow_nan=False)

@@ -141,9 +141,11 @@ def run(frame_count=4):
             if (not result['target_checks'][0]['matched'] or
                     not result['measured_values']['destination_exit_observed'] or
                     result['maneuver_completed'] or result['behavior_attempted'] or
-                    result['setup_confirmed'] or result['provenance_kind']!='synthetic_local_diagnostic' or
+                    result['setup_confirmed'] or result['provenance_kind']!='synthetic_fixture' or
                     report['acquisition_provenance']['native_executed']):
                 raise RuntimeError('Synthetic engineering target or provenance differs')
+            if not report['scope'].startswith('synthetic CPU saved sources'):
+                raise RuntimeError('Synthetic analysis scope mislabeled')
             if report['original_joins']['frames']!=frame_count or len(report['video_frames'])!=4 or any(v!=frame_count for v in report['video_frames'].values()):
                 raise RuntimeError('Synthetic video/trace join absent')
             (negative/'native_samples.jsonl').unlink()
