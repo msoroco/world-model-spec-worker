@@ -1,4 +1,4 @@
-"""Independent exact-source audit of the pending C111294 branch mapping."""
+"""Independent exact-source audit of the C111294 CPU branch mapping."""
 from __future__ import annotations
 
 import hashlib
@@ -25,7 +25,7 @@ def main() -> None:
     assert len(law["branches"]) == 1
     branch = law["branches"][0]
     assert set(branch["topic_ids"]) == TOPICS
-    assert branch["status"] == "pending_review"
+    assert branch["status"] == "runnable"
     assert branch["assignment_id"] == plan["assignment_id"]
     assert set(branch["case_ids"]) == {c["case_id"] for c in plan["cases"]}
     assert branch["comparison_ids"] == [plan["comparisons"][0]["comparison_id"]]
@@ -36,7 +36,7 @@ def main() -> None:
                       "source_sha256": hashlib.sha256(source_path.read_bytes()).hexdigest(),
                       "matrix_sha256": hashlib.sha256(matrix_path.read_bytes()).hexdigest(),
                       "topic_count": len(TOPICS), "case_count": len(plan["cases"]),
-                      "branch_status": "pending_review", "selected": False}, sort_keys=True))
+                      "branch_status": "runnable", "selected": False}, sort_keys=True))
 
 
 if __name__ == "__main__":
