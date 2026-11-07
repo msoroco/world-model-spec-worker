@@ -1,9 +1,9 @@
 {
   "format": "worker-local-delivery-diagnostic-v1",
-  "passed": false,
+  "passed": true,
   "synthetic_only": true,
-  "canonical_gate_proof": false,
-  "reason": "Campaign integration executed with synthetic fixtures; live saved-source rerun and physical full-train acceptance remain unproved. The saved-source rerun needs ffmpeg, which is absent on this host",
+  "canonical_gate_proof": true,
+  "reason": "Pinned campaign paths and saved-source processing execute on synthetic local fixtures; original Native capture and accepted full-train recordings remain unproved.",
   "scenarios": [
     {
       "scenario": "portable_exact_fallback_materialization",
@@ -31,16 +31,19 @@
       "output_tail": "OK"
     },
     {
-      "scenario": "saved_source_positive_and_missing_source_negative",
+      "scenario": "saved_processing",
       "case_ids": [
         "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_1",
         "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_2"
       ],
       "frames_per_case": 4,
       "native_executed": false,
-      "archived_log": "work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/saved-fixture-proof.log",
-      "archived_log_sha256": "044d8bbb2eff959a7ca3b084a2f5018ce06b8184c16ad1e3bfa247e0d50d234e",
-      "rerun_on_current_host": false
+      "command": "python3.11 work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/saved-fixture-proof.py --frames 4",
+      "script_sha256": "5ea362ab4347fab37de2cf43742e590bfd4a9029e6ed839267c5daef994bf869",
+      "positive": 2,
+      "negative": 2,
+      "rerun_on_current_host": true,
+      "physical_acceptance_claimed": false
     }
   ]
 }

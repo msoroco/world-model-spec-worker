@@ -125,7 +125,7 @@ def main():
         "candidate_id":args.candidate,"positive":receipt,"negative_exit_code":failure.returncode,
         "negative_removed":"native_samples.jsonl","synthetic":True,"selected":False,
         "physical_success_claimed":False,"scratch":str(scratch)}
-    (HERE/f"compatibility-probe-{args.feet}-{args.candidate}.json").write_text(json.dumps(summary,indent=2)+"\n")
+    (HERE/f"package-probe-{args.feet}-{args.candidate}.json").write_text(json.dumps(summary,indent=2)+"\n")
     print(json.dumps({k:v for k,v in summary.items() if k!="positive"},indent=2))
 
 if __name__=="__main__":main()

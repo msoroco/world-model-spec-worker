@@ -22,11 +22,11 @@ def main():
                  "--feet",str(feet),"--candidate",candidate]
             result=subprocess.run(cmd,cwd=ROOT,env=env,stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,text=True,timeout=300)
-            log=HERE/f"compatibility-probe-{feet}-{candidate}.log"
+            log=HERE/f"package-probe-{feet}-{candidate}.log"
             log.write_text(result.stdout)
             if result.returncode:
                 raise RuntimeError(f"{feet} {candidate}: {result.stdout[-1500:]}")
-            receipt=HERE/f"compatibility-probe-{feet}-{candidate}.json"
+            receipt=HERE/f"package-probe-{feet}-{candidate}.json"
             payload=json.loads(receipt.read_text())
             assert payload["positive"]["passed"] is True
             assert payload["negative_exit_code"]!=0 and payload["synthetic"] is True
@@ -38,6 +38,6 @@ def main():
         "passed":True,"cases":6,"candidates":24,"positive":24,"negative":24,
         "synthetic":True,"selected":False,"physical_success_claimed":False,
         "records":records}
-    (HERE/"compatibility-probes-summary.json").write_text(json.dumps(summary,indent=2)+"\n")
+    (HERE/"package-probes-summary.json").write_text(json.dumps(summary,indent=2)+"\n")
 
 if __name__=="__main__":main()
