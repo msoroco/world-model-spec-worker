@@ -34,11 +34,12 @@ def _source(folder, case):
                                     'native_body_xy_m': [[x, -y] for x, y in body]},
                         'approach': {'native_center_xy_m': [approach['x_m'], -approach['y_m']]}}})
         videos.append({'video_frame': index, 'native_frame': native_frame,
+                       'carla_frame': native_frame,
                        'time_s': .05 + index / 20})
         annotations.append({'video_frame': index, 'native_frame': native_frame,
                             'front_red_flash_on': request['lamp_request']['front_red_flash_on']})
     _write_rows(folder / 'observed-actors.jsonl', raw)
-    _write_rows(folder / 'video-frames.jsonl', videos)
+    _write_rows(folder / 'video_frames.jsonl', videos)
     (folder / 'front_lamp.source').write_text('synthetic CPU lamp pixel placeholder ' + case + '\n')
     video_sha = hashlib.sha256((folder / 'front_lamp.source').read_bytes()).hexdigest()
     (folder / 'front-lamp-review.json').write_text(json.dumps({
@@ -85,7 +86,7 @@ def prove():
                       lambda p: (p / 'front_lamp.source').write_text('changed source\n'),
                       'Lamp review video source hash differs', case)
             _negative(scratch, source, 'join',
-                      lambda p: _mutate_jsonl(p / 'video-frames.jsonl', 100,
+                      lambda p: _mutate_jsonl(p / 'video_frames.jsonl', 100,
                                               lambda row: row.update(native_frame=99999)),
                       'Native actor/video/lamp frame join differs', case)
             _negative(scratch, source, 'control',

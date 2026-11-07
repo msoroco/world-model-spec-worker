@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-NAMES = ('observed-actors.jsonl', 'video-frames.jsonl', 'front-lamp-review.json',
+NAMES = ('observed-actors.jsonl', 'video_frames.jsonl', 'front-lamp-review.json',
          'front_lamp.source')
 
 
@@ -24,7 +24,7 @@ def audit():
         folder = ROOT / 'synthetic-bridge' / case
         source, prepared = folder / 'source', folder / 'prepared'
         original = _rows(source / 'observed-actors.jsonl')
-        frames = _rows(source / 'video-frames.jsonl')
+        frames = _rows(source / 'video_frames.jsonl')
         review = json.loads((source / 'front-lamp-review.json').read_text())
         saved = _rows(prepared / 'actor-frames.jsonl')
         scope = json.loads((prepared / 'source-scope.json').read_text())

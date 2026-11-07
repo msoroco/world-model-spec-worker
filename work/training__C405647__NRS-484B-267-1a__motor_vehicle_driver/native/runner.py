@@ -190,7 +190,7 @@ def execute(case, candidate, output, host, port):
                 stdin=subprocess.PIPE, stderr=log)
         start = world.get_snapshot().timestamp.elapsed_seconds
         with (output / 'observed-actors.jsonl').open('x') as actor_file, \
-             (output / 'video-frames.jsonl').open('x') as video_file:
+             (output / 'video_frames.jsonl').open('x') as video_file:
             for index, request in enumerate(tracks):
                 commands = {}
                 for name, actor, key, target_speed in (
@@ -236,6 +236,7 @@ def execute(case, candidate, output, host, port):
                         spec['height'], spec['width'], 4)[:, :, :3][:, :, ::-1]
                     encoders[spec['name']].stdin.write(rgb.tobytes())
                 video_file.write(json.dumps({'video_frame': index, 'native_frame': frame,
+                                             'carla_frame': frame,
                                              'time_s': time_s}, allow_nan=False) + '\n')
                 frames += 1
         if frames != 480:

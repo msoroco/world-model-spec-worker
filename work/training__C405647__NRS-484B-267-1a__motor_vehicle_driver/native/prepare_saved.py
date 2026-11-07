@@ -11,10 +11,11 @@ import json
 import math
 from pathlib import Path
 import shutil
+import subprocess
 
 from measure_saved import LAW_SHA256, COORDINATE_FRAME, measure
 
-BASE_NAMES = ('observed-actors.jsonl', 'video-frames.jsonl', 'front-lamp-review.json')
+BASE_NAMES = ('observed-actors.jsonl', 'video_frames.jsonl', 'front-lamp-review.json')
 
 
 def _sha(path):
@@ -34,7 +35,32 @@ def _authored(point):
     return [x, -y]
 
 
-def prepare(source, output, case):
+def _decoded_frame_hashes(path, ffmpeg):
+    executable = ffmpeg or shutil.which('ffmpeg')
+    if not executable:
+        raise ValueError('Original lamp video decoder absent')
+    result = subprocess.run([str(executable), '-hide_banner', '-loglevel', 'error',
+                             '-i', str(path), '-map', '0:v:0', '-f', 'framehash',
+                             '-hash', 'sha256', '-'], text=True,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            timeout=180, check=False)
+    if result.returncode:
+        raise ValueError('Original lamp video decode failed')
+    hashes = []
+    for line in result.stdout.splitlines():
+        if line.startswith('#') or not line.strip():
+            continue
+        columns = [part.strip() for part in line.split(',')]
+        if len(columns) != 6 or columns[0] != '0' or len(columns[5]) != 64 or \
+                any(char not in '0123456789abcdef' for char in columns[5]):
+            raise ValueError('Original lamp video framehash malformed')
+        hashes.append(columns[5])
+    if len(hashes) != 480:
+        raise ValueError('Original lamp video decoded frame count differs')
+    return hashes
+
+
+def prepare(source, output, case, ffmpeg=None):
     source, output = Path(source), Path(output)
     if case not in ('witness_1', 'witness_2'):
         raise ValueError('Unknown controlled case')
@@ -63,6 +89,8 @@ def prepare(source, output, case):
         raise ValueError('Lamp review frame count differs')
     if kind == 'original_pixel_review' and not review.get('reviewer'):
         raise ValueError('Original lamp review attribution absent')
+    decoded_hashes = _decoded_frame_hashes(source / video_name, ffmpeg) if \
+        kind == 'original_pixel_review' else None
     saved = []
     prior_time = None
     for index, (row, video, annotation) in enumerate(zip(actors, frames, annotations)):
@@ -72,6 +100,7 @@ def prepare(source, output, case):
         native_frame = row.get('native_frame')
         if (row.get('frame') != index or video.get('video_frame') != index or
                 video.get('native_frame') != native_frame or
+                video.get('carla_frame') != native_frame or
                 annotation.get('native_frame') != native_frame or
                 annotation.get('video_frame') != index):
             raise ValueError('Native actor/video/lamp frame join differs')
@@ -79,6 +108,8 @@ def prepare(source, output, case):
             raise ValueError('Raw Native light control substituted for pixel review')
         if type(annotation.get('front_red_flash_on')) is not bool:
             raise ValueError('Lamp pixel annotation absent')
+        if decoded_hashes is not None and annotation.get('pixel_frame_sha256') != decoded_hashes[index]:
+            raise ValueError('Lamp review decoded pixel frame hash differs')
         time_s = float(row['time_s'])
         if not math.isfinite(time_s) or (prior_time is not None and
                                          abs(time_s - prior_time - .05) > .01):
@@ -130,5 +161,6 @@ if __name__ == '__main__':
     parser.add_argument('--source', required=True)
     parser.add_argument('--output', required=True)
     parser.add_argument('--case', required=True)
+    parser.add_argument('--ffmpeg')
     args = parser.parse_args()
-    print(json.dumps(prepare(args.source, args.output, args.case), indent=2))
+    print(json.dumps(prepare(args.source, args.output, args.case, args.ffmpeg), indent=2))
