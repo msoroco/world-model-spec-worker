@@ -67,10 +67,36 @@ def main():
                 assert "route_error_m" in str(error)
             else:
                 raise AssertionError("Missing route error was accepted")
+            save(probe / "native_samples.jsonl", samples)
+            names = ("overview", "approach", "reference_corner", "driver_reference")
+            for name in names:
+                shutil.copyfile(source / (name + ".mkv"), probe / (name + ".mkv"))
+            audit = {"independent_original_pixel_review": True,
+                     "source_video_sha256": {name: sha(probe / (name + ".mkv")) for name in names},
+                     "frames": [{"native_frame": row["native_frame"],
+                                 "marking_visible": True, "body_visible": True} for row in samples]}
+            annotation = probe / "pixel_visibility_audit.json"
+            annotation.write_text(json.dumps(audit))
+            assert evaluate(probe, "fallback3")["triggered"] is False
+            for flag in audit["frames"][:24]:
+                flag["marking_visible"] = False
+            annotation.write_text(json.dumps(audit))
+            assert evaluate(probe, "fallback3")["triggered"] is False  # exactly 95%
+            audit["frames"][24]["marking_visible"] = False
+            annotation.write_text(json.dumps(audit))
+            assert evaluate(probe, "fallback3")["triggered"] is True
+            (probe / "overview.mkv").write_bytes(b"changed synthetic video")
+            try:
+                evaluate(probe, "fallback3")
+            except ValueError as error:
+                assert "video hash differs" in str(error)
+            else:
+                raise AssertionError("Changed video was accepted")
         report.append({"case": suffix, "frames": 480,
                        "turn_completion_time_s": baseline1["metric"]["turn_completion_time_s"],
                        "baseline_fallback1": False, "baseline_fallback2": False,
-                       "isolated_crossings": ["body_containment", "route_error"],
+                       "baseline_fallback3": False,
+                       "isolated_crossings": ["body_containment", "route_error", "synthetic_pixel_visibility"],
                        "source_sha256": sha(source / "native_samples.jsonl")})
     print(json.dumps({"passed": True, "source_kind": "synthetic_local_diagnostic",
                       "original_native_or_pixels_observed": False, "cases": report}, sort_keys=True))
