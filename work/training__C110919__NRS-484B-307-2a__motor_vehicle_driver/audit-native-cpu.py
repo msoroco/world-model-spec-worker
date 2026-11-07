@@ -62,6 +62,13 @@ def audit():
             try:eng.evaluate_trigger(k,metrics,path,'0'*64)
             except ValueError:pass
             else:raise AssertionError('Unbound trigger accepted')
+            for invalid in (float('nan'), float('inf'), -float('inf'), True):
+                altered=dict(metrics,**{eng.TRIGGERS[k]['metric']:invalid})
+                path.write_text(json.dumps(altered))
+                try:eng.evaluate_trigger(k,altered,path,hashlib.sha256(path.read_bytes()).hexdigest())
+                except ValueError:pass
+                else:raise AssertionError('Nonfinite or boolean trigger accepted')
+            path.write_text(json.dumps(metrics))
     return {'passed':True,'assignment_id':HERE.name,'candidate_count':8,
             'comparison_variable':'yielded_to_lawful_users','pair':pair,
             'scope':'authored Native proposal and synthetic CPU only; no physical or accepted recording'}

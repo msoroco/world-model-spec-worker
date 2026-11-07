@@ -2,6 +2,7 @@
 from __future__ import annotations
 import hashlib
 import json
+import math
 from pathlib import Path
 
 CASES = ('controlled_1','controlled_2')
@@ -45,6 +46,6 @@ def evaluate_trigger(candidate: str, metrics: dict, source: Path, expected_sha25
         raise ValueError('Metrics are not bound to original Native and video')
     trigger=TRIGGERS[candidate]
     value=record.get(trigger['metric'])
-    if type(value) not in (int,float):
+    if type(value) not in (int,float) or not math.isfinite(value) or value < 0:
         raise ValueError('Missing measured fallback metric')
     return value>trigger['threshold'] if trigger['op']=='>' else value<trigger['threshold']
