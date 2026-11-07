@@ -9,7 +9,7 @@ FOLDER=Path(__file__).resolve().parent
 NATIVE=FOLDER/'native'
 SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','controller.py':'controller.py',
          'engineering.py':'engineering.py','measure.py':'measure.py','cameras.py':'cameras.py',
-         'finalize.py':'finalize.py',
+         'finalize.py':'finalize.py','other_traffic_yield.py':'other_traffic_yield.py',
          'tests/test_native.py':'test_native.py'}
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -47,7 +47,9 @@ def build():
                                    'source':dispositions[index]['source'],
                                    'output_key':output_key,'method':method,
                                    'value_type':'object','kind':'measured',
-                                   'inputs':['native_samples.jsonl','road_geometry.json']}
+                                   'inputs':['native_samples.jsonl',
+                                             'other_traffic_history.jsonl',
+                                             'road_geometry.json']}
                                   for index,method,output_key in zip(selected,methods,outputs)],
                   'negative':{'remove':['road_geometry.json'],
                               'error_contains':'Missing required source: road_geometry.json'}}
@@ -75,7 +77,7 @@ def build():
                           'recording_description':recording,
                           'mechanisms':['authored traffic-light right-turn OpenDRIVE',
                                         'observed-pose vehicle controller with case stop policy',
-                                        'pedestrian yield actor and four synchronized lossless cameras'],
+                                        'pedestrian and signal-governed other-traffic yield actors with four synchronized lossless cameras'],
                           'termination_rules':['exact 480 original frames','capture and restoration errors retained'],
                           'status':'unselected_cpu_draft'}
             path=FOLDER/'draft-candidates'/case/candidate/'construction.json'

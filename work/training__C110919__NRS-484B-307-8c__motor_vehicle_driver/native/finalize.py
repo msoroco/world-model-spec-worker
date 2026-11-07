@@ -139,7 +139,8 @@ def measure_other_traffic_yield(attempt: Path,mapping: list[dict],turn: dict,geo
             'sources':{name:sha(source(attempt,name)) for name in
                        ('other_traffic_history.jsonl','video_frames.jsonl','road_geometry.json')}}
 
-def measure_right_turn_permission(attempt: Path,signal: dict,stop: dict,turn: dict,geometry: dict):
+def measure_right_turn_permission(attempt: Path,signal: dict,stop: dict,turn: dict,
+                                  other_turn: dict,geometry: dict):
     lanes=geometry.get('lanes',{})
     approach=lanes.get('approach_right',{})
     destination=lanes.get('destination_right',{})
@@ -151,10 +152,13 @@ def measure_right_turn_permission(attempt: Path,signal: dict,stop: dict,turn: di
            'extreme_right_approach_lane':approach,
            'two_way_destination':lanes.get('destination_left',{}).get('lane_id')==1,
            'pedestrian_clearance_s':turn['value']['sampled_clearance_s'],
+           'other_traffic_clearance_s':other_turn['value']['other_traffic_clearance_s'],
+           'other_traffic_actor_id':other_turn['value']['other_actor_id'],
            'destination_exit_observed':turn['value']['destination_exit_observed']}
     return {'value':value,'method':'measure_right_turn_permission',
             'sources':{name:sha(source(attempt,name))
-                       for name in ('native_samples.jsonl','road_geometry.json')}}
+                       for name in ('native_samples.jsonl','other_traffic_history.jsonl',
+                                    'road_geometry.json')}}
 
 def video_frames(path: Path):
     source(path.parent,path.name)
@@ -178,7 +182,7 @@ def finalize(attempt: Path,output: Path):
     stop=measure_stop(attempt,native,geometry)
     turn=measure_turn_yield(attempt,native,geometry)
     other_turn=measure_other_traffic_yield(attempt,mapping,turn,geometry)
-    permission=measure_right_turn_permission(attempt,signal,stop,turn,geometry)
+    permission=measure_right_turn_permission(attempt,signal,stop,turn,other_turn,geometry)
     videos=[f'{name}.mkv' for name in ('overview','approach','signal','destination')]
     counts={name:video_frames(attempt/name) for name in videos}
     if any(value!=count for value in counts.values()):

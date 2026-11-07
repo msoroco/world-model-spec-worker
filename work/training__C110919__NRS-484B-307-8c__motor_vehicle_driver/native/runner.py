@@ -70,7 +70,7 @@ def camera_transform(carla,spec):
 def survey(carla,mapping,native_hash):
     requests={'approach_right':(1.75,-30,1),
               'approach_left':(-1.75,-30,1),
-              'other_traffic_approach':(-30,-1.75,2),
+              'other_traffic_approach':(-30,-1.75,3),
               'destination_right':(30,-1.75,2),
               'destination_left':(30,1.75,2)}
     observed={}
@@ -199,7 +199,8 @@ def execute(config: dict,output: Path,host: str,port: int):
              (output/'body_history.jsonl').open('x') as body_file, \
              (output/'video_frames.jsonl').open('x') as frame_file:
             for index in range(config['rate_hz']*config['duration_s']):
-                other_speed=other.get_velocity().length()
+                other_velocity=other.get_velocity()
+                other_speed=math.sqrt(other_velocity.x**2+other_velocity.y**2+other_velocity.z**2)
                 other.apply_control(carla.VehicleControl(
                     throttle=.38 if other_speed<6.0 else 0.0,
                     brake=.25 if other_speed>6.5 else 0.0))

@@ -31,6 +31,10 @@ def audit():
             differences.append(index)
     assert differences and min(differences)>=100 and max(differences)<170
     ref=pair['probe_a']['measurement'];con=pair['probe_b']['measurement']
+    traffic_a=json.loads((NATIVE/'fixtures'/'probe_a-other-traffic-480.json').read_text())
+    traffic_b=json.loads((NATIVE/'fixtures'/'probe_b-other-traffic-480.json').read_text())
+    assert traffic_a['frames']==traffic_b['frames']
+    assert traffic_a['actor_id']==traffic_b['actor_id']==204
     assert ref['halt_before_right_turn_on_red'] is True
     assert con['halt_before_right_turn_on_red'] is False
     assert ref['first_front_stop_line_crossing_frame']>con['first_front_stop_line_crossing_frame']
@@ -48,6 +52,7 @@ def audit():
             'probe_a_stop':ref['halt_before_right_turn_on_red'],
             'probe_b_stop':con['halt_before_right_turn_on_red'],
             'same_turn_entry_frame':181,'same_yield_clearance_s':1.05,
+            'other_traffic_context_fixed':True,
             'package_diagnostics_passed':8,
             'scope':'synthetic local controlled comparison only; no physical causation or acceptance'}
 

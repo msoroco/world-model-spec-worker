@@ -35,11 +35,15 @@ def audit() -> dict:
                                 for case in eng.CASES for candidate in eng.CANDIDATES]
     xml=ET.parse(NATIVE/'road.xodr').getroot()
     roads={int(r.attrib['id']):r for r in xml.findall('road')}
-    assert set(roads)=={1,2,3,4,13}
+    assert set(roads)=={1,2,3,4,13,14}
     assert roads[13].find('planView/geometry/arc') is not None
     assert roads[13].find('link/predecessor').attrib['elementId']=='1'
     assert roads[13].find('link/successor').attrib['elementId']=='2'
     assert len(xml.findall(".//signal[@id='601']"))==1
+    assert roads[14].find('planView/geometry/line') is not None
+    assert roads[14].find('link/predecessor').attrib['elementId']=='3'
+    assert roads[14].find('link/successor').attrib['elementId']=='2'
+    assert len(xml.findall(".//signal[@id='602']"))==1
     assert len(xml.findall(".//object[@type='crosswalk']"))==2
     assert len(xml.findall(".//object[@name='nearest-side-crosswalk']"))==1
     assert len(xml.findall(".//object[@name='destination-pedestrian-crosswalk']"))==1

@@ -14,6 +14,8 @@ FILES = ('draft-execution-manifest.json', 'draft-offline-summary.json',
          'package-probes-summary.json', 'native/synthetic-comparison-audit.log',
          'native/statutory-review-audit.log')
 RED_FILE = 'red-signal-source-proof.json'
+YIELD_FILES = ('other-traffic-yield-audit.json', 'native/saved-fixture-proof.log',
+               'native/measurement-contract.json')
 
 
 def sha(path):
@@ -32,6 +34,7 @@ def main():
     branch = next(row for row in rows
                   if row['branch_id'].startswith('right_turn_after_stop_from_extreme_right_to_two_way__'))
     red = next(row for row in rows if row['branch_id'].startswith('governing_steady_red__'))
+    other_yield = next(row for row in rows if row['branch_id'].startswith('yield_to_pedestrians_and_other_traffic__'))
     review = read(ROOT/'work/_shared/branch-review.json')
     assert source['law']['text'] == plan['statutory_text']
     assert set(branch['topic_ids']) == {'text-1', 'reviewed-scope-0'} <= set(source['topics'])
@@ -45,6 +48,12 @@ def main():
     assert red['topic_ids'] == ['text-0']
     assert red['case_ids'] == branch['case_ids'] and red['comparison_ids'] == branch['comparison_ids']
     assert red['cpu_proofs'] == {**branch['cpu_proofs'], RED_FILE: sha(HERE/RED_FILE)}
+    assert other_yield['status'] == 'runnable' and other_yield['assignment_id'] == HERE.name
+    assert other_yield['topic_ids'] == ['text-1']
+    assert other_yield['case_ids'] == branch['case_ids']
+    assert other_yield['comparison_ids'] == branch['comparison_ids']
+    assert other_yield['cpu_proofs'] == {
+        **branch['cpu_proofs'], **{name: sha(HERE/name) for name in YIELD_FILES}}
     manifest = read(HERE/'draft-execution-manifest.json')
     offline = read(HERE/'draft-offline-summary.json')
     package = read(HERE/'package-probes-summary.json')
@@ -71,12 +80,14 @@ def main():
     env['PATH'] = str(ROOT/'.runtime-work/linux_arm64') + os.pathsep + env.get('PATH', '')
     audits = ('audit-native-cpu.py', 'audit-statutory-review.py',
               'audit-synthetic-comparison.py', 'audit-fallback-triggers.py',
-              'audit-package-probes.py', 'audit-red-signal-source.py')
+              'audit-package-probes.py', 'audit-red-signal-source.py',
+              'audit-other-traffic-yield.py')
     for name in audits:
         subprocess.run([sys.executable, str(HERE/name)], cwd=ROOT, env=env,
                        check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     assert read(HERE/'result.json')['status'] == 'blocked'
-    receipt = {'passed': True, 'law_id': LAW, 'branch_ids': [red['branch_id'], branch['branch_id']],
+    receipt = {'passed': True, 'law_id': LAW,
+               'branch_ids': [red['branch_id'], branch['branch_id'],other_yield['branch_id']],
                'source_topics': 3, 'exact_offline_bundles': 8,
                'portable_positive_negative_pairs': 8,
                'selected': False, 'original_native_or_strict_v2_verified': False,

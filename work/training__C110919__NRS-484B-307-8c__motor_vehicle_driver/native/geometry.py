@@ -19,7 +19,8 @@ def open_drive() -> str:
                   west="-100", vendor="full-train-worker")
     roads = ((1, 0, -100, math.pi/2, 93, -1), (2, 7, 0, 0, 93, -1),
              (3, -100, 0, 0, 93, -1), (4, 0, 7, math.pi/2, 93, -1),
-             (13, 0, -7, math.pi/2, 7*math.pi/2, 100))
+             (13, 0, -7, math.pi/2, 7*math.pi/2, 100),
+             (14, -7, 0, 0, 14, 100))
     for ident, x, y, hdg, length, junction in roads:
         road = ET.SubElement(root, "road", id=str(ident), name=f"C110919_{ident}",
                              length=str(length), junction=str(junction))
@@ -28,8 +29,11 @@ def open_drive() -> str:
             ET.SubElement(link, "successor", elementType="junction", elementId="100")
         elif ident in (2, 4):
             ET.SubElement(link, "predecessor", elementType="junction", elementId="100")
-        else:
+        elif ident == 13:
             ET.SubElement(link, "predecessor", elementType="road", elementId="1", contactPoint="end")
+            ET.SubElement(link, "successor", elementType="road", elementId="2", contactPoint="start")
+        else:
+            ET.SubElement(link, "predecessor", elementType="road", elementId="3", contactPoint="end")
             ET.SubElement(link, "successor", elementType="road", elementId="2", contactPoint="start")
         geom = ET.SubElement(ET.SubElement(road, "planView"), "geometry", s="0",
                              x=str(x), y=str(y), hdg=str(hdg), length=str(length))
@@ -48,7 +52,7 @@ def open_drive() -> str:
                                      type="none" if lane_id == 0 else "driving", level="false")
                 if lane_id:
                     ET.SubElement(lane, "width", sOffset="0", a=str(LANE_WIDTH_M), b="0", c="0", d="0")
-                    if ident == 13:
+                    if ident in (13,14):
                         lane_link = ET.SubElement(lane, "link")
                         ET.SubElement(lane_link, "predecessor", id=str(lane_id))
                         ET.SubElement(lane_link, "successor", id=str(lane_id))
@@ -71,10 +75,18 @@ def open_drive() -> str:
                           s="87", t="-3.5", zOffset="4", hOffset="0", pitch="0", roll="0",
                           orientation="+", dynamic="yes", country="US", type="1000001",
                           subtype="0", value="0", unit="")
+        if ident == 3:
+            ET.SubElement(signals, "signal", id="602", name="west-approach-circular-green",
+                          s="87", t="-3.5", zOffset="4", hOffset="0", pitch="0", roll="0",
+                          orientation="+", dynamic="yes", country="US", type="1000001",
+                          subtype="0", value="0", unit="")
     junction = ET.SubElement(root, "junction", id="100", name="two-way-right-turn")
     connection = ET.SubElement(junction, "connection", id="0", incomingRoad="1",
                                connectingRoad="13", contactPoint="start")
     ET.SubElement(connection, "laneLink", **{"from": "-1", "to": "-1"})
+    other_connection = ET.SubElement(junction, "connection", id="1", incomingRoad="3",
+                                     connectingRoad="14", contactPoint="start")
+    ET.SubElement(other_connection, "laneLink", **{"from": "-1", "to": "-1"})
     return ET.tostring(root, encoding="unicode")
 
 
@@ -90,14 +102,16 @@ def route() -> list[list[float]]:
 
 def check() -> dict:
     root = ET.fromstring(open_drive())
-    if {r.attrib['id'] for r in root.findall('road')} != {'1','2','3','4','13'}:
+    if {r.attrib['id'] for r in root.findall('road')} != {'1','2','3','4','13','14'}:
         raise ValueError('Two-way intersection roads missing')
-    if len(root.findall('junction/connection/laneLink')) != 1:
+    if len(root.findall('junction/connection/laneLink')) != 2:
         raise ValueError('Right-turn lane link missing')
     if len(root.findall(".//object[@type='crosswalk']")) != 2 or len(root.findall(".//object[@name='stop-line']")) != 1:
         raise ValueError('Stop probe_a hierarchy missing')
     if len(root.findall(".//signal[@id='601']")) != 1:
         raise ValueError('Governing signal proposal missing')
+    if len(root.findall(".//signal[@id='602']")) != 1:
+        raise ValueError('Other-traffic governing signal proposal missing')
     points = route()
     if max(math.dist(a,b) for a,b in zip(points,points[1:])) > .11:
         raise ValueError('Route discontinuity')

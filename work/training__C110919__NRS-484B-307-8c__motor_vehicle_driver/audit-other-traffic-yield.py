@@ -56,9 +56,19 @@ def main():
         cases[case] = {'ego_sha256': sha(ego), 'other_traffic_sha256': sha(traffic),
                        'turn_entry_frame': entry, 'last_conflict_frame': 155,
                        'clearance_s': 1.3, 'mutation_rejections': rejected}
+    runner = (HERE / 'native/runner.py').read_text()
+    finalizer = (HERE / 'native/finalize.py').read_text()
+    assert 'other_traffic_history.jsonl' in runner and 'other_traffic_history.jsonl' in finalizer
+    assert 'measure_other_traffic_yield' in finalizer
+    saved = json.loads((HERE / 'native/saved-fixture-proof.log').read_text())
+    assert {r['case'] for r in saved['results']} == {'probe_a', 'probe_b'}
+    assert all(r['positive_exit_code'] == 0 and r['negative_exit_code'] != 0 and
+               r['traffic_mutation_exit_code'] != 0 and r['other_traffic_history_joined']
+               for r in saved['results'])
     receipt = {'format': 'c110919-other-traffic-yield-cpu-proof-v1', 'passed': True,
                'cases': cases, 'source_kind': 'synthetic_cpu',
-               'integrated_into_native_runner_or_finalizer': False,
+               'authored_in_native_runner_and_finalizer': True,
+               'synthetic_saved_finalization_verified': True,
                'original_native_or_legal_acceptance': False}
     (HERE / 'other-traffic-yield-audit.json').write_text(json.dumps(receipt, indent=2) + '\n')
     print(json.dumps(receipt, sort_keys=True))
