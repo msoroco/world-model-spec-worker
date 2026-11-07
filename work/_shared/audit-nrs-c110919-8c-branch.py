@@ -1,4 +1,4 @@
-"""Independent pending statutory mapping audit for NRS 484B.307(8)(c)."""
+"""Independent statutory mapping audit for NRS 484B.307(8)(c)."""
 import hashlib
 import json
 from pathlib import Path
@@ -15,12 +15,22 @@ expected = {item["id"]: set(item["source_topics"]) for item in review["branches"
 actual = {b["branch_id"].removesuffix("__" + LAW): set(b["topic_ids"]) for b in branches}
 if actual != expected or set().union(*actual.values()) != set(source["topics"]):
     raise ValueError("Source branches differ")
-if any(b["status"] != "pending_review" or b["assignment_id"] != AID for b in branches):
-    raise ValueError("Unproven branch was promoted or rebound")
+if any(b["assignment_id"] != AID for b in branches):
+    raise ValueError("Branch assignment differs")
 turn = next(b for b in branches if b["branch_id"].startswith("right_turn_after_stop"))
+red = next(b for b in branches if b["branch_id"].startswith("governing_steady_red"))
+pending = [b for b in branches if b not in (turn, red)]
+if turn["status"] != "runnable" or red["status"] != "runnable" or any(b["status"] != "pending_review" for b in pending):
+    raise ValueError("Branch status differs from demonstrated CPU scope")
 cases = {c["case_id"] for c in plan["cases"]}
 comparisons = {c["comparison_id"]: set(c["case_ids"]) for c in plan["comparisons"]}
 if set(turn["case_ids"]) != cases or len(turn["comparison_ids"]) != 1 or comparisons[turn["comparison_ids"][0]] != cases:
     raise ValueError("Right-turn comparison binding differs")
+if red["case_ids"] != turn["case_ids"] or red["comparison_ids"] != turn["comparison_ids"]:
+    raise ValueError("Red signal comparison binding differs")
+for branch in (red, turn):
+    for name, digest in branch["cpu_proofs"].items():
+        if hashlib.sha256((ROOT / "work" / AID / name).read_bytes()).hexdigest() != digest:
+            raise ValueError("CPU proof bytes differ: " + name)
 print(json.dumps({"passed": True, "law_id": LAW, "branches_mapped": len(branches),
-                  "runnable_branches": 0, "coverage_sha256": hashlib.sha256(matrix_path.read_bytes()).hexdigest()}, sort_keys=True))
+                  "runnable_branches": 2, "coverage_sha256": hashlib.sha256(matrix_path.read_bytes()).hexdigest()}, sort_keys=True))
