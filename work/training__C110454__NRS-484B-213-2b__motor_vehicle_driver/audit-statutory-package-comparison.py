@@ -57,6 +57,11 @@ def main():
             path=HERE/selected['construction'];folder=path.parent
             if sha(path)!=selected['construction_sha256']:raise ValueError('Statutory construction hash differs')
             construction=json.loads(path.read_text())
+            runner=next(f['content'] for f in construction['files'] if f['path']=='runner.py')
+            if ('observed_speed=observed_speed_mps(ego)' not in runner or
+                '"speed_mps":observed_speed' not in runner or
+                '"speed_m_s":observed_speed' not in runner):
+                raise ValueError('Statutory Native saved speed is not observed after the tick')
             cfg=json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
             road=ET.fromstring(next(f['content'] for f in construction['files'] if f['path']=='road.xodr'))
             rail=road.findall(".//object[@id='701']")
@@ -77,7 +82,7 @@ def main():
             offline=json.loads((folder/'command-offline.log').read_text())
             if not offline['offline_passed'] or offline['case_id']!=entry['case_id'] or offline['candidate_id']!=candidate:
                 raise ValueError('Exact statutory offline receipt differs')
-            if 'Ran 7 tests' not in (folder/'offline.log').read_text():
+            if 'Ran 8 tests' not in (folder/'offline.log').read_text():
                 raise ValueError('Exact statutory test count differs')
             receipt=json.loads((folder/'diagnostic-compatibility.json').read_text())
             if receipt['format']!='worker-package-compatibility-v1' or not receipt['passed'] or (

@@ -23,6 +23,15 @@ from geometry_statutory import CASES, EXCURSION_WINDOWS, check as geometry_check
 ROOT = Path(__file__).resolve().parent
 
 
+def observed_speed_mps(actor):
+    """Read finite velocity in the same frame as the saved pose and body."""
+    velocity = actor.get_velocity()
+    components = (velocity.x, velocity.y, velocity.z)
+    if any(not math.isfinite(component) for component in components):
+        raise ValueError("Nonfinite observed Native velocity")
+    return math.sqrt(sum(component * component for component in components))
+
+
 def frame_map_row(index,frame,time_s):
     """Preserve both Native and canonical CARLA identities for saved/Core joins."""
     if type(index) is not int or index<0 or type(frame) is not int or frame<0:
@@ -218,12 +227,13 @@ def execute(config, output, host, port):
                     hand_brake=command["hand_brake"]))
                 frame=world.tick();time_s=world.get_snapshot().timestamp.elapsed_seconds-start
                 pose=ego.get_transform();forward=pose.get_forward_vector();body=body_xy(ego)
+                observed_speed=observed_speed_mps(ego)
                 sample={"time_s":time_s,"native_frame":frame,
                     "native_center_xy_m":[pose.location.x,pose.location.y],
                     "native_forward_xy":[forward.x/math.hypot(forward.x,forward.y),
                                          forward.y/math.hypot(forward.x,forward.y)],
-                    "native_body_xy_m":body,"speed_mps":speed,
-                    "body_xy_m":body,"speed_m_s":speed,"video_frame":index,
+                    "native_body_xy_m":body,"speed_mps":observed_speed,
+                    "body_xy_m":body,"speed_m_s":observed_speed,"video_frame":index,
                     "two_way_native_survey":not CASES[suffix]["one_way"],
                     "one_way_native_survey":CASES[suffix]["one_way"],
                     "controller_request":command}
