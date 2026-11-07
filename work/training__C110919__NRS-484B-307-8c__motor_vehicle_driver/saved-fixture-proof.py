@@ -32,6 +32,7 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     config=json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
     (destination/'config.json').write_text(json.dumps(config))
     geometry={'native_map_sha256':'a'*64,'signal_actor_id':601,
+              'other_traffic_signal_actor_id':602,
               'stop_line_y_m':-14.0,'nearest_crosswalk_y_m':-11.0,
               'destination_crosswalk_x_m':10.0,
               'lanes':{'approach_right':{'road_id':1,'lane_id':-1,'forward_xy':[0,1]},
@@ -42,7 +43,7 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     (destination/'road_geometry.json').write_text(json.dumps(geometry))
     (destination/'context.json').write_text(json.dumps({'surveyed_right_turn':geometry}))
     frames=synthetic(case)['frames']
-    trace=[];evidence=[];mapping=[];native=[];body=[]
+    trace=[];evidence=[];mapping=[];native=[];body=[];other=[]
     for i,row in enumerate(frames):
         frame=100+i;time=(i+1)/20;x=row['ego_x_m'];y=row['ego_y_m']
         if i<181:heading=90.0
@@ -76,9 +77,18 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
                        'signal_state_observed':'Red',
                        'controller_request':{'synthetic_diagnostic':True}})
         body.append({'frame':frame,'time_s':time,'body_vertices_m':vertices})
+        other_x=-19+.2*i
+        other.append({'frame':i,'video_frame':i,'native_frame':frame,'time_s':time,
+                      'actor_id':204,'actor_type':'vehicle.tesla.model3',
+                      'center_xy_m':[round(other_x,6),-1.75],
+                      'conflict_occupied':135<=i<=155,
+                      'governing_signal_actor_id':602,
+                      'governing_signal_state':'Green',
+                      'lawful_intersection_user':True})
     for name,values in [('trace.jsonl',trace),('capture/evidence.jsonl',evidence),
                         ('video_frames.jsonl',mapping),('native_samples.jsonl',native),
-                        ('body_history.jsonl',body)]:write_rows(destination/name,values)
+                        ('body_history.jsonl',body),
+                        ('other_traffic_history.jsonl',other)]:write_rows(destination/name,values)
     (destination/'capture/manifest.json').write_text(json.dumps({'extraction_confirmed':True,'frames':480,
                                                                    'synthetic_diagnostic':True}))
     (destination/'capture/recorder_info.txt').write_text('Create 107: vehicle.lincoln.mkz_2020\n')
@@ -140,7 +150,9 @@ def run():
         for case in ('probe_a','probe_b'):
             base=Path(tmp)/(case+'-base');make_attempt(base,case)
             positive=Path(tmp)/(case+'-positive');negative=Path(tmp)/(case+'-negative')
+            traffic_negative=Path(tmp)/(case+'-traffic-negative')
             shutil.copytree(base,positive);shutil.copytree(base,negative)
+            shutil.copytree(base,traffic_negative)
             before=digest(positive)
             command=[sys.executable,str(NATIVE/'finalize.py'),'--attempt',str(positive),
                      '--output',str(positive/'analysis-report.json')]
@@ -164,11 +176,23 @@ def run():
                                    stderr=subprocess.STDOUT,timeout=300)
             if failure.returncode==0 or 'Missing required source: road_geometry.json' not in failure.stdout:
                 raise RuntimeError('Negative missing-source diagnostic accepted: '+failure.stdout)
+            traffic_rows=[json.loads(line) for line in
+                (traffic_negative/'other_traffic_history.jsonl').read_text().splitlines()]
+            traffic_rows[181]['actor_id']=205
+            write_rows(traffic_negative/'other_traffic_history.jsonl',traffic_rows)
+            traffic_failure=subprocess.run([sys.executable,str(NATIVE/'finalize.py'),
+                '--attempt',str(traffic_negative),
+                '--output',str(traffic_negative/'analysis-report.json')],
+                env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=300)
+            if traffic_failure.returncode==0 or 'Other-traffic actor or signal changed' not in traffic_failure.stdout:
+                raise RuntimeError('Negative other-traffic actor mutation accepted: '+traffic_failure.stdout)
             records.append({'case':case,'positive_exit_code':success.returncode,
                             'negative_exit_code':failure.returncode,
+                            'traffic_mutation_exit_code':traffic_failure.returncode,
                             'analysis_sha256':sha(positive/'analysis-report.json'),
                             'result_sha256':sha(positive/'result.json'),
                             'source_unchanged':True,'video_decoded':4,'frames':480,
+                            'other_traffic_history_joined':True,
                             'scope':'synthetic saved finalization only; no CARLA/physical/acceptance'})
     return records
 

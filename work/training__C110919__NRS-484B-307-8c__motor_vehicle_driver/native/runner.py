@@ -70,6 +70,7 @@ def camera_transform(carla,spec):
 def survey(carla,mapping,native_hash):
     requests={'approach_right':(1.75,-30,1),
               'approach_left':(-1.75,-30,1),
+              'other_traffic_approach':(-30,-1.75,2),
               'destination_right':(30,-1.75,2),
               'destination_left':(30,1.75,2)}
     observed={}
@@ -124,7 +125,15 @@ def execute(config: dict,output: Path,host: str,port: int):
             (actor.get_location().x,actor.get_location().y),(0,-13)))
         signal_actor.set_state(carla.TrafficLightState.Red)
         signal_actor.freeze(True)
+        other_signal=min((a for a in traffic_lights if a.id!=signal_actor.id),
+                         key=lambda actor:math.dist((actor.get_location().x,actor.get_location().y),(-13,0)),
+                         default=None)
+        if other_signal is None:
+            raise RuntimeError('Distinct other-traffic signal actor absent')
+        other_signal.set_state(carla.TrafficLightState.Green)
+        other_signal.freeze(True)
         readback['signal_actor_id']=signal_actor.id
+        readback['other_traffic_signal_actor_id']=other_signal.id
         write_new(output/'road_geometry.json',readback)
         write_new(output/'context.json',{'surveyed_right_turn':readback})
         library=world.get_blueprint_library()
@@ -148,10 +157,17 @@ def execute(config: dict,output: Path,host: str,port: int):
         walker=world.spawn_actor(walker_bp,carla.Transform(
             carla.Location(x=10,y=5,z=.4),carla.Rotation(yaw=-90)))
         owned.append(walker)
+        other_bp=library.find('vehicle.tesla.model3')
+        other_bp.set_attribute('role_name','c110919_other_traffic')
+        other=world.spawn_actor(other_bp,carla.Transform(
+            carla.Location(x=-30,y=-1.75,z=.5),carla.Rotation(yaw=0)))
+        owned.append(other)
         write_new(output/'native-construction-context.json',{
             'case_id':config['case_id'],'candidate_id':config['candidate_id'],
             'native_map_sha256':native_hash,'vehicle_blueprint':ego.type_id,
-            'walker_blueprint':walker.type_id,'wheelbase_m':wheelbase,'max_steer_deg':steer,
+            'walker_blueprint':walker.type_id,'other_traffic_blueprint':other.type_id,
+            'other_traffic_actor_id':other.id,
+            'wheelbase_m':wheelbase,'max_steer_deg':steer,
             'initial_body_xy_m':body_xy(ego),'knobs':knobs,
             'authored_intent':'right turn after red-signal stop; pedestrian yield',
             'physical_completion_claimed':False})
@@ -179,9 +195,14 @@ def execute(config: dict,output: Path,host: str,port: int):
         start=world.get_snapshot().timestamp.elapsed_seconds
         held=0;yield_clear=0
         with (output/'native_samples.jsonl').open('x') as native_file, \
+             (output/'other_traffic_history.jsonl').open('x') as other_file, \
              (output/'body_history.jsonl').open('x') as body_file, \
              (output/'video_frames.jsonl').open('x') as frame_file:
             for index in range(config['rate_hz']*config['duration_s']):
+                other_speed=other.get_velocity().length()
+                other.apply_control(carla.VehicleControl(
+                    throttle=.38 if other_speed<6.0 else 0.0,
+                    brake=.25 if other_speed>6.5 else 0.0))
                 pose=ego.get_transform();velocity=ego.get_velocity()
                 speed=math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
                 command=controller.step(position_xy_m=(pose.location.x,pose.location.y),
@@ -196,7 +217,9 @@ def execute(config: dict,output: Path,host: str,port: int):
                 if stop_needed:
                     command.update(throttle=0.0,brake=1.0,hand_brake=speed<.05)
                     if speed<.05 and max(p[1] for p in body_xy(ego))<-14.0:held+=1
-                yield_needed=pose.location.y>-10 and pose.location.x<10 and occupied
+                other_pose=other.get_transform().location
+                other_occupied=8<=other_pose.x<=12 and -4<=other_pose.y<=4
+                yield_needed=pose.location.y>-10 and pose.location.x<10 and (occupied or other_occupied)
                 if yield_needed:
                     command.update(throttle=0.0,brake=1.0,hand_brake=speed<.05)
                     yield_clear=0
@@ -207,6 +230,18 @@ def execute(config: dict,output: Path,host: str,port: int):
                 ego.apply_control(carla.VehicleControl(throttle=command['throttle'],
                     brake=command['brake'],steer=command['steer'],hand_brake=command['hand_brake']))
                 frame=world.tick();time_s=world.get_snapshot().timestamp.elapsed_seconds-start
+                other_pose=other.get_transform().location
+                other_occupied=8<=other_pose.x<=12 and -4<=other_pose.y<=4
+                other_state=str(other_signal.get_state())
+                other_file.write(json.dumps({
+                    'frame':index,'video_frame':index,'native_frame':frame,'time_s':time_s,
+                    'actor_id':other.id,'actor_type':other.type_id,
+                    'center_xy_m':[other_pose.x,other_pose.y],
+                    'conflict_occupied':other_occupied,
+                    'governing_signal_actor_id':other_signal.id,
+                    'governing_signal_state':other_state,
+                    'lawful_intersection_user':other_state in ('Green','TrafficLightState.Green')},
+                    allow_nan=False)+'\n')
                 pose=ego.get_transform();velocity=ego.get_velocity()
                 speed=math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
                 body=body_xy(ego);ped=walker.get_transform().location
@@ -270,7 +305,7 @@ def execute(config: dict,output: Path,host: str,port: int):
             'frames':frames,'expected_frames':480,'restoration':restored,
             'error':error,'accepted':False,
             'required_saved_checks':['actual signal state and governing direction',
-                'Native stop-line and crosswalk readback','original full body and walker conflict',
+                'Native stop-line and crosswalk readback','original full body, walker and other-traffic conflict',
                 'full video/frame join and independent audit']})
     if error:raise RuntimeError('Native attempt failed; see native-capture-report.json: '+str(error))
 

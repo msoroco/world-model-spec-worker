@@ -22,10 +22,11 @@ def joins(attempt: Path,count: int):
     mapping=rows(source(attempt,'video_frames.jsonl'))
     native=rows(source(attempt,'native_samples.jsonl'))
     body=rows(source(attempt,'body_history.jsonl'))
-    if any(len(group)!=count for group in (trace,evidence,mapping,native,body)):
+    other=rows(source(attempt,'other_traffic_history.jsonl'))
+    if any(len(group)!=count for group in (trace,evidence,mapping,native,body,other)):
         raise ValueError('Saved source frame counts differ')
     previous=-math.inf
-    for index,(t,e,m,n,b) in enumerate(zip(trace,evidence,mapping,native,body)):
+    for index,(t,e,m,n,b,o) in enumerate(zip(trace,evidence,mapping,native,body,other)):
         frame=m.get('native_frame');time=m.get('time_s')
         if type(frame) is not int or type(time) not in (int,float) or not math.isfinite(time):
             raise ValueError('Invalid original frame or time')
@@ -34,8 +35,12 @@ def joins(attempt: Path,count: int):
         previous=frame
         if any(item!=frame for item in (t.get('frame'),e.get('original_frame'),n.get('native_frame'),b.get('frame'))):
             raise ValueError('Original Native frame join differs')
+        if o.get('frame')!=index or o.get('video_frame')!=index or o.get('native_frame')!=frame:
+            raise ValueError('Original other-traffic frame join differs')
         if any(abs(item-time)>1e-4 for item in (t['time_s'],e['recording_time_s'],n['time_s'],b['time_s'])):
             raise ValueError('Original Native timestamp join differs')
+        if abs(o.get('time_s',-1)-time)>1e-4:
+            raise ValueError('Original other-traffic timestamp join differs')
         captured={(round(v[0],5),round(v[1],5)) for v in e['ego']['body_vertices_m']}
         measured={(round(v[0],5),round(v[1],5)) for v in n['native_body_xy_m']}
         history={(round(v[0],5),round(v[1],5)) for v in b['body_vertices_m']}
@@ -48,7 +53,8 @@ def joins(attempt: Path,count: int):
                            'last_frame':mapping[-1]['native_frame'],
                            'source_hashes':{name:sha(source(attempt,name)) for name in
                              ('trace.jsonl','capture/evidence.jsonl','video_frames.jsonl',
-                              'native_samples.jsonl','body_history.jsonl','capture/manifest.json')}}
+                              'native_samples.jsonl','body_history.jsonl',
+                              'other_traffic_history.jsonl','capture/manifest.json')}}
 
 def measure_signal(attempt: Path,native: list[dict],geometry: dict):
     states=[sample.get('signal_state_observed') for sample in native]
@@ -98,6 +104,41 @@ def measure_turn_yield(attempt: Path,native: list[dict],geometry: dict):
             'method':'measure_turn_yield','sources':{name:sha(source(attempt,name))
                 for name in ('native_samples.jsonl','road_geometry.json')}}
 
+def measure_other_traffic_yield(attempt: Path,mapping: list[dict],turn: dict,geometry: dict):
+    history=rows(source(attempt,'other_traffic_history.jsonl'))
+    if len(history)!=len(mapping):
+        raise ValueError('Other-traffic history count differs')
+    actor=history[0].get('actor_id')
+    signal=geometry.get('other_traffic_signal_actor_id')
+    if type(actor) is not int or actor<=0 or type(signal) is not int or signal<=0:
+        raise ValueError('Other-traffic actor or signal identity absent')
+    occupied=[]
+    for index,(row,join) in enumerate(zip(history,mapping)):
+        if row.get('frame')!=index or row.get('video_frame')!=index or row.get('native_frame')!=join['native_frame']:
+            raise ValueError('Other-traffic original frame differs')
+        if row.get('actor_id')!=actor or row.get('governing_signal_actor_id')!=signal:
+            raise ValueError('Other-traffic actor or signal changed')
+        if row.get('governing_signal_state') not in ('Green','TrafficLightState.Green'):
+            raise ValueError('Other-traffic governing green source absent')
+        if row.get('lawful_intersection_user') is not True:
+            raise ValueError('Other-traffic lawful-use source absent')
+        xy=row.get('center_xy_m')
+        if not isinstance(xy,list) or len(xy)!=2 or any(type(v) not in (int,float) or not math.isfinite(v) for v in xy):
+            raise ValueError('Other-traffic pose absent')
+        actual=8<=xy[0]<=12 and -4<=xy[1]<=4
+        if row.get('conflict_occupied') is not actual:
+            raise ValueError('Other-traffic conflict differs from original pose')
+        if actual:occupied.append(index)
+    if not occupied:raise ValueError('Other-traffic intersection conflict absent')
+    first=turn['value']['turn_entry_frame'];last=occupied[-1]
+    if first<=last:raise ValueError('Ego entered before other traffic cleared')
+    return {'value':{'other_actor_id':actor,'governing_signal_actor_id':signal,
+                     'turn_entry_frame':first,'last_other_traffic_conflict_frame':last,
+                     'other_traffic_clearance_s':round((first-last)/20,3)},
+            'method':'measure_other_traffic_yield',
+            'sources':{name:sha(source(attempt,name)) for name in
+                       ('other_traffic_history.jsonl','video_frames.jsonl','road_geometry.json')}}
+
 def measure_right_turn_permission(attempt: Path,signal: dict,stop: dict,turn: dict,geometry: dict):
     lanes=geometry.get('lanes',{})
     approach=lanes.get('approach_right',{})
@@ -136,6 +177,7 @@ def finalize(attempt: Path,output: Path):
     signal=measure_signal(attempt,native,geometry)
     stop=measure_stop(attempt,native,geometry)
     turn=measure_turn_yield(attempt,native,geometry)
+    other_turn=measure_other_traffic_yield(attempt,mapping,turn,geometry)
     permission=measure_right_turn_permission(attempt,signal,stop,turn,geometry)
     videos=[f'{name}.mkv' for name in ('overview','approach','signal','destination')]
     counts={name:video_frames(attempt/name) for name in videos}
@@ -150,7 +192,8 @@ def finalize(attempt: Path,output: Path):
         recording.append({'name':name,'unit':channel['unit'],'reference':relative})
     result={'case_id':config['case_id'],
         'measured_values':{'signal':signal['value'],'stop':stop['value'],
-                           'turn_yield':turn['value'],'right_turn_permission':permission['value']},
+                           'turn_yield':turn['value'],'other_traffic_yield':other_turn['value'],
+                           'right_turn_permission':permission['value']},
         'target_checks':[{'target':'authored controlled halt before nearest stop line',
             'requested':expected,'measured':observed,'method':'saved original full body and speed before stop-line crossing',
             'tolerance':0,'matched':observed==expected,'physical_cause_confirmed':False,
@@ -177,6 +220,7 @@ def finalize(attempt: Path,output: Path):
             'candidate_id':config['candidate_id'],
             'measurements':{'steady_red_activation':signal,
                             'right_turn_stop':stop,'right_turn_yield':turn,
+                            'other_traffic_yield':other_turn,
                             'red_right_turn_permission':permission},
             'original_joins':original,'video_frames':counts,
             'scope':'saved original Native sources and decoded original video; not independent acceptance or legal verdict'}
