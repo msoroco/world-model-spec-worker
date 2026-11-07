@@ -15,7 +15,10 @@ def main():
     source=json.loads((REPO/'inputs/coverage/branch-sources.json').read_text())['laws'][LAW]
     plan=json.loads((REPO/'work'/AID/'case-plan.json').read_text())
     assert review['coverage_sha256']==hashlib.sha256(matrix_path.read_bytes()).hexdigest()
-    assert LAW in review['missing_branches']  # C104393 source inventory remains unresolved.
+    assert LAW not in review['missing_branches']
+    sibling=next(b for b in matrix['laws'][LAW]['branches'] if
+                 b.get('assignment_id')=='training__C104393__NRS-484B-413-2__motor_vehicle_driver')
+    assert sibling['status']=='runnable' and len(sibling['case_ids'])==6
     branches=[b for b in matrix['laws'][LAW]['branches'] if b.get('assignment_id')==AID]
     assert len(branches)==2 and all(b['status']=='runnable' for b in branches)
     assert set().union(*(set(b['topic_ids']) for b in branches))==set(source['topics'])
@@ -40,7 +43,7 @@ def main():
         assert branch['cpu_proofs']['signal-cpu-branches-audit.log']==hashlib.sha256(proof.read_bytes()).hexdigest()
     print(json.dumps({'source_topics':len(source['topics']),'planned_cases':6,
                       'controlled_comparisons':2,'pending_c329610_branches':0,
-                      'runnable_branches':2,'c104393_inventory_pending':True}))
+                      'runnable_branches':2,'c104393_cpu_runnable':True}))
 
 
 if __name__=='__main__':main()
