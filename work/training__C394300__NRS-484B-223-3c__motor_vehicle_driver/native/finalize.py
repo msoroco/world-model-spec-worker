@@ -110,6 +110,47 @@ def video_frames(path):
     return int(result.stdout.strip())
 
 
+def capture_provenance(attempt, count):
+    from worker_exchange.common import digest, within
+    from worker_exchange.native_output import provenance_record
+    record = provenance_record(attempt)
+    seal_path = attempt/'capture-seal.json'
+    if not seal_path.is_file():
+        return {'source_kind':record['provenance_kind'],
+                'diagnostic_fixture':record['diagnostic_fixture'],
+                'native_executed':False}, False
+    seal = json.loads(seal_path.read_text())
+    sources = seal.get('sources')
+    required = {'trace.jsonl','video_frames.jsonl','capture/evidence.jsonl',
+                'native_samples.jsonl','body_history.jsonl','capture/native/frames.jsonl',
+                'road_geometry.json',
+                'overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv'}
+    if not isinstance(sources,dict) or not required <= set(sources) or digest(sources)!=seal.get('source_digest'):
+        raise ValueError('Native capture seal source inventory incomplete')
+    for name, expected in sources.items():
+        if _sha(within(attempt,name))!=expected:
+            raise ValueError('Sealed original changed: '+name)
+    marker_path=attempt/'acquisition-provenance.json'
+    marker=json.loads(marker_path.read_text()) if marker_path.is_file() else {}
+    codes=seal.get('encoder_exit_codes')
+    cameras={'overview','approach','reference_corner','driver_reference'}
+    native=(record['provenance_kind']=='native' and
+            record['diagnostic_fixture'] is False and
+            seal.get('format')=='worker-sealed-capture-v2' and
+            seal.get('provenance_kind')=='native' and
+            seal.get('diagnostic_fixture') is False and
+            seal.get('frames')==count and
+            seal.get('events')==['capture_finished','encoders_closed','restoration_verified'] and
+            seal.get('restoration',{}).get('restored') is True and
+            isinstance(codes,dict) and set(codes)==cameras and
+            all(type(code) is int and code==0 for code in codes.values()) and
+            marker.get('diagnostic_fixture') is not True and
+            marker.get('native_executed') is not False)
+    return {'source_kind':record['provenance_kind'],
+            'diagnostic_fixture':record['diagnostic_fixture'],
+            'native_executed':native}, native
+
+
 def finalize(attempt,output):
     from worker_exchange.native_output import validate_result
     attempt=Path(attempt).resolve();output=Path(output).resolve()
@@ -120,6 +161,7 @@ def finalize(attempt,output):
     if type(count) is not int or count<2:
         raise ValueError('Recording duration/rate invalid')
     joins=verify_original_joins(attempt,count)
+    provenance,native=capture_provenance(attempt,count)
     report=analysis_report(attempt)
     relation=report['measurements']['after_left_turn_distance_interval']['value']['threshold_relation']
     scope=report['measurements']['turn_to_merge_scope']['value']
@@ -145,8 +187,8 @@ def finalize(attempt,output):
         'matched':relation==requested and relation!='unresolved_at_50_feet',
         'physical_cause_confirmed':False,
         'cause_evidence':['road_geometry.json','native_samples.jsonl','trace.jsonl']}],
-      'setup_confirmed':context['native_center_lane_design_verified'],
-      'behavior_attempted':True,'maneuver_completed':True,
+      'setup_confirmed':native and context['native_center_lane_design_verified'],
+      'behavior_attempted':native,'maneuver_completed':native and scope['full_merge_native_frame'] is not None,
       'termination_reason':'full original duration retained',
       'physical_failure_flags':['center_turn_lane_design_and_pixels_unverified']+
          (['distance_threshold_unresolved'] if relation=='unresolved_at_50_feet' else []),
@@ -161,11 +203,12 @@ def finalize(attempt,output):
           'reference':'native_samples.jsonl','interval_m':measured['distance_interval_m'],
           'turn_completion_frame_bracket':scope['turn_completion_frame_bracket'],
           'merge_onset_frame_bracket':scope['merge_onset_frame_bracket']}},
-      'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
+      'provenance_kind':'native' if native else 'synthetic_local_diagnostic',
+      'accepted':False,'legal_verdict_claimed':False}
     validate_result(result)
     report.update(format='c394300-3c-saved-after-turn-analysis-v1',
                   candidate_id=config['candidate_id'],original_joins=joins,
-                  video_frames=counts,
+                  video_frames=counts,acquisition_provenance=provenance,
                   scope='saved original Native sources and source-video decode; physical designation and legal verdict unverified')
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     (attempt/'result.json').write_text(json.dumps(result,indent=2,allow_nan=False)+'\n')

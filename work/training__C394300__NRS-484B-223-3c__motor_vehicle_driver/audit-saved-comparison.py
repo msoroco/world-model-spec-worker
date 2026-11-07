@@ -49,7 +49,12 @@ def audit():
             assert samples[-1]['native_road_id']==1 and samples[-1]['native_lane_id']==-2
             assert all(maprow['carla_frame']==sample['native_frame'] and maprow['time_s']==sample['time_s']
                        for maprow,sample in zip(mapping,samples))
-            assert not result['setup_confirmed'] and not result['accepted']
+            assert report['acquisition_provenance']['native_executed'] is False
+            assert result['provenance_kind']=='synthetic_local_diagnostic'
+            assert result['setup_confirmed'] is False
+            assert result['behavior_attempted'] is False
+            assert result['maneuver_completed'] is False
+            assert result['accepted'] is False
             observations[suffix]={'requested_ft':TARGET_FEET[suffix],
                 'relation':measured['threshold_relation'],'interval_m':observed,
                 'turn_completion_frame':completion[1],'merge_onset_frame':merge[1],

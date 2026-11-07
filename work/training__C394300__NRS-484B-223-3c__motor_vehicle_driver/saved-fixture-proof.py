@@ -162,7 +162,10 @@ def run():
             if observed!=expected:raise RuntimeError(f'Unexpected sampled interval: {suffix} {observed}')
             if report['original_joins']['frames']!=480 or set(report['video_frames'].values())!={480}:
                 raise RuntimeError('Original 480-frame joins or video decode incomplete')
-            if result['setup_confirmed'] or result['accepted'] or result['legal_verdict_claimed']:
+            if (result['setup_confirmed'] or result['behavior_attempted'] or
+                result['maneuver_completed'] or result['provenance_kind']!='synthetic_local_diagnostic' or
+                report['acquisition_provenance']['native_executed'] or
+                result['accepted'] or result['legal_verdict_claimed']):
                 raise RuntimeError('Synthetic fixture claimed Native design or acceptance')
             (negative/'native_samples.jsonl').unlink()
             (wrong/'road_geometry.json').write_text(json.dumps({**json.loads((wrong/'road_geometry.json').read_text()),
@@ -181,6 +184,7 @@ def run():
                 'negative_errors':failures,'threshold_relation':observed,
                 'distance_interval_m':report['measurements']['after_left_turn_distance_interval']['value']['distance_interval_m'],
                 'source_unchanged':True,'video_sources_decoded':4,'setup_confirmed':False,
+                'diagnostic_provenance_enforced':True,'physical_flags_false':True,
                 'native_attempt_validator_passed':True,'rebuild_required':True,
                 'analysis_report_sha256':sha(positive/'analysis-report.json'),
                 'result_sha256':sha(positive/'result.json'),

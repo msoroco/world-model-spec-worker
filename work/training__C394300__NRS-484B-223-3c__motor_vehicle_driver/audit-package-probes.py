@@ -58,6 +58,12 @@ def audit():
                 raise ValueError('Missing source-video audit')
             if not json.loads((scratch/'output/final-decode.json').read_text())['passed']:
                 raise ValueError('Final render decode failed')
+            result=json.loads((scratch/'output/result.json').read_text())
+            if (result['provenance_kind']!='synthetic_local_diagnostic' or
+                result['setup_confirmed'] or result['behavior_attempted'] or
+                result['maneuver_completed'] or result['accepted'] or
+                result['legal_verdict_claimed']):
+                raise ValueError('Synthetic package claimed physical execution or acceptance')
             if (negative['exit_code']==0 or negative['removed']!='native_samples.jsonl'
                 or negative['error_contains']!='Missing required source: native_samples.jsonl'
                 or negative['error_contains'] not in (scratch/'negative-analysis.log').read_text()):
