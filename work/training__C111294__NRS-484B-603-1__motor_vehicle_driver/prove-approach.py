@@ -54,6 +54,32 @@ def run() -> dict:
                 raise
         else:
             raise AssertionError("Changed source hash accepted")
+    reflected_rows = [json.loads(x) for x in make_trace("decrease").splitlines()]
+    for row in reflected_rows:
+        row["ego_position_m"][1] *= -1
+        row["ego_velocity_mps"][1] *= -1
+    reflected = ("\n".join(json.dumps(row, sort_keys=True) for row in reflected_rows)+"\n").encode()
+    reflected_path = FIXTURES/"decrease-reflected-synthetic-native.jsonl"
+    reflected_path.write_bytes(reflected)
+    reflected_measurement = module.measure(reflected_path, hashlib.sha256(reflected).hexdigest())
+    if (reflected_measurement["measured_relation"] != "measured_early_decrease_held" or
+            reflected_measurement["measured_travel_direction_y"] != -1):
+        raise AssertionError("Reflected Native coordinate path changed result")
+    results["decrease_reflected"] = reflected_measurement
+    altered_rows = [dict(row) for row in reflected_rows]
+    altered_rows[10] = dict(altered_rows[10])
+    altered_rows[10]["ego_velocity_mps"] = [0, 0, 0]
+    altered = ("\n".join(json.dumps(row, sort_keys=True) for row in altered_rows)+"\n").encode()
+    altered_path = FIXTURES/"velocity-mismatch-negative.jsonl"
+    altered_path.write_bytes(altered)
+    try:
+        module.measure(altered_path, hashlib.sha256(altered).hexdigest())
+    except ValueError as exc:
+        if str(exc) != "Saved pose and speed disagree":
+            raise
+    else:
+        raise AssertionError("Pose/velocity disagreement accepted")
+    altered_path.unlink()
     # A validly hashed trace with a missing frame must also fail.
     truncated = FIXTURES / "truncated-negative.jsonl"
     truncated.write_bytes(make_trace("decrease").split(b"\n", 1)[1])
@@ -67,7 +93,7 @@ def run() -> dict:
     truncated.unlink()
     return {"passed": True, "source_scope": "synthetic CPU Native-shaped fixtures",
             "law_id": "NRS-484B-603-1", "cell_id": "C111294",
-            "positives": results, "negatives": ["changed source hash", "missing frame"],
+            "positives": results, "negatives": ["changed source hash", "missing frame", "pose/velocity disagreement"],
             "physical_behavior_observed": False, "original_pixels_observed": False}
 
 

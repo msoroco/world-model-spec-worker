@@ -35,22 +35,41 @@ def audit() -> dict:
             raise AssertionError("Four ordered construction targets required")
         if len({json.dumps(c, sort_keys=True) for c in case["candidates"]}) != 4:
             raise AssertionError("Construction targets duplicated")
-    for name, expected in (("decrease", "measured_early_decrease_held"), ("hold", "measured_no_material_decrease")):
-        path = ROOT/"draft-fixtures"/f"{name}-synthetic-native.jsonl"
+        suffix = case["case_id"].split("__")[-1]
+        contract = json.loads((ROOT/f"draft-measurement-contract-{suffix}.json").read_text())
+        if contract["case_id"] != case["case_id"] or len(contract["requirements"]) != 1:
+            raise AssertionError("Exact case measurement contract differs")
+        requirement = contract["requirements"][0]
+        if (requirement["requirement"], requirement["source"], requirement["method"],
+                requirement["inputs"]) != ("NRS-484B-603-1", "NRS 484B.603(1)",
+                    "measure_intersection_approach", ["native_samples.jsonl", "road.xodr"]):
+            raise AssertionError("Statutory source measurement binding differs")
+    contract_proof = json.loads((ROOT/"measurement-contract-proof.json").read_text())
+    if not contract_proof["passed"] or len(contract_proof["cases"]) != 2:
+        raise AssertionError("Pinned contract positives/negatives absent")
+    if not all(row["positive"] and row["negative_missing_source"] and
+               row["negative_changed_source"] for row in contract_proof["cases"]):
+        raise AssertionError("Pinned contract negative missing")
+    for name, expected in (("decrease", "measured_early_decrease_held"),
+                           ("decrease_reflected", "measured_early_decrease_held"),
+                           ("hold", "measured_no_material_decrease")):
+        filename = "decrease-reflected" if name == "decrease_reflected" else name
+        path = ROOT/"draft-fixtures"/f"{filename}-synthetic-native.jsonl"
         raw = path.read_bytes()
         rows = [json.loads(x) for x in raw.splitlines()]
         receipt = proof["positives"][name]
         if len(rows) != 480 or hashlib.sha256(raw).hexdigest() != receipt["source_sha256"]:
             raise AssertionError("Saved fixture source differs")
+        direction = -1 if name == "decrease_reflected" else 1
         approach = [math.dist(r["ego_velocity_mps"], [0, 0, 0])*2.2369362920544
-                    for r in rows if -60 <= r["ego_position_m"][1] < -50]
+                    for r in rows if -60 <= direction*r["ego_position_m"][1] < -50]
         preentry = [math.dist(r["ego_velocity_mps"], [0, 0, 0])*2.2369362920544
-                    for r in rows if -20 <= r["ego_position_m"][1] < -7]
+                    for r in rows if -20 <= direction*r["ego_position_m"][1] < -7]
         reduction = sum(approach)/len(approach)-sum(preentry)/len(preentry)
         if abs(reduction-receipt["decrease_mph"]) > .001 or receipt["measured_relation"] != expected:
             raise AssertionError("Independent speed comparison differs")
     return {"passed": True, "frozen_assignment_sha256": PIN,
-            "cases": 2, "construction_targets": 8, "synthetic_source_audits": 2,
+            "cases": 2, "construction_targets": 8, "synthetic_source_audits": 3,
             "selected_delivery_cases": 0, "physical_observations": 0}
 
 
