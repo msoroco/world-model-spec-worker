@@ -16,6 +16,10 @@ def main():
     entries = {e["case_id"].split("__")[-1]: e for e in manifest["cases"]}
     if set(entries) != {"probe_a", "probe_b"}:
         raise ValueError("Controlled case identities differ")
+    offline = json.loads((HERE / "pinned-offline-proof.log").read_text())
+    offline_rows = {(r["case"], r["candidate"]): r for r in offline["results"]}
+    if offline.get("passed") is not True or len(offline_rows) != 8:
+        raise ValueError("Eight exact pinned offline receipts required")
     outcomes = {}
     primary_configs = {}
     for suffix in ("probe_a", "probe_b"):
@@ -40,10 +44,19 @@ def main():
             if sha(construction_path) != ref["construction_sha256"]:
                 raise ValueError("Construction changed after portable proof")
             construction = json.loads(construction_path.read_text())
+            offline_row = offline_rows[suffix, candidate]
+            offline_log = (REPO / offline_row["log"]).resolve()
+            if (REPO.resolve() not in offline_log.parents or
+                    offline_row["offline_passed"] is not True or
+                    offline_row["construction_sha256"] != ref["construction_sha256"] or
+                    "Ran 5 tests" not in offline_log.read_text() or
+                    not offline_log.read_text().rstrip().endswith("OK")):
+                raise ValueError("Current exact pinned offline test proof differs")
             runner = next(f["content"] for f in construction["files"] if f["path"] == "runner.py")
             if ("observed_speed=observed_speed_mps(ego)" not in runner or
                     '"speed_mps":observed_speed' not in runner or
-                    '"speed_m_s":observed_speed' not in runner):
+                    '"speed_m_s":observed_speed' not in runner or
+                    '"kin.velocity":{"speed_m_s":observed_speed}' not in runner):
                 raise ValueError("Native saved speed is not observed in the post-tick frame")
             config = json.loads(next(f["content"] for f in construction["files"] if f["path"] == "config.json"))
             if candidate == "primary": primary_configs[suffix] = config
