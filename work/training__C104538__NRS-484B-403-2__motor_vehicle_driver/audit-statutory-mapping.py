@@ -41,12 +41,12 @@ def audit():
         if (case['target_law_id'] != LAW or case['source_branch'] != plan['witness_branches'][0]
             or case['kind'] != 'planned_only' or case['requested_not_measured'] is not True):
             raise AssertionError('Case source branch or pending status differs')
-    if branch['status'] != 'pending_review' or plan['selected_branch'] is not None:
-        raise AssertionError('Unproved statutory branch was promoted')
+    if branch['status'] != 'runnable' or plan['selected_branch'] is not None:
+        raise AssertionError('CPU branch status or unselected plan differs')
     return {'passed': True, 'law_id': LAW, 'source_topics': sorted(source['topics']),
             'controlled_cases': sorted(cases), 'comparison_id': pair['comparison_id'],
             'branch_status': branch['status'], 'selected': False,
-            'scope': 'exact source-to-planned-case mapping; runnable acceptance pending'}
+            'scope': 'exact source-to-planned-case mapping with CPU runnable construction; selected acceptance pending'}
 
 
 if __name__ == '__main__':

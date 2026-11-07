@@ -22,6 +22,38 @@ def run():
             baseline=evaluate_fallbacks(folder,suffix)
             if [baseline[f'fallback{i}'] for i in (1,2,3)]!=[False,False,False]:
                 raise ValueError('Baseline trigger mismatch')
+            samples=folder/'native_samples.jsonl'
+            original_samples=samples.read_text()
+            native_rows=[json.loads(line) for line in original_samples.splitlines()]
+            # Move one pre-approach Native body laterally, keeping its four
+            # corners and reviewer source hash in sync. This crosses only the
+            # 0.35 m route-error gate.
+            row=native_rows[30]
+            row['native_center_xy_m'][1]+=.5
+            for corner in row['native_body_xy_m']:corner[1]+=.5
+            samples.write_text(''.join(json.dumps(row)+'\n' for row in native_rows))
+            review_path=folder/'sign-review.json';review=json.loads(review_path.read_text())
+            review['native_samples_sha256']=sha(samples)
+            review_path.write_text(json.dumps(review))
+            route_error=evaluate_fallbacks(folder,suffix)
+            if [route_error[f'fallback{i}'] for i in (1,2,3)]!=[True,False,False] or route_error['metrics']['maximum_approach_route_error_m']<=.35:
+                raise ValueError('Route-error trigger mismatch')
+            samples.write_text(original_samples)
+            review['native_samples_sha256']=sha(samples)
+            review_path.write_text(json.dumps(review))
+            # Removing only the exit lane completion crosses the movement
+            # completion gate while keeping the signed camera review intact.
+            native_rows=[json.loads(line) for line in original_samples.splitlines()]
+            native_rows[-1]['native_lane_id']=999
+            samples.write_text(''.join(json.dumps(row)+'\n' for row in native_rows))
+            review['native_samples_sha256']=sha(samples)
+            review_path.write_text(json.dumps(review))
+            incomplete=evaluate_fallbacks(folder,suffix)
+            if [incomplete[f'fallback{i}'] for i in (1,2,3)]!=[False,True,False]:
+                raise ValueError('Movement-completion trigger mismatch')
+            samples.write_text(original_samples)
+            review['native_samples_sha256']=sha(samples)
+            review_path.write_text(json.dumps(review))
             packet_path=folder/'sign-review.json';packet=json.loads(packet_path.read_text())
             marks=folder/'pixel_review.jsonl';labels=[json.loads(line) for line in marks.read_text().splitlines()]
             boundary=95*len(labels)//100
@@ -49,6 +81,9 @@ def run():
             else:raise AssertionError('Changed video accepted')
             records.append({'case_suffix':suffix,'baseline_source_sha256':baseline['source_hashes']['native_samples.jsonl'],
                             'three_baseline_gates_false':True,'reviewed_approach_frames':len(labels),
+                            'route_error_m':route_error['metrics']['maximum_approach_route_error_m'],
+                            'route_error_above_035m_triggers_fallback1':True,
+                            'incomplete_movement_triggers_fallback2':True,
                             'visibility_below_95_percent_triggers':True,
                             'visibility_at_95_percent_does_not_trigger':True,'changed_video_rejected':True})
     return {'passed':True,'records':records,'native_executed':False,'selected':False}
