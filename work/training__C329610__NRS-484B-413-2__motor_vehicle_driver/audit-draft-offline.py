@@ -38,6 +38,9 @@ def main():
                 case["case_id"], plan["law_id"], plan["cell_id"], plan["actor"])
             files = {f["path"]: f["content"] for f in bundle["files"]}
             assert "runner.py" in files and "tests/test_bundle.py" in files and "geometry.py" in files
+            runner = files["runner.py"]
+            assert runner.index("frame=world.tick()") < runner.index("observed_speed=observed_speed_mps(ego)")
+            assert '"native_body_xy_m":body,"speed_mps":observed_speed' in runner
             config = json.loads(files["config.json"])
             configs[ident] = config
             request = config["native_request"]
@@ -50,7 +53,7 @@ def main():
             assert receipt["exit_code"] == 0 and receipt["construction_sha256"] == ref["construction_sha256"]
             assert sha(HERE / receipt["command_log"]) == receipt["command_log_sha256"]
             assert sha(HERE / receipt["unit_log"]) == receipt["unit_log_sha256"]
-            assert "Ran 3 tests" in (HERE / receipt["unit_log"]).read_text()
+            assert "Ran 4 tests" in (HERE / receipt["unit_log"]).read_text()
             assert "offline --manifest" in receipt["command"] and "--candidate " + ident in receipt["command"]
         primary = configs["primary"]["native_request"]
         assert len({c["native_request"]["start_x_m"] for c in configs.values()}) == 2
@@ -59,7 +62,7 @@ def main():
         assert configs["fallback3"]["native_request"]["camera_policy"] != primary["camera_policy"]
         assert all(c["native_request"]["signal_onset_x_m"] == primary["signal_onset_x_m"] for c in configs.values())
     print(json.dumps({"cases_audited": 6, "bundles_audited": 24,
-                      "tests_per_bundle": 3, "selected": False}))
+                      "tests_per_bundle": 4, "selected": False}))
 
 
 if __name__ == "__main__":

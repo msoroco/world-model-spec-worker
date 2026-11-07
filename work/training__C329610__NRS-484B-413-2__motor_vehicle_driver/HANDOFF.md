@@ -8,11 +8,11 @@ Law: NRS 484B.413(2). Exact text and topic inventory are referenced by hashes in
 
 ## Planned controlled comparison
 
-business/residential 100 ft and other-area 300 ft branches. Compare only `continuous_signal_distance_prior_course_change` (ft) while fixing cell, actor, legal context, traffic controls, weather, other controller settings, and capture plan. The 6 case definitions are unselected and have no observed values.
+business/residential 100 ft and other-area 300 ft branches. Compare only `continuous_signal_distance_prior_course_change` (ft) while fixing cell, actor, legal context, traffic controls, weather, other controller settings, and capture plan. The 6 case definitions are unselected; synthetic CPU measurements exist, and original Native values remain unobserved.
 
 ## Blocker and resumption
 
-Executable Native package and all four candidate offline/compatibility proofs absent; exact statutory exceptions and historical equivalence remain unverified. Build and validate semantic stages, exact Native construction, four distinct candidates per selected case, full mandatory capture, saved positive/negative fixtures, independent audits, and comparison audit. Keep unsupported exception branches explicit. Only then set `ready`/`delivery_prepared` and add the exact GPU queue commands. Do not infer legal verdicts from CPU fixtures.
+Current unselected Native construction and all four candidate offline/v1 diagnostic compatibility proofs exist for six cases. Selected strict v2, independent delivery acceptance, runnable statutory closure, original Native and pixel observations, and queue rows remain unfinished. Keep unsupported exception branches explicit. Set `ready`/`delivery_prepared` only after all required CPU proofs pass. Do not infer legal verdicts from CPU fixtures.
 
 ## Source-bound signal measurement and extended approach, 2026-11-06
 
@@ -35,3 +35,7 @@ The static checker rejected `.mkv` diagnostic media under `work/`; all generated
 ## Completed unselected v1 diagnostic matrix, 2026-11-06
 
 The corrected fixture-location run completed all 24 exact primary/fallback v1 portable positives and all 24 removed-`native_samples.jsonl` negatives. The independent matrix audit checks each current construction identity, pinned-runtime log and negative receipt. Summary SHA-256 `33ed9aba517aa34cc939123060607edc4e2802fbe5917b1c9e230211cba5ceb8`; audit log SHA-256 `acc13b13a5965773493c45f6244b7539e46172fb93da42e76b34e178e8f1b59e`. The full-resolution primary package has an additional independent output/Core/Lean/final-decode audit (log SHA-256 `2179d6511d8fc080229362ccccf80fd705004ad4f4c7707d4171d2581a1f76cf`). These are synthetic, unselected v1 compatibility diagnostics. Strict selected v2 positive/negative proof, original Native and pixel observations, selected-case delivery audit, statutory runnable closure, canonical commands and ordered GPU queue rows remain worker-owned. All six cases remain planned and the assignment remains blocked.
+
+## Current frame and exact diagnostic refresh, 2026-11-07
+
+The Native runner now reads observed post-tick velocity for saved speed beside post-tick pose, body and indicator, while its controller retains pre-tick speed. The changing-velocity and nonfinite CPU test is embedded in all 24 rebuilt bundles. Each pinned offline command passes four tests. All 24 refreshed exact synthetic v1 package positives and missing-`native_samples.jsonl` negatives pass, as do independent receipt, package, saved fixture, Core/Lean/render, Native construction and trigger audits. Current manifest / offline summary / package summary SHA-256 values are `0cc503e58f0feb6d468531deaff99ce8dfbdf0328284214fdbec399b6365e3e5` / `f137e4da4aff5f85419fc374f184c11dba5a00bcae0b66fd22e2041a4111d82c` / `9bc34ad17a6802e55a0afe5dfc6bfee6ad1e16048d8da1feb1ee2f6da1fa9658`. Earlier diagnostic hashes above are historical. No original Native speed, signal or pixels were observed; no case is selected or ready.

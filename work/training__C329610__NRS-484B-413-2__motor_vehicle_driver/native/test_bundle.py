@@ -1,9 +1,11 @@
 import json
+import math
 from pathlib import Path
+import types
 import unittest
 
 from engineering import parameters
-from runner import check
+from runner import check, observed_speed_mps
 from signal_control import left_signal_requested
 
 
@@ -36,6 +38,15 @@ class ExactBundleTest(unittest.TestCase):
                          ("NRS-484B-413-2", "C329610", "motor_vehicle_driver"))
         self.assertLess(abs((-7 - request["signal_onset_x_m"]) / .3048 -
                             request["target_signal_distance_ft"]), 1e-8)
+
+    def test_saved_speed_reads_current_native_frame(self):
+        actor = types.SimpleNamespace(get_velocity=lambda: types.SimpleNamespace(x=3., y=4., z=0.))
+        self.assertEqual(observed_speed_mps(actor), 5.)
+        actor.get_velocity = lambda: types.SimpleNamespace(x=0., y=0., z=2.)
+        self.assertEqual(observed_speed_mps(actor), 2.)
+        actor.get_velocity = lambda: types.SimpleNamespace(x=math.nan, y=0., z=0.)
+        with self.assertRaisesRegex(ValueError, "Nonfinite observed Native velocity"):
+            observed_speed_mps(actor)
 
 
 if __name__ == "__main__":

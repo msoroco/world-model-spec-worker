@@ -26,6 +26,15 @@ from survey import survey as map_survey
 ROOT = Path(__file__).resolve().parent
 
 
+def observed_speed_mps(actor):
+    """Read finite velocity for the frame whose pose and body are saved."""
+    velocity=actor.get_velocity()
+    components=(velocity.x,velocity.y,velocity.z)
+    if any(not math.isfinite(component) for component in components):
+        raise ValueError("Nonfinite observed Native velocity")
+    return math.sqrt(sum(component*component for component in components))
+
+
 def write_new(path, value):
     with path.open("x") as output:
         json.dump(value, output, indent=2, allow_nan=False)
@@ -181,6 +190,7 @@ def execute(config, output, host, port):
                     hand_brake=command["hand_brake"]))
                 frame=world.tick();time_s=world.get_snapshot().timestamp.elapsed_seconds-start
                 pose=ego.get_transform();forward=pose.get_forward_vector();body=body_xy(ego)
+                observed_speed=observed_speed_mps(ego)
                 lane=mapping.get_waypoint(pose.location,project_to_road=False,
                                           lane_type=carla.LaneType.Driving | carla.LaneType.Bidirectional)
                 if lane is None:raise RuntimeError('Native lane identity missing at original frame')
@@ -192,7 +202,7 @@ def execute(config, output, host, port):
                     "native_center_xy_m":[pose.location.x,pose.location.y],
                     "native_forward_xy":[forward.x/math.hypot(forward.x,forward.y),
                                          forward.y/math.hypot(forward.x,forward.y)],
-                    "native_body_xy_m":body,"speed_mps":speed,
+                    "native_body_xy_m":body,"speed_mps":observed_speed,
                     "native_road_id":lane.road_id,"native_lane_id":lane.lane_id,
                     "controller_request":command}
                 capture.capture(frame,time_s,extra={"c394300_native":sample})

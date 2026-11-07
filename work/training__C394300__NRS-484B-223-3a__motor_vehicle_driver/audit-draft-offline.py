@@ -48,6 +48,9 @@ def audit():
             assert {'runner.py','geometry.py','controller.py','engineering.py',
                     'survey.py','cameras.py','measure_saved.py','finalize.py','tests/test_constructions.py',
                     'config.json'}<=set(files)
+            runner=files['runner.py']
+            assert runner.index('frame=world.tick()') < runner.index('observed_speed=observed_speed_mps(ego)')
+            assert '"native_body_xy_m":body,"speed_mps":observed_speed' in runner
             config=json.loads(files['config.json'])
             assert config['case_id']==case_id and config['candidate_id']==ref['id']
             assert config['duration_s']==24 and config['rate_hz']==20
@@ -71,10 +74,10 @@ def audit():
         for field,hash_field in (('command_log','command_log_sha256'),('unit_log','unit_log_sha256')):
             assert sha(FOLDER/receipt[field])==receipt[hash_field]
         unit=(FOLDER/receipt['unit_log']).read_text()
-        assert 'Ran 3 tests' in unit and '\nOK\n' in unit
+        assert 'Ran 4 tests' in unit and '\nOK\n' in unit
         assert '"native_imported": false' in unit
     return {'passed':True,'cases':2,'exact_unselected_bundles':8,
-            'offline_tests_per_bundle':3,'selected_or_physical_claimed':False}
+            'offline_tests_per_bundle':4,'selected_or_physical_claimed':False}
 
 
 if __name__=='__main__':print(json.dumps(audit(),sort_keys=True))

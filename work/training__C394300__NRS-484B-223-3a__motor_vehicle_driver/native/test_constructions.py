@@ -1,17 +1,29 @@
 """CPU candidate distinction and measured-source trigger smoke tests."""
 import hashlib
 import json
+import math
 from pathlib import Path
 import tempfile
+import types
 import unittest
 
 from controller import PathController
 from engineering import CANDIDATES,parameters
 from trigger_evidence import evaluate
 from survey import REQUESTS,survey
+from runner import observed_speed_mps
 
 
 class ConstructionTests(unittest.TestCase):
+    def test_saved_speed_reads_current_native_frame(self):
+        actor=types.SimpleNamespace(get_velocity=lambda:types.SimpleNamespace(x=3.,y=4.,z=0.))
+        self.assertEqual(observed_speed_mps(actor),5.)
+        actor.get_velocity=lambda:types.SimpleNamespace(x=0.,y=0.,z=2.)
+        self.assertEqual(observed_speed_mps(actor),2.)
+        actor.get_velocity=lambda:types.SimpleNamespace(x=math.inf,y=0.,z=0.)
+        with self.assertRaisesRegex(ValueError,"Nonfinite observed Native velocity"):
+            observed_speed_mps(actor)
+
     def test_native_survey_requests_bidirectional_center_and_rejects_driving(self):
         class Types:
             Bidirectional='bidirectional';Driving='driving'
