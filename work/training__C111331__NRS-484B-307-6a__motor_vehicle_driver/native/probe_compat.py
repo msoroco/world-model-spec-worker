@@ -23,7 +23,8 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[2]
 sys.path.insert(0, str(REPO / 'runtime/pipeline/scenario_pipeline'))
 from worker_exchange.media import compose_four_views
-from worker_exchange.package_compatibility import run
+from worker_exchange.package_compatibility import run, materialize_case
+from worker_exchange.runtime_cli import execution_env
 
 FFMPEG = REPO / '.runtime-work/linux_arm64/ffmpeg'
 DECODER = REPO / '.runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck'
@@ -87,7 +88,14 @@ def fixture(destination, case, candidate):
         observed = {'frame': frame, 'time_s': sample['time_s'],
                     'participants': [actor], 'world_settings': {'no_rendering_mode': False},
                     'rgb_sensors': {'overview': {'frame': frame}}}
-        road_id = 1 if y < -7 else 13 if x < 7 else 2
+        travelled = index * speed / 20
+        turn_length = 5.25 * math.pi / 2
+        if travelled <= 73:
+            road_id, station = 1, 20 + travelled
+        elif travelled <= 73 + turn_length:
+            road_id, station = 13, (travelled - 73) * 7 / 5.25
+        else:
+            road_id, station = 2, travelled - 73 - turn_length
         evidence.append({'original_frame': frame, 'replay_frame': frame,
                          'actor_id': 107, 'recording_time_s': sample['time_s'],
                          'replay_simulation_time_s': sample['time_s'],
@@ -99,7 +107,7 @@ def fixture(destination, case, candidate):
                                                'wetness': 0, 'fog_density': 0},
                                    'road_projection': {'road_id': road_id,
                                                        'section_id': 0, 'lane_id': -1,
-                                                       's_m': index * speed / 20}},
+                                                       's_m': station}},
                          'original_observations': observed})
         graph = nx.DiGraph()
         graph.graph.update(frame=frame, observed_evidence=observed)
@@ -158,8 +166,47 @@ def main():
     case_id = HERE.parent.name + '__' + args.case
     receipt = run(HERE / 'package-manifest.json', case_id, source, scratch / 'output',
                   REPO / 'runtime/pipeline/library', DECODER, args.candidate)
+    if not receipt.get('passed'):
+        raise ValueError('Pinned portable compatibility did not pass')
+    negative = scratch / 'negative'
+    materialize_case(HERE / 'package-manifest.json', case_id, negative, source,
+                     args.candidate)
+    (negative / 'native_samples.jsonl').unlink()
+    failure = subprocess.run([sys.executable, str(negative / 'finalize.py'),
+                              '--attempt', str(negative), '--output',
+                              str(negative / 'analysis-report.json')],
+                             cwd=negative, env=execution_env(), text=True,
+                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                             timeout=300)
+    expected = 'Missing required source: native_samples.jsonl'
+    if failure.returncode == 0 or expected not in failure.stdout:
+        raise ValueError('Pinned missing-source negative accepted: ' + failure.stdout[-700:])
+    retained = HERE / 'portable-receipts' / args.case / args.candidate
+    retained.mkdir(parents=True, exist_ok=True)
+    for name in ('compatibility.json', 'analysis-report.json', 'result.json',
+                 'final-decode.json'):
+        shutil.copy2(scratch / 'output' / name, retained / name)
+    shutil.copy2(scratch / 'output/compatibility-analysis.log',
+                 retained / 'portable-analysis.log')
+    (retained / 'negative-analysis.log').write_text(failure.stdout)
+    summary = {'format': 'c111331-exact-synthetic-portable-v1',
+               'case_id': case_id, 'candidate_id': args.candidate,
+               'manifest_sha256': sha(HERE / 'package-manifest.json'),
+               'fixture_runtime_relative': str(source.relative_to(REPO)),
+               'fixture_manifest_sha256': sha(source / 'capture/manifest.json'),
+               'fixture_native_sha256': sha(source / 'native_samples.jsonl'),
+               'fixture_map_sha256': sha(source / 'video_frames.jsonl'),
+               'positive_receipt_sha256': sha(retained / 'compatibility.json'),
+               'positive_log_sha256': sha(retained / 'portable-analysis.log'),
+               'final_decode_sha256': sha(retained / 'final-decode.json'),
+               'negative_log_sha256': sha(retained / 'negative-analysis.log'),
+               'negative_error': expected, 'synthetic_only': True,
+               'native_or_original_pixels_claimed': False}
+    (retained / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
     print(json.dumps({'passed': receipt['passed'], 'case_id': case_id,
-                      'candidate_id': args.candidate, 'scope': receipt['scope']}, sort_keys=True))
+                      'candidate_id': args.candidate, 'scope': receipt['scope'],
+                      'negative_rejected': True,
+                      'summary_sha256': sha(retained / 'summary.json')}, sort_keys=True))
 
 
 if __name__ == '__main__':
