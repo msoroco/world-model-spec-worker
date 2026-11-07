@@ -16,7 +16,7 @@ Unresolved judgment or rule composition: 'as soon as possible' is a judgement el
 
 Accepted membership: 0 membership rows; exact source-hashed equivalence and reuse are unverified.
 
-Blocker: No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.
+Current gap: Sixteen unselected exact Native bundles and their synthetic v1 positive/negative software probes pass. Selected v2 delivery, lawful prior entry, physical signal governance, introductory statutory exceptions, as-soon-as-possible judgment and queue construction remain unverified. Physical feasibility and legal outcome are unverified.
 
 Resume: reconcile each branch against the exact law and cited provisions; establish compatible Native construction and measurement channels; produce four distinct candidate plans and exact offline, compatibility, saved-only, semantic and audit proofs; then evaluate readiness.
 
@@ -31,3 +31,7 @@ All eight witness primary/fallback source-exact bundles pass pinned offline, wit
 ## Prior-entry exception CPU continuation
 
 The two unselected exception cases now isolate first-entry indication (flashing Don't Walk without countdown versus Walk), holding the 4 s steady transition, pedestrian path and 8 s full clearance fixed. Ten malformed source variants reject; independent row audit confirms the source facts. The pinned saved-value verifier and missing-source negative pass both draft contracts, while the pinned contract validator rejects their `exception_pending` status with `Every selected requirement needs one case measurement`. Eight distinct primary/fallback exception bundles pass pinned offline and independent source/receipt audit. Two saved synthetic positives, six damaged-source negatives and eight exact v1 positive/negative packages pass independent saved and package audits. These do not prove lawful prior entry, a qualifying physical signal, statutory exceptions, as-soon-as-possible judgment, Native behavior, strict v2 recipe or delivery acceptance. The assignment remains blocked. See exception-summary.json, draft-exception-execution-manifest.json, saved-exception-summary.json and draft-package-exception-summary.json.
+
+## Pinned prior-entry contract continuation
+
+The exception pair is now marked `selected_required` **as a measurement requirement** in `case-plan.json`; its four cases remain `planned_only` and unselected for delivery. Both prior-entry contracts pass pinned validation, actual saved finalization and source-hash verification, plus missing-source negatives. `audit-exception-contracts.py` independently reruns finalization, checks exact source and disposition bindings, and confirms that lawful entry, physical signal and as-soon-as-possible claims remain false. The eight exception bundles were rebuilt against the current pinned runtime-manifest hash, then passed exact offline and eight synthetic v1 positive/negative portable probes with independent audits. This resolves the historical `exception_pending` contract rejection above without asserting a legal exception or readiness.

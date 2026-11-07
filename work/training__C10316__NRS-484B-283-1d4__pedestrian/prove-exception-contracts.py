@@ -32,14 +32,8 @@ def main():
         destination = HERE / 'draft-exception' / suffix
         destination.mkdir(parents=True, exist_ok=True)
         (destination / 'measurement-contract.json').write_text(json.dumps(contract, indent=2) + '\n')
-        try:
-            validate(contract, plan['requirement_dispositions'], code, case)
-        except ValueError as error:
-            if str(error) != 'Every selected requirement needs one case measurement':
-                raise
-            validator_status = 'rejected_exception_pending_disposition'
-        else:
-            raise RuntimeError('Pinned validator unexpectedly treated exception_pending as selected')
+        validate(contract, plan['requirement_dispositions'], code, case)
+        validator_status = 'passed_selected_measurement_requirement'
         fixture = Path(item['retained_positive'])
         with tempfile.TemporaryDirectory(dir=ROOT / '.runtime-work', prefix='d4-exception-contract-') as temporary:
             output = Path(temporary) / 'analysis-report.json'
@@ -64,7 +58,7 @@ def main():
     (HERE / 'exception-contract-summary.json').write_text(json.dumps({
         'format': 'c10316-prior-entry-contract-proof-v1', 'records': records}, indent=2) + '\n')
     print(json.dumps({'draft_case_contracts': 2, 'pinned_saved_value_positives': 2,
-                      'pinned_validator_rejections_for_pending_exception': 2,
+                      'pinned_contract_validations': 2,
                       'missing_source_negatives': 2, 'accepted_recordings': 0}))
 
 
