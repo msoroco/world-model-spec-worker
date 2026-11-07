@@ -44,6 +44,7 @@ def measure(source_path: Path, expected_sha256: str, *, uncertainty_mph: float =
     ego_positions = []
     other_positions = []
     velocities = []
+    source_kinds = set()
     for i, row in enumerate(rows):
         if not isinstance(row, dict) or row.get("frame") != i:
             raise ValueError("Noncontinuous Native frame sequence")
@@ -60,6 +61,21 @@ def measure(source_path: Path, expected_sha256: str, *, uncertainty_mph: float =
             raise ValueError("Qualifying subject or other role missing")
         if row.get("ego_blueprint") != "vehicle.tesla.model3" or row.get("other_blueprint") != "vehicle.tesla.model3":
             raise ValueError("Declared conventional vehicle blueprint changed")
+        kind = row.get("source_kind")
+        if kind not in ("original_native_capture", "synthetic_cpu_fixture"):
+            raise ValueError("Unknown Native source kind")
+        source_kinds.add(kind)
+        if kind == "original_native_capture" and (
+                row.get("ego_role_name") != "c111294_speed_subject" or
+                row.get("other_role_name") != "c111294_opposing_vehicle"):
+            raise ValueError("Original actor role readback differs")
+        control = row.get("ego_control")
+        if not isinstance(control, dict) or set(control) != {"throttle", "brake", "steer"}:
+            raise ValueError("Ego control source absent")
+        if (any(not 0 <= _finite_number(control[name], "ego control") <= 1
+                for name in ("throttle", "brake")) or
+                not -1 <= _finite_number(control["steer"], "ego control") <= 1):
+            raise ValueError("Ego control out of range")
         velocity = row.get("ego_velocity_mps")
         if not isinstance(velocity, list) or len(velocity) != 3:
             raise ValueError("Missing three-axis Native velocity")
@@ -77,6 +93,8 @@ def measure(source_path: Path, expected_sha256: str, *, uncertainty_mph: float =
         other_positions.append(tuple(_finite_number(v, "other position") for v in other))
     if len(ego_ids) != 1 or len(other_ids) != 1 or ego_ids == other_ids:
         raise ValueError("Actor identity changed within capture")
+    if len(source_kinds) != 1:
+        raise ValueError("Native source kind changed within capture")
     for previous, current, velocity in zip(ego_positions, ego_positions[1:], velocities[1:]):
         observed_delta = tuple((b - a) * FPS for a, b in zip(previous, current))
         if math.dist(observed_delta, velocity) > 5.0:
@@ -100,6 +118,7 @@ def measure(source_path: Path, expected_sha256: str, *, uncertainty_mph: float =
     else:
         relation = "unresolved_at_80_mph"
     return {"source_sha256": actual_sha, "frames": FRAMES, "rate_hz": FPS,
+            "source_kind": next(iter(source_kinds)),
             "ego_actor_id": next(iter(ego_ids)), "other_actor_id": next(iter(other_ids)),
             "velocity_source": "saved Native three-axis ego velocity",
             "derived_peak_mph": round(peak, 6),
@@ -126,6 +145,7 @@ def synthetic_fixture(speed_mph: float) -> bytes:
         "ego_position_m": [1.75, -70 + speed * i / FPS, 0],
         "other_position_m": [-1.75, 100 - 10 * i / FPS, 0],
         "ego_velocity_mps": [0, speed, 0],
+        "ego_control": {"throttle": .5, "brake": 0, "steer": 0},
         "source_kind": "synthetic_cpu_fixture"}, sort_keys=True) + "\n"
         for i in range(FRAMES)).encode()
 

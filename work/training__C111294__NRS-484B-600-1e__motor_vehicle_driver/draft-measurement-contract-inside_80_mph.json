@@ -1,0 +1,61 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "subject_operation",
+      "method": "measure_subject_operation",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "speed_relation",
+      "method": "measure_speed_relation",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "unconditional_scope",
+      "method": "measure_unconditional_scope",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "native_samples.jsonl",
+        "road.xodr"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "reviewed-scope-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "other_vehicle_context",
+      "method": "measure_other_vehicle_context",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native_samples.jsonl"
+    ],
+    "error_contains": "Missing required source: native_samples.jsonl"
+  }
+}
