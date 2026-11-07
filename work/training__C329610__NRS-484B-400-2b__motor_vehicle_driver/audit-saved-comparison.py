@@ -46,7 +46,8 @@ def run():
         for source,report in ((a,left),(b,right)):
             result=json.loads((source/'result.json').read_text())
             assert report['acquisition_provenance']=={
-                'source_kind':'synthetic_fixture','native_executed':False}
+                'source_kind':'synthetic_fixture','diagnostic_fixture':True,
+                'native_executed':False}
             assert result['provenance_kind']=='synthetic_local_diagnostic'
             assert result['accepted'] is False and result['legal_verdict_claimed'] is False
             assert result['setup_confirmed'] is False

@@ -66,6 +66,43 @@ def video_frames(path):
     return int(completed.stdout.strip())
 
 
+def capture_provenance(attempt, count):
+    from worker_exchange.common import digest, within
+    from worker_exchange.native_output import provenance_record
+    record = provenance_record(attempt)
+    seal_path = attempt / 'capture-seal.json'
+    if not seal_path.is_file():
+        return {'source_kind': record['provenance_kind'],
+                'diagnostic_fixture': record['diagnostic_fixture'],
+                'native_executed': False}, False
+    seal = json.loads(seal_path.read_text())
+    sources = seal.get('sources')
+    required = {'trace.jsonl', 'video_frames.jsonl', 'capture/evidence.jsonl',
+                'native_samples.jsonl', 'body_history.jsonl', 'road_geometry.json',
+                'overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv'}
+    if not isinstance(sources, dict) or not required <= set(sources) or digest(sources) != seal.get('source_digest'):
+        raise ValueError('Native capture seal source inventory incomplete')
+    for name, expected in sources.items():
+        if sha(within(attempt, name)) != expected:
+            raise ValueError('Sealed original changed: ' + name)
+    marker_path = attempt / 'acquisition-provenance.json'
+    marker = json.loads(marker_path.read_text()) if marker_path.is_file() else {}
+    native = (record['provenance_kind'] == 'native' and
+              record['diagnostic_fixture'] is False and
+              seal.get('format') == 'worker-sealed-capture-v2' and
+              seal.get('provenance_kind') == 'native' and
+              seal.get('diagnostic_fixture') is False and
+              seal.get('frames') == count and
+              seal.get('events') == ['capture_finished', 'encoders_closed', 'restoration_verified'] and
+              seal.get('restoration', {}).get('restored') is True and
+              all(code == 0 for code in seal.get('encoder_exit_codes', {}).values()) and
+              marker.get('diagnostic_fixture') is not True and
+              marker.get('native_executed') is not False)
+    return {'source_kind': record['provenance_kind'],
+            'diagnostic_fixture': record['diagnostic_fixture'],
+            'native_executed': native}, native
+
+
 def measure_approach(attempt):
     attempt=Path(attempt)
     result=measure(attempt/'native_samples.jsonl',attempt/'road_geometry.json')
@@ -79,7 +116,7 @@ def measure_approach(attempt):
 
 
 def finalize(attempt,output):
-    from worker_exchange.native_output import provenance_kind, validate_result
+    from worker_exchange.native_output import validate_result
     attempt=Path(attempt).resolve();output=Path(output).resolve()
     if output.exists() or (attempt/'result.json').exists():
         raise ValueError("Retain original finalization; use a fresh attempt")
@@ -89,8 +126,7 @@ def finalize(attempt,output):
     if abs(requested_count-count)>1e-6 or count<2:
         raise ValueError("Recording duration/rate does not yield an integral frame count")
     original=verify_original_joins(attempt,count)
-    source_kind=provenance_kind(attempt)
-    native=source_kind=='native'
+    provenance,native=capture_provenance(attempt,count)
     measured=measure_approach(attempt)
     videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     video_counts={name:video_frames(attempt/name) for name in videos}
@@ -137,8 +173,7 @@ def finalize(attempt,output):
     report={'format':'c329610-saved-analysis-v1','case_id':config['case_id'],
             'candidate_id':config['candidate_id'],'measurements':{'approach_placement_geometry':measured},
             'original_joins':original,'video_frames':video_counts,
-            'acquisition_provenance':{'source_kind':source_kind,
-                                      'native_executed':native},
+      'acquisition_provenance':provenance,
             'scope':'saved original Native sources and source video decode, not independent acceptance or legal verdict'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     with (attempt/'result.json').open('x') as stream:

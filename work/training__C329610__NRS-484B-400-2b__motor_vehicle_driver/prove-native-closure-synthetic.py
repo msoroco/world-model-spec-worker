@@ -3,6 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 import shutil
+import subprocess
 import sys
 import tempfile
 
@@ -12,6 +13,7 @@ sys.path.insert(0, str(ROOT / 'runtime/pipeline/scenario_pipeline'))
 from worker_exchange.media import compose_four_views
 from worker_exchange.native_output import seal_capture
 from worker_exchange.saved_processing import record_native_exit, _closure
+from worker_exchange.runtime_cli import execution_env
 
 
 def sha(path):
@@ -52,6 +54,19 @@ def main():
         assert seal['frames']==480 and receipt['frames']==480
         record_native_exit(attempt)
         _closure(attempt,None,'diagnostic',True)
+        finalized = subprocess.run([sys.executable, str(HERE/'native/finalize.py'),
+            '--attempt', str(attempt), '--output', str(attempt/'analysis-report.json')],
+            env=execution_env(), text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            timeout=180)
+        if finalized.returncode:
+            raise ValueError('Sealed diagnostic finalization failed: '+finalized.stdout)
+        analysis = json.loads((attempt/'analysis-report.json').read_text())
+        result = json.loads((attempt/'result.json').read_text())
+        assert analysis['acquisition_provenance']['diagnostic_fixture'] is True
+        assert analysis['acquisition_provenance']['native_executed'] is False
+        assert result['provenance_kind']=='synthetic_local_diagnostic'
+        assert not any(result[key] for key in ('setup_confirmed','behavior_attempted',
+                                               'maneuver_completed','accepted','legal_verdict_claimed'))
         with (attempt/'native_samples.jsonl').open('a') as stream:
             stream.write('changed\n')
         try:
@@ -60,10 +75,20 @@ def main():
             assert 'Sealed original changed: native_samples.jsonl' in str(error)
         else:
             raise AssertionError('Changed sealed Native source accepted')
+        sys.path.insert(0, str(HERE/'native'))
+        from finalize import capture_provenance
+        try:
+            capture_provenance(attempt,480)
+        except ValueError as error:
+            assert 'Sealed original changed: native_samples.jsonl' in str(error)
+        else:
+            raise AssertionError('Changed sealed source acquired Native finalizer provenance')
         print(json.dumps({'passed':True,'diagnostic_fixture':True,'native_executed':False,
                           'frames':480,'four_view_receipt_sha256':sha(attempt/'four-view-receipt.json'),
                           'capture_seal_sha256':sha(attempt/'capture-seal.json'),
                           'positive_closure_and_changed_source_negative':True,
+                          'sealed_diagnostic_finalization_without_native_claim':True,
+                          'finalizer_changed_sealed_source_rejected':True,
                           'scope':'synthetic CPU closure only; no CARLA, physical or accepted recording'}))
 
 
