@@ -1,9 +1,10 @@
 """CPU mock for CARLA's OpenDRIVE-to-Native Y reflection."""
+import math
 import types
 import unittest
 
 from engineering import parameters
-from runner import map_survey
+from runner import map_survey, observed_speed_mps
 
 
 class Waypoint:
@@ -31,6 +32,17 @@ class Map:
 
 
 class RunnerSurveyTest(unittest.TestCase):
+    def test_speed_reads_current_native_velocity(self):
+        actor = types.SimpleNamespace(get_velocity=lambda: types.SimpleNamespace(x=3., y=4., z=0.))
+        self.assertEqual(observed_speed_mps(actor), 5.)
+        actor.get_velocity = lambda: types.SimpleNamespace(x=0., y=0., z=2.)
+        self.assertEqual(observed_speed_mps(actor), 2.)
+
+    def test_nonfinite_observed_velocity_rejected(self):
+        actor = types.SimpleNamespace(get_velocity=lambda: types.SimpleNamespace(x=math.nan, y=0., z=0.))
+        with self.assertRaisesRegex(ValueError, 'nonfinite'):
+            observed_speed_mps(actor)
+
     def test_reflected_route_and_native_lane_survey_agree(self):
         carla = types.SimpleNamespace(
             Location=lambda **kw: types.SimpleNamespace(**kw),

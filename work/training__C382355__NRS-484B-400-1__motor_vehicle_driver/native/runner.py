@@ -70,6 +70,15 @@ def body_xy(actor):
     return [list(v) for v in projected]
 
 
+def observed_speed_mps(actor):
+    """Read speed at the same Native tick as the saved pose and body."""
+    velocity=actor.get_velocity()
+    speed=math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
+    if not math.isfinite(speed):
+        raise ValueError('Native observed speed is nonfinite')
+    return speed
+
+
 def direction(waypoint):
     v=waypoint.transform.get_forward_vector()
     length=math.hypot(v.x,v.y)
@@ -212,6 +221,7 @@ def execute(config, output, host, port):
                     hand_brake=command["hand_brake"]))
                 frame=world.tick();time_s=world.get_snapshot().timestamp.elapsed_seconds-start
                 pose=ego.get_transform();forward=pose.get_forward_vector();body=body_xy(ego)
+                observed_speed=observed_speed_mps(ego)
                 lane=mapping.get_waypoint(pose.location,project_to_road=False,
                                           lane_type=carla.LaneType.Driving)
                 if lane is None:raise RuntimeError('Native lane identity missing at original frame')
@@ -219,7 +229,7 @@ def execute(config, output, host, port):
                     "native_center_xy_m":[pose.location.x,pose.location.y],
                     "native_forward_xy":[forward.x/math.hypot(forward.x,forward.y),
                                          forward.y/math.hypot(forward.x,forward.y)],
-                    "native_body_xy_m":body,"speed_mps":speed,
+                    "native_body_xy_m":body,"speed_mps":observed_speed,
                     "native_road_id":lane.road_id,"native_lane_id":lane.lane_id,
                     "controller_request":command}
                 capture.capture(frame,time_s,extra={"c382355_native":sample})
