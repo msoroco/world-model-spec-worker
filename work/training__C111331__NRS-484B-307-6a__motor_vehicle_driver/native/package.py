@@ -68,24 +68,31 @@ def build():
                 'runtime_manifest_sha256': batch['runtime']['source_manifest_sha256'],
                 'source_branch': 'yellow_warning_red_entry', 'cases': []}
     fixed_files = [{'path': name, 'content': (HERE / name).read_text()}
-                   for name in ('runner.py', 'road.xodr', 'measure_saved.py')]
+                   for name in ('runner.py', 'road.xodr', 'measure_saved.py',
+                                'signal_video_cpu.py', 'finalize.py')]
     fixed_files.append({'path': 'tests/test_construction.py', 'content': TEST})
     for case in CASES:
         case_id = AID + '__' + case
         entry = {'case_id': case_id, 'kind': 'draft_not_selected', 'candidates': [],
                  'measurement_contract': f'measurement-contracts/{case}.json',
-                 'measurement_procedure': {'entrypoint': 'measure_saved.py',
-                                           'output_schema': 'c111331-saved-signal-entry-measurement-v1'},
+                 'measurement_procedure': {'entrypoint': 'finalize.py',
+                                           'output_schema': 'c111331-saved-signal-entry-report-v1'},
                  'candidate_risk': {'status': 'native_and_original_pixels_unverified',
                                     'reason': 'Requested signal phase and junction entry require observed Native actor and pixel evidence'}}
         write(HERE / 'measurement-contracts' / (case + '.json'), {
             'format': 'worker-measurement-contract-v1', 'case_id': case_id,
-            'requirements': [{'disposition_index': 1, 'requirement': 'NRS-484B-307-6a',
-                              'source': 'NRS 484B.307(6)(a)',
-                              'output_key': 'observed_signal_phase_at_entry',
-                              'method': 'first_full_body_junction_entry_joined_to_observed_native_signal',
-                              'value_type': 'string', 'kind': 'measured',
-                              'inputs': ['native_samples.jsonl', 'video_frames.jsonl']}],
+            'requirements': [
+                {'disposition_index': index, 'requirement': requirement,
+                 'source': 'inputs/coverage/branch-sources.json',
+                 'output_key': key, 'method': method, 'value_type': value_type,
+                 'kind': 'measured', 'inputs': ['native_samples.jsonl',
+                     'video_frames.jsonl', 'signal_reference.mkv']}
+                for index, requirement, key, method, value_type in (
+                    (0, 'text-0', 'yellow_warning_onset_frame', 'measure_yellow_onset', 'number'),
+                    (1, 'text-1', 'observed_signal_phase_at_entry', 'measure_phase_at_entry', 'text'),
+                    (2, 'reviewed-scope-0', 'red_exhibition_onset_frame', 'measure_red_onset', 'number'),
+                    (3, 'reviewed-scope-1', 'full_body_intersection_entry_frame', 'measure_body_entry', 'number'),
+                    (4, 'reviewed-scope-2', 'entry_to_red_margin_frames', 'measure_entry_red_margin', 'number'))],
             'negative': {'remove': ['native_samples.jsonl'],
                          'error_contains': 'Missing required source: native_samples.jsonl'},
             'uncertainty': {'frame_bracket_s': .05,
@@ -112,7 +119,11 @@ def build():
                                  'method': 'original Native frame join', 'time_window': '480 frames',
                                  'reference_frame': 'Native imported OpenDRIVE', 'uncertainty': '50 ms frame bracket'}
                                 for name in ('native_body_pose', 'observed_signal_state', 'signal_camera_frame_join')],
-                                'context_inputs': ['road.xodr', 'native-requests.jsonl'],
+                                'context_inputs': [
+                                    {'name': 'authored_road', 'unit': 'structured',
+                                     'method': 'source-hashed OpenDRIVE road.xodr'},
+                                    {'name': 'authored_signal_request', 'unit': 'structured',
+                                     'method': 'source-hashed native-requests.jsonl'}],
                                 'limitations': ['Native signal behavior and original pixels unverified']},
                             'static_checks': ['480 frame request identity', 'OpenDRIVE signal ID and source hashes',
                                               'requested phase and body entry recomputation'],

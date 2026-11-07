@@ -1,0 +1,120 @@
+{
+  "case_id": "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__reference",
+  "measured_values": {
+    "signal_phase_at_first_full_body_entry": "yellow",
+    "entry_frame": 222,
+    "red_start_frame": 240
+  },
+  "target_checks": [
+    {
+      "target": "signal phase at first full-body junction entry",
+      "requested": "yellow",
+      "measured": "yellow",
+      "method": "saved Native body/traffic-light frame join",
+      "tolerance": "one retained 50 ms frame bracket",
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": [
+        "native_samples.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": false,
+  "maneuver_completed": false,
+  "termination_reason": "full 480-frame synthetic saved window",
+  "physical_failure_flags": [
+    "Native signal/body behavior and original pixels unverified"
+  ],
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "signal_reference.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "native_body_pose",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native frame join",
+        "time_window": "480 frames",
+        "reference_frame": "Native imported OpenDRIVE",
+        "uncertainty": "50 ms frame bracket"
+      },
+      {
+        "name": "observed_signal_state",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native frame join",
+        "time_window": "480 frames",
+        "reference_frame": "Native imported OpenDRIVE",
+        "uncertainty": "50 ms frame bracket"
+      },
+      {
+        "name": "signal_camera_frame_join",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native frame join",
+        "time_window": "480 frames",
+        "reference_frame": "Native imported OpenDRIVE",
+        "uncertainty": "50 ms frame bracket"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "authored_road",
+        "unit": "structured",
+        "method": "source-hashed OpenDRIVE road.xodr"
+      },
+      {
+        "name": "authored_signal_request",
+        "unit": "structured",
+        "method": "source-hashed native-requests.jsonl"
+      }
+    ],
+    "limitations": [
+      "Native signal behavior and original pixels unverified"
+    ]
+  },
+  "recording_evidence": [
+    {
+      "name": "native_body_pose",
+      "unit": "structured",
+      "reference": "channels/native_body_pose.jsonl"
+    },
+    {
+      "name": "observed_signal_state",
+      "unit": "structured",
+      "reference": "channels/observed_signal_state.jsonl"
+    },
+    {
+      "name": "signal_camera_frame_join",
+      "unit": "structured",
+      "reference": "channels/signal_camera_frame_join.jsonl"
+    },
+    {
+      "name": "authored_road",
+      "unit": "structured",
+      "reference": "road-context.json"
+    },
+    {
+      "name": "authored_signal_request",
+      "unit": "structured",
+      "reference": "signal-request-context.json"
+    }
+  ],
+  "realized_observables": {
+    "full_body_entry_frame": {
+      "value": 222,
+      "unit": "frame",
+      "method": "saved 480-frame synthetic Native signal/body join",
+      "time_window": "24 s diagnostic",
+      "statistic": "first body entry",
+      "reference": "native_samples.jsonl"
+    }
+  },
+  "provenance_kind": "synthetic_local_diagnostic",
+  "accepted": false
+}

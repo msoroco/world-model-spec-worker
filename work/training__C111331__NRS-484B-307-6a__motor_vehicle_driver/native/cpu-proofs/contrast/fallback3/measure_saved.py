@@ -22,6 +22,7 @@ def measure(source_dir, case_id, candidate_id):
     if len(native) != 480 or len(video) != 480:
         raise ValueError('Saved 480-frame profile differs')
     entry = None
+    provenance = native[0]['source_kind']
     phases = []
     signal_ids = set()
     for i, (n, v) in enumerate(zip(native, video)):
@@ -29,7 +30,7 @@ def measure(source_dir, case_id, candidate_id):
             raise ValueError('Native/video frame join differs')
         if abs(n['time_s'] - v['time_s']) > .001 or abs(n['time_s'] - i / 20) > .051:
             raise ValueError('Native/video time join differs')
-        if n['source_kind'] not in ('synthetic_cpu_native_observation', 'original_native_observation'):
+        if n['source_kind'] not in ('synthetic_cpu_native_observation', 'original_native_observation') or n['source_kind'] != provenance:
             raise ValueError('Saved source provenance differs')
         phase = n['observed_signal_state'].lower().rsplit('.', 1)[-1]
         if phase not in ('green', 'yellow', 'red'):
@@ -49,7 +50,7 @@ def measure(source_dir, case_id, candidate_id):
         raise ValueError('Observed signal sequence differs')
     return {'format': 'c111331-saved-signal-entry-measurement-v1',
             'case_id': case_id, 'candidate_id': candidate_id,
-            'source_kind': native[0]['source_kind'],
+            'source_kind': provenance,
             'sources': {'native_samples.jsonl': sha(source_dir / 'native_samples.jsonl'),
                         'video_frames.jsonl': sha(source_dir / 'video_frames.jsonl')},
             'observed_signal_actor_id': next(iter(signal_ids)),
@@ -58,7 +59,7 @@ def measure(source_dir, case_id, candidate_id):
             'observed_signal_phase_at_entry': phases[entry],
             'entry_to_red_margin_frames': red - entry,
             'frame_bracket_uncertainty_s': .05,
-            'physical_native_evidence': native[0]['source_kind'] == 'original_native_observation',
+            'physical_native_evidence': provenance == 'original_native_observation',
             'original_pixel_visibility_verified': False,
             'statutory_verdict_claimed': False}
 
