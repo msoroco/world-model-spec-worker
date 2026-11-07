@@ -2,6 +2,7 @@
 import importlib.util
 import json
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
 FOLDER=Path(__file__).resolve().parent
 spec=importlib.util.spec_from_file_location('center_geometry',FOLDER/'native/geometry.py')
@@ -24,8 +25,17 @@ def run():
     assert len(set(stations.values()))==5
     parsed=geometry.check()
     assert parsed['passed'] and parsed['native_center_lane_design_verified'] is False
+    root=ET.fromstring(geometry.open_drive())
+    designated=[]
+    for road in root.findall('road'):
+        for lane in road.findall('./lanes/laneSection/right/lane'):
+            if lane.attrib.get('type')=='bidirectional':
+                designated.append((int(road.attrib['id']),int(lane.attrib['id']),
+                    [(item.attrib.get('code'),item.attrib.get('value')) for item in lane.findall('userData')]))
+    assert designated==[(1,-1,[('lane_use','left_turn_only_both_directions')])]
     return {'format':'c394300-3b-authored-route-comparison-v1','passed':True,
       'same_map':True,'cases':list(cases),
+      'authored_bidirectional_turn_only_lane':True,
       'fixed':'actor, law, map, initial 7.5 m, longitudinal route stations, turn connector and destination',
       'deliberate_difference':'nominal lane-change station before the same left turn',
       'nominal_entry_station_x_m':stations,'lateral_at_x_minus_68_m':x68,
