@@ -30,7 +30,7 @@ def main():
     review = read(ROOT/'work/_shared/branch-review.json')
     assert plan['source_law_text'] == source['law']['text']
     assert review['coverage_sha256'] == sha(matrix_path)
-    assert LAW in review['missing_branches']  # Traversal remains pending.
+    assert LAW not in review['missing_branches']  # All four CPU source branches now runnable.
     branches = {b['branch_id'].split('__')[0]: b for b in laws[LAW]['branches']}
     expected = {
         'two_way_railroad_crossing': (('rail_reference', 'rail_contrast'),

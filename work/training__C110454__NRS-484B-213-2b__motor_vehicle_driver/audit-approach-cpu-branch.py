@@ -34,17 +34,17 @@ def main():
     assert set(branch['topic_ids']) == {'text-0', 'text-1'}
     assert branch['assignment_id'] == HERE.name and branch['status'] == 'runnable'
     cases = {c['case_id'] for c in plan['cases']}
-    assert len(cases) == 2 and set(branch['case_ids']) == cases
+    assert len(branch['case_ids']) == 2 and set(branch['case_ids']) <= cases
     assert branch['comparison_ids'] == [plan['comparisons'][0]['comparison_id']]
-    assert set(plan['comparisons'][0]['case_ids']) == cases
+    assert set(plan['comparisons'][0]['case_ids']) == set(branch['case_ids'])
     assert branch['cpu_proofs'] == {name: sha(HERE/name) for name in PROOFS}
     assert review['coverage_sha256'] == sha(matrix_path)
-    assert LAW in review['missing_branches']  # Traversal, rail and one-way remain pending.
+    assert LAW not in review['missing_branches']  # All four CPU source branches now runnable.
     manifest = read(HERE/'draft-execution-manifest.json')
     batch = read(ROOT/'batch.json')
     assert manifest['status'] == 'draft_not_selected'
     assert manifest['runtime_manifest_sha256'] == batch['runtime']['source_manifest_sha256']
-    assert {entry['case_id'] for entry in manifest['cases']} == cases
+    assert {entry['case_id'] for entry in manifest['cases']} == set(branch['case_ids'])
     assert read(HERE/'draft-package-audit.json')['candidate_count'] == 8
     assert read(HERE/'fallback-trigger-summary.json')['original_native_observed'] is False
     env = os.environ.copy()
@@ -57,7 +57,7 @@ def main():
                        check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     assert read(HERE/'result.json')['status'] == 'blocked'
     receipt = {'passed': True, 'law_id': LAW, 'branch_id': branch['branch_id'],
-               'controlled_cases': sorted(cases), 'exact_offline_bundles': 8,
+               'controlled_cases': sorted(branch['case_ids']), 'exact_offline_bundles': 8,
                'portable_positive_negative_pairs': 8, 'synthetic_trigger_rows': 8,
                'selected': False, 'original_native_or_strict_v2_verified': False,
                'proof_sha256': branch['cpu_proofs'], 'independent_audits': audits}

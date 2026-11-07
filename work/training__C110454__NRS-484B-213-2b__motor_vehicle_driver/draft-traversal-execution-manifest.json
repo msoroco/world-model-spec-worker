@@ -1,0 +1,135 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "0d9a74f44af88236ebed007ae6e020a134b420ad6fe8f2f87c8869184ebee555",
+  "status": "draft_not_selected",
+  "scope": "intersection traversal source alternative; no legal verdict",
+  "cases": [
+    {
+      "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__traversal_reference",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, full-body intersection traversal, parking and original pixels require physical capture"
+      },
+      "measurement_contract": "draft-traversal-contracts/traversal_reference/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-traversal-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-traversal-candidates/traversal_reference/fallback1/construction.json",
+          "construction_sha256": "b69e2c1ab3d489a138769ac30247aca337a3cd6a043759f66d0a086b7e8f5010",
+          "trigger": {
+            "metric": "max_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "source": "original Native ego pose joined to authored route and map readback",
+            "failure_condition": "max_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-traversal-candidates/traversal_reference/fallback2/construction.json",
+          "construction_sha256": "99e0312ec26fe069d40dea5032f0114a3a3b01d89dcb0132809e4e9819c61a77",
+          "trigger": {
+            "metric": "parking_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "source": "original Native velocity at surveyed parking endpoint",
+            "failure_condition": "parking_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-traversal-candidates/traversal_reference/fallback3/construction.json",
+          "construction_sha256": "d16086ea0a6faa02d9fd258437f7cfb7005bc8d0a9a9b74d6959976fced09da3",
+          "trigger": {
+            "metric": "min_ego_pixel_margin_px",
+            "op": "<",
+            "threshold": 40,
+            "source": "decoded original overview video and original body-mask corners",
+            "failure_condition": "min_ego_pixel_margin_px < 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-traversal-candidates/traversal_reference/primary/construction.json",
+      "construction_sha256": "0cea0e9cef13ef662ddaf63cf54dd06fc0f6cb6e5207cca9f2821967db45fb38"
+    },
+    {
+      "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__traversal_contrast",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, full-body intersection traversal, parking and original pixels require physical capture"
+      },
+      "measurement_contract": "draft-traversal-contracts/traversal_contrast/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-traversal-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-traversal-candidates/traversal_contrast/fallback1/construction.json",
+          "construction_sha256": "2d4f510da5eb4a880b4ffec84e45331165c9954b1aaa2cd80d44b655e449760a",
+          "trigger": {
+            "metric": "max_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "source": "original Native ego pose joined to authored route and map readback",
+            "failure_condition": "max_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-traversal-candidates/traversal_contrast/fallback2/construction.json",
+          "construction_sha256": "510b5687d033facbee8ee4590752e9b11115f6dafa554e1ab75ec18fe31dbd2e",
+          "trigger": {
+            "metric": "parking_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "source": "original Native velocity at surveyed parking endpoint",
+            "failure_condition": "parking_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-traversal-candidates/traversal_contrast/fallback3/construction.json",
+          "construction_sha256": "4ef48ec7e4a411efdbab00288ead49ae8805d42f39cb850f8d9191425fabbb0d",
+          "trigger": {
+            "metric": "min_ego_pixel_margin_px",
+            "op": "<",
+            "threshold": 40,
+            "source": "decoded original overview video and original body-mask corners",
+            "failure_condition": "min_ego_pixel_margin_px < 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-traversal-candidates/traversal_contrast/primary/construction.json",
+      "construction_sha256": "beb7d9bfe165295cc6ba9465ce74482e949e074f3a8827f90ddbf9093370f368"
+    }
+  ]
+}
