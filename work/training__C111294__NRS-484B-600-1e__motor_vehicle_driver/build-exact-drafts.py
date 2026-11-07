@@ -75,8 +75,10 @@ def build() -> dict:
                       "actor": "motor_vehicle_driver", "rate_hz": 20,
                       "duration_s": 24, "requested_setting_mph": case["requested_setting"],
                       "comparison_variable": "observed_speed",
+                      "measurement_contract": "measurement-contract.json",
                       "required_atoms": ["kin.speed", "kin.velocity"],
-                      "source_packets": plan["sources"],
+                      "source_packets": [],
+                      "frozen_source_hashes": plan["sources"],
                       "mandatory_channels": ["ego_pose", "ego_speed",
                                              "observed_speed", "other_vehicle_pose"],
                       "case": {"case_id": case["case_id"]},
@@ -84,7 +86,9 @@ def build() -> dict:
                       "recording_description": recording,
                       "cameras": camera_plan(),
                       "status": "unselected_native_draft"}
-            files = common + [{"path": "config.json",
+            files = common + [{"path": "measurement-contract.json",
+                               "content": (HERE / contract).read_text()},
+                              {"path": "config.json",
                                "content": json.dumps(config, indent=2) + "\n"}]
             construction = {"case_id": case["case_id"],
                 "law_id": "NRS-484B-600-1e", "cell_id": "C111294",
@@ -118,6 +122,13 @@ def build() -> dict:
                 entry["candidates"].append(ref)
         manifest["cases"].append(entry)
     write(HERE / "draft-execution-manifest.json", manifest)
+    write(HERE / "proposals/cases.json", {"status": "unselected_cpu_drafts",
+        "cases": [{"case_id": case["case_id"], "target_law_id": "NRS-484B-600-1e",
+            "target_type": "boundary_probe", "cell_id": "C111294",
+            "actor": "motor_vehicle_driver", "recording_description": recording,
+            "sweep_measurements": [], "comparison_variable": "observed_speed",
+            "requested_setting": case["requested_setting"],
+            "status": "unselected_draft"} for case in plan["cases"]]})
     return {"cases": len(manifest["cases"]),
             "candidates": sum(1 + len(c["candidates"]) for c in manifest["cases"]),
             "selected": False}

@@ -91,6 +91,7 @@ def native_sample(index: int, frame: int, elapsed_s: float, ego, other) -> dict:
             other.attributes.get("role_name") != "c111294_opposing_vehicle"):
         raise ValueError("Native subject or other actor role readback changed")
     return {"frame": index, "native_frame": frame, "t_s": index / FPS,
+            "time_s": elapsed_s,
             "native_elapsed_s": elapsed_s,
             "ego_actor_id": ego.id, "other_actor_id": other.id,
             "ego_role": "motor_vehicle_driver", "other_role": "motor_vehicle_driver",
@@ -142,6 +143,8 @@ def execute(case: str, candidate: str, output_dir: Path, host: str, port: int) -
             sys.path[:0] = [str(package), str(source)]
             break
     from worker_exchange.world_restore import snapshot, restore
+    from worker_exchange.media import compose_four_views
+    from worker_exchange.native_output import seal_capture
     from pipeline_capture import PipelineCapture
 
     preflight = check(case, candidate)
@@ -164,6 +167,7 @@ def execute(case: str, candidate: str, output_dir: Path, host: str, port: int) -
     owned, encoders, logs, queues, channels = [], {}, {}, {}, {}
     capture = None
     changed, restored, error, frames = False, None, None, 0
+    encoder_exit_codes = {}
     try:
         world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
             vertex_distance=.25, max_road_length=50, wall_height=0,
@@ -184,6 +188,11 @@ def execute(case: str, candidate: str, output_dir: Path, host: str, port: int) -
             "lane_readback": survey,
             "native_map_sha256": hashlib.sha256(mapping.to_opendrive().encode()).hexdigest(),
             "physical_speed_observed": False, "selected": False})
+        _write_new(output / "context.json", {
+            "map_survey": survey,
+            "other_vehicle": {"role": "motor_vehicle_driver",
+                "route": "opposing through lane road 4 to junction 100 to road 1"},
+            "territorial_applicability_verified": False})
         library = world.get_blueprint_library()
         ego_bp = library.find("vehicle.tesla.model3")
         ego_bp.set_attribute("role_name", "c111294_speed_subject")
@@ -229,7 +238,8 @@ def execute(case: str, candidate: str, output_dir: Path, host: str, port: int) -
             channels[name] = (output / "channels" / (name + ".jsonl")).open("x")
         start = world.get_snapshot().timestamp.elapsed_seconds
         with (output / "native_samples.jsonl").open("x") as native_file, \
-             (output / "video_frames.jsonl").open("x") as video_file:
+             (output / "video_frames.jsonl").open("x") as video_file, \
+             (output / "body_history.jsonl").open("x") as body_file:
             for index in range(FRAMES):
                 transform = ego.get_transform()
                 velocity = ego.get_velocity()
@@ -242,6 +252,8 @@ def execute(case: str, candidate: str, output_dir: Path, host: str, port: int) -
                 elapsed = world.get_snapshot().timestamp.elapsed_seconds - start
                 row = native_sample(index, frame, elapsed, ego, other)
                 native_file.write(json.dumps(row, allow_nan=False) + "\n")
+                body_file.write(json.dumps({"frame": frame, "time_s": elapsed,
+                    "body_vertices_m": row["ego_body_vertices_m"]}, allow_nan=False) + "\n")
                 capture.capture(frame, elapsed, extra={"c111294_speed_source": row})
                 values = {"ego_pose": row["ego_position_m"],
                           "ego_speed": math.sqrt(sum(v*v for v in row["ego_velocity_mps"])),
@@ -273,7 +285,8 @@ def execute(case: str, candidate: str, output_dir: Path, host: str, port: int) -
         for name, encoder in encoders.items():
             try:
                 encoder.stdin.close()
-                if encoder.wait(timeout=180) != 0:
+                encoder_exit_codes[name] = encoder.wait(timeout=180)
+                if encoder_exit_codes[name] != 0:
                     raise RuntimeError("Lossless original camera encoder failed: " + name)
             except BaseException as exc:
                 error = error or {"encoder_error": str(exc)}
@@ -284,7 +297,8 @@ def execute(case: str, candidate: str, output_dir: Path, host: str, port: int) -
                 if error is None:
                     manifest_path = output / "capture/manifest.json"
                     manifest = json.loads(manifest_path.read_text())
-                    for name in ("native_samples.jsonl", "video_frames.jsonl",
+                    for name in ("native_samples.jsonl", "body_history.jsonl",
+                                 "video_frames.jsonl", "context.json",
                                  *(spec["name"] + ".mkv" for spec in camera_plan())):
                         manifest["sources"][name] = _sha(output / name)
                     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
@@ -306,10 +320,27 @@ def execute(case: str, candidate: str, output_dir: Path, host: str, port: int) -
                 restored = restore(client, saved)
             except BaseException as exc:
                 error = error or {"world_restore_error": str(exc)}
+        if error is None and frames == FRAMES:
+            try:
+                sources = {"overview": output / "overview.mkv",
+                           "approach": output / "ego_forward.mkv",
+                           "reference_corner": output / "junction.mkv",
+                           "driver_reference": output / "ego_side.mkv"}
+                composed = compose_four_views(sources, output / "video_frames.jsonl",
+                                              output / "raw.mkv")
+                _write_new(output / "four-view-receipt.json", composed)
+                seal_capture(output, frames=frames, restoration=restored, errors=[],
+                             encoder_exit_codes=encoder_exit_codes,
+                             context={"case_id": plan["case_id"],
+                                      "candidate_id": candidate,
+                                      "physical_acceptance_claimed": False})
+            except BaseException as exc:
+                error = error or {"capture_seal_error": str(exc)}
         _write_new(output / "native-capture-report.json", {
             "case_id": plan["case_id"], "candidate_id": candidate,
             "frames": frames, "expected_frames": FRAMES,
             "restoration": restored, "error": error,
+            "encoder_exit_codes": encoder_exit_codes,
             "accepted": False, "legal_verdict": None})
     if error:
         raise RuntimeError("Native attempt failed; see native-capture-report.json")
