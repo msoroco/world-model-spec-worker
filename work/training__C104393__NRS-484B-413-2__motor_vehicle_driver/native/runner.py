@@ -108,7 +108,9 @@ def execute(config, output_dir, host, port):
         survey=map_survey(carla,mapping,p["radius_m"])
         write_new(output/"road_geometry.json",{"native_map_sha256":native_hash,
             "authored_map_sha256":config["native_request"]["map_sha256"],
-            "lane_survey":survey,"turn_entry_x_m":0,"area_classification":p["area"]})
+            "lane_survey":survey,"turn_entry_x_m":0,"area_classification":p["area"],
+            "turn_radius_m":p["radius_m"],"lane_link_confirmed":True,
+            "provenance":"original_native_capture"})
         ego_bp=world.get_blueprint_library().find("vehicle.lincoln.mkz_2020")
         ego_bp.set_attribute("role_name","c104393_ego")
         ego=world.spawn_actor(ego_bp,carla.Transform(
@@ -193,7 +195,9 @@ def execute(config, output_dir, host, port):
                 capture.capture(frame,time_s,extra={"c104393_native":row})
                 samples.write(json.dumps(row,allow_nan=False)+"\n")
                 bodies.write(json.dumps({"frame":frame,"time_s":time_s,
-                    "ego_body_xy_m":footprint},allow_nan=False)+"\n")
+                    "ego_body_xy_m":footprint,
+                    "body_vertices_m":[[v.x,v.y,v.z] for v in
+                        ego.bounding_box.get_world_vertices(pose)]},allow_nan=False)+"\n")
                 values={"sig.turn_indicator":{"requested":requested,"observed":bool(bits&left_bit)},
                     "drv.distance_while":row,"kin.path_length":row,
                     "drv.turning":{"heading_deg":pose.rotation.yaw,"course_change":changed_now},

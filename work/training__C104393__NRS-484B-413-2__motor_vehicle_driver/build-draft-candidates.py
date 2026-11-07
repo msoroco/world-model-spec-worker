@@ -13,7 +13,7 @@ from geometry import open_drive,route,signal_start
 
 NAMES=("primary","fallback1","fallback2","fallback3")
 SOURCES=("runner.py","geometry.py","controller.py","cameras.py",
-         "engineering.py","signal_control.py")
+         "engineering.py","signal_control.py","saved_measure.py","fallback_triggers.py")
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def digest(value):return hashlib.sha256(value).hexdigest()
