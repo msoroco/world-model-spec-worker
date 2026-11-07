@@ -34,7 +34,8 @@ def audit():
             assert proposal['entrypoint'] == 'runner.py'
             files = {item['path']: item['content'] for item in proposal['files']}
             assert {'config.json', 'runner.py', 'build.py', 'official_motion.py',
-                    'candidates.py',
+                    'candidates.py', 'measure_saved.py', 'prepare_saved.py',
+                    'finalize.py',
                     'statutory-scope.json', 'tests/test_construction.py'} <= files.keys()
             config = json.loads(files['config.json'])
             assert config['case_id'] == case['case_id']
@@ -42,7 +43,8 @@ def audit():
             assert config['officer_direction_verified'] is False
             assert config['physical_success_claimed'] is False
             for name in ('runner.py', 'build.py', 'official_motion.py',
-                         'candidates.py', 'statutory-scope.json'):
+                         'candidates.py', 'statutory-scope.json',
+                         'measure_saved.py', 'prepare_saved.py', 'finalize.py'):
                 assert files[name] == (HERE / name).read_text()
             folder = HERE / 'cpu-receipts' / case['case_id'].rsplit('__', 1)[1] / candidate
             receipt = json.loads((folder / 'receipt.json').read_text())

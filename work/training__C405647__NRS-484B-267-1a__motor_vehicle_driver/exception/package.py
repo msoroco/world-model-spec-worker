@@ -8,7 +8,8 @@ from build import ASSIGNMENT, CASES, CANDIDATES
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[2]
 SOURCES = ('runner.py', 'candidates.py', 'build.py', 'official_motion.py',
-           'statutory-scope.json')
+           'statutory-scope.json', 'measure_saved.py', 'prepare_saved.py',
+           'finalize.py')
 TEST = '''import hashlib
 import json
 from pathlib import Path
@@ -67,6 +68,9 @@ def build():
         case_id = ASSIGNMENT + '__' + case
         entry = {'case_id': case_id, 'kind': 'draft_not_selected',
                  'candidates': [],
+                 'measurement_contract': f'measurement-contracts/{case}.json',
+                 'measurement_procedure': {'entrypoint': 'finalize.py',
+                                           'output_schema': 'c405647-exception-saved-analysis-v1'},
                  'candidate_risk': {'status': 'physical_and_source_review',
                                     'reason': 'Officer identity, direction content, recipient, time and qualifying approach unverified'}}
         for candidate in CANDIDATES:
@@ -98,8 +102,8 @@ def build():
                             'actor': 'motor_vehicle_driver', 'entrypoint': 'runner.py',
                             'files': files + [{'path': 'config.json',
                                                'content': json.dumps(config, indent=2) + '\n'}],
-                            'measurement_plan': {'method': 'original officer/approach pixels, actor poses and direction annotation',
-                                                 'status': 'unselected_not_yet_implemented'},
+                            'measurement_plan': {'method': 'source-bound synthetic saved officer cue/approach measurement; original review later',
+                                                 'status': 'synthetic_cpu_path_tested'},
                             'recording_description': {'channels': [
                                 {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
                                  'method': 'original Native frame join',
