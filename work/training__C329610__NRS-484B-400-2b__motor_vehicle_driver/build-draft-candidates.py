@@ -18,6 +18,7 @@ SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','base_geometry.py':
          'tests/test_measure_exit.py':'test_measure_exit.py',
          'tests/test_cameras.py':'test_cameras.py'}
 SOURCES['tests/test_fallback_triggers.py']='test_fallback_triggers.py'
+SOURCES['tests/test_runner_speed.py']='test_runner_speed.py'
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
