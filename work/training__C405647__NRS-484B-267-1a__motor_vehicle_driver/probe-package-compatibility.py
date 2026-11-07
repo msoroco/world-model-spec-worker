@@ -174,12 +174,14 @@ def main():
                              cwd=negative, env=execution_env(), text=True,
                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                              timeout=300)
+    (scratch / 'negative-analysis.log').write_text(failure.stdout)
     if failure.returncode == 0 or 'Missing required source: source-scope.json' not in failure.stdout:
         raise ValueError('Exact missing-source negative did not reject')
     print(json.dumps({'case_id': case_id, 'candidate_id': args.candidate,
                       'positive': {k: v for k, v in receipt.items() if k != 'fixture_manifest'},
                       'negative': {'removed': 'source-scope.json',
-                                   'exit_code': failure.returncode},
+                                   'exit_code': failure.returncode,
+                                   'log_sha256': _sha(scratch / 'negative-analysis.log')},
                       'scope': 'unselected exact synthetic portable diagnostic; no accepted Native recording'}))
 
 
