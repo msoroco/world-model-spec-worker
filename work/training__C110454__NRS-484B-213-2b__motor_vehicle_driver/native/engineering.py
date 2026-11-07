@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 CASES = ("reference", "contrast")
@@ -60,6 +61,6 @@ def evaluate_trigger(candidate: str, metrics: dict, source: Path,
         raise ValueError("Metrics are not bound to the original source")
     trigger = TRIGGERS[candidate]
     value = record.get(trigger["metric"])
-    if type(value) not in (int, float):
+    if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
         raise ValueError("Missing measured fallback metric")
     return value > trigger["threshold"] if trigger["op"] == ">" else value < trigger["threshold"]

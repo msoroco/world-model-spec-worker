@@ -37,6 +37,12 @@ class EngineeringProof(unittest.TestCase):
                     self.assertEqual(module.evaluate_trigger(candidate, metrics, source, digest), expected)
                 with self.assertRaisesRegex(ValueError, "hash"):
                     module.evaluate_trigger(candidate, metrics, source, "0" * 64)
+                for invalid in (float("nan"), float("inf"), float("-inf"), -1, True):
+                    metrics = {"source_kind": "original_native_and_video", metric: invalid}
+                    source.write_text(json.dumps(metrics))
+                    digest = hashlib.sha256(source.read_bytes()).hexdigest()
+                    with self.assertRaisesRegex(ValueError, "metric"):
+                        module.evaluate_trigger(candidate, metrics, source, digest)
 
 
 if __name__ == "__main__":
