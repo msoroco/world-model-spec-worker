@@ -19,6 +19,11 @@ def audit():
         raise ValueError('Package manifest source differs')
     if proof['physical_success_claimed'] or proof['delivery_ready_claimed']:
         raise ValueError('Unselected CPU proof promoted to readiness')
+    proposals = json.loads((HERE / 'proposals/cases.json').read_text())
+    if proposals['cell_id'] != 'C111331' or proposals['actor'] != 'motor_vehicle_driver' or proposals['status'] != 'unselected_cpu_draft':
+        raise ValueError('Portable proposal identity differs')
+    if {p['case_id'] for p in proposals['cases']} != {e['case_id'] for e in manifest['cases']}:
+        raise ValueError('Portable proposal cases differ')
     indexed = {(r['case'], r['candidate']): r for r in proof['rows']}
     if len(indexed) != 8 or len(proof['rows']) != 8:
         raise ValueError('Eight exact receipts required')
@@ -27,6 +32,9 @@ def audit():
     compared = 0
     for case in ('reference', 'contrast'):
         entry = next(e for e in manifest['cases'] if e['case_id'] == AID + '__' + case)
+        proposal = next(p for p in proposals['cases'] if p['case_id'] == entry['case_id'])
+        if proposal['target_law_id'] != 'NRS-484B-307-6a' or proposal['target_type'] != 'attempt' or proposal['recording_description'] != json.loads((HERE / entry['construction']).read_text())['recording_description']:
+            raise ValueError('Portable proposal recording contract differs')
         for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
             ref = entry if candidate == 'primary' else next(c for c in entry['candidates'] if c['id'] == candidate)
             folder = HERE / 'cpu-proofs' / case / candidate

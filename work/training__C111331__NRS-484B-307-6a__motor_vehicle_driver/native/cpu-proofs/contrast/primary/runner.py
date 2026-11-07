@@ -59,15 +59,19 @@ def check():
             raise ValueError('Request was promoted to observation')
         center = r['native_center_xy_m']
         body = r['native_body_xy_m']
-        if len(body) != 4 or center[0] != 1.75 or abs(sum(p[0] for p in body) / 4 - center[0]) > 1e-5 or abs(sum(p[1] for p in body) / 4 - center[1]) > 1e-5:
+        if len(body) != 4 or abs(sum(p[0] for p in body) / 4 - center[0]) > 1e-5 or abs(sum(p[1] for p in body) / 4 - center[1]) > 1e-5:
             raise ValueError('Requested body and center differ')
-        if i and abs((requests[i - 1]['native_center_xy_m'][1] - center[1]) - config['knobs']['speed_m_per_frame']) > 1e-4:
+        if i and abs(math.dist(center, requests[i - 1]['native_center_xy_m']) - config['knobs']['speed_m_per_frame']) > .001:
             raise ValueError('Requested motion cadence differs')
-        if entry is None and -min(p[1] for p in body) >= -7:
+        if not 0 <= r['native_yaw_deg_requested'] <= 90:
+            raise ValueError('Requested northbound-to-eastbound heading differs')
+        if entry is None and max(p[1] for p in body) >= -7:
             entry = i
     metrics = config['metrics']
     if entry != metrics['requested_full_body_entry_frame'] or requests[entry]['signal_phase_requested'] != metrics['requested_phase_at_entry']:
         raise ValueError('Entry and signal metric differ')
+    if requests[0]['native_center_xy_m'] != [1.75, -80.0] or requests[-1]['native_center_xy_m'][1] != -1.75 or requests[-1]['native_center_xy_m'][0] > 100:
+        raise ValueError('Requested road-one/right-turn/road-two route differs')
     if metrics['requested_phase_at_entry'] != ('yellow' if case == 'reference' else 'red'):
         raise ValueError('Controlled phase differs')
     trigger = config['measured_trigger']
@@ -99,6 +103,7 @@ def saved_capture_rows(sample, video_frame):
              'position_m': [x, y, sample['native_z_m']],
              'heading_deg': sample['native_yaw_deg'], 'speed_mps': sample['speed_mps']}
     video = {'video_frame': video_frame, 'native_frame': sample['native_frame'],
+             'carla_frame': sample['native_frame'],
              'time_s': sample['time_s']}
     return sample, trace, video
 
@@ -173,7 +178,7 @@ def execute(output, host, port):
         blueprint = world.get_blueprint_library().find('vehicle.lincoln.mkz_2020')
         blueprint.set_attribute('role_name', 'c111331_ego')
         ego = world.spawn_actor(blueprint, carla.Transform(
-            carla.Location(x=first[0], y=first[1], z=.5), carla.Rotation(yaw=-90)))
+            carla.Location(x=first[0], y=first[1], z=.5), carla.Rotation(yaw=90)))
         owned.append(ego)
         camera_bp = world.get_blueprint_library().find('sensor.camera.rgb')
         camera_bp.set_attribute('image_size_x', '1280')
@@ -203,9 +208,10 @@ def execute(output, host, port):
                 velocity = ego.get_velocity()
                 speed = math.hypot(velocity.x, velocity.y)
                 target = request['native_center_xy_m']
-                lateral = target[0] - pose.location.x
-                heading_error = ((-90 - pose.rotation.yaw + 180) % 360) - 180
-                steer = max(-.35, min(.35, .08 * lateral + .012 * heading_error))
+                yaw = math.radians(pose.rotation.yaw)
+                left_error = -(target[0] - pose.location.x) * math.sin(yaw) + (target[1] - pose.location.y) * math.cos(yaw)
+                heading_error = ((request['native_yaw_deg_requested'] - pose.rotation.yaw + 180) % 360) - 180
+                steer = max(-.35, min(.35, -.08 * left_error - .012 * heading_error))
                 target_speed = config['knobs']['speed_m_per_frame'] * 20
                 throttle = max(0, min(.6, .15 * (target_speed - speed)))
                 brake = max(0, min(.8, .2 * (speed - target_speed)))
@@ -222,7 +228,7 @@ def execute(output, host, port):
                     'requested_signal_phase': phase, 'observed_signal_state': str(signal.get_state()),
                     'signal_actor_id': signal.id, 'approach_road_id': waypoint.road_id,
                     'approach_lane_id': waypoint.lane_id, 'controller_request': control,
-                    'body_entered_junction_observed': min(p[1] for p in body) <= 7.0}
+                    'body_entered_junction_observed': max(p[1] for p in body) >= -7.0}
                 image = camera_queue.get(timeout=30)
                 while image.frame < frame:
                     image = camera_queue.get(timeout=30)

@@ -65,7 +65,7 @@ def audit():
         reference, contrast = pair
         if any(a['native_body_xy_m'] != b['native_body_xy_m'] or a['native_center_xy_m'] != b['native_center_xy_m'] for a, b in zip(reference, contrast)):
             raise ValueError('Controlled body path differs')
-        entry = next(i for i, n in enumerate(reference) if min(p[1] for p in n['native_body_xy_m']) <= 7)
+        entry = next(i for i, n in enumerate(reference) if max(p[1] for p in n['native_body_xy_m']) >= -7)
         if reference[entry]['observed_signal_state'] != 'yellow' or contrast[entry]['observed_signal_state'] != 'red':
             raise ValueError('Controlled decoded signal phase differs')
     return {'passed': True, 'decoded_bundles': compared, 'decoded_frames_per_bundle': 480,

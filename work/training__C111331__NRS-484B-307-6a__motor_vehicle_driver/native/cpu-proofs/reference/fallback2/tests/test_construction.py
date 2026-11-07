@@ -38,13 +38,14 @@ class ExactRequestTests(unittest.TestCase):
 
     def test_observed_tick_saved_handoff(self):
         sample = {'request_index': 7, 'native_frame': 107, 'time_s': .35,
-                  'native_center_xy_m': [1.75, 8.5], 'native_z_m': .5,
-                  'native_body_xy_m': [[1, 8], [2, 8], [2, 9], [1, 9]],
-                  'native_yaw_deg': -90, 'speed_mps': 4.0}
+                  'native_center_xy_m': [1.75, -8.5], 'native_z_m': .5,
+                  'native_body_xy_m': [[1, -9], [2, -9], [2, -8], [1, -8]],
+                  'native_yaw_deg': 90, 'speed_mps': 4.0}
         native, trace, video = runner.saved_capture_rows(sample, 7)
         self.assertEqual(native['source_kind'], 'original_native_observation')
         self.assertEqual(trace['frame'], video['native_frame'])
-        self.assertEqual(trace['position_m'], [1.75, 8.5, .5])
+        self.assertEqual(trace['frame'], video['carla_frame'])
+        self.assertEqual(trace['position_m'], [1.75, -8.5, .5])
         self.assertNotIn('source_kind', sample)
         with self.assertRaisesRegex(ValueError, 'frame or body differs'):
             runner.saved_capture_rows(sample, 8)

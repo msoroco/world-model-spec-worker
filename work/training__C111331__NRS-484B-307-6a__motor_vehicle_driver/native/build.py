@@ -13,6 +13,9 @@ CANDIDATES = ('primary', 'fallback1', 'fallback2', 'fallback3')
 SEED = REPO / 'work/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/native/road.xodr'
 ENTRANCE_Y = -7.0
 YELLOW_START = 150
+TURN_RADIUS_M = 5.25
+APPROACH_DISTANCE_M = 73.0
+TURN_LENGTH_M = TURN_RADIUS_M * math.pi / 2
 
 
 def sha(path):
@@ -39,18 +42,30 @@ def proposal(case, candidate):
     red_frame = k[case + '_red_frame']
     rows = []
     for frame in range(480):
-        authored_y = -80 + k['speed_m_per_frame'] * frame
-        # Northbound full body first enters the junction at its leading edge.
-        front_y = authored_y + 2.25
+        distance = k['speed_m_per_frame'] * frame
+        if distance <= APPROACH_DISTANCE_M:
+            center = (1.75, -80 + distance)
+            forward = (0.0, 1.0)
+        elif distance <= APPROACH_DISTANCE_M + TURN_LENGTH_M:
+            theta = math.pi - (distance - APPROACH_DISTANCE_M) / TURN_RADIUS_M
+            center = (7 + TURN_RADIUS_M * math.cos(theta),
+                      -7 + TURN_RADIUS_M * math.sin(theta))
+            forward = (math.sin(theta), -math.cos(theta))
+        else:
+            center = (7 + distance - APPROACH_DISTANCE_M - TURN_LENGTH_M, -1.75)
+            forward = (1.0, 0.0)
+        right = (forward[1], -forward[0])
+        body = [[round(center[0] + longitudinal * forward[0] + lateral * right[0], 5),
+                 round(center[1] + longitudinal * forward[1] + lateral * right[1], 5)]
+                for longitudinal, lateral in ((-2.25, -.9), (-2.25, .9),
+                                               (2.25, -.9), (2.25, .9))]
         phase = ('green' if frame < YELLOW_START else
                  'yellow' if frame < red_frame else 'red')
         rows.append({'frame': frame, 'time_s': round(frame / 20, 4),
                      'source_kind': 'authored_cpu_request',
-                     'native_center_xy_m': [1.75, round(-authored_y, 5)],
-                     'native_body_xy_m': [[x, round(-y, 5)] for x, y in
-                                          ((.85, authored_y - 2.25),
-                                           (2.65, authored_y - 2.25),
-                                           (.85, front_y), (2.65, front_y))],
+                     'native_center_xy_m': [round(v, 5) for v in center],
+                     'native_body_xy_m': body,
+                     'native_yaw_deg_requested': round(math.degrees(math.atan2(forward[1], forward[0])), 5),
                      'signal_phase_requested': phase,
                      'signal_red_start_requested_frame': red_frame,
                      'actual_signal_phase_observed': None,
@@ -58,7 +73,7 @@ def proposal(case, candidate):
                      'intersection_entrance_authored_y_m': ENTRANCE_Y,
                      'camera_fov_deg': k['signal_camera_fov_deg']})
     entry = next(i for i, row in enumerate(rows)
-                 if -min(v[1] for v in row['native_body_xy_m']) >= ENTRANCE_Y)
+                 if max(v[1] for v in row['native_body_xy_m']) >= ENTRANCE_Y)
     phase_at_entry = rows[entry]['signal_phase_requested']
     assert phase_at_entry == ('yellow' if case == 'reference' else 'red')
     # Projection of the authored signal head from the fixed camera site at entry.

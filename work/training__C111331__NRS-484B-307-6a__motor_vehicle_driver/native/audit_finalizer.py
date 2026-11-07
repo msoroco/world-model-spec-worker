@@ -36,9 +36,9 @@ def audit():
             construction = HERE / 'package-candidates' / case / candidate / 'construction.json'
             if item['manifest_sha256'] != sha(manifest) or item['construction_sha256'] != sha(construction) or item['measurement_contract_sha256'] != sha(contract):
                 raise ValueError('Saved result construction/contract hash differs')
-            if item['analysis_report_sha256'] != sha(retained / 'analysis-report.json') or item['result_sha256'] != sha(retained / 'result.json') or item['positive_log_sha256'] != sha(retained / 'positive-analysis.log') or item['negative_log_sha256'] != sha(retained / 'negative-analysis.log') or item['wrong_video_log_sha256'] != sha(retained / 'wrong-video-analysis.log'):
+            if item['analysis_report_sha256'] != sha(retained / 'analysis-report.json') or item['result_sha256'] != sha(retained / 'result.json') or item['positive_log_sha256'] != sha(retained / 'positive-analysis.log') or item['negative_log_sha256'] != sha(retained / 'negative-analysis.log') or item['wrong_video_log_sha256'] != sha(retained / 'wrong-video-analysis.log') or item['wrong_join_log_sha256'] != sha(retained / 'wrong-join-analysis.log'):
                 raise ValueError('Saved result/log hash differs')
-            if item['negative_error'] not in (retained / 'negative-analysis.log').read_text() or item['wrong_video_error'] not in (retained / 'wrong-video-analysis.log').read_text() or item['physical_success_claimed']:
+            if item['negative_error'] not in (retained / 'negative-analysis.log').read_text() or item['wrong_video_error'] not in (retained / 'wrong-video-analysis.log').read_text() or item['wrong_join_error'] not in (retained / 'wrong-join-analysis.log').read_text() or item['pinned_native_attempt_validation'] != 'passed' or item['physical_success_claimed']:
                 raise ValueError('Missing-source negative or physical scope differs')
             if report['selected'] or report['physical_acceptance_claimed'] or report['legal_verdict_claimed'] or result['accepted'] or result['setup_confirmed'] or result['behavior_attempted'] or result['maneuver_completed']:
                 raise ValueError('Synthetic result promoted to physical or legal evidence')
@@ -48,7 +48,7 @@ def audit():
             if item['acquisition_sha256']['native_samples.jsonl'] != source_hashes['native_samples.jsonl'] or item['acquisition_sha256']['video_frames.jsonl'] != source_hashes['video_frames.jsonl'] or item['acquisition_sha256']['signal_reference.mkv'] != source_hashes['signal_reference.mkv']:
                 raise ValueError('Saved source hashes differ')
             samples = rows(source / 'native_samples.jsonl')
-            entry = next(i for i, r in enumerate(samples) if min(p[1] for p in r['native_body_xy_m']) <= 7)
+            entry = next(i for i, r in enumerate(samples) if max(p[1] for p in r['native_body_xy_m']) >= -7)
             yellow = next(i for i, r in enumerate(samples) if r['observed_signal_state'] == 'yellow')
             red = next(i for i, r in enumerate(samples) if r['observed_signal_state'] == 'red')
             expected = {'yellow_warning_onset_frame': yellow,
@@ -68,6 +68,7 @@ def audit():
                 raise ValueError('Decoded synthetic pixel source differs')
     return {'passed': True, 'audited_bundles': 8, 'contract_outputs_per_bundle': 5,
             'missing_source_negatives': 8, 'wrong_video_negatives': 8,
+            'wrong_join_negatives': 8,
             'synthetic_only': True,
             'summary_sha256': sha(summary_path)}
 

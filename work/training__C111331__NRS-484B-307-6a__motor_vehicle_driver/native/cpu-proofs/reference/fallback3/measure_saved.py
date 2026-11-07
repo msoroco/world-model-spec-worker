@@ -26,7 +26,8 @@ def measure(source_dir, case_id, candidate_id):
     phases = []
     signal_ids = set()
     for i, (n, v) in enumerate(zip(native, video)):
-        if n['request_index'] != i or v['video_frame'] != i or n['native_frame'] != v['native_frame']:
+        if (n['request_index'] != i or v['video_frame'] != i or
+                n['native_frame'] != v['native_frame'] or n['native_frame'] != v['carla_frame']):
             raise ValueError('Native/video frame join differs')
         if abs(n['time_s'] - v['time_s']) > .001 or abs(n['time_s'] - i / 20) > .051:
             raise ValueError('Native/video time join differs')
@@ -40,7 +41,7 @@ def measure(source_dir, case_id, candidate_id):
         body = n['native_body_xy_m']
         if len(body) != 4 or any(len(p) != 2 for p in body):
             raise ValueError('Native body footprint differs')
-        if entry is None and min(p[1] for p in body) <= 7.0:
+        if entry is None and max(p[1] for p in body) >= -7.0:
             entry = i
     if len(signal_ids) != 1 or entry is None:
         raise ValueError('Native signal actor or body entry absent')

@@ -37,7 +37,7 @@ def audit():
                 raise ValueError('Synthetic evidence promoted to physical or legal claim')
             if measured['sources'] != {'native_samples.jsonl': item['native_sha256'], 'video_frames.jsonl': item['video_frames_sha256']}:
                 raise ValueError('Saved measurement source binding differs')
-            first_entry = next(i for i, n in enumerate(native) if min(p[1] for p in n['native_body_xy_m']) <= 7)
+            first_entry = next(i for i, n in enumerate(native) if max(p[1] for p in n['native_body_xy_m']) >= -7)
             red = next(i for i, n in enumerate(native) if n['observed_signal_state'] == 'red')
             if first_entry != measured['observed_full_body_entry_frame'] or red != measured['observed_red_start_frame'] or measured['observed_signal_phase_at_entry'] != native[first_entry]['observed_signal_state']:
                 raise ValueError('Independent signal at body entry differs')

@@ -36,14 +36,28 @@ def verify_case(rows_, config):
             raise ValueError('Requested signal phase differs')
         x, native_y = row['native_center_xy_m']
         body = row['native_body_xy_m']
-        if x != 1.75 or len(body) != 4 or \
+        if len(body) != 4 or \
                 abs(sum(v[0] for v in body)/4 - x) > 1e-5 or \
                 abs(sum(v[1] for v in body)/4 - native_y) > 1e-5:
-            raise ValueError('Native body/center reflection differs')
-        if prior is not None and abs((prior - native_y) - config['knobs']['speed_m_per_frame']) > 1e-4:
+            raise ValueError('Native body/center geometry differs')
+        if prior is not None and abs(math.dist(prior, (x, native_y)) - config['knobs']['speed_m_per_frame']) > .001:
             raise ValueError('Requested pose cadence differs')
-        prior = native_y
-        if entry is None and -min(v[1] for v in body) >= -7:
+        prior = (x, native_y)
+        distance = i * config['knobs']['speed_m_per_frame']
+        curve_length = 5.25 * math.pi / 2
+        if distance <= 73:
+            expected = (1.75, -80 + distance)
+            yaw = 90
+        elif distance <= 73 + curve_length:
+            theta = math.pi - (distance - 73) / 5.25
+            expected = (7 + 5.25 * math.cos(theta), -7 + 5.25 * math.sin(theta))
+            yaw = math.degrees(math.atan2(-math.cos(theta), math.sin(theta)))
+        else:
+            expected = (7 + distance - 73 - curve_length, -1.75)
+            yaw = 0
+        if math.dist((x, native_y), expected) > 1e-4 or abs(row['native_yaw_deg_requested'] - yaw) > 1e-4:
+            raise ValueError('Authored approach/turn/destination route differs')
+        if entry is None and max(v[1] for v in body) >= -7:
             entry = i
     if entry is None or entry != config['metrics']['requested_full_body_entry_frame'] or \
             rows_[entry]['signal_phase_requested'] != config['metrics']['requested_phase_at_entry']:
@@ -74,6 +88,20 @@ def audit():
     road = ET.parse(HERE / 'road.xodr').getroot()
     assert road.find('.//junction') is not None
     assert any(s.get('id') == '601' for s in road.findall('.//signal'))
+    approach = next(r for r in road.findall('road') if r.get('id') == '1')
+    turn = next(r for r in road.findall('road') if r.get('id') == '13')
+    destination = next(r for r in road.findall('road') if r.get('id') == '2')
+    approach_geometry = approach.find('./planView/geometry')
+    turn_geometry = turn.find('./planView/geometry')
+    destination_geometry = destination.find('./planView/geometry')
+    assert abs(float(approach_geometry.get('y')) + 100) < 1e-9
+    assert abs(float(approach_geometry.get('length')) - 93) < 1e-9
+    assert abs(float(approach_geometry.get('hdg')) - math.pi/2) < 1e-9
+    assert abs(float(turn_geometry.get('y')) + 7) < 1e-9
+    assert abs(float(turn_geometry.find('arc').get('curvature')) + 1/7) < 1e-9
+    assert abs(float(destination_geometry.get('x')) - 7) < 1e-9
+    signal = next(s for s in road.findall('.//signal') if s.get('id') == '601')
+    assert abs(float(signal.get('s')) - 87) < 1e-9 and abs(float(signal.get('t')) + 3.5) < 1e-9
     records = {}
     for item in summary['cases']:
         case, candidate = item['case'], item['candidate']
@@ -125,7 +153,7 @@ def audit():
     for label, mutate, error in (
         ('phase', lambda p: p[200].update(signal_phase_requested='green'), 'Requested signal phase differs'),
         ('observation', lambda p: p[200].update(actual_signal_phase_observed='red'), 'promoted to observation'),
-        ('body', lambda p: p[200]['native_body_xy_m'][0].__setitem__(1, 999), 'body/center reflection differs')):
+        ('body', lambda p: p[200]['native_body_xy_m'][0].__setitem__(1, 999), 'body/center geometry differs')):
         bad = copy.deepcopy(packet)
         mutate(bad)
         try:

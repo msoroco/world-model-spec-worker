@@ -34,10 +34,12 @@ def prove():
                 native.append({'source_kind': 'synthetic_cpu_native_observation',
                                'request_index': i, 'native_frame': 1000 + i,
                                'time_s': row['time_s'], 'native_center_xy_m': row['native_center_xy_m'],
+                               'native_yaw_deg': row['native_yaw_deg_requested'],
                                'native_body_xy_m': row['native_body_xy_m'],
                                'observed_signal_state': row['signal_phase_requested'],
                                'signal_actor_id': 601})
                 video.append({'video_frame': i, 'native_frame': 1000 + i,
+                              'carla_frame': 1000 + i,
                               'time_s': row['time_s'], 'synthetic_frame_only': True})
             write_rows(folder / 'native_samples.jsonl', native)
             write_rows(folder / 'video_frames.jsonl', video)

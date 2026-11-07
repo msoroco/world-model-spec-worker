@@ -41,7 +41,8 @@ def inspect(source_dir, video_path, ffmpeg):
     frame_hashes = []
     phases = []
     for i, (sample, join) in enumerate(zip(native, mapping)):
-        if join['video_frame'] != i or join['native_frame'] != sample['native_frame']:
+        if (join['video_frame'] != i or join['native_frame'] != sample['native_frame'] or
+                join['carla_frame'] != sample['native_frame']):
             raise ValueError('Saved signal video Native frame join differs')
         frame = decoded.stdout[i * FRAME_BYTES:(i + 1) * FRAME_BYTES]
         frame_hashes.append(hashlib.sha256(frame).hexdigest())

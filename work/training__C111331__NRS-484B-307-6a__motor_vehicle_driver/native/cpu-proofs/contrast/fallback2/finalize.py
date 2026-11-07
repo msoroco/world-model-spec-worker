@@ -63,6 +63,7 @@ def finalize(attempt, output):
     for i, (n, frame, point) in enumerate(zip(native, mapping, trace)):
         if (n['request_index'] != i or frame['video_frame'] != i or
                 n['native_frame'] != frame['native_frame'] or point['frame'] != frame['native_frame'] or
+                point['frame'] != frame['carla_frame'] or
                 abs(frame['time_s'] - point['time_s']) > .001):
             raise ValueError('Saved Native/trace/video frame join differs')
     measurement = measure(attempt, config['case_id'], config['candidate_id'])
