@@ -32,7 +32,7 @@
         "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_1",
         "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_2"
       ],
-      "evidence_or_gap": "Eight exact unselected bundles pass pinned offline with ten CPU tests each and embed source-hash-bound measured fallback trigger logic. Eight 480-frame synthetic v1 package positives and missing-source negatives are diagnostic; strict v2 portable compatibility, Native right-only lane design, original physical/pixel observations, statutory branch closure and independent selected delivery audit remain unverified."
+      "evidence_or_gap": "Eight exact unselected bundles pass pinned offline with 14 CPU tests each and embed source-hash-bound measured fallback trigger logic. Eight 480-frame synthetic v1 package positives and missing-source negatives are diagnostic; strict v2 portable compatibility, Native right-only lane design, original physical/pixel observations, statutory branch closure and independent selected delivery audit remain unverified."
     }
   ],
   "activation_conditions": [
@@ -239,10 +239,10 @@
     "Legal context and exceptions can be represented without substituting authored targets for measurements"
   ],
   "blockers": [
-    "Eight exact unselected bundles pass pinned offline with ten CPU tests each and embed source-hash-bound measured fallback trigger logic. Eight 480-frame synthetic v1 package positives and missing-source negatives are diagnostic; strict v2 portable compatibility, Native right-only lane design, original physical/pixel observations, statutory branch closure and independent selected delivery audit remain unverified."
+    "Eight exact unselected bundles pass pinned offline with 14 CPU tests each and embed source-hash-bound measured fallback trigger logic. Eight 480-frame synthetic v1 package positives and missing-source negatives are diagnostic; strict v2 portable compatibility, Native right-only lane design, original physical/pixel observations, statutory branch closure and independent selected delivery audit remain unverified."
   ],
   "runtime_uncertainties": [
-    "Eight exact unselected bundles pass pinned offline with ten CPU tests each and embed source-hash-bound measured fallback trigger logic. Eight 480-frame synthetic v1 package positives and missing-source negatives are diagnostic; strict v2 portable compatibility, Native right-only lane design, original physical/pixel observations, statutory branch closure and independent selected delivery audit remain unverified.",
+    "Eight exact unselected bundles pass pinned offline with 14 CPU tests each and embed source-hash-bound measured fallback trigger logic. Eight 480-frame synthetic v1 package positives and missing-source negatives are diagnostic; strict v2 portable compatibility, Native right-only lane design, original physical/pixel observations, statutory branch closure and independent selected delivery audit remain unverified.",
     "The authored connector road/lane identifiers and right-only lane signage have not been verified against an original Native map and camera stream."
   ],
   "readiness_limitation": "CPU draft proofs only. No selected delivery cases, dispatchable GPU jobs, accepted recordings, physical CARLA results, or legal verdicts.",
@@ -276,11 +276,11 @@
     "proofs": [
       {
         "path": "training__C382355__NRS-484B-400-1__motor_vehicle_driver/draft-execution-manifest.json",
-        "sha256": "f265ceeddcd9ade2e2f96fab9c3314e751a5a515b6427ea390126b5e2e4139df"
+        "sha256": "612e85f4e18e8120b9cea8a5f34c488539dbb7ccf1b00aa8f0cfa0073ece55b3"
       },
       {
         "path": "training__C382355__NRS-484B-400-1__motor_vehicle_driver/draft-offline-summary.json",
-        "sha256": "e1ef0601e667c66a0e32cf71e4432ccc3805652527bebbc5f1174ba931fa9130"
+        "sha256": "95d274ca0bf0f8b75f67ad038ce3a5901a1393c376471695ede9b657d4aa25c0"
       },
       {
         "path": "training__C382355__NRS-484B-400-1__motor_vehicle_driver/draft-offline-audit.log",
@@ -320,11 +320,11 @@
       },
       {
         "path": "training__C382355__NRS-484B-400-1__motor_vehicle_driver/saved-fixture-proof-480.log",
-        "sha256": "f037ca91c52a433d4ce6b2b7d3d4cd6e3019f424f266555e49379ecded073af6"
+        "sha256": "af5a5943d55bd9809ff030c40ffbacd5114268cafffdb34fed17944a9bc8fb68"
       },
       {
         "path": "training__C382355__NRS-484B-400-1__motor_vehicle_driver/saved-comparison-audit.log",
-        "sha256": "9de5f880d341ae79b619588f6b00738a6f606a5fc419427a5ba59d990740f399"
+        "sha256": "7d090399182d315dc591f34c00abb6ff8da0f49e78ca95d6af0c2d871c7fa15c"
       },
       {
         "path": "training__C382355__NRS-484B-400-1__motor_vehicle_driver/draft-package-probe-summary.json",
@@ -348,16 +348,26 @@
       "status": "synthetic_cpu_logic_passes",
       "evaluator": "native/fallback_triggers.py",
       "sources": [
-        "native_samples.jsonl",
-        "reviewed Native map readback",
-        "reviewed original-pixel counts bound to video hash"
+        "saved synthetic 480-frame Native-shaped samples",
+        "synthetic map-link annotation bound to saved sample hash",
+        "synthetic visibility annotation bound to saved sample and generated video hashes"
       ],
       "thresholds": {
         "fallback1": "missing Native link or no full-body destination exit by 24 s",
         "fallback2": "maximum turn-entry route error > 0.35 m",
         "fallback3": "full-body and lane-marking visibility < 95% of approach frames"
       },
-      "physical_observed": false
+      "physical_observed": false,
+      "synthetic_saved_audit": {
+        "path": "route-trigger-integration-audit.log",
+        "sha256": "2545a9fcdc15c823c12bbc32ba49a431fe3ad8c483f22eba66053f258ddc7b94",
+        "baseline_maximum_route_error_m": {
+          "witness_1": 0.0,
+          "witness_2": 0.0
+        },
+        "original_pixels_measured": false,
+        "native_executed": false
+      }
     },
     "exact_v1_package_diagnostics": {
       "positive": 8,
@@ -374,8 +384,8 @@
     "runner_sha256": "fcbbd8ca418fdacca32af50984630c868d435e44a02111ffdbb7d3042af163f3",
     "independent_audit": "../_shared/native-frame-map-audit.log",
     "independent_audit_sha256": "5e1586fa3b18d2a2f18371861812e78dc4e1654b1d8f338f497ed18925bda605",
-    "exact_draft_manifest_sha256": "f265ceeddcd9ade2e2f96fab9c3314e751a5a515b6427ea390126b5e2e4139df",
-    "offline_summary_sha256": "e1ef0601e667c66a0e32cf71e4432ccc3805652527bebbc5f1174ba931fa9130",
+    "exact_draft_manifest_sha256": "612e85f4e18e8120b9cea8a5f34c488539dbb7ccf1b00aa8f0cfa0073ece55b3",
+    "offline_summary_sha256": "95d274ca0bf0f8b75f67ad038ce3a5901a1393c376471695ede9b657d4aa25c0",
     "offline_audit_sha256": "9d9a0e2ad8de8bdd6de6e1747431c05aa5111cf039216c089bec6d8d5c254bb7",
     "selected_delivery_cases": 0,
     "native_executed": false

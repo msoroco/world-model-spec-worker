@@ -40,14 +40,17 @@ def evaluate(samples_path, map_audit_path, pixel_audit_path, video_path, request
         raise ValueError('Too few original Native samples')
     mapping = json.loads(paths[1].read_text())
     pixels = json.loads(paths[2].read_text())
-    if mapping.get('source_kind') != 'native_map_readback':
+    map_kind=mapping.get('source_kind')
+    pixel_kind=pixels.get('source_kind')
+    if map_kind not in ('native_map_readback','synthetic_map_readback'):
         raise ValueError('Native map readback provenance missing')
+    if (map_kind,pixel_kind) not in (('native_map_readback','original_camera_pixels'),
+                                     ('synthetic_map_readback','synthetic_camera_pixels')):
+        raise ValueError('Trigger source provenance mismatch')
     if mapping.get('native_samples_sha256') != _sha(paths[0]):
         raise ValueError('Native sample hash mismatch')
     if type(mapping.get('connected_right_turn_lane_link')) is not bool:
         raise ValueError('Native connector observation missing')
-    if pixels.get('source_kind') != 'original_camera_pixels':
-        raise ValueError('Original pixel provenance missing')
     if pixels.get('video_sha256') != _sha(paths[3]) or pixels.get('native_samples_sha256') != _sha(paths[0]):
         raise ValueError('Pixel audit source hash mismatch')
     visible, total = pixels.get('full_body_and_lane_marking_visible_frames'), pixels.get('approach_frames')
@@ -88,5 +91,6 @@ def evaluate(samples_path, map_audit_path, pixel_audit_path, video_path, request
                     'maximum_turn_entry_route_error_m': maximum,
                     'approach_pixel_visible_fraction': fraction},
         'source_hashes': {p.name: _sha(p) for p in paths},
+        'declared_source_kind':map_kind,
         'scope': 'Source-bound trigger logic; synthetic values are not physical observations'
     }

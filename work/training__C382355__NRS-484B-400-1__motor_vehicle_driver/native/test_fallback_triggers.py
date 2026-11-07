@@ -33,9 +33,9 @@ class FallbackTriggersTest(unittest.TestCase):
         rows = [row(1,-20,5.25,1,-2), row(2,-8,5.25+deviation,1,-2),
                 row(3,-5,5.25,13,-2),row(4,-5,12 if exit else 6,4 if exit else 13,-2)]
         self.samples.write_text(''.join(json.dumps(r)+'\n' for r in rows))
-        self.mapping.write_text(json.dumps({'source_kind':'native_map_readback',
+        self.mapping.write_text(json.dumps({'source_kind':'synthetic_map_readback',
             'native_samples_sha256':sha(self.samples),'connected_right_turn_lane_link':link}))
-        self.pixels.write_text(json.dumps({'source_kind':'original_camera_pixels',
+        self.pixels.write_text(json.dumps({'source_kind':'synthetic_camera_pixels',
             'native_samples_sha256':sha(self.samples),'video_sha256':sha(self.video),
             'full_body_and_lane_marking_visible_frames':visible,'approach_frames':total}))
 
@@ -62,6 +62,13 @@ class FallbackTriggersTest(unittest.TestCase):
         self.video.write_bytes(b'synthetic camera fixture')
         self.samples.write_text(self.samples.read_text()+'\n')
         with self.assertRaisesRegex(ValueError,'Native sample hash mismatch'):
+            self.measure()
+
+    def test_mixed_provenance_rejected(self):
+        packet=json.loads(self.pixels.read_text())
+        packet['source_kind']='original_camera_pixels'
+        self.pixels.write_text(json.dumps(packet))
+        with self.assertRaisesRegex(ValueError,'Trigger source provenance mismatch'):
             self.measure()
 
 
