@@ -37,10 +37,10 @@ def audit():
             decode = read(folder / 'final-decode.json')
             cid = ASSIGNMENT + '__' + case
             entry = next(item for item in manifest_data['cases'] if item['case_id'] == cid)
-            source = entry if candidate == 'primary' else next(
+            selected = entry if candidate == 'primary' else next(
                 item for item in entry['candidates'] if item['id'] == candidate)
-            assert receipt['construction_sha256'] == source['construction_sha256']
-            assert digest(HERE / source['construction']) == source['construction_sha256']
+            assert receipt['construction_sha256'] == selected['construction_sha256']
+            assert digest(HERE / selected['construction']) == selected['construction_sha256']
             assert summary['format'] == 'c111331-exact-synthetic-portable-v1'
             assert summary['case_id'] == receipt['case_id'] == report['case_id'] == result['case_id'] == cid
             assert summary['candidate_id'] == receipt['candidate_id'] == candidate

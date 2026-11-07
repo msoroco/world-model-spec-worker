@@ -80,11 +80,21 @@ def audit():
     coverage_path = REPO / 'work/_shared/branch-coverage.json'
     branch = json.loads(coverage_path.read_text())['laws']['NRS-484B-307-6a']['branches']
     assert len(branch) == 1 and set(branch[0]['topic_ids']) == source_topics
-    assert branch[0]['status'] == 'pending_review' and branch[0]['assignment_id'] == AID
+    assert branch[0]['status'] == 'runnable' and branch[0]['assignment_id'] == AID
     assert set(branch[0]['case_ids']) == {AID + '__reference', AID + '__contrast'}
     assert branch[0]['comparison_ids'] == [AID + '__comparison_main']
     review = json.loads((REPO / 'work/_shared/branch-review.json').read_text())
     assert review['coverage_sha256'] == sha(coverage_path)
+    assert 'NRS-484B-307-6a' not in review['missing_branches']
+    for name, digest in branch[0]['cpu_proofs'].items():
+        assert name in ('package-manifest.json', 'cpu-proof-summary.json',
+                        'saved-finalizer-summary.json', 'portable-audit-summary.json')
+        assert digest == sha(HERE / name)
+    assert len(branch[0]['cpu_proofs']) == 4
+    offline = json.loads((HERE / 'cpu-proof-summary.json').read_text())
+    portable = json.loads((HERE / 'portable-audit-summary.json').read_text())
+    assert len(offline['rows']) == 8 and all(row['exit_code'] == 0 for row in offline['rows'])
+    assert portable['positive_count'] == portable['missing_source_negative_count'] == 8
     road = ET.parse(HERE / 'road.xodr').getroot()
     assert road.find('.//junction') is not None
     assert any(s.get('id') == '601' for s in road.findall('.//signal'))
