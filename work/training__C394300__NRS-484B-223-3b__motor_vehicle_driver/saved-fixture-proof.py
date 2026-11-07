@@ -135,7 +135,9 @@ def run():
             if observed!=expected:raise RuntimeError(f'Unexpected sampled interval relation: {suffix} {observed}')
             if report['original_joins']['frames']!=480 or set(report['video_frames'].values())!={480}:
                 raise RuntimeError('Original 480-frame joins or video decode incomplete')
-            if result['setup_confirmed'] or result['accepted'] or result['legal_verdict_claimed']:
+            if (result['setup_confirmed'] or result['behavior_attempted'] or
+                result['maneuver_completed'] or result['provenance_kind']!='synthetic_local_diagnostic' or
+                result['accepted'] or result['legal_verdict_claimed']):
                 raise RuntimeError('Synthetic fixture claimed Native design or acceptance')
             (negative/'native_samples.jsonl').unlink()
             (wrong/'road_geometry.json').write_text(json.dumps({**json.loads((wrong/'road_geometry.json').read_text()),

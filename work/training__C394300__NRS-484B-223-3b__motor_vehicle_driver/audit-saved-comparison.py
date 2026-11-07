@@ -42,7 +42,9 @@ def main():
             assert samples[-1]['native_road_id']==4 and samples[-1]['native_lane_id']==-1
             assert all(m['carla_frame']==s['native_frame'] and m['time_s']==s['time_s']
                        for m,s in zip(mapping,samples))
-            assert not result['setup_confirmed'] and not result['accepted']
+            assert (not result['setup_confirmed'] and not result['behavior_attempted'] and
+                    not result['maneuver_completed'] and not result['accepted'] and
+                    result['provenance_kind']=='synthetic_local_diagnostic')
             observations[suffix]={'requested_ft':TARGET_FEET[suffix],
                 'relation':distance['threshold_relation'],'distance_interval_m':observed,
                 'entry_frame':first[1],'turn_frame':last[1],

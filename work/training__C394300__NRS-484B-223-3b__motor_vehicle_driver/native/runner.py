@@ -11,6 +11,7 @@ import json
 import math
 from pathlib import Path
 import queue
+import shutil
 import subprocess
 import sys
 import traceback
@@ -111,6 +112,9 @@ def execute(config, output, host, port):
     import carla
     import numpy as np
     from pipeline_capture import PipelineCapture
+    from worker_exchange.media import compose_four_views
+    from worker_exchange.native_output import seal_capture
+    from worker_exchange.saved_processing import record_native_exit
     from worker_exchange.world_restore import snapshot,restore
     check(config)
     output=Path(output).resolve()
@@ -122,7 +126,7 @@ def execute(config, output, host, port):
     if saved["settings"].synchronous_mode or [a for a in prior_world.get_actors()
         if a.type_id.startswith(("vehicle.","walker.","sensor.","controller."))]:
         raise RuntimeError("Requires exclusive idle asynchronous world ownership")
-    owned=[];encoders={};encoder_logs={};camera_queues={};channels={}
+    owned=[];encoders={};encoder_logs={};encoder_exit_codes={};camera_queues={};channels={}
     capture=None;changed=False;error=None;frames=0;restored=None
     try:
         world=client.generate_opendrive_world(open_drive(),carla.OpendriveGenerationParameters(
@@ -250,7 +254,8 @@ def execute(config, output, host, port):
         for name,encoder in encoders.items():
             try:
                 encoder.stdin.close()
-                if encoder.wait(timeout=180)!=0:raise RuntimeError("Lossless encoder failed: "+name)
+                encoder_exit_codes[name]=encoder.wait(timeout=180)
+                if encoder_exit_codes[name]!=0:raise RuntimeError("Lossless encoder failed: "+name)
             except BaseException as exc:error=error or {"encoder_error":str(exc)}
             encoder_logs[name].close()
         for actor in reversed(owned):
@@ -261,12 +266,24 @@ def execute(config, output, host, port):
         if changed:
             try:restored=restore(client,saved)
             except BaseException as exc:error=error or {"world_restore_error":str(exc)}
+        if error is None:
+            try:
+                shutil.copytree(output/"channels",output/"source_channels")
+                sources={name:output/(name+".mkv") for name in
+                         ("overview","approach","reference_corner","driver_reference")}
+                composition=compose_four_views(sources,output/"video_frames.jsonl",output/"raw.mkv")
+                write_new(output/"four-view-receipt.json",composition)
+                seal_capture(output,frames=frames,restoration=restored,errors=[],
+                    encoder_exit_codes=encoder_exit_codes,
+                    context={"case_id":config["case_id"],"candidate_id":config["candidate_id"]})
+            except BaseException as exc:error={"capture_seal_error":str(exc)}
         write_new(output/"native-capture-report.json",{
             "case_id":config["case_id"],"candidate_id":config["candidate_id"],
             "frames":frames,"expected_frames":config["duration_s"]*config["rate_hz"],
             "restoration":restored,"error":error,"accepted":False,
             "required_saved_checks":["actual original pixels","Native body and lane joins",
                 "exact full video/trace frame mapping","measured turn completion","independent audit"]})
+        record_native_exit(output)
     if error:raise RuntimeError("Native attempt failed; see native-capture-report.json: "+str(error))
 
 
