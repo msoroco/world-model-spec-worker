@@ -141,8 +141,12 @@ def run(frame_count=4):
                 'actor':'motor_vehicle_driver'},construction,{'recorded_exit_code':0},{})
             if not validated['rebuild_required']:
                 raise RuntimeError('Synthetic diagnostic unexpectedly claimed physical acceptance')
-            if not result['maneuver_completed'] or not result['target_checks'][0]['matched']:
-                raise RuntimeError('Synthetic positive did not meet its engineering target')
+            if (not result['target_checks'][0]['matched'] or
+                    not result['measured_values']['full_body_exit_observed'] or
+                    result['maneuver_completed'] or result['behavior_attempted'] or
+                    result['setup_confirmed'] or result['provenance_kind']!='synthetic_local_diagnostic' or
+                    report['acquisition_provenance']['native_executed']):
+                raise RuntimeError('Synthetic engineering target or provenance differs')
             if report['original_joins']['frames']!=frame_count or len(report['video_frames'])!=4 or any(v!=frame_count for v in report['video_frames'].values()):
                 raise RuntimeError('Synthetic video/trace join absent')
             (negative/'native_samples.jsonl').unlink()

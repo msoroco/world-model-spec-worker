@@ -79,6 +79,7 @@ def measure_approach(attempt):
 
 
 def finalize(attempt,output):
+    from worker_exchange.native_output import provenance_kind, validate_result
     attempt=Path(attempt).resolve();output=Path(output).resolve()
     if output.exists() or (attempt/'result.json').exists():
         raise ValueError("Retain original finalization; use a fresh attempt")
@@ -88,6 +89,8 @@ def finalize(attempt,output):
     if abs(requested_count-count)>1e-6 or count<2:
         raise ValueError("Recording duration/rate does not yield an integral frame count")
     original=verify_original_joins(attempt,count)
+    source_kind=provenance_kind(attempt)
+    native=source_kind=='native'
     measured=measure_approach(attempt)
     videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     video_counts={name:video_frames(attempt/name) for name in videos}
@@ -113,8 +116,8 @@ def finalize(attempt,output):
         'tolerance':.35,'matched':matched,
         'physical_cause_confirmed':False,
         'cause_evidence':['road_geometry.json','native_samples.jsonl']}],
-      'setup_confirmed':actual['full_body_right_half'],
-      'behavior_attempted':True,'maneuver_completed':actual['destination_exit_observed'],
+      'setup_confirmed':native and actual['full_body_right_half'],
+      'behavior_attempted':native,'maneuver_completed':native and actual['destination_exit_observed'],
       'termination_reason':'full original duration retained',
       'physical_failure_flags':['camera_and_native_surface_review_pending'] +
           ([] if matched and actual['destination_exit_observed'] else
@@ -128,12 +131,14 @@ def finalize(attempt,output):
            'time_window':'before first front-body intersection entry',
            'statistic':'mean','reference':'native_samples.jsonl',
            'sample_window_s':measured['value']['approach_window_s']}},
-      'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
-    from worker_exchange.native_output import validate_result
+      'provenance_kind':'native' if native else 'synthetic_local_diagnostic',
+      'accepted':False,'legal_verdict_claimed':False}
     validate_result(result)
     report={'format':'c329610-saved-analysis-v1','case_id':config['case_id'],
             'candidate_id':config['candidate_id'],'measurements':{'approach_placement_geometry':measured},
             'original_joins':original,'video_frames':video_counts,
+            'acquisition_provenance':{'source_kind':source_kind,
+                                      'native_executed':native},
             'scope':'saved original Native sources and source video decode, not independent acceptance or legal verdict'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     with (attempt/'result.json').open('x') as stream:

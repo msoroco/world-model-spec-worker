@@ -80,6 +80,7 @@ def measure_exit_side(attempt):
 
 
 def finalize(attempt,output):
+    from worker_exchange.native_output import provenance_kind, validate_result
     attempt=Path(attempt).resolve();output=Path(output).resolve()
     if output.exists() or (attempt/'result.json').exists():
         raise ValueError('Retain original finalization; use a fresh attempt')
@@ -88,6 +89,8 @@ def finalize(attempt,output):
     if abs(requested_count-count)>1e-6 or count<2:
         raise ValueError('Recording duration/rate does not yield an integral frame count')
     original=verify_original_joins(attempt,count)
+    source_kind=provenance_kind(attempt)
+    native=source_kind=='native'
     measured=measure_exit_side(attempt)
     videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     video_counts={name:video_frames(attempt/name) for name in videos}
@@ -111,8 +114,8 @@ def finalize(attempt,output):
         'tolerance':'full body on one side at sampled exit','matched':matched,
         'physical_cause_confirmed':False,
         'cause_evidence':['road_geometry.json','native_samples.jsonl']}],
-      'setup_confirmed':True,'behavior_attempted':True,
-      'maneuver_completed':actual['full_body_exit_observed'],
+      'setup_confirmed':native,'behavior_attempted':native,
+      'maneuver_completed':native and actual['full_body_exit_observed'],
       'termination_reason':'full original duration retained',
       'physical_failure_flags':['camera_and_native_surface_review_pending']+
            ([] if matched else ['exit_side_target_not_measured']),
@@ -126,13 +129,15 @@ def finalize(attempt,output):
            'statistic':'minimum of four body vertices',
            'reference':'native_samples.jsonl',
            'sample_window_s':actual['first_full_body_exit_time_bracket_s']}},
-      'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
-    from worker_exchange.native_output import validate_result
+      'provenance_kind':'native' if native else 'synthetic_local_diagnostic',
+      'accepted':False,'legal_verdict_claimed':False}
     validate_result(result)
     report={'format':'c329610-exit-saved-analysis-v1','case_id':config['case_id'],
       'candidate_id':config['candidate_id'],
       'measurements':{'destination_exit_geometry':measured},
       'original_joins':original,'video_frames':video_counts,
+      'acquisition_provenance':{'source_kind':source_kind,
+                                'native_executed':native},
       'scope':'saved original Native sources and source-video decode; no legal or acceptance verdict'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     with (attempt/'result.json').open('x') as stream:

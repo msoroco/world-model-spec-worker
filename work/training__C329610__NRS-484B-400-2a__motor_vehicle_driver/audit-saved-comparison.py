@@ -43,6 +43,15 @@ def run():
             if result.returncode:raise RuntimeError(result.stdout)
             assert fixture.source_digest(source)==before
         left,right=[json.loads((source/'analysis-report.json').read_text()) for source in (a,b)]
+        for source,report in ((a,left),(b,right)):
+            result=json.loads((source/'result.json').read_text())
+            assert report['acquisition_provenance']=={
+                'source_kind':'synthetic_fixture','native_executed':False}
+            assert result['provenance_kind']=='synthetic_local_diagnostic'
+            assert result['accepted'] is False and result['legal_verdict_claimed'] is False
+            assert result['setup_confirmed'] is False
+            assert result['behavior_attempted'] is False
+            assert result['maneuver_completed'] is False
         lv=left['measurements']['approach_placement_geometry']['value']
         rv=right['measurements']['approach_placement_geometry']['value']
         assert left['original_joins']['frames']==right['original_joins']['frames']==480
@@ -64,6 +73,7 @@ def run():
             'deliberate_difference':'approach centerline offset: 1.75 m versus 5.25 m, converging to same left-turn destination',
             'measured_mean_approach_offsets_m':[1.75,5.25],
             'both_full_body_within_right_half':True,'both_destination_exits_observed':True,
+            'both_provenance_synthetic':True,'native_executed':False,
             'scope':'synthetic saved controlled comparison only; no Native physical or legal outcome proof'}
 
 
