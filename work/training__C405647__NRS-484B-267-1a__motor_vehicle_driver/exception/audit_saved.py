@@ -61,6 +61,7 @@ def audit():
                                                       review['frames'])):
                 assert n['frame'] == v['frame'] == s['frame'] == f['native_frame'] == a['frame'] == i
                 assert f['video_frame'] == s['video_frame'] == i
+                assert f['carla_frame'] == i
                 assert n['time_s'] == v['time_s'] == s['time_s'] == f['time_s'] == round(i / 20, 4)
                 assert s['subject']['x_m'] == n['subject_request']['x_m']
                 assert s['subject']['y_m'] == -n['subject_request']['y_m']

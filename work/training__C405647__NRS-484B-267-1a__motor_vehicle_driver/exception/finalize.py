@@ -84,6 +84,9 @@ def finalize(attempt, output):
     if channels.exists():
         raise ValueError('Retain prior channels; use a fresh attempt')
     channels.mkdir()
+    native_requests = rows(attempt / 'native-requests.jsonl')
+    if len(native_requests) != count:
+        raise ValueError('Saved Native request count differs')
     evidence = []
     for channel in construction['recording_description']['channels']:
         name = channel['name']
@@ -95,8 +98,7 @@ def finalize(attempt, output):
                                           'body_xy_m': actor['subject_body_xy_m']},
                     'approach_pose_body': actor['approach'],
                     'officer_visual_pose': {'requested_xy_m':
-                        json.loads((attempt / 'native-requests.jsonl').read_text().splitlines()[
-                            actor['frame']])['officer_position_request_xy_m'],
+                        native_requests[actor['frame']]['officer_position_request_xy_m'],
                         'identity_verified': False},
                     'requested_direction': {'requested': actor['direction_requested'],
                                             'review': actor['direction_review']},

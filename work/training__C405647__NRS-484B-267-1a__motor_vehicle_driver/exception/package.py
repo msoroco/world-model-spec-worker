@@ -137,6 +137,15 @@ def build():
                 entry['candidates'].append(ref)
         manifest['cases'].append(entry)
     write(HERE / 'package-manifest.json', manifest)
+    proposals = {'cell_id': 'C405647', 'actor': 'motor_vehicle_driver',
+                 'status': 'unselected_cpu_draft', 'cases': []}
+    for entry in manifest['cases']:
+        construction = json.loads((HERE / entry['construction']).read_text())
+        proposals['cases'].append({'case_id': entry['case_id'],
+                                   'target_law_id': 'NRS-484B-267-1a',
+                                   'target_type': 'attempt',
+                                   'recording_description': construction['recording_description']})
+    write(HERE / 'proposals/cases.json', proposals)
     return {'case_count': 2, 'candidate_count': 8,
             'manifest_sha256': sha(HERE / 'package-manifest.json')}
 

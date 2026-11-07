@@ -38,7 +38,8 @@ def run():
             (source / 'officer_reference.source').write_text(
                 'synthetic CPU cue source; no original pixels or officer identity\n')
             (source / 'video_frames.jsonl').write_text(''.join(json.dumps({
-                'video_frame': i, 'native_frame': i, 'time_s': row['time_s']},
+                'video_frame': i, 'native_frame': i, 'carla_frame': i,
+                'time_s': row['time_s']},
                 sort_keys=True) + '\n' for i, row in enumerate(native)))
             annotations = [{'frame': i,
                             'cue_visible': bool(v['direction_cue_in_frame']),

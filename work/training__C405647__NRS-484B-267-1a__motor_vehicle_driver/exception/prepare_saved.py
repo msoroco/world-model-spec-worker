@@ -40,6 +40,7 @@ def prepare(source, output, case):
     for i, (n, v, video, annotation) in enumerate(zip(native, visible, videos, annotations)):
         if n.get('frame') != i or v.get('frame') != i or \
                 video.get('video_frame') != i or video.get('native_frame') != i or \
+                video.get('carla_frame') != i or \
                 annotation.get('frame') != i or n.get('time_s') != round(i / 20, 4) or \
                 v.get('time_s') != n['time_s'] or video.get('time_s') != n['time_s']:
             raise ValueError('Native/video/direction frame join differs')
