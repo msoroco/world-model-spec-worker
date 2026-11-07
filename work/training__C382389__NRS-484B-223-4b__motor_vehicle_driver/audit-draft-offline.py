@@ -56,7 +56,7 @@ def main():
         assert 'offline_geometry' in unit and '"right_turn_lane_design_and_signage_native_verified": false' in unit
     assert actual==expected
     print(json.dumps({'passed':True,'cases':2,'draft_candidates':8,
-                      'offline_unit_tests_per_bundle':12,
+                      'offline_unit_tests_per_bundle':15,
                       'selected_delivery_cases':0,'physical_verified':False}))
 
 

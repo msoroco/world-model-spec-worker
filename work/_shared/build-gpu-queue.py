@@ -29,7 +29,6 @@ def build(root=ROOT):
                 "case_id": case_id,
                 "status": "blocked",
                 "dispatchable": False,
-                "reason": "Selected strict CPU proof and independent delivery acceptance absent",
                 "capture_command": "python3.11 runtime.py capture --manifest " + manifest
                     + " --case " + case_id + " --output ${ATTEMPT_DIR} --host ${CARLA_HOST}"
                     + " --port ${CARLA_PORT} --python ${NATIVE_PYTHON}",
@@ -53,8 +52,8 @@ def build(root=ROOT):
                     + " --db ${WORKER_DB} --run ${RUN_ID} " + identity
                     + " --job ${JOB_ID} --attempt ${ATTEMPT_ID} --audit ${ACCEPTANCE_AUDIT}",
                 "candidate_commands": {
-                    candidate: prefix + " prepare-delivery --repo . --batch full-train-delivery"
-                        + " --db ${WORKER_DB} " + identity + " --candidate " + candidate
+                    candidate: "python3.11 work/_shared/prepare-delivery-candidate.py "
+                        + case_id + " " + candidate
                     for candidate in ("fallback1", "fallback2", "fallback3")
                 },
             }
@@ -87,7 +86,7 @@ if __name__ == "__main__":
         if json.loads(QUEUE.read_text()) != data:
             raise ValueError("Ordered queue differs from current case plans")
     else:
-        QUEUE.write_text(json.dumps(data, indent=2) + "\n")
+        QUEUE.write_text(json.dumps(data, separators=(",", ":")) + "\n")
     print(json.dumps({"passed": True, "cases": len(data["cases"]),
                       "comparisons": len(data["comparison_audit_commands"]),
                       "dispatchable": sum(row["dispatchable"] for row in data["cases"])}))
