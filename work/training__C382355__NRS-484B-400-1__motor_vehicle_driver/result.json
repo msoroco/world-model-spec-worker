@@ -2,7 +2,7 @@
   "assignment_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver",
   "input_sha256": "d3150b8a2f434a697fedf18a09d70b00bbe71d0f6672c3a4f1624d61f9bcadfd",
   "status": "blocked",
-  "reason": "Corrected the authored OpenDRIVE to CARLA Native y reflection across right-turn survey, spawn, lane bounds, full-body exit, fallback logic and saved fixtures. Eleven Native CPU tests, eight unselected pinned offline bundles, two 480-frame synthetic saved positives/negatives, eight full-resolution synthetic v1 package positives/negatives and independent audits pass. Strict selected v2, right-only lane design, statutory closure, independent delivery acceptance and queue rows remain worker-owned unfinished work.",
+  "reason": "Repaired saved provenance so synthetic 480-frame right-turn-lane fixtures retain measured geometry but report false Native physical flags. Eight exact unselected primary/fallback bundles pass pinned offline and independent audits; eight full-resolution synthetic v1 package positives and missing-source negatives pass independent audit. Sealed synthetic four-view/exit/finalizer closure rejects changed Native samples. Strict selected v2, right-only lane designation, statutory closure, independent delivery acceptance and queue rows remain unfinished worker-owned work.",
   "readiness_kind": null,
   "planned_case_count": 2,
   "comparison_count": 1,
@@ -15,7 +15,7 @@
   "draft_case_count": 2,
   "unselected_candidate_bundle_count": 8,
   "draft_offline_pass_count": 8,
-  "draft_proof_manifest_sha256": "21d7bd65f8ae8a2df7fdf8d80b8d004638940f1d6572017bbffe0880b46152cf",
+  "draft_proof_manifest_sha256": "a489b7c0fc922fcd748d0e1569a7baea5f88a4fb0584de3838271347889863ac",
   "selected_case_count": 0,
   "native_frame_map_proof": {
     "status": "cpu_source_check_only",
@@ -23,8 +23,8 @@
     "runner_sha256": "7a0c88494ac5be5c8cf0e5b47667c6c4fd65033b04be1e4a42c5c9cf350d139e",
     "independent_audit": "../_shared/native-frame-map-audit.log",
     "independent_audit_sha256": "cb7e445e90b80a71bdbdd6043733571ab7a7cdb364bc311aa64e464c51ad8fe0",
-    "exact_draft_manifest_sha256": "21d7bd65f8ae8a2df7fdf8d80b8d004638940f1d6572017bbffe0880b46152cf",
-    "offline_summary_sha256": "e54dff863c946eb0d54c210d3ac21faa53738405aba874998b6e3a2cc761990a",
+    "exact_draft_manifest_sha256": "a489b7c0fc922fcd748d0e1569a7baea5f88a4fb0584de3838271347889863ac",
+    "offline_summary_sha256": "09f73a0f4e0397fdaf5f1aa469e57a1b6347ca3c0657c5c560cdd929840ce481",
     "offline_audit_sha256": "9d9a0e2ad8de8bdd6de6e1747431c05aa5111cf039216c089bec6d8d5c254bb7",
     "selected_delivery_cases": 0,
     "native_executed": false
@@ -32,15 +32,15 @@
   "synthetic_v1_package_proof": {
     "count": 8,
     "negative_count": 8,
-    "independent_audit_sha256": "e0ca5c29c1aa88908689a22c850e1392af19b6d8e96b9161e999ecc811854f96",
-    "summary_sha256": "e0ca5c29c1aa88908689a22c850e1392af19b6d8e96b9161e999ecc811854f96",
+    "independent_audit_sha256": "b128bb0d70d16a4f530697cb51af1fb92d5de3713d78554af45f30d218d84c17",
+    "summary_sha256": "b128bb0d70d16a4f530697cb51af1fb92d5de3713d78554af45f30d218d84c17",
     "selected": false,
     "strict_v2_portable": false
   },
   "synthetic_native_closure_proof": {
     "passed": true,
     "log": "native-closure-synthetic.log",
-    "log_sha256": "ca994a8c90bd536031f0443172aec2e812fac59444b3d021f34d2efb2b6de66e",
+    "log_sha256": "ae7d38251b01def8f7f3b0031834c83821fb823290af1c3cd79c78a612f583a3",
     "native_executed": false,
     "accepted": false
   },
@@ -50,12 +50,22 @@
     "native_test_log": "native-runner-check.log",
     "native_test_log_sha256": "c8f6f7ef663bd2929ba717843c041c13e4a43d8d03b958925662139eee47deee",
     "native_tests_passed": 11,
-    "saved_480_log": "saved-full.log",
-    "saved_480_log_sha256": "f037ca91c52a433d4ce6b2b7d3d4cd6e3019f424f266555e49379ecded073af6",
-    "independent_saved_comparison_log": "saved-comparison-audit.log",
-    "independent_saved_comparison_log_sha256": "9de5f880d341ae79b619588f6b00738a6f606a5fc419427a5ba59d990740f399",
+    "saved_480_log": "saved-full-latest.log",
+    "saved_480_log_sha256": "97c6332a7aac49d6ea13a29ecf0d85750f15ebd1c7f2374df945114ffc8cbe57",
+    "independent_saved_comparison_log": "saved-comparison-latest.log",
+    "independent_saved_comparison_log_sha256": "7d090399182d315dc591f34c00abb6ff8da0f49e78ca95d6af0c2d871c7fa15c",
     "synthetic_trigger_audit": "route-trigger-integration-audit.log",
     "synthetic_trigger_audit_sha256": "11da383bc8db6e9ae8213475c7ba702888d7893652362da621ddb3ef8eee48c4",
     "scope": "Source-grounded transform and CPU mock/synthetic checks only; no CARLA run or original pixels"
+  },
+  "saved_provenance_proof": {
+    "finalizer_sha256": "05e93ed9d65aa01fff260fc69cfcab502f1c1ee51cb7c3025b0e384a7e951d88",
+    "saved_480_log_sha256": "97c6332a7aac49d6ea13a29ecf0d85750f15ebd1c7f2374df945114ffc8cbe57",
+    "comparison_audit_sha256": "7d090399182d315dc591f34c00abb6ff8da0f49e78ca95d6af0c2d871c7fa15c",
+    "sealed_closure_log_sha256": "ae7d38251b01def8f7f3b0031834c83821fb823290af1c3cd79c78a612f583a3",
+    "source_unchanged": true,
+    "synthetic_physical_flags_false": true,
+    "native_executed": false,
+    "selected": false
   }
 }

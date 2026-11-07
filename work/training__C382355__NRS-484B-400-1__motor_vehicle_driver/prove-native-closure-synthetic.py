@@ -5,6 +5,8 @@ from pathlib import Path
 import shutil
 import sys
 import tempfile
+import os
+import subprocess
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -62,6 +64,18 @@ def main():
         assert seal['frames']==480 and receipt['frames']==480
         record_native_exit(attempt)
         _closure(attempt,None,'diagnostic',True)
+        finalizer=HERE/'native/finalize.py'
+        env=dict(os.environ)
+        env['PYTHONPATH']=os.pathsep.join((str(ROOT/'runtime/pipeline/scenario_pipeline'),
+            str(ROOT/'runtime/pipeline/python'),str(ROOT/'runtime/pipeline'),env.get('PYTHONPATH','')))
+        good=subprocess.run([sys.executable,str(finalizer),'--attempt',str(attempt),
+            '--output',str(attempt/'analysis-report.json')],env=env,text=True,
+            stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=180)
+        if good.returncode:raise RuntimeError('Sealed diagnostic finalizer failed: '+good.stdout)
+        result=json.loads((attempt/'result.json').read_text())
+        assert result['provenance_kind']=='synthetic_local_diagnostic'
+        assert result['setup_confirmed'] is False and result['behavior_attempted'] is False
+        assert result['maneuver_completed'] is False
         with (attempt/'native_samples.jsonl').open('a') as stream:
             stream.write('changed\n')
         try:
@@ -70,11 +84,20 @@ def main():
             assert 'Sealed original changed: native_samples.jsonl' in str(error)
         else:
             raise AssertionError('Changed sealed Native source accepted')
+        sys.path.insert(0,str(HERE/'native'))
+        from finalize import capture_provenance
+        try:
+            capture_provenance(attempt,480)
+        except ValueError as error:
+            assert 'Sealed original changed: native_samples.jsonl' in str(error)
+        else:
+            raise AssertionError('Saved finalizer accepted changed sealed Native source')
         print(json.dumps({'passed':True,'diagnostic_fixture':True,'native_executed':False,
                           'current_exact_runner_sha256':sha(runner),
                           'frames':480,'four_view_receipt_sha256':sha(attempt/'four-view-receipt.json'),
                           'capture_seal_sha256':sha(attempt/'capture-seal.json'),
                           'positive_closure_and_changed_source_negative':True,
+                          'saved_finalizer_diagnostic_and_changed_source_negative':True,
                           'scope':'synthetic CPU closure only; no CARLA, physical or accepted recording'}))
 
 

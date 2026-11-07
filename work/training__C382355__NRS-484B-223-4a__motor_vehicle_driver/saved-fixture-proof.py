@@ -148,7 +148,10 @@ def run(frame_count=4):
                 'actor':'motor_vehicle_driver'},construction,{'recorded_exit_code':0},{})
             if not validated['rebuild_required']:
                 raise RuntimeError('Synthetic diagnostic unexpectedly claimed physical acceptance')
-            if not result['maneuver_completed'] or not result['target_checks'][0]['matched']:
+            if (result['maneuver_completed'] or result['behavior_attempted'] or
+                result['setup_confirmed'] or result['provenance_kind']!='synthetic_local_diagnostic' or
+                report['acquisition_provenance']['native_executed'] or
+                not result['target_checks'][0]['matched']):
                 raise RuntimeError('Synthetic positive did not meet its engineering target')
             if report['original_joins']['frames']!=frame_count or len(report['video_frames'])!=4 or any(v!=frame_count for v in report['video_frames'].values()):
                 raise RuntimeError('Synthetic video/trace join absent')
@@ -165,6 +168,7 @@ def run(frame_count=4):
                 'negative_log_tail':failure.stdout.strip().splitlines()[-1],
                 'source_unchanged':True,'video_sources_decoded':4,'frames':frame_count,
                 'native_attempt_validator_passed':True,'rebuild_required':True,
+                'diagnostic_provenance_enforced':True,'physical_flags_false':True,
                 'analysis_report_sha256':sha(positive/'analysis-report.json'),
                 'result_sha256':sha(positive/'result.json'),
                 'scope':f'{frame_count}-frame synthetic local saved-processing diagnostic, not pinned-runtime Core compatibility or Native physical evidence'})

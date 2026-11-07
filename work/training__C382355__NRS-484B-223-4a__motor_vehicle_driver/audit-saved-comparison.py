@@ -46,6 +46,13 @@ def run():
                 raise RuntimeError('Saved finalizer changed original sources')
         l=json.loads((left/'analysis-report.json').read_text())
         r=json.loads((right/'analysis-report.json').read_text())
+        for source,report in ((left,l),(right,r)):
+            result=json.loads((source/'result.json').read_text())
+            assert report['acquisition_provenance']['native_executed'] is False
+            assert result['provenance_kind']=='synthetic_local_diagnostic'
+            assert result['setup_confirmed'] is False
+            assert result['behavior_attempted'] is False
+            assert result['maneuver_completed'] is False
         lv=l['measurements']['right_only_lane_subsequent_movement']['value']
         rv=r['measurements']['right_only_lane_subsequent_movement']['value']
         assert l['original_joins']['frames']==r['original_joins']['frames']==480
@@ -79,6 +86,7 @@ def run():
                 'measured_subsequent_movements':['right_turn_follows','straight_follows'],
                 'right_only_design_verified':False,
                 'source_unchanged':True,
+                'synthetic_physical_flags_false':True,
                 'scope':'synthetic saved controlled comparison only; no Native physical or legal outcome proof'}
 
 

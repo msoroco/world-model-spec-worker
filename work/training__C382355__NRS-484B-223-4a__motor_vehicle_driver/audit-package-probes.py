@@ -59,8 +59,11 @@ def audit():
             if not json.loads((scratch/'output/final-decode.json').read_text())['passed']:
                 raise ValueError('Final render decode failed')
             native_result=json.loads((scratch/'output/result.json').read_text())
-            if native_result['accepted'] or native_result['legal_verdict_claimed'] or any(
-                check.get('physical_cause_confirmed') for check in native_result['target_checks']):
+            if (native_result['provenance_kind']!='synthetic_local_diagnostic' or
+                native_result['setup_confirmed'] or native_result['behavior_attempted'] or
+                native_result['maneuver_completed'] or native_result['accepted'] or
+                native_result['legal_verdict_claimed'] or any(
+                check.get('physical_cause_confirmed') for check in native_result['target_checks'])):
                 raise ValueError('Synthetic diagnostic claimed physical success or acceptance')
             if (negative['exit_code']==0 or negative['removed']!='native_samples.jsonl'
                 or negative['error_contains']!='Missing required source: native_samples.jsonl'

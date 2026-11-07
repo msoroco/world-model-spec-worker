@@ -66,6 +66,46 @@ def video_frames(path):
     return int(completed.stdout.strip())
 
 
+def capture_provenance(attempt, count):
+    from worker_exchange.common import digest, within
+    from worker_exchange.native_output import provenance_record
+    record = provenance_record(attempt)
+    seal_path = attempt/'capture-seal.json'
+    if not seal_path.is_file():
+        return {'source_kind':record['provenance_kind'],
+                'diagnostic_fixture':record['diagnostic_fixture'],
+                'native_executed':False}, False
+    seal = json.loads(seal_path.read_text())
+    sources = seal.get('sources')
+    required = {'trace.jsonl','video_frames.jsonl','capture/evidence.jsonl',
+                'native_samples.jsonl','body_history.jsonl','road_geometry.json',
+                'overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv'}
+    if not isinstance(sources,dict) or not required <= set(sources) or digest(sources)!=seal.get('source_digest'):
+        raise ValueError('Native capture seal source inventory incomplete')
+    for name, expected in sources.items():
+        if sha(within(attempt,name))!=expected:
+            raise ValueError('Sealed original changed: '+name)
+    marker_path=attempt/'acquisition-provenance.json'
+    marker=json.loads(marker_path.read_text()) if marker_path.is_file() else {}
+    codes=seal.get('encoder_exit_codes')
+    cameras={'overview','approach','reference_corner','driver_reference'}
+    native=(record['provenance_kind']=='native' and
+            record['diagnostic_fixture'] is False and
+            seal.get('format')=='worker-sealed-capture-v2' and
+            seal.get('provenance_kind')=='native' and
+            seal.get('diagnostic_fixture') is False and
+            seal.get('frames')==count and
+            seal.get('events')==['capture_finished','encoders_closed','restoration_verified'] and
+            seal.get('restoration',{}).get('restored') is True and
+            isinstance(codes,dict) and set(codes)==cameras and
+            all(type(code) is int and code==0 for code in codes.values()) and
+            marker.get('diagnostic_fixture') is not True and
+            marker.get('native_executed') is not False)
+    return {'source_kind':record['provenance_kind'],
+            'diagnostic_fixture':record['diagnostic_fixture'],
+            'native_executed':native}, native
+
+
 def measure_right_turn_lane(attempt):
     attempt=Path(attempt)
     result=measure(attempt/'native_samples.jsonl',attempt/'road_geometry.json')
@@ -86,6 +126,7 @@ def finalize(attempt,output):
     if abs(requested_count-count)>1e-6 or count<2:
         raise ValueError('Recording duration/rate does not yield an integral frame count')
     original=verify_original_joins(attempt,count)
+    provenance,native=capture_provenance(attempt,count)
     measured=measure_right_turn_lane(attempt)
     videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     video_counts={name:video_frames(attempt/name) for name in videos}
@@ -111,8 +152,8 @@ def finalize(attempt,output):
         'tolerance':'all sampled approach bodies and IDs','matched':matched,
         'physical_cause_confirmed':False,
         'cause_evidence':['road_geometry.json','native_samples.jsonl']}],
-      'setup_confirmed':actual['right_turn_lane_design_native_verified'],
-      'behavior_attempted':True,'maneuver_completed':actual['right_turn_observed_at_complete_exit'],
+      'setup_confirmed':native and actual['right_turn_lane_design_native_verified'],
+      'behavior_attempted':native,'maneuver_completed':native and actual['right_turn_observed_at_complete_exit'],
       'termination_reason':'full original duration retained',
       'physical_failure_flags':['right_turn_lane_design_and_pixels_unverified']+
            ([] if matched else ['approach_lane_target_not_measured']),
@@ -125,13 +166,15 @@ def finalize(attempt,output):
            'time_window':'before first body intersection entry',
            'statistic':'fraction','reference':'native_samples.jsonl',
            'sample_window_s':actual['approach_window_s']}},
-      'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
+      'provenance_kind':'native' if native else 'synthetic_local_diagnostic',
+      'accepted':False,'legal_verdict_claimed':False}
     from worker_exchange.native_output import validate_result
     validate_result(result)
     report={'format':'c382355-right-turn-saved-analysis-v1','case_id':config['case_id'],
       'candidate_id':config['candidate_id'],
       'measurements':{'right_turn_lane_occupancy':measured},
       'original_joins':original,'video_frames':video_counts,
+      'acquisition_provenance':provenance,
       'scope':'saved original Native sources and source-video decode; right-only lane design and legal verdict unverified'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     with (attempt/'result.json').open('x') as stream:
