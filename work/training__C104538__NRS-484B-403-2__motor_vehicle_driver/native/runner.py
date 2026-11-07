@@ -32,6 +32,14 @@ def frame_map_row(index, frame, time_s):
     return {'video_frame': index, 'native_frame': frame, 'carla_frame': frame, 'time_s': time_s}
 
 
+def observed_speed_mps(actor):
+    velocity = actor.get_velocity()
+    speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
+    if not math.isfinite(speed):
+        raise RuntimeError('Original Native observed speed is nonfinite')
+    return speed
+
+
 def check(case_suffix, candidate_id):
     geometry = geometry_check()
     engineering = parameters(case_suffix, candidate_id)
@@ -239,8 +247,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
              (output / 'body_history.jsonl').open('x') as body_file:
             for index in range(480):
                 before = ego.get_transform()
-                velocity = ego.get_velocity()
-                speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
+                speed = observed_speed_mps(ego)
                 command = controller.step(position_xy_m=(before.location.x, before.location.y),
                     yaw_rad=math.radians(before.rotation.yaw), speed_mps=speed, dt_s=.05)
                 ego.apply_control(carla.VehicleControl(throttle=command['throttle'],
@@ -249,6 +256,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                 frame = world.tick()
                 time_s = world.get_snapshot().timestamp.elapsed_seconds - start
                 pose = ego.get_transform()
+                observed_speed = observed_speed_mps(ego)
                 lane = mapping.get_waypoint(pose.location, project_to_road=False,
                                             lane_type=carla.LaneType.Driving)
                 if lane is None:
@@ -266,7 +274,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                     'native_heading_deg': pose.rotation.yaw,
                     'native_body_xy_m': body,
                     'native_road_id': lane.road_id, 'native_lane_id': lane.lane_id,
-                    'speed_mps': speed, 'controller_request': command}
+                    'speed_mps': observed_speed, 'controller_request': command}
                 capture.capture(frame, time_s, extra={'c104538_native': sample})
                 native_file.write(json.dumps(sample, allow_nan=False) + '\n')
                 body_file.write(json.dumps({'frame': frame, 'time_s': time_s,

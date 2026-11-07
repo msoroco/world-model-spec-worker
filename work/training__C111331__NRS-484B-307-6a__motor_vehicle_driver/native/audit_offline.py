@@ -12,6 +12,12 @@ def sha(path):
 
 
 def audit():
+    runner = (HERE / 'runner.py').read_text()
+    tick = runner.index('frame = world.tick()')
+    observed = runner.index('observed_speed = observed_speed_mps(ego)', tick)
+    saved = runner.index("'speed_mps': observed_speed", observed)
+    if not tick < observed < saved or "'speed_mps': speed," in runner:
+        raise ValueError('Saved Native speed is not observed after the tick')
     manifest_path = HERE / 'package-manifest.json'
     manifest = json.loads(manifest_path.read_text())
     proof = json.loads((HERE / 'cpu-proof-summary.json').read_text())
@@ -56,7 +62,7 @@ def audit():
             if package['status'] != 'unselected_cpu_draft' or config['physical_success_claimed'] or not config['no_native_or_original_observation_claimed']:
                 raise ValueError('Draft status or observation boundary differs')
             log = (folder / 'offline.log').read_text()
-            if receipt['exit_code'] != 0 or 'Ran 6 tests' not in log or '\nOK\n' not in log or '"carla_imported": false' not in log:
+            if receipt['exit_code'] != 0 or 'Ran 7 tests' not in log or '\nOK\n' not in log or '"carla_imported": false' not in log:
                 raise ValueError('Pinned offline and adversarial CPU tests did not pass')
             if candidate != 'primary':
                 trigger = ref['trigger']

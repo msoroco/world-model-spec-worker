@@ -22,7 +22,9 @@ def read(path):
 
 
 def audit():
-    manifest = digest(HERE / 'package-manifest.json')
+    manifest_path = HERE / 'package-manifest.json'
+    manifest = digest(manifest_path)
+    manifest_data = read(manifest_path)
     checked = []
     for case in ('reference', 'contrast'):
         for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
@@ -34,6 +36,11 @@ def audit():
             result = read(folder / 'result.json')
             decode = read(folder / 'final-decode.json')
             cid = ASSIGNMENT + '__' + case
+            entry = next(item for item in manifest_data['cases'] if item['case_id'] == cid)
+            source = entry if candidate == 'primary' else next(
+                item for item in entry['candidates'] if item['id'] == candidate)
+            assert receipt['construction_sha256'] == source['construction_sha256']
+            assert digest(HERE / source['construction']) == source['construction_sha256']
             assert summary['format'] == 'c111331-exact-synthetic-portable-v1'
             assert summary['case_id'] == receipt['case_id'] == report['case_id'] == result['case_id'] == cid
             assert summary['candidate_id'] == receipt['candidate_id'] == candidate

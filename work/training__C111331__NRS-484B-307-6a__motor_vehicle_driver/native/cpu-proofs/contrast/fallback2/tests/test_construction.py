@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import unittest
 import runner
+from types import SimpleNamespace
 
 class ExactRequestTests(unittest.TestCase):
     def test_exact_request(self):
@@ -67,5 +68,19 @@ class ExactRequestTests(unittest.TestCase):
         self.assertEqual(plans['reference_corner']['fov_deg'], config['camera_plan']['horizontal_fov_deg'])
         self.assertEqual(plans['reference_corner']['y'], config['camera_plan']['authored_xy_m'][1])
         self.assertTrue(plans['driver_reference']['attach_to_ego'])
+
+    def test_observed_speed_uses_current_tick_and_rejects_nonfinite(self):
+        class Actor:
+            speed = 2.0
+            def get_velocity(self):
+                return SimpleNamespace(x=self.speed, y=0.0)
+        actor = Actor()
+        before = runner.observed_speed_mps(actor)
+        actor.speed = .25
+        self.assertEqual(before, 2.0)
+        self.assertEqual(runner.observed_speed_mps(actor), .25)
+        actor.speed = float('nan')
+        with self.assertRaisesRegex(RuntimeError, 'nonfinite'):
+            runner.observed_speed_mps(actor)
 
 if __name__ == '__main__': unittest.main()

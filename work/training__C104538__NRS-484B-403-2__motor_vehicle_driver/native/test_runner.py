@@ -4,7 +4,7 @@ from types import SimpleNamespace
 from cameras import camera_plan
 from controller import PathController
 from engineering import parameters
-from runner import check, frame_map_row, map_survey
+from runner import check, frame_map_row, map_survey, observed_speed_mps
 
 
 class RunnerTest(unittest.TestCase):
@@ -33,6 +33,20 @@ class RunnerTest(unittest.TestCase):
         self.assertEqual(frame_map_row(2, 42, .1)['carla_frame'], 42)
         with self.assertRaises(ValueError):
             frame_map_row(2, True, .1)
+
+    def test_observed_speed_uses_current_velocity(self):
+        class Actor:
+            speed = 2.0
+            def get_velocity(self):
+                return SimpleNamespace(x=self.speed, y=0.0, z=0.0)
+        actor = Actor()
+        pre_tick = observed_speed_mps(actor)
+        actor.speed = 0.25
+        self.assertEqual(pre_tick, 2.0)
+        self.assertEqual(observed_speed_mps(actor), 0.25)
+        actor.speed = float('nan')
+        with self.assertRaisesRegex(RuntimeError, 'nonfinite'):
+            observed_speed_mps(actor)
 
     def test_synthetic_map_readback_and_adversarial_direction(self):
         class Location:

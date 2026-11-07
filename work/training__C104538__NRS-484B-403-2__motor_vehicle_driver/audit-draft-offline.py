@@ -21,6 +21,12 @@ def audit():
     manifest = json.loads((FOLDER / 'draft-execution-manifest.json').read_text())
     summary = json.loads((FOLDER / 'draft-offline-summary.json').read_text())
     plan = json.loads((FOLDER / 'case-plan.json').read_text())
+    runner = (FOLDER / 'native/runner.py').read_text()
+    tick = runner.index('frame = world.tick()')
+    observed = runner.index('observed_speed = observed_speed_mps(ego)', tick)
+    saved = runner.index("'speed_mps': observed_speed", observed)
+    if not tick < observed < saved or "'speed_mps': speed, 'controller_request'" in runner:
+        raise AssertionError('Saved Native speed must be observed after the tick')
     if manifest['status'] != 'draft_not_selected' or len(manifest['cases']) != 2:
         raise AssertionError('Selected or missing draft cases')
     if len(summary['results']) != 8:
@@ -77,12 +83,12 @@ def audit():
             if digest(FOLDER / receipt[path_key]) != receipt[hash_key]:
                 raise AssertionError('Offline log hash changed')
         unit = (FOLDER / receipt['unit_log']).read_text()
-        if 'Ran 17 tests' not in unit or '\nOK\n' not in unit:
+        if 'Ran 18 tests' not in unit or '\nOK\n' not in unit:
             raise AssertionError('Exact bundle tests did not pass')
     if observed != expected:
         raise AssertionError('Exact bundle inventory incomplete')
     return {'passed': True, 'cases': 2, 'unselected_candidates': 8,
-            'offline_tests_per_bundle': 17, 'native_executed': False,
+            'offline_tests_per_bundle': 18, 'native_executed': False,
             'selected_delivery_cases': 0}
 
 

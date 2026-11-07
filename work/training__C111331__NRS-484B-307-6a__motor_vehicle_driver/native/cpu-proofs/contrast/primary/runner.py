@@ -92,6 +92,14 @@ def _body_xy(actor):
     return [list(p) for p in points]
 
 
+def observed_speed_mps(actor):
+    velocity = actor.get_velocity()
+    speed = math.hypot(velocity.x, velocity.y)
+    if not math.isfinite(speed):
+        raise RuntimeError('Original Native observed speed is nonfinite')
+    return speed
+
+
 def saved_capture_rows(sample, video_frame):
     """Build the three synchronized saved sources from one observed tick."""
     if video_frame != sample['request_index'] or len(sample['native_body_xy_m']) != 4:
@@ -234,8 +242,7 @@ def execute(output, host, port):
                 signal.set_state({'green': carla.TrafficLightState.Green, 'yellow': carla.TrafficLightState.Yellow,
                                   'red': carla.TrafficLightState.Red}[phase])
                 pose = ego.get_transform()
-                velocity = ego.get_velocity()
-                speed = math.hypot(velocity.x, velocity.y)
+                speed = observed_speed_mps(ego)
                 target = request['native_center_xy_m']
                 yaw = math.radians(pose.rotation.yaw)
                 left_error = -(target[0] - pose.location.x) * math.sin(yaw) + (target[1] - pose.location.y) * math.cos(yaw)
@@ -249,11 +256,12 @@ def execute(output, host, port):
                 frame = world.tick()
                 now = world.get_snapshot().timestamp.elapsed_seconds - start
                 pose = ego.get_transform()
+                observed_speed = observed_speed_mps(ego)
                 body = _body_xy(ego)
                 native_sample = {'request_index': index, 'native_frame': frame, 'time_s': now,
                     'native_center_xy_m': [pose.location.x, pose.location.y], 'native_z_m': pose.location.z,
                     'native_body_xy_m': body,
-                    'native_yaw_deg': pose.rotation.yaw, 'speed_mps': speed,
+                    'native_yaw_deg': pose.rotation.yaw, 'speed_mps': observed_speed,
                     'requested_signal_phase': phase, 'observed_signal_state': str(signal.get_state()),
                     'signal_actor_id': signal.id, 'approach_road_id': waypoint.road_id,
                     'approach_lane_id': waypoint.lane_id, 'controller_request': control,
