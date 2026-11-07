@@ -44,6 +44,7 @@ def build():
     plan = json.loads((HERE / 'case-plan.json').read_text())
     common = {name: (NATIVE / source).read_text() for name, source in SOURCES.items()}
     common['statutory-context-contract.json'] = (HERE / 'statutory-context-contract.json').read_text()
+    common['official-cited-context.json'] = (HERE / 'official-cited-context.json').read_text()
     description = recording_description()
     manifest = {'format': 'worker-unselected-draft-construction-manifest-v1',
                 'assignment_id': HERE.name,

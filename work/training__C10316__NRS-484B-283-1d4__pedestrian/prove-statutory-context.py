@@ -16,7 +16,7 @@ for item in json.loads((HERE / 'exception-summary.json').read_text())['records']
     measurement_path = folder / 'source-measurement.json'
     measured = json.loads(measurement_path.read_text())
     unresolved = assess(contract, measurement_path)
-    assert len(unresolved['branches']) == 10
+    assert len(unresolved['branches']) == 12
     assert all(not row['diagnostic_facts_complete'] for row in unresolved['branches'])
     facts = {field: False for field in fields}
     facts.update(governing_pedestrian_signal=True, facing_signal=True,
@@ -49,6 +49,6 @@ output = {'format': 'c10316-statutory-context-cpu-proof-v1',
           'records': records, 'selected_delivery_cases': 0,
           'physical_context_observed': False, 'legal_applicability_determined': False}
 (HERE / 'statutory-context-summary.json').write_text(json.dumps(output, indent=2) + '\n')
-print(json.dumps({'cases': 2, 'source_dependencies': 10,
+print(json.dumps({'cases': 2, 'source_dependencies': 12,
                   'diagnostic_fact_fields': len(fields), 'changed_source_rejections': 2,
                   'physical_context_observed': False, 'legal_applicability_determined': False}))

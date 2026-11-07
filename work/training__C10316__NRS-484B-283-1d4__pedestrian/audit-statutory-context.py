@@ -9,15 +9,26 @@ source = ROOT / 'inputs/coverage/branch-sources.json'
 frozen = json.loads(source.read_text())['laws']
 contract_path = HERE / 'statutory-context-contract.json'
 contract = json.loads(contract_path.read_text())
+official_path = HERE / 'official-cited-context.json'
+official = json.loads(official_path.read_text())
 proof = json.loads((HERE / 'statutory-context-summary.json').read_text())
 sha = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
 assert contract['frozen_branch_source_sha256'] == sha(source)
-assert len(contract['dependencies']) == 10
+assert len(contract['dependencies']) == 12
 assert contract['cited_exact_sources_absent_from_frozen_inventory'] == ['NRS 484B.290', 'NRS 484B.350']
+assert contract['official_cited_context_sha256'] == sha(official_path)
+assert contract['official_cited_sections_reviewed'] == ['NRS 484B.290', 'NRS 484B.350']
 assert all(row['law_id'] in frozen and row['source'] == frozen[row['law_id']]['law']['source']
            and row['text_sha256'] == hashlib.sha256(frozen[row['law_id']]['law']['text'].encode()).hexdigest()
-           for row in contract['dependencies'])
+           for row in contract['dependencies'][:10])
+assert [row['law_id'] for row in contract['dependencies'][10:]] == ['NRS-484B-290', 'NRS-484B-350']
+for row, section in zip(contract['dependencies'][10:], official['sections']):
+    assert row['law_id'] == section['law_id']
+    assert row['required_source_facts'] == section['required_source_facts']
+    assert row['source_summary_sha256'] == hashlib.sha256(section['source_summary'].encode()).hexdigest()
+    assert row['frozen_companion_law_id'] == section['frozen_companion_law_id']
+    assert row['companion_is_exact_equivalent'] is False
 assert len(proof['records']) == 2
 for record in proof['records']:
     path = Path(record['source_measurement'])
@@ -49,5 +60,6 @@ assert proof['selected_delivery_cases'] == 0
 assert proof['physical_context_observed'] is False
 assert proof['legal_applicability_determined'] is False
 print(json.dumps({'audit': 'pass', 'exact_frozen_source_dependencies': 10,
+                  'official_cited_references': 2,
                   'synthetic_cases': 2, 'physical_context_observed': False,
                   'legal_applicability_determined': False}))

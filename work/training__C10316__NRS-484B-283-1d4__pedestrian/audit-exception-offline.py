@@ -41,6 +41,7 @@ def main():
             for name in sources:
                 assert files[name] == (HERE / 'native' / sources[name]).read_text()
             assert files['statutory-context-contract.json'] == (HERE / 'statutory-context-contract.json').read_text()
+            assert files['official-cited-context.json'] == (HERE / 'official-cited-context.json').read_text()
             assert files['tests/test_offline.py'] == (HERE / 'native/test_offline_exception.py').read_text()
             config = json.loads(files['config.json'])
             assert config['case_id'] == case['case_id'] == config['selected_case_id']

@@ -29,7 +29,7 @@ for branch in entry['branches']:
     assert len(branch['comparison_ids']) == 1
     assert set(branch['case_ids']) <= comparisons[branch['comparison_ids'][0]]
     assert all(source['topics'][topic]['text'] for topic in branch['topic_ids'])
-assert len(contract['dependencies']) == 10
+assert len(contract['dependencies']) == 12
 assert contract['target_law_id'] == source['law']['id']
 assert contract['dependencies'][0]['text_sha256'] == hashlib.sha256(source['law']['text'].encode()).hexdigest()
 assert contract['legal_applicability_determined'] is False

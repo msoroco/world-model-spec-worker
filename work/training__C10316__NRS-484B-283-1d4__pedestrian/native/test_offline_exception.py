@@ -50,7 +50,7 @@ class PriorEntryOffline(unittest.TestCase):
             source.write_text(json.dumps({'format': 'c10316-prior-entry-source-observation-v1',
                                           'source_sha256': {}, 'legal_verdict_claimed': False}))
             assessment = assess_statutory_context(HERE / 'statutory-context-contract.json', source)
-            self.assertEqual(len(assessment['branches']), 10)
+            self.assertEqual(len(assessment['branches']), 12)
             self.assertTrue(all(row['missing_source_facts'] for row in assessment['branches']))
             self.assertFalse(assessment['physical_context_observed'])
             self.assertFalse(assessment['legal_applicability_determined'])

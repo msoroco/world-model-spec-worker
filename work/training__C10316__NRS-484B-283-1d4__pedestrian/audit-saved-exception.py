@@ -50,6 +50,27 @@ for record in records:
     assert result['setup_confirmed'] is False and result['behavior_attempted'] is False
     assert result['maneuver_completed'] is False
     measured = report['measurements']['prior_entry_exception_source_facts']['value']
+    assessment = report['statutory_context_assessment']
+    contract = json.loads((HERE / 'statutory-context-contract.json').read_text())
+    packet_path = root / 'statutory-diagnostic-facts.json'
+    packet = json.loads(packet_path.read_text())
+    canonical_measurement = json.dumps(measured, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
+    assert assessment['contract_sha256'] == sha(HERE / 'statutory-context-contract.json')
+    assert assessment['source_measurement_sha256'] == hashlib.sha256(canonical_measurement).hexdigest()
+    assert assessment['facts_sha256'] == sha(packet_path)
+    assert packet['source_sha256'] == measured['source_sha256']
+    assert packet['provenance'] == assessment['fact_provenance'] == 'synthetic_diagnostic'
+    assert len(assessment['branches']) == len(contract['dependencies']) == 12
+    for branch, dependency in zip(assessment['branches'], contract['dependencies']):
+        assert branch['law_id'] == dependency['law_id']
+        assert branch['required_source_facts'] == dependency['required_source_facts']
+        assert branch['missing_source_facts'] == []
+        assert branch['diagnostic_facts_complete'] is True
+        assert branch['physical_context_observed'] is False
+        assert branch['legal_applicability_determined'] is False
+    assert assessment['physical_context_observed'] is False
+    assert assessment['legal_applicability_determined'] is False
+    assert assessment['selected_delivery_cases'] == 0
     assert measured['source_kind'] == 'synthetic_scene_request'
     assert measured['exceptions_reviewed'] is False and measured['lawful_prior_entry_proven'] is False
     assert measured['as_soon_as_possible_bound_declared'] is False
@@ -65,6 +86,9 @@ for record in records:
         assert not (root.parent / (suffix + '-' + label) / removed).exists()
     wrong = rows(root.parent / (suffix + '-wrong-footprint') / 'capture/evidence.jsonl')
     assert wrong[10]['ego']['body_vertices_m'][0][0] != evidence[10]['ego']['body_vertices_m'][0][0]
+    wrong_packet = json.loads((root.parent / (suffix + '-wrong-statutory-source') /
+                               'statutory-diagnostic-facts.json').read_text())
+    assert wrong_packet['source_sha256'] != packet['source_sha256']
 
 first = rows(Path(records[0]['retained_positive']) / 'exception-samples.jsonl')
 second = rows(Path(records[1]['retained_positive']) / 'exception-samples.jsonl')
@@ -75,4 +99,4 @@ for a, b in zip(first, second):
 assert [r['measured_entry_indication'] for r in records] == ['dont_walk_flashing', 'walk']
 print(json.dumps({'independent_audit': 'pass', 'synthetic_saved_cases': 2,
                   'source_frames_per_case': 240, 'original_videos_per_case': 4,
-                  'negative_source_variants': 6, 'accepted_recordings': 0}))
+                  'negative_source_variants': 8, 'accepted_recordings': 0}))

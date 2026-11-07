@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 
 from exception import measure, sha
+from statutory_context import assess
 
 
 def required(folder, name):
@@ -74,10 +75,16 @@ def prior_entry_exception(folder):
 def report(folder, case_id):
     folder = Path(folder)
     value = prior_entry_exception(folder)
+    contract = Path(__file__).with_name('statutory-context-contract.json')
+    if not contract.is_file():
+        contract = Path(__file__).resolve().parent.parent / 'statutory-context-contract.json'
+    facts = folder / 'statutory-diagnostic-facts.json'
+    context_assessment = assess(contract, value, facts if facts.is_file() else None)
     sources = {name: sha(folder / name) for name in ('exception-samples.jsonl', 'exception-context.json', 'road.xodr')}
     return {'format': 'worker-analysis-report-v1', 'case_id': case_id,
             'measurements': {'prior_entry_exception_source_facts': {
                 'method': 'prior_entry_exception', 'value': value, 'sources': sources}},
+            'statutory_context_assessment': context_assessment,
             'scope': 'prior-entry source facts without lawful-entry, exception or legal verdict'}
 
 

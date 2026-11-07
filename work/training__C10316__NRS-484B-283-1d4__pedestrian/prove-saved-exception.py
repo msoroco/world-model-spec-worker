@@ -46,7 +46,7 @@ def make_base(destination, suffix):
     config = json.loads(next(item['content'] for item in construction['files'] if item['path'] == 'config.json'))
     (destination / 'config.json').write_text(json.dumps(config) + '\n')
     source = Path(json.loads((HERE / 'exception-summary.json').read_text())['retained_root']) / suffix
-    for name in ('exception-samples.jsonl', 'exception-context.json'):
+    for name in ('exception-samples.jsonl', 'exception-context.json', 'statutory-diagnostic-facts.json'):
         shutil.copy2(source / name, destination / name)
     context_path = destination / 'exception-context.json'
     context = json.loads(context_path.read_text())
@@ -93,6 +93,13 @@ def make_base(destination, suffix):
                            'road.xodr': sha(destination / 'road.xodr')}
     manifest['synthetic_diagnostic'] = True
     manifest_path.write_text(json.dumps(manifest) + '\n')
+    sys.path.insert(0, str(HERE / 'native'))
+    from exception import measure
+    packet_path = destination / 'statutory-diagnostic-facts.json'
+    packet = json.loads(packet_path.read_text())
+    packet['source_sha256'] = measure(destination / 'exception-samples.jsonl',
+                                      destination / 'exception-context.json')['source_sha256']
+    packet_path.write_text(json.dumps(packet, indent=2) + '\n')
     return config
 
 
@@ -116,7 +123,7 @@ def main():
         base = retained / (suffix + '-base')
         config = make_base(base, suffix)
         variants = {name: retained / (suffix + '-' + name) for name in
-                    ('positive', 'missing', 'wrong-footprint', 'missing-video')}
+                    ('positive', 'missing', 'wrong-footprint', 'missing-video', 'wrong-statutory-source')}
         for folder in variants.values():
             shutil.copytree(base, folder)
         positive = variants['positive']
@@ -132,16 +139,26 @@ def main():
         verify_report(contract, report, positive)
         if result['accepted'] or result['legal_verdict_claimed'] or result['setup_confirmed'] or result['behavior_attempted']:
             raise RuntimeError('Synthetic steady acquired physical or legal status')
+        assessment = report['statutory_context_assessment']
+        if (len(assessment['branches']) != 12 or
+                not all(branch['diagnostic_facts_complete'] for branch in assessment['branches']) or
+                assessment['physical_context_observed'] or assessment['legal_applicability_determined']):
+            raise RuntimeError('Saved statutory assessment differs')
         (variants['missing'] / 'exception-samples.jsonl').unlink()
         wrong = variants['wrong-footprint']
         wrong_rows = read_rows(wrong / 'capture/evidence.jsonl')
         wrong_rows[10]['ego']['body_vertices_m'][0][0] += 1
         write_rows(wrong / 'capture/evidence.jsonl', wrong_rows)
         (variants['missing-video'] / 'overview.mkv').unlink()
+        wrong_statutory = variants['wrong-statutory-source'] / 'statutory-diagnostic-facts.json'
+        changed_packet = json.loads(wrong_statutory.read_text())
+        changed_packet['source_sha256'] = {}
+        wrong_statutory.write_text(json.dumps(changed_packet) + '\n')
         errors = []
         for name, expected in (('missing', 'Missing required source: exception-samples.jsonl'),
                                ('wrong-footprint', 'Original prior-entry pedestrian footprint differs'),
-                               ('missing-video', 'Missing required source: overview.mkv')):
+                               ('missing-video', 'Missing required source: overview.mkv'),
+                               ('wrong-statutory-source', 'Statutory context facts source differs')):
             failure = run_finalizer(variants[name], env)
             if failure.returncode == 0 or expected not in failure.stdout:
                 raise RuntimeError('Countdown negative did not reject: ' + name + ' ' + failure.stdout)
@@ -158,7 +175,7 @@ def main():
                'retained_root': str(retained), 'records': records}
     (HERE / 'saved-exception-summary.json').write_text(json.dumps(summary, indent=2) + '\n')
     print(json.dumps({'cases': 2, 'frames_per_case': 240, 'video_sources_per_case': 4,
-                      'negative_rejections': 6, 'accepted_recordings': 0}))
+                      'negative_rejections': 8, 'accepted_recordings': 0}))
 
 
 if __name__ == '__main__':
