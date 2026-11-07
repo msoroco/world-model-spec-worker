@@ -9,7 +9,7 @@ FPS = 20
 FRAMES = 480
 MPH_TO_MPS = .44704
 ROOT = Path(__file__).resolve().parent
-ROAD = ROOT / "road.xodr"
+ROAD = ROOT / "authored-road.xodr"
 
 
 def open_drive() -> str:

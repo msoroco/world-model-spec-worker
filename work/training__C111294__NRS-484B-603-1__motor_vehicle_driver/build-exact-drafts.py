@@ -14,7 +14,7 @@ from cameras import camera_plan
 from engineering import CANDIDATES, candidate_plan
 
 FILES = ("runner.py", "geometry.py", "engineering.py", "cameras.py",
-         "measure_approach.py", "finalize.py", "road.xodr", "draft-candidates.json")
+         "measure_approach.py", "finalize.py", "authored-road.xodr", "draft-candidates.json")
 
 
 def sha(path: Path) -> str:

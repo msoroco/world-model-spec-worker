@@ -72,7 +72,7 @@ def main() -> None:
             for key, value in policy_rows[candidate].items():
                 if key != "name":
                     assert config["knobs"][key] == value
-            assert files["road.xodr"] == (HERE / "draft-fixtures/road.xodr").read_text()
+            assert files["authored-road.xodr"] == (HERE / "draft-fixtures/road.xodr").read_text()
             assert files["draft-candidates.json"] == (HERE / "draft-candidates.json").read_text()
             source_files = {k: v for k, v in files.items() if k != "config.json"}
             if common_files is None:
