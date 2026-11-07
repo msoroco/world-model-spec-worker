@@ -111,6 +111,17 @@ def audit() -> dict:
                 pass
             else:
                 raise AssertionError('Unbound trigger accepted')
+            for invalid in (float('nan'), float('inf'), -float('inf'), True):
+                altered = dict(metrics, **{eng.TRIGGERS[c]['metric']: invalid})
+                source.write_text(json.dumps(altered))
+                try:
+                    eng.evaluate_trigger(c, altered, source,
+                                         hashlib.sha256(source.read_bytes()).hexdigest())
+                except ValueError:
+                    pass
+                else:
+                    raise AssertionError('Nonfinite or boolean trigger accepted')
+            source.write_text(json.dumps(metrics))
     return {'passed':True,'assignment_id':ROOT.name,'source_scope':'authored CPU geometry and synthetic saved frames',
             'candidate_count':8,'pair_variable':'halt_before_right_turn_on_red',
             'synthetic_pair':pair,'negative_checks':['signal_state','source_hash','fallback_source_hash'],
