@@ -6,6 +6,7 @@ import unittest
 from engineering import candidate, evaluate_fallbacks
 from geometry import check as check_geometry
 from exception import measure, signal_state
+from statutory_context import assess as assess_statutory_context
 from runner import check as check_runner
 
 HERE = Path(__file__).resolve().parent.parent
@@ -42,6 +43,17 @@ class PriorEntryOffline(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Missing required source: exception-samples.jsonl'):
                 evaluate_fallbacks(Path(folder) / 'exception-samples.jsonl',
                                    Path(folder) / 'exception-context.json')
+
+    def test_statutory_context_requires_source_facts(self):
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / 'source-measurement.json'
+            source.write_text(json.dumps({'format': 'c10316-prior-entry-source-observation-v1',
+                                          'source_sha256': {}, 'legal_verdict_claimed': False}))
+            assessment = assess_statutory_context(HERE / 'statutory-context-contract.json', source)
+            self.assertEqual(len(assessment['branches']), 10)
+            self.assertTrue(all(row['missing_source_facts'] for row in assessment['branches']))
+            self.assertFalse(assessment['physical_context_observed'])
+            self.assertFalse(assessment['legal_applicability_determined'])
 
 
 if __name__ == '__main__':

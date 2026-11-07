@@ -24,6 +24,7 @@ def main():
     assert len(summary['results']) == 8
     sources = {'runner.py': 'runner_exception.py', 'geometry.py': 'geometry.py',
                'engineering.py': 'engineering_exception.py', 'exception.py': 'exception.py',
+               'statutory_context.py': 'statutory_context.py',
                'finalize.py': 'finalize_exception.py', 'road.xodr': 'road.xodr'}
     configs = {}
     seen = set()
@@ -39,6 +40,7 @@ def main():
             files = {item['path']: item['content'] for item in construction['files']}
             for name in sources:
                 assert files[name] == (HERE / 'native' / sources[name]).read_text()
+            assert files['statutory-context-contract.json'] == (HERE / 'statutory-context-contract.json').read_text()
             assert files['tests/test_offline.py'] == (HERE / 'native/test_offline_exception.py').read_text()
             config = json.loads(files['config.json'])
             assert config['case_id'] == case['case_id'] == config['selected_case_id']
@@ -54,7 +56,7 @@ def main():
             assert receipt['exit_code'] == 0
             assert sha(HERE / receipt['command_log']) == receipt['command_log_sha256']
             assert sha(HERE / receipt['unit_log']) == receipt['unit_log_sha256']
-            assert 'Ran 4 tests' in (HERE / receipt['unit_log']).read_text()
+            assert 'Ran 5 tests' in (HERE / receipt['unit_log']).read_text()
             assert '\nOK' in (HERE / receipt['unit_log']).read_text()
             assert 'simulation_started' in (HERE / receipt['command_log']).read_text()
             assert receipt in summary['results']

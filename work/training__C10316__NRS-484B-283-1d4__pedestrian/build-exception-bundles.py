@@ -9,6 +9,7 @@ NATIVE = HERE / 'native'
 IDS = ('primary', 'fallback1', 'fallback2', 'fallback3')
 SOURCES = {'runner.py': 'runner_exception.py', 'geometry.py': 'geometry.py',
            'engineering.py': 'engineering_exception.py', 'exception.py': 'exception.py',
+           'statutory_context.py': 'statutory_context.py',
            'finalize.py': 'finalize_exception.py',
            'road.xodr': 'road.xodr', 'tests/test_offline.py': 'test_offline_exception.py'}
 
@@ -42,6 +43,7 @@ def build():
     batch = json.loads((ROOT / 'batch.json').read_text())
     plan = json.loads((HERE / 'case-plan.json').read_text())
     common = {name: (NATIVE / source).read_text() for name, source in SOURCES.items()}
+    common['statutory-context-contract.json'] = (HERE / 'statutory-context-contract.json').read_text()
     description = recording_description()
     manifest = {'format': 'worker-unselected-draft-construction-manifest-v1',
                 'assignment_id': HERE.name,
