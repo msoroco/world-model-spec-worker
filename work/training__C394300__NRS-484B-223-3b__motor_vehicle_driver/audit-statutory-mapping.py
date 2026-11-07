@@ -24,7 +24,7 @@ def main():
         frozen['law']['source']!=plan['source_law']['source'] or
         set(frozen['topics'])!={'text-0','text-1','reviewed-scope-0'} or
         plan['assignment_id']!=HERE.name or len(branches)!=2 or
-        review['coverage_sha256']!=sha(matrix_path) or LAW not in review['missing_branches']):
+        review['coverage_sha256']!=sha(matrix_path) or LAW in review['missing_branches']):
         raise ValueError('Frozen statutory source or matrix differs')
     cases={c['case_id'] for c in plan['cases']}
     comparisons={c['comparison_id']:c for c in plan['comparisons']}
@@ -32,7 +32,7 @@ def main():
         raise ValueError('Controlled case inventory differs')
     for branch,suffixes in zip(branches,SUFFIXES):
         expected={HERE.name+'__'+suffix for suffix in suffixes}
-        if (branch['status']!='pending_review' or branch['assignment_id']!=HERE.name or
+        if (branch['status']!='runnable' or branch['assignment_id']!=HERE.name or
             set(branch['topic_ids'])!=set(frozen['topics']) or
             set(branch['case_ids'])!=expected or len(branch['comparison_ids'])!=1 or
             set(comparisons[branch['comparison_ids'][0]]['case_ids'])!=expected):

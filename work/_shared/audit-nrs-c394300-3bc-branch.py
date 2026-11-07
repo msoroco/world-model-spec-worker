@@ -19,7 +19,7 @@ for law, count in (("NRS-484B-223-3b", 2), ("NRS-484B-223-3c", 1)):
     comparisons = {c["comparison_id"]: set(c["case_ids"]) for c in plan["comparisons"]}
     covered = set()
     for branch in branches:
-        expected_status = "runnable" if law == "NRS-484B-223-3c" else "pending_review"
+        expected_status = "runnable"
         if branch["status"] != expected_status or branch["assignment_id"] != aid:
             raise ValueError("Branch status or assignment binding differs")
         runnable += branch["status"] == "runnable"

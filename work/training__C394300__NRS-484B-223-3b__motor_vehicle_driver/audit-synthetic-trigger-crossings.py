@@ -58,9 +58,9 @@ def audit():
                 raise ValueError("Lane-entry fault is not isolated fallback1")
             route_fault = copy.deepcopy(rows)
             row = route_fault[-1]
-            row["native_center_xy_m"][1] += 0.5
+            row["native_center_xy_m"][0] += 0.5
             for vertex in row["native_body_xy_m"]:
-                vertex[1] += 0.5
+                vertex[0] += 0.5
             write_rows(source_fault, route_fault)
             f2 = evaluate_native(source_fault, case)
             if (f2["fallback1"]["triggered"] or not f2["fallback2"]["triggered"]
