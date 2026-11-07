@@ -1,6 +1,7 @@
 """Independent audit of the two saved CPU fixtures and processor negatives."""
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -76,9 +77,11 @@ def audit():
         shutil.copyfile(source/'native_samples.jsonl',destination/'native_samples.jsonl')
         purpose.unlink()
         output=destination/'new-analysis.json'
+        env=dict(os.environ)
+        env['PYTHONPATH']=str(FOLDER.parents[1]/'runtime/pipeline/scenario_pipeline')+os.pathsep+env.get('PYTHONPATH','')
         result=subprocess.run([sys.executable,str(FOLDER/'native/finalize.py'),
             '--attempt',str(destination),'--output',str(output)],
-            text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+            env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
         assert result.returncode!=0 and 'Missing required source: declared_purpose.json' in result.stdout
         assert not output.exists()
     return {'passed':True,'synthetic_frame_counts':{'controlled_1':480,'controlled_2':480},

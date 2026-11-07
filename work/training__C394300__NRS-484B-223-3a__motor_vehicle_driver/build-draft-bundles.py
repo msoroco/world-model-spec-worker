@@ -54,6 +54,7 @@ def build():
                                'reference_frame':'surveyed Native map and original frame',
                                'uncertainty':'50 ms frame bracket; physical purpose unverified'}
                               for name in config['mandatory_channels']],
+                          'context_inputs':[],
                               'limitations':['Authored purpose is not observed driver intent',
                                              'CPU synthetic rows are not physical observations']},
                           cameras=[{'name':name,'width':width,'height':height,

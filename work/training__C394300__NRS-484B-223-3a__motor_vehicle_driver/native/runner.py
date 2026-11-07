@@ -255,7 +255,7 @@ def execute(config, output, host, port):
                 seal_capture(output,frames=frames,restoration=restored,errors=[],
                     encoder_exit_codes=encoder_exit_codes,
                     context={"case_id":config["case_id"],"candidate_id":config["candidate_id"]})
-                write_new(output/'analysis-report.json',measure(output))
+                write_new(output/'saved-movement-preview.json',measure(output))
             except BaseException as exc:error={"capture_seal_error":str(exc)}
         write_new(output/"native-capture-report.json",{
             "case_id":config["case_id"],"candidate_id":config["candidate_id"],
