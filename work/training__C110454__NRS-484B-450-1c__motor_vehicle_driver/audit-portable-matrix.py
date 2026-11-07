@@ -40,6 +40,11 @@ def main():
             if sha(construction_path) != ref["construction_sha256"]:
                 raise ValueError("Construction changed after portable proof")
             construction = json.loads(construction_path.read_text())
+            runner = next(f["content"] for f in construction["files"] if f["path"] == "runner.py")
+            if ("observed_speed=observed_speed_mps(ego)" not in runner or
+                    '"speed_mps":observed_speed' not in runner or
+                    '"speed_m_s":observed_speed' not in runner):
+                raise ValueError("Native saved speed is not observed in the post-tick frame")
             config = json.loads(next(f["content"] for f in construction["files"] if f["path"] == "config.json"))
             if candidate == "primary": primary_configs[suffix] = config
             analysis_code = next(f["content"] for f in construction["files"] if f["path"] == "finalize.py")

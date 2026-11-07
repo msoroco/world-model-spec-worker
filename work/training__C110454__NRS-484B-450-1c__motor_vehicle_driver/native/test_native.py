@@ -4,14 +4,30 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from geometry import check, route
 from engineering import evaluate_trigger, parameters
 from controller import EngineeringKnobs, PathController
+from runner import observed_speed_mps
 
 
 class NativeParkingUnit(unittest.TestCase):
+    def test_observed_speed_uses_current_velocity_and_rejects_nonfinite(self):
+        class Actor:
+            velocity = SimpleNamespace(x=3, y=4, z=0)
+            def get_velocity(self):
+                return self.velocity
+
+        actor = Actor()
+        self.assertEqual(observed_speed_mps(actor), 5)
+        actor.velocity = SimpleNamespace(x=0, y=0, z=2)
+        self.assertEqual(observed_speed_mps(actor), 2)
+        actor.velocity = SimpleNamespace(x=float('inf'), y=0, z=0)
+        with self.assertRaisesRegex(ValueError, 'Nonfinite observed Native velocity'):
+            observed_speed_mps(actor)
+
     def test_controlled_full_body(self):
         proof = check()["probes"]
         self.assertEqual(proof["probe_a"]["authored_intersection_overlap_m2"], 0)

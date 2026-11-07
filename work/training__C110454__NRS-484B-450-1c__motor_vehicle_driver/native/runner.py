@@ -24,6 +24,15 @@ from geometry import STOP_X, check as geometry_check, road_xml, route
 ROOT = Path(__file__).resolve().parent
 
 
+def observed_speed_mps(actor):
+    """Read finite speed from the same observed frame as pose and body."""
+    velocity = actor.get_velocity()
+    components = (velocity.x, velocity.y, velocity.z)
+    if any(not math.isfinite(component) for component in components):
+        raise ValueError("Nonfinite observed Native velocity")
+    return math.sqrt(sum(component * component for component in components))
+
+
 def frame_map_row(index,frame,time_s):
     """Preserve both Native and canonical CARLA identities for saved/Core joins."""
     if type(index) is not int or index<0 or type(frame) is not int or frame<0:
@@ -211,12 +220,13 @@ def execute(config, output, host, port):
                 if other_traffic:
                     raise RuntimeError("Unplanned traffic or direction actor in parking probe")
                 pose=ego.get_transform();forward=pose.get_forward_vector();body=body_xy(ego)
+                observed_speed=observed_speed_mps(ego)
                 sample={"time_s":time_s,"native_frame":frame,
                     "native_center_xy_m":[pose.location.x,pose.location.y],
                     "native_forward_xy":[forward.x/math.hypot(forward.x,forward.y),
                                          forward.y/math.hypot(forward.x,forward.y)],
-                    "native_body_xy_m":body,"speed_mps":speed,
-                    "body_xy_m":body,"speed_m_s":speed,"video_frame":index,
+                    "native_body_xy_m":body,"speed_mps":observed_speed,
+                    "body_xy_m":body,"speed_m_s":observed_speed,"video_frame":index,
                     "native_intersection_survey":True,
                     "exception_source":{"other_traffic_actor_count":0,
                                         "native_signal_count":signal_count,
@@ -229,13 +239,13 @@ def execute(config, output, host, port):
                 body_file.write(json.dumps({"frame":frame,"time_s":time_s,
                     "body_vertices_m":[[v.x,v.y,v.z] for v in ego.bounding_box.get_world_vertices(pose)]},
                     allow_nan=False)+"\n")
-                values={"drv.standing_or_parked":{"speed_m_s":speed,"controller":command},
+                values={"drv.standing_or_parked":{"speed_m_s":observed_speed,"controller":command},
                     "st.intersection":survey,
                     "rel.occupies":{"body_xy_m":body,"intersection_polygon_xy_m":survey["intersection_polygon_xy_m"]},
                     "drv.forced_halt":{"traffic_conflict":False,"exclusive_world_actor_count":1},
                     "dev.human_direction":{"police_direction":False,"exclusive_world_actor_count":1},
                     "dev.traffic_signal":{"traffic_device":False,"native_signal_count":signal_count},
-                    "kin.velocity":{"speed_m_s":speed},
+                    "kin.velocity":{"speed_m_s":observed_speed},
                     "native_body_pose_control":sample,
                     "camera_frame_join":{"native_frame":frame,"video_frame":index}}
                 for name,stream in channels.items():
