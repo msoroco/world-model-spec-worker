@@ -6,7 +6,7 @@ from pathlib import Path
 FOLDER = Path(__file__).resolve().parent
 CANDIDATES = {'primary', 'fallback1', 'fallback2', 'fallback3'}
 SOURCES = {'runner.py', 'geometry.py', 'candidates.py', 'source-scope.json',
-           'measure_saved.py', 'finalize.py', 'trigger_evidence.py'}
+           'measure_saved.py', 'prepare_saved.py', 'finalize.py', 'trigger_evidence.py'}
 
 
 def _sha(path):

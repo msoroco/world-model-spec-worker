@@ -10,7 +10,7 @@ ASSIGNMENT = FOLDER.name
 CASES = ('witness_1', 'witness_2')
 CANDIDATES = ('primary', 'fallback1', 'fallback2', 'fallback3')
 SOURCES = ('runner.py', 'geometry.py', 'candidates.py', 'source-scope.json',
-           'measure_saved.py', 'finalize.py', 'trigger_evidence.py')
+           'measure_saved.py', 'prepare_saved.py', 'finalize.py', 'trigger_evidence.py')
 TEST = '''import json
 from pathlib import Path
 import unittest
