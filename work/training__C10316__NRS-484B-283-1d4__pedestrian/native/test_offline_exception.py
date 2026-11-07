@@ -3,7 +3,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from engineering import candidate
+from engineering import candidate, evaluate_fallbacks
 from geometry import check as check_geometry
 from exception import measure, signal_state
 from runner import check as check_runner
@@ -39,6 +39,9 @@ class PriorEntryOffline(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             with self.assertRaisesRegex(ValueError, 'Missing required source: exception-samples.jsonl'):
                 measure(Path(folder) / 'exception-samples.jsonl', Path(folder) / 'exception-context.json')
+            with self.assertRaisesRegex(ValueError, 'Missing required source: exception-samples.jsonl'):
+                evaluate_fallbacks(Path(folder) / 'exception-samples.jsonl',
+                                   Path(folder) / 'exception-context.json')
 
 
 if __name__ == '__main__':

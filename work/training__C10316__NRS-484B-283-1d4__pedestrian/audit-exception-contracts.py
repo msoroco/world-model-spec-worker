@@ -52,6 +52,8 @@ def main() -> None:
         assert measured["lawful_prior_entry_proven"] is False
         assert measured["as_soon_as_possible_bound_declared"] is False
         assert measured["physical_signal_observed"] is False
+        assert measured["progress_bound"]["engineering_surrogate_met"] is True
+        assert measured["progress_bound"]["legal_sufficiency_assessed"] is False
         env = dict(os.environ)
         env["PYTHONPATH"] = os.pathsep.join((str(HERE / "native"), env.get("PYTHONPATH", "")))
         with tempfile.TemporaryDirectory(dir=ROOT / ".runtime-work", prefix="d4-exception-audit-") as tmp:

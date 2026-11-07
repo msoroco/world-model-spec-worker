@@ -12,7 +12,7 @@ Timing to retain: entering on a steady indication is the violation; for a pedest
 
 Exceptions and numeric alternatives planned: a pedestrian who entered lawfully on the walk indication, or during a countdown, may continue and must proceed to a place of safety as soon as possible.
 
-Unresolved judgment or rule composition: 'as soon as possible' is a judgement element: a progress or delay bound must be declared. No judgment bound is set by this plan.
+Unresolved judgment or rule composition: 'as soon as possible' is a judgment element. The saved Native source declares and tests an engineering progress bound; whether that bound is legally sufficient remains unresolved.
 
 Accepted membership: 0 membership rows; exact source-hashed equivalence and reuse are unverified.
 
@@ -35,3 +35,7 @@ The two unselected exception cases now isolate first-entry indication (flashing 
 ## Pinned prior-entry contract continuation
 
 The exception pair is now marked `selected_required` **as a measurement requirement** in `case-plan.json`; its four cases remain `planned_only` and unselected for delivery. Both prior-entry contracts pass pinned validation, actual saved finalization and source-hash verification, plus missing-source negatives. `audit-exception-contracts.py` independently reruns finalization, checks exact source and disposition bindings, and confirms that lawful entry, physical signal and as-soon-as-possible claims remain false. The eight exception bundles were rebuilt against the current pinned runtime-manifest hash, then passed exact offline and eight synthetic v1 positive/negative portable probes with independent audits. This resolves the historical `exception_pending` contract rejection above without asserting a legal exception or readiness.
+
+The exception saved source now measures a declared engineering surrogate for continuous progress: maximum stationary interval 0.25 s and clearance within 5 s after steady illumination. Both 240-frame continuous synthetic crossings measure 0 s stationary and 4 s to clearance; two paused variants measure at least 0.35 s stationary and fail the surrogate. The pinned contracts, saved processing, eight exact offline bundles, eight synthetic v1 portable positive/negative probes, and independent row/contract/saved/offline/package audits pass against the refreshed source. Legal sufficiency of this bound, physical signal governance, lawful prior entry, selected v2 delivery and a queue row remain unproved; all cases remain unselected and the assignment remains blocked.
+
+The exact bundled engineering module now evaluates fallback1 from the saved first-frame full-body clearance to the authored edge, and fallback2/3 from a source-hash-bound pixel-audit receipt containing phase skew and legibility. Synthetic diagnostic receipts exercise low/high threshold decisions independently; altered source hashes and an original-pixel claim on synthetic source are rejected. Independent trigger audit recomputes clearance and thresholds. The refreshed eight bundles pass pinned offline and synthetic v1 positive/negative portable probes. The synthetic audit receipts do not establish original pixels or physical trigger observations; all cases remain unselected.

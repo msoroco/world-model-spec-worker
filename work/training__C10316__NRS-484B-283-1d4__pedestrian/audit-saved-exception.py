@@ -53,6 +53,10 @@ for record in records:
     assert measured['source_kind'] == 'synthetic_scene_request'
     assert measured['exceptions_reviewed'] is False and measured['lawful_prior_entry_proven'] is False
     assert measured['as_soon_as_possible_bound_declared'] is False
+    assert measured['progress_bound']['observed_max_stationary_s'] == 0.0
+    assert measured['progress_bound']['observed_clearance_after_steady_s'] == 4.0
+    assert measured['progress_bound']['engineering_surrogate_met'] is True
+    assert measured['progress_bound']['legal_sufficiency_assessed'] is False
     for camera in config['cameras']:
         assert report['video_frames'][camera['name'] + '.mkv'] == {
             'frames': 240, 'width': camera['width'], 'height': camera['height']}

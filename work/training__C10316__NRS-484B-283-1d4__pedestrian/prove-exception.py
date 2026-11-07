@@ -53,6 +53,21 @@ def main():
         if measured['entry_indication'] != expected or measured['post_steady_crossing_samples'] != 80:
             raise RuntimeError('Prior-entry source missed expected controlled fact')
         (folder / 'source-measurement.json').write_text(json.dumps(measured, indent=2) + '\n')
+        if not measured['progress_bound']['engineering_surrogate_met']:
+            raise RuntimeError('Continuous synthetic crossing missed declared progress bound')
+        paused = root / (suffix + '-paused')
+        shutil.copytree(folder, paused)
+        paused_rows = [dict(row) for row in rows]
+        for index in range(100, 108):
+            paused_rows[index]['pedestrian_xy_m'] = list(rows[99]['pedestrian_xy_m'])
+            paused_rows[index]['pedestrian_footprint_xy_m'] = [list(v) for v in rows[99]['pedestrian_footprint_xy_m']]
+        write_rows(paused / 'exception-samples.jsonl', paused_rows)
+        paused_measurement = measure(paused / 'exception-samples.jsonl', paused / 'exception-context.json')
+        if (paused_measurement['progress_bound']['engineering_surrogate_met'] or
+                paused_measurement['progress_bound']['observed_max_stationary_s'] < .35 or
+                paused_measurement['legal_verdict_claimed']):
+            raise RuntimeError('Paused synthetic crossing did not expose engineering-bound failure')
+        (paused / 'source-measurement.json').write_text(json.dumps(paused_measurement, indent=2) + '\n')
         negatives = []
         for label, expected_error in (
             ('missing', 'Missing required source: exception-samples.jsonl'),
@@ -93,13 +108,16 @@ def main():
                         'steady_start_s': 4.0, 'frames': 240,
                         'source_hashes': measured['source_sha256'],
                         'source_measurement_sha256': sha(folder / 'source-measurement.json'),
+                        'paused_diagnostic': str(paused),
+                        'paused_source_measurement_sha256': sha(paused / 'source-measurement.json'),
                         'negative_errors': negatives,
                         'scope': 'synthetic prior-entry source facts, not lawful-entry or legal verdict'})
     (HERE / 'exception-summary.json').write_text(json.dumps({
         'format': 'c10316-prior-entry-synthetic-proof-v1', 'retained_root': str(root),
         'records': records}, indent=2) + '\n')
     print(json.dumps({'exception_cases': 2, 'frames_per_case': 240,
-                      'negative_rejections': 10, 'lawful_prior_entry_proven': False,
+                      'negative_rejections': 10, 'progress_bound_negative_metrics': 2,
+                      'lawful_prior_entry_proven': False,
                       'accepted_recordings': 0}))
 
 

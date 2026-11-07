@@ -116,6 +116,20 @@ def measure(samples_path, context_path):
     if not progress_after_steady or any(b[1] < a[1] - .001 for a, b in
                                         zip(progress_after_steady, progress_after_steady[1:])):
         raise ValueError('Prior-entry crossing did not continue toward far edge')
+    stationary_samples = longest_stationary_samples = 0
+    for before, after in zip(progress_after_steady, progress_after_steady[1:]):
+        if after[1] - before[1] <= .01:
+            stationary_samples += 1
+            longest_stationary_samples = max(longest_stationary_samples, stationary_samples)
+        else:
+            stationary_samples = 0
+    max_stationary_s = round(longest_stationary_samples / 20, 3)
+    clearance_after_steady_s = round(clearance[1]['time_s'] - steady[1]['time_s'], 3)
+    progress_bound = {'max_stationary_s': .25, 'max_clearance_after_steady_s': 5.0,
+                      'observed_max_stationary_s': max_stationary_s,
+                      'observed_clearance_after_steady_s': clearance_after_steady_s,
+                      'engineering_surrogate_met': max_stationary_s <= .25 and clearance_after_steady_s <= 5.0,
+                      'legal_sufficiency_assessed': False}
     def bracket(event):
         return {'first_frame': event[1]['native_frame'],
                 'time_interval_s': [event[0]['time_s'], event[1]['time_s']]}
@@ -126,6 +140,7 @@ def measure(samples_path, context_path):
             'steady_start': bracket(steady), 'full_body_clearance': bracket(clearance),
             'post_steady_crossing_samples': len(progress_after_steady),
             'continued_progress_source_fact': True,
+            'progress_bound': progress_bound,
             'lawful_prior_entry_proven': False, 'as_soon_as_possible_bound_declared': False,
             'exceptions_reviewed': False, 'physical_signal_observed': False,
             'legal_verdict_claimed': False}

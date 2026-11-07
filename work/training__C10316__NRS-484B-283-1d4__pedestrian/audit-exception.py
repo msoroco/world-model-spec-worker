@@ -38,12 +38,24 @@ for record in records:
     assert entry['indication'] == measured['entry_indication'] == record['entry_indication']
     assert measured['post_steady_crossing_samples'] == 80
     assert measured['continued_progress_source_fact'] is True
+    assert measured['progress_bound'] == {
+        'max_stationary_s': .25, 'max_clearance_after_steady_s': 5.0,
+        'observed_max_stationary_s': 0.0,
+        'observed_clearance_after_steady_s': 4.0,
+        'engineering_surrogate_met': True,
+        'legal_sufficiency_assessed': False}
     assert measured['lawful_prior_entry_proven'] is False
     assert measured['as_soon_as_possible_bound_declared'] is False
     assert measured['exceptions_reviewed'] is False
     assert measured['physical_signal_observed'] is False
     assert measured['legal_verdict_claimed'] is False
     assert not (folder.parent / (record['case_suffix'] + '-missing') / 'exception-samples.jsonl').exists()
+    paused = Path(record['paused_diagnostic'])
+    pause_measurement = json.loads((paused / 'source-measurement.json').read_text())
+    assert sha(paused / 'source-measurement.json') == record['paused_source_measurement_sha256']
+    assert pause_measurement['progress_bound']['observed_max_stationary_s'] >= .35
+    assert pause_measurement['progress_bound']['engineering_surrogate_met'] is False
+    assert pause_measurement['progress_bound']['legal_sufficiency_assessed'] is False
     sources.append(samples)
 
 first, second = sources
@@ -54,4 +66,5 @@ assert [r['entry_indication'] for r in records] == ['dont_walk_flashing', 'walk'
 assert [r['steady_start_s'] for r in records] == [4.0, 4.0]
 print(json.dumps({'independent_audit': 'pass', 'synthetic_exception_cases': 2,
                   'rows_per_case': 240, 'adversarial_rejections': 10,
+                  'progress_bound_negative_metrics': 2,
                   'lawful_prior_entry_proven': False, 'accepted_recordings': 0}))
