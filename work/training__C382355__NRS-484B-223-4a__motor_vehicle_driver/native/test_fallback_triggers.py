@@ -34,10 +34,10 @@ class FallbackTriggerTests(unittest.TestCase):
         rows=[row(1,-20,5.25,1,[1,0]),row(2,-8,5.25+deviation,1,[1,0]),
               row(3,-5,5.25,connector,[1,0]),final]
         self.samples.write_text(''.join(json.dumps(value)+'\n' for value in rows))
-        self.mapping.write_text(json.dumps({'source_kind':'native_map_readback',
+        self.mapping.write_text(json.dumps({'source_kind':'synthetic_map_readback',
             'connected_requested_lane_link':link,'native_map_sha256':'a'*64,
             'native_samples_sha256':sha(self.samples),'road_geometry_sha256':sha(self.geometry)}))
-        self.pixels.write_text(json.dumps({'source_kind':'original_camera_pixels',
+        self.pixels.write_text(json.dumps({'source_kind':'synthetic_camera_pixels',
             'native_samples_sha256':sha(self.samples),'video_sha256':sha(self.video),
             'full_body_and_lane_marking_visible_frames':visible,'approach_frames':20}))
         return route
@@ -76,6 +76,14 @@ class FallbackTriggerTests(unittest.TestCase):
         route=self.write('right_turn')
         self.geometry.write_text(json.dumps({'native_map_sha256':'b'*64}))
         with self.assertRaisesRegex(ValueError,'Native map audit source hash mismatch'):
+            self.measure('right_turn',route)
+
+    def test_mixed_provenance_rejected(self):
+        route=self.write('right_turn')
+        packet=json.loads(self.pixels.read_text())
+        packet['source_kind']='original_camera_pixels'
+        self.pixels.write_text(json.dumps(packet))
+        with self.assertRaisesRegex(ValueError,'Trigger source provenance mismatch'):
             self.measure('right_turn',route)
 
 

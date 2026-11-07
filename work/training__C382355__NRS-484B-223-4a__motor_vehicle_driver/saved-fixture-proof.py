@@ -16,6 +16,8 @@ from batch_pipeline.carla import validate_attempt
 ROOT=Path(__file__).resolve().parents[2]
 FOLDER=Path(__file__).resolve().parent
 FINALIZER=FOLDER/'native/finalize.py'
+sys.path.insert(0,str(FOLDER/'native'))
+from engineering import parameters
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -55,19 +57,26 @@ def make_base(destination,suffix,approach_y,frame_count=4,full_resolution=False)
             states += [(0,5.25,(1,0),14,-2),(15,5.25,(1,0),2,-2)]
     else:
         states=[]
+        requested=parameters('controlled_1','primary')['native_route_xy_m']
+        entry_index=round(((-7)+50)/.1)
+        turn_points=requested[entry_index:entry_index+151]
+        assert len(turn_points)==151
         for index in range(frame_count):
             if index<160:
-                x=-40+30*index/159;y=approach_y;angle=0;road_id=1;lane_id=lane
+                x=-40+33*index/159;y=approach_y;angle=0;road_id=1;lane_id=lane
             elif index<320:
                 progress=(index-160)/159
                 if suffix=='controlled_1':
-                    x=-9.5+4.25*progress;y=approach_y+(12-approach_y)*progress
-                    angle=math.pi*progress/2;road_id=13;lane_id=-2
+                    point=round(150*progress)
+                    x,y=turn_points[point]
+                    before=turn_points[max(0,point-1)]
+                    after=turn_points[min(150,point+1)]
+                    angle=math.atan2(after[1]-before[1],after[0]-before[0]);road_id=13;lane_id=-2
                 else:
-                    x=-9.5+16.8*progress;y=approach_y;angle=0;road_id=14;lane_id=-2
+                    x=-7+14.3*progress;y=approach_y;angle=0;road_id=14;lane_id=-2
             else:
                 if suffix=='controlled_1':
-                    x=-5.25;y=12+18*(index-320)/159;angle=math.pi/2;road_id=4;lane_id=-2
+                    x=-5.25;y=7.3+32.7*(index-320)/159;angle=math.pi/2;road_id=4;lane_id=-2
                 else:
                     x=7.3+32.7*(index-320)/159;y=approach_y;angle=0;road_id=2;lane_id=-2
             states.append((x,y,(math.cos(angle),math.sin(angle)),road_id,lane_id))
