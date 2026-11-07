@@ -37,6 +37,9 @@ def build():
     outputs=[]
     for case in ('controlled_1','controlled_2'):
         destination=root/case;destination.mkdir(exist_ok=True)
+        config=json.loads((FOLDER/'native/config.json').read_text())
+        config.update(case_id=FOLDER.name+'__'+case,case_suffix=case)
+        (destination/'config.json').write_text(json.dumps(config,indent=2)+'\n')
         shutil.copyfile(FOLDER/'draft-construction/scene.xodr',destination/'scene.xodr')
         map_sha=hashlib.sha256((destination/'scene.xodr').read_bytes()).hexdigest()
         survey={'source_kind':'synthetic_cpu','authored_map_sha256':map_sha,

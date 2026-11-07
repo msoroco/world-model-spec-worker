@@ -14,7 +14,7 @@ def parameters(case,candidate):
     authored=route(case,start_x=start,entry_advance_m=advance)
     knobs=EngineeringKnobs(lookahead_base_m=2.5 if candidate=='fallback2' else 4,
                            max_steer_fraction=1.0 if candidate=='fallback2' else .75,
-                           target_speed_mps=5.5 if candidate=='fallback2' else 8.0)
+                           target_speed_mps=9.0 if candidate=='fallback2' else 10.0)
     knobs.validate()
     return {'case':case,'candidate':candidate,'law_id':'NRS-484B-223-3a',
             'authored_route_xy_m':authored,'native_route_xy_m':[[x,-y] for x,y in authored],

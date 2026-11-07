@@ -30,6 +30,10 @@ def measure(folder):
         raise ValueError('Native lane survey missing')
     if purpose.get('law_text_sha256')!=LAW_TEXT_SHA256 or purpose.get('case') not in ('controlled_1','controlled_2'):
         raise ValueError('Source-bound declared purpose missing')
+    expected_purpose={'controlled_1':'left_turn_from_center_at_first_opportunity',
+                      'controlled_2':'through_travel_then_later_left_from_through_lane'}
+    if purpose.get('declaration')!=expected_purpose[purpose['case']]:
+        raise ValueError('Declared purpose differs from controlled case')
     kinds={r.get('source_kind') for r in rows}
     if len(kinds)!=1 or kinds.pop() not in ('synthetic_cpu','original_native'):
         raise ValueError('Mixed or missing source provenance')

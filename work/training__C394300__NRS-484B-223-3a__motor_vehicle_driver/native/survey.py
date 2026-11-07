@@ -12,7 +12,7 @@ REQUESTS={
     'later_left_exit':(47,-20,24,-1,'Driving')}
 
 
-def survey(carla,mapping):
+def survey(carla,mapping,native_hash=None):
     observed={}
     for name,(x,y,road,lane,lane_type) in REQUESTS.items():
         requested=getattr(carla.LaneType,lane_type)
@@ -29,6 +29,7 @@ def survey(carla,mapping):
         observed[name]={'road_id':road,'lane_id':lane,'lane_type':lane_type,
                         'lane_width_m':waypoint.lane_width,'native_center_xy_m':[x,y]}
     return {'authored_map_sha256':hashlib.sha256(open_drive().encode()).hexdigest(),
+            'native_map_sha256':native_hash,'source_kind':'original_native' if native_hash else 'synthetic_cpu',
             'readback':observed,'native_lane_types_verified':True,
             'physical_turn_only_design_verified':False,
             'driver_purpose_verified':False}

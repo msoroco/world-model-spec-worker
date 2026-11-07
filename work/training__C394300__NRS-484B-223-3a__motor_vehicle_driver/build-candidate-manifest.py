@@ -19,7 +19,8 @@ def build():
     batch=json.loads((ROOT/'batch.json').read_text())
     plan=json.loads((FOLDER/'case-plan.json').read_text())
     sources={name:sha(NATIVE/name) for name in
-             ('geometry.py','controller.py','engineering.py','cameras.py','survey.py','trigger_evidence.py')}
+             ('runner.py','config.json','geometry.py','controller.py','engineering.py','cameras.py',
+              'survey.py','trigger_evidence.py','measure_saved.py','finalize.py')}
     results=[]
     for case in ('controlled_1','controlled_2'):
         for candidate in CANDIDATES:
