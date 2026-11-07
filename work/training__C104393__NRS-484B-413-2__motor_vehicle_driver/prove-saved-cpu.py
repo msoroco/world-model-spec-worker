@@ -27,7 +27,8 @@ def run():
     output=HERE/"synthetic-saved-fixtures"
     output.mkdir(exist_ok=True)
     results=[]
-    for feet,onset in ((90,410),(300,154)):
+    for feet in (90,100,110,290,300,310):
+        onset=520-round(feet*.3048/.25)
         case=output/str(feet);case.mkdir(exist_ok=True)
         source=case/"native_samples.jsonl"
         rows=[]
@@ -75,31 +76,30 @@ def run():
         if any(baseline[name] for name in ("fallback1","fallback2","fallback3")):
             raise AssertionError("Synthetic primary triggered a fallback")
         results[-1]["baseline_trigger_metrics"]=baseline
-        if feet==300:
-            crossings={}
-            with tempfile.TemporaryDirectory() as temp:
-                temp=Path(temp)
-                for name in ("fallback1","fallback2","fallback3"):
-                    modified_rows=json.loads(json.dumps(rows))
-                    modified_review=[{"frame":i,"native_frame":1000+i,
-                        "signal_and_body_visible":True} for i in range(840)]
-                    if name=="fallback1":modified_rows[550]["native_body_xy_m"][0][1]+=4
-                    if name=="fallback2":modified_rows[550]["route_error_m"]=.4
-                    if name=="fallback3":
-                        for item in modified_review[:30]:item["signal_and_body_visible"]=False
-                    changed=temp/(name+"-samples.jsonl")
-                    changed.write_text("".join(json.dumps(row,separators=(",", ":"))+"\n" for row in modified_rows))
-                    changed_review=temp/(name+"-review.jsonl")
-                    changed_review.write_text("".join(json.dumps(row,separators=(",", ":"))+"\n" for row in modified_review))
-                    altered=dict(paths)
-                    altered["native_samples.jsonl"]=changed
-                    altered["pixel_review.jsonl"]=changed_review
-                    outcome=trigger(altered)
-                    if [key for key in ("fallback1","fallback2","fallback3") if outcome[key]]!=[name]:
-                        raise AssertionError("Fallback crossing is not isolated: "+name)
-                    crossings[name]={"metric":outcome,
-                        "sample_sha256":sha(changed),"pixel_review_sha256":sha(changed_review)}
-            results[-1]["isolated_synthetic_crossings"]=crossings
+        crossings={}
+        with tempfile.TemporaryDirectory() as temp:
+            temp=Path(temp)
+            for name in ("fallback1","fallback2","fallback3"):
+                modified_rows=json.loads(json.dumps(rows))
+                modified_review=[{"frame":i,"native_frame":1000+i,
+                    "signal_and_body_visible":True} for i in range(840)]
+                if name=="fallback1":modified_rows[550]["native_body_xy_m"][0][1]+=4
+                if name=="fallback2":modified_rows[550]["route_error_m"]=.4
+                if name=="fallback3":
+                    for item in modified_review[:30]:item["signal_and_body_visible"]=False
+                changed=temp/(name+"-samples.jsonl")
+                changed.write_text("".join(json.dumps(row,separators=(",", ":"))+"\n" for row in modified_rows))
+                changed_review=temp/(name+"-review.jsonl")
+                changed_review.write_text("".join(json.dumps(row,separators=(",", ":"))+"\n" for row in modified_review))
+                altered=dict(paths)
+                altered["native_samples.jsonl"]=changed
+                altered["pixel_review.jsonl"]=changed_review
+                outcome=trigger(altered)
+                if [key for key in ("fallback1","fallback2","fallback3") if outcome[key]]!=[name]:
+                    raise AssertionError("Fallback crossing is not isolated: "+name)
+                crossings[name]={"metric":outcome,
+                    "sample_sha256":sha(changed),"pixel_review_sha256":sha(changed_review)}
+        results[-1]["isolated_synthetic_crossings"]=crossings
     receipt={"format":"c104393-synthetic-saved-cpu-v1","passed":True,
         "provenance":"synthetic_cpu_fixture","physical_success_claimed":False,
         "cases":results}

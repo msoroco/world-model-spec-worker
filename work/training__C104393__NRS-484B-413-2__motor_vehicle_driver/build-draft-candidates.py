@@ -13,7 +13,8 @@ from geometry import open_drive,route,signal_start
 
 NAMES=("primary","fallback1","fallback2","fallback3")
 SOURCES=("runner.py","geometry.py","controller.py","cameras.py",
-         "engineering.py","signal_control.py","saved_measure.py","fallback_triggers.py")
+         "engineering.py","signal_control.py","saved_measure.py","fallback_triggers.py",
+         "finalize.py")
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def digest(value):return hashlib.sha256(value).hexdigest()
@@ -41,20 +42,29 @@ def main():
         "assignment_id":plan["assignment_id"],
         "runtime_manifest_sha256":sha(ROOT/"runtime/pipeline/SOURCE-MANIFEST.json"),
         "status":"draft_not_selected","cases":[]}
+    proposals=[]
     for case in plan["cases"]:
         case_id=case["case_id"]; feet=case["requested_setting"]
         suffix=str(feet); variants=designs(feet)
+        proposals.append({"case_id":case_id,"target_law_id":plan["law_id"],
+            "target_type":"boundary_probe","rationale":"Unselected exact 100/300-foot source threshold; no legal verdict",
+            "variable_assignments":{"commanded_signal_distance_ft":{"kind":"controller","value":feet,"unit":"ft"},
+                "area_classification":{"kind":"world_setup","value":"any_other_area","unit":"categorical"},
+                "actual_signal_distance_ft":{"kind":"subject_behavior","value":None,"unit":"ft"}},
+            "recording_description":recording,
+            "unresolved_judgment_calls":["Original Native map, body, signal, weather and pixels require review"]})
         contract_rel=f"draft-candidates/{suffix}/measurement-contract.json"
         requirements=[]
-        methods={"text-0":"continuous_signal_distance_ft","text-1":"weather_context",
-            "reviewed-scope-0":"any_other_area_coverage",
-            "reviewed-scope-1":"any_other_area_duplicate"}
+        methods={"text-0":("continuous_signal_distance_ft","measure_signal_distance","number"),
+            "text-1":("weather_context","measure_weather_context","text"),
+            "reviewed-scope-0":("other_area_coverage","measure_other_area_coverage","object"),
+            "reviewed-scope-1":("other_area_duplicate","measure_other_area_duplicate","object")}
         for i,d in enumerate(plan["requirement_dispositions"]):
             if case_id in d.get("case_ids",[]):
+                output_key,method,value_type=methods[d["requirement"]]
                 requirements.append({"disposition_index":i,"requirement":d["requirement"],
-                    "source":d["source"],"output_key":methods[d["requirement"]],
-                    "method":"saved_native_signal_and_path" if d["requirement"]=="text-0" else "saved_context_review",
-                    "value_type":"number" if d["requirement"]=="text-0" else "object",
+                    "source":d["source"],"output_key":output_key,
+                    "method":method,"value_type":value_type,
                     "kind":"measured" if d["requirement"]=="text-0" else "sourced_context",
                     "inputs":["native_samples.jsonl","road_geometry.json"]})
         write(HERE/contract_rel,{"format":"worker-measurement-contract-v1",
@@ -66,7 +76,7 @@ def main():
         entry={"case_id":case_id,"kind":"draft_not_selected",
             "candidate_risk":{"status":"physical","reason":"Native map, body, indicator and pixels require original observation"},
             "measurement_contract":contract_rel,
-            "measurement_procedure":{"entrypoint":"saved_measure.py","status":"planned"},
+            "measurement_procedure":{"entrypoint":"finalize.py","status":"saved_source_diagnostic"},
             "candidates":[]}
         for candidate in NAMES:
             settings=variants[candidate]["config"]
@@ -113,6 +123,8 @@ def main():
                 entry["candidates"].append(selected)
         manifest["cases"].append(entry)
     write(HERE/"draft-execution-manifest.json",manifest)
+    write(HERE/"proposals/cases.json",{"cell_id":plan["cell_id"],"actor":plan["actor"],
+        "status":"unselected_draft","cases":proposals})
     print(json.dumps({"cases":len(manifest["cases"]),"candidates":len(manifest["cases"])*4,
         "status":manifest["status"]}))
 

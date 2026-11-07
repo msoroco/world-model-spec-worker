@@ -67,11 +67,16 @@ def audit():
     synthetic=read(HERE/"synthetic-saved-cpu-receipt.json")
     assert synthetic["passed"] is True and synthetic["provenance"]=="synthetic_cpu_fixture"
     assert synthetic["physical_success_claimed"] is False
+    assert {item["target_ft"] for item in synthetic["cases"]}=={90,100,110,290,300,310}
+    fixed_trajectory=None
     for item in synthetic["cases"]:
         source=HERE/item["source"]
         assert sha(source)==item["source_sha256"]
         rows=[json.loads(line) for line in source.read_text().splitlines()]
         assert len(rows)==840
+        fixed=[{key:value for key,value in row.items() if key!="signal"} for row in rows]
+        if fixed_trajectory is None:fixed_trajectory=fixed
+        else:assert fixed==fixed_trajectory,"Controlled source trajectory/context changed"
         turn=next(i for i,row in enumerate(rows) if row["course_change"])
         start=turn
         while rows[start-1]["signal"]=="left":start-=1
@@ -82,18 +87,17 @@ def audit():
         assert all(item["baseline_trigger_metrics"][key] is False
             for key in ("fallback1","fallback2","fallback3"))
         assert set(item["negative"])=={"source_hash_mismatch","missing_frame"}
-        if item["target_ft"]==300:
-            assert set(item["isolated_synthetic_crossings"])=={"fallback1","fallback2","fallback3"}
-            for key,entry in item["isolated_synthetic_crossings"].items():
-                assert entry["metric"][key] is True
-                assert sum(entry["metric"][name] for name in
-                    ("fallback1","fallback2","fallback3"))==1
-                assert entry["metric"]["dispatchable_observation"] is False
+        assert set(item["isolated_synthetic_crossings"])=={"fallback1","fallback2","fallback3"}
+        for key,entry in item["isolated_synthetic_crossings"].items():
+            assert entry["metric"][key] is True
+            assert sum(entry["metric"][name] for name in
+                ("fallback1","fallback2","fallback3"))==1
+            assert entry["metric"]["dispatchable_observation"] is False
     assert result["status"]=="blocked" and result["cases_selected"]==0
     assert result["recordings_accepted"]==0 and result["carla_executed"] is False
     return {"format":"c104393-independent-cpu-audit-v1","passed":True,
         "cases":6,"draft_bundles":24,"pinned_offline_passes":24,
-        "synthetic_saved_cases":2,"isolated_synthetic_trigger_crossings":3,
+        "synthetic_saved_cases":6,"isolated_synthetic_trigger_crossings":18,
         "native_executed":False,"delivery_ready":False,
         "source_hashes":{"frozen_assignment":sha(ROOT/"inputs"/ASSIGNMENT/"assignment.json"),
             "draft_manifest":sha(HERE/"draft-execution-manifest.json"),
