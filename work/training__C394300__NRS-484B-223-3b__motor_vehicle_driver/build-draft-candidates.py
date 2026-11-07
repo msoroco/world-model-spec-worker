@@ -18,6 +18,7 @@ SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','controller.py':'co
          'tests/test_controller.py':'test_controller.py',
          'tests/test_candidate_knobs.py':'test_candidate_knobs.py',
          'tests/test_fallback_triggers.py':'test_fallback_triggers.py',
+         'tests/test_lane_design.py':'test_lane_design.py',
          'tests/test_cameras.py':'test_cameras.py'}
 
 
@@ -45,7 +46,7 @@ def description():
         for name,method in methods.items()],
         'context_inputs':[{'name':'surveyed_center_turn_lane','unit':'structured',
             'method':'Native road/lane and design-source readback for bidirectional turn-only designation'}],
-        'limitations':['Authored lane type alone does not prove bidirectional turn-only design in Native',
+        'limitations':['Authored bidirectional lane type and turn-only user data require Native readback and visible source review',
             'Commanded 180/199/200/201/220 ft probes are not measured distances or legal outcomes',
             'Map links, physical route tracking and original camera pixels remain unverified']}
 

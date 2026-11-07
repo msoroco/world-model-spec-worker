@@ -40,10 +40,14 @@ def open_drive():
         for side,ids in (('left',(1,)),('center',(0,)),('right',(-1,-2))):
             group=ET.SubElement(section,side)
             for lane_id in ids:
+                center_turn=(ident==1 and lane_id==-1)
                 lane=ET.SubElement(group,'lane',id=str(lane_id),
-                    type='none' if lane_id==0 else 'driving',level='false')
+                    type='none' if lane_id==0 else 'bidirectional' if center_turn else 'driving',
+                    level='false')
                 if lane_id:
                     ET.SubElement(lane,'width',sOffset='0',a=str(LANE_WIDTH_M),b='0',c='0',d='0')
+                    if center_turn:
+                        ET.SubElement(lane,'userData',code='lane_use',value='left_turn_only_both_directions')
                     if ident==13 and lane_id==-1:
                         ll=ET.SubElement(lane,'link')
                         ET.SubElement(ll,'predecessor',id='-1');ET.SubElement(ll,'successor',id='-1')
@@ -93,6 +97,12 @@ def check():
     assert roads[13].find('link/successor').attrib['elementId']=='4'
     assert roads[4].find('link/predecessor').attrib['elementId']=='100'
     assert [(v.attrib['from'],v.attrib['to']) for v in root.findall('junction/connection/laneLink')]==[('-1','-1')]
+    bidirectional=[(int(road.attrib['id']),lane) for road in roads.values()
+                   for lane in road.findall("./lanes/laneSection/right/lane[@type='bidirectional']")]
+    assert [(road,int(lane.attrib['id'])) for road,lane in bidirectional]==[(1,-1)]
+    assert bidirectional[0][1].find("userData[@code='lane_use']").attrib['value']=='left_turn_only_both_directions'
+    assert roads[1].find("./lanes/laneSection/left/lane[@id='1']").attrib['type']=='driving'
+    assert roads[1].find("./lanes/laneSection/right/lane[@id='-2']").attrib['type']=='driving'
     from shapely.geometry import LineString,Point,Polygon,box
     from shapely.ops import unary_union
     surface=unary_union((box(-100,-5.25,90,5.25),box(-10,-5,5,9),box(-6.5,7,.5,90)))
@@ -115,6 +125,7 @@ def check():
                        'maximum_sample_gap_m':round(max(gaps),5)}
     assert len({route(case)[270][1] for case in TARGET_FEET})==5, 'Controlled entry routes are not distinct'
     return {'passed':True,'scope':'authored OpenDRIVE, route and prospective body proxy only',
+            'authored_bidirectional_turn_only_lane':True,
             'native_center_lane_design_verified':False,
             'native_connector_identity_verified':False,
             'cases':results}
