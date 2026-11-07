@@ -105,8 +105,8 @@ def build() -> dict:
                 row.update(ref)
             else:
                 ref.update({"trigger": {"source": "hashed saved Native samples",
-                    "metric": "measured approach-speed relation and other-actor motion",
-                    "failure_condition": policy["fallback_trigger"]},
+                    "metric": policy["fallback_triggers"][candidate]["metric"],
+                    "failure_condition": policy["fallback_triggers"][candidate]["failure_condition"]},
                     "changed_knobs": [key for key, value in policy["knobs"].items()
                                       if candidate_plan(suffix, "primary")["knobs"].get(key) != value]})
                 row["candidates"].append(ref)

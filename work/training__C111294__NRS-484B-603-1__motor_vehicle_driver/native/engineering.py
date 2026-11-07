@@ -34,7 +34,7 @@ def candidate_plan(case: str, candidate: str) -> dict:
             "target_relation": case_row["target_relation"], "knobs": knobs,
             "construction_sha256": hashlib.sha256(canonical).hexdigest(),
             "source_sha256": hashlib.sha256(raw).hexdigest(),
-            "fallback_trigger": case_row["fallback_trigger"],
+            "fallback_triggers": case_row["fallback_triggers"],
             "selected": False}
 
 
@@ -64,18 +64,34 @@ def evaluate_fallback(case: str, candidate: str, source_path: Path,
     from measure_approach import measure
     measurement = measure(source_path, expected_sha256)
     relation = measurement.get("measured_relation")
-    if case == "probe_a":
-        triggered = relation != "measured_early_decrease_held"
-        reason = "early speed reduction or crossing hold below engineering surrogate"
-    elif case == "probe_b":
-        triggered = relation != "measured_no_material_decrease"
-        reason = "held-speed comparison differs from measured target"
-    else:
-        raise ValueError("Unknown controlled case")
     index = CANDIDATES.index(candidate)
+    next_id = CANDIDATES[index+1] if index+1 < len(CANDIDATES) else None
+    if next_id is None:
+        triggered = relation != candidate_plan(case, candidate)["target_relation"]
+        reason = "final candidate fails the case relation"
+        metric = "measured_relation"
+        observed = relation
+    else:
+        values = {key: float(measurement[key]) for key in
+                  ("approach_start_mph", "preentry_mph", "decrease_mph", "crossing_peak_mph")}
+        checks = {
+            "probe_a": {
+                "fallback1": ("decrease_mph", values["decrease_mph"], values["decrease_mph"] < 3.0),
+                "fallback2": ("crossing_peak_mph", values["crossing_peak_mph"],
+                              values["crossing_peak_mph"] > values["approach_start_mph"] - 2.0),
+                "fallback3": ("preentry_mph", values["preentry_mph"], values["preentry_mph"] > 21.0)},
+            "probe_b": {
+                "fallback1": ("decrease_mph", values["decrease_mph"], values["decrease_mph"] >= 1.0),
+                "fallback2": ("approach_start_mph", values["approach_start_mph"],
+                              values["approach_start_mph"] < 29.0),
+                "fallback3": ("crossing_peak_mph", values["crossing_peak_mph"],
+                              values["crossing_peak_mph"] < 29.0)}}
+        metric, observed, triggered = checks[case][next_id]
+        reason = candidate_plan(case, candidate)["fallback_triggers"][next_id]["failure_condition"]
     next_candidate = CANDIDATES[index+1] if triggered and index+1 < len(CANDIDATES) else candidate
     return {"triggered": triggered, "reason": reason,
             "candidate": candidate, "next_candidate": next_candidate,
             "exhausted": triggered and index+1 == len(CANDIDATES),
             "source_sha256": measurement.get("source_sha256"),
-            "measured_relation": relation, "legal_verdict": None}
+            "measured_relation": relation, "metric": metric, "observed": observed,
+            "legal_verdict": None}

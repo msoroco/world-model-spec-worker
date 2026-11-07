@@ -5,6 +5,7 @@ import hashlib
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -50,6 +51,34 @@ class NativeApproachTests(unittest.TestCase):
         choice = evaluate_fallback("probe_a", "fallback3", wrong, wrong_sha)
         self.assertTrue(choice["exhausted"])
         self.assertEqual(choice["next_candidate"], "fallback3")
+
+    def test_three_fallbacks_have_distinct_measured_conditions(self):
+        cases = {
+            "probe_a": [
+                ("primary", "fallback1", {"approach_start_mph": 30, "preentry_mph": 28,
+                                          "decrease_mph": 2, "crossing_peak_mph": 20}, "decrease_mph"),
+                ("fallback1", "fallback2", {"approach_start_mph": 30, "preentry_mph": 20,
+                                            "decrease_mph": 10, "crossing_peak_mph": 29}, "crossing_peak_mph"),
+                ("fallback2", "fallback3", {"approach_start_mph": 30, "preentry_mph": 22,
+                                            "decrease_mph": 8, "crossing_peak_mph": 20}, "preentry_mph")],
+            "probe_b": [
+                ("primary", "fallback1", {"approach_start_mph": 30, "preentry_mph": 28.5,
+                                          "decrease_mph": 1.5, "crossing_peak_mph": 30}, "decrease_mph"),
+                ("fallback1", "fallback2", {"approach_start_mph": 28, "preentry_mph": 28,
+                                            "decrease_mph": 0, "crossing_peak_mph": 30}, "approach_start_mph"),
+                ("fallback2", "fallback3", {"approach_start_mph": 30, "preentry_mph": 30,
+                                            "decrease_mph": 0, "crossing_peak_mph": 28}, "crossing_peak_mph")]}
+        for case, checks in cases.items():
+            for current, next_id, measured, metric in checks:
+                with self.subTest(case=case, next_id=next_id):
+                    with patch("measure_approach.measure", return_value={
+                        **measured, "measured_relation": "measured_ambiguous_decrease",
+                        "source_sha256": "a" * 64}):
+                        result = evaluate_fallback(case, current, Path("unused"), "a" * 64)
+                    self.assertTrue(result["triggered"])
+                    self.assertEqual(result["next_candidate"], next_id)
+                    self.assertEqual(result["metric"], metric)
+                    self.assertEqual(result["observed"], measured[metric])
 
 
 if __name__ == "__main__":

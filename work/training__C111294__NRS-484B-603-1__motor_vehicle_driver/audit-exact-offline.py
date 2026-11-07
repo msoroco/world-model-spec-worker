@@ -34,6 +34,10 @@ def main() -> None:
         suffix = entry["case_id"].split("__")[-1]
         policy_rows = {row["name"]: row for row in policy_by_suffix[suffix]["candidates"]}
         assert set(policy_rows) == set(NAMES)
+        expected_triggers = policy_by_suffix[suffix]["fallback_triggers"]
+        assert set(expected_triggers) == set(NAMES[1:])
+        assert len({row["metric"] for row in expected_triggers.values()}) == 3
+        assert len({row["failure_condition"] for row in expected_triggers.values()}) == 3
         common_files = None
         primary_config = None
         for candidate in NAMES:
@@ -54,7 +58,7 @@ def main() -> None:
             assert receipt["offline_command_log_sha256"] == sha(folder / "command-proof.log")
             assert receipt["offline_test_log_sha256"] == sha(folder / "unit-proof.log")
             log = (folder / "unit-proof.log").read_text()
-            assert "Ran 3 tests" in log and "OK" in log
+            assert "Ran 4 tests" in log and "OK" in log
             assert "native_capture_executed\": false" in log
             assert config["case_id"] == entry["case_id"]
             assert config["candidate_id"] == candidate
@@ -79,6 +83,10 @@ def main() -> None:
                 common_files = source_files
                 primary_config = config
             else:
+                assert selected["trigger"] == {
+                    "source": "hashed saved Native samples",
+                    "metric": expected_triggers[candidate]["metric"],
+                    "failure_condition": expected_triggers[candidate]["failure_condition"]}
                 assert source_files == common_files
                 assert {k: v for k, v in config.items() if k not in ("candidate_id", "knobs")} == {
                     k: v for k, v in primary_config.items() if k not in ("candidate_id", "knobs")}

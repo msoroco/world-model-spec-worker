@@ -20,11 +20,11 @@
         {
           "id": "fallback1",
           "construction": "exact-drafts/probe_a/fallback1/construction.json",
-          "construction_sha256": "ad2928963fc36fa7b02d4c08c3dba485ca17cb8a315090374a0b38dfefebce1b",
+          "construction_sha256": "371324bc6b27f019523b9005c895d0a4e7bb8912a4434e056f4a56059ff2153d",
           "trigger": {
             "source": "hashed saved Native samples",
-            "metric": "measured approach-speed relation and other-actor motion",
-            "failure_condition": "If measured speed reduction before y=-20 m is under 3 mph or crossing peak is less than 2 mph below approach speed, select the next braking construction; verify other actor and approach windows from saved Native pose before selection."
+            "metric": "approach minus preentry speed, mph",
+            "failure_condition": "decrease_mph < 3.0"
           },
           "changed_knobs": [
             "brake_start_y_m",
@@ -35,11 +35,11 @@
         {
           "id": "fallback2",
           "construction": "exact-drafts/probe_a/fallback2/construction.json",
-          "construction_sha256": "7d559f3781a43c1da184b67a992beac1e87d8bf3bf4c9778a731663e4b59d3e5",
+          "construction_sha256": "9c38d3e2d70d6571fe1bbeab8c17f87ef606e2598c07281940d40c242d346582",
           "trigger": {
             "source": "hashed saved Native samples",
-            "metric": "measured approach-speed relation and other-actor motion",
-            "failure_condition": "If measured speed reduction before y=-20 m is under 3 mph or crossing peak is less than 2 mph below approach speed, select the next braking construction; verify other actor and approach windows from saved Native pose before selection."
+            "metric": "crossing peak relative to approach speed, mph",
+            "failure_condition": "crossing_peak_mph > approach_start_mph - 2.0"
           },
           "changed_knobs": [
             "brake_start_y_m",
@@ -51,11 +51,11 @@
         {
           "id": "fallback3",
           "construction": "exact-drafts/probe_a/fallback3/construction.json",
-          "construction_sha256": "d1db7d0cb632ab1ec3b80b20e5fb0b5abea4fde7584b4604e395c5c079ed9130",
+          "construction_sha256": "073549b40370901472fb8db8ad55c588006fa373c0e91de78fd395dc766ad6b2",
           "trigger": {
             "source": "hashed saved Native samples",
-            "metric": "measured approach-speed relation and other-actor motion",
-            "failure_condition": "If measured speed reduction before y=-20 m is under 3 mph or crossing peak is less than 2 mph below approach speed, select the next braking construction; verify other actor and approach windows from saved Native pose before selection."
+            "metric": "preentry speed, mph",
+            "failure_condition": "preentry_mph > 21.0"
           },
           "changed_knobs": [
             "brake_start_y_m",
@@ -67,7 +67,7 @@
       ],
       "id": "primary",
       "construction": "exact-drafts/probe_a/primary/construction.json",
-      "construction_sha256": "20d8fa88227e251d22995e8ddccb38e727ff98b320a61af82ceaa9fdc020fc9a"
+      "construction_sha256": "7f81d5e278a181acd27cc450de20c8320da1d9ddae0d75c951e0652646594e91"
     },
     {
       "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b",
@@ -85,11 +85,11 @@
         {
           "id": "fallback1",
           "construction": "exact-drafts/probe_b/fallback1/construction.json",
-          "construction_sha256": "5869fe1ada7e0943480b9f32c9e34608a567100c12461a794adfe1f48d36f776",
+          "construction_sha256": "8cbbc6e3355824d11501a7e86a8cd159ee5d7b284ce9aebb300ed7a3bd583a04",
           "trigger": {
             "source": "hashed saved Native samples",
-            "metric": "measured approach-speed relation and other-actor motion",
-            "failure_condition": "If measured approach-to-preentry speed decrease reaches 1 mph or the other actor fails to traverse at least 10 m, select the next hold-speed construction and remeasure the same relation."
+            "metric": "approach minus preentry speed, mph",
+            "failure_condition": "decrease_mph >= 1.0"
           },
           "changed_knobs": [
             "other_start_x_m",
@@ -99,11 +99,11 @@
         {
           "id": "fallback2",
           "construction": "exact-drafts/probe_b/fallback2/construction.json",
-          "construction_sha256": "5f04a520fcc690c6d7b2f30639f99531cd7078aa2c42c2c755ac49fd03579623",
+          "construction_sha256": "1cee2adc82f58cec0685fdcf537858f598cee2856ec42d3787b6aba9fd51437d",
           "trigger": {
             "source": "hashed saved Native samples",
-            "metric": "measured approach-speed relation and other-actor motion",
-            "failure_condition": "If measured approach-to-preentry speed decrease reaches 1 mph or the other actor fails to traverse at least 10 m, select the next hold-speed construction and remeasure the same relation."
+            "metric": "approach start speed, mph",
+            "failure_condition": "approach_start_mph < 29.0"
           },
           "changed_knobs": [
             "other_start_x_m",
@@ -113,11 +113,11 @@
         {
           "id": "fallback3",
           "construction": "exact-drafts/probe_b/fallback3/construction.json",
-          "construction_sha256": "c3210d3032bb8e9d996d5cb02123ce3e5944c751bcbda8e2940fbbb447e19134",
+          "construction_sha256": "814048a01b0e30a0232c1d8f789f6020b0df4f82926e7115c43beeb04d6b3bbb",
           "trigger": {
             "source": "hashed saved Native samples",
-            "metric": "measured approach-speed relation and other-actor motion",
-            "failure_condition": "If measured approach-to-preentry speed decrease reaches 1 mph or the other actor fails to traverse at least 10 m, select the next hold-speed construction and remeasure the same relation."
+            "metric": "crossing peak speed, mph",
+            "failure_condition": "crossing_peak_mph < 29.0"
           },
           "changed_knobs": [
             "other_start_x_m",
@@ -127,7 +127,7 @@
       ],
       "id": "primary",
       "construction": "exact-drafts/probe_b/primary/construction.json",
-      "construction_sha256": "20735cc1c291ebb397c13dc023ddd47867acaf6facaf8c578772e43e62bf0743"
+      "construction_sha256": "153f26658f8bbf5a27fc9df8639112b11052ea8cf5a7aa968ec076382f25b3af"
     }
   ]
 }
