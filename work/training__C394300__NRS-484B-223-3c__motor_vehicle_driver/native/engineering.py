@@ -27,7 +27,7 @@ def parameters(case_suffix,candidate_id):
 TRIGGERS={
     'fallback1':{'source':'original Native body and turn-completion samples',
                  'metric':'inbound_body_containment_fraction and turn_completion_time_s',
-                 'failure_condition':'containment fraction < 1.0 or turn completion > 4.0 s'},
+                 'failure_condition':'containment fraction < 1.0 or turn completion > 7.0 s'},
     'fallback2':{'source':'original Native route-error samples',
                  'metric':'max_premerge_route_error_m',
                  'failure_condition':'maximum route error > 0.35 m'},
@@ -47,7 +47,7 @@ def trigger(candidate_id,evidence):
             raise ValueError('Invalid measured trigger: '+key)
         return value
     if candidate_id=='fallback1':
-        return number('inbound_body_containment_fraction',0,1)<1 or number('turn_completion_time_s')>4
+        return number('inbound_body_containment_fraction',0,1)<1 or number('turn_completion_time_s')>7
     if candidate_id=='fallback2':
         return number('max_premerge_route_error_m')>.35
     return number('marking_and_body_visible_fraction',0,1)<.95

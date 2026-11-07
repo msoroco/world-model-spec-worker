@@ -64,7 +64,7 @@ def make_base(destination,suffix,full_resolution=False):
         sample={'native_frame':frame,'time_s':time_s,'native_center_xy_m':[x,y],
             'native_forward_xy':[fx,fy],'native_body_xy_m':corners,
             'native_road_id':road,'native_lane_id':lane,'speed_mps':speed,
-            'controller_request':{'synthetic_diagnostic':True}}
+            'controller_request':{'route_error_m':0.0,'synthetic_diagnostic':True}}
         samples.append(sample)
         trace.append({'frame':frame,'time_s':time_s,'position':{'x':x,'y':y,'z':.5},
                       'position_m':[x,y,.5],'heading_deg':math.degrees(math.atan2(fy,fx)),

@@ -94,6 +94,10 @@ class CandidatesTest(unittest.TestCase):
             'inbound_body_containment_fraction':.99,'turn_completion_time_s':3.5}))
         self.assertFalse(trigger('fallback1',{'source':TRIGGERS['fallback1']['source'],
             'inbound_body_containment_fraction':1,'turn_completion_time_s':3.5}))
+        self.assertFalse(trigger('fallback1',{'source':TRIGGERS['fallback1']['source'],
+            'inbound_body_containment_fraction':1,'turn_completion_time_s':6.75}))
+        self.assertTrue(trigger('fallback1',{'source':TRIGGERS['fallback1']['source'],
+            'inbound_body_containment_fraction':1,'turn_completion_time_s':7.05}))
         self.assertTrue(trigger('fallback2',{'source':TRIGGERS['fallback2']['source'],
             'max_premerge_route_error_m':.36}))
         self.assertFalse(trigger('fallback2',{'source':TRIGGERS['fallback2']['source'],

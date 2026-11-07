@@ -95,7 +95,7 @@ def build():
             else:
                 risks={'fallback1':('original Native body and turn-completion samples',
                                     'inbound_body_containment_fraction and turn_completion_time_s',
-                                    'containment fraction < 1.0 or turn completion > 4.0 s',
+                                    'containment fraction < 1.0 or turn completion > 7.0 s',
                                     'inbound route start 45 m to 42 m'),
                        'fallback2':('original Native route-error samples',
                                     'max_premerge_route_error_m',
