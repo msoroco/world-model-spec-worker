@@ -74,9 +74,13 @@ def map_survey(carla, mapping, native_hash):
               "adjacent_through_highway_lane":(-40,3.5,1,-2,[1,0])}
     observed={};waypoints={}
     for name,(x,y,road_id,lane_id,expected) in requests.items():
-        wp=mapping.get_waypoint(carla.Location(x=x,y=y,z=.2),project_to_road=False,lane_type=carla.LaneType.Driving)
+        requested_type=(carla.LaneType.Bidirectional if name=='center_turn_highway_lane'
+                        else carla.LaneType.Driving)
+        wp=mapping.get_waypoint(carla.Location(x=x,y=y,z=.2),project_to_road=False,lane_type=requested_type)
         if wp is None or wp.road_id!=road_id or wp.lane_id!=lane_id:
             raise RuntimeError("Native lane survey failed: "+name)
+        if wp.lane_type!=requested_type:
+            raise RuntimeError("Native lane type differs from authored road: "+name)
         vector=direction(wp)
         if sum(a*b for a,b in zip(vector,expected))<.98:
             raise RuntimeError("Native lane direction differs from authored road: "+name)
@@ -104,8 +108,9 @@ def map_survey(carla, mapping, native_hash):
             "through_lane_native_xy_bounds_m":[-66.5,1.75,90,5.25],
             "inbound_lane_native_xy_bounds_m":[inbound_low,0,inbound_high,50],
             "highway_forward_native_xy":[1,0],
+            "native_center_lane_bidirectional_type_verified":True,
             "native_center_lane_design_verified":False,
-            "boundary_provenance":"Native road/lane readback at survey points; dual-direction turn-only designation, connector lane link and traffic merge require independent saved review"}
+            "boundary_provenance":"Native road/lane type and boundary readback at survey points; turn-only designation, connector lane link and traffic merge require independent saved review"}
 
 
 def camera_transform(carla, spec):
@@ -218,7 +223,7 @@ def execute(config, output, host, port):
                 frame=world.tick();time_s=world.get_snapshot().timestamp.elapsed_seconds-start
                 pose=ego.get_transform();forward=pose.get_forward_vector();body=body_xy(ego)
                 lane=mapping.get_waypoint(pose.location,project_to_road=False,
-                                          lane_type=carla.LaneType.Driving)
+                                          lane_type=carla.LaneType.Driving | carla.LaneType.Bidirectional)
                 if lane is None:raise RuntimeError('Native lane identity missing at original frame')
                 sample={"time_s":time_s,"native_frame":frame,
                     "native_center_xy_m":[pose.location.x,pose.location.y],

@@ -45,10 +45,13 @@ def open_drive():
                           ('right',(-1,) if ident==13 else (-1,-2))):
             group = ET.SubElement(section,side)
             for lane_id in ids:
+                center_turn = ident==1 and lane_id==-1
                 lane = ET.SubElement(group,'lane',id=str(lane_id),
-                                     type='none' if lane_id==0 else 'driving',level='false')
+                                     type='none' if lane_id==0 else 'bidirectional' if center_turn else 'driving',level='false')
                 if lane_id:
                     ET.SubElement(lane,'width',sOffset='0',a=str(LANE_WIDTH_M),b='0',c='0',d='0')
+                    if center_turn:
+                        ET.SubElement(lane,'userData',code='lane_use',value='left_turn_only_both_directions')
                 if ident==13 and lane_id==-1:
                     ll=ET.SubElement(lane,'link')
                     ET.SubElement(ll,'predecessor',id='-1');ET.SubElement(ll,'successor',id='-1')
@@ -96,6 +99,10 @@ def check():
     assert roads[13].find('link/successor').attrib['elementId']=='1'
     assert roads[1].find('link/predecessor').attrib['elementId']=='100'
     assert [(x.attrib['from'],x.attrib['to']) for x in root.findall('junction/connection/laneLink')]==[('-1','-1')]
+    bidirectional=[(int(road.attrib['id']),lane) for road in roads.values()
+                   for lane in road.findall("./lanes/laneSection/right/lane[@type='bidirectional']")]
+    assert [(road,int(lane.attrib['id'])) for road,lane in bidirectional]==[(1,-1)]
+    assert bidirectional[0][1].find("userData[@code='lane_use']").attrib['value']=='left_turn_only_both_directions'
     # Exact rectangle-union coverage without a nonportable geometry dependency.
     pavement=((-76,-5.25,100,5.25),(-76,-50,-66.5,0))
     def covered(point):
@@ -132,6 +139,7 @@ def check():
                        'nominal_merge_start_x_m':round(TURN_END_X+feet*.3048+.19*8,5)}
     assert len({v['nominal_merge_start_x_m'] for v in results.values()})==3
     return {'passed':True,'scope':'authored OpenDRIVE, route and body proxy only',
+            'authored_bidirectional_turn_only_lane':True,
             'native_center_lane_design_verified':False,'native_connector_identity_verified':False,
             'cases':results}
 

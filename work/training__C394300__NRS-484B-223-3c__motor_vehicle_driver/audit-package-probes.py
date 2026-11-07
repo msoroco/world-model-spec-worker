@@ -3,6 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+import xml.etree.ElementTree as ET
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
@@ -48,6 +49,17 @@ def audit():
                 raise ValueError('Saved receipt differs from log')
             if digest(tree(scratch/'fixture'))!=positive['fixture_sha256']:
                 raise ValueError('Diagnostic fixture changed')
+            road=scratch/'fixture/road.xodr'
+            geometry=json.loads((scratch/'fixture/road_geometry.json').read_text())
+            if (sha(road)!=geometry.get('authored_map_sha256') or
+                sha(road)!=sha(HERE/'draft-construction/scene.xodr')):
+                raise ValueError('Diagnostic road or geometry packet is stale')
+            root=ET.fromstring(road.read_text())
+            center=root.find("./road[@id='1']/lanes/laneSection/right/lane[@id='-1']")
+            if (center is None or center.attrib.get('type')!='bidirectional' or
+                center.find("userData[@code='lane_use']") is None or
+                center.find("userData[@code='lane_use']").attrib.get('value')!='left_turn_only_both_directions'):
+                raise ValueError('Diagnostic bidirectional turn-only lane absent')
             if sha(scratch/'output/finalize.py')!=positive['analysis_sha256']:
                 raise ValueError('Packaged finalizer changed')
             if sha(scratch/'output/compatibility-analysis.log')!=positive['log_sha256']:

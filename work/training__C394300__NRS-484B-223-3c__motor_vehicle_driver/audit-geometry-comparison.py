@@ -23,6 +23,10 @@ def audit():
     assert root.find('junction/connection').attrib['incomingRoad']=='4'
     assert root.find('junction/connection').attrib['connectingRoad']=='13'
     assert [(link.attrib['from'],link.attrib['to']) for link in root.findall('junction/connection/laneLink')]==[('-1','-1')]
+    bidirectional=[(int(road.attrib['id']),lane) for road in roads.values()
+                   for lane in road.findall("./lanes/laneSection/right/lane[@type='bidirectional']")]
+    assert [(road,int(lane.attrib['id'])) for road,lane in bidirectional]==[(1,-1)]
+    assert bidirectional[0][1].find("userData[@code='lane_use']").attrib['value']=='left_turn_only_both_directions'
     routes={case:json.loads((OUT/f'route-{case}.json').read_text()) for case in EXPECTED}
     assert all(len(route)==2050 for route in routes.values())
     first=routes['below_50_ft']
@@ -39,6 +43,7 @@ def audit():
     assert abs(first_lateral['above_50_ft']-first_lateral['at_50_ft']-5*.3048)<.11
     proof=json.loads((OUT/'geometry-check.json').read_text())
     assert proof['passed'] is True and proof['native_center_lane_design_verified'] is False
+    assert proof['authored_bidirectional_turn_only_lane'] is True
     assert proof['native_connector_identity_verified'] is False
     print(json.dumps({'status':'authored_geometry_comparison_pass',
                       'map_sha256':sha(map_path), 'shared_turn_prefix_points':550,

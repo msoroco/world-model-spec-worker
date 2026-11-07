@@ -21,7 +21,7 @@ def sha(path):
 
 
 def main():
-    log = HERE / 'package-compatibility-below_50_ft.log'
+    log = HERE / 'package-compatibility-below_50_ft-primary.log'
     first = log.read_text().splitlines()[0]
     if not first.startswith('scratch '):
         raise ValueError('No exact package fixture')
