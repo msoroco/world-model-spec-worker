@@ -1,0 +1,21 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "assignment_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver",
+  "case_suffixes": ["traversal_reference", "traversal_contrast"],
+  "scope": "unselected CPU construction proposal; original Native capture required",
+  "sources": [
+    {"name": "native_samples.jsonl", "sampling_rate_hz": 20, "required_frames": 480, "join": "video_frame, native_frame, time_s"},
+    {"name": "road_geometry.json", "required": ["intersection_polygon_xy_m", "approach_forward_native", "road_directions_native", "native_map_sha256"]},
+    {"name": "original_overview_video", "required": ["480 decoded frames", "body mask and frame joins"]}
+  ],
+  "measurements": [
+    {"name": "moving_full_body_inside_intersection", "unit": "frames", "method": "all four observed body vertices strictly inside surveyed polygon while observed speed exceeds 0.05 m/s"},
+    {"name": "moving_full_body_left_of_center_inside_intersection", "unit": "frames", "method": "moving full body inside intersection and every body vertex left of surveyed centerline"},
+    {"name": "parking_endpoint", "unit": "m", "method": "final observed body pose relative to surveyed parking bay"}
+  ],
+  "controlled_variable": "lateral route within intersection",
+  "fixed": ["two-way intersection", "vehicle body", "longitudinal route", "speed schedule", "parking endpoint", "weather", "camera profile"],
+  "acceptance": {"reference_left_traversal_frames": 0, "contrast_min_left_traversal_frames": 10, "missing_or_mutated_source": "reject"},
+  "legal_verdict": null,
+  "physical_success_claimed": false
+}
