@@ -83,12 +83,14 @@ def _smooth(t):
     t=max(0,min(1,t));return t*t*(3-2*t)
 
 
-def route(case):
+def route(case,start_x=-95,entry_advance_m=0):
     if case not in CASES:raise ValueError('Unknown purpose comparison case')
+    if start_x not in (-95,-98):raise ValueError('Unknown candidate approach')
+    if entry_advance_m not in (0,5):raise ValueError('Unknown candidate entry adjustment')
     points=[]
-    for index in range(851):
-        x=-95+index*STEP_M
-        y=-3.5+3.5*_smooth((x+75)/10)
+    for index in range(round((-10-start_x)/STEP_M)+1):
+        x=start_x+index*STEP_M
+        y=-3.5+3.5*_smooth((x+75+entry_advance_m)/10)
         points.append([round(x,5),round(y,5)])
     if case=='controlled_1':
         # Turn at the first center-lane opportunity after common entry.
