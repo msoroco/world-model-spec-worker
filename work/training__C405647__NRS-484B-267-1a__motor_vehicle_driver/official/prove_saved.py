@@ -130,6 +130,21 @@ def prove():
             retained.parent.mkdir(parents=True, exist_ok=True)
             shutil.copytree(attempt, retained)
             (retained / 'negative-analysis.log').write_text(rejected.stdout)
+            media = REPO / '.runtime-work/official-saved-videos' / case / candidate
+            media.mkdir(parents=True, exist_ok=True)
+            video_receipts = []
+            for name in VIDEOS:
+                target = media / name
+                if target.exists():
+                    target.unlink()
+                shutil.move(str(retained / name), str(target))
+                video_receipts.append({'name': name, 'runtime_relative_path':
+                                       str(target.relative_to(REPO)), 'sha256': sha(target),
+                                       'expected_frames': 480,
+                                       'source_kind': 'synthetic_cpu_video'})
+            (retained / 'saved-video-decodes.json').write_text(
+                json.dumps({'format': 'c405647-official-saved-video-sources-v1',
+                            'videos': video_receipts}, indent=2) + '\n')
             results.append({'case_id': case_id, 'candidate_id': candidate,
                             'bridge_frames': bridge['frames'],
                             'result_valid': True, 'recording_evidence_valid': True,

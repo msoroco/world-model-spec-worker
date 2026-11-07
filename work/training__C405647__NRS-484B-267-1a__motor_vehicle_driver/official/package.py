@@ -74,7 +74,7 @@ def build():
                  'candidate_risk': {'status': 'physical_and_source_review',
                                     'reason': 'Agency authority, incorporated lamps and Native motion unverified'}}
         contract = {'format': 'worker-measurement-contract-v1', 'case_id': case_id,
-                    'requirements': [{'disposition_index': 0,
+                    'requirements': [{'disposition_index': 2,
                                       'requirement': 'NRS-484B-267-1a',
                                       'source': 'NRS 484B.267(1)(a)',
                                       'output_key': 'official_approach_clearance',

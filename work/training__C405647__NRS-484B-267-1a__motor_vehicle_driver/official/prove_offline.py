@@ -37,7 +37,7 @@ def run():
             result = subprocess.run(command, cwd=REPO, env=env, text=True,
                                     stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                     timeout=300)
-            folder = HERE / 'offline-receipts' / suffix / candidate
+            folder = HERE / 'cpu-receipts' / suffix / candidate
             folder.mkdir(parents=True, exist_ok=True)
             (folder / 'command.log').write_text(result.stdout)
             unit_log = destination / 'offline.log'
@@ -57,7 +57,7 @@ def run():
             print(suffix, candidate, result.returncode, flush=True)
     summary = {'format': 'c405647-official-pinned-offline-v1',
                'manifest_sha256': sha(MANIFEST), 'receipts': receipts}
-    (HERE / 'offline-summary.json').write_text(json.dumps(summary, indent=2) + '\n')
+    (HERE / 'cpu-summary.json').write_text(json.dumps(summary, indent=2) + '\n')
     if any(r['exit_code'] for r in receipts):
         raise SystemExit(1)
 

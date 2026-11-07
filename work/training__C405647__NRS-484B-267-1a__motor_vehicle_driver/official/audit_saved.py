@@ -78,14 +78,21 @@ def audit():
         assert result['target_checks'][0]['requested'] == (case == 'official_1')
         for channel in result['recording_evidence']:
             assert len(rows(folder / channel['reference'])) == 480
+        video_sources = json.loads((folder / 'saved-video-decodes.json').read_text())
+        indexed = {row['name']: row for row in video_sources['videos']}
+        assert set(indexed) == set(result['video_references'])
         for video in result['video_references']:
+            source = indexed[video]
+            path = REPO / source['runtime_relative_path']
+            assert source['source_kind'] == 'synthetic_cpu_video'
+            assert path.is_file() and sha(path) == source['sha256']
             probe = subprocess.run([str(FFPROBE), '-v', 'error', '-count_frames',
                                     '-select_streams', 'v:0', '-show_entries',
                                     'stream=nb_read_frames,width,height', '-of', 'json',
-                                    str(folder / video)], check=True, text=True,
+                                    str(path)], check=True, text=True,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
             stream = json.loads(probe.stdout)['streams'][0]
-            assert int(stream['nb_read_frames']) == 480
+            assert int(stream['nb_read_frames']) == source['expected_frames'] == 480
     return {'passed': True, 'retained_case_candidates': len(seen),
             'source_hashes_recomputed': True, 'four_videos_each_decoded': True,
             'original_pixels_or_native_verified': False,

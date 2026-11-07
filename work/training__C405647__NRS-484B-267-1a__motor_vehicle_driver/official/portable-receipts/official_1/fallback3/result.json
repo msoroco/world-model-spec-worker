@@ -1,0 +1,133 @@
+{
+  "case_id": "training__C405647__NRS-484B-267-1a__motor_vehicle_driver__official_1",
+  "measured_values": {
+    "format": "c405647-1a-saved-motion-v1",
+    "case_suffix": "official_1",
+    "source_hashes": {
+      "source-scope.json": "88426d7f5bde0309c75e3ff6a8580f42f27d467ba4fda86ccc1352e4b49940c6",
+      "actor-frames.jsonl": "4b41a3d5b4f8a30a5de116fea7ea483949bf0de506371446599867e731e87ddf"
+    },
+    "observed_frame_count": 480,
+    "observed_lamp_transitions": 95,
+    "initial_longitudinal_gap_m": 50.0,
+    "catchup_frame": 166,
+    "first_full_body_inner_lane_clearance_frame": 81,
+    "full_body_cleared_before_catchup": true,
+    "body_footprint_source": "four retained vertices per saved frame",
+    "coordinate_frame": "authored_opendrive_xy",
+    "provenance_kinds": [
+      "synthetic_cpu"
+    ],
+    "vehicle_authority_verified": false,
+    "lamp_qualification_verified": false,
+    "scope": "saved geometric motion and lamp state only"
+  },
+  "target_checks": [
+    {
+      "target": "full-body inner-lane clearance before approach catch-up",
+      "requested": true,
+      "measured": true,
+      "method": "saved four-vertex footprint and longitudinal gap",
+      "tolerance": "one 50 ms retained frame",
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": [
+        "actor-frames.jsonl",
+        "source-scope.json"
+      ]
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": false,
+  "maneuver_completed": false,
+  "termination_reason": "full diagnostic 480-frame saved window",
+  "physical_failure_flags": [
+    "Native behavior and authority unverified"
+  ],
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "overview.mkv",
+    "front_lamp.mkv",
+    "rear_approach.mkv",
+    "subject_reference.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "subject_pose_body",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native frame join",
+        "time_window": "480 frames",
+        "reference_frame": "Native imported OpenDRIVE",
+        "uncertainty": "50 ms frame bracket"
+      },
+      {
+        "name": "approach_pose_body",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native frame join",
+        "time_window": "480 frames",
+        "reference_frame": "Native imported OpenDRIVE",
+        "uncertainty": "50 ms frame bracket"
+      },
+      {
+        "name": "light_state",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native frame join",
+        "time_window": "480 frames",
+        "reference_frame": "Native imported OpenDRIVE",
+        "uncertainty": "50 ms frame bracket"
+      },
+      {
+        "name": "camera_frame_join",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native frame join",
+        "time_window": "480 frames",
+        "reference_frame": "Native imported OpenDRIVE",
+        "uncertainty": "50 ms frame bracket"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "authority and lamp qualification are unverified"
+    ]
+  },
+  "recording_evidence": [
+    {
+      "name": "subject_pose_body",
+      "unit": "structured",
+      "reference": "channels/subject_pose_body.jsonl"
+    },
+    {
+      "name": "approach_pose_body",
+      "unit": "structured",
+      "reference": "channels/approach_pose_body.jsonl"
+    },
+    {
+      "name": "light_state",
+      "unit": "structured",
+      "reference": "channels/light_state.jsonl"
+    },
+    {
+      "name": "camera_frame_join",
+      "unit": "structured",
+      "reference": "channels/camera_frame_join.jsonl"
+    }
+  ],
+  "realized_observables": {
+    "lamp_transitions": {
+      "value": 95,
+      "unit": "count",
+      "method": "saved source-bound front-lamp review transitions",
+      "time_window": "entire 24 s saved window",
+      "statistic": "count",
+      "reference": "actor-frames.jsonl"
+    }
+  },
+  "provenance_kind": "synthetic_local_diagnostic",
+  "accepted": false
+}

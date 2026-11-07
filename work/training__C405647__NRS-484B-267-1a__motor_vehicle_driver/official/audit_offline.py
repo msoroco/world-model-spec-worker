@@ -13,7 +13,7 @@ def sha(path):
 def audit():
     manifest_path = HERE / 'package-manifest.json'
     manifest = json.loads(manifest_path.read_text())
-    summary = json.loads((HERE / 'offline-summary.json').read_text())
+    summary = json.loads((HERE / 'cpu-summary.json').read_text())
     assert summary['manifest_sha256'] == sha(manifest_path)
     assert manifest['status'] == 'draft_not_selected'
     assert len(manifest['cases']) == 2 and len(summary['receipts']) == 8
@@ -42,7 +42,7 @@ def audit():
             assert config['lamp_qualification_verified'] is False
             assert config['physical_success_claimed'] is False
             assert files['runner.py'] == (HERE / 'runner.py').read_text()
-            folder = HERE / 'offline-receipts' / case['case_id'].rsplit('__', 1)[1] / candidate
+            folder = HERE / 'cpu-receipts' / case['case_id'].rsplit('__', 1)[1] / candidate
             receipt = json.loads((folder / 'receipt.json').read_text())
             assert receipt['case_id'] == key[0] and receipt['candidate_id'] == key[1]
             assert receipt['construction_sha256'] == ref['construction_sha256']
