@@ -140,7 +140,9 @@ def run():
         for case in ('reference','contrast'):
             base=Path(tmp)/(case+'-base');make_attempt(base,case)
             positive=Path(tmp)/(case+'-positive');negative=Path(tmp)/(case+'-negative')
+            provenance_negative=Path(tmp)/(case+'-provenance-negative')
             shutil.copytree(base,positive);shutil.copytree(base,negative)
+            shutil.copytree(base,provenance_negative)
             before=digest(positive)
             command=[sys.executable,str(NATIVE/'finalize.py'),'--attempt',str(positive),
                      '--output',str(positive/'analysis-report.json')]
@@ -151,6 +153,8 @@ def run():
             report=json.loads((positive/'analysis-report.json').read_text())
             result=json.loads((positive/'result.json').read_text())
             assert report['original_joins']['frames']==480
+            assert report['provenance_kind']==result['provenance_kind']=='synthetic_fixture'
+            assert result['diagnostic_fixture'] is True and result['accepted'] is False
             assert result['target_checks'][0]['matched']
             assert result['maneuver_completed']
             (negative/'road_geometry.json').unlink()
@@ -160,8 +164,18 @@ def run():
                                    stderr=subprocess.STDOUT,timeout=300)
             if failure.returncode==0 or 'Missing required source: road_geometry.json' not in failure.stdout:
                 raise RuntimeError('Negative missing-source diagnostic accepted: '+failure.stdout)
+            marker=provenance_negative/'capture/manifest.json'
+            mutated=json.loads(marker.read_text());mutated.pop('synthetic_diagnostic')
+            marker.write_text(json.dumps(mutated))
+            mismatch=subprocess.run([sys.executable,str(NATIVE/'finalize.py'),'--attempt',str(provenance_negative),
+                                    '--output',str(provenance_negative/'analysis-report.json')],
+                                   env=env,text=True,stdout=subprocess.PIPE,
+                                   stderr=subprocess.STDOUT,timeout=300)
+            if mismatch.returncode==0 or 'Saved source provenance markers disagree' not in mismatch.stdout:
+                raise RuntimeError('Mixed source provenance accepted: '+mismatch.stdout)
             records.append({'case':case,'positive_exit_code':success.returncode,
                             'negative_exit_code':failure.returncode,
+                            'provenance_negative_exit_code':mismatch.returncode,
                             'analysis_sha256':sha(positive/'analysis-report.json'),
                             'result_sha256':sha(positive/'result.json'),
                             'source_unchanged':True,'video_decoded':4,'frames':480,

@@ -116,6 +116,12 @@ def finalize(attempt: Path,output: Path):
     if count!=480:raise ValueError('Exact 480-frame contract differs')
     native,mapping,original=joins(attempt,count)
     geometry=json.loads(source(attempt,'road_geometry.json').read_text())
+    capture_manifest=json.loads(source(attempt,'capture/manifest.json').read_text())
+    geometry_synthetic=geometry.get('synthetic_diagnostic') is True
+    capture_synthetic=capture_manifest.get('synthetic_diagnostic') is True
+    if geometry_synthetic!=capture_synthetic:
+        raise ValueError('Saved source provenance markers disagree')
+    diagnostic_fixture=geometry_synthetic
     signal=measure_signal(attempt,native,geometry)
     stop=measure_stop(attempt,native,geometry)
     turn=measure_turn_yield(attempt,native,geometry)
@@ -151,7 +157,9 @@ def finalize(attempt: Path,output: Path):
             'method':'source-hashed sampled full-body stop-line crossing',
             'time_window':'entire original 24 s attempt','statistic':'first',
             'reference':'native_samples.jsonl'}},
-        'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
+        'provenance_kind':'synthetic_fixture' if diagnostic_fixture else 'native',
+        'diagnostic_fixture':diagnostic_fixture,
+        'accepted':False,'legal_verdict_claimed':False}
     from worker_exchange.native_output import validate_result
     validate_result(result)
     report={'format':'c110919-saved-analysis-v1','case_id':config['case_id'],
@@ -159,7 +167,10 @@ def finalize(attempt: Path,output: Path):
             'measurements':{'steady_red_activation':signal,
                             'right_turn_stop':stop,'right_turn_yield':turn},
             'original_joins':original,'video_frames':counts,
-            'scope':'saved original Native sources and decoded original video; not independent acceptance or legal verdict'}
+            'provenance_kind':result['provenance_kind'],
+            'scope':('synthetic CPU saved sources and decoded synthetic video' if diagnostic_fixture
+                     else 'saved original Native sources and decoded original video')+
+                    '; not independent acceptance or legal verdict'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     with (attempt/'result.json').open('x') as stream:
         json.dump(result,stream,indent=2,allow_nan=False);stream.write('\n')
