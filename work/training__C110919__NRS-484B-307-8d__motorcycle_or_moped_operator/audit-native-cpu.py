@@ -121,6 +121,18 @@ def audit() -> dict:
                 pass
             else:
                 raise AssertionError('Unbound trigger accepted')
+        for candidate in eng.CANDIDATES[1:]:
+            key=eng.TRIGGERS[candidate]['metric']
+            for invalid in (float('nan'),float('inf'),float('-inf'),-1,True):
+                corrupt=metrics|{key:invalid}
+                source.write_text(json.dumps(corrupt))
+                digest=hashlib.sha256(source.read_bytes()).hexdigest()
+                try:
+                    eng.evaluate_trigger(candidate,corrupt,source,digest)
+                except ValueError:
+                    pass
+                else:
+                    raise AssertionError('Nonfinite, negative or boolean metric accepted')
     return {'passed':True,'assignment_id':ROOT.name,'source_scope':'authored CPU geometry and synthetic saved frames',
             'candidate_count':8,'pair_variable':'two_complete_signal_cycles_waited_before_right_turn',
             'synthetic_pair':pair,'negative_checks':['signal_state','source_hash','fallback_source_hash'],
