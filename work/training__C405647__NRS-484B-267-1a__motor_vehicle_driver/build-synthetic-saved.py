@@ -6,7 +6,7 @@ import sys
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / 'native'))
 from geometry import CASES, requested_tracks
-from measure_saved import measure
+from finalize import analysis_report
 
 
 def build():
@@ -28,11 +28,12 @@ def build():
                          'source_kind': 'synthetic_cpu'})
         (folder / 'actor-frames.jsonl').write_text(''.join(
             json.dumps(row, sort_keys=True) + '\n' for row in rows))
-        report = measure(folder)
+        report = analysis_report(folder)
         (folder / 'analysis-report.json').write_text(json.dumps(report, indent=2) + '\n')
+        value = report['measurements']['emergency_approach_clearance']['value']
         results.append({'case_suffix': case, 'frames': len(rows),
-                        'catchup_frame': report['catchup_frame'],
-                        'clearance_frame': report['first_full_body_inner_lane_clearance_frame']})
+                        'catchup_frame': value['catchup_frame'],
+                        'clearance_frame': value['first_full_body_inner_lane_clearance_frame']})
     return {'passed': True, 'cases': results,
             'scope': 'retained synthetic CPU motion packets; no Native observations'}
 

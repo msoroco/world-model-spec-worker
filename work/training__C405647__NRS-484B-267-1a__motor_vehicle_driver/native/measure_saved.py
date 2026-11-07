@@ -23,6 +23,9 @@ def _rows(path):
 
 def measure(folder):
     folder = Path(folder)
+    for name in ('source-scope.json', 'actor-frames.jsonl'):
+        if not (folder / name).is_file():
+            raise ValueError('Missing required source: ' + name)
     scope = json.loads((folder / 'source-scope.json').read_text())
     if scope.get('assignment_law_text_sha256') != LAW_SHA256:
         raise ValueError('Law source hash differs')
