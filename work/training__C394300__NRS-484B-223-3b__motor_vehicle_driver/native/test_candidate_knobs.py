@@ -1,11 +1,21 @@
 import unittest
+import math
 from types import SimpleNamespace
 from engineering import parameters
 from geometry import TARGET_FEET
-from runner import body_xy
+from runner import body_xy, observed_speed_mps
 
 
 class CandidateKnobsTest(unittest.TestCase):
+    def test_saved_speed_reads_post_tick_velocity(self):
+        actor=SimpleNamespace(get_velocity=lambda:SimpleNamespace(x=3.,y=4.,z=0.))
+        self.assertEqual(observed_speed_mps(actor),5.)
+        actor.get_velocity=lambda:SimpleNamespace(x=0.,y=0.,z=2.)
+        self.assertEqual(observed_speed_mps(actor),2.)
+        actor.get_velocity=lambda:SimpleNamespace(x=math.nan,y=0.,z=0.)
+        with self.assertRaisesRegex(ValueError,"Nonfinite observed Native velocity"):
+            observed_speed_mps(actor)
+
     def test_native_body_vertices_are_perimeter_ordered(self):
         points=[SimpleNamespace(x=x,y=y) for x,y in
                 ((2,1),(-2,-1),(2,-1),(-2,1),(2,1),(-2,-1))]

@@ -11,10 +11,19 @@ from cameras import camera_plan
 from controller import PathController
 from engineering import TRIGGERS,parameters,trigger
 from geometry import TARGET_FEET,open_drive
-from runner import body_xy,check,map_survey
+from runner import body_xy,check,map_survey,observed_speed_mps
 
 
 class CandidatesTest(unittest.TestCase):
+    def test_saved_speed_reads_post_tick_velocity(self):
+        actor=SimpleNamespace(get_velocity=lambda:SimpleNamespace(x=3.,y=4.,z=0.))
+        self.assertEqual(observed_speed_mps(actor),5.)
+        actor.get_velocity=lambda:SimpleNamespace(x=0.,y=0.,z=2.)
+        self.assertEqual(observed_speed_mps(actor),2.)
+        actor.get_velocity=lambda:SimpleNamespace(x=math.inf,y=0.,z=0.)
+        with self.assertRaisesRegex(ValueError,"Nonfinite observed Native velocity"):
+            observed_speed_mps(actor)
+
     def test_authored_highway_has_one_bidirectional_turn_only_lane(self):
         root=ET.fromstring(open_drive())
         found=[(road.attrib['id'],lane) for road in root.findall('road')
