@@ -22,7 +22,7 @@ def _write_rows(path, rows):
     path.write_text(''.join(json.dumps(row, sort_keys=True) + '\n' for row in rows))
 
 
-def _fixture(attempt, case, ffmpeg):
+def _fixture(attempt, case, ffmpeg, full_resolution=False):
     prepared = HERE / 'synthetic-bridge' / case / 'prepared'
     for name in ('source-scope.json', 'actor-frames.jsonl',
                  'observed-actors.jsonl', 'front-lamp-review.json', 'front_lamp.source'):
@@ -38,8 +38,9 @@ def _fixture(attempt, case, ffmpeg):
                       'heading_deg': 0.0, 'speed_mps': 4.0})
     _write_rows(attempt / 'trace.jsonl', trace)
     for name in VIDEOS:
+        size = ('1920x1080' if name == 'overview.mkv' else '1280x720') if full_resolution else '16x16'
         subprocess.run([str(ffmpeg), '-hide_banner', '-loglevel', 'error',
-                        '-f', 'lavfi', '-i', 'color=c=blue:s=16x16:r=20:d=24',
+                        '-f', 'lavfi', '-i', f'color=c=blue:s={size}:r=20:d=24',
                         '-c:v', 'ffv1', '-n', str(attempt / name)],
                        check=True, timeout=120)
 

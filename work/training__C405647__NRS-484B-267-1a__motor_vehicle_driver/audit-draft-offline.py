@@ -5,7 +5,7 @@ from pathlib import Path
 
 FOLDER = Path(__file__).resolve().parent
 CANDIDATES = {'primary', 'fallback1', 'fallback2', 'fallback3'}
-SOURCES = {'runner.py', 'geometry.py', 'candidates.py', 'source-scope.json',
+SOURCES = {'runner.py', 'geometry.py', 'candidates.py', 'statutory-scope.json',
            'measure_saved.py', 'prepare_saved.py', 'finalize.py', 'trigger_evidence.py'}
 
 
@@ -47,7 +47,8 @@ def audit():
             files = {row['path']: row['content'] for row in bundle['files']}
             assert SOURCES | {'config.json', 'tests/test_construction.py'} == set(files)
             for name in SOURCES:
-                assert files[name] == (FOLDER / 'native' / name).read_text()
+                source_name = 'source-scope.json' if name == 'statutory-scope.json' else name
+                assert files[name] == (FOLDER / 'native' / source_name).read_text()
             config = json.loads(files['config.json'])
             assert config['case_id'] == case_id
             assert config['case_suffix'] == suffix
@@ -56,8 +57,9 @@ def audit():
             assert config['status'] == 'unselected_native_runner_prototype'
             assert config['source_packets'] == []
             assert set(config['required_atoms']) == {
-                'ru.emergency_vehicle', 'sig.warning_lamp', 'rel.same_direction',
-                'rel.surface_gap', 'kin.position', 'rel.occupies'}
+                'rel.same_direction', 'rel.surface_gap', 'kin.position', 'rel.occupies'}
+            assert set(config['case_specific_saved_observables']) == {
+                'emergency_vehicle_authority', 'front_red_warning_lamp'}
             assert bundle['measurement_plan']['status'] == 'prototype_not_runtime_compatible'
             if ref['id'] != 'primary':
                 target = next(row for row in policy['cases'] if

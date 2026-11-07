@@ -53,7 +53,8 @@ def build():
     assert policies['assignment_id'] == ASSIGNMENT
     by_key = {(row['case_suffix'], row['candidate_id']): row for row in policies['cases']}
     assert len(by_key) == 8
-    code = [{'path': name, 'content': (NATIVE / name).read_text()} for name in SOURCES]
+    code = [{'path': 'statutory-scope.json' if name == 'source-scope.json' else name,
+             'content': (NATIVE / name).read_text()} for name in SOURCES]
     code.append({'path': 'tests/test_construction.py', 'content': TEST})
     manifest = {'format': 'worker-unselected-draft-construction-manifest-v1',
                 'assignment_id': ASSIGNMENT, 'status': 'draft_not_selected',
@@ -75,9 +76,11 @@ def build():
                       'supported_case_ids': [case_id], 'case': {'case_id': case_id},
                       'cell_id': 'C405647', 'law_id': 'NRS-484B-267-1a',
                       'actor': 'motor_vehicle_driver', 'duration_s': 24, 'rate_hz': 20,
-                      'required_atoms': ['ru.emergency_vehicle', 'sig.warning_lamp',
-                                         'rel.same_direction', 'rel.surface_gap',
+                      'required_atoms': ['rel.same_direction', 'rel.surface_gap',
                                          'kin.position', 'rel.occupies'],
+                      'case_specific_saved_observables': {
+                          'emergency_vehicle_authority': 'source-scope.json vehicle_authority_verified',
+                          'front_red_warning_lamp': 'front-lamp-review.json source-hashed decoded pixel frames'},
                       'source_packets': [],
                       'cameras': [{'name': name, 'width': width, 'height': height,
                                    'pose_strategy': 'candidate-specific candidates.py'}

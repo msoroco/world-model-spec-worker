@@ -59,7 +59,9 @@ def construction(case, candidate):
         'requested_tracks_sha256': _sha(serialized),
         'native_track_requests_sha256': _sha(native_serialized),
         'requested_track_rows': len(rows),
-        'source_scope_sha256': hashlib.sha256((Path(__file__).parent / 'source-scope.json').read_bytes()).hexdigest(),
+        'source_scope_sha256': hashlib.sha256((Path(__file__).parent / (
+            'statutory-scope.json' if (Path(__file__).parent / 'statutory-scope.json').is_file()
+            else 'source-scope.json')).read_bytes()).hexdigest(),
         'trigger': None if candidate == 'primary' else {
             'fallback1': 'saved_subject_clearance_or_lane_drift',
             'fallback2': 'saved_approach_catchup_outside_capture_window',

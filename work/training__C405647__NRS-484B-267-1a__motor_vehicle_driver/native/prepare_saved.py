@@ -137,7 +137,10 @@ def prepare(source, output, case, ffmpeg=None):
     output.mkdir(parents=True)
     for name in names:
         shutil.copyfile(source / name, output / name)
-    scope = json.loads((Path(__file__).parent / 'source-scope.json').read_text())
+    static_scope = Path(__file__).parent / 'statutory-scope.json'
+    if not static_scope.is_file():
+        static_scope = Path(__file__).parent / 'source-scope.json'
+    scope = json.loads(static_scope.read_text())
     if scope.get('assignment_law_text_sha256') != LAW_SHA256:
         raise ValueError('Law source hash differs')
     scope.update(case_suffix=case, coordinate_frame=COORDINATE_FRAME,

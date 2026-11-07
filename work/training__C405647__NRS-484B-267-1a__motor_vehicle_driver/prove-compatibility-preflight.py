@@ -10,6 +10,7 @@ ROOT = FOLDER.parents[1]
 sys.path.insert(0, str(ROOT / 'runtime/pipeline/scenario_pipeline'))
 from worker_exchange.candidate_constructions import select
 from worker_exchange.package_compatibility import check_source_packets
+from worker_exchange.atom_preflight import check_required_atoms
 
 
 def prove():
@@ -23,9 +24,13 @@ def prove():
             files = {item['path']: item['content'] for item in proposal['files']}
             config = json.loads(files['config.json'])
             check_source_packets(config, set(files))
+            check_required_atoms(ROOT / 'runtime/pipeline', config['required_atoms'],
+                                 config['source_packets'])
             assert config['case_id'] == entry['case_id']
             assert config['candidate_id'] == candidate
             assert all('"' + atom + '"' in ontology for atom in config['required_atoms'])
+            assert set(config['case_specific_saved_observables']) == {
+                'emergency_vehicle_authority', 'front_red_warning_lamp'}
             changed = copy.deepcopy(config)
             changed['source_packets'] = ['source-scope.json']
             try:
@@ -37,6 +42,7 @@ def prove():
             results.append({'case_id': entry['case_id'], 'candidate_id': candidate,
                             'construction_sha256': selected['construction_sha256'],
                             'runtime_source_packet_positive': True,
+                            'adapter_atom_path_positive': True,
                             'unsupported_source_packet_negative_rejected': True,
                             'ontology_ids_verified': True})
     assert len(results) == 8
