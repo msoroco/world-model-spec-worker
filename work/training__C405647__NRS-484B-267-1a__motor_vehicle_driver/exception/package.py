@@ -9,7 +9,7 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[2]
 SOURCES = ('runner.py', 'candidates.py', 'build.py', 'official_motion.py',
            'statutory-scope.json', 'measure_saved.py', 'prepare_saved.py',
-           'finalize.py')
+           'prepare_original.py', 'finalize.py')
 TEST = '''import hashlib
 import json
 from pathlib import Path
