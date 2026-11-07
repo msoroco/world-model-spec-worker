@@ -24,7 +24,7 @@ def audit():
             assert files['fallback_triggers.py']==code
             assert files['tests/test_fallback_triggers.py']==tests
             log=HERE/'draft-candidates'/case['case_id'].split('__')[-1]/name/'unit-test.log'
-            assert 'Ran 20 tests' in log.read_text() and '\nOK\n' in log.read_text()
+            assert 'Ran 21 tests' in log.read_text() and '\nOK\n' in log.read_text()
             checked.append([case['case_id'],name,candidate['construction_sha256']])
     assert len(checked)==20
     result={'passed':True,'bundles':checked,'source_evaluator_sha256':sha(HERE/'native/fallback_triggers.py'),

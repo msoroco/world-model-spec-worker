@@ -16,7 +16,7 @@ class FallbackTriggersTest(unittest.TestCase):
     def samples(self,first_y=3.5,entry_time=2.0,error=0):
         rows=[]
         for frame,(time,x,y,lane) in enumerate(((.05,-95,first_y,-2),
-                    (entry_time,-50,0,-1),(4,-40,0,-1)),1):
+                    (entry_time,-50,0,-1),(8,-40,0,-1)),1):
             y+=error
             rows.append({'native_frame':frame,'time_s':time,
                 'native_center_xy_m':[x,y],
@@ -29,7 +29,8 @@ class FallbackTriggersTest(unittest.TestCase):
     def test_fallback1_positive_and_negative(self):
         self.assertFalse(evaluate_native(self.samples(),'witness_1')['fallback1']['triggered'])
         self.assertTrue(evaluate_native(self.samples(first_y=6),'witness_1')['fallback1']['triggered'])
-        self.assertTrue(evaluate_native(self.samples(entry_time=3.5),'witness_1')['fallback1']['triggered'])
+        self.assertFalse(evaluate_native(self.samples(entry_time=5.85),'witness_1')['fallback1']['triggered'])
+        self.assertTrue(evaluate_native(self.samples(entry_time=6.05),'witness_1')['fallback1']['triggered'])
 
     def test_fallback2_positive_and_negative(self):
         self.assertFalse(evaluate_native(self.samples(),'witness_1')['fallback2']['triggered'])

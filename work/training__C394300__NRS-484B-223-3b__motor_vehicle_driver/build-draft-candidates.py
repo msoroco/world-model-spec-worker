@@ -96,7 +96,7 @@ def build():
             else:
                 risk={
                     'fallback1':('initial through-lane placement and lane-change convergence',
-                        'Native initial body is outside the through lane or center-lane entry is not attained by 3 s',
+                        'Native initial body is outside the through lane or center-lane entry is not attained by 6 s',
                         'route start x -95 m to -98 m'),
                     'fallback2':('approach and turn path tracking',
                         'maximum original Native route error near lane change or turn exceeds 0.35 m',
