@@ -1,0 +1,47 @@
+{
+  "scope": "Unselected Native construction targets; no exact offline or pinned compatibility receipt yet",
+  "source": "inputs/training__C111294__NRS-484B-603-1__motor_vehicle_driver/assignment.json",
+  "law_id": "NRS-484B-603-1",
+  "cell_id": "C111294",
+  "actor": "motor_vehicle_driver",
+  "fixed": {
+    "layout": "intersection",
+    "maneuver": "travel",
+    "control": "other_vehicle",
+    "junction_entry_y_m": -7,
+    "junction_exit_y_m": 7,
+    "approach_measurement_y_m": [-60, -20],
+    "ego_start_mph": 30,
+    "measurement_source": "saved Native ego positions and three-axis velocities at 20 Hz for 480 frames",
+    "comparison_variable": "hazard_approach_speed_profile"
+  },
+  "cases": [
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a",
+      "target_relation": "measured_early_decrease_held",
+      "candidates": [
+        {"name": "primary", "brake_start_y_m": -60, "brake_finish_y_m": -20, "target_mph": 20, "other_start_x_m": -30},
+        {"name": "fallback1", "brake_start_y_m": -65, "brake_finish_y_m": -25, "target_mph": 20, "other_start_x_m": -35},
+        {"name": "fallback2", "brake_start_y_m": -70, "brake_finish_y_m": -25, "target_mph": 19, "other_start_x_m": -40},
+        {"name": "fallback3", "brake_start_y_m": -75, "brake_finish_y_m": -30, "target_mph": 18, "other_start_x_m": -45}
+      ],
+      "fallback_trigger": "If measured speed reduction before y=-20 m is under 3 mph or crossing peak is less than 2 mph below approach speed, select the next braking construction; verify other actor and approach windows from saved Native pose before selection."
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b",
+      "target_relation": "measured_no_material_decrease",
+      "candidates": [
+        {"name": "primary", "hold_mph": 30, "other_start_x_m": -30, "other_speed_mps": 5},
+        {"name": "fallback1", "hold_mph": 30, "other_start_x_m": -35, "other_speed_mps": 5.5},
+        {"name": "fallback2", "hold_mph": 30, "other_start_x_m": -40, "other_speed_mps": 6},
+        {"name": "fallback3", "hold_mph": 30, "other_start_x_m": -45, "other_speed_mps": 6.5}
+      ],
+      "fallback_trigger": "If measured approach-to-preentry speed decrease reaches 1 mph or the other actor fails to traverse at least 10 m, select the next hold-speed construction and remeasure the same relation."
+    }
+  ],
+  "limitations": [
+    "Candidate controls are authoring targets; exact construction hashes and offline/compatibility proofs do not yet exist.",
+    "The intersection creates the statutory approach condition; whether reduction was necessary to avoid a collision remains a legal and physical observation question.",
+    "No actual CARLA behavior, original pixels, accepted recording or legal verdict is claimed."
+  ]
+}

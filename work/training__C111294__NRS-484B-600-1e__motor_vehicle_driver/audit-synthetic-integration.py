@@ -23,6 +23,15 @@ def rows(path: Path) -> list[dict]:
 def main() -> None:
     saved = json.loads((HERE / "synthetic-saved-integration.json").read_text())
     core = json.loads((HERE / "synthetic-core-integration.json").read_text())
+    composition = json.loads((HERE / "synthetic-composition.json").read_text())
+    assert composition["format"] == "c111294-synthetic-four-view-composition-v1"
+    assert composition["original_sources_preserved"] and not composition["ready"]
+    assert composition["composition"]["frames"] == composition["decode"]["frames"] == 480
+    assert composition["composition"]["primary_sha256"] == sha(
+        Path(composition["composition"]["primary"])) == composition["decode"]["video_sha256"]
+    assert composition["decode"]["passed"]
+    for name, digest in composition["source_hashes"].items():
+        assert composition["composition"]["sources"][name] == digest
     assert saved["ready"] is False and core["ready"] is False
     assert not saved["carla_executed"] and not core["carla_executed"]
     assert len(saved["results"]) == len(core["results"]) == 3
