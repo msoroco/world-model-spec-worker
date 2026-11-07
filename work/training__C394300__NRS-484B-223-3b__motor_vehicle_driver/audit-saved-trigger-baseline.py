@@ -38,13 +38,15 @@ def main():
                          row['native_lane_id']==-1 and
                          all(-1.75<=y<=1.75 for _,y in row['native_body_xy_m'])),None)
         measured=evaluate_native(source,case)
-        if (entry_time is None or entry_time>6 or
+        if (measured['source_kind']!='synthetic_diagnostic' or
+            entry_time is None or entry_time>6 or
             measured['fallback1']['triggered'] or measured['fallback2']['triggered'] or
             measured['fallback1']['entered_center_lane_by_6s'] is not True):
             raise ValueError('Primary route baseline incorrectly selects fallback')
         outcomes.append({'case':case,'source_sha256':sha(source),'entry_time_s':entry_time,
                          'max_route_error_m':measured['fallback2']['max_route_error_m'],
-                         'fallback1':False,'fallback2':False})
+                         'fallback1':False,'fallback2':False,
+                         'source_kind':measured['source_kind']})
     print(json.dumps({'passed':True,'source_kind':'synthetic_local_diagnostic',
                       'full_duration_cases':5,'frames_per_case':480,'rows':outcomes,
                       'original_native_or_pixels_observed':False,'selected':False},sort_keys=True))

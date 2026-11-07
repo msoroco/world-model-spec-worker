@@ -50,11 +50,11 @@ def main():
         assert digest(FOLDER/receipt['command_log'])==receipt['command_log_sha256']
         assert digest(FOLDER/receipt['unit_log'])==receipt['unit_log_sha256']
         unit=(FOLDER/receipt['unit_log']).read_text()
-        assert 'Ran 21 tests' in unit and '\nOK\n' in unit
+        assert 'Ran 22 tests' in unit and '\nOK\n' in unit
         assert 'offline_geometry' in unit and '"native_center_lane_design_verified": false' in unit
     assert actual==expected
     print(json.dumps({'passed':True,'cases':5,'draft_candidates':20,
-                      'offline_unit_tests_per_bundle':21,
+                      'offline_unit_tests_per_bundle':22,
                       'selected_delivery_cases':0,'physical_verified':False}))
 
 

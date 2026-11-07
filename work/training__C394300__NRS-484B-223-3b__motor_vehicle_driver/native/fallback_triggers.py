@@ -1,7 +1,7 @@
-"""Evaluate proposed fallback triggers from original saved source observations.
+"""Evaluate fallback triggers with explicit saved-source provenance.
 
-Pixel annotations are independent human observations, not inferred from a video
-hash. A missing or unverified annotation makes fallback3 unresolved.
+Synthetic diagnostics remain synthetic even when their video bytes and annotations
+match. A missing or unverified annotation makes fallback3 unresolved.
 """
 from __future__ import annotations
 
@@ -31,6 +31,11 @@ def evaluate_native(native_samples, case_suffix, candidate_id='primary'):
     samples=_rows(native_samples)
     if not samples:
         raise ValueError('Original Native samples missing')
+    synthetic=[row.get('controller_request',{}).get('synthetic_diagnostic') is True
+               for row in samples]
+    if any(synthetic) and not all(synthetic):
+        raise ValueError('Mixed synthetic and original Native sample provenance')
+    source_kind='synthetic_diagnostic' if all(synthetic) else 'original_unverified'
     prior_frame=-1;prior_time=-math.inf
     for row in samples:
         frame=row['native_frame'];time=row['time_s']
@@ -49,7 +54,7 @@ def evaluate_native(native_samples, case_suffix, candidate_id='primary'):
     # The entire requested left-turn approach is checked. A larger error signals
     # route tracking trouble; a frame-window shortcut could hide a missed turn.
     max_error=max(_distance_to_polyline(row['native_center_xy_m'],route) for row in samples)
-    return {'source':'native_samples.jsonl','fallback1':{
+    return {'source':'native_samples.jsonl','source_kind':source_kind,'fallback1':{
         'metric':'initial body outside adjacent through lane or no full-body center-lane entry by 6 s',
         'initial_body_inside_through_lane':initial_inside,
         'entered_center_lane_by_6s':entered_by_6s,
@@ -61,6 +66,9 @@ def evaluate_native(native_samples, case_suffix, candidate_id='primary'):
 
 def evaluate_pixels(annotation_path, source_video_path):
     annotation=json.loads(Path(annotation_path).read_text())
+    kind=annotation.get('source_kind')
+    if kind not in ('synthetic_diagnostic','original_review'):
+        raise ValueError('Pixel annotation source kind missing or invalid')
     source=Path(source_video_path)
     actual_sha=hashlib.sha256(source.read_bytes()).hexdigest()
     if annotation['source_video_sha256']!=actual_sha:
@@ -68,11 +76,16 @@ def evaluate_pixels(annotation_path, source_video_path):
     observations=annotation['approach_frames']
     if not observations or len({item['frame'] for item in observations})!=len(observations):
         raise ValueError('Approach frame annotations missing or repeated')
-    if not all(item.get('original_pixels_reviewed') is True for item in observations):
+    if kind=='original_review' and not all(item.get('original_pixels_reviewed') is True
+                                           for item in observations):
         raise ValueError('Original pixel review is absent')
+    if kind=='synthetic_diagnostic' and any(item.get('original_pixels_reviewed') is not False
+                                            for item in observations):
+        raise ValueError('Synthetic pixels cannot be labelled original review')
     visible=sum(bool(item['body_visible'] and item['center_lane_marking_visible']) for item in observations)
     ratio=visible/len(observations)
-    return {'source_video_sha256':actual_sha,'reviewed_approach_frames':len(observations),
+    return {'source_kind':kind,'source_video_sha256':actual_sha,
+            'reviewed_approach_frames':len(observations),
             'body_and_marking_visible_frames':visible,'visible_fraction':ratio,
             'threshold_fraction':0.95,'fallback3_triggered':ratio<0.95}
 
