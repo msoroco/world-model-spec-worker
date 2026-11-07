@@ -17,7 +17,7 @@ for law, cell in mapping.items():
     if len(branches) != 1:
         raise ValueError("Expected one exact clause branch: " + law)
     branch = branches[0]
-    expected_status = "runnable" if law == "NRS-484B-223-4b" else "pending_review"
+    expected_status = "pending_review" if law == "NRS-484B-400-1" else "runnable"
     if branch["status"] != expected_status or branch["assignment_id"] != aid:
         raise ValueError("Branch status or assignment binding differs")
     runnable += branch["status"] == "runnable"
