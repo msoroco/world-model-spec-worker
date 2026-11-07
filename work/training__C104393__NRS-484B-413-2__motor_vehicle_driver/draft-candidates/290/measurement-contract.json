@@ -1,0 +1,69 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__290",
+  "target_distance_ft": 290,
+  "area": "any_other_area",
+  "rate_hz": 20,
+  "duration_s": 42,
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "continuous_signal_distance_ft",
+      "method": "saved_native_signal_and_path",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "weather_context",
+      "method": "saved_context_review",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "any_other_area_coverage",
+      "method": "saved_context_review",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "reviewed-scope-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "any_other_area_duplicate",
+      "method": "saved_context_review",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native_samples.jsonl"
+    ],
+    "error_contains": "Missing required source: native_samples.jsonl"
+  },
+  "status": "unselected_contract_draft"
+}
