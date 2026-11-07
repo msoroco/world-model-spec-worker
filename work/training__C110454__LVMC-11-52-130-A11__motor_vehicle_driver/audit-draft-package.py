@@ -44,8 +44,13 @@ def main():
             if command['case_id']!=entry['case_id'] or command['candidate_id']!=candidate:
                 raise ValueError('Offline command chose another candidate')
             log=(folder/'offline.log').read_text()
-            if 'Ran 9 tests' not in log or not log.rstrip().endswith('OK'):
+            if 'Ran 10 tests' not in log or not log.rstrip().endswith('OK'):
                 raise ValueError('Exact offline unit tests incomplete')
+            runner=next(f['content'] for f in construction['files'] if f['path']=='runner.py')
+            if 'observed_speed=observed_speed_mps(ego)' not in runner or (
+                '"speed_mps":observed_speed' not in runner or
+                '"speed_m_s":observed_speed' not in runner):
+                raise ValueError('Native saved speed is not observed in the post-tick frame')
             receipt=json.loads((folder/'diagnostic-compatibility.json').read_text())
             if receipt['format']!='worker-package-compatibility-v1' or receipt['passed'] is not True:
                 raise ValueError('Pinned v1 compatibility did not pass')

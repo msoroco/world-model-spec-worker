@@ -57,8 +57,13 @@ def main():
             if offline['offline_passed'] is not True or offline['candidate_id']!=candidate or (
                 offline['case_id']!=entry['case_id']):
                 raise ValueError('Numeric exact offline proof differs')
-            if 'Ran 9 tests' not in (folder/'offline.log').read_text():
+            if 'Ran 10 tests' not in (folder/'offline.log').read_text():
                 raise ValueError('Numeric bundle tests incomplete')
+            runner=next(f['content'] for f in construction['files'] if f['path']=='runner.py')
+            if 'observed_speed=observed_speed_mps(ego)' not in runner or (
+                '"speed_mps":observed_speed' not in runner or
+                '"speed_m_s":observed_speed' not in runner):
+                raise ValueError('Numeric Native speed is not in the observed frame')
             receipt=json.loads((folder/'diagnostic-compatibility.json').read_text())
             if receipt['format']!='worker-package-compatibility-v1' or receipt['passed'] is not True or (
                 receipt['case_id']!=entry['case_id'] or receipt['candidate_id']!=candidate or
