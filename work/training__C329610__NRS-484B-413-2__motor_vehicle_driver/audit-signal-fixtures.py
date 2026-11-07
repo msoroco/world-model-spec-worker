@@ -50,15 +50,18 @@ def main():
         for _, _, rows in group[1:]:
             assert [(r["ego_xy_m"], r["heading_deg"], r["course_change"], r["weather"]) for r in rows] == [
                 (r["ego_xy_m"], r["heading_deg"], r["course_change"], r["weather"]) for r in base]
-    wet = summary["weather_control"]
-    wet_rows = rows_and_hash(wet["source_path"], wet["measurement"]["source_sha256"])
-    dry_item = next(i for i in summary["receipts"] if i["requested_ft"] == 100)
-    dry_rows = rows_and_hash(dry_item["source_path"], dry_item["measurement"]["source_sha256"])
-    assert len(wet_rows) == len(dry_rows) == 800
-    assert all(a["weather"] == "rain" and {k:v for k,v in a.items() if k != "weather"} ==
-               {k:v for k,v in b.items() if k != "weather"} for a,b in zip(wet_rows,dry_rows))
-    assert wet["measurement"]["continuous_signal_distance_ft"] == dry_item["measurement"]["continuous_signal_distance_ft"]
-    print(json.dumps({"cases_audited":6,"weather_control_audited":True,"comparison_groups":2,
+    controls = summary["weather_controls"]
+    assert {item["requested_ft"] for item in controls} == {100, 300}
+    assert summary["weather_control"] == {key: controls[0][key] for key in ("source_path", "measurement")}
+    for wet in controls:
+        wet_rows = rows_and_hash(wet["source_path"], wet["measurement"]["source_sha256"])
+        dry_item = next(i for i in summary["receipts"] if i["requested_ft"] == wet["requested_ft"])
+        dry_rows = rows_and_hash(dry_item["source_path"], dry_item["measurement"]["source_sha256"])
+        assert len(wet_rows) == len(dry_rows) == 800
+        assert all(a["weather"] == "rain" and {k:v for k,v in a.items() if k != "weather"} ==
+                   {k:v for k,v in b.items() if k != "weather"} for a,b in zip(wet_rows,dry_rows))
+        assert wet["measurement"]["continuous_signal_distance_ft"] == dry_item["measurement"]["continuous_signal_distance_ft"]
+    print(json.dumps({"cases_audited":6,"weather_controls_audited":2,"comparison_groups":2,
                       "selected":False,"original_native_observed":False}))
 
 

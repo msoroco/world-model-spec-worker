@@ -17,7 +17,7 @@ def main():
     assert review['coverage_sha256']==hashlib.sha256(matrix_path.read_bytes()).hexdigest()
     assert LAW in review['missing_branches']  # C104393 source inventory remains unresolved.
     branches=[b for b in matrix['laws'][LAW]['branches'] if b.get('assignment_id')==AID]
-    assert len(branches)==2 and all(b['status']=='pending_review' for b in branches)
+    assert len(branches)==2 and all(b['status']=='runnable' for b in branches)
     assert set().union(*(set(b['topic_ids']) for b in branches))==set(source['topics'])
     cases={c['case_id']:c for c in plan['cases']}
     comparisons={c['comparison_id']:c for c in plan['comparisons']}
@@ -32,9 +32,15 @@ def main():
         assert sorted(cases[case]['requested_setting'] for case in selected) in ([90,100,110],[290,300,310])
         bound|=selected
     assert bound==set(cases)
+    proof=REPO/'work'/AID/'signal-cpu-branches-audit.log'
+    assert json.loads(proof.read_text())['passed'] is True
+    for branch in branches:
+        for name,digest in branch['cpu_proofs'].items():
+            assert hashlib.sha256((REPO/'work'/AID/name).read_bytes()).hexdigest()==digest
+        assert branch['cpu_proofs']['signal-cpu-branches-audit.log']==hashlib.sha256(proof.read_bytes()).hexdigest()
     print(json.dumps({'source_topics':len(source['topics']),'planned_cases':6,
-                      'controlled_comparisons':2,'pending_c329610_branches':2,
-                      'runnable_branches':0,'c104393_inventory_pending':True}))
+                      'controlled_comparisons':2,'pending_c329610_branches':0,
+                      'runnable_branches':2,'c104393_inventory_pending':True}))
 
 
 if __name__=='__main__':main()

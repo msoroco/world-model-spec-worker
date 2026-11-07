@@ -42,13 +42,18 @@ def evaluate(samples_path,geometry_path,map_audit_path,pixel_audit_path,video_pa
     pixels=json.loads(paths[3].read_text())
     if not isinstance(geometry.get('native_map_sha256'),str) or len(geometry['native_map_sha256'])!=64:
         raise ValueError('Native geometry map hash missing')
-    if mapping.get('source_kind')!='native_map_readback' or type(mapping.get('connected_requested_lane_link')) is not bool:
+    map_kind=mapping.get('source_kind')
+    pixel_kind=pixels.get('source_kind')
+    if map_kind not in ('native_map_readback','synthetic_map_readback') or type(mapping.get('connected_requested_lane_link')) is not bool:
         raise ValueError('Native lane-link audit missing')
+    if (map_kind,pixel_kind) not in (('native_map_readback','original_camera_pixels'),
+                                     ('synthetic_map_readback','synthetic_camera_pixels')):
+        raise ValueError('Trigger source provenance mismatch')
     if (mapping.get('native_samples_sha256')!=sha(paths[0]) or
         mapping.get('road_geometry_sha256')!=sha(paths[1]) or
         mapping.get('native_map_sha256')!=geometry['native_map_sha256']):
         raise ValueError('Native map audit source hash mismatch')
-    if pixels.get('source_kind')!='original_camera_pixels' or pixels.get('native_samples_sha256')!=sha(paths[0]) or pixels.get('video_sha256')!=sha(paths[4]):
+    if pixels.get('native_samples_sha256')!=sha(paths[0]) or pixels.get('video_sha256')!=sha(paths[4]):
         raise ValueError('Pixel audit source hash mismatch')
     visible,total=pixels.get('full_body_and_lane_marking_visible_frames'),pixels.get('approach_frames')
     if type(visible) is not int or type(total) is not int or total<1 or not 0<=visible<=total:
@@ -81,4 +86,5 @@ def evaluate(samples_path,geometry_path,map_audit_path,pixel_audit_path,video_pa
                        'maximum_connector_entry_route_error_m':maximum,
                        'approach_pixel_visible_fraction':fraction},
             'source_hashes':{p.name:sha(p) for p in paths},
+            'declared_source_kind':map_kind,
             'scope':'Source-bound CPU trigger logic; synthetic packets are not physical observations'}

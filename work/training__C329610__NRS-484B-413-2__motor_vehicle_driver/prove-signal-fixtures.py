@@ -87,20 +87,25 @@ def main():
         write_rows(path, rows)
     for name in ("negative-signal-gap.jsonl", "negative-frame-gap.jsonl", "negative-no-turn.jsonl", "negative-area.jsonl"):
         (OUT / name).unlink()
-    clear_path = OUT / "at_100_ft.jsonl"
-    wet_rows = [json.loads(line) for line in clear_path.read_text().splitlines()]
-    for row in wet_rows:
-        row["weather"] = "rain"
-    wet_path = OUT / "at_100_ft_rain.jsonl"
-    wet_digest = write_rows(wet_path, wet_rows)
-    wet = measure(wet_path, expected_sha256=wet_digest, area="business_or_residential",
-                  expected_onset_frame=TURN - round(100 * .3048 / .25), expected_course_change_frame=TURN)
-    assert wet["continuous_signal_distance_ft"] == next(r["measurement"]["continuous_signal_distance_ft"]
-                                                    for r in receipts if r["requested_ft"] == 100)
+    weather_controls = []
+    for target, area in ((100, "business_or_residential"), (300, "other")):
+        clear_path = OUT / f"at_{target}_ft.jsonl"
+        wet_rows = [json.loads(line) for line in clear_path.read_text().splitlines()]
+        for row in wet_rows:
+            row["weather"] = "rain"
+        wet_path = OUT / f"at_{target}_ft_rain.jsonl"
+        wet_digest = write_rows(wet_path, wet_rows)
+        wet = measure(wet_path, expected_sha256=wet_digest, area=area,
+                      expected_onset_frame=TURN - round(target * .3048 / .25), expected_course_change_frame=TURN)
+        assert wet["continuous_signal_distance_ft"] == next(r["measurement"]["continuous_signal_distance_ft"]
+                                                        for r in receipts if r["requested_ft"] == target)
+        weather_controls.append({"source_path": str(wet_path.relative_to(HERE.parent.parent)),
+                                 "measurement": wet, "requested_ft": target})
     (HERE / "signal-fixture-summary.json").write_text(json.dumps({"format": "c329610-413-2-synthetic-proof-v1", "receipts": receipts,
-          "weather_control": {"source_path": str(wet_path.relative_to(HERE.parent.parent)), "measurement": wet},
+          "weather_control": {key: weather_controls[0][key] for key in ("source_path", "measurement")},
+          "weather_controls": weather_controls,
           "negative_checks_per_case": 5, "selected": False, "original_native_observed": False}, indent=2) + "\n")
-    print(json.dumps({"cases": len(receipts), "weather_controls": 1, "negative_checks": 5 * len(receipts),
+    print(json.dumps({"cases": len(receipts), "weather_controls": 2, "negative_checks": 5 * len(receipts),
                       "distances_ft": [round(r["measurement"]["continuous_signal_distance_ft"], 3) for r in receipts]}))
 
 

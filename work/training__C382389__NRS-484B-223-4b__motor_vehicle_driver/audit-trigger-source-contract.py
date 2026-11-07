@@ -1,5 +1,6 @@
-"""Independent 480-row synthetic contract for both 4(b) lane probes."""
+"""Measure synthetic fallback gates from the saved 480-frame case fixtures."""
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import sys
@@ -11,55 +12,79 @@ sys.path.insert(0,str(HERE/'native'))
 from fallback_triggers import evaluate
 from geometry import route
 
+spec=importlib.util.spec_from_file_location('saved_fixture',HERE/'saved-fixture-proof.py')
+fixture=importlib.util.module_from_spec(spec)
+spec.loader.exec_module(fixture)
+
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
 def run():
     records=[]
-    with tempfile.TemporaryDirectory(prefix='c382389-4b-trigger-',dir=ROOT/'.runtime-work') as temp:
-        root=Path(temp)
-        for suffix,lateral,lane in (('reference',1.75,-1),('contrast',5.25,-2)):
-            folder=root/suffix;folder.mkdir()
-            samples=folder/'native_samples.jsonl';geometry=folder/'road_geometry.json'
-            mapping=folder/'map-audit.json';pixels=folder/'pixel-audit.json';video=folder/'overview.mkv'
-            video.write_bytes(b'480-frame synthetic camera audit placeholder')
-            geometry.write_text(json.dumps({'native_map_sha256':'a'*64}))
-            authored=[[x,-y] for x,y in route(-lateral)]
-            rows=[]
-            for index in range(480):
-                x,y=authored[round(index*(len(authored)-1)/479)]
-                road=1 if index<160 else 14 if index<320 else 2
-                rows.append({'native_frame':100+index,'time_s':(index+1)/20,
-                    'native_center_xy_m':[x,y],'native_forward_xy':[1,0],
-                    'native_body_xy_m':[[x-1,y-1],[x-1,y+1],[x+1,y+1],[x+1,y-1]],
-                    'native_road_id':road,'native_lane_id':lane})
-            def write_sources(link=True,visible=456):
-                samples.write_text(''.join(json.dumps(row)+'\n' for row in rows))
-                mapping.write_text(json.dumps({'source_kind':'native_map_readback',
-                    'native_map_sha256':'a'*64,'native_samples_sha256':sha(samples),
-                    'road_geometry_sha256':sha(geometry),'connected_requested_lane_link':link}))
-                pixels.write_text(json.dumps({'source_kind':'original_camera_pixels',
+    with tempfile.TemporaryDirectory(prefix='c382389-saved-trigger-',dir=ROOT/'.runtime-work') as temp:
+        for suffix,y,lane in (('reference',1.75,-1),('contrast',5.25,-2)):
+            folder=Path(temp)/suffix
+            fixture.make_base(folder,suffix,y,480)
+            samples=folder/'native_samples.jsonl'
+            geometry=folder/'road_geometry.json'
+            mapping=folder/'map-audit.json'
+            pixels=folder/'pixel-audit.json'
+            video=folder/'overview.mkv'
+            saved_rows=[json.loads(line) for line in samples.read_text().splitlines()]
+            assert len(saved_rows)==480
+            assert all(row['native_lane_id']==lane for row in saved_rows)
+            authored=[[x,-v] for x,v in route(-y)]
+
+            def source_packet(link=True,visible=456):
+                fixture.write_rows(samples,saved_rows)
+                map_data=json.loads(geometry.read_text())
+                mapping.write_text(json.dumps({'source_kind':'synthetic_map_readback',
+                    'native_map_sha256':map_data['native_map_sha256'],
+                    'native_samples_sha256':sha(samples),
+                    'road_geometry_sha256':sha(geometry),
+                    'connected_requested_lane_link':link}))
+                pixels.write_text(json.dumps({'source_kind':'synthetic_camera_pixels',
                     'native_samples_sha256':sha(samples),'video_sha256':sha(video),
-                    'full_body_and_lane_marking_visible_frames':visible,'approach_frames':480}))
+                    'full_body_and_lane_marking_visible_frames':visible,
+                    'approach_frames':480,
+                    'annotation_scope':'synthetic count bound to generated video, not pixel measurement'}))
+
             def check():return evaluate(samples,geometry,mapping,pixels,video,authored,lane)
-            write_sources();base=check()
+
+            source_packet()
+            base=check()
+            assert base['declared_source_kind']=='synthetic_map_readback'
             assert [base[f'fallback{i}'] for i in (1,2,3)]==[False,False,False],base
-            write_sources(link=False);assert [check()[f'fallback{i}'] for i in (1,2,3)]==[True,False,False]
-            rows[200]['native_center_xy_m'][1]+=.5
-            for point in rows[200]['native_body_xy_m']:point[1]+=.5
-            write_sources();assert [check()[f'fallback{i}'] for i in (1,2,3)]==[False,True,False]
-            rows[200]['native_center_xy_m'][1]-=.5
-            for point in rows[200]['native_body_xy_m']:point[1]-=.5
-            write_sources(visible=455);assert [check()[f'fallback{i}'] for i in (1,2,3)]==[False,False,True]
-            write_sources();samples.write_text(samples.read_text()+'\n')
+            base_hashes=base['source_hashes']
+            source_packet(link=False)
+            assert [check()[f'fallback{i}'] for i in (1,2,3)]==[True,False,False]
+            source_packet()
+            saved_rows[200]['native_center_xy_m'][1]+=.5
+            for point in saved_rows[200]['native_body_xy_m']:point[1]+=.5
+            source_packet()
+            assert [check()[f'fallback{i}'] for i in (1,2,3)]==[False,True,False]
+            saved_rows[200]['native_center_xy_m'][1]-=.5
+            for point in saved_rows[200]['native_body_xy_m']:point[1]-=.5
+            source_packet(visible=455)
+            assert [check()[f'fallback{i}'] for i in (1,2,3)]==[False,False,True]
+            source_packet()
+            samples.write_text(samples.read_text()+'\n')
             try:check()
             except ValueError as error:assert 'Native map audit source hash mismatch' in str(error)
-            else:raise AssertionError('Changed Native samples accepted')
-            records.append({'case_suffix':suffix,'rows':480,'three_isolated_triggers':True,
-                            'changed_source_rejected':True,'baseline_metrics':base['metrics']})
+            else:raise AssertionError('Changed saved samples accepted')
+            source_packet()
+            video.write_bytes(video.read_bytes()+b'changed')
+            try:check()
+            except ValueError as error:assert 'Pixel audit source hash mismatch' in str(error)
+            else:raise AssertionError('Changed synthetic video accepted')
+            records.append({'case_suffix':suffix,'saved_rows':480,
+                'baseline_metrics':base['metrics'],'baseline_source_hashes':base_hashes,
+                'isolated_fallbacks':[1,2,3],
+                'changed_samples_and_video_rejected':True,
+                'generated_video_sha256':base_hashes['overview.mkv']})
     return {'passed':True,'records':records,'native_executed':False,
-            'scope':'synthetic source-contract audit, not physical trigger observation'}
+        'scope':'480-frame saved synthetic case fixtures; visibility counts are synthetic annotations, not original pixel measurements'}
 
 
 if __name__=='__main__':print(json.dumps(run(),indent=2))
