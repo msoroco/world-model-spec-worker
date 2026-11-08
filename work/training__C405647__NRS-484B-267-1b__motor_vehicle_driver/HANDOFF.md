@@ -63,8 +63,12 @@ finalizations emit analysis, a native-result shape and three recording channels;
 eight altered actor/trace/video frame joins reject. `prove-finalization.py`
 retains the results and `audit-finalization.py` independently checks the
 receipts. Eight exact saved-processor positives and removed-source negatives
-also pass with an independent audit. The full Core/Lean/video compatibility
-path and physical delivery acceptance remain unproved.
+also pass with an independent audit. The synthetic full Core/Lean/render/final
+decode compatibility path now passes for both cases and all four exact
+candidates with a matching deleted-source negative each.
+`full-package-summary.json` and `full-package-audit.json` retain the unselected
+v1 receipts and independent audit. Strict v2 selected-measurement compatibility,
+original Native evidence and physical delivery acceptance remain unproved.
 
 ## Source review
 
@@ -76,4 +80,4 @@ emergency approach with fixed signal context; edge/shoulder exceptions separatel
 
 ## Blocker and resumption
 
-Original CARLA capture and full Core/Lean/video positive/negative compatibility proofs are still absent; exact statutory exceptions and historical equivalence remain unverified. Continue with original-source bridge positive proof, full portable processing, independent delivery and comparison audits. Keep unsupported exception branches explicit. Only then set `ready`/`delivery_prepared` and add the exact GPU queue commands. Do not infer legal verdicts from CPU fixtures.
+Original CARLA capture and strict v2 selected-measurement compatibility proofs are still absent; exact statutory exceptions and historical equivalence remain unverified. Continue with original-source bridge positive proof, strict measurement contract/recipe compatibility, independent delivery and comparison audits. Keep unsupported exception branches explicit. Only then set `ready`/`delivery_prepared` and add the exact GPU queue commands. Do not infer legal verdicts from CPU fixtures.

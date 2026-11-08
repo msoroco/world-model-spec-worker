@@ -138,6 +138,13 @@ def build():
                 entry['candidates'].append(ref)
         manifest['cases'].append(entry)
     write(FOLDER / 'draft-execution-manifest.json', manifest)
+    write(FOLDER / 'proposals/cases.json', {
+        'cell_id': 'C405647', 'actor': 'motor_vehicle_driver',
+        'status': 'unselected_cpu_draft',
+        'cases': [{'case_id': entry['case_id'],
+                   'target_law_id': 'NRS-484B-267-1b', 'target_type': 'attempt',
+                   'recording_description': json.loads((FOLDER / entry['construction']).read_text())['recording_description']}
+                  for entry in manifest['cases']]})
     return {'cases': 2, 'bundles': 8,
             'manifest_sha256': sha(FOLDER / 'draft-execution-manifest.json'),
             'delivery_ready': False}
