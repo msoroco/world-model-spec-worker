@@ -11,7 +11,7 @@ import shutil
 import tempfile
 from pathlib import Path
 
-from measure_saved import AID, FRAME, HERE, ROOT, _verify_original_cameras, measure, sha
+from measure_saved import AID, FRAME, HERE, _verify_original_cameras, assignment_hash, measure, sha
 
 CAMERAS = ('overview', 'front_lamp', 'right_edge', 'rear_approach')
 
@@ -38,7 +38,9 @@ def prepare(source, destination, case, candidate):
     config = json.loads((source / 'config.json').read_text())
     if config.get('case_id') != AID + '__' + case or config.get('candidate_id') != candidate:
         raise ValueError('Original capture bundle identity differs')
-    draft = HERE / 'drafts' / case / candidate / 'config.json'
+    draft = HERE / 'config.json'
+    if not draft.is_file():
+        draft = HERE / 'drafts' / case / candidate / 'config.json'
     if sha(source / 'config.json') != sha(draft):
         raise ValueError('Original capture bundle differs from exact CPU construction')
     report = json.loads((source / 'native-capture-report.json').read_text())
@@ -52,7 +54,7 @@ def prepare(source, destination, case, candidate):
     if any(not (source / (name + '.mkv')).is_file() for name in CAMERAS):
         raise ValueError('Original camera source absent')
     camera_sha = {name: sha(source / (name + '.mkv')) for name in CAMERAS}
-    scope = {'assignment_sha256': sha(ROOT / 'inputs' / AID / 'assignment.json'),
+    scope = {'assignment_sha256': assignment_hash(),
              'case_suffix': case, 'candidate_id': candidate,
              'coordinate_frame': FRAME, 'source_kind': 'original_native',
              'camera_sha256': camera_sha, 'original_camera_decode_verified': True,

@@ -11,7 +11,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
-AID = HERE.parent.name
+AID = 'training__C405647__NRS-484B-267-1b__motor_vehicle_driver'
 SOURCE = ROOT / 'inputs' / AID / 'assignment.json'
 PLAN = HERE.parent / 'case-plan.json'
 OUT = HERE / 'drafts'

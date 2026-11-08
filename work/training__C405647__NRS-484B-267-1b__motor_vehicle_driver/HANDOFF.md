@@ -52,6 +52,15 @@ contrast. `native/measurement-contract.json` names the required original
 channels and the unresolved source/legal observations. Synthetic CPU packets
 are not original video or accepted delivery evidence.
 
+`build_offline.py` materializes the exact Native sources, authored map, both
+480-frame request tracks, the frozen assignment source, candidate config and
+three CPU tests into each of
+eight unselected bundles. All eight pinned `runtime.py offline` commands pass;
+`audit-draft-offline.py` independently checks source equality, construction
+hashes, measured fallback triggers, log hashes and three tests per bundle.
+This is exact CPU feasibility, not portable saved-analysis compatibility or
+physical delivery acceptance.
+
 ## Source review
 
 Law: NRS 484B.267(1)(b); with NRS 484B.210(4). Exact text and topic inventory are referenced by hashes in `case-plan.json`. The 1 supplied witness row(s) are planning context, not execution proof. Membership rows: {'full-train': 0}. No accepted equivalence receipt was verified.
@@ -62,4 +71,4 @@ emergency approach with fixed signal context; edge/shoulder exceptions separatel
 
 ## Blocker and resumption
 
-Original CARLA capture, pinned offline package and portable positive/negative compatibility proofs are still absent; exact statutory exceptions and historical equivalence remain unverified. Continue with original-source bridge proof, mandatory portable processing, independent delivery and comparison audits. Keep unsupported exception branches explicit. Only then set `ready`/`delivery_prepared` and add the exact GPU queue commands. Do not infer legal verdicts from CPU fixtures.
+Original CARLA capture and portable positive/negative compatibility proofs are still absent; exact statutory exceptions and historical equivalence remain unverified. Continue with original-source bridge positive proof, mandatory portable processing, independent delivery and comparison audits. Keep unsupported exception branches explicit. Only then set `ready`/`delivery_prepared` and add the exact GPU queue commands. Do not infer legal verdicts from CPU fixtures.

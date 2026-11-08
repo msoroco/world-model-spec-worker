@@ -8,8 +8,9 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
-AID = HERE.parent.name
+AID = 'training__C405647__NRS-484B-267-1b__motor_vehicle_driver'
 FRAME = 'authored_opendrive_xy'
+EXPECTED_ASSIGNMENT_SHA256 = '5fdf7db6dbb934d4ebe21ebea78baeaaf7cb93d6df595dbfbf0b86d1e7822ffa'
 
 
 def sha(path):
@@ -18,6 +19,15 @@ def sha(path):
 
 def rows(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines()]
+
+
+def assignment_hash():
+    source = HERE / 'assignment-source.json'
+    if not source.is_file():
+        source = ROOT / 'inputs' / AID / 'assignment.json'
+    if not source.is_file() or sha(source) != EXPECTED_ASSIGNMENT_SHA256:
+        raise ValueError('frozen assignment source differs')
+    return EXPECTED_ASSIGNMENT_SHA256
 
 
 def _point(value):
@@ -66,7 +76,7 @@ def measure(folder):
     if not scope_path.is_file() or not actor_path.is_file():
         raise ValueError('saved source files absent')
     scope = json.loads(scope_path.read_text())
-    if scope.get('assignment_sha256') != sha(ROOT / 'inputs' / AID / 'assignment.json'):
+    if scope.get('assignment_sha256') != assignment_hash():
         raise ValueError('frozen assignment source differs')
     if scope.get('case_suffix') not in ('reference', 'contrast') or scope.get('coordinate_frame') != FRAME:
         raise ValueError('saved case or coordinate frame differs')

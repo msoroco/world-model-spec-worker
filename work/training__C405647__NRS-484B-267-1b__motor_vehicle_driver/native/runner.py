@@ -46,10 +46,12 @@ def _camera_plan(candidate):
 
 
 def construction(case, candidate):
-    folder = OUT / case / candidate
+    bundle = ROOT / 'config.json'
+    folder = ROOT if bundle.is_file() else OUT / case / candidate
+    road_file = ROOT / 'road.xodr' if bundle.is_file() else OUT / 'road.xodr'
     config = json.loads((folder / 'config.json').read_text())
     if (config['case_id'] != AID + '__' + case or config['candidate_id'] != candidate or
-        config['map_sha256'] != sha((OUT / 'road.xodr').read_bytes()) or
+        config['map_sha256'] != sha(road_file.read_bytes()) or
         config['requested_tracks_sha256'] != sha((folder / 'requested-tracks.jsonl').read_bytes()) or
         config['native_requests_sha256'] != sha((folder / 'native-requests.jsonl').read_bytes())):
         raise ValueError('Exact CPU construction hash or identity differs')
