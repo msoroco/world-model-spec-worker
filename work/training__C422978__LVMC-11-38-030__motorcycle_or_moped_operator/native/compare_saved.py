@@ -6,7 +6,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 CASE = HERE.parent
 SOURCES = ('native-observed.jsonl', 'native-map-readback.json',
-           'video_frames.jsonl', 'capture/evidence.jsonl')
+           'video_frames.jsonl', 'capture/evidence.jsonl', 'city-context.json')
 
 
 def sha(path):
@@ -21,11 +21,16 @@ def rows(path):
     return [json.loads(line) for line in path.read_text().splitlines()]
 
 
-def compare(candidate, roadway=None, sidewalk=None):
+def compare(candidate, roadway=None, sidewalk=None, roadway_context=None, sidewalk_context=None):
     if candidate not in ('primary', 'fallback1', 'fallback2', 'fallback3'):
         raise ValueError('Unknown exact candidate')
     roadway = Path(roadway) if roadway else HERE / 'saved-fixtures/witness_1' / candidate
     sidewalk = Path(sidewalk) if sidewalk else HERE / 'saved-fixtures/witness_2' / candidate
+    contexts = {
+        'witness_1': Path(roadway_context) if roadway_context else
+        HERE / 'context-fixtures/witness_1' / candidate / 'city-context.json',
+        'witness_2': Path(sidewalk_context) if sidewalk_context else
+        HERE / 'context-fixtures/witness_2' / candidate / 'city-context.json'}
     configs = [read(HERE / 'drafts' / case / candidate / 'config.json')
                for case in ('witness_1', 'witness_2')]
     for key in ('candidate_id', 'cell_id', 'law_id', 'actor', 'rate_hz', 'duration_s',
@@ -36,6 +41,7 @@ def compare(candidate, roadway=None, sidewalk=None):
         raise ValueError('Candidate/config binding differs')
     packets = []
     reports = []
+    spatial_packets = []
     for case, folder in (('witness_1', roadway), ('witness_2', sidewalk)):
         manifest = read(CASE / 'draft-execution-manifest.json')
         entry = next(x for x in manifest['cases'] if x['case_id'].endswith('__' + case))
@@ -51,12 +57,20 @@ def compare(candidate, roadway=None, sidewalk=None):
         if result['accepted'] or result['provenance_kind'] != 'synthetic_local_diagnostic':
             raise ValueError('Synthetic evidence cannot claim acceptance')
         for source in SOURCES:
-            if measured['source_hashes'][source] != sha(folder / source):
+            path = contexts[case] if source == 'city-context.json' else folder / source
+            if measured['source_hashes'][source] != sha(path):
                 raise ValueError('Measured source hash differs: ' + source)
+        spatial = measured['spatial_context']
+        if (spatial['source_hashes']['city-context.json'] != sha(contexts[case]) or
+                spatial['city_authority_reviewed'] is not False or
+                spatial['driveway_rule_composition_reviewed'] is not False or
+                spatial['legal_verdict'] is not None):
+            raise ValueError('Spatial context measurement or review status differs')
         if measured['frames'] != 480 or measured['source_kind'] != 'synthetic_cpu':
             raise ValueError('Synthetic measurement frame/provenance differs')
         packets.append(rows(folder / 'native-observed.jsonl'))
         reports.append(measured)
+        spatial_packets.append(read(contexts[case]))
     left, right = packets
     if len(left) != len(right) or len(left) != 480:
         raise ValueError('Paired frame count differs')
@@ -75,6 +89,8 @@ def compare(candidate, roadway=None, sidewalk=None):
                    'capture/evidence.jsonl'):
         if sha(roadway / source) != sha(sidewalk / source):
             raise ValueError('Paired fixed source changed: ' + source)
+    if spatial_packets[0] != spatial_packets[1]:
+        raise ValueError('Paired city/sidewalk/driveway context changed')
     if reports[0]['moving_sidewalk_overlap_frames'] != 0:
         raise ValueError('Roadway witness has sidewalk occupancy')
     if reports[1]['moving_sidewalk_overlap_frames'] < 390:
@@ -88,7 +104,8 @@ def compare(candidate, roadway=None, sidewalk=None):
                                  reports[0]['moving_sidewalk_overlap_frames'],
             'fixed_motorcycle_blueprint': 'vehicle.kawasaki.ninja',
             'fixed_frame_count': 480, 'fixed_speed_mps': 4.0,
-            'source_hashes': {case: {name: sha(folder / name) for name in SOURCES}
+            'source_hashes': {case: {name: sha(contexts[case] if name == 'city-context.json'
+                                               else folder / name) for name in SOURCES}
                               for case, folder in (('witness_1', roadway),
                                                    ('witness_2', sidewalk))},
             'scope': 'unselected synthetic controlled measurement; no original Native or legal verdict'}

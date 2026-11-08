@@ -52,6 +52,10 @@ def audit():
             assert roadway['center_native_xy_m'][0] == sidewalk['center_native_xy_m'][0]
         for source in ('native-map-readback.json', 'video_frames.jsonl', 'capture/evidence.jsonl'):
             assert sha(left / source) == sha(right / source)
+        left_context = HERE / 'native/context-fixtures/witness_1' / candidate / 'city-context.json'
+        right_context = HERE / 'native/context-fixtures/witness_2' / candidate / 'city-context.json'
+        assert read(left_context) == read(right_context)
+        assert sha(left_context) == sha(right_context)
         expected = row['positive']
         assert expected['fixed_frame_count'] == 480
         assert expected['roadway_overlap_frames'] == overlap(a) == 0
@@ -59,7 +63,9 @@ def audit():
         assert expected['difference_frames'] == overlap(b) - overlap(a)
         for case, folder in (('witness_1', left), ('witness_2', right)):
             for name, checksum in expected['source_hashes'][case].items():
-                assert checksum == sha(folder / name)
+                path = (HERE / 'native/context-fixtures' / case / candidate / name
+                        if name == 'city-context.json' else folder / name)
+                assert checksum == sha(path)
             entry = next(e for e in manifest['cases'] if e['case_id'].endswith('__' + case))
             ref = entry if candidate == 'primary' else next(
                 x for x in entry['candidates'] if x['id'] == candidate)
@@ -67,24 +73,42 @@ def audit():
             package = next(r for r in full['results'] if r['case_id'] == entry['case_id']
                            and r['candidate_id'] == candidate)
             assert package['construction_sha256'] == ref['construction_sha256']
-        assert len(row['negatives']) == 2
-        assert {n['kind'] for n in row['negatives']} == {'changed_speed', 'changed_frame_map'}
+        assert len(row['negatives']) == 4
+        assert {n['kind'] for n in row['negatives']} == {
+            'changed_speed', 'changed_frame_map', 'changed_city_polygon',
+            'changed_driveway_polygon'}
         assert all(n['rejected'] and n['reason'].startswith('Measured source hash differs:')
                    for n in row['negatives'])
         for negative in row['negatives']:
-            source = 'native-observed.jsonl' if negative['kind'] == 'changed_speed' else 'video_frames.jsonl'
-            altered = lines(right / source)
-            if negative['kind'] == 'changed_speed':
-                altered[90]['speed_mps'] = 5.0
+            kind = negative['kind']
+            source = ('native-observed.jsonl' if kind == 'changed_speed' else
+                      'video_frames.jsonl' if kind == 'changed_frame_map' else
+                      'city-context.json')
+            if source == 'city-context.json':
+                altered = read(right_context)
+                if kind == 'changed_city_polygon':
+                    altered['city_boundary_polygon'][2][0] = 140
+                else:
+                    altered['driveway_crossing_polygons'] = [
+                        [[50, 3], [60, 3], [60, 6], [50, 6]]]
+                packet = (json.dumps(altered, indent=2) + '\n').encode()
             else:
-                altered[90]['native_frame'] += 1
-            packet = ''.join(json.dumps(item, sort_keys=True) + '\n' for item in altered).encode()
+                altered = lines(right / source)
+                if kind == 'changed_speed':
+                    altered[90]['speed_mps'] = 5.0
+                else:
+                    altered[90]['native_frame'] += 1
+                packet = ''.join(json.dumps(item, sort_keys=True) + '\n' for item in altered).encode()
             assert negative['mutated_source_sha256'] == hashlib.sha256(packet).hexdigest()
+            retained = HERE / negative['retained_source']
+            assert retained == HERE / 'native/comparison-negatives' / candidate / kind / source
+            assert retained.read_bytes() == packet
             assert negative['reason'] == 'Measured source hash differs: ' + source
         audited.append({'candidate_id': candidate, 'roadway_overlap_frames': overlap(a),
                         'sidewalk_overlap_frames': overlap(b)})
     output = {'format': 'c422978-independent-controlled-comparison-audit-v1',
               'proof_sha256': sha(proof_path), 'audited': audited,
+              'negative_packets_verified': 16,
               'synthetic_only': True, 'selected_or_original_claimed': False}
     (HERE / 'synthetic-controlled-comparison-audit.json').write_text(json.dumps(output, indent=2) + '\n')
     return output
