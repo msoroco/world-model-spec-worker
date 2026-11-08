@@ -205,7 +205,7 @@ def execute(bundle,output,host,port):
                     'actual_private_way_passed_observed':False,
                     'pavement_condition_verified':False,
                     'legal_verdict':None}
-                pipeline.capture(frame,time_s,extra={'c146314_paragraph_c1_right_pass':row})
+                pipeline.capture(frame,time_s,extra={'c146314_paragraph_c2_private_way':row})
                 observed.write(json.dumps(row,allow_nan=False)+'\n')
                 for name,width,height,_,_ in cameras:
                     image=camera_queues[name].get(timeout=30)

@@ -47,8 +47,12 @@ def check(bundle):
     roads = road.findall('./road')
     main = next((x for x in roads if x.attrib.get('id') == '212'), None)
     spur = next((x for x in roads if x.attrib.get('id') == '214'), None)
+    main_geometry = main.find('./planView/geometry') if main is not None else None
     require(main is not None and len(roads) == (2 if private_way else 1) and
             (spur is not None) == private_way and
+            main_geometry is not None and
+            all(math.isclose(float(main_geometry.attrib[k]), v) for k, v in
+                (('x', 0), ('y', 0), ('hdg', 0), ('length', 300))) and
             [(int(x.attrib['id']), x.attrib['type']) for x in
              main.findall('./lanes/laneSection/right/lane')] ==
                 [(-1, 'driving'), (-2, 'shoulder')] and

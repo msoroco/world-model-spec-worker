@@ -9,7 +9,8 @@ CASE = HERE.parent.parent
 ROOT = CASE.parents[1]
 NAMES = ('assignment-source.json', 'case-plan.json', 'unmarked-pass.xodr',
          'config.json', 'requested-tracks.jsonl', 'build.py', 'check.py',
-         'capture.py', 'measurement-contract.json')
+         'capture.py', 'measurement-contract.json', 'saved.py',
+         'fixture_raw.py', 'route_fallbacks.py')
 
 
 def sha(path):
@@ -32,7 +33,9 @@ def build():
             'requested-tracks.jsonl': HERE/'drafts'/witness/candidate/'requested-tracks.jsonl',
             'build.py': HERE/'build.py', 'check.py': HERE/'check.py',
             'capture.py': HERE/'capture.py',
-            'measurement-contract.json': HERE/'measurement-contract.json'}
+            'measurement-contract.json': HERE/'measurement-contract.json',
+            'saved.py': HERE/'saved.py', 'fixture_raw.py': HERE/'fixture_raw.py',
+            'route_fallbacks.py': HERE/'route_fallbacks.py'}
         for name, source in sources.items():
             shutil.copyfile(source, target/name)
         entries.append({'case_id': row['case_id'], 'candidate_id': candidate,

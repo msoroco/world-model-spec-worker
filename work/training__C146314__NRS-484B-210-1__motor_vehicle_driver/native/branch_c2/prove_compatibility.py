@@ -54,8 +54,11 @@ def run():
                     cfg['road_sha256'] = sha(bad/'unmarked-pass.xodr')
                     (bad/'config.json').write_text(json.dumps(cfg)+'\n')
                 elif n == 3:
-                    road = (bad/'unmarked-pass.xodr').read_text().replace(
-                        'x="50" y="-3.5"', 'x="52" y="-3.5"')
+                    road = (bad/'unmarked-pass.xodr').read_text()
+                    road = (road.replace('x="50" y="-3.5"', 'x="52" y="-3.5"')
+                            if cfg['private_way_requested'] else
+                            road.replace('x="0" y="0" hdg="0"',
+                                         'x="2" y="0" hdg="0"'))
                     (bad/'unmarked-pass.xodr').write_text(road)
                     cfg['road_sha256'] = sha(bad/'unmarked-pass.xodr')
                     (bad/'config.json').write_text(json.dumps(cfg)+'\n')

@@ -126,6 +126,9 @@ def build():
         'road_sha256_by_witness': roads,
         'capture_sha256': sha(HERE/'capture.py'),
         'measurement_contract_sha256': sha(HERE/'measurement-contract.json'),
+        'saved_sha256': sha(HERE/'saved.py'),
+        'fixture_raw_sha256': sha(HERE/'fixture_raw.py'),
+        'route_fallbacks_sha256': sha(HERE/'route_fallbacks.py'),
         'entries': entries, 'original_native_observed': False,
         'delivery_ready': False}
     put(HERE/'manifest.json', manifest)
