@@ -1,0 +1,22 @@
+{
+  "format": "c131364-roundabout-lane-measurement-contract-v1",
+  "assignment_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver",
+  "rate_hz": 20,
+  "frames": 240,
+  "case_variable": "observed circulating lane while the subject actually exits left or completes a U-turn",
+  "fixed_context": "same actor, roundabout map, entry, target exit, weather, frame timing and requested speed within each candidate pair",
+  "left_lane_request": {"witness": "witness_1", "native_lane_id": -1, "center_radius_m": 23.75},
+  "right_lane_request": {"witness": "witness_2", "native_lane_id": -2, "center_radius_m": 27.25},
+  "fallback1": "slow passage if fewer than 20 of first 40 saved camera frames show the entry and left lane",
+  "fallback2": "add elevated overview camera if saved lane-center deviation exceeds 0.2 m",
+  "fallback3": "stop before exit if physical roundabout, exit connector, or lane marking is unverified",
+  "required_original_measurements": [
+    "Native generated map, left/right lane adjacency and physical roundabout readback",
+    "240 synchronized ego poses, body vertices, lane IDs, path headings and camera frames",
+    "continuous full-body circulating-lane occupancy from entry to actual left or U-turn exit",
+    "actual exit vector versus entry vector and source-hashed human video review",
+    "source-hashed same-condition inner versus outer lane comparison"
+  ],
+  "request_limit": "Current authored ring has no exit connector; requested circulation and exit intent do not establish an actual left turn or U-turn",
+  "status": "cpu_request_unselected"
+}

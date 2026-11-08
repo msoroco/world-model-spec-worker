@@ -1,0 +1,264 @@
+{
+  "assignment_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver",
+  "law_id": "LVMC-11-43-010-C1",
+  "cell_id": "C131364",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "multilane_roundabout",
+    "maneuver": "left_turn",
+    "control": "lane_allocation"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "LVMC 11.43.010(C)(1)",
+    "text": "The following regulations pertain to the operation of vehicles within a roundabout: The operator of a vehicle who intends to exit a roundabout: Shall use the left lane to turn left or complete a U-turn.",
+    "sha256": "a56b54311412be61ab77ce4947afc17c66b8790525402d8508f3d64ece514e5b"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Intended left-turn exit."
+  ],
+  "selected_branch": null,
+  "requirement_dispositions": [
+    {
+      "requirement": "LVMC-11-43-010-C1",
+      "source": "LVMC 11.43.010(C)(1)",
+      "branch": "Intended left-turn exit.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1",
+        "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2"
+      ],
+      "evidence_or_gap": "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+    }
+  ],
+  "activation_conditions": [
+    "the subject is in a multi-lane roundabout",
+    "the subject intends to turn left or complete a U-turn"
+  ],
+  "timing_requirements": [
+    {
+      "kind": "span",
+      "requirement": "the intended exit is shown by the exit actually taken, so the whole passage from entry to exit is needed"
+    },
+    {
+      "kind": "continuous",
+      "requirement": "the left lane must be held through the circulating movement"
+    }
+  ],
+  "unresolved_judgment_calls": [
+    "'intends to exit' is intention; the exit taken is the observable substitute"
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1",
+      "target_law_id": "LVMC-11-43-010-C1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "left-exiting driver uses left circulating lane",
+      "comparison_variable": "roundabout_exit_lane",
+      "source_branch": "Intended left-turn exit.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "multilane_roundabout",
+          "maneuver": "left_turn",
+          "control": "lane_allocation"
+        },
+        "activation_conditions_to_verify": [
+          "the subject is in a multi-lane roundabout",
+          "the subject intends to turn left or complete a U-turn"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "left-exiting driver uses left circulating lane"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "'intends to exit' is intention; the exit taken is the observable substitute"
+      ]
+    },
+    {
+      "case_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2",
+      "target_law_id": "LVMC-11-43-010-C1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "left-exiting driver uses right circulating lane",
+      "comparison_variable": "roundabout_exit_lane",
+      "source_branch": "Intended left-turn exit.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "multilane_roundabout",
+          "maneuver": "left_turn",
+          "control": "lane_allocation"
+        },
+        "activation_conditions_to_verify": [
+          "the subject is in a multi-lane roundabout",
+          "the subject intends to turn left or complete a U-turn"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "left-exiting driver uses right circulating lane"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "'intends to exit' is intention; the exit taken is the observable substitute"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_comparison",
+      "case_ids": [
+        "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1",
+        "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2"
+      ],
+      "deliberate_differences": [
+        "roundabout_exit_lane"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "same map geometry except named comparison variable",
+        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "st.roundabout",
+      "purpose": "the roundabout and its exits",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane",
+      "purpose": "the circulatory lanes",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_adjacency",
+      "purpose": "which is the left lane",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.occupies",
+      "purpose": "the lane the subject uses",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.turning",
+      "purpose": "the left-turn movement through the roundabout",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.u_turn",
+      "purpose": "or the U-turn",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.heading",
+      "purpose": "the exit direction relative to the entry",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.path_length",
+      "purpose": "how far round the subject travels",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.lane_change",
+      "purpose": "a move between circulatory lanes",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "st.roundabout",
+      "mandatory": true,
+      "reason": "the roundabout and its exits"
+    },
+    {
+      "name": "st.lane",
+      "mandatory": true,
+      "reason": "the circulatory lanes"
+    },
+    {
+      "name": "st.lane_adjacency",
+      "mandatory": true,
+      "reason": "which is the left lane"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "the lane the subject uses"
+    },
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "reason": "the left-turn movement through the roundabout"
+    },
+    {
+      "name": "drv.u_turn",
+      "mandatory": true,
+      "reason": "or the U-turn"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "reason": "the exit direction relative to the entry"
+    },
+    {
+      "name": "kin.path_length",
+      "mandatory": true,
+      "reason": "how far round the subject travels"
+    },
+    {
+      "name": "drv.lane_change",
+      "mandatory": true,
+      "reason": "a move between circulatory lanes"
+    }
+  ],
+  "candidate_plans": [],
+  "existing_evidence": [],
+  "sources": [
+    {
+      "path": "inputs/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/assignment.json",
+      "sha256": "42034713010efcc100933a0f2d2c68fbc2f66990e715c562168f133989ca630b"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map realizes frozen layout, maneuver and control",
+    "Actor blueprints and controllers can produce proposed behavior",
+    "Four camera views and saved channels can establish every decisive relation",
+    "Legal context and exceptions can be represented without substituting authored targets for measurements"
+  ],
+  "blockers": [
+    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+  ],
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
+    "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
+  ],
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+}

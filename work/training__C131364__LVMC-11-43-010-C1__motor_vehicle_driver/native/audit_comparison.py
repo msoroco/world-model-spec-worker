@@ -1,0 +1,40 @@
+"""Independently check C131364 saved pair and changed-speed rejection."""
+import json
+from pathlib import Path
+import shutil
+import tempfile
+
+from compare_saved import compare
+from measure_saved import rows, sha
+
+HERE=Path(__file__).resolve().parent
+
+def audit():
+    path=HERE/'saved-comparison.json'
+    saved=json.loads(path.read_text())
+    if saved!=compare():raise ValueError('C131364 saved comparison differs')
+    a=rows(HERE/'saved-fixtures'/'witness_1'/'native-observed.jsonl')
+    b=rows(HERE/'saved-fixtures'/'witness_2'/'native-observed.jsonl')
+    if len(a)!=240 or len(b)!=240:raise ValueError('C131364 pair coverage differs')
+    for i,(x,y) in enumerate(zip(a,b)):
+        if (x['frame']!=y['frame'] or x['time_s']!=y['time_s'] or
+            x['ego_speed_mps']!=y['ego_speed_mps'] or
+            x['lane_id']!=-1 or y['lane_id']!=-2):
+            raise ValueError(f'C131364 controlled observed pair differs at {i}')
+    with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+        changed=Path(temporary)/'witness_2'
+        shutil.copytree(HERE/'saved-fixtures'/'witness_2',changed)
+        path=changed/'native-observed.jsonl';entries=rows(path)
+        entries[50]['ego_speed_mps']+=.5
+        path.write_text(''.join(json.dumps(row)+'\n' for row in entries))
+        try:compare(second=changed)
+        except ValueError:pass
+        else:raise ValueError('C131364 altered speed accepted')
+    result={'format':'c131364-independent-saved-comparison-audit-v1',
+            'comparison_sha256':sha(HERE/'saved-comparison.json'),
+            'rows_recomputed':480,'negative_controls_replayed':1,
+            'delivery_ready':False}
+    (HERE/'saved-comparison-audit.json').write_text(json.dumps(result,indent=2)+'\n')
+    return result
+
+if __name__=='__main__':print(json.dumps(audit()))
