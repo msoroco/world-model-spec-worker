@@ -16,6 +16,8 @@ Unresolved judgment or rule composition: the state rule permits crossing a sidew
 
 Accepted membership: 0 membership rows; exact source-hashed equivalence and reuse are unverified.
 
-Blocker: No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.
+CPU construction progress: `native/build.py` authors a two-way road with an explicit right sidewalk lane and eight source-bound 480-frame motorcycle requests. `native/prove_triggers.py` retains synthetic saved-body trigger and non-trigger packets for three distinct fallbacks in both cases, plus changed-camera-hash and changed-body negatives. `native/audit_construction.py` independently recomputes road lane types, all eight request metrics and all 12 trigger fixtures. `build_offline.py` materializes the eight exact unselected bundles; `run-draft-offline.py` passes the pinned offline command and three unit tests for each; `audit-draft-offline.py` independently checks source bytes, construction hashes and receipt logs. These are CPU construction requests and synthetic diagnostics, not original Native observations.
 
-Resume: reconcile each branch against the exact law and cited provisions; establish compatible Native construction and measurement channels; produce four distinct candidate plans and exact offline, compatibility, saved-only, semantic and audit proofs; then evaluate readiness.
+Remaining worker-owned work: executable Native capture runner and original four-camera data; positive/negative full package compatibility; original saved-body and city-sidewalk measurement; driveway rule composition; independent accepted comparison and selection. Physical feasibility and legal outcome remain unverified.
+
+Resume: implement the exact Native capture runner and measure original motorcycle body overlap with the Native sidewalk lane; prove positive/negative Core/video compatibility for all eight bundles before evaluating readiness.
