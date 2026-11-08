@@ -52,6 +52,15 @@ def main():
         raise ValueError('Independent no-entry moving body intersects facility')
     comparison=json.loads((HERE/'no-entry-comparison-proof.json').read_text())
     trigger_proof=json.loads((HERE/'no-entry-trigger-proof.json').read_text())
+    pixel_proof_path=HERE/'reference-pixel-proof.json'
+    pixel_audit_path=HERE/'reference-pixel-audit.json'
+    pixel_proof=json.loads(pixel_proof_path.read_text())
+    pixel_audit=json.loads(pixel_audit_path.read_text())
+    if (pixel_proof.get('passed') is not True or pixel_audit.get('passed') is not True or
+        pixel_proof['manifest_sha256']!=sha(manifest_path) or
+        pixel_audit['proof_sha256']!=sha(pixel_proof_path) or
+        pixel_audit['controlled_fractions']!={'primary':.866667,'wide':1.0}):
+        raise ValueError('Reference pixel exact proof or independent audit differs')
     if (trigger_proof.get('passed') is not True or
         trigger_proof['manifest_sha256']!=sha(manifest_path) or
         [row['candidate'] for row in trigger_proof['candidates']]!=list(NAMES)):
@@ -183,6 +192,8 @@ def main():
             'first_controlled_entry_native_frame':crossing[first]['native_frame'],
             'exact_candidates':list(NAMES),'package_receipts':package_receipts,
             'trigger_proof_sha256':sha(HERE/'no-entry-trigger-proof.json'),
+            'reference_pixel_proof_sha256':sha(pixel_proof_path),
+            'reference_pixel_audit_sha256':sha(pixel_audit_path),
             'selected':False,
             'physical_or_legal_verdict_claimed':False}
 

@@ -202,6 +202,25 @@ def execute(config,output,host,port):
                 '-r','20','-i','pipe:0','-an','-c:v','ffv1','-level','1',
                 str(output/(spec['name']+'.mkv'))],stdin=subprocess.PIPE,
                 stderr=encoder_logs[spec['name']])
+        if suffix=='probe_d_no_entry':
+            reference=next(spec for spec in alley_camera_plan(candidate)
+                           if spec['name']=='reference_corner')
+            instance_bp=world.get_blueprint_library().find('sensor.camera.instance_segmentation')
+            for key,value in (('image_size_x',reference['width']),
+                              ('image_size_y',reference['height']),
+                              ('fov',reference['fov_deg']),('sensor_tick',0)):
+                instance_bp.set_attribute(key,str(value))
+            instance=world.spawn_actor(instance_bp,camera_transform(carla,reference))
+            owned.append(instance);camera_queues['reference_instance']=queue.Queue()
+            instance.listen(camera_queues['reference_instance'].put)
+            encoder_logs['reference_instance']=(output/'reference_instance.encoder.log').open('x')
+            encoders['reference_instance']=subprocess.Popen([
+                'ffmpeg','-nostdin','-hide_banner','-loglevel','error','-n',
+                '-f','rawvideo','-pix_fmt','rgb24','-s',
+                f"{reference['width']}x{reference['height']}",'-r','20',
+                '-i','pipe:0','-an','-c:v','ffv1','-level','1',
+                str(output/'reference_instance.mkv')],stdin=subprocess.PIPE,
+                stderr=encoder_logs['reference_instance'])
         capture=PipelineCapture(client,ego,output,config['case_id'],visibility=False,
             required_observations=config.get('required_atoms',[]))
         (output/'channels').mkdir()
@@ -262,6 +281,15 @@ def execute(config,output,host,port):
                     rgb=np.frombuffer(image.raw_data,dtype=np.uint8).reshape(
                         spec['height'],spec['width'],4)[:,:,:3][:,:,::-1]
                     encoders[spec['name']].stdin.write(rgb.tobytes())
+                if suffix=='probe_d_no_entry':
+                    image=camera_queues['reference_instance'].get(timeout=30)
+                    while image.frame<frame:
+                        image=camera_queues['reference_instance'].get(timeout=30)
+                    if image.frame!=frame:
+                        raise RuntimeError('Original instance camera/Native frame join failed')
+                    instance_rgb=np.frombuffer(image.raw_data,dtype=np.uint8).reshape(
+                        reference['height'],reference['width'],4)[:,:,:3][:,:,::-1]
+                    encoders['reference_instance'].stdin.write(instance_rgb.tobytes())
                 frame_file.write(json.dumps(frame_map_row(index,frame,time_s))+'\n')
                 frames+=1
         if frames!=480:raise RuntimeError('Original frame count incomplete')
@@ -306,6 +334,27 @@ def execute(config,output,host,port):
                 composed=compose_four_views(sources,output/'video_frames.jsonl',output/'raw.mkv')
                 write_new(output/'four-view-receipt.json',composed)
             except BaseException as exc:error={'four_view_composition_error':str(exc)}
+        if error is None and frames==480 and config['case_suffix']=='probe_d_no_entry':
+            try:
+                from measure_reference_pixels import measure as measure_pixels
+                write_new(output/'reference-pixel-sources.json',{
+                    'format':'c10052-reference-pixel-sources-v1',
+                    'source_kind':'original_native','width':1280,'height':720,
+                    'sha256':{name:hashlib.sha256((output/name).read_bytes()).hexdigest()
+                        for name in ('reference_corner.mkv','reference_instance.mkv',
+                                     'video_frames.jsonl','native_samples.jsonl')}})
+                pixel_result=measure_pixels(output)
+                with (output/'camera_visibility.jsonl').open('x') as stream:
+                    for row in pixel_result['frame_measurements']:
+                        stream.write(json.dumps(row,allow_nan=False)+'\n')
+                write_new(output/'reference-pixel-measurement.json',pixel_result)
+                write_new(output/'no-entry-trigger-sources.json',{
+                    'format':'c10052-no-entry-trigger-sources-v1',
+                    'source_kind':'original_native',
+                    'sha256':{name:hashlib.sha256((output/name).read_bytes()).hexdigest()
+                        for name in ('native_samples.jsonl','road_geometry.json',
+                                     'camera_visibility.jsonl')}})
+            except BaseException as exc:error={'reference_pixel_processing_error':str(exc)}
         write_new(output/'native-capture-report.json',{
             'case_id':config['case_id'],'candidate_id':config['candidate_id'],
             'frames':frames,'expected_frames':480,'restoration':restored,

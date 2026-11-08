@@ -76,6 +76,8 @@ def main():
                 item['content']=(NATIVE/'finalize_no_entry.py').read_text()
         construction['files'].append({'path':'measure_no_entry_triggers.py',
                                       'content':(NATIVE/'measure_no_entry_triggers.py').read_text()})
+        construction['files'].append({'path':'measure_reference_pixels.py',
+                                      'content':(NATIVE/'measure_reference_pixels.py').read_text()})
         output=HERE/'draft-no-entry-candidates'/SUFFIX/name/'construction.json'
         write(output,construction)
         exact={'id':name,'construction':str(output.relative_to(HERE)),
