@@ -35,6 +35,7 @@ def audit():
             assert ref['construction_sha256'] == sha(HERE / ref['construction'])
             assert files['finalize.py'] == (HERE / 'native/finalize.py').read_text()
             assert files['measure_saved.py'] == (HERE / 'native/measure_saved.py').read_text()
+            assert files['measure_context.py'] == (HERE / 'native/measure_context.py').read_text()
             row = next(row for row in proof['results'] if row['case_id'] == entry['case_id']
                        and row['candidate_id'] == candidate)
             assert row['construction_sha256'] == ref['construction_sha256']
@@ -43,13 +44,21 @@ def audit():
             assert row['analysis_sha256'] == sha(analysis_path)
             assert row['result_sha256'] == sha(result_path)
             assert row['negative_log_sha256'] == sha(folder / 'finalization-negative.log')
+            assert row['context_negative_log_sha256'] == sha(folder / 'finalization-context-negative.log')
             assert row['measurement_contract_sha256'] == sha(HERE / 'native/measurement-contract.json')
             assert 'Missing required source: native-observed.jsonl' in (folder / 'finalization-negative.log').read_text()
+            assert 'Missing required source: city-context.json' in (folder / 'finalization-context-negative.log').read_text()
             analysis, result = read(analysis_path), read(result_path)
             source = HERE / 'native/saved-fixtures' / suffix / candidate
             measured = read(source / 'analysis-report.json')
-            assert analysis['measurements']['motorcycle_sidewalk_occupancy']['value'] == measured
-            assert analysis['measurements']['motorcycle_sidewalk_occupancy']['sources'] == measured['source_hashes']
+            context = read(HERE / 'native/context-fixtures' / suffix / candidate / 'context-measurement.json')
+            expected = dict(measured)
+            expected['spatial_context'] = context
+            expected['source_hashes'] = dict(measured['source_hashes'],
+                **{'city-context.json': sha(HERE / 'native/context-fixtures' / suffix / candidate / 'city-context.json')})
+            assert analysis['measurements']['motorcycle_sidewalk_occupancy']['value'] == expected
+            assert analysis['measurements']['motorcycle_sidewalk_occupancy']['sources'] == expected['source_hashes']
+            assert context['city_authority_reviewed'] is False and context['legal_verdict'] is None
             assert analysis['selected'] is False and analysis['draft_only'] is True
             assert result['case_id'] == entry['case_id'] and result['accepted'] is False
             assert result['provenance_kind'] == 'synthetic_local_diagnostic'

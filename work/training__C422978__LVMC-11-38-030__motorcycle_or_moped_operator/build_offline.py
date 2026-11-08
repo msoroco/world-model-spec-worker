@@ -59,6 +59,7 @@ def build():
     runner = (NATIVE / 'runner.py').read_text()
     triggers = (NATIVE / 'triggers.py').read_text()
     saved_meter = (NATIVE / 'measure_saved.py').read_text()
+    context_meter = (NATIVE / 'measure_context.py').read_text()
     finalizer = (NATIVE / 'finalize.py').read_text()
     for case in ('witness_1', 'witness_2'):
         case_id = AID + '__' + case
@@ -77,6 +78,7 @@ def build():
             files = [{'path': name, 'content': content} for name, content in (
                 ('runner.py', runner), ('triggers.py', triggers),
                 ('measure_saved.py', saved_meter),
+                ('measure_context.py', context_meter),
                 ('finalize.py', finalizer),
                 ('assignment-source.json', assignment), ('authored-road.xodr', road),
                 ('requested-tracks.jsonl', (source / 'requested-tracks.jsonl').read_text()),
@@ -94,8 +96,13 @@ def build():
                                  'reference_frame': 'Native imported OpenDRIVE and original camera',
                                  'uncertainty': '50 ms frame bracket; legal context separately reviewed'}
                                 for name in ('motorcycle_body_speed', 'sidewalk_lane_readback', 'camera_frame_join')],
-                                'context_inputs': [],
-                                'limitations': ['Authored requests are not Native observations']},
+                                'context_inputs': [
+                                    {'name': name, 'unit': 'structured record',
+                                     'method': 'source-hashed explicit city spatial context packet'}
+                                    for name in ('city_boundary_polygon', 'sidewalk_polygon',
+                                                 'driveway_crossing_polygons')],
+                                'limitations': ['Authored requests are not Native observations',
+                                                'Spatial packet geometry is not city authority or legal review']},
                             'status': 'unselected_cpu_draft'}
             relative = f'draft-candidates/{case}/{candidate}/construction.json'
             target = FOLDER / relative

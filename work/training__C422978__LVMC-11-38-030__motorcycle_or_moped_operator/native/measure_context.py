@@ -128,6 +128,9 @@ def measure(folder, context):
     rows = [json.loads(line) for line in observed_path.read_text().splitlines()]
     if len(rows) != 480:
         raise ValueError('Context observation frame count differs')
+    kinds = {row.get('source_kind') for row in rows}
+    if len(kinds) != 1 or not kinds <= {'synthetic_cpu', 'native_original'}:
+        raise ValueError('Context observation provenance differs')
     sidewalk_frames, city_frames, driveway_frames, qualifying_geometry = [], [], [], []
     for index, row in enumerate(rows):
         if row.get('frame') != index or row.get('motorcycle_blueprint') != 'vehicle.kawasaki.ninja':
@@ -145,7 +148,7 @@ def measure(folder, context):
         if on_driveway: driveway_frames.append(index)
         if on_sidewalk and in_city and not on_driveway: qualifying_geometry.append(index)
     return {'format': 'c422978-spatial-context-measurement-v1',
-            'source_kind': rows[0]['source_kind'],
+            'source_kind': kinds.pop(),
             'authority_kind': packet['authority_kind'],
             'frames': 480,
             'moving_sidewalk_intersection_frames': len(sidewalk_frames),

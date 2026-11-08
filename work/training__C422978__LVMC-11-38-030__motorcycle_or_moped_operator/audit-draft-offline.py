@@ -24,6 +24,7 @@ def audit():
         'runner.py': (HERE / 'native/runner.py').read_text(),
         'triggers.py': (HERE / 'native/triggers.py').read_text(),
         'measure_saved.py': (HERE / 'native/measure_saved.py').read_text(),
+        'measure_context.py': (HERE / 'native/measure_context.py').read_text(),
         'finalize.py': (HERE / 'native/finalize.py').read_text(),
         'authored-road.xodr': (HERE / 'native/road.xodr').read_text(),
         'assignment-source.json': (ROOT / 'inputs' / HERE.name / 'assignment.json').read_text(),
@@ -40,7 +41,7 @@ def audit():
             assert construction['case_id'] == case['case_id']
             assert construction['status'] == 'unselected_cpu_draft'
             files = {item['path']: item['content'] for item in construction['files']}
-            assert len(files) == len(construction['files']) == 9
+            assert len(files) == len(construction['files']) == 10
             for name, content in source.items(): assert files[name] == content
             config = json.loads(files['config.json'])
             assert config['case_id'] == case['case_id']

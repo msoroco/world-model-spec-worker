@@ -59,6 +59,8 @@ def build(source, case, candidate, media=None):
     saved = HERE / 'native/saved-fixtures' / case / candidate
     shutil.copyfile(saved / 'native-observed.jsonl', source / 'native-observed.jsonl')
     shutil.copyfile(saved / 'native-map-readback.json', source / 'native-map-readback.json')
+    shutil.copyfile(HERE / 'native/context-fixtures' / case / candidate / 'city-context.json',
+                    source / 'city-context.json')
     shutil.copyfile(saved / 'video_frames.jsonl', source / 'video_frames.jsonl')
     shutil.copyfile(HERE / 'native/road.xodr', source / 'road.xodr')
     observed = rows(source / 'native-observed.jsonl')

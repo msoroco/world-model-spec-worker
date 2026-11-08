@@ -5,11 +5,12 @@ import json
 from pathlib import Path
 
 from measure_saved import measure, rows, source
+from measure_context import measure as measure_spatial_context
 
 AID = 'training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator'
 VIDEOS = ('overview.mkv', 'front.mkv', 'sidewalk.mkv', 'rear.mkv')
 SOURCES = ('native-observed.jsonl', 'native-map-readback.json',
-           'video_frames.jsonl', 'capture/evidence.jsonl')
+           'video_frames.jsonl', 'capture/evidence.jsonl', 'city-context.json')
 
 
 def sha(path):
@@ -17,7 +18,10 @@ def sha(path):
 
 
 def measure_sidewalk_occupancy(attempt):
-    return measure(attempt)
+    value = measure(attempt)
+    value['spatial_context'] = measure_spatial_context(attempt, Path(attempt) / 'city-context.json')
+    value['source_hashes']['city-context.json'] = sha(Path(attempt) / 'city-context.json')
+    return value
 
 
 def finalize(attempt, output):
@@ -61,6 +65,12 @@ def finalize(attempt, output):
                                          'value': values[name]}, allow_nan=False) + '\n')
         evidence.append({'name': name, 'unit': spec['unit'],
                          'reference': 'channels/' + path.name})
+    for spec in recording['context_inputs']:
+        if spec['name'] not in ('city_boundary_polygon', 'sidewalk_polygon',
+                                'driveway_crossing_polygons'):
+            raise ValueError('Unexpected spatial context recording input')
+        evidence.append({'name': spec['name'], 'unit': spec['unit'],
+                         'reference': 'city-context.json'})
     report = {'format': 'c422978-sidewalk-analysis-v1', 'case_id': case_id,
               'selected': False, 'draft_only': True,
               'measurements': {'motorcycle_sidewalk_occupancy': {
@@ -69,7 +79,7 @@ def finalize(attempt, output):
               'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
     result = {'case_id': case_id,
               'measured_values': {key: value for key, value in measured.items()
-                                  if key != 'legal_verdict'},
+                                  if key not in ('legal_verdict', 'spatial_context')},
               'target_checks': [{'target': 'moving motorcycle body intersects surveyed sidewalk',
                                  'requested': requested, 'measured': observed,
                                  'method': 'saved Native full-body sidewalk occupancy',

@@ -32,6 +32,8 @@ def fixture(bundle, case, candidate, video):
         target = bundle / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source / name, target)
+    shutil.copyfile(FOLDER / 'native/context-fixtures' / case / candidate / 'city-context.json',
+                    bundle / 'city-context.json')
     for name in VIDEOS: shutil.copyfile(video, bundle / name)
     observed = [json.loads(line) for line in (bundle / 'native-observed.jsonl').read_text().splitlines()]
     (bundle / 'trace.jsonl').write_text(''.join(json.dumps({
@@ -87,10 +89,19 @@ def prove():
             if (failure.returncode == 0 or
                     contract['negative']['error_contains'] not in failure.stdout):
                 raise ValueError(f'{case}/{candidate}: missing original source accepted')
+            missing_context = scratch / (case + '-' + candidate + '-missing-context')
+            materialize(MANIFEST, entry['case_id'], missing_context, candidate)
+            fixture(missing_context, case, candidate, video)
+            (missing_context / 'city-context.json').unlink()
+            context_failure = invoke(missing_context)
+            context_error = 'Missing required source: city-context.json'
+            if context_failure.returncode == 0 or context_error not in context_failure.stdout:
+                raise ValueError(f'{case}/{candidate}: missing spatial context accepted')
             output = FOLDER / 'draft-candidates' / case / candidate
             shutil.copyfile(bundle / 'analysis-report.json', output / 'finalization-analysis.json')
             shutil.copyfile(bundle / 'result.json', output / 'finalization-result.json')
             (output / 'finalization-negative.log').write_text(failure.stdout)
+            (output / 'finalization-context-negative.log').write_text(context_failure.stdout)
             ref = entry if candidate == 'primary' else next(
                 r for r in entry['candidates'] if r['id'] == candidate)
             results.append({'case_id': entry['case_id'], 'candidate_id': candidate,
@@ -98,6 +109,7 @@ def prove():
                             'analysis_sha256': sha(output / 'finalization-analysis.json'),
                             'result_sha256': sha(output / 'finalization-result.json'),
                             'negative_log_sha256': sha(output / 'finalization-negative.log'),
+                            'context_negative_log_sha256': sha(output / 'finalization-context-negative.log'),
                             'measurement_contract_sha256': sha(FOLDER / 'native/measurement-contract.json')})
             print(case, candidate, 'contract positive and missing-source negative passed', flush=True)
     proof = {'format': 'c422978-exact-finalization-proof-v1',

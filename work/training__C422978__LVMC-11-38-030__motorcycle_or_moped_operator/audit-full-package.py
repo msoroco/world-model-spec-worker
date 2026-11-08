@@ -43,6 +43,7 @@ def audit():
             files = {p['path']: p['content'] for p in construction['files']}
             assert files['authored-road.xodr'] == (HERE / 'native/road.xodr').read_text()
             assert files['finalize.py'] == (HERE / 'native/finalize.py').read_text()
+            assert files['measure_context.py'] == (HERE / 'native/measure_context.py').read_text()
             folder = HERE / 'draft-candidates' / case / candidate
             assert row == read(folder / 'full-package-proof.json')
             assert row['compatibility_sha256'] == sha(folder / 'full-compatibility.json')
@@ -75,6 +76,10 @@ def audit():
             assert (scratch / 'output/converted/trace.json').is_file()
             measured = read(scratch / 'output/analysis-report.json')['measurements']['motorcycle_sidewalk_occupancy']['value']
             assert bool(measured['moving_sidewalk_overlap_frames']) == (case == 'witness_2')
+            assert measured['spatial_context']['city_authority_reviewed'] is False
+            assert measured['spatial_context']['legal_verdict'] is None
+            assert measured['spatial_context']['source_hashes']['city-context.json'] == sha(
+                HERE / 'native/context-fixtures' / case / candidate / 'city-context.json')
             audited.append({'case_id': entry['case_id'], 'candidate_id': candidate,
                             'construction_sha256': ref['construction_sha256'],
                             'compatibility_sha256': row['compatibility_sha256']})
