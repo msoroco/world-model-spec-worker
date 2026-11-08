@@ -95,6 +95,21 @@ def audit():
                for row in exception_proof['exact_candidate_pairs'])
     assert exception_proof['controlled_near']['simultaneous_moving_overlap_frames']==27
     assert exception_proof['controlled_away']['simultaneous_moving_overlap_frames']==0
+    exception_c=next(b for b in branches if b['branch_id'].endswith('__exception_c'))
+    exception_c_cases={ASSIGNMENT+'__exception_c_avoid',ASSIGNMENT+'__exception_c_no_conflict'}
+    assert exception_c['status']=='pending_review'
+    assert set(exception_c['case_ids'])==exception_c_cases<=cases
+    assert exception_c['comparison_ids']==[ASSIGNMENT+'__comparison_exception_c']
+    assert set(comparisons[exception_c['comparison_ids'][0]]['case_ids'])==exception_c_cases
+    assert all(sha(work/name)==digest for name,digest in exception_c['cpu_proofs'].items())
+    exception_c_run=subprocess.run([sys.executable,str(work/'audit-exception-c-source.py')],
+                                   cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert exception_c_run.returncode==0,(exception_c_run.stdout,exception_c_run.stderr)
+    exception_c_proof=json.loads((work/'exception-c-independent-audit.json').read_text())
+    assert exception_c_proof['passed'] and exception_c_proof['positive_sources']==8
+    assert exception_c_proof['causal_negatives']==8 and exception_c_proof['changed_frame_negatives']==8
+    assert len(exception_c_proof['controlled_pairs'])==4
+    assert exception_c_proof['original_native_verified'] is False
     park=next(b for b in branches if b['branch_id'].endswith('__prohibition_park'))
     park_cases={ASSIGNMENT+'__probe_park_released',ASSIGNMENT+'__probe_park_held'}
     assert set(park['case_ids'])==park_cases<=cases

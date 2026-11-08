@@ -1,0 +1,38 @@
+{
+  "format": "c10052-exception-c-cpu-measurement-contract-v1",
+  "law_id": "NRS-484B-270-3",
+  "branch_id": "nrs_484b_270_3__exception_c",
+  "source_topic_id": "text-4",
+  "source_text": "To avoid conflict with other traffic",
+  "scope": "unselected synthetic 480-frame construction; original Native traffic conflict and legal exception unverified",
+  "rate_hz": 20,
+  "required_source_fields": [
+    "native_frame",
+    "time_s",
+    "ego_center_xy",
+    "ego_body_xy",
+    "conflict_actor_id",
+    "conflict_actor_body_xy",
+    "conflict_actor_active",
+    "scripted_reference_visible"
+  ],
+  "measurement_procedure": "native/exception_c_engineering.py:measure",
+  "controlled_cases": ["exception_c_avoid", "exception_c_no_conflict"],
+  "positive_geometry": {
+    "avoid": "source-hashed active actor, positive straight-path body collision frames, zero actual body collision frames, positive bicycle-lane body occupancy",
+    "no_conflict": "no active conflict actor and zero bicycle-lane body occupancy"
+  },
+  "negative_controls": [
+    "remove actor while retaining diversion",
+    "add actor while retaining straight path",
+    "change source frame identity"
+  ],
+  "fallback_triggers": {
+    "fallback1": "approach runway below 55 m; measured 50 to 60 m",
+    "fallback2": "diversion lead below 25 frames; measured 24 to 34 frames in avoidance case",
+    "fallback3": "scripted reference visibility below 0.95; measured 0.901408 to 1.0"
+  },
+  "original_native_verified": false,
+  "legal_exception_verified": false,
+  "accepted": false
+}
