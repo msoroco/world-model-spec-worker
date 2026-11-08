@@ -100,6 +100,10 @@ def make_attempt(path,suffix,full_resolution=False):
             elif branch=='compliance_with_law':
                 laws=json.loads((ROOT/'inputs/coverage/branch-sources.json').read_text())
                 law=laws['laws']['NRS-484B-300-1']['law']['text']
+                write_rows(path/'device_action_history.jsonl',[{'native_frame':frame,
+                    'device_id':'620','device_type':'206','device_road_id':2,
+                    'ego_brake_applied':index==221,'ego_speed_mps':4.0 if index<221 else 3.0,
+                    'synthetic_diagnostic':True} for index,frame in enumerate(frames)])
                 packet.update(cited_law_id='NRS-484B-300-1',
                     cited_law_text_sha256=hashlib.sha256(law.encode()).hexdigest(),
                     ego_action_frames=[221])

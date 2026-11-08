@@ -80,7 +80,9 @@ def main():
                'output_key':'exception_source_context',
                'method':'inspect_case',
                'inputs':(['exception_context.json','other_actor_history.jsonl','ego_response_history.jsonl']
-                         if suffix=='exception_1_2' else ['exception_context.json']),
+                         if suffix=='exception_1_2' else
+                         ['exception_context.json','device_action_history.jsonl']
+                         if suffix=='exception_2_2' else ['exception_context.json']),
                'negative':{'remove':['exception_context.json'],
                            'error_contains':'Missing required source: exception_context.json'},
                'exception_interpretation':'source packet completeness only; physical and statutory applicability require independent review'})

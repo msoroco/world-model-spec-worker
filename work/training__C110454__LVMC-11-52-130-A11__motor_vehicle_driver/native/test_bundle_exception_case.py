@@ -15,6 +15,10 @@ class ExceptionCaseProofs(unittest.TestCase):
             (root/'ego_response_history.jsonl').write_text(''.join(json.dumps({'native_frame':frame,
                 'brake_applied':index==221,'speed_mps':4.0 if index<221 else 3.0})+'\n'
                 for index,frame in enumerate(frames)))
+            (root/'device_action_history.jsonl').write_text(''.join(json.dumps({'native_frame':frame,
+                'device_id':'620','device_type':'206','device_road_id':2,
+                'ego_brake_applied':index==221,'ego_speed_mps':4.0 if index<221 else 3.0})+'\n'
+                for index,frame in enumerate(frames)))
             for suffix,(branch,polarity) in BRANCHES.items():
                 packet={'source_kind':'native_context_schema','branch':branch,
                     'requested_polarity':polarity,'original_frames':list(frames),

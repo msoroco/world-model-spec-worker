@@ -39,6 +39,11 @@ def main():
               'speed_mps':4.0 if index<221 else 3.0}
              for index,frame in enumerate(frames)]
         (root/'ego_response_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in ego))
+        device_actions=[{'native_frame':frame,'device_id':'620','device_type':'206',
+                         'device_road_id':2,'ego_brake_applied':index==221,
+                         'ego_speed_mps':4.0 if index<221 else 3.0}
+                        for index,frame in enumerate(frames)]
+        (root/'device_action_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in device_actions))
         for suffix,(branch,polarity) in BRANCHES.items():
             packet={'source_kind':'native_context_schema','branch':branch,
                 'requested_polarity':polarity,'original_frames':frames,
@@ -66,6 +71,8 @@ def main():
             if polarity=='present' and branch=='necessary_traffic_conflict':
                 shutil.copy2(root/'other_actor_history.jsonl',retained/'other_actor_history.jsonl')
                 shutil.copy2(root/'ego_response_history.jsonl',retained/'ego_response_history.jsonl')
+            if polarity=='present' and branch=='compliance_with_law':
+                shutil.copy2(root/'device_action_history.jsonl',retained/'device_action_history.jsonl')
             if polarity=='present' and branch=='police_or_device_direction':
                 (retained/'parking-pixels.hex').write_text((root/'parking.mkv').read_bytes().hex()+'\n')
             retained_sha=hashlib.sha256((retained/'exception_context.json').read_bytes()).hexdigest()

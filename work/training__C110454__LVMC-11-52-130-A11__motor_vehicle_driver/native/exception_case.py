@@ -4,6 +4,7 @@ This tests source continuity, never statutory applicability or physical causatio
 """
 import hashlib
 import json
+import math
 from pathlib import Path
 from exception_evidence import inspect as inspect_present
 
@@ -39,6 +40,24 @@ def inspect_case(path: Path, suffix: str, original_frames: list[int]):
         if branch == 'compliance_with_law' and (packet.get('cited_law_id') != CITED_DEVICE_LAW_ID or
                 packet.get('cited_law_text_sha256') != CITED_DEVICE_LAW_SHA256):
             raise ValueError('Cited law differs from frozen NRS 484B.300(1) source')
+        if branch == 'compliance_with_law':
+            action_source=path.parent/'device_action_history.jsonl'
+            if not action_source.is_file():
+                raise ValueError('Missing required source: device_action_history.jsonl')
+            action_rows=[json.loads(line) for line in action_source.read_text().splitlines() if line.strip()]
+            if len(action_rows)!=len(original_frames) or [r.get('native_frame') for r in action_rows]!=original_frames:
+                raise ValueError('Device action original frame join differs')
+            if any(r.get('device_id')!='620' or r.get('device_type')!='206' or
+                   r.get('device_road_id')!=2 or isinstance(r.get('ego_speed_mps'),bool) or
+                   not isinstance(r.get('ego_speed_mps'),(int,float)) or not math.isfinite(r['ego_speed_mps'])
+                   for r in action_rows):
+                raise ValueError('Device and ego Native readback differs')
+            action_frames={index for index,r in enumerate(action_rows) if r.get('ego_brake_applied') is True}
+            if action_frames!=set(packet.get('ego_action_frames',[])):
+                raise ValueError('Device ego action source does not match exception context')
+            if not action_frames or not all(index>0 and action_rows[index]['ego_speed_mps']<action_rows[index-1]['ego_speed_mps']
+                                            for index in action_frames):
+                raise ValueError('Device ego action has no measured deceleration')
         if branch == 'police_or_device_direction':
             video=path.parent/'parking.mkv'
             if not video.is_file() or hashlib.sha256(video.read_bytes()).hexdigest() != packet.get('original_pixel_sha256'):
@@ -65,7 +84,7 @@ def inspect_case(path: Path, suffix: str, original_frames: list[int]):
             if not braking or not any(any(abs(a-b)<=1 for a in active) for b in braking):
                 raise ValueError('Ego brake does not overlap the source conflict window')
             for index in braking:
-                if index==0 or not isinstance(ego_rows[index]['speed_mps'],(int,float)) or not isinstance(ego_rows[index-1]['speed_mps'],(int,float)) or ego_rows[index]['speed_mps']>=ego_rows[index-1]['speed_mps']:
+                if index==0 or not isinstance(ego_rows[index]['speed_mps'],(int,float)) or not isinstance(ego_rows[index-1]['speed_mps'],(int,float)) or not math.isfinite(ego_rows[index]['speed_mps']) or not math.isfinite(ego_rows[index-1]['speed_mps']) or ego_rows[index]['speed_mps']>=ego_rows[index-1]['speed_mps']:
                     raise ValueError('Ego brake has no measured deceleration')
         source = inspect_present(path, digest, branch)
         return {'source': source, 'requested_polarity': polarity,

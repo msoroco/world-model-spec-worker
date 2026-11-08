@@ -92,10 +92,29 @@ def main():
                     assert rejected(negative,suffix,frames,expected)
                 ego.unlink()
                 assert rejected(negative,suffix,frames,'Missing required source: ego_response_history.jsonl')
+            if polarity=='present' and branch=='compliance_with_law':
+                action=scratch/'case/device_action_history.jsonl'
+                source_rows=[json.loads(line) for line in (path.parent/'device_action_history.jsonl').read_text().splitlines()]
+                assert len(source_rows)==len(frames)
+                assert [r['native_frame'] for r in source_rows]==frames
+                assert [i for i,r in enumerate(source_rows) if r['ego_brake_applied']]==packet['ego_action_frames']
+                write(negative,packet)
+                for index,mutation,expected in (
+                    (221,{'ego_brake_applied':False},'Device ego action source does not match'),
+                    (221,{'ego_speed_mps':4.0},'Device ego action has no measured deceleration'),
+                    (221,{'native_frame':9999},'Device action original frame join differs'),
+                    (221,{'device_id':'621'},'Device and ego Native readback differs')):
+                    altered_rows=json.loads(json.dumps(source_rows))
+                    altered_rows[index].update(mutation)
+                    action.write_text(''.join(json.dumps(r)+'\n' for r in altered_rows))
+                    assert rejected(negative,suffix,frames,expected)
+                action.unlink()
+                assert rejected(negative,suffix,frames,'Missing required source: device_action_history.jsonl')
         checked.append({'case_suffix':suffix,'branch':branch,'polarity':polarity,
                         'source_sha256':sha(path),'positive':True,
                         'controlled_negative':True,'truncated_join_negative':True,
-                        'ego_response_negatives':4 if suffix=='exception_1_2' else 0})
+                        'ego_response_negatives':4 if suffix=='exception_1_2' else 0,
+                        'device_action_negatives':5 if suffix=='exception_2_2' else 0})
     proof={'format':'c110454-retained-exception-source-audit-v1','passed':True,
            'synthetic_only':True,'physical_or_legal_applicability':False,'rows':checked}
     (HERE/'retained-exception-source-audit.json').write_text(json.dumps(proof,indent=2)+'\n')

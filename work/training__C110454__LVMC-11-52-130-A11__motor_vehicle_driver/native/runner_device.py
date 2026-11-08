@@ -224,6 +224,7 @@ def execute(config, output, host, port):
         start=world.get_snapshot().timestamp.elapsed_seconds
         parked_history=[]
         other_actor_history=[]
+        device_action_history=[]
         with (output/"native_samples.jsonl").open("x") as native_file, \
              (output/"body_history.jsonl").open("x") as body_file, \
              (output/"video_frames.jsonl").open("x") as frame_file:
@@ -259,6 +260,13 @@ def execute(config, output, host, port):
                         'body_xy_m':cross_body,
                         'conflict_occupancy':any(-7<=vertex[0]<=7 and -7<=vertex[1]<=7 for vertex in cross_body),
                         'physical_conflict_necessity_claimed':False})
+                if config['exception_branch']=='compliance_with_law' and config['requested_polarity']=='present':
+                    device_action_history.append({'native_frame':frame,'time_s':time_s,
+                        'device_id':device_readback['id'],'device_type':device_readback['type'],
+                        'device_road_id':device_readback['road_id'],
+                        'ego_brake_applied':command['brake']>0,
+                        'ego_speed_mps':observed_speed_mps(ego),
+                        'legal_applicability_claimed':False})
                 parked_history.append({"video_frame":index,"native_frame":frame,
                     "time_s":time_s,"body_xy_m":body,"speed_m_s":speed})
                 native_file.write(json.dumps(sample,allow_nan=False)+"\n")
@@ -287,6 +295,10 @@ def execute(config, output, host, port):
         if conflict_actor is not None:
             with (output/'other_actor_history.jsonl').open('x') as stream:
                 for row in other_actor_history:
+                    stream.write(json.dumps(row,allow_nan=False)+'\n')
+        if device_action_history:
+            with (output/'device_action_history.jsonl').open('x') as stream:
+                for row in device_action_history:
                     stream.write(json.dumps(row,allow_nan=False)+'\n')
         write_new(output/"exception_context_capture.json",{
             "source_kind":"native_exception_capture_index",
