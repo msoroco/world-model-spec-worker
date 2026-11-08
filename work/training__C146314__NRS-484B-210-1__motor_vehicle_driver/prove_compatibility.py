@@ -23,6 +23,7 @@ def prove():
         if any(sha(folder/name)!=digest for name,digest in entry['sha256'].items()):
             raise ValueError('copied bundle bytes differ')
         commands=(('check.py',['--bundle',folder]),
+                  ('capture.py',['--check','--bundle',folder]),
                   ('measure_saved.py',['--bundle',folder,'--saved-dir',folder/'saved']),
                   ('route_fallbacks.py',['--bundle',folder,'--saved-dir',folder/'saved']))
         for script,args in commands:

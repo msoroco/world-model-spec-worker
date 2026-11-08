@@ -22,7 +22,7 @@ def audit():
             manifest['measurement_contract_sha256']==
                 sha(NATIVE/'measurement-contract.json') and
             proof['manifest_sha256']==sha(manifest_path) and
-            len(proof['positives'])==24 and len(proof['negatives'])==48 and
+            len(proof['positives'])==32 and len(proof['negatives'])==48 and
             proof['strict_v2_compatibility'] is False and
             proof['delivery_ready'] is False, 'package manifest/proof')
     saved_audit=read(NATIVE/'saved-audit.json')
@@ -40,6 +40,7 @@ def audit():
             'case-plan.json':CASE/'case-plan.json',
             'measurement-contract.json':NATIVE/'measurement-contract.json',
             'check.py':NATIVE/'check.py',
+            'capture.py':NATIVE/'capture.py',
             'measure_saved.py':NATIVE/'measure_saved.py',
             'route_fallbacks.py':NATIVE/'route_fallbacks.py'}
         for name in ('native-observed.jsonl','camera-frames.jsonl','readback.json'):
@@ -48,7 +49,7 @@ def audit():
                 all(sha(bundle/name)==sha(path) for name,path in original.items()),
                 'copy/source mismatch')
         require(sum(x['case_id']==entry['case_id'] and
-                    x['candidate_id']==candidate for x in proof['positives'])==3 and
+                    x['candidate_id']==candidate for x in proof['positives'])==4 and
                 sum(x['case_id']==entry['case_id'] and
                     x['candidate_id']==candidate for x in proof['negatives'])==6,
                 'missing copied control')
@@ -72,7 +73,8 @@ def audit():
                 measured['delivery_ready'] is False,
                 'copied saved measurement differs')
     receipt={'format':'c146314-independent-package-audit-v1',
-        'bundles':8,'request_positives':8,'saved_positives':8,
+        'bundles':8,'request_positives':8,'capture_preflight_positives':8,
+        'saved_positives':8,
         'router_positives':8,'rejected_negatives':48,
         'strict_v2_compatibility':False,'delivery_ready':False}
     (CASE/'offline'/'package-audit.json').write_text(json.dumps(receipt,indent=2)+'\n')

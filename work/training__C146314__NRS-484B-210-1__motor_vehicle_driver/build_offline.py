@@ -25,6 +25,7 @@ def build():
                 'case-plan.json':CASE/'case-plan.json',
                 'measurement-contract.json':NATIVE/'measurement-contract.json',
                 'check.py':NATIVE/'check.py',
+                'capture.py':NATIVE/'capture.py',
                 'measure_saved.py':NATIVE/'measure_saved.py',
                 'route_fallbacks.py':NATIVE/'route_fallbacks.py'}
             for name in ('native-observed.jsonl','camera-frames.jsonl','readback.json'):

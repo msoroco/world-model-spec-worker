@@ -88,7 +88,7 @@ def audit():
                 == (expected_speed, expected_stop, expected_camera), 'variant policy')
         for i, row in enumerate(track):
             t = (i + 1) / 20
-            x = min(expected_stop or 300, expected_speed * t)
+            x = min(expected_stop or 300, 5 + expected_speed * t)
             right = max(0, min(1, (x - 15) / 20, (105 - x) / 20))
             require(row['frame'] == i and row['time_s'] == t and
                     row['road_id'] == 210 and row['source_kind'] ==
@@ -96,7 +96,7 @@ def audit():
                     math.isclose(row['ego_x_m'], x, abs_tol=1e-6) and
                     math.isclose(row['ego_y_m'], -1.75 - 3.5*right,
                                  abs_tol=1e-6) and
-                    math.isclose(row['lead_x_m'], 30 + 4*t, abs_tol=1e-6) and
+                    math.isclose(row['lead_x_m'], 35 + 4*t, abs_tol=1e-6) and
                     row['lead_y_m'] == -1.75 and row['lead_lane_id'] == -1 and
                     row['right_lane_obstruction_requested'] ==
                     (witness == 'witness_2') and

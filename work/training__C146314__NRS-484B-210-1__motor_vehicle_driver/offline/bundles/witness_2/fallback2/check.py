@@ -60,7 +60,7 @@ def check(bundle):
             'candidate/witness policy')
     data=rows(track);require(len(data)==240,'request frame coverage')
     for i,row in enumerate(data):
-        t=(i+1)/20;x=min(stop or 300,speed*t)
+        t=(i+1)/20;x=min(stop or 300,5+speed*t)
         right=max(0,min(1,(x-15)/20,(105-x)/20))
         y=-1.75-3.5*right
         phase='approach' if x<15 else 'right_excursion' if x<85 else 'return'
@@ -72,7 +72,7 @@ def check(bundle):
                 math.isclose(row['ego_x_m'],x,abs_tol=1e-6) and
                 math.isclose(row['ego_y_m'],y,abs_tol=1e-6) and
                 row['ego_lane_id']==(-2 if y<-3.5 else -1) and
-                math.isclose(row['lead_x_m'],30+4*t,abs_tol=1e-6) and
+                math.isclose(row['lead_x_m'],35+4*t,abs_tol=1e-6) and
                 row['lead_y_m']==-1.75 and row['lead_lane_id']==-1 and
                 row['right_lane_obstruction_requested']==obstruction and
                 row['obstruction_x_m']==(55 if obstruction else None) and

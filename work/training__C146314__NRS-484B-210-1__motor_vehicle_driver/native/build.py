@@ -55,12 +55,12 @@ def build():
             rows = []
             for i in range(240):
                 t = (i + 1) / 20
-                x = min(policy['stop_x_m'] or 300, policy['ego_speed_mps'] * t)
+                x = min(policy['stop_x_m'] or 300, 5 + policy['ego_speed_mps'] * t)
                 # The route requests a lane change and return; observed actor
                 # motion and clear pavement must be measured after Native capture.
                 right = max(0.0, min(1.0, (x - 15) / 20, (105 - x) / 20))
                 y = -1.75 - 3.5 * right
-                lead_x = 30 + 4 * t
+                lead_x = 35 + 4 * t
                 phase = ('approach' if x < 15 else 'right_excursion' if x < 85
                          else 'return')
                 rows.append({
