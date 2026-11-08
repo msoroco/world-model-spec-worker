@@ -7,8 +7,8 @@
   "fixed_context": "same authored ring geometry, island envelope, actor blueprint, weather, frame times, speed and lane within each paired candidate",
   "witness_1": "counterclockwise request; expected positive signed angular progress",
   "witness_2": "clockwise request; expected negative signed angular progress",
-  "fallback1": "slower passage if entry island visibility is insufficient; threshold requires saved measurement",
-  "fallback2": "wider outer-lane passage if measured lane-center deviation exceeds tolerance; threshold requires saved measurement",
+  "fallback1": "slower passage when fewer than 20 of first 40 saved camera frames show the island",
+  "fallback2": "wider outer-lane passage when maximum saved lane-center deviation exceeds 0.2 m",
   "fallback3": "stop before full passage if physical roundabout or traffic-control verification is absent",
   "required_original_measurements": [
     "Native generated-map and physical roundabout readback",
@@ -17,6 +17,9 @@
     "camera-reviewed island and traffic-control identity",
     "source-hashed same-condition witness comparison"
   ],
+  "saved_processor": "measure_saved.py: 240 exact Native pose, body, readback and camera joins at 20 Hz",
+  "fallback_router": "triggers.py: source-bound visibility, lane-deviation and physical-readback gates",
+  "controlled_saved_comparison": "compare_saved.py: fixed map, time, lane, speed and visibility; mirrored position and opposite signed angular progress",
   "accepted_membership_limit": "Three historical accepted membership rows are context only; no original is replayed and equivalence is unverified",
   "legal_limit": "Authored headings and road geometry do not establish a physical roundabout, observed continuous travel direction or statutory verdict",
   "status": "cpu_request_unselected"

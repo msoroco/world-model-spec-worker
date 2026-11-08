@@ -17,12 +17,18 @@ def build():
     source=json.loads(source_path.read_text())
     plan=json.loads(plan_path.read_text())
     manifest=json.loads(manifest_path.read_text())
+    saved_path=CASE/'native'/'saved-proof.json'
+    saved=json.loads(saved_path.read_text())
+    measured={row['witness']:row['measurement'] for row in saved['positives']}
     if source['law_id']!='LVMC-11-43-010-A' or len(plan['cases'])!=2:
         raise ValueError('LVMC statutory scope differs')
     rows=[]
     for item in plan['cases']:
         witness=item['case_id'].removeprefix(CASE.name+'__')
         expected='counterclockwise' if witness=='witness_1' else 'clockwise'
+        sample=measured[witness]
+        if sample['source_kind']!='synthetic_cpu' or sample['frames']!=240:
+            raise ValueError('LVMC synthetic saved source differs')
         rows.append({'case_id':item['case_id'],'witness':witness,
             'source_law_sha256':source['local_snapshot']['law_sha256'],
             'assignment_sha256':sha(source_path),
@@ -32,6 +38,10 @@ def build():
             'activation':'subject vehicle within a physically verified roundabout',
             'requirement':'all vehicular travel counterclockwise',
             'requested_rotation':expected,
+            'synthetic_measurement_sha256':sha(saved_path),
+            'synthetic_signed_angular_progress_rad':sample['signed_angular_progress_rad'],
+            'synthetic_requested_rotation_frames':sample['rotation_frame_counts'][expected],
+            'synthetic_authored_ring_frames':sample['occupied_authored_ring_frames'],
             'measured_rotation':None,'roundabout_verified':False,
             'accepted_original_equivalence':False,
             'legal_verdict':None,'status':'pending_original_evidence'})

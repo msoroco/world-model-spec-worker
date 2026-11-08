@@ -18,6 +18,9 @@ def audit():
     source=json.loads(source_path.read_text())
     plan=json.loads(plan_path.read_text())
     review=json.loads(review_path.read_text())
+    saved_path=CASE/'native'/'saved-proof.json'
+    saved=json.loads(saved_path.read_text())
+    measured={row['witness']:row['measurement'] for row in saved['positives']}
     text='The following regulations pertain to the operation of vehicles within a roundabout: All vehicular travel shall be in a counterclockwise direction.'
     if (source['law_record']['text']!=text or
             review['format']!='c234827-lvmc-statutory-review-v1' or
@@ -30,6 +33,8 @@ def audit():
         raise ValueError('LVMC witness statutory coverage differs')
     for row in review['rows']:
         witness=row['case_id'].removeprefix(CASE.name+'__')
+        sample=measured[witness]
+        direction='counterclockwise' if witness=='witness_1' else 'clockwise'
         if (row['witness']!=witness or
                 row['source_law_sha256']!=source['local_snapshot']['law_sha256'] or
                 row['assignment_sha256']!=sha(source_path) or
@@ -38,6 +43,11 @@ def audit():
                 row['statutory_text']!=text or
                 row['requested_rotation']!=
                 ('counterclockwise' if witness=='witness_1' else 'clockwise') or
+                row['synthetic_measurement_sha256']!=sha(saved_path) or
+                sample['source_kind']!='synthetic_cpu' or sample['frames']!=240 or
+                row['synthetic_signed_angular_progress_rad']!=sample['signed_angular_progress_rad'] or
+                row['synthetic_requested_rotation_frames']!=sample['rotation_frame_counts'][direction] or
+                row['synthetic_authored_ring_frames']!=sample['occupied_authored_ring_frames'] or
                 row['measured_rotation'] is not None or row['roundabout_verified'] or
                 row['accepted_original_equivalence'] or row['legal_verdict'] is not None or
                 row['status']!='pending_original_evidence'):

@@ -25,9 +25,18 @@ def build():
                 'island-geometry.json':NATIVE/'island-geometry.json',
                 'measurement-contract.json':NATIVE/'measurement-contract.json',
                 'runner.py':NATIVE/'runner.py',
+                'measure_saved.py':NATIVE/'measure_saved.py',
+                'triggers.py':NATIVE/'triggers.py',
+                'compare_saved.py':NATIVE/'compare_saved.py',
                 'assignment-source.json':ROOT/'inputs'/CASE.name/'assignment.json',
                 'case-plan.json':CASE/'case-plan.json'}
-            for name,path in mapping.items():shutil.copy2(path,target/name)
+            for saved_witness in ('witness_1','witness_2'):
+                for name in ('native-observed.jsonl','roundabout-readback.json','roundabout-frames.jsonl'):
+                    relative=f'saved-fixtures/{saved_witness}/{name}'
+                    mapping[relative]=NATIVE/relative
+            for name,path in mapping.items():
+                (target/name).parent.mkdir(parents=True,exist_ok=True)
+                shutil.copy2(path,target/name)
             entries.append({'case_id':CASE.name+'__'+witness,
                 'candidate_id':candidate,'bundle':str(target.relative_to(CASE)),
                 'sha256':{name:sha(target/name) for name in mapping},
