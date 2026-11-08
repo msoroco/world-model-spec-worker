@@ -15,19 +15,33 @@ def evaluate(case, candidate, saved_rows, visibility_path=None):
         raise ValueError('Unknown case or fallback')
     if len(saved_rows) != 480 or any(row['frame'] != i for i, row in enumerate(saved_rows)):
         raise ValueError('Saved Native frame sequence differs')
+    kinds = {row.get('source_kind') for row in saved_rows}
+    if len(kinds) != 1 or kinds.pop() not in ('synthetic_cpu', 'original_native'):
+        raise ValueError('Saved source provenance absent')
+    native = saved_rows[0]['source_kind'] == 'original_native'
+    first_time = float(saved_rows[0].get('time_s', -1))
+    if not math.isfinite(first_time) or first_time < 0 or first_time > .2:
+        raise ValueError('Saved motorcycle time origin differs')
     overlaps = []
     gaps = []
+    prior_native_frame = None
     for frame, row in enumerate(saved_rows):
-        if row.get('source_kind') not in ('synthetic_cpu', 'original_native'):
-            raise ValueError('Saved source provenance absent')
+        time = float(row.get('time_s', -1))
         if (row.get('motorcycle_blueprint') != 'vehicle.kawasaki.ninja' or
-                abs(float(row.get('time_s', -1)) - frame / 20) > 1e-4):
+                not math.isfinite(time) or
+                abs(time - first_time - frame / 20) > 1e-3):
             raise ValueError('Saved motorcycle identity or time differs')
-        body = row.get('body_xy_m')
+        if native:
+            native_frame = row.get('native_frame')
+            if (type(native_frame) is not int or
+                    (prior_native_frame is not None and native_frame != prior_native_frame + 1)):
+                raise ValueError('Saved Native frame sequence differs')
+            prior_native_frame = native_frame
+        body = row.get('body_native_xy_m' if native else 'body_xy_m')
         if not isinstance(body, list) or len(body) != 4:
             raise ValueError('Saved motorcycle body absent')
         vertices = [(float(v[0]), float(v[1])) for v in body]
-        center = row.get('center_xy_m')
+        center = row.get('center_native_xy_m' if native else 'center_xy_m')
         if (not isinstance(center, list) or len(center) != 2 or
                 len(set(vertices)) != 4 or
                 not all(math.isfinite(v) for point in vertices for v in point) or
@@ -36,11 +50,12 @@ def evaluate(case, candidate, saved_rows, visibility_path=None):
             raise ValueError('Saved motorcycle body/center differs')
         ys = [y for _, y in vertices]
         speed = float(row.get('speed_mps', -1))
-        if speed < 0:
+        if not math.isfinite(speed) or speed < 0:
             raise ValueError('Saved motorcycle speed absent')
-        if speed > .1 and min(ys) < -3.5 and max(ys) > -5.5:
+        if speed > .1 and ((min(ys) < 5.5 and max(ys) > 3.5) if native else
+                            (min(ys) < -3.5 and max(ys) > -5.5)):
             overlaps.append(row['frame'])
-        gaps.append(min(ys) - (-3.5))
+        gaps.append(3.5 - max(ys) if native else min(ys) + 3.5)
     if candidate == 'fallback1':
         value = (overlaps[0] if overlaps else None) if case == 'witness_2' else len(overlaps)
         threshold = 90 if case == 'witness_2' else 0
@@ -58,11 +73,10 @@ def evaluate(case, candidate, saved_rows, visibility_path=None):
         video = Path(visibility_path).parent / packet['video_path']
         if not video.is_file() or sha(video) != packet.get('video_sha256'):
             raise ValueError('Camera source hash differs')
-        if packet.get('case_suffix') != case or packet.get('source_kind') not in (
-                'synthetic_cpu', 'original_native'):
+        if packet.get('case_suffix') != case or packet.get('source_kind') != saved_rows[0]['source_kind']:
             raise ValueError('Camera review provenance differs')
         value = float(packet['visible_fraction'])
-        if value < 0 or value > 1:
+        if not math.isfinite(value) or value < 0 or value > 1:
             raise ValueError('Camera visible fraction invalid')
         threshold = .75
         triggered = value < threshold
