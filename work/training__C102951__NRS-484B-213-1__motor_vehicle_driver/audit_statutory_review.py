@@ -37,7 +37,7 @@ def audit():
             passed=False;returned=None;nonpositive=None
             for i,r in enumerate(rows):
                 if i>=entry and r['ego_x_m']-2.2>r['overtaken_x_m']+2.2:passed=True
-                if i>=entry and returned is None and r['oncoming_x_m']-r['ego_x_m']-4.4<=0:nonpositive=i if nonpositive is None else nonpositive
+                if i>=entry and returned is None and round(r['oncoming_x_m']-r['ego_x_m']-4.4,3)<=0:nonpositive=i if nonpositive is None else nonpositive
                 if passed and r['ego_y_m']+.9<=0:returned=i;break
             cache[d]=(sha(actor),round(rows[entry]['oncoming_x_m']-rows[entry]['ego_x_m']-4.4,3),nonpositive,returned)
             rows_checked+=480

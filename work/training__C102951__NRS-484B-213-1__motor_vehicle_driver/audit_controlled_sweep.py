@@ -40,7 +40,7 @@ def audit():
         for i in range(entry,480):
             r=group[i]
             if r['ego_x_m']-2.2>r['overtaken_x_m']+2.2:passed=True
-            if nonpositive is None and r['oncoming_x_m']-r['ego_x_m']-4.4<=0:nonpositive=i
+            if nonpositive is None and round(r['oncoming_x_m']-r['ego_x_m']-4.4,3)<=0:nonpositive=i
             if passed and r['ego_y_m']+.9<=0:returned=i;break
         entries.append((nonpositive,returned))
     metric={'probe_distances_m':list(DISTANCES),

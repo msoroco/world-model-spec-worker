@@ -27,6 +27,14 @@ def run(folder, distance, candidate):
                           capture_output=True, timeout=30)
 
 
+def run_preparer(bundle, raw, output):
+    return subprocess.run([sys.executable, str(bundle/'prepare_pass.py'),
+                           '--raw-folder', str(raw), '--review',
+                           str(raw/'sightline-review.json'), '--output', str(output),
+                           '--config', str(bundle/'config.json')],
+                          text=True, capture_output=True, timeout=30)
+
+
 def audit():
     manifest_path = CASE/'offline'/'manifest.json'
     manifest = json.loads(manifest_path.read_text())
@@ -47,7 +55,11 @@ def audit():
     if len(proof['positives']) != 12 or len(proof['negatives']) != 24 or not all(
             item['rejected'] is True for item in proof['negatives']):
         raise ValueError('Compatibility proof coverage differs')
-    checks, rejections = 0, 0
+    if (len(proof.get('saved_preparation_positives', [])) != 3 or
+            len(proof.get('saved_preparation_negatives', [])) != 3 or
+            not all(item['rejected'] is True for item in proof['saved_preparation_negatives'])):
+        raise ValueError('Copied saved-preparation coverage differs')
+    checks, rejections, preparation_checks, preparation_rejections = 0, 0, 0, 0
     for entry in manifest['entries']:
         distance, candidate = entry['distance_m'], entry['candidate_id']
         folder = CASE/entry['bundle']
@@ -65,6 +77,7 @@ def audit():
             'case-plan.json': CASE/'case-plan.json',
             'runner.py': CASE/'native'/'runner.py',
             'measure_pass.py': CASE/'native'/'measure_pass.py',
+            'prepare_pass.py': CASE/'native'/'prepare_pass.py',
             'triggers.py': CASE/'native'/'triggers.py',
             'measurement-contract.json': CASE/'native'/'measurement-contract.json'}
         if actual != {name: sha(path) for name, path in source_pairs.items()}:
@@ -91,11 +104,37 @@ def audit():
             if run(changed, distance, candidate).returncode == 0:
                 raise ValueError('Altered frozen assignment accepted by copied runner')
             rejections += 1
+        if candidate == 'primary':
+            raw = CASE/'native'/'raw-fixtures'/str(distance)
+            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+                root = Path(temporary)
+                result = run_preparer(folder, raw, root/'prepared')
+                if result.returncode != 0:
+                    raise ValueError('Copied raw-to-saved preparer failed: '+result.stderr)
+                receipt = json.loads(result.stdout)
+                if (receipt['measurement']['entry_oncoming_body_gap_m'] != distance or
+                        receipt['saved_hashes'] != {name: sha(root/'prepared'/name)
+                                                     for name in ('native-observed.jsonl',
+                                                                  'road-readback.json')}):
+                    raise ValueError('Copied saved processor result differs')
+                expected_receipt = next(item for item in proof['saved_preparation_positives']
+                                        if item['case_id'] == entry['case_id'])
+                if expected_receipt['prepared_saved_hashes'] != receipt['saved_hashes']:
+                    raise ValueError('Copied saved preparation hash differs from proof')
+                preparation_checks += 1
+                changed_raw = root/'changed-raw'
+                shutil.copytree(raw, changed_raw)
+                (changed_raw/'forward-video-stub.txt').write_text('independent altered video\n')
+                if run_preparer(folder, changed_raw, root/'changed-prepared').returncode == 0:
+                    raise ValueError('Copied preparer accepted altered video')
+                preparation_rejections += 1
     receipt = {'format': 'c102951-independent-package-audit-v1',
                'assignment_id': AID,
                'manifest_sha256': sha(manifest_path), 'proof_sha256': sha(proof_path),
                'copied_bundles_checked': checks,
                'altered_source_rejections_replayed': rejections,
+               'copied_saved_preparations_checked': preparation_checks,
+               'copied_video_rejections_replayed': preparation_rejections,
                'original_native_observed': False, 'delivery_ready': False}
     (CASE/'offline'/'package-audit.json').write_text(json.dumps(receipt, indent=2)+'\n')
     return receipt

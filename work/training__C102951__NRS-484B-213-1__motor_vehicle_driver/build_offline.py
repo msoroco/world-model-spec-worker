@@ -11,7 +11,8 @@ OUT = CASE/'offline'/'bundles'
 AID = CASE.name
 FILES = ('config.json', 'requested-tracks.jsonl', 'road.xodr',
          'assignment-source.json', 'case-plan.json', 'runner.py',
-         'measure_pass.py', 'triggers.py', 'measurement-contract.json')
+         'measure_pass.py', 'prepare_pass.py', 'triggers.py',
+         'measurement-contract.json')
 
 
 def sha(path):
@@ -32,6 +33,7 @@ def build():
                       'case-plan.json': CASE/'case-plan.json',
                       'runner.py': NATIVE/'runner.py',
                       'measure_pass.py': NATIVE/'measure_pass.py',
+                      'prepare_pass.py': NATIVE/'prepare_pass.py',
                       'triggers.py': NATIVE/'triggers.py',
                       'measurement-contract.json': NATIVE/'measurement-contract.json'}
             for name, path in inputs.items():

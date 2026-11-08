@@ -3,6 +3,7 @@
   "assignment_id": "training__C102951__NRS-484B-213-1__motor_vehicle_driver",
   "law_id": "NRS-484B-213-1",
   "entrypoint": "measure_pass.py",
+  "original_preparation_entrypoint": "prepare_pass.py",
   "cases": [70, 120, 170],
   "sampling_rate_hz": 20,
   "frames": 480,
@@ -16,7 +17,9 @@
     "clear_sight": "saved driver-eye visible flag and measured clear distance throughout left phase"
   },
   "time_uncertainty": "one 50 ms frame bracket; no subframe event or physical sightline claim",
-  "spatial_uncertainty": "synthetic longitudinal body gap uses 2.2 m half-length per actor; actual Native bounding boxes and road geometry require readback",
+  "spatial_uncertainty": "synthetic longitudinal body gap uses 2.2 m half-length per actor; original Native rows require each actor's observed body vertices and map readback",
+  "original_source_join": "prepare_pass.py binds raw Native actor rows, map readback, synchronized video-frame map, 480-frame FFV1 forward video, sightline review packet and exact candidate config by SHA-256; output preserves source hashes and does not assert highway or legal review",
+  "sightline_review": "original mode requires a human_frame_review packet with a per-frame visible flag and clear distance linked to the exact Native and video frames; pixel-truth and legal acceptance remain independent review tasks",
   "fallback_routing": {
     "fallback1": "measured entry oncoming body gap < 100 m routes to delayed left entry",
     "fallback2": "measured minimum pre-return oncoming body gap < 20 m routes to shorter exposure request",

@@ -14,6 +14,23 @@ def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def number(value):return type(value) in (int,float) and math.isfinite(value)
 
 
+def body_bounds(row, actor, kind):
+    if kind=='synthetic_cpu':
+        x,y=row[actor+'_x_m'],row[actor+'_y_m']
+        return x-2.2,x+2.2,y-.9,y+.9
+    points=row.get(actor+'_body_xy_m')
+    if not isinstance(points,list) or len(points)<4 or any(
+            not isinstance(point,list) or len(point)!=2 or not all(number(v) for v in point)
+            for point in points):
+        raise ValueError('Original Native actor body vertices absent: '+actor)
+    xs=[point[0] for point in points];ys=[point[1] for point in points]
+    if max(xs)-min(xs)<1 or max(ys)-min(ys)<.5:
+        raise ValueError('Original Native actor body dimensions invalid: '+actor)
+    if not min(xs)<=row[actor+'_x_m']<=max(xs) or not min(ys)<=row[actor+'_y_m']<=max(ys):
+        raise ValueError('Original Native actor center outside body: '+actor)
+    return min(xs),max(xs),min(ys),max(ys)
+
+
 def measure(folder,expected_hashes=None):
     folder=Path(folder)
     paths={name:folder/name for name in SOURCES}
@@ -44,30 +61,35 @@ def measure(folder,expected_hashes=None):
         if (row['ego_speed_mps']<0 or row['overtaken_speed_mps']<0 or row['oncoming_speed_mps']<0 or
                 row['driver_eye_clear_m']<0 or row['overtaken_y_m']>=0 or row['oncoming_y_m']<=0):
             raise ValueError('Saved traffic direction or sightline invalid')
-        if row['ego_y_m']+0.9>0:
+        ego=body_bounds(row,'ego',kind)
+        overtaken=body_bounds(row,'overtaken',kind)
+        oncoming=body_bounds(row,'oncoming',kind)
+        if ego[3]>0:
             entry.append(i);clear.append(row['driver_eye_clear_m']);visible.append(row['sightline_visible'])
-            if row['ego_y_m']-0.9>0:full_left.append(i)
-        if entry and row['ego_x_m']+2.2>=row['overtaken_x_m']-2.2 and row['ego_x_m']-2.2<=row['overtaken_x_m']+2.2:
+            if ego[2]>0:full_left.append(i)
+        if entry and ego[1]>=overtaken[0] and ego[0]<=overtaken[1]:
             abreast.append(i)
-        if entry and row['ego_x_m']-2.2>row['overtaken_x_m']+2.2:
+        if entry and ego[0]>overtaken[1]:
             passed=True
-        if passed and row['ego_y_m']+0.9<=0:
+        if passed and ego[3]<=0:
             return_frames.append(i)
         if entry and not return_frames:
-            gap.append((i,row['oncoming_x_m']-row['ego_x_m']-4.4))
+            gap.append((i,oncoming[0]-ego[1]))
     if not entry or not abreast or not return_frames or not full_left:
         raise ValueError('Saved pass entry, abreast or return absent')
     start=entry[0];finish=return_frames[0]
     if start>=abreast[0] or abreast[-1]>=finish or finish>=480:
         raise ValueError('Saved pass event order differs')
     entry_row=rows[start]
+    entry_ego=body_bounds(entry_row,'ego',kind)
+    entry_oncoming=body_bounds(entry_row,'oncoming',kind)
     return {'format':'c102951-saved-pass-measurement-v1','source_kind':kind,'frames':480,
             'first_left_of_center_frame':start,'first_full_left_frame':full_left[0],
             'first_abreast_frame':abreast[0],'first_return_after_pass_frame':finish,
             'left_of_center_frames':len(entry),
-            'entry_oncoming_body_gap_m':round(entry_row['oncoming_x_m']-entry_row['ego_x_m']-4.4,3),
+            'entry_oncoming_body_gap_m':round(entry_oncoming[0]-entry_ego[1],3),
             'minimum_pre_return_oncoming_body_gap_m':round(min(value for _,value in gap),3),
-            'first_nonpositive_pre_return_oncoming_gap_frame':next((i for i,value in gap if value<=0),None),
+            'first_nonpositive_pre_return_oncoming_gap_frame':next((i for i,value in gap if round(value,3)<=0),None),
             'minimum_left_phase_driver_eye_clear_m':round(min(clear),3),
             'all_left_phase_sightline_flags_visible':all(visible),
             'highway_status_reviewed':False,'safe_distance_judgment':None,

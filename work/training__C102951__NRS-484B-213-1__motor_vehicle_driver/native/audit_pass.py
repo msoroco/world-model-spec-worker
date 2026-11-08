@@ -68,14 +68,16 @@ def audit():
                   'left_of_center_frames':len(left),
                   'entry_oncoming_body_gap_m':round(rows[left[0]]['oncoming_x_m']-rows[left[0]]['ego_x_m']-4.4,3),
                   'minimum_pre_return_oncoming_body_gap_m':round(min(value for _,value in gaps),3),
-                  'first_nonpositive_pre_return_oncoming_gap_frame':next((i for i,value in gaps if value<=0),None),
+                  'first_nonpositive_pre_return_oncoming_gap_frame':next((i for i,value in gaps if round(value,3)<=0),None),
                   'minimum_left_phase_driver_eye_clear_m':round(min(eyes),3),
                   'all_left_phase_sightline_flags_visible':True,
                   'highway_status_reviewed':False,'safe_distance_judgment':None,
                   'interference_judgment':None,'legal_verdict':None,
                   'source_hashes':{'native-observed.jsonl':sha(actor_path),'road-readback.json':sha(road_path)}}
         if metric!=expected or expected['entry_oncoming_body_gap_m']!=distance:
-            raise ValueError('Independent saved pass measurement differs')
+            differences={key:(metric.get(key),value) for key,value in expected.items()
+                         if metric.get(key)!=value}
+            raise ValueError('Independent saved pass measurement differs: '+str(differences))
         events[str(distance)]={'entry':left[0],'abreast':abreast[0],
                                'return':returned[0],
                                'first_nonpositive_gap':expected['first_nonpositive_pre_return_oncoming_gap_frame']}
