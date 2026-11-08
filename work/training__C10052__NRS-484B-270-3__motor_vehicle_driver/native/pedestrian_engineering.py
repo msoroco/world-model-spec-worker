@@ -13,6 +13,8 @@ SIDEWALK_Y_M = -7.0
 LANE_Y_M = -4.0
 OBSTRUCTION_X_M = (-6.0, 6.0)
 BUFFER_X_M = (-6.0, 6.0)
+SIDEWALK_PASSAGE_BOUNDS_M = (-6.0, -7.5, 6.0, -6.5)
+BUFFER_PASSAGE_BOUNDS_M = (-6.0, -6.0, 6.0, -5.0)
 FRAMES = 480
 
 
@@ -66,10 +68,16 @@ def measure(rows: list[dict], construction_data: dict) -> dict:
     if any(row['native_frame'] != 1000+i or row['time_s'] != round(i/20, 2)
            for i, row in enumerate(rows)):
         raise ValueError('Frame/time join changed')
-    sidewalk_obstructed = all(row['sidewalk_obstructed'] is True
-                               for row in rows if OBSTRUCTION_X_M[0] <= row['pedestrian_xy'][0] <= OBSTRUCTION_X_M[1])
-    buffer_impassable = all(row['buffer_impassable'] is True
-                            for row in rows if BUFFER_X_M[0] <= row['pedestrian_xy'][0] <= BUFFER_X_M[1])
+    sidewalk_obstructed = all(
+        row['sidewalk_obstructed'] is True and
+        len(row['sidewalk_obstruction_body_xy']) == 4 and
+        overlap_area(row['sidewalk_obstruction_body_xy'], SIDEWALK_PASSAGE_BOUNDS_M) >= 11.99
+        for row in rows if OBSTRUCTION_X_M[0] <= row['pedestrian_xy'][0] <= OBSTRUCTION_X_M[1])
+    buffer_impassable = all(
+        row['buffer_impassable'] is True and
+        len(row['buffer_obstruction_body_xy']) == 4 and
+        overlap_area(row['buffer_obstruction_body_xy'], BUFFER_PASSAGE_BOUNDS_M) >= 11.99
+        for row in rows if BUFFER_X_M[0] <= row['pedestrian_xy'][0] <= BUFFER_X_M[1])
     lane = [i for i, row in enumerate(rows)
             if overlap_area(row['pedestrian_body_xy'], CONFLICT_BOUNDS_M) > .01]
     ego = [i for i, row in enumerate(rows)
@@ -113,5 +121,38 @@ def fixture_rows(response: str, candidate: str, *, blocked=True, return_delay=0)
                      'pedestrian_body_xy': pedestrian['body_xy'],
                      'ego_body_xy': ego['body_xy'],
                      'sidewalk_obstructed': blocked,
-                     'buffer_impassable': blocked})
+                     'buffer_impassable': blocked,
+                     'sidewalk_obstruction_body_xy':
+                         [[-6.0,-7.5],[6.0,-7.5],[6.0,-6.5],[-6.0,-6.5]] if blocked else [],
+                     'buffer_obstruction_body_xy':
+                         [[-6.0,-6.0],[6.0,-6.0],[6.0,-5.0],[-6.0,-5.0]] if blocked else [],
+                     # Synthetic geometry-only visibility annotation. It is
+                     # intentionally not treated as a decoded camera result.
+                     'synthetic_camera_body_visible': candidate == 'fallback3' or i % 10 != 0})
     return rows
+
+
+def trigger_measurements(rows: list[dict], policy: dict) -> dict:
+    if len(rows) != FRAMES:
+        raise ValueError('Incomplete trigger source')
+    response = policy['response']
+    candidate = policy['candidate_id']
+    first_center_x = sum(point[0] for point in rows[0]['ego_body_xy']) / 4
+    runway = round(-9.0 - first_center_x, 3)
+    ego = [i for i, row in enumerate(rows)
+           if overlap_area(row['ego_body_xy'], CONFLICT_BOUNDS_M) > .01]
+    pedestrian = [i for i, row in enumerate(rows)
+                  if overlap_area(row['pedestrian_body_xy'], CONFLICT_BOUNDS_M) > .01]
+    if not ego or not pedestrian:
+        raise ValueError('Missing source conflict')
+    baseline_first = 262 if response == 'clear' else 187
+    error = abs(ego[0] - baseline_first)
+    visible = sum(rows[i]['synthetic_camera_body_visible'] is True for i in pedestrian)
+    fraction = round(visible / len(pedestrian), 6)
+    return {'candidate_id': candidate, 'case_suffix': policy['case_suffix'],
+            'approach_runway_m': runway, 'ego_entry_error_frames': error,
+            'synthetic_visible_fraction': fraction,
+            'fallback1_trigger': runway < 40.0,
+            'fallback2_trigger': error > 3,
+            'fallback3_trigger': fraction < .95,
+            'original_camera_pixels_verified': False}

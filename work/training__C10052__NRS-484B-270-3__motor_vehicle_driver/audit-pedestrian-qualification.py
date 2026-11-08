@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT/'native'))
-from pedestrian_engineering import NAMES, measure
+from pedestrian_engineering import NAMES, measure, trigger_measurements
 
 
 def sha(path):
@@ -21,6 +21,7 @@ def audit():
     summary = read(ROOT/'pedestrian-qualification-cpu-summary.json')
     assert summary['accepted'] is False and len(summary['receipts']) == 8
     pairs = []
+    trigger_pairs = []
     for candidate in NAMES:
         outcomes = {}
         for response in ('clear', 'conflict'):
@@ -30,11 +31,19 @@ def audit():
             for key, file in (('construction_sha256', 'construction.json'),
                               ('source_sha256', 'source-rows.jsonl'),
                               ('measurement_sha256', 'measurement.json'),
+                              ('trigger_sha256', 'trigger-measurement.json'),
                               ('negative_sha256', 'negative-receipts.json')):
                 assert receipt[key] == sha(folder/file), (candidate, response, key)
             rows = [json.loads(line) for line in (folder/'source-rows.jsonl').read_text().splitlines()]
             actual = measure(rows, read(folder/'construction.json'))
             assert actual == read(folder/'measurement.json')
+            trigger = trigger_measurements(rows, read(folder/'construction.json'))
+            assert trigger == read(folder/'trigger-measurement.json')
+            assert trigger['approach_runway_m'] == (46.0 if candidate == 'fallback1' else 36.0)
+            assert trigger['ego_entry_error_frames'] == (5 if candidate == 'fallback2' else 0)
+            assert trigger['fallback1_trigger'] == (candidate != 'fallback1')
+            assert trigger['fallback2_trigger'] == (candidate == 'fallback2')
+            assert trigger['fallback3_trigger'] == (candidate != 'fallback3')
             assert actual['qualifying_synthetic_geometry'] and actual['accepted'] is False
             # A changed saved source must fail its pinned receipt. A changed frame
             # identity must fail the source join even before any timing inference.
@@ -46,6 +55,11 @@ def audit():
                 assert 'Frame/time join' in str(exc)
             else:
                 raise AssertionError('Changed frame identity accepted')
+            changed_obstacle = [dict(row) for row in rows]
+            changed_obstacle[200] = dict(changed_obstacle[200],
+                                         sidewalk_obstruction_body_xy=[])
+            assert not measure(changed_obstacle, read(folder/'construction.json'))[
+                'qualifying_synthetic_geometry']
             negatives = read(folder/'negative-receipts.json')
             assert set(negatives) == {'passable_sidewalk', 'late_sidewalk_return'}
             assert all(n['qualification_rejected'] and not n['measured']['qualifying_synthetic_geometry']
@@ -54,6 +68,8 @@ def audit():
         clear_rows, clear = outcomes['clear']
         conflict_rows, conflict = outcomes['conflict']
         assert all(a['pedestrian_body_xy'] == b['pedestrian_body_xy'] and
+                   a['sidewalk_obstruction_body_xy'] == b['sidewalk_obstruction_body_xy'] and
+                   a['buffer_obstruction_body_xy'] == b['buffer_obstruction_body_xy'] and
                    a['sidewalk_obstructed'] == b['sidewalk_obstructed'] and
                    a['buffer_impassable'] == b['buffer_impassable'] and
                    a['native_frame'] == b['native_frame'] and a['time_s'] == b['time_s']
@@ -67,10 +83,25 @@ def audit():
                                                      clear['last_pedestrian_conflict_frame']],
                       'simultaneous_frames': [0, 20],
                       'return_gap_after_obstacle_frames': clear['return_gap_after_obstacle_frames']})
+    for response in ('clear', 'conflict'):
+        base = read(ROOT/'draft-pedestrian-cases'/response/'primary'/'trigger-measurement.json')
+        for candidate, changed_key in (('fallback1', 'fallback1_trigger'),
+                                       ('fallback2', 'fallback2_trigger'),
+                                       ('fallback3', 'fallback3_trigger')):
+            variant = read(ROOT/'draft-pedestrian-cases'/response/candidate/'trigger-measurement.json')
+            keys = ('fallback1_trigger', 'fallback2_trigger', 'fallback3_trigger')
+            assert {key for key in keys if base[key] != variant[key]} == {changed_key}
+            trigger_pairs.append({'response': response, 'candidate_id': candidate,
+                                  'isolated_changed_trigger': changed_key,
+                                  'primary_value': base[changed_key],
+                                  'variant_value': variant[changed_key]})
     proof = {'format': 'c10052-pedestrian-independent-source-audit-v1',
              'summary_sha256': sha(ROOT/'pedestrian-qualification-cpu-summary.json'),
              'source_bound_positive_receipts': 8, 'qualification_negatives': 16,
              'changed_frame_join_negatives': 8,
+             'removed_obstacle_body_negatives': 8,
+             'synthetic_trigger_source_variants': 8,
+             'isolated_synthetic_trigger_pairs': trigger_pairs,
              'pairs': pairs, 'accepted': False,
              'original_native_verified': False, 'legal_yield_finding': None}
     (ROOT/'pedestrian-qualification-independent-audit.json').write_text(

@@ -163,6 +163,14 @@ def audit():
     assert len(pedestrian_proof['pairs'])==4
     assert pedestrian_proof['qualification_negatives']==16
     assert pedestrian_proof['changed_frame_join_negatives']==8
+    assert pedestrian_proof['removed_obstacle_body_negatives']==8
+    assert len(pedestrian_proof['isolated_synthetic_trigger_pairs'])==6
+    native_geometry_run=subprocess.run([sys.executable,str(work/'native/pedestrian_native_geometry.py')],
+                                       cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert native_geometry_run.returncode==0,(native_geometry_run.stdout,native_geometry_run.stderr)
+    native_geometry=json.loads(native_geometry_run.stdout)
+    assert native_geometry['sidewalk_lane_id']==-3
+    assert native_geometry['physical_obstruction_verified'] is False
     assert pedestrian_proof['original_native_verified'] is False
     shared=json.loads((ROOT/'work/_shared/branch-review.json').read_text())
     assert shared['coverage_sha256']==sha(matrix_path)

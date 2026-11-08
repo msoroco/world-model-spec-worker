@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT/'native'))
-from pedestrian_engineering import NAMES, construction, fixture_rows, measure
+from pedestrian_engineering import NAMES, construction, fixture_rows, measure, trigger_measurements
 
 
 def write(path, data):
@@ -34,6 +34,8 @@ def main():
             assert result['qualifying_synthetic_geometry']
             assert result['simultaneous_conflict_frames'] == (0 if response == 'clear' else 20)
             write(folder/'measurement.json', result)
+            triggers = trigger_measurements(rows, policy)
+            write(folder/'trigger-measurement.json', triggers)
             negatives = {}
             for label, kwargs in (('passable_sidewalk', {'blocked': False}),
                                   ('late_sidewalk_return', {'return_delay': 30})):
@@ -47,6 +49,7 @@ def main():
                        'construction_sha256': sha(folder/'construction.json'),
                        'source_sha256': sha(folder/'source-rows.jsonl'),
                        'measurement_sha256': sha(folder/'measurement.json'),
+                       'trigger_sha256': sha(folder/'trigger-measurement.json'),
                        'negative_sha256': sha(folder/'negative-receipts.json')}
             write(folder/'receipt.json', receipt)
             receipts.append(receipt)
@@ -55,6 +58,7 @@ def main():
                'cases': 2, 'candidates_per_case': 4,
                'positive_source_receipts': 8, 'qualification_negatives': 16,
                'controlled_clear_conflict_pairs': 4,
+               'measured_synthetic_trigger_variants': 8,
                'receipts': receipts,
                'original_native_verified': False, 'strict_v2_compatibility_verified': False}
     write(ROOT/'pedestrian-qualification-cpu-summary.json', summary)

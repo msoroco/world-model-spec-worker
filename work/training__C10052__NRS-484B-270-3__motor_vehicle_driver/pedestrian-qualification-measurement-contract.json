@@ -2,7 +2,9 @@
   "format": "c10052-pedestrian-qualification-measurement-contract-draft-v1",
   "law_id": "NRS-484B-270-3",
   "cross_reference": "NRS-484B-297-6",
-  "source_topic_ids": ["text-0"],
+  "source_topic_ids": [
+    "text-0"
+  ],
   "case_ids": [
     "training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_clear",
     "training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_conflict"
@@ -21,14 +23,40 @@
     "source": "native/pedestrian_engineering.py",
     "sampling_hz": 20,
     "frames": 480,
-    "source_row": "native_frame, time_s, pedestrian and ego full-body polygons, obstruction and buffer evidence flags",
-    "obstacle_span_x_m": [-6.0, 6.0],
-    "pedestrian_conflict_region_xy_m": [-2.5, -5.0, 2.5, -3.0],
+    "source_row": "native_frame, time_s, pedestrian and ego full-body polygons, sidewalk and buffer obstruction body polygons, obstruction flags, synthetic camera visibility annotation",
+    "obstacle_span_x_m": [
+      -6.0,
+      6.0
+    ],
+    "pedestrian_conflict_region_xy_m": [
+      -2.5,
+      -5.0,
+      2.5,
+      -3.0
+    ],
     "bounded_path": "nondecreasing longitudinal progress, at most 0.21 m between samples, lateral center between -7.01 and -3.99 m",
     "return_gap_threshold_frames": 30,
     "clear_simultaneous_conflict_frames": 0,
     "conflict_simultaneous_conflict_frames": 20,
-    "qualification_negative_controls": ["passable_sidewalk", "late_sidewalk_return", "changed_frame_join"]
+    "qualification_negative_controls": [
+      "passable_sidewalk",
+      "late_sidewalk_return",
+      "changed_frame_join",
+      "removed_obstacle_body"
+    ],
+    "sidewalk_passage_xy_bounds_m": [
+      -6,
+      -7.5,
+      6,
+      -6.5
+    ],
+    "buffer_passage_xy_bounds_m": [
+      -6,
+      -6,
+      6,
+      -5
+    ],
+    "required_obstruction_overlap_m2": 11.99
   },
   "candidate_policies": {
     "primary": "45 m authored approach, standard release, reference camera [10,-8,10] m",
@@ -36,7 +64,14 @@
     "fallback2": "five-frame later release for measured ego entry error",
     "fallback3": "reference camera [8,-10,14] m for insufficient body visibility",
     "knob_source": "native/rider_candidates.py",
-    "pedestrian_specific_physical_triggers_measured": false
+    "pedestrian_specific_physical_triggers_measured": false,
+    "synthetic_source_trigger_measurements": {
+      "fallback1": "36 m primary runway below 40 m trigger; 46 m extended approach clears it",
+      "fallback2": "five-frame ego entry error exceeds three-frame trigger",
+      "fallback3": "scripted synthetic visibility 0.888889 below 0.95; moved-view annotation 1.0",
+      "independent_isolated_pairs": 6,
+      "original_pixels_verified": false
+    }
   },
   "source_receipts": "pedestrian-qualification-cpu-summary.json",
   "independent_audit": "pedestrian-qualification-independent-audit.json",
