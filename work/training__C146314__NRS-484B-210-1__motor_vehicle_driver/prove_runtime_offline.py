@@ -34,14 +34,14 @@ def prove():
             log=output/'offline.log'
             if (response['offline_passed'] is not True or
                 response['simulation_started'] is not False or
-                log.read_text().count('Ran 3 tests')!=1 or
+                log.read_text().count('Ran 4 tests')!=1 or
                 'OK' not in log.read_text()):
                 raise ValueError('Pinned offline receipt/test log differs')
             selected=json.loads((output/'candidate-selection.json').read_text())
             entries.append({'case_id':case_id,'candidate_id':candidate,
                 'construction_sha256':selected['construction_sha256'],
                 'materialized_dir':str(output.relative_to(ROOT)),
-                'log_sha256':sha(log),'tests':3,'exit_code':result.returncode,
+                'log_sha256':sha(log),'tests':4,'exit_code':result.returncode,
                 'simulation_started':False})
     proof={'format':'c146314-pinned-runtime-offline-diagnostic-v1',
         'manifest_sha256':sha(MANIFEST),'entries':entries,

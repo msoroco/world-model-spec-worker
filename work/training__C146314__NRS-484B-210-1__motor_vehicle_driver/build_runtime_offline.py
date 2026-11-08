@@ -15,6 +15,10 @@ def write(path,value):
 TEST='''import json
 from pathlib import Path
 import unittest
+import tempfile
+from fixture_raw import build as build_raw
+from prepare_raw import prepare
+from measure_prepared import measure as measure_raw
 from check import check
 from measure_saved import measure
 from route_fallbacks import route
@@ -35,6 +39,17 @@ class ExactConstruction(unittest.TestCase):
         result=route(Path.cwd(),Path.cwd()/'saved')
         self.assertEqual(set(result['triggers']),{'fallback1','fallback2','fallback3'})
         self.assertIsNone(result['selected_fallback'])
+
+    def test_raw_to_saved_cpu(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder)
+            build_raw(Path.cwd(),root/'raw')
+            receipt=prepare(Path.cwd(),root/'raw',root/'prepared',synthetic_cpu=True)
+            self.assertEqual(receipt['source_kind'],'synthetic_cpu')
+            self.assertFalse(receipt['delivery_ready'])
+            measured=measure_raw(Path.cwd(),root/'prepared')
+            self.assertEqual(measured['frames'],240)
+            self.assertFalse(measured['delivery_ready'])
 '''
 
 
@@ -47,7 +62,9 @@ def build():
             files=[]
             for name in ('config.json','requested-tracks.jsonl','one-way-pass.xodr',
                 'assignment-source.json','case-plan.json','measurement-contract.json',
-                'check.py','capture.py','measure_saved.py','route_fallbacks.py',
+                'check.py','capture.py','fixture_raw.py','prepare_raw.py',
+                'measure_prepared.py',
+                'measure_saved.py','route_fallbacks.py',
                 'saved/native-observed.jsonl','saved/camera-frames.jsonl',
                 'saved/readback.json'):
                 files.append({'path':name,'content':(bundle/name).read_text()})

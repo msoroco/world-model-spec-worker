@@ -42,9 +42,9 @@ def audit():
                 choice['case_id']==row['case_id'] and
                 choice['candidate_id']==row['candidate_id'] and
                 row['log_sha256']==sha(output/'offline.log') and
-                'Ran 3 tests' in (output/'offline.log').read_text() and
+                'Ran 4 tests' in (output/'offline.log').read_text() and
                 '\nOK\n' in (output/'offline.log').read_text() and
-                row['tests']==3 and row['exit_code']==0 and
+                row['tests']==4 and row['exit_code']==0 and
                 row['simulation_started'] is False,
                 'pinned offline command/receipt')
         for item in constructed['files']:

@@ -41,6 +41,9 @@ def audit():
             'measurement-contract.json':NATIVE/'measurement-contract.json',
             'check.py':NATIVE/'check.py',
             'capture.py':NATIVE/'capture.py',
+            'fixture_raw.py':NATIVE/'fixture_raw.py',
+            'prepare_raw.py':NATIVE/'prepare_raw.py',
+            'measure_prepared.py':NATIVE/'measure_prepared.py',
             'measure_saved.py':NATIVE/'measure_saved.py',
             'route_fallbacks.py':NATIVE/'route_fallbacks.py'}
         for name in ('native-observed.jsonl','camera-frames.jsonl','readback.json'):
