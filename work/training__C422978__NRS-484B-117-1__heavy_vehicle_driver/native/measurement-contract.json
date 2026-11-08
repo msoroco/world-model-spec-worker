@@ -28,6 +28,23 @@
   ],
   "time_uncertainty": "one 50 ms frame bracket plus Native sensor synchronization; no subframe onset claim",
   "spatial_uncertainty": "world XY bounding-box geometry and imported OpenDRIVE lane bounds only; City sidewalk boundary and driveway or alley authority require separate source-bound evidence",
+  "camera_review": {
+    "entrypoint": "measure_camera.py",
+    "camera": "sidewalk",
+    "required_annotations": "480 frame-indexed visible flags and normalized subject boxes joined to Native and video frame IDs",
+    "original_video_source": "SHA-256 bound lossless Matroska sidewalk.mkv with manual box-review provenance",
+    "synthetic_video_source": "explicit text stub used only for CPU diagnostics",
+    "fallback3_threshold": "source-bound visible frames below 360 of 480 triggers the wider camera field",
+    "limitation": "Annotation structure and source hashes are checked; pixel truth and unobstructed body visibility require independent original-video review"
+  },
+  "spatial_context": {
+    "entrypoint": "measure_context.py",
+    "required_packet": "city-context.json bound by SHA-256 to the Native map readback and a surveyed source provenance identifier",
+    "coordinate_system": "Explicit invertible Native-to-context affine transform with named source CRS and calibration source",
+    "geometry": "Moving four-corner body hull intersects source sidewalk and City polygons; driveway or alley entrance polygons are inventoried by unique ID",
+    "metrics": "20 Hz moving sidewalk, City, entrance, and City sidewalk outside entrance intersection frame counts plus first outside frame and touched entrance IDs",
+    "limitation": "Synthetic packets validate joins and geometry only; City and entrance authority and legal exception review remain pending"
+  },
   "legal_scope": "No legal violation or statutory exception is inferred from synthetic rows or authored OpenDRIVE alone",
   "status": "cpu_contract_unselected"
 }

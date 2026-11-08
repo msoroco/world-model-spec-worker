@@ -61,6 +61,8 @@ def audit():
                     'runner.py': HERE/'native/runner.py',
                     'triggers.py': HERE/'native/triggers.py',
                     'measure_saved.py': HERE/'native/measure_saved.py',
+                    'measure_camera.py': HERE/'native/measure_camera.py',
+                    'measure_context.py': HERE/'native/measure_context.py',
                     'measurement-contract.json': HERE/'native/measurement-contract.json',
                     'config.json': HERE/'native/drafts'/case/candidate/'config.json',
                     'requested-tracks.jsonl': HERE/'native/drafts'/case/candidate/'requested-tracks.jsonl'}
@@ -79,6 +81,29 @@ def audit():
         positive = command(expected_bundle, case, candidate)
         if positive.returncode or not json.loads(positive.stdout)['passed']:
             raise ValueError('Offline positive recheck failed')
+        saved_fixture = HERE/'native/saved-fixtures'/case/candidate
+        saved_run = subprocess.run((sys.executable,str(expected_bundle/'measure_saved.py'),
+                                    str(saved_fixture)),capture_output=True,text=True,check=True)
+        if json.loads(saved_run.stdout)['frames'] != 480:
+            raise ValueError('Offline packaged saved processing differs')
+        context_run = subprocess.run((sys.executable,str(expected_bundle/'measure_context.py'),
+                                      '--attempt',str(saved_fixture),'--context',
+                                      str(saved_fixture/'city-context.json')),
+                                     capture_output=True,text=True,check=True)
+        context_count = json.loads(context_run.stdout)['moving_city_sidewalk_outside_entrance_frames']
+        if context_count != (0 if case == 'reference' else
+                            next(p['measurement']['moving_city_sidewalk_outside_entrance_frames']
+                                 for p in json.loads((HERE/'native/context-proof.json').read_text())['positives']
+                                 if p['case'] == case and p['candidate'] == candidate)):
+            raise ValueError('Offline packaged spatial processing differs')
+        if candidate == 'fallback3':
+            camera = HERE/'native/camera-fixtures'/case/'clear'
+            camera_run = subprocess.run((sys.executable,str(expected_bundle/'measure_camera.py'),
+                                         str(saved_fixture),str(camera/'camera-review.jsonl'),
+                                         str(camera/'sidewalk-video-stub.txt')),
+                                        capture_output=True,text=True,check=True)
+            if json.loads(camera_run.stdout)['visible_frames'] != 420:
+                raise ValueError('Offline packaged camera processing differs')
         for name in SOURCE_FILES:
             with tempfile.TemporaryDirectory(dir=OFFLINE) as temporary:
                 altered = Path(temporary)/'copy'
@@ -90,6 +115,17 @@ def audit():
                 rejection_count += 1
     if seen != {(case,candidate) for case in CASES for candidate in CANDIDATES}:
         raise ValueError('Offline candidate coverage differs')
+    positive_index = {(p['case'],p['candidate']):p for p in proof['positives']}
+    if set(positive_index) != seen:
+        raise ValueError('Offline packaged processor positive coverage differs')
+    for case,candidate in seen:
+        row = positive_index[(case,candidate)]
+        target = OFFLINE/case/candidate
+        if (row['bundle_sha256'] != {name:digest(target/name) for name in expected} or
+                row['packaged_saved_frames'] != 480 or
+                row['packaged_spatial_outside_entrance_frames'] != next(p['measurement']['moving_city_sidewalk_outside_entrance_frames'] for p in json.loads((HERE/'native/context-proof.json').read_text())['positives'] if p['case'] == case and p['candidate'] == candidate) or
+                row['packaged_clear_camera_visible_frames'] != (420 if candidate == 'fallback3' else None)):
+            raise ValueError('Offline packaged processor recorded positive differs')
     if {(n['case'],n['candidate'],n['altered_file']) for n in proof['negatives']} != {
             (case,candidate,name) for case,candidate in seen for name in SOURCE_FILES}:
         raise ValueError('Offline recorded negative coverage differs')

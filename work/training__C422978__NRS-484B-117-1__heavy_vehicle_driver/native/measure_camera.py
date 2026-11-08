@@ -8,7 +8,11 @@ from measure_saved import measure
 
 
 def sha(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    digest = hashlib.sha256()
+    with Path(path).open('rb') as source:
+        for chunk in iter(lambda: source.read(1024*1024), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def lines(path):
@@ -22,7 +26,9 @@ def camera_packet(saved_folder, review_file, video_source, expected_hashes=None)
         raise ValueError('Camera review or video source absent')
     kind = saved['source_kind']
     if kind == 'original_native':
-        if video_source.suffix != '.mkv' or video_source.read_bytes()[:4] != bytes.fromhex('1a45dfa3'):
+        with video_source.open('rb') as source:
+            magic = source.read(4)
+        if video_source.suffix != '.mkv' or magic != bytes.fromhex('1a45dfa3'):
             raise ValueError('Original lossless Matroska video source absent')
     elif video_source.suffix != '.txt':
         raise ValueError('Synthetic video stub must be labelled text')

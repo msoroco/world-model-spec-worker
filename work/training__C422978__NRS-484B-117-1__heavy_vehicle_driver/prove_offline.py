@@ -33,8 +33,34 @@ def prove():
         result = run(bundle, case, candidate)
         if result.returncode or not json.loads(result.stdout)['passed']:
             raise AssertionError('Exact offline positive failed: '+case+'/'+candidate)
+        saved_fixture = CASE/'native/saved-fixtures'/case/candidate
+        saved_run = subprocess.run([sys.executable, str(bundle/'measure_saved.py'),
+                                    str(saved_fixture)], text=True, capture_output=True, check=True)
+        saved_measure = json.loads(saved_run.stdout)
+        if saved_measure['frames'] != 480 or saved_measure['source_kind'] != 'synthetic_cpu':
+            raise AssertionError('Packaged saved processor positive failed')
+        context_run = subprocess.run([sys.executable, str(bundle/'measure_context.py'),
+                                      '--attempt', str(saved_fixture), '--context',
+                                      str(saved_fixture/'city-context.json')],
+                                     text=True, capture_output=True, check=True)
+        context_measure = json.loads(context_run.stdout)
+        if context_measure['frames'] != 480 or context_measure['authority_kind'] != 'synthetic_cpu':
+            raise AssertionError('Packaged spatial processor positive failed')
+        camera_visible = None
+        if candidate == 'fallback3':
+            camera = CASE/'native/camera-fixtures'/case/'clear'
+            camera_run = subprocess.run([sys.executable, str(bundle/'measure_camera.py'),
+                                         str(saved_fixture), str(camera/'camera-review.jsonl'),
+                                         str(camera/'sidewalk-video-stub.txt')],
+                                        text=True, capture_output=True, check=True)
+            camera_visible = json.loads(camera_run.stdout)['visible_frames']
+            if camera_visible != 420:
+                raise AssertionError('Packaged camera processor positive failed')
         positives.append({'case': case, 'candidate': candidate,
-                          'bundle_sha256': {name: sha(bundle/name) for name in entry['file_sha256']}})
+                          'bundle_sha256': {name: sha(bundle/name) for name in entry['file_sha256']},
+                          'packaged_saved_frames':saved_measure['frames'],
+                          'packaged_spatial_outside_entrance_frames':context_measure['moving_city_sidewalk_outside_entrance_frames'],
+                          'packaged_clear_camera_visible_frames':camera_visible})
         for name in SOURCES:
             with tempfile.TemporaryDirectory(dir=OFFLINE) as temporary:
                 altered = Path(temporary)/'candidate'
