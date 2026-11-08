@@ -15,7 +15,8 @@ FILES = {'runner.py':'runner_exception.py', 'geometry.py':'geometry_exception.py
          'controller.py':'controller.py', 'engineering.py':'engineering_exception.py', 'engineering_numeric.py':'engineering_numeric.py',
          'cameras.py':'cameras.py', 'measure_park.py':'measure_park.py',
          'finalize.py':'finalize_exception.py', 'exception_case.py':'exception_case.py', 'road.xodr':'road.xodr',
-         'exception_evidence.py':'exception_evidence.py'}
+         'exception_evidence.py':'exception_evidence.py',
+         'traffic_counterfactual.py':'traffic_counterfactual.py'}
 TESTS = ('test_runner.py', 'test_bundle_proofs.py', 'test_bundle_finalize.py',
          'test_bundle_exception_evidence.py', 'test_bundle_exception_case.py')
 

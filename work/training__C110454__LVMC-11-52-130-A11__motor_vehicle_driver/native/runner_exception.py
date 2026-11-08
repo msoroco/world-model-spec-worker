@@ -189,6 +189,17 @@ def execute(config, output, host, port):
         native_route=route(suffix)
         knobs=controller_parameters(suffix,candidate)
         controller=PathController(native_route,wheelbase,max_steer,knobs)
+        if config['exception_branch']=='necessary_traffic_conflict':
+            def fingerprint(value):
+                return hashlib.sha256(json.dumps(value,sort_keys=True,default=str).encode()).hexdigest()
+            write_new(output/'capture_identity.json',{
+                'map_sha256':native_hash,
+                'route_sha256':fingerprint(native_route),
+                'controller_sha256':fingerprint({'knobs':vars(knobs),'wheelbase_m':wheelbase,
+                                                  'max_steer_deg':max_steer}),
+                'candidate_id':candidate,'seed':'authored-fixed-start-v1',
+                'actor_present':conflict_actor is not None,
+                'physical_determinism_claimed':False})
         write_new(output/"native-construction-context.json",{
             "case_id":config["case_id"],"candidate_id":candidate,"map_sha256":native_hash,
             "vehicle_blueprint":ego.type_id,"wheelbase_m":wheelbase,"max_steer_deg":max_steer,
@@ -246,11 +257,17 @@ def execute(config, output, host, port):
                     hand_brake=command["hand_brake"]))
                 frame=world.tick();time_s=world.get_snapshot().timestamp.elapsed_seconds-start
                 pose=ego.get_transform();forward=pose.get_forward_vector();body=body_xy(ego)
+                observed_velocity=ego.get_velocity()
+                observed_speed=math.sqrt(observed_velocity.x**2+observed_velocity.y**2+observed_velocity.z**2)
                 sample={"time_s":time_s,"native_frame":frame,
                     "native_center_xy_m":[pose.location.x,pose.location.y],
                     "native_forward_xy":[forward.x/math.hypot(forward.x,forward.y),
                                          forward.y/math.hypot(forward.x,forward.y)],
                     "native_body_xy_m":body,"speed_mps":speed,
+                    "observed_speed_mps":observed_speed,
+                    "observed_velocity_xy_mps":[observed_velocity.x,observed_velocity.y],
+                    "applied_brake":applied_brake,
+                    "conflict_brake_override":conflict_override,
                     "body_xy_m":body,"speed_m_s":speed,"video_frame":index,
                     "two_way_native_survey":True,
                     "controller_request":command}
@@ -258,17 +275,21 @@ def execute(config, output, host, port):
                 if conflict_actor is not None:
                     cross_pose=conflict_actor.get_transform()
                     cross_body=body_xy(conflict_actor)
+                    cross_velocity=conflict_actor.get_velocity()
                     other_actor_history.append({'native_frame':frame,'time_s':time_s,
                         'center_xy_m':[cross_pose.location.x,cross_pose.location.y],
                         'body_xy_m':cross_body,
+                        'velocity_xy_mps':[cross_velocity.x,cross_velocity.y],
                         'conflict_occupancy':any(-7<=vertex[0]<=7 and -7<=vertex[1]<=7 for vertex in cross_body),
                         'physical_conflict_necessity_claimed':False})
-                    observed_velocity=ego.get_velocity()
                     ego_response_history.append({'native_frame':frame,'time_s':time_s,
+                        'center_xy_m':[pose.location.x,pose.location.y],
+                        'body_xy_m':body,
+                        'velocity_xy_mps':[observed_velocity.x,observed_velocity.y],
                         'brake_applied':applied_brake>0,
                         'conflict_brake_override':conflict_override,
                         'response_onset':conflict_override and not previous_conflict_override,
-                        'speed_mps':math.sqrt(observed_velocity.x**2+observed_velocity.y**2+observed_velocity.z**2)})
+                        'speed_mps':observed_speed})
                     previous_conflict_override=conflict_override
                 parked_history.append({"video_frame":index,"native_frame":frame,
                     "time_s":time_s,"body_xy_m":body,"speed_m_s":speed})

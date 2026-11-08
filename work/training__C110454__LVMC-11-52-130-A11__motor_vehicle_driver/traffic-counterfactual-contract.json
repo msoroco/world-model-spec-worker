@@ -1,0 +1,15 @@
+{
+  "format": "lvmc-controlled-traffic-pair-contract-v1",
+  "cases": ["exception_1_1", "exception_1_2"],
+  "candidate_pairing": "same candidate_id for absent and present captures",
+  "fixed_construction_fields": ["map_sha256", "route_sha256", "controller_sha256", "candidate_id", "seed"],
+  "saved_inputs": {
+    "absent": ["capture_identity.json", "native_samples.jsonl"],
+    "present": ["capture_identity.json", "native_samples.jsonl", "other_actor_history.jsonl"]
+  },
+  "sample_count": 480,
+  "time_alignment_tolerance_s": 0.026,
+  "comparison": "At each matched video frame, test horizontal footprint overlap between observed absent-case ego and observed present-case actor; separately test observed present-case ego against that actor.",
+  "required_diagnostic": "one measured present-case brake onset before hypothetical overlap; absent ego overlaps present actor; present ego does not overlap present actor",
+  "inference_limit": "This is a saved controlled path diagnostic. The cross-run overlap alone cannot prove an actual collision, causal necessity, or an LVMC exception verdict. Original Native captures and independent physical and legal review are required."
+}
