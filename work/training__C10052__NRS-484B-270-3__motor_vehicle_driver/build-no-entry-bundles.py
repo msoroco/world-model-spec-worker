@@ -8,6 +8,19 @@ HERE=Path(__file__).resolve().parent
 NATIVE=HERE/'native'
 SUFFIX='probe_d_no_entry'
 NAMES=('primary','fallback1','fallback2','fallback3')
+TRIGGERS={
+    'fallback1':{'source':'source-hashed original Native starting pose and surveyed alley mouth',
+        'metric':'approach runway to alley mouth (m)',
+        'failure_condition':'measured runway < 45 m',
+        'changed_knobs':['approach start x -45 m to -55 m']},
+    'fallback2':{'source':'source-hashed original Native velocity near alley mouth',
+        'metric':'peak speed over x=-20 to 0 m (m/s)',
+        'failure_condition':'measured peak speed > 2.2 m/s',
+        'changed_knobs':['straight-route target speed 2.5 to 1.8 m/s']},
+    'fallback3':{'source':'original-frame reference camera body-visibility annotations',
+        'metric':'body-visible fraction over x=-20 to 10 m',
+        'failure_condition':'measured visible fraction < 0.95',
+        'changed_knobs':['reference camera to wide elevated view']}}
 
 
 def write(path,value):
@@ -26,8 +39,8 @@ def main():
     entry={'case_id':case_id,'kind':'draft_not_selected',
            'candidate_risk':{'status':'physical',
                'reason':'Original straight-route tracking, facility designation and pixels require Native evidence'},
-           'measurement_procedure':{'entrypoint':'measure_entry.py',
-                                    'output_schema':'c10052-moving-entry-measurement-v1'},
+           'measurement_procedure':{'entrypoint':'finalize_no_entry.py',
+                                    'output_schema':'c10052-no-entry-saved-diagnostic-v1'},
            'measurement_contract':'draft-no-entry-measurement-contract.json',
            'candidates':[]}
     for name in NAMES:
@@ -58,6 +71,11 @@ def main():
                 item['content']=(NATIVE/'alley_runner.py').read_text()
             elif item['path']=='alley_geometry.py':
                 item['content']=(NATIVE/'alley_geometry.py').read_text()
+            elif item['path']=='finalize_alley.py':
+                item['path']='finalize_no_entry.py'
+                item['content']=(NATIVE/'finalize_no_entry.py').read_text()
+        construction['files'].append({'path':'measure_no_entry_triggers.py',
+                                      'content':(NATIVE/'measure_no_entry_triggers.py').read_text()})
         output=HERE/'draft-no-entry-candidates'/SUFFIX/name/'construction.json'
         write(output,construction)
         exact={'id':name,'construction':str(output.relative_to(HERE)),
@@ -65,8 +83,8 @@ def main():
         if name=='primary':
             entry.update(exact)
         else:
-            exact['trigger']=ref['trigger']
-            exact['changed_knobs']=ref['changed_knobs']
+            exact['trigger']={key:value for key,value in TRIGGERS[name].items() if key!='changed_knobs'}
+            exact['changed_knobs']=TRIGGERS[name]['changed_knobs']
             entry['candidates'].append(exact)
     manifest={'format':'worker-unselected-draft-construction-manifest-v1',
               'assignment_id':HERE.name,

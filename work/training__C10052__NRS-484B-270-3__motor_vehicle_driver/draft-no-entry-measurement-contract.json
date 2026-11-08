@@ -13,5 +13,16 @@
   }],
   "negative": {"remove": ["entry-sources.json"],
                "error_contains": "Missing required source: entry-sources.json"},
+  "fallback_trigger_measurements": [
+    {"candidate": "fallback1", "output_key": "approach_runway_to_alley_m",
+     "source": "native_samples.jsonl plus road_geometry.json",
+     "failure_condition": "value < 45 m", "changed_knob": "approach start x -45 m to -55 m"},
+    {"candidate": "fallback2", "output_key": "peak_approach_speed_mps",
+     "source": "native_samples.jsonl over x=-20 to 0 m",
+     "failure_condition": "value > 2.2 m/s", "changed_knob": "target speed 2.5 to 1.8 m/s"},
+    {"candidate": "fallback3", "output_key": "reference_body_visibility_fraction",
+     "source": "original-frame camera_visibility.jsonl over x=-20 to 10 m",
+     "failure_condition": "value < 0.95", "changed_knob": "reference camera wide elevated view"}
+  ],
   "limitations": "The straight-through route and synthetic false entry do not prove original Native motion, statutory designation, or exception absence."
 }
