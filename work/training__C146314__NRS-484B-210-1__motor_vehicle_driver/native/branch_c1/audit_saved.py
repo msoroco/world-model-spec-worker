@@ -24,7 +24,7 @@ def audit():
     saved_proof = read(HERE/'offline/saved-proof.json')
     compatibility = read(HERE/'offline/saved-compatibility.json')
     if saved_proof['copied_manifest_sha256'] != sha(HERE/'offline/manifest.json') or \
-       compatibility['positive'] != 8 or compatibility['tamper_negative'] != 48 or \
+       compatibility['positive'] != 8 or compatibility['tamper_negative'] != 56 or \
        len(copied['entries']) != 8 or len(saved_proof['entries']) != 8:
         raise ValueError('saved audit source/proof')
     total = 0
@@ -102,6 +102,15 @@ def audit():
         if span['boundary_relation'] != relation or \
            span['distance_upper_m'] != (round(distance+uncertainty, 6) if end < 239 else None):
             raise ValueError('boundary classification')
+        route = proof['routing']
+        triggers = route['triggers']
+        if (route['selected_fallback'] is not None or route['delivery_ready'] or
+            route['measured_boundary_relation'] != relation or
+            triggers['fallback1']['eligible'] !=
+                (passes < 1 or relation in ('ambiguous', 'incomplete_exit', 'missing_or_multiple_spans')) or
+            triggers['fallback2']['eligible'] != (reviewed < 240) or
+            triggers['fallback3']['eligible'] is not True):
+            raise ValueError('independent measured fallback eligibility')
         relations[f'{witness}/{candidate}'] = relation
     if total != 1920 or relations['exception_3_1/primary'] != 'over_200ft' or \
        relations['exception_3_2/primary'] != 'ambiguous' or \
@@ -109,7 +118,7 @@ def audit():
         raise ValueError('controlled boundary findings')
     result = {'format': 'c146314-paragraph-c1-independent-saved-audit-v1',
               'bundles': 8, 'raw_saved_rows_audited': total,
-              'saved_positive': 8, 'saved_tamper_negative': 48,
+              'saved_positive': 8, 'saved_tamper_negative': 56,
               'relations': relations, 'original_native_observed': False,
               'delivery_ready': False}
     (HERE/'offline/saved-audit.json').write_text(json.dumps(result, indent=2)+'\n')

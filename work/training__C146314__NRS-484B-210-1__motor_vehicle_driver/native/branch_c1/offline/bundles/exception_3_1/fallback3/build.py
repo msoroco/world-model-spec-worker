@@ -101,6 +101,7 @@ def build():
         'capture_sha256':sha(HERE/'capture.py'),
         'saved_sha256':sha(HERE/'saved.py'),
         'fixture_raw_sha256':sha(HERE/'fixture_raw.py'),
+        'route_fallbacks_sha256':sha(HERE/'route_fallbacks.py'),
         'measurement_contract_sha256':sha(HERE/'measurement-contract.json'),
         'entries':entries,
         'original_native_observed':False,'delivery_ready':False}

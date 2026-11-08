@@ -19,6 +19,7 @@ from pathlib import Path
 from check import check
 from fixture_raw import build as fixture
 from saved import prepare, measure
+from route_fallbacks import route
 
 class ExactC1Boundary(unittest.TestCase):
     def test_source_and_inclusive_boundary(self):
@@ -41,9 +42,12 @@ class ExactC1Boundary(unittest.TestCase):
             fixture(Path.cwd(),root/'raw')
             receipt=prepare(Path.cwd(),root/'raw',root/'saved',True)
             measured=measure(Path.cwd(),root/'saved')
+            routing=route(Path.cwd(),root/'saved')
             self.assertEqual(receipt['source_kind'],'synthetic_cpu')
             self.assertFalse(measured['requested_distance_is_observed_distance'])
             self.assertFalse(measured['delivery_ready'])
+            self.assertEqual(set(routing['triggers']),{'fallback1','fallback2','fallback3'})
+            self.assertIsNone(routing['selected_fallback'])
 '''
 
 
@@ -55,7 +59,8 @@ def build():
             bundle=HERE/'offline/bundles'/witness/candidate
             names=('assignment-source.json','case-plan.json','unmarked-pass.xodr',
                 'config.json','requested-tracks.jsonl','build.py','check.py',
-                'capture.py','measurement-contract.json','saved.py','fixture_raw.py')
+                'capture.py','measurement-contract.json','saved.py','fixture_raw.py',
+                'route_fallbacks.py')
             files=[{'path':name,'content':(bundle/name).read_text()} for name in names]
             files.append({'path':'tests/test_exact.py','content':TEST})
             construction={'case_id':CASE.name+'__'+witness,

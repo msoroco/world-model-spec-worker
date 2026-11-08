@@ -27,6 +27,7 @@ def audit():
         construction['capture_sha256']==sha(HERE/'capture.py') and
         construction['saved_sha256']==sha(HERE/'saved.py') and
         construction['fixture_raw_sha256']==sha(HERE/'fixture_raw.py') and
+        construction['route_fallbacks_sha256']==sha(HERE/'route_fallbacks.py') and
         construction['measurement_contract_sha256']==sha(HERE/'measurement-contract.json') and
         offline['construction_sha256']==sha(HERE/'manifest.json') and
         proof['positives']==16 and proof['negatives']==40 and
@@ -50,7 +51,8 @@ def audit():
             'build.py':HERE/'build.py','check.py':HERE/'check.py',
             'capture.py':HERE/'capture.py',
             'measurement-contract.json':HERE/'measurement-contract.json',
-            'saved.py':HERE/'saved.py','fixture_raw.py':HERE/'fixture_raw.py'}
+            'saved.py':HERE/'saved.py','fixture_raw.py':HERE/'fixture_raw.py',
+            'route_fallbacks.py':HERE/'route_fallbacks.py'}
         if set(sources)!=set(entry['file_sha256']):
             raise ValueError('copy set')
         for name,source in sources.items():

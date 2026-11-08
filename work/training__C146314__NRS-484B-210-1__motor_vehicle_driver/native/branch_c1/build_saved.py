@@ -36,12 +36,16 @@ def run():
                                  '--bundle', str(bundle), '--saved-folder', str(saved)],
                                 check=True, capture_output=True, text=True)
         measurement = json.loads(result.stdout)
+        routed = subprocess.run([sys.executable, str(bundle/'route_fallbacks.py'),
+                                 '--bundle', str(bundle), '--saved', str(saved)],
+                                check=True, capture_output=True, text=True)
+        routing = json.loads(routed.stdout)
         if measurement['source_kind'] != 'synthetic_cpu' or measurement['delivery_ready']:
             raise ValueError('synthetic result cannot be promoted')
         entries.append({'case_id': entry['case_id'], 'candidate_id': candidate,
                         'raw_hashes': {p.name: sha(p) for p in raw.iterdir() if p.is_file()},
                         'saved_hashes': {p.name: sha(p) for p in saved.iterdir() if p.is_file()},
-                        'measurement': measurement})
+                        'measurement': measurement, 'routing': routing})
     output = {'format': 'c146314-paragraph-c1-synthetic-saved-v1',
               'copied_manifest_sha256': sha(HERE/'offline/manifest.json'),
               'entries': entries, 'original_native_observed': False,

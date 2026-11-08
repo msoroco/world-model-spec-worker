@@ -183,6 +183,12 @@ def measure(bundle, saved_dir):
     cameras = rows(saved_dir/'camera-frames.jsonl')
     reviews = rows(saved_dir/'frame-review.jsonl')
     require(receipt.get('config_sha256') == sha(bundle/'config.json') and
+            receipt.get('source_kind') in ('synthetic_cpu', 'original_native') and
+            receipt.get('original_native_observed') ==
+                (receipt.get('source_kind') == 'original_native') and
+            receipt.get('pavement_condition_verified') is False and
+            receipt.get('legal_verdict') is None and
+            receipt.get('delivery_ready') is False and
             all(receipt['saved_hashes'][name] == sha(saved_dir/name) for name in
                 ('native-observed.jsonl', 'camera-frames.jsonl', 'frame-review.jsonl')) and
             len(observations) == len(cameras) == len(reviews) == 240,
