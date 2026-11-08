@@ -31,6 +31,14 @@ def observed_speed_mps(actor):
     return math.sqrt(sum(component*component for component in components))
 
 
+def conflict_brake_required(ego_x_m, actor_body_xy_m):
+    """Request a junction hold only while the crossing body occupies the path."""
+    if actor_body_xy_m is None or not -18.0 <= ego_x_m <= 7.0:
+        return False
+    return any(-7.0 <= x <= 7.0 and -7.0 <= y <= 7.0
+               for x,y in actor_body_xy_m)
+
+
 def frame_map_row(index,frame,time_s):
     """Preserve both Native and canonical CARLA identities for saved/Core joins."""
     if type(index) is not int or index<0 or type(frame) is not int or frame<0:
@@ -215,6 +223,7 @@ def execute(config, output, host, port):
         parked_history=[]
         other_actor_history=[]
         ego_response_history=[]
+        previous_conflict_override=False
         with (output/"native_samples.jsonl").open("x") as native_file, \
              (output/"body_history.jsonl").open("x") as body_file, \
              (output/"video_frames.jsonl").open("x") as frame_file:
@@ -223,13 +232,17 @@ def execute(config, output, host, port):
                 speed=math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
                 command=controller.step(position_xy_m=(before.location.x,before.location.y),
                     yaw_rad=math.radians(before.rotation.yaw),speed_mps=speed,dt_s=.05)
+                conflict_override=(conflict_actor is not None and
+                    conflict_brake_required(before.location.x,body_xy(conflict_actor)))
+                applied_brake=1.0 if conflict_override else command['brake']
+                applied_throttle=0.0 if conflict_override else command['throttle']
                 if conflict_actor is not None:
                     cross_pose=conflict_actor.get_transform()
-                    cross_command=(carla.VehicleControl(throttle=.24) if cross_pose.location.y < -8.0
+                    cross_command=(carla.VehicleControl(throttle=.24) if cross_pose.location.y < 10.0
                         else carla.VehicleControl(brake=1.0))
                     conflict_actor.apply_control(cross_command)
-                ego.apply_control(carla.VehicleControl(throttle=command["throttle"],
-                    brake=command["brake"],steer=command["steer"],
+                ego.apply_control(carla.VehicleControl(throttle=applied_throttle,
+                    brake=applied_brake,steer=command["steer"],
                     hand_brake=command["hand_brake"]))
                 frame=world.tick();time_s=world.get_snapshot().timestamp.elapsed_seconds-start
                 pose=ego.get_transform();forward=pose.get_forward_vector();body=body_xy(ego)
@@ -252,8 +265,11 @@ def execute(config, output, host, port):
                         'physical_conflict_necessity_claimed':False})
                     observed_velocity=ego.get_velocity()
                     ego_response_history.append({'native_frame':frame,'time_s':time_s,
-                        'brake_applied':command['brake']>0,
+                        'brake_applied':applied_brake>0,
+                        'conflict_brake_override':conflict_override,
+                        'response_onset':conflict_override and not previous_conflict_override,
                         'speed_mps':math.sqrt(observed_velocity.x**2+observed_velocity.y**2+observed_velocity.z**2)})
+                    previous_conflict_override=conflict_override
                 parked_history.append({"video_frame":index,"native_frame":frame,
                     "time_s":time_s,"body_xy_m":body,"speed_m_s":speed})
                 native_file.write(json.dumps(sample,allow_nan=False)+"\n")

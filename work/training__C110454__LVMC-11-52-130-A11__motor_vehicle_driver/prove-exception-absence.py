@@ -36,6 +36,7 @@ def main():
                for index,frame in enumerate(frames)]
         (root/'other_actor_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in actor))
         ego=[{'native_frame':frame,'brake_applied':index==221,
+              'conflict_brake_override':index==221,'response_onset':index==221,
               'speed_mps':4.0 if index<221 else 3.0}
              for index,frame in enumerate(frames)]
         (root/'ego_response_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in ego))
@@ -95,7 +96,7 @@ def main():
                 try:
                     inspect_case(source,suffix,frames)
                 except ValueError as problem:
-                    if 'Ego brake source does not match' not in str(problem):raise
+                    if 'Ego conflict-brake onset does not match' not in str(problem):raise
                 else:raise ValueError('Ego brake negative passed')
                 ego_file.write_text(ego_original)
             elif branch=='compliance_with_law':

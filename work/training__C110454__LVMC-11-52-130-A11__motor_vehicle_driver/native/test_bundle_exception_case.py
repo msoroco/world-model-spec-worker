@@ -13,7 +13,8 @@ class ExceptionCaseProofs(unittest.TestCase):
             (root/'parking.mkv').write_bytes(b'synthetic pixel source')
             (root/'other_actor_history.jsonl').write_text(''.join(json.dumps({'native_frame':frame,'conflict_occupancy':frame==320})+'\n' for frame in frames))
             (root/'ego_response_history.jsonl').write_text(''.join(json.dumps({'native_frame':frame,
-                'brake_applied':index==221,'speed_mps':4.0 if index<221 else 3.0})+'\n'
+                'brake_applied':index==221,'conflict_brake_override':index==221,
+                'response_onset':index==221,'speed_mps':4.0 if index<221 else 3.0})+'\n'
                 for index,frame in enumerate(frames)))
             (root/'device_action_history.jsonl').write_text(''.join(json.dumps({'native_frame':frame,
                 'device_id':'620','device_type':'206','device_road_id':2,

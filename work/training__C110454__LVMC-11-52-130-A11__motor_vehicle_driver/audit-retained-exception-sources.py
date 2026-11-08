@@ -79,11 +79,15 @@ def main():
                 source_rows=[json.loads(line) for line in (path.parent/'ego_response_history.jsonl').read_text().splitlines()]
                 assert len(source_rows)==len(frames)
                 assert [r['native_frame'] for r in source_rows]==frames
-                assert [i for i,r in enumerate(source_rows) if r['brake_applied']]==packet['ego_brake_frames']
+                assert [i for i,r in enumerate(source_rows) if r['response_onset']]==packet['ego_brake_frames']
+                assert all(source_rows[i]['conflict_brake_override'] and source_rows[i]['brake_applied']
+                           for i in packet['ego_brake_frames'])
                 assert source_rows[221]['speed_mps']<source_rows[220]['speed_mps']
                 write(negative,packet)
                 for index,mutation,expected in (
-                    (221,{'brake_applied':False},'Ego brake source does not match'),
+                    (221,{'brake_applied':False},'Ego conflict-brake onset does not match'),
+                    (221,{'conflict_brake_override':False},'Ego conflict-brake onset does not match'),
+                    (221,{'response_onset':False},'Ego conflict-brake onset does not match'),
                     (221,{'speed_mps':4.0},'Ego brake has no measured deceleration'),
                     (221,{'native_frame':9999},'Ego response original frame join differs')):
                     altered_rows=json.loads(json.dumps(source_rows))
@@ -113,7 +117,7 @@ def main():
         checked.append({'case_suffix':suffix,'branch':branch,'polarity':polarity,
                         'source_sha256':sha(path),'positive':True,
                         'controlled_negative':True,'truncated_join_negative':True,
-                        'ego_response_negatives':4 if suffix=='exception_1_2' else 0,
+                        'ego_response_negatives':6 if suffix=='exception_1_2' else 0,
                         'device_action_negatives':5 if suffix=='exception_2_2' else 0})
     proof={'format':'c110454-retained-exception-source-audit-v1','passed':True,
            'synthetic_only':True,'physical_or_legal_applicability':False,'rows':checked}

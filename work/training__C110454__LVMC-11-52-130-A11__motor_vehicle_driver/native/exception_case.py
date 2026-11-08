@@ -78,9 +78,16 @@ def inspect_case(path: Path, suffix: str, original_frames: list[int]):
             active={index for index,r in enumerate(actor_rows) if r.get('conflict_occupancy') is True}
             if not active.intersection(packet.get('other_actor_frames',[])):
                 raise ValueError('Conflict source does not match original actor history')
-            braking={index for index,r in enumerate(ego_rows) if r.get('brake_applied') is True}
-            if braking != set(packet.get('ego_brake_frames',[])):
-                raise ValueError('Ego brake source does not match exception context')
+            braking={index for index,r in enumerate(ego_rows) if r.get('response_onset') is True}
+            if braking != set(packet.get('ego_brake_frames',[])) or any(
+                ego_rows[index].get('conflict_brake_override') is not True or
+                ego_rows[index].get('brake_applied') is not True for index in braking):
+                raise ValueError('Ego conflict-brake onset does not match exception context')
+            for index,r in enumerate(ego_rows):
+                expected_onset=(r.get('conflict_brake_override') is True and
+                                (index==0 or ego_rows[index-1].get('conflict_brake_override') is not True))
+                if r.get('response_onset') is not expected_onset:
+                    raise ValueError('Ego conflict-brake onset differs from override history')
             if not braking or not any(any(abs(a-b)<=1 for a in active) for b in braking):
                 raise ValueError('Ego brake does not overlap the source conflict window')
             for index in braking:
