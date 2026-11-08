@@ -127,6 +127,13 @@ def audit():
     exact_rider_proof=json.loads(exact_rider_run.stdout)
     assert exact_rider_proof['passed'] and exact_rider_proof['candidates']==24
     assert exact_rider_proof['original_native_capture_executed'] is False
+    package_rider_run=subprocess.run([sys.executable,str(work/'audit-rider-package-matrix.py')],
+                                     cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert package_rider_run.returncode==0,(package_rider_run.stdout,package_rider_run.stderr)
+    package_rider_proof=json.loads(package_rider_run.stdout)
+    assert package_rider_proof['passed'] and package_rider_proof['candidates']==24
+    assert package_rider_proof['controlled_pairs']==12
+    assert package_rider_proof['original_native_capture_executed'] is False
     rider_run=subprocess.run([sys.executable,str(work/'audit-rider-yield-timing.py')],
                              cwd=ROOT,capture_output=True,text=True,timeout=120)
     assert rider_run.returncode==0,(rider_run.stdout,rider_run.stderr)

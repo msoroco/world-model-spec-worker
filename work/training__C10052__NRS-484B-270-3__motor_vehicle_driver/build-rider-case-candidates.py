@@ -150,7 +150,7 @@ def main():
             entry={'case_id':case_id,'kind':'draft_not_selected',
                 'candidate_risk':{'status':'physical','reason':'Original Native rider asset class, physical turn, view and facility designation need saved readback'},
                 'measurement_contract':'rider-yield-measurement-contract.json',
-                'measurement_procedure':{'entrypoint':'measure_rider_native.py','output_schema':'c10052-original-rider-conflict-timing-v1'},
+                'measurement_procedure':{'entrypoint':'finalize_rider.py','output_schema':'c10052-saved-rider-conflict-diagnostic-v1'},
                 'candidates':[]}
             for name in NAMES:
                 ref=base if name=='primary' else next(x for x in base['candidates'] if x['id']==name)
@@ -180,11 +180,15 @@ def main():
                             rider_type=rider,rider_response=response)
                         config['required_atoms']=sorted(set(config['required_atoms'])|{'ru.'+rider})
                         config['mandatory_channels']=sorted(set(config['mandatory_channels'])|{'ru.'+rider})
+                        config['recording_description']=candidate['recording_description']
+                        for camera in config['cameras']:
+                            if camera['name']=='facility':
+                                camera['name']='reference_corner'
                         content=json.dumps(config,indent=2)+'\n'
                     elif path=='tests/test_bundle.py':
                         content="import json\nimport unittest\nfrom pathlib import Path\nimport runner\n\nclass ExactRiderCase(unittest.TestCase):\n    def test_check(self):\n        config=json.loads(Path('config.json').read_text())\n        result=runner.check(config)\n        self.assertEqual(result['camera_count'],4)\n        self.assertFalse(result['native_imported'])\n"
                     files.append({'path':path,'content':content})
-                for module in ('alley_geometry','rider_engineering','rider_candidates','measure_rider_yield','measure_rider_native'):
+                for module in ('alley_geometry','rider_engineering','rider_candidates','measure_rider_yield','measure_rider_native','finalize_rider'):
                     files.append({'path':module+'.py','content':(HERE/'native'/(module+'.py')).read_text()})
                 candidate['files']=files
                 path=HERE/'draft-rider-cases'/suffix/name/'construction.json'

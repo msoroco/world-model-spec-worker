@@ -38,8 +38,13 @@ def main():
             assert 'rider_actor.type_id!=asset_ids[rider_type]' in files['runner.py']
             assert 'rider_file.write(json.dumps(rider_row' in files['runner.py']
             assert 'rider_geometry.json' in files['runner.py']
+            assert 'engineering=parameters(rider_type,response,candidate)' in files['runner.py']
+            assert files['rider_candidates.py']==(HERE/'native/rider_candidates.py').read_text()
             assert 'measure_rider_native.py' in files
             assert 'original_native' in files['measure_rider_native.py']
+            assert 'finalize_rider.py' in files
+            assert "source.get('source_kind')=='original_native'" in files['finalize_rider.py']
+            assert "source.get('source_kind')=='synthetic_native_shaped_diagnostic'" in files['finalize_rider.py']
             check=next(x for x in proof['results'] if x['case_id']==case_id and x['candidate_id']==name)
             assert check['construction_sha256']==ref['construction_sha256']
             assert check['exit_code']==0 and sha(HERE/check['command_log'])==check['command_log_sha256']
@@ -60,10 +65,17 @@ def main():
     except ValueError as exc:rejected='Candidate construction changed' in str(exc)
     finally:temp.unlink()
     assert rejected
+    package_path=HERE/'rider-package-matrix-summary.json'
+    package=json.loads(package_path.read_text())
+    assert package['passed'] is True and package['manifest_sha256']==sha(manifest_path)
+    assert len(package['results'])==24
     result={'format':'c10052-exact-rider-independent-audit-v1','passed':True,
             'manifest_sha256':sha(manifest_path),'offline_summary_sha256':sha(HERE/'rider-case-offline-summary.json'),
+            'synthetic_v1_package_matrix_sha256':sha(package_path),
             'cases':6,'candidates':24,'changed_construction_rejected':True,
-            'original_native_capture_executed':False,'package_compatibility_proven':False,
+            'original_native_capture_executed':False,
+            'synthetic_v1_package_compatibility_proven':True,
+            'strict_v2_package_compatibility_proven':False,
             'selected':False,'rows':rows}
     (HERE/'rider-case-independent-audit.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps({k:v for k,v in result.items() if k!='rows'},indent=2))
