@@ -121,6 +121,12 @@ def audit():
         assert set(comparisons[cid]['case_ids'])=={
             ASSIGNMENT+'__rider_'+kind+'_'+response for response in ('clear','conflict')}
     assert all(sha(work/name)==digest for name,digest in rider['cpu_proofs'].items())
+    exact_rider_run=subprocess.run([sys.executable,str(work/'audit-rider-case-candidates.py')],
+                                   cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert exact_rider_run.returncode==0,(exact_rider_run.stdout,exact_rider_run.stderr)
+    exact_rider_proof=json.loads(exact_rider_run.stdout)
+    assert exact_rider_proof['passed'] and exact_rider_proof['candidates']==24
+    assert exact_rider_proof['original_native_capture_executed'] is False
     rider_run=subprocess.run([sys.executable,str(work/'audit-rider-yield-timing.py')],
                              cwd=ROOT,capture_output=True,text=True,timeout=120)
     assert rider_run.returncode==0,(rider_run.stdout,rider_run.stderr)
