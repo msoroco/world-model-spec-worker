@@ -85,6 +85,74 @@
           "measured_trigger": "full body and facility edge visible in under 95% of stopped frames"
         }
       ]
+    },
+    {
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_c_alley_entry",
+      "target_law_id": "NRS-484B-270-3",
+      "kind": "planned_only",
+      "target_type": "entry_attempt",
+      "physical_target": "enter the authored bicycle facility while turning into the alley",
+      "comparison_variable": "moving_full_body_facility_entry",
+      "planning_status": "unselected_exact_cpu_diagnostic",
+      "recorded_value": null,
+      "comparison_unit": "moving occupied frames",
+      "measurement_status": "synthetic saved and exact v1 package proof; original Native designation, exception and delivery acceptance unresolved",
+      "candidate_plans": [
+        {
+          "id": "primary",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "baseline route and capture"
+        },
+        {
+          "id": "fallback1",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "approach runway < 35 m"
+        },
+        {
+          "id": "fallback2",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "turn lateral acceleration > 1.5 m/s2"
+        },
+        {
+          "id": "fallback3",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "turn body visible fraction < 0.95"
+        }
+      ]
+    },
+    {
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_d_no_entry",
+      "target_law_id": "NRS-484B-270-3",
+      "kind": "planned_only",
+      "target_type": "no_entry_control",
+      "physical_target": "continue in driving lane past alley without entering the authored bicycle facility",
+      "comparison_variable": "moving_full_body_facility_entry",
+      "planning_status": "unselected_exact_cpu_diagnostic",
+      "recorded_value": null,
+      "comparison_unit": "moving occupied frames",
+      "measurement_status": "synthetic saved and exact v1 package proof; original Native designation, exception and delivery acceptance unresolved",
+      "candidate_plans": [
+        {
+          "id": "primary",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "baseline route and capture"
+        },
+        {
+          "id": "fallback1",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "approach runway < 45 m"
+        },
+        {
+          "id": "fallback2",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "peak approach speed > 2.2 m/s"
+        },
+        {
+          "id": "fallback3",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "reference body visible fraction < 0.95"
+        }
+      ]
     }
   ],
   "comparisons": [
@@ -100,6 +168,21 @@
       "fixed_conditions": [
         "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
       ]
+    },
+    {
+      "comparison_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__comparison_entry_no_entry",
+      "case_ids": [
+        "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_c_alley_entry",
+        "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_d_no_entry"
+      ],
+      "deliberate_differences": [
+        "facility entry while turning into alley versus straight driving-lane continuation"
+      ],
+      "fixed_conditions": [
+        "same frozen cell, law, actor, authored bicycle facility, 20 Hz 24 s capture, four recording views and candidate identities"
+      ],
+      "evidence": "no-entry-comparison-proof.json plus exact alley and no-entry package audits",
+      "status": "unselected_synthetic_cpu_comparison"
     }
   ],
   "observations": [

@@ -191,9 +191,10 @@ def main():
                     for key in ('approach_runway_to_alley_m','peak_approach_speed_mps',
                                 'reference_body_visibility_fraction','fallback1_trigger_measured',
                                 'fallback2_trigger_measured','fallback3_trigger_measured')) or
-                analysis['measurements']['no_entry_fallback_triggers']['approach_runway_to_alley_m']!=42.0 or
-                analysis['measurements']['no_entry_fallback_triggers']['peak_approach_speed_mps']!=2.5 or
-                analysis['measurements']['no_entry_fallback_triggers']['reference_body_visibility_fraction']!=.866667 or
+                any(analysis['measurements']['no_entry_fallback_triggers'][key]!=measured[key]
+                    for key in ('approach_runway_to_alley_m','peak_approach_speed_mps',
+                                'reference_body_visibility_fraction','fallback1_trigger_measured',
+                                'fallback2_trigger_measured','fallback3_trigger_measured')) or
                 any(analysis['source_sha256'][name]!=sha(root/'fixture'/name) for name in
                     ('native_samples.jsonl','road_geometry.json','camera_visibility.jsonl',
                      'no-entry-trigger-sources.json'))):

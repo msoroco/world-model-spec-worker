@@ -45,11 +45,12 @@ def prepare(root):
     (package/'proposals/cases.json').write_text(json.dumps({'cases':[proposal]})+'\n')
     return package/manifest.name,config['case_id']
 
-def fixture(root):
+def fixture(root,candidate):
     folder=root/'fixture'
     saved.build(folder,full_resolution=True)
-    original=rows(HERE/'no-entry-sources/native_samples.jsonl')
-    geometry=HERE/'no-entry-sources/road_geometry.json'
+    trigger_root=HERE/'no-entry-trigger-sources'/candidate
+    original=rows(trigger_root/'native_samples.jsonl')
+    geometry=trigger_root/'road_geometry.json'
     shutil.copyfile(geometry,folder/'road_geometry.json')
     trace=[];evidence=[];history=[];mapping=[]
     for index,row in enumerate(original):
@@ -66,8 +67,12 @@ def fixture(root):
         ('capture/evidence.jsonl',evidence),('body_history.jsonl',history),
         ('video_frames.jsonl',mapping)):
         write_rows(folder/name,values)
-    shutil.copyfile(HERE/'no-entry-sources/entry-sources.json',folder/'entry-sources.json')
-    shutil.copyfile(HERE/'no-entry-trigger-sources/primary/camera_visibility.jsonl',
+    entry_source={'format':'c10052-entry-sources-v1',
+                  'source_kind':'synthetic_cpu_fixture',
+                  'sha256':{name:sha(folder/name) for name in
+                            ('native_samples.jsonl','road_geometry.json')}}
+    (folder/'entry-sources.json').write_text(json.dumps(entry_source)+'\n')
+    shutil.copyfile(trigger_root/'camera_visibility.jsonl',
                     folder/'camera_visibility.jsonl')
     trigger_source={'format':'c10052-no-entry-trigger-sources-v1',
                     'source_kind':'synthetic_cpu_fixture',
@@ -102,7 +107,7 @@ def main():
     parser.add_argument('--candidate',choices=('primary','fallback1','fallback2','fallback3'),default='primary')
     args=parser.parse_args()
     root=Path(tempfile.mkdtemp(dir=REPO/'.runtime-work',prefix='c10052-no-entry-v1-'))
-    manifest,case=prepare(root);source=fixture(root)
+    manifest,case=prepare(root);source=fixture(root,args.candidate)
     positive=root/'positive'
     receipt=run(manifest,case,source,positive,REPO/'runtime/pipeline/library',
         REPO/'.runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck',args.candidate)
@@ -110,9 +115,13 @@ def main():
     if result['measured_values']['moving_entry_measured'] or result['measured_values']['moving_occupied_frames']:
         raise ValueError('No-entry package yielded moving facility occupancy')
     triggers=json.loads((positive/'analysis-report.json').read_text())['measurements']['no_entry_fallback_triggers']
-    if (triggers['approach_runway_to_alley_m']!=42.0 or
-        triggers['peak_approach_speed_mps']!=2.5 or
-        triggers['reference_body_visibility_fraction']!=.866667 or
+    expected={'primary':(42.0,2.5,.866667),
+              'fallback1':(52.0,2.5,.863415),
+              'fallback2':(42.0,1.8,.866667),
+              'fallback3':(42.0,2.5,1.0)}[args.candidate]
+    if (tuple(triggers[key] for key in
+              ('approach_runway_to_alley_m','peak_approach_speed_mps',
+               'reference_body_visibility_fraction'))!=expected or
         any(result['measured_values'][key]!=triggers[key] for key in
             ('approach_runway_to_alley_m','peak_approach_speed_mps',
              'reference_body_visibility_fraction','fallback1_trigger_measured',
