@@ -45,7 +45,12 @@ def main():
         assert all(abs(r['time_s']-i*.05)<1e-8 for i,r in enumerate(rows))
         assert all(r['rider_actor_id']=='rider-1' and r['rider_type']==rider_type and
                    r['rider_native_road_id']==1 and r['rider_native_lane_id']==-2 and
-                   r['ego_native_road_id']==2 for r in rows)
+                   r['ego_native_road_id'] in (1,2) for r in rows)
+        road_ids=[r['ego_native_road_id'] for r in rows]
+        assert road_ids==sorted(road_ids) and set(road_ids)=={1,2}
+        assert rows[0]['ego_route_index']==0
+        assert all(r['ego_route_index']==360 for r in rows[90:174])
+        assert rows[-1]['ego_route_index']>500
         rider=[i for i,row in enumerate(rows) if crosses(row['rider_body_xy'],box)]
         ego=[i for i,row in enumerate(rows) if crosses(row['ego_body_xy'],box)]
         assert rider and ego
@@ -68,7 +73,7 @@ def main():
         assert clear['rider_trace']==conflict['rider_trace']
         assert clear['last_rider']==conflict['last_rider']==217
         assert clear['first_ego']==262 and conflict['first_ego']==187
-        assert clear['simultaneous']==0 and conflict['simultaneous']==31
+        assert clear['simultaneous']==0 and conflict['simultaneous']==20
     assert len({json.dumps(pairs[t]['clear']['ego_trace']) for t in RIDERS})==1
     assert len({json.dumps(pairs[t]['conflict']['ego_trace']) for t in RIDERS})==1
     return {'passed':True,'rider_identities':list(RIDERS),

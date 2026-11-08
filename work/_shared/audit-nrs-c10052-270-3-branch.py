@@ -127,6 +127,19 @@ def audit():
     rider_proof=json.loads(rider_run.stdout)
     assert rider_proof['passed'] and rider_proof['controlled_pairs']==3
     assert rider_proof['legal_yield_observed'] is False
+    trigger_run=subprocess.run([sys.executable,str(work/'audit-rider-fallback-triggers.py')],
+                               cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert trigger_run.returncode==0,(trigger_run.stdout,trigger_run.stderr)
+    trigger_proof=json.loads(trigger_run.stdout)
+    assert trigger_proof['passed'] and trigger_proof['rows']==24
+    assert trigger_proof['isolated_crossings']==18
+    assert trigger_proof['original_camera_pixels_verified'] is False
+    candidate_run=subprocess.run([sys.executable,str(work/'native/rider_candidates.py')],
+                                 cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert candidate_run.returncode==0,(candidate_run.stdout,candidate_run.stderr)
+    candidate_proof=json.loads(candidate_run.stdout)
+    assert candidate_proof['cases']==6 and candidate_proof['candidates_per_case']==4
+    assert candidate_proof['original_native_actor_verified'] is False
     shared=json.loads((ROOT/'work/_shared/branch-review.json').read_text())
     assert shared['coverage_sha256']==sha(matrix_path)
     assert LAW in shared['missing_branches']

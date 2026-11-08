@@ -54,12 +54,17 @@ def measure(samples_path, geometry_path, manifest_path):
     rider_type = manifest.get('rider_type')
     if rider_type not in RIDERS:
         raise ValueError('Unqualified rider type')
+    if geometry.get('ego_road_ids') != [1, 2]:
+        raise ValueError('Missing authored ego road transition')
     rows = _rows(samples_path)
     if any(row.get('rider_type') != rider_type or row.get('rider_actor_id') != manifest.get('rider_actor_id')
            or row.get('rider_native_road_id') != geometry.get('rider_road_id')
            or row.get('rider_native_lane_id') != geometry.get('rider_lane_id')
-           or row.get('ego_native_road_id') != geometry.get('ego_road_id') for row in rows):
+           or row.get('ego_native_road_id') not in geometry['ego_road_ids'] for row in rows):
         raise ValueError('Original actor or Native road/lane join failed')
+    roads = [row['ego_native_road_id'] for row in rows]
+    if roads != sorted(roads) or set(roads) != {1, 2}:
+        raise ValueError('Original ego road transition missing or reversed')
     rider = [i for i, row in enumerate(rows) if overlap_area(row['rider_body_xy'], conflict) > .01]
     ego = [i for i, row in enumerate(rows) if overlap_area(row['ego_body_xy'], conflict) > .01]
     if not rider or not ego:

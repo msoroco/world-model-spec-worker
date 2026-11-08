@@ -8,33 +8,27 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE / 'native'))
 from measure_rider_yield import RIDERS, measure
+from rider_engineering import CONFLICT_BOUNDS_M, check as route_check, ego_pose, rider_pose
 
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def body(x, y, half_length, half_width, direction):
-    if direction == 'east':
-        return [[x-half_length,y-half_width],[x-half_length,y+half_width],
-                [x+half_length,y+half_width],[x+half_length,y-half_width]]
-    return [[x-half_width,y+half_length],[x+half_width,y+half_length],
-            [x+half_width,y-half_length],[x-half_width,y-half_length]]
-
-
 def rows(rider_type, response):
-    start = 245 if response == 'clear' else 170
     for i in range(480):
-        rider_x = -20 + .2 * max(0, min(i-100, 200))
-        ego_y = 2 - .15 * max(0, min(i-start, 100))
+        rider=rider_pose(i)
+        ego=ego_pose(i,response)
         yield {'native_frame': 1000+i, 'time_s': round(i*.05, 6),
                'rider_type': rider_type, 'rider_actor_id': 'rider-1',
-               'rider_native_road_id': 1, 'rider_native_lane_id': -2,
-               'ego_native_road_id': 2,
-               'rider_body_xy': body(rider_x,-4,1.0,.35,'east'),
-               'ego_body_xy': body(0,ego_y,2.6,.9,'south'),
-               'rider_speed_mps': 4.0 if 100 < i <= 300 else 0.0,
-               'ego_speed_mps': 3.0 if start < i <= start+100 else 0.0}
+               'rider_native_road_id': rider['road_id'],
+               'rider_native_lane_id': rider['lane_id'],
+               'ego_native_road_id': ego['road_id'],
+               'rider_body_xy': rider['body_xy'],
+               'ego_body_xy': ego['body_xy'],
+               'rider_speed_mps': rider['speed_mps'],
+               'ego_speed_mps': ego['speed_mps'],
+               'ego_route_index': ego['route_index']}
 
 
 def write(path, data):
@@ -42,12 +36,13 @@ def write(path, data):
 
 
 def main():
+    route_check()
     scratch = ROOT / '.runtime-work/c10052-rider-yield-timing'
     scratch.mkdir(parents=True, exist_ok=True)
     geometry = {'source_kind': 'authored_native_geometry_proposal',
                 'bicycle_facility_native_xy_bounds_m': [-60,-5,60,-3],
-                'conflict_native_xy_bounds_m': [-2.5,-5,2.5,-3],
-                'rider_road_id': 1, 'rider_lane_id': -2, 'ego_road_id': 2,
+                'conflict_native_xy_bounds_m': list(CONFLICT_BOUNDS_M),
+                'rider_road_id': 1, 'rider_lane_id': -2, 'ego_road_ids': [1,2],
                 'native_readback_verified': False}
     geometry_path = scratch / 'geometry.json'
     write(geometry_path, geometry)
