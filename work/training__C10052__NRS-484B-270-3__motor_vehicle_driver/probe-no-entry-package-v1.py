@@ -67,6 +67,13 @@ def fixture(root):
         ('video_frames.jsonl',mapping)):
         write_rows(folder/name,values)
     shutil.copyfile(HERE/'no-entry-sources/entry-sources.json',folder/'entry-sources.json')
+    shutil.copyfile(HERE/'no-entry-trigger-sources/primary/camera_visibility.jsonl',
+                    folder/'camera_visibility.jsonl')
+    trigger_source={'format':'c10052-no-entry-trigger-sources-v1',
+                    'source_kind':'synthetic_cpu_fixture',
+                    'sha256':{name:sha(folder/name) for name in
+                              ('native_samples.jsonl','road_geometry.json','camera_visibility.jsonl')}}
+    (folder/'no-entry-trigger-sources.json').write_text(json.dumps(trigger_source)+'\n')
     (folder/'alley-transition-sources.json').unlink()
     for channel in (folder/'channels').glob('*.jsonl'):
         name=channel.stem
@@ -102,6 +109,15 @@ def main():
     result=json.loads((positive/'result.json').read_text())
     if result['measured_values']['moving_entry_measured'] or result['measured_values']['moving_occupied_frames']:
         raise ValueError('No-entry package yielded moving facility occupancy')
+    triggers=json.loads((positive/'analysis-report.json').read_text())['measurements']['no_entry_fallback_triggers']
+    if (triggers['approach_runway_to_alley_m']!=42.0 or
+        triggers['peak_approach_speed_mps']!=2.5 or
+        triggers['reference_body_visibility_fraction']!=.866667 or
+        any(result['measured_values'][key]!=triggers[key] for key in
+            ('approach_runway_to_alley_m','peak_approach_speed_mps',
+             'reference_body_visibility_fraction','fallback1_trigger_measured',
+             'fallback2_trigger_measured','fallback3_trigger_measured'))):
+        raise ValueError('Exact package fallback trigger measurement differs')
     negative=root/'negative'
     materialize_case(manifest,case,negative,source,args.candidate)
     (negative/'entry-sources.json').unlink()
@@ -112,6 +128,16 @@ def main():
     (root/'negative.log').write_text(failure.stdout)
     if failure.returncode==0 or 'entry-sources.json' not in failure.stdout:
         raise ValueError('Exact no-entry missing-source negative did not reject')
+    trigger_negative=root/'trigger-negative'
+    materialize_case(manifest,case,trigger_negative,source,args.candidate)
+    (trigger_negative/'no-entry-trigger-sources.json').unlink()
+    trigger_failure=subprocess.run([sys.executable,str(trigger_negative/'finalize_no_entry.py'),
+        '--attempt',str(trigger_negative),'--output',str(trigger_negative/'analysis-report.json')],
+        cwd=trigger_negative,env=execution_env(),text=True,stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,timeout=300)
+    (root/'trigger-negative.log').write_text(trigger_failure.stdout)
+    if trigger_failure.returncode==0 or 'no-entry-trigger-sources.json' not in trigger_failure.stdout:
+        raise ValueError('Exact no-entry missing trigger source negative did not reject')
     summary={'format':'c10052-no-entry-unselected-exact-v1-probe',
         'source_root':root.relative_to(REPO).as_posix(),'candidate_id':args.candidate,
         'manifest_sha256':sha(manifest),'construction_sha256':receipt['construction_sha256'],
@@ -119,6 +145,8 @@ def main():
         'positive_receipt_sha256':sha(positive/'compatibility.json'),
         'positive_analysis_sha256':sha(positive/'analysis-report.json'),
         'negative_exit_code':failure.returncode,'negative_log_sha256':sha(root/'negative.log'),
+        'trigger_negative_exit_code':trigger_failure.returncode,
+        'trigger_negative_log_sha256':sha(root/'trigger-negative.log'),
         'selected':False,'accepted':False}
     (HERE/('no-entry-package-'+args.candidate+'-summary.json')).write_text(json.dumps(summary,indent=2)+'\n')
     print(json.dumps(summary,indent=2))

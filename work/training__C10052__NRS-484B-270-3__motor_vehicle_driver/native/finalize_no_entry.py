@@ -6,6 +6,7 @@ import shutil
 
 from finalize import verify_original_joins, video_frames, sha
 from measure_entry import measure
+from measure_no_entry_triggers import evaluate as measure_triggers
 
 
 def entry_observation(attempt):
@@ -30,6 +31,7 @@ def finalize(attempt, output):
     original = verify_original_joins(attempt, 480)
     observation = entry_observation(attempt)
     entry = observation['value']
+    triggers = measure_triggers(attempt)
     videos = [name+'.mkv' for name in
               ('overview', 'approach', 'reference_corner', 'driver_reference')]
     counts = {name: video_frames(attempt/name) for name in videos}
@@ -64,14 +66,20 @@ def finalize(attempt, output):
         'measured_values': {
             'moving_entry_measured': entry['moving_entry_measured'],
             'moving_occupied_frames': entry['moving_occupied_frames'],
-            'straight_route_traversed': traversed},
+            'straight_route_traversed': traversed,
+            **{key: triggers[key] for key in (
+                'approach_runway_to_alley_m', 'peak_approach_speed_mps',
+                'reference_body_visibility_fraction', 'reference_body_visible_frames',
+                'reference_sampled_frames', 'fallback1_trigger_measured',
+                'fallback2_trigger_measured', 'fallback3_trigger_measured')}},
         'target_checks': [{'target': 'straight-through control with no moving full-body facility entry',
             'requested': True, 'measured': no_entry,
             'method': 'source-hashed original-frame body polygon and authored facility bounds',
             'tolerance': 'zero moving occupied frames over 480 frames and x crossing -40 to +10 m',
             'matched': no_entry, 'physical_cause_confirmed': False,
             'cause_evidence': ['native_samples.jsonl', 'road_geometry.json',
-                               'entry-sources.json']}],
+                               'entry-sources.json', 'camera_visibility.jsonl',
+                               'no-entry-trigger-sources.json']}],
         'setup_confirmed': False, 'behavior_attempted': True,
         'maneuver_completed': no_entry,
         'termination_reason': 'full source duration retained',
@@ -84,16 +92,34 @@ def finalize(attempt, output):
             'value': entry['moving_occupied_frames'], 'unit': 'frames',
             'method': 'source-bound moving body overlap with facility polygon',
         'time_window': 'entire 480-frame source attempt', 'statistic': 'count',
-            'reference': 'native_samples.jsonl', 'sample_window_s': [0.05, 24.0]}},
+            'reference': 'native_samples.jsonl', 'sample_window_s': [0.05, 24.0]},
+            'approach_runway_to_alley': {
+                'value': triggers['approach_runway_to_alley_m'], 'unit': 'm',
+                'method': 'source-bound first center to alley entrance distance',
+                'time_window': 'first source frame', 'statistic': 'distance',
+                'reference': 'no-entry-trigger-sources.json', 'sample_window_s': [0.05, 0.05]},
+            'peak_approach_speed': {
+                'value': triggers['peak_approach_speed_mps'], 'unit': 'm/s',
+                'method': 'source-bound Native speed for center x=-20 to 0 m',
+                'time_window': 'approach x=-20 to 0 m', 'statistic': 'maximum',
+                'reference': 'native_samples.jsonl', 'sample_window_s': [0.05, 24.0]},
+            'reference_body_visibility': {
+                'value': triggers['reference_body_visibility_fraction'], 'unit': 'fraction',
+                'method': 'source-bound visible frame fraction for center x=-20 to 10 m',
+                'time_window': 'approach x=-20 to 10 m', 'statistic': 'fraction',
+                'reference': 'camera_visibility.jsonl', 'sample_window_s': [0.05, 24.0]}},
         'provenance_kind': 'native', 'accepted': False, 'legal_verdict_claimed': False}
     from worker_exchange.native_output import validate_result
     validate_result(result)
     report = {'format': 'c10052-no-entry-saved-diagnostic-v1',
         'case_id': config['case_id'], 'candidate_id': config['candidate_id'],
-        'measurements': {'moving_body_facility_entry': observation},
+        'measurements': {'moving_body_facility_entry': observation,
+                         'no_entry_fallback_triggers': triggers},
         'original_joins': original, 'video_frames': counts,
         'source_sha256': {'native_samples.jsonl': sha(attempt/'native_samples.jsonl'),
-            'road_geometry.json': sha(attempt/'road_geometry.json')},
+            'road_geometry.json': sha(attempt/'road_geometry.json'),
+            'camera_visibility.jsonl': sha(attempt/'camera_visibility.jsonl'),
+            'no-entry-trigger-sources.json': sha(attempt/'no-entry-trigger-sources.json')},
         'scope': ('synthetic saved CPU diagnostic' if entry['source_kind']=='synthetic_cpu_fixture'
                   else 'original Native saved diagnostic')+
             '; no statutory exception verdict or acceptance'}

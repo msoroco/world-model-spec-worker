@@ -24,16 +24,22 @@ def evaluate(folder):
     samples=[json.loads(line) for line in (folder/'native_samples.jsonl').read_text().splitlines() if line.strip()]
     visibility=[json.loads(line) for line in (folder/'camera_visibility.jsonl').read_text().splitlines() if line.strip()]
     if len(samples)!=480 or len(visibility)!=480:raise ValueError('No-entry trigger duration differs')
-    speeds=[];visible=0;sampled=0
+    speeds=[];visible=0;sampled=0;first_frame=None;previous_time=None
     for index,(sample,view) in enumerate(zip(samples,visibility)):
         frame,time=sample.get('native_frame'),sample.get('time_s')
+        if first_frame is None:first_frame=frame
         if (type(frame) is not int or type(time) not in (int,float) or
-            frame!=1000+index or abs(time-(index+1)*.05)>1e-5 or
+            not math.isfinite(time) or
+            type(first_frame) is not int or first_frame<0 or
+            frame!=first_frame+index or
+            (previous_time is None and abs(time-.05)>.002) or
+            (previous_time is not None and abs(time-previous_time-.05)>.002) or
             view.get('native_frame')!=frame or view.get('time_s')!=time or
             type(view.get('body_visible')) is not bool or
             sample.get('native_road_id')!=geometry['road_id'] or
             sample.get('native_lane_id')!=geometry['driving_lane_id']):
             raise ValueError('No-entry trigger original frame/time/road join differs')
+        previous_time=time
         if source['source_kind']=='original_native' and (sample.get('synthetic_diagnostic') or view.get('synthetic_diagnostic')):
             raise ValueError('Synthetic trigger samples cannot be original Native')
         x,y=sample['native_center_xy_m'];speed=sample['speed_mps']

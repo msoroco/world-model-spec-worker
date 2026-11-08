@@ -13,6 +13,15 @@
   }],
   "negative": {"remove": ["entry-sources.json"],
                "error_contains": "Missing required source: entry-sources.json"},
+  "additional_negative": {"remove": ["no-entry-trigger-sources.json"],
+                          "error_contains": "Missing required source: no-entry-trigger-sources.json"},
+  "saved_trigger_procedure": {
+    "entrypoint": "finalize_no_entry.py",
+    "method": "measure_no_entry_triggers.evaluate",
+    "inputs": ["native_samples.jsonl", "road_geometry.json", "camera_visibility.jsonl", "no-entry-trigger-sources.json"],
+    "outputs": ["approach_runway_to_alley_m", "peak_approach_speed_mps", "reference_body_visibility_fraction", "fallback1_trigger_measured", "fallback2_trigger_measured", "fallback3_trigger_measured"],
+    "scope": "frame-joined saved diagnostics in result.json and analysis-report.json"
+  },
   "fallback_trigger_measurements": [
     {"candidate": "fallback1", "output_key": "approach_runway_to_alley_m",
      "source": "native_samples.jsonl plus road_geometry.json",

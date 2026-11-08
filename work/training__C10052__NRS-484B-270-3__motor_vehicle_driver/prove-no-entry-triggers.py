@@ -57,6 +57,24 @@ def main():
             raise ValueError('Baseline no-entry triggers were not measured')
         if name!='primary' and result['fallback'+name[-1]+'_trigger_measured']:
             raise ValueError('Changed no-entry candidate did not clear its trigger')
+        if name=='primary':
+            shifted=folder/'shifted';shifted.mkdir(exist_ok=True)
+            shutil.copyfile(folder/'road_geometry.json',shifted/'road_geometry.json')
+            shifted_samples=json.loads(json.dumps(samples))
+            shifted_views=json.loads(json.dumps(views))
+            for row in shifted_samples:row['native_frame']+=317
+            for row in shifted_views:row['native_frame']+=317
+            write_rows(shifted/'native_samples.jsonl',shifted_samples)
+            write_rows(shifted/'camera_visibility.jsonl',shifted_views)
+            write(shifted/'no-entry-trigger-sources.json',{
+                'format':'c10052-no-entry-trigger-sources-v1','source_kind':'synthetic_cpu_fixture',
+                'sha256':{p:sha(shifted/p) for p in
+                    ('native_samples.jsonl','road_geometry.json','camera_visibility.jsonl')}})
+            shifted_result=module.evaluate(shifted)
+            if any(result[key]!=shifted_result[key] for key in
+                ('approach_runway_to_alley_m','peak_approach_speed_mps',
+                 'reference_body_visibility_fraction')):
+                raise ValueError('Native frame offset changed trigger measurements')
         negative=folder/'negative';shutil.copytree(folder,negative,ignore=shutil.ignore_patterns('negative'))
         (negative/'camera_visibility.jsonl').write_bytes((negative/'camera_visibility.jsonl').read_bytes()+b' ')
         try:module.evaluate(negative)
@@ -65,7 +83,8 @@ def main():
         else:raise ValueError('Changed visibility source passed unexpectedly')
         outputs.append({'candidate':name,'construction_sha256':sha(construction_path),
             'meter_sha256':sha(meter_path),'source_sha256':sha(folder/'no-entry-trigger-sources.json'),
-            'measurements':result,'changed_visibility_negative':True})
+            'measurements':result,'changed_visibility_negative':True,
+            'arbitrary_native_frame_start_passed':name!='primary' or shifted_result['approach_runway_to_alley_m']==result['approach_runway_to_alley_m']})
         shutil.rmtree(negative)
     proof={'format':'c10052-no-entry-trigger-proof-v1','passed':True,
         'manifest_sha256':sha(HERE/'draft-no-entry-execution-manifest.json'),

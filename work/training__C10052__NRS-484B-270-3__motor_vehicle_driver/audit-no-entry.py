@@ -154,7 +154,8 @@ def main():
             measured['fallback1_trigger_measured']!=(runway<45) or
             measured['fallback2_trigger_measured']!=(peak>2.2) or
             measured['fallback3_trigger_measured']!=(fraction<.95) or
-            trigger_row['changed_visibility_negative'] is not True):
+            trigger_row['changed_visibility_negative'] is not True or
+            trigger_row['arbitrary_native_frame_start_passed'] is not True):
             raise ValueError('Independent no-entry trigger measurement differs')
         summary_path=HERE/('no-entry-package-'+candidate+'-summary.json')
         if not summary_path.is_file():
@@ -163,6 +164,7 @@ def main():
             package=json.loads(summary_path.read_text())
             root=REPO/package['source_root']
             positive=root/'positive';negative_log=root/'negative.log'
+            trigger_negative_log=root/'trigger-negative.log'
             compatibility=json.loads((positive/'compatibility.json').read_text())
             result=json.loads((positive/'result.json').read_text())
             analysis=json.loads((positive/'analysis-report.json').read_text())
@@ -174,6 +176,9 @@ def main():
                 package['negative_log_sha256']!=sha(negative_log) or
                 package['negative_exit_code']==0 or
                 'entry-sources.json' not in negative_log.read_text() or
+                package['trigger_negative_log_sha256']!=sha(trigger_negative_log) or
+                package['trigger_negative_exit_code']==0 or
+                'no-entry-trigger-sources.json' not in trigger_negative_log.read_text() or
                 compatibility.get('passed') is not True or
                 compatibility['construction_sha256']!=sha(construction) or
                 set(compatibility['checks'])!={'actual_analysis','native_validation',
@@ -181,11 +186,22 @@ def main():
                     'acquisition_unchanged'} or
                 result['measured_values']['moving_entry_measured'] is not False or
                 result['measured_values']['moving_occupied_frames']!=0 or
-                analysis['measurements']['moving_body_facility_entry']['value']['moving_entry_measured'] is not False):
+                analysis['measurements']['moving_body_facility_entry']['value']['moving_entry_measured'] is not False or
+                any(result['measured_values'][key]!=analysis['measurements']['no_entry_fallback_triggers'][key]
+                    for key in ('approach_runway_to_alley_m','peak_approach_speed_mps',
+                                'reference_body_visibility_fraction','fallback1_trigger_measured',
+                                'fallback2_trigger_measured','fallback3_trigger_measured')) or
+                analysis['measurements']['no_entry_fallback_triggers']['approach_runway_to_alley_m']!=42.0 or
+                analysis['measurements']['no_entry_fallback_triggers']['peak_approach_speed_mps']!=2.5 or
+                analysis['measurements']['no_entry_fallback_triggers']['reference_body_visibility_fraction']!=.866667 or
+                any(analysis['source_sha256'][name]!=sha(root/'fixture'/name) for name in
+                    ('native_samples.jsonl','road_geometry.json','camera_visibility.jsonl',
+                     'no-entry-trigger-sources.json'))):
                 raise ValueError('No-entry exact package receipt differs')
             package_receipts.append({'candidate':candidate,
                                      'receipt_sha256':sha(positive/'compatibility.json'),
-                                     'negative_log_sha256':sha(negative_log)})
+                                     'negative_log_sha256':sha(negative_log),
+                                     'trigger_negative_log_sha256':sha(trigger_negative_log)})
     return {'format':'c10052-no-entry-independent-audit-v1','passed':True,
             'frames':len(rows),'maximum_moving_overlap_m2':max(areas),
             'controlled_entry_frames':occupied,
