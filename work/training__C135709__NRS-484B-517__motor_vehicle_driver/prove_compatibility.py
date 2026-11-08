@@ -13,6 +13,9 @@ def run(folder,script='check.py'):
     args=['--bundle',str(folder)] if script=='check.py' else [str(folder)]
     return subprocess.run([sys.executable,str(folder/script),*args],
         capture_output=True,text=True,timeout=20)
+def run_args(folder,script,args):
+    return subprocess.run([sys.executable,str(folder/script),*map(str,args)],
+        capture_output=True,text=True,timeout=20)
 
 def prove():
     manifest_path=CASE/'offline'/'manifest.json'
@@ -37,6 +40,45 @@ def prove():
             raise AssertionError('C135709 copied trigger rejected or overclaimed: '+routed.stderr)
         saved_positives.append({'case_id':entry['case_id'],
             'candidate_id':entry['candidate_id'],'script':'triggers.py','passed':True})
+        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            raw=Path(temporary)/'raw';prepared=Path(temporary)/'prepared'
+            fixture=run_args(folder,'fixture_raw.py',
+                ['--bundle',folder,'--output-dir',raw])
+            converted=run_args(folder,'prepare_raw.py',
+                ['--bundle',folder,'--raw-folder',raw,
+                 '--output-dir',prepared,'--synthetic-cpu']) if fixture.returncode==0 else fixture
+            measured_raw=run_args(folder,'measure_prepared.py',
+                ['--bundle',folder,'--saved-dir',prepared]) if converted.returncode==0 else converted
+            if (fixture.returncode or converted.returncode or measured_raw.returncode or
+                json.loads(converted.stdout)['delivery_ready'] or
+                json.loads(measured_raw.stdout)['delivery_ready']):
+                raise AssertionError('C135709 raw-to-saved proof failed: '+
+                    fixture.stderr+converted.stderr+measured_raw.stderr)
+            saved_positives.append({'case_id':entry['case_id'],
+                'candidate_id':entry['candidate_id'],
+                'script':'prepare_raw.py + measure_prepared.py','passed':True})
+            video=raw/'video_frames.jsonl';lines=video.read_text().splitlines()
+            row=json.loads(lines[71]);row['native_frame']+=1
+            lines[71]=json.dumps(row);video.write_text('\n'.join(lines)+'\n')
+            if run_args(folder,'prepare_raw.py',
+                ['--bundle',folder,'--raw-folder',raw,'--output-dir',
+                 Path(temporary)/'altered','--synthetic-cpu']).returncode==0:
+                raise AssertionError('C135709 changed raw video frame accepted')
+            saved_negatives.append({'case_id':entry['case_id'],
+                'candidate_id':entry['candidate_id'],
+                'mutation':'raw_video_frame','rejected':True})
+        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            raw=Path(temporary)/'raw'
+            if run_args(folder,'fixture_raw.py',
+                ['--bundle',folder,'--output-dir',raw]).returncode:
+                raise AssertionError('C135709 raw fixture failed')
+            if run_args(folder,'prepare_raw.py',
+                ['--bundle',folder,'--raw-folder',raw,
+                 '--output-dir',Path(temporary)/'original']).returncode==0:
+                raise AssertionError('C135709 missing original FFV1 accepted')
+            saved_negatives.append({'case_id':entry['case_id'],
+                'candidate_id':entry['candidate_id'],
+                'mutation':'missing_original_media','rejected':True})
         with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
             altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
             path=altered/'saved'/'camera-frames.jsonl'

@@ -23,6 +23,10 @@ def build():
                 'check.py':NATIVE/'check.py',
                 'measure_saved.py':NATIVE/'measure_saved.py',
                 'triggers.py':NATIVE/'triggers.py',
+                'capture.py':NATIVE/'capture.py',
+                'fixture_raw.py':NATIVE/'fixture_raw.py',
+                'prepare_raw.py':NATIVE/'prepare_raw.py',
+                'measure_prepared.py':NATIVE/'measure_prepared.py',
                 'assignment-source.json':ROOT/'inputs'/CASE.name/'assignment.json',
                 'case-plan.json':CASE/'case-plan.json'}
             for name in ('native-observed.jsonl','camera-frames.jsonl','stand-review.jsonl','stand-readback.json'):
