@@ -50,7 +50,7 @@ def build():
     planned = {case["case_id"] for case in plan["cases"]}
     assert set(CASE_MAP.values()).issubset(planned)
     files = {name: (HERE/"native"/name).read_text() for name in
-             ("runner.py", "geometry.py", "engineering.py", "controller.py", "cameras.py", "finalize.py")}
+             ("runner.py", "geometry.py", "engineering.py", "controller.py", "cameras.py", "finalize.py", "measure_geometry.py")}
     files["authored-sign-source.json"] = (HERE/"draft-native-sources/authored-sign.json").read_text()
     files["tests/test_bundle.py"] = (
         "import json\nimport unittest\nfrom pathlib import Path\nimport runner\n"
@@ -87,7 +87,8 @@ def build():
         entry = {"case_id": case_id, "kind": "draft_not_selected",
                  "candidate_risk": {"status": "physical", "reason": "Bicycle asset, sign, rider posture, route and pixels need original Native readback"},
                  "measurement_contract": "draft-measurement-contract.json",
-                 "measurement_procedure": {"entrypoint": "finalize.py", "output_schema": "c104538-lvmc-synthetic-saved-mounted-diagnostic-v1"},
+                 "measurement_procedure": {"entrypoint": "finalize.py", "output_schema": "c104538-lvmc-synthetic-saved-mounted-diagnostic-v1",
+                     "original_geometry_entrypoint": "measure_geometry.py", "original_geometry_scope": "unreviewed posture; unaccepted"},
                  "candidates": []}
         for name in NAMES:
             config = {"case_id": case_id, "selected_case_id": case_id,
