@@ -1,53 +1,56 @@
 {
-  "format": "c104538-lvmc-1140080-draft-measurement-contract-v1",
-  "scope": "unselected synthetic CPU diagnostic",
-  "law_id": "LVMC-11-40-080",
-  "cell_id": "C104538",
   "actor": "cycle_or_scooter_operator",
+  "cell_id": "C104538",
   "controlled_cases": [
     "mounted_obey",
     "mounted_turn"
   ],
+  "cpu_proofs": {
+    "exact_offline_manifest_sha256": "99014bd53d2a15c89fdf2c390bab312df4c0038712d4a356a6ac8337bafd172f",
+    "independent_package_audit_sha256": "9106523bafbf89b271e0ba8e71ce2ca64bde131a1f43c1da11dd25ddbd1b341e",
+    "negative_count": 8,
+    "offline_audit_sha256": "ab0278e7e3546b150ffa9731de49f3317411dd14db58583ee875495aac99ad0a",
+    "positive_count": 8,
+    "scope": "unselected synthetic software diagnostic",
+    "synthetic_v1_package_index_sha256": "6735b7917ee6ecfd62402d77e1481642759ef121ccb7bb3560a280f9deecaa2e"
+  },
+  "delivery_proofs_required": [
+    "exact pinned offline primary and three distinct fallback bundles",
+    "saved positive and changed-source negative compatibility",
+    "independent original-source audit",
+    "selected strict v2 receipt",
+    "accepted delivery audit"
+  ],
   "exception_control": "dismounted_turn",
-  "source_inputs": [
-    "draft-native-source-manifest.json",
-    "draft-native-sources/authored-sign.json",
-    "draft-native-sources/*.jsonl"
-  ],
-  "sample_rate_hz": 20,
+  "fallback_triggers": {
+    "fallback1": {
+      "fallback": 42,
+      "metric": "approach_runway_m",
+      "primary": 27,
+      "threshold": "under 35 m"
+    },
+    "fallback2": {
+      "fallback": 5,
+      "metric": "release_error_frames",
+      "primary": 0,
+      "threshold": "over 3 frames"
+    },
+    "fallback3": {
+      "fallback": 1.0,
+      "metric": "scripted_visibility",
+      "primary": 0.9,
+      "threshold": "below 0.95"
+    }
+  },
+  "format": "c104538-lvmc-1140080-draft-measurement-contract-v1",
   "frames_per_source": 480,
-  "positive_cpu_checks": [
-    "frame/time and rider-machine identity joins",
-    "governing sign ID/road/lane join",
-    "mounted posture during turning",
-    "dismount before exception turn",
-    "four fixed-context controlled triplets"
-  ],
+  "law_id": "LVMC-11-40-080",
+  "legal_outcome": "unresolved",
   "negative_cpu_checks": [
     "changed sign ID",
     "changed frame identity",
     "contradictory posture"
   ],
-  "fallback_triggers": {
-    "fallback1": {
-      "metric": "approach_runway_m",
-      "threshold": "under 35 m",
-      "primary": 27,
-      "fallback": 42
-    },
-    "fallback2": {
-      "metric": "release_error_frames",
-      "threshold": "over 3 frames",
-      "primary": 0,
-      "fallback": 5
-    },
-    "fallback3": {
-      "metric": "scripted_visibility",
-      "threshold": "below 0.95",
-      "primary": 0.9,
-      "fallback": 1.0
-    }
-  },
   "original_proofs_required": [
     "Native sign asset and authorization provenance",
     "Native sign orientation and governed approach",
@@ -57,22 +60,19 @@
     "four original source cameras and decoded sign/rider visibility",
     "pedestrian-rule compliance for exception"
   ],
-  "delivery_proofs_required": [
-    "exact pinned offline primary and three distinct fallback bundles",
-    "saved positive and changed-source negative compatibility",
-    "independent original-source audit",
-    "selected strict v2 receipt",
-    "accepted delivery audit"
+  "positive_cpu_checks": [
+    "frame/time and rider-machine identity joins",
+    "governing sign ID/road/lane join",
+    "mounted posture during turning",
+    "dismount before exception turn",
+    "four fixed-context controlled triplets"
   ],
-  "legal_outcome": "unresolved",
   "ready": false,
-  "cpu_proofs": {
-    "exact_offline_manifest_sha256": "d72aafc63f7d34f0afd75e72b96a486cc14481f1c7b5457886c29aeb3953f137",
-    "offline_audit_sha256": "5b7b4447f7b122e6547c9809390c293a8815a555bbe6bd92e92ce68902bd240f",
-    "synthetic_v1_package_index_sha256": "0fe50a9fb2c937969f242f577db35203c48c7c710e8d45c241b0fbf471072376",
-    "independent_package_audit_sha256": "43e20b90f8f5540c35dfd361c7dd85a76ed51857a7229148977540e142ba95e8",
-    "positive_count": 8,
-    "negative_count": 8,
-    "scope": "unselected synthetic software diagnostic"
-  }
+  "sample_rate_hz": 20,
+  "scope": "unselected synthetic CPU diagnostic",
+  "source_inputs": [
+    "draft-native-source-manifest.json",
+    "draft-native-sources/authored-sign.json",
+    "draft-native-sources/*.jsonl"
+  ]
 }

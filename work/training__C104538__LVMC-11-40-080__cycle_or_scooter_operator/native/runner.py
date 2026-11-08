@@ -136,6 +136,18 @@ def _write_json_new(path, value):
         stream.write('\n')
 
 
+def rider_observation_row(index, sample, sign, actor_id):
+    """Retain geometry and identity without inventing rider posture or a turn."""
+    x, y = sample['native_center_xy_m']
+    return {'frame': index, 'time_s': sample['time_s'], 'actor_id': str(actor_id),
+            'machine_class': 'bicycle', 'x_m': x, 'y_m': y,
+            'sign_id': sign['id'], 'road_id': sign['governs_road'],
+            'approach_lane_id': sign['governs_lane'],
+            'mounted': None, 'walking_machine': None, 'u_turn_active': None,
+            'posture_source': 'original_pixel_review_pending',
+            'turn_source': 'saved_geometry_review_pending'}
+
+
 def execute(case_suffix, candidate_id, output_dir, host, port):
     """Capture unaccepted original sources on an exclusively owned CARLA world.
 
@@ -187,6 +199,13 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
         world.set_weather(carla.WeatherParameters.ClearNoon)
         mapping = world.get_map()
         survey = map_survey(carla, mapping)
+        sign_source = ROOT / 'authored-sign-source.json'
+        sign = json.loads(sign_source.read_text())
+        if sign['code'] != 'no_u_turn' or sign['governs_road'] != 1 or sign['governs_lane'] != -1:
+            raise RuntimeError('Authored sign source differs from Native survey contract')
+        if len(survey['landmark_readback']) != 1:
+            raise RuntimeError('Native authored sign landmark readback incomplete')
+        shutil.copyfile(sign_source, output / 'authored-sign.json')
         native_xml = mapping.to_opendrive()
         survey['native_map_sha256'] = hashlib.sha256(native_xml.encode()).hexdigest()
         _write_json_new(output / 'road_geometry.json', survey)
@@ -244,7 +263,8 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
         start = world.get_snapshot().timestamp.elapsed_seconds
         with (output / 'native_samples.jsonl').open('x') as native_file, \
              (output / 'video_frames.jsonl').open('x') as frame_file, \
-             (output / 'body_history.jsonl').open('x') as body_file:
+             (output / 'body_history.jsonl').open('x') as body_file, \
+             (output / 'rider_native_samples.jsonl').open('x') as rider_file:
             for index in range(480):
                 before = ego.get_transform()
                 speed = observed_speed_mps(ego)
@@ -280,6 +300,8 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                     'speed_mps': observed_speed, 'controller_request': command}
                 capture.capture(frame, time_s, extra={'c104538_native': sample})
                 native_file.write(json.dumps(sample, allow_nan=False) + '\n')
+                rider_file.write(json.dumps(rider_observation_row(index, sample, sign, ego.id),
+                                            allow_nan=False) + '\n')
                 body_file.write(json.dumps({'frame': frame, 'time_s': time_s,
                     'body_vertices_m': [[v.x, v.y, v.z] for v in
                         ego.bounding_box.get_world_vertices(pose)]}, allow_nan=False) + '\n')
@@ -372,6 +394,21 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                              'physical_acceptance_claimed': False})
             except BaseException as exc:
                 error = {'capture_seal_error': str(exc)}
+        if error is None and frames == 480:
+            try:
+                _write_json_new(output / 'rider-source-manifest.json', {
+                    'source_kind': 'original_native_capture_unreviewed',
+                    'case_suffix': case_suffix, 'candidate_id': candidate_id,
+                    'rider_samples_sha256': hashlib.sha256(
+                        (output / 'rider_native_samples.jsonl').read_bytes()).hexdigest(),
+                    'sign_sha256': hashlib.sha256(
+                        (output / 'authored-sign.json').read_bytes()).hexdigest(),
+                    'original_native_capture_executed': True,
+                    'mounted_posture_verified': False,
+                    'turn_from_saved_geometry_verified': False,
+                    'official_sign_authorization_verified': False})
+            except BaseException as exc:
+                error = {'rider_source_manifest_error': str(exc)}
         _write_json_new(output / 'native-capture-report.json', {
             'case_suffix': case_suffix, 'candidate_id': candidate_id,
             'frames': frames, 'expected_frames': 480,

@@ -51,6 +51,7 @@ def build():
     assert set(CASE_MAP.values()).issubset(planned)
     files = {name: (HERE/"native"/name).read_text() for name in
              ("runner.py", "geometry.py", "engineering.py", "controller.py", "cameras.py", "finalize.py")}
+    files["authored-sign-source.json"] = (HERE/"draft-native-sources/authored-sign.json").read_text()
     files["tests/test_bundle.py"] = (
         "import json\nimport unittest\nfrom pathlib import Path\nimport runner\n"
         "class Bundle(unittest.TestCase):\n"
@@ -61,6 +62,18 @@ def build():
         "        self.assertEqual(len(p['camera_views']),4)\n"
         "        self.assertFalse(p['native_imported'])\n"
         "        self.assertTrue(p['native_capture_pending'])\n")
+    files["tests/test_rider_source.py"] = (
+        "import json\nimport unittest\nfrom pathlib import Path\nimport runner\n"
+        "class RiderSource(unittest.TestCase):\n"
+        "    def test_unreviewed_original_row(self):\n"
+        "        sign=json.loads(Path('authored-sign-source.json').read_text())\n"
+        "        sample={'native_center_xy_m':[1.25,4.0],'time_s':.05}\n"
+        "        row=runner.rider_observation_row(1,sample,sign,107)\n"
+        "        self.assertEqual((row['actor_id'],row['sign_id']),('107',sign['id']))\n"
+        "        self.assertIsNone(row['mounted'])\n"
+        "        self.assertIsNone(row['walking_machine'])\n"
+        "        self.assertIsNone(row['u_turn_active'])\n"
+        "        self.assertEqual(row['posture_source'],'original_pixel_review_pending')\n")
     desc = description()
     manifest = {"format": "worker-unselected-draft-construction-manifest-v1",
                 "assignment_id": AID, "runtime_manifest_sha256": RUNTIME_SHA,
