@@ -110,6 +110,15 @@ def audit():
     assert exception_c_proof['causal_negatives']==8 and exception_c_proof['changed_frame_negatives']==8
     assert len(exception_c_proof['controlled_pairs'])==4
     assert exception_c_proof['original_native_verified'] is False
+    for script, receipt, count_key in (
+        ('audit-exception-c-case-candidates.py', 'exception-c-case-independent-audit.json', 'candidates'),
+        ('audit-exception-c-packages-v1.py', 'exception-c-package-audit-v1.json', 'positive_package_receipts')):
+        completed=subprocess.run([sys.executable,str(work/script)],cwd=ROOT,
+                                 capture_output=True,text=True,timeout=120)
+        assert completed.returncode==0,(completed.stdout,completed.stderr)
+        proof=json.loads((work/receipt).read_text())
+        assert proof['passed'] and proof[count_key]==8
+        assert proof['original_native_capture_executed'] is False
     park=next(b for b in branches if b['branch_id'].endswith('__prohibition_park'))
     park_cases={ASSIGNMENT+'__probe_park_released',ASSIGNMENT+'__probe_park_held'}
     assert set(park['case_ids'])==park_cases<=cases

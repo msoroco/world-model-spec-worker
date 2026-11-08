@@ -141,7 +141,8 @@ def execute(config,output,host,port):
         write_new(output/'context.json',{'surveyed_bicycle_facility_and_alley':survey})
         requested_exception_context={
             'source_kind':'synthetic_scene_request',
-            'exceptions':{key:False for key in (
+            'exceptions':{key:(key=='avoiding_traffic_conflict' and
+                               config['case_suffix']=='exception_c_avoid') for key in (
                 'entering_or_exiting_alley_or_driveway','disabled_vehicle',
                 'avoiding_traffic_conflict','official_duties','police_direction',
                 'emergency')},
@@ -150,8 +151,9 @@ def execute(config,output,host,port):
             **requested_exception_context,
             'requested_exception_context':requested_exception_context})
         suffix=config['case_suffix'];candidate=config['candidate_id']
-        engineering=parameters(candidate)
-        start=engineering['approach_start_x_m']
+        response=suffix.removeprefix('exception_c_')
+        engineering=policy(response,candidate)
+        start=engineering['ego_start_x_m']
         blueprint=world.get_blueprint_library().find('vehicle.lincoln.mkz_2020')
         blueprint.set_attribute('role_name','c10052_facility_ego')
         ego=world.spawn_actor(blueprint,carla.Transform(
@@ -161,31 +163,38 @@ def execute(config,output,host,port):
         initial=body_xy(ego)
         if not all(-3<y<0 for x,y in initial):
             raise RuntimeError('Original vehicle body not contained in driving lane at spawn')
-        pedestrian_bp=next((bp for bp in world.get_blueprint_library().filter('walker.pedestrian.*')),
-                           None)
-        if pedestrian_bp is None:raise RuntimeError('Pedestrian control blueprint missing')
-        pedestrian_bp.set_attribute('role_name','c10052_pedestrian_control')
-        pedestrian=world.spawn_actor(pedestrian_bp,carla.Transform(
-            carla.Location(x=8,y=-4,z=.5),carla.Rotation(yaw=0)))
-        owned.append(pedestrian)
+        conflict_actor=None
+        if response=='avoid':
+            conflict_bp=world.get_blueprint_library().find('vehicle.audi.a2')
+            if conflict_bp is None or conflict_bp.id!='vehicle.audi.a2':
+                raise RuntimeError('Exact Native other-traffic asset unavailable')
+            conflict_bp.set_attribute('role_name','c10052_conflict_traffic')
+            conflict_actor=world.spawn_actor(conflict_bp,carla.Transform(
+                carla.Location(x=0,y=-1.5,z=.5),carla.Rotation(yaw=0)))
+            if conflict_actor.type_id!='vehicle.audi.a2':
+                raise RuntimeError('Native other-traffic actor class differs')
+            owned.append(conflict_actor)
+            conflict_actor.apply_control(carla.VehicleControl(brake=1,hand_brake=True))
         wheels=ego.get_physics_control().wheels
         if len(wheels)!=4:raise RuntimeError('Native vehicle wheel geometry unverified')
         wheelbase=(max(w.position.x for w in wheels)-min(w.position.x for w in wheels))/100
         max_steer=max(w.max_steer_angle for w in wheels)
-        knobs=EngineeringKnobs(target_speed_mps=engineering['turn_speed_mps'],
-            final_brake_mps2=engineering['turn_speed_mps']**2/(2*6.0),
+        target_speed=5.0
+        knobs=EngineeringKnobs(target_speed_mps=target_speed,
+            final_brake_mps2=target_speed**2/(2*6.0),
             final_margin_m=0)
-        native_route=[list(p) for p in
-                      (route if suffix=='probe_c_alley_entry' else route_no_entry)(start)]
+        native_route=[list(p) for p in route(start,response,
+                                             engineering['diversion_start_frame'])]
         controller=PathController(native_route,wheelbase,max_steer,knobs)
         write_new(output/'native-construction-context.json',{
             'case_id':config['case_id'],'candidate_id':candidate,
             'native_map_sha256':native_hash,'vehicle_blueprint':ego.type_id,
             'wheelbase_m':wheelbase,'max_steer_deg':max_steer,
             'initial_body_xy_native_m':initial,'controller_knobs':vars(knobs),
-            'requested_stop_xy_m':([0,-12] if suffix=='probe_c_alley_entry' else [15,-1.5]),
+            'requested_end_xy_m':[55,-1.5],
             'requested_route_points':len(native_route),
-            'pedestrian_control_blueprint':pedestrian.type_id,
+            'conflict_actor_blueprint':conflict_actor.type_id if conflict_actor else None,
+            'conflict_actor_id':conflict_actor.id if conflict_actor else None,
             'physical_success_claimed':False})
         for spec in alley_camera_plan(candidate):
             camera_bp=world.get_blueprint_library().find('sensor.camera.rgb')
@@ -203,7 +212,7 @@ def execute(config,output,host,port):
                 '-r','20','-i','pipe:0','-an','-c:v','ffv1','-level','1',
                 str(output/(spec['name']+'.mkv'))],stdin=subprocess.PIPE,
                 stderr=encoder_logs[spec['name']])
-        if suffix=='probe_d_no_entry':
+        if False:  # Only the four contracted RGB cameras are requested.
             reference=next(spec for spec in alley_camera_plan(candidate)
                            if spec['name']=='reference_corner')
             instance_bp=world.get_blueprint_library().find('sensor.camera.instance_segmentation')
@@ -228,7 +237,8 @@ def execute(config,output,host,port):
         for name in config['mandatory_channels']:
             channels[name]=(output/'channels'/(name+'.jsonl')).open('x')
         start_time=world.get_snapshot().timestamp.elapsed_seconds
-        with (output/'native_samples.jsonl').open('x') as native_file, \
+        with (output/'exception_c_native_samples.jsonl').open('x') as traffic_file, \
+             (output/'native_samples.jsonl').open('x') as native_file, \
              (output/'body_history.jsonl').open('x') as body_file, \
              (output/'video_frames.jsonl').open('x') as frame_file:
             for index in range(config['duration_s']*config['rate_hz']):
@@ -257,6 +267,16 @@ def execute(config,output,host,port):
                     'controller_request':command}
                 capture.capture(frame,time_s,extra={'c10052_native':sample})
                 native_file.write(json.dumps(sample,allow_nan=False)+'\n')
+                conflict_body=body_xy(conflict_actor) if conflict_actor else []
+                traffic_row={'native_frame':frame,'time_s':time_s,
+                    'ego_center_xy':[pose.location.x,pose.location.y],
+                    'ego_body_xy':body,
+                    'conflict_actor_active':conflict_actor is not None,
+                    'conflict_actor_id':conflict_actor.id if conflict_actor else None,
+                    'conflict_actor_blueprint':conflict_actor.type_id if conflict_actor else None,
+                    'conflict_actor_body_xy':conflict_body,
+                    'ego_native_road_id':lane.road_id,'ego_native_lane_id':lane.lane_id}
+                traffic_file.write(json.dumps(traffic_row,allow_nan=False)+'\n')
                 vertices=ego.bounding_box.get_world_vertices(pose)
                 body_file.write(json.dumps({'frame':frame,'time_s':time_s,
                     'body_vertices_m':[[v.x,v.y,v.z] for v in vertices]},allow_nan=False)+'\n')
@@ -265,9 +285,10 @@ def execute(config,output,host,port):
                     'rel.occupies':body,'kin.extent':{'body_xy_m':body},
                     'kin.position':sample['native_center_xy_m'],'ego_speed':speed,
                     'drv.standing_or_parked':{'observed_speed_mps':speed,
-                        'requested_stop_xy_m':([0,-12] if suffix=='probe_c_alley_entry' else [15,-1.5])},
-                    'ru.pedestrian':{'native_actor_id':pedestrian.id,
-                        'native_xy_m':[pedestrian.get_location().x,pedestrian.get_location().y]},
+                        'requested_stop_xy_m':[55,-1.5]},
+                    'ru.vehicle':{'native_actor_id':conflict_actor.id if conflict_actor else None,
+                        'native_blueprint':conflict_actor.type_id if conflict_actor else None,
+                        'native_body_xy_m':conflict_body},
                     'exception_context':{'source':'exception_context.json',
                         'observed_exception_status':'unresolved'},
                     'native_body_pose_control':sample,
@@ -282,7 +303,7 @@ def execute(config,output,host,port):
                     rgb=np.frombuffer(image.raw_data,dtype=np.uint8).reshape(
                         spec['height'],spec['width'],4)[:,:,:3][:,:,::-1]
                     encoders[spec['name']].stdin.write(rgb.tobytes())
-                if suffix=='probe_d_no_entry':
+                if False:
                     image=camera_queues['reference_instance'].get(timeout=30)
                     while image.frame<frame:
                         image=camera_queues['reference_instance'].get(timeout=30)
@@ -294,6 +315,13 @@ def execute(config,output,host,port):
                 frame_file.write(json.dumps(frame_map_row(index,frame,time_s))+'\n')
                 frames+=1
         if frames!=480:raise RuntimeError('Original frame count incomplete')
+        write_new(output/'exception-c-source-manifest.json',{
+            'format':'c10052-original-traffic-conflict-sources-v1',
+            'source_kind':'original_native','accepted':False,
+            'conflict_actor_id':conflict_actor.id if conflict_actor else None,
+            'conflict_actor_blueprint':conflict_actor.type_id if conflict_actor else None,
+            'samples_sha256':hashlib.sha256((output/'exception_c_native_samples.jsonl').read_bytes()).hexdigest(),
+            'road_geometry_sha256':hashlib.sha256((output/'road_geometry.json').read_bytes()).hexdigest()})
         write_new(output/'entry-sources.json',{'format':'c10052-entry-sources-v1',
             'source_kind':'original_native',
             'sha256':{name:hashlib.sha256((output/name).read_bytes()).hexdigest()
@@ -335,7 +363,7 @@ def execute(config,output,host,port):
                 composed=compose_four_views(sources,output/'video_frames.jsonl',output/'raw.mkv')
                 write_new(output/'four-view-receipt.json',composed)
             except BaseException as exc:error={'four_view_composition_error':str(exc)}
-        if error is None and frames==480 and config['case_suffix']=='probe_d_no_entry':
+        if False:
             try:
                 from measure_reference_pixels import measure as measure_pixels
                 write_new(output/'reference-pixel-sources.json',{
@@ -379,7 +407,7 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true')
     parser.add_argument('--output-dir');parser.add_argument('--host');parser.add_argument('--port',type=int)
     args=parser.parse_args()
-    config=json.loads((ROOT/'alley-native-config.json').read_text())
+    config=json.loads((ROOT/'config.json').read_text())
     if args.check:print(json.dumps(check(config),allow_nan=False))
     else:
         if not args.output_dir or not args.host or not args.port:
