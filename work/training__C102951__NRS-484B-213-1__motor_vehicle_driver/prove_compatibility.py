@@ -33,9 +33,15 @@ def invoke_preparer(bundle, raw, output):
                           text=True, capture_output=True, timeout=30)
 
 
+def invoke_response(bundle, saved):
+    return subprocess.run([sys.executable, str(bundle/'measure_response.py'), str(saved)],
+                          text=True, capture_output=True, timeout=30)
+
+
 def prove():
     manifest = json.loads((CASE/'offline'/'manifest.json').read_text())
     positives, negatives, preparation_positives, preparation_negatives = [], [], [], []
+    response_positives, response_negatives = [], []
     for entry in manifest['entries']:
         folder = CASE/entry['bundle']
         actual = {name: sha(folder/name) for name in entry['sha256']}
@@ -84,6 +90,26 @@ def prove():
                                               'candidate_id': 'primary',
                                               'prepared_saved_hashes': receipt['saved_hashes'],
                                               'passed': True})
+                response = invoke_response(folder, root/'prepared')
+                if response.returncode != 0:
+                    raise AssertionError(response.stderr)
+                response_result = json.loads(response.stdout)
+                if (response_result['source_hashes'] != receipt['saved_hashes'] or
+                        response_result['delivery_ready'] or
+                        response_result['response']['oncoming']['five_frame_hard_deceleration_count'] != 0):
+                    raise AssertionError('Copied response measurement differs')
+                response_positives.append({'case_id': entry['case_id'],
+                                           'source_hashes': response_result['source_hashes'],
+                                           'passed': True})
+                altered_saved = root/'changed-saved'
+                shutil.copytree(root/'prepared', altered_saved)
+                saved_rows = altered_saved/'native-observed.jsonl'
+                saved_rows.write_bytes(saved_rows.read_bytes()+b' ')
+                changed = invoke_response(folder, altered_saved)
+                if changed.returncode == 0:
+                    raise AssertionError('Copied response accepted altered saved rows')
+                response_negatives.append({'case_id': entry['case_id'],
+                                           'mutation': 'saved_rows_bytes', 'rejected': True})
                 changed_raw = root/'changed-raw'
                 shutil.copytree(raw, changed_raw)
                 (changed_raw/'forward-video-stub.txt').write_text('altered copied video bytes\n')
@@ -100,6 +126,8 @@ def prove():
              'positives': positives, 'negatives': negatives,
              'saved_preparation_positives': preparation_positives,
              'saved_preparation_negatives': preparation_negatives,
+             'copied_response_positives': response_positives,
+             'copied_response_negatives': response_negatives,
              'original_native_observed': False, 'delivery_ready': False}
     path = CASE/'offline'/'proof-compatibility.json'
     path.write_text(json.dumps(proof, indent=2)+'\n')

@@ -15,6 +15,7 @@ def audit():
              'branch_source_sha256':ROOT/'inputs/coverage/branch-sources.json',
              'case_plan_sha256':CASE/'case-plan.json',
              'pass_proof_sha256':CASE/'native/pass-proof.json'}
+    sources['response_proof_sha256']=CASE/'native/response-proof.json'
     if review['format']!='c102951-statutory-review-v1' or review['assignment_id']!=AID or any(review[k]!=sha(v) for k,v in sources.items()) or review['topic_count']!=2 or len(review['candidate_topic_rows'])!=6 or any(review[k] for k in ('original_native_observed','legal_coverage_ready','delivery_ready')):
         raise ValueError('Passing statutory review identity differs')
     topics=json.loads(sources['branch_source_sha256'].read_text())['laws']['NRS-484B-213-1']['topics']
@@ -43,6 +44,8 @@ def audit():
             rows_checked+=480
         if (row['saved_actor_sha256'],row['synthetic_entry_gap_m'],row['synthetic_first_nonpositive_gap_frame'],row['synthetic_return_frame'])!=cache[d]:
             raise ValueError('Passing statutory saved metric differs')
+        if row['synthetic_oncoming_speed_drop_mps']!=0 or row['synthetic_overtaken_speed_drop_mps']!=0:
+            raise ValueError('Constant-speed saved response differs')
     if seen!=expected or rows_checked!=1440:raise ValueError('Passing statutory coverage incomplete')
     result={'format':'c102951-independent-statutory-audit-v1','topics':2,'rows':6,
             'saved_rows_checked':rows_checked,'review_sha256':sha(path),

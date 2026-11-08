@@ -4,6 +4,16 @@
   "law_id": "NRS-484B-213-1",
   "entrypoint": "measure_pass.py",
   "original_preparation_entrypoint": "prepare_pass.py",
+  "saved_response_entrypoint": "measure_response.py",
+  "vehicle_response": {
+    "actors": ["oncoming", "overtaken"],
+    "baseline": "median speed over the first 20 saved frames before left entry",
+    "phase": "inclusive first left-of-center frame through first return-after-pass frame",
+    "speed_drop": "nonnegative baseline median minus minimum left-phase speed, separately for each actor",
+    "acceleration": "saved speed difference over five frames (0.25 s), evaluated at each left-phase frame",
+    "hard_deceleration_engineering_threshold_mps2": -3.0,
+    "interpretation": "observed kinematics only; no causal attribution, interference or legal safe-distance conclusion"
+  },
   "cases": [70, 120, 170],
   "sampling_rate_hz": 20,
   "frames": 480,

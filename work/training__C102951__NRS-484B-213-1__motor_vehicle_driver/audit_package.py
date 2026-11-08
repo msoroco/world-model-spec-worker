@@ -35,6 +35,11 @@ def run_preparer(bundle, raw, output):
                           text=True, capture_output=True, timeout=30)
 
 
+def run_response(bundle, saved):
+    return subprocess.run([sys.executable, str(bundle/'measure_response.py'), str(saved)],
+                          text=True, capture_output=True, timeout=30)
+
+
 def audit():
     manifest_path = CASE/'offline'/'manifest.json'
     manifest = json.loads(manifest_path.read_text())
@@ -59,7 +64,12 @@ def audit():
             len(proof.get('saved_preparation_negatives', [])) != 3 or
             not all(item['rejected'] is True for item in proof['saved_preparation_negatives'])):
         raise ValueError('Copied saved-preparation coverage differs')
+    if (len(proof.get('copied_response_positives', [])) != 3 or
+            len(proof.get('copied_response_negatives', [])) != 3 or
+            not all(item['rejected'] is True for item in proof['copied_response_negatives'])):
+        raise ValueError('Copied response coverage differs')
     checks, rejections, preparation_checks, preparation_rejections = 0, 0, 0, 0
+    response_checks, response_rejections = 0, 0
     for entry in manifest['entries']:
         distance, candidate = entry['distance_m'], entry['candidate_id']
         folder = CASE/entry['bundle']
@@ -77,6 +87,7 @@ def audit():
             'case-plan.json': CASE/'case-plan.json',
             'runner.py': CASE/'native'/'runner.py',
             'measure_pass.py': CASE/'native'/'measure_pass.py',
+            'measure_response.py': CASE/'native'/'measure_response.py',
             'prepare_pass.py': CASE/'native'/'prepare_pass.py',
             'triggers.py': CASE/'native'/'triggers.py',
             'measurement-contract.json': CASE/'native'/'measurement-contract.json'}
@@ -122,6 +133,24 @@ def audit():
                 if expected_receipt['prepared_saved_hashes'] != receipt['saved_hashes']:
                     raise ValueError('Copied saved preparation hash differs from proof')
                 preparation_checks += 1
+                response = run_response(folder, root/'prepared')
+                if response.returncode != 0:
+                    raise ValueError('Copied response failed: '+response.stderr)
+                measured = json.loads(response.stdout)
+                expected_response = next(item for item in proof['copied_response_positives']
+                                         if item['case_id'] == entry['case_id'])
+                if (measured['source_hashes'] != receipt['saved_hashes'] or
+                        measured['source_hashes'] != expected_response['source_hashes'] or
+                        measured['delivery_ready']):
+                    raise ValueError('Copied response source or status differs')
+                response_checks += 1
+                changed_saved = root/'changed-saved'
+                shutil.copytree(root/'prepared', changed_saved)
+                rows = changed_saved/'native-observed.jsonl'
+                rows.write_bytes(rows.read_bytes()+b' ')
+                if run_response(folder, changed_saved).returncode == 0:
+                    raise ValueError('Copied response accepted altered saved rows')
+                response_rejections += 1
                 changed_raw = root/'changed-raw'
                 shutil.copytree(raw, changed_raw)
                 (changed_raw/'forward-video-stub.txt').write_text('independent altered video\n')
@@ -135,6 +164,8 @@ def audit():
                'altered_source_rejections_replayed': rejections,
                'copied_saved_preparations_checked': preparation_checks,
                'copied_video_rejections_replayed': preparation_rejections,
+               'copied_responses_checked': response_checks,
+               'copied_response_rejections_replayed': response_rejections,
                'original_native_observed': False, 'delivery_ready': False}
     (CASE/'offline'/'package-audit.json').write_text(json.dumps(receipt, indent=2)+'\n')
     return receipt
