@@ -121,6 +121,9 @@ def execute(bundle,output,host,port):
             carla.Rotation(yaw=0)))
         if lead is None:raise RuntimeError('C146314 lead spawn failed')
         owned.append(lead)
+        lead_signal=bool(cfg.get('lead_left_signal_requested',False))
+        lead.set_light_state(carla.VehicleLightState.LeftBlinker if lead_signal
+                             else carla.VehicleLightState(0))
         obstruction=None
         if cfg['right_lane_obstruction_requested']:
             matches=library.filter('static.prop.trafficcone*')
@@ -193,6 +196,8 @@ def execute(bundle,output,host,port):
                     'observed_lead_road_id':None if lwp is None else lwp.road_id,
                     'observed_lead_lane_id':None if lwp is None else lwp.lane_id,
                     'ego':pose(ego),'lead':pose(lead),
+                    'requested_lead_left_signal':lead_signal,
+                    'observed_lead_light_state':int(lead.get_light_state()),
                     'obstruction':None if obstruction is None else pose(obstruction),
                     'one_way_designation_verified':False,
                     'pavement_condition_verified':False,
