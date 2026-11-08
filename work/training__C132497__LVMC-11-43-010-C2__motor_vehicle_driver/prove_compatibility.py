@@ -1,0 +1,74 @@
+"""Run copied C132497 request and saved positives plus altered-source controls."""
+import hashlib
+import json
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import tempfile
+
+CASE=Path(__file__).resolve().parent
+
+def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+def run(folder,script,args):
+    return subprocess.run([sys.executable,str(folder/script),*map(str,args)],
+        capture_output=True,text=True,timeout=20)
+
+def prove():
+    manifest_path=CASE/'offline'/'manifest.json'
+    manifest=json.loads(manifest_path.read_text())
+    positives=[];negatives=[];saved_positives=[];saved_negatives=[]
+    for entry in manifest['entries']:
+        folder=CASE/entry['bundle']
+        if entry['sha256']!={name:sha(folder/name) for name in entry['sha256']}:
+            raise ValueError('C132497 copied bytes differ')
+        request=run(folder,'check.py',['--bundle',folder])
+        if request.returncode or json.loads(request.stdout)['delivery_ready']:
+            raise AssertionError('C132497 copied request rejected or overclaimed: '+request.stderr)
+        positives.append({'case_id':entry['case_id'],'candidate_id':entry['candidate_id'],
+            'config_sha256':sha(folder/'config.json'),'passed':True})
+        measured=run(folder,'measure_saved.py',[folder])
+        if measured.returncode or json.loads(measured.stdout)['delivery_ready']:
+            raise AssertionError('C132497 copied saved rejected or overclaimed: '+measured.stderr)
+        saved_positives.append({'case_id':entry['case_id'],
+            'candidate_id':entry['candidate_id'],'passed':True})
+        routed=run(folder,'triggers.py',[folder])
+        if routed.returncode or json.loads(routed.stdout)['delivery_ready']:
+            raise AssertionError('C132497 copied trigger rejected or overclaimed: '+routed.stderr)
+        saved_positives.append({'case_id':entry['case_id'],
+            'candidate_id':entry['candidate_id'],'script':'triggers.py','passed':True})
+        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
+            path=altered/'saved'/'camera-frames.jsonl'
+            lines=path.read_text().splitlines();row=json.loads(lines[71]);row['camera_frame']+=1
+            lines[71]=json.dumps(row);path.write_text('\n'.join(lines)+'\n')
+            if run(altered,'measure_saved.py',[altered]).returncode==0:
+                raise AssertionError('C132497 changed saved camera join accepted')
+            saved_negatives.append({'case_id':entry['case_id'],
+                'candidate_id':entry['candidate_id'],'mutation':'camera_frame','rejected':True})
+            if run(altered,'triggers.py',[altered]).returncode==0:
+                raise AssertionError('C132497 changed trigger camera join accepted')
+            saved_negatives.append({'case_id':entry['case_id'],
+                'candidate_id':entry['candidate_id'],'mutation':'trigger_camera_frame','rejected':True})
+        for mutation,name in (('track','requested-tracks.jsonl'),
+            ('assignment','assignment-source.json'),('road','right-exit-road.xodr'),
+            ('plan','case-plan.json')):
+            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+                altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
+                path=altered/name;path.write_bytes(path.read_bytes()+b' ')
+                if run(altered,'check.py',['--bundle',altered]).returncode==0:
+                    raise AssertionError('C132497 changed source accepted: '+mutation)
+                negatives.append({'case_id':entry['case_id'],
+                    'candidate_id':entry['candidate_id'],'mutation':mutation,'rejected':True})
+    proof={'format':'c132497-compatibility-proof-v1',
+        'manifest_sha256':sha(manifest_path),'positives':positives,
+        'negatives':negatives,'saved_positives':saved_positives,
+        'saved_negatives':saved_negatives,'original_native_observed':False,
+        'delivery_ready':False}
+    (CASE/'offline'/'proof-compatibility.json').write_text(json.dumps(proof,indent=2)+'\n')
+    return proof
+
+if __name__=='__main__':
+    x=prove();print(json.dumps({'positives':len(x['positives']),
+        'negatives':len(x['negatives']),'saved_positives':len(x['saved_positives']),
+        'saved_negatives':len(x['saved_negatives'])}))

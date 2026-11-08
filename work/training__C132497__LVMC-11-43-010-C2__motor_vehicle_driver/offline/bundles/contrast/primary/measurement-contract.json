@@ -1,0 +1,39 @@
+{
+  "format": "c132497-right-exit-measurement-contract-v1",
+  "assignment_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver",
+  "rate_hz": 20,
+  "frames": 240,
+  "case_variable": "observed right-lane occupancy while a vehicle actually takes the intended right-turn exit",
+  "fixed_context": "same authored entry, clockwise arc, right exit, actor, weather, frame timing, speed and camera policy within each candidate pair",
+  "reference_request": "lane -2, rightmost of two driving lanes; arc centerline radius 16.75 m",
+  "contrast_request": "lane -1, other driving lane; arc centerline radius 20.25 m",
+  "fallback1_trigger": "fewer than 20 visible right-lane frames among first 40 saved frames: slower request",
+  "fallback2_trigger": "observed lane-center deviation above 0.2 m: elevated overview request",
+  "fallback3_trigger": "physical roundabout, right-lane marking or actual exit unverified: stop before circulation request",
+  "required_original_evidence": [
+    "generated Native map and physical two-lane roundabout readback",
+    "240 synchronized actual actor pose, speed, body vertices, lane ID and camera frames",
+    "full-body occupancy of the right circulating lane through an actual right-turn exit",
+    "observed entry-to-exit heading vector and source-hashed human camera review",
+    "same-condition measured reference/contrast pair and exact statutory review"
+  ],
+  "request_limit": "Eight authored CPU trajectories are unselected proposals. The clockwise quarter arc and exit are not a physically verified roundabout or an observed turn.",
+  "status": "cpu_request_unselected",
+  "saved_processor": "measure_saved.py: exact 240-frame synthetic actor/camera/road/lane/body joins; measured phase, lane containment and visibility; original Native acceptance pending",
+  "fallback_router": "triggers.py: first-40-frame visibility, observed center deviation and physical/lane/exit readback gates; no candidate selected",
+  "controlled_saved_comparison": "compare_saved.py: four same-map, same-speed, same-frame and same-camera synthetic pairs varying requested rightmost versus other circulating lane",
+  "native_capture_contract": {
+    "entrypoint": "capture.py --bundle BUNDLE --output-dir NEW_DIR --host HOST --port PORT",
+    "world": "exclusive idle asynchronous CARLA world; generated right-exit OpenDRIVE and prior-world restoration",
+    "outputs": [
+      "native-map-readback.json",
+      "native-raw-actors.jsonl",
+      "video_frames.jsonl",
+      "forward.mkv",
+      "overview.mkv",
+      "native-capture-report.json",
+      "PipelineCapture rows"
+    ],
+    "capture_limit": "Free-driving attempt is unexecuted. Actual right exit, physical roundabout, right-lane allocation, accepted recording and legal verdict remain pending."
+  }
+}
