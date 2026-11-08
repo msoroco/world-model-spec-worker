@@ -22,6 +22,12 @@
     "saved_phase_measurements": ["entry_frame_count", "circulation_frame_count", "exit_frame_count", "full_body_circulation_lane_frames", "left_lane_visible_frames"],
     "stop_policy": "fallback3 remains on entry road; the other six candidate requests reach the authored exit road"
   },
+  "native_capture_contract": {
+    "entrypoint": "runner.py --bundle BUNDLE --output-dir NEW_DIR --host HOST --port PORT",
+    "world": "exclusive idle asynchronous CARLA world; generate connected-road.xodr and restore prior world after attempt",
+    "outputs": ["native-map-readback.json", "native-raw-actors.jsonl", "video_frames.jsonl", "forward.mkv", "overview.mkv", "native-capture-report.json", "PipelineCapture rows"],
+    "capture_limit": "Free-driving controller attempts the connected path; observed poses, body vertices, lane IDs and synchronized videos require later original saved processing and source-backed physical/legal review"
+  },
   "request_limit": "The copied bundle retains the earlier ring-only trace for comparison and includes a connected entry, arc, and exit request. Both remain authored or synthetic CPU evidence; neither establishes a physical roundabout, original Native left exit, or legal verdict",
   "status": "cpu_request_unselected"
 }

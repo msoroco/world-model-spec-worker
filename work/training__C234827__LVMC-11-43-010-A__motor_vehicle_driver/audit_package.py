@@ -59,6 +59,7 @@ def audit():
             'island-geometry.json':NATIVE/'island-geometry.json',
             'measurement-contract.json':NATIVE/'measurement-contract.json',
             'runner.py':NATIVE/'runner.py',
+            'capture.py':NATIVE/'capture.py',
             'measure_saved.py':NATIVE/'measure_saved.py',
             'triggers.py':NATIVE/'triggers.py',
             'compare_saved.py':NATIVE/'compare_saved.py',
@@ -72,6 +73,7 @@ def audit():
                 entry['sha256']!={name:sha(path) for name,path in mapping.items()} or
                 entry['status']!='unselected_native_request'):
             raise ValueError('LVMC copied source bytes differ')
+        compile((folder/'capture.py').read_text(),str(folder/'capture.py'),'exec')
         result=run(folder)
         if result.returncode!=0 or json.loads(result.stdout)['requested_frames']!=240:
             raise ValueError('LVMC copied CPU check differs')

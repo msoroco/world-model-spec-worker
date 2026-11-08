@@ -1,4 +1,4 @@
-"""CPU exact-bundle checker for unselected LVMC roundabout requests."""
+"""CPU exact-bundle checker and unaccepted Native capture entrypoint."""
 import argparse
 import hashlib
 import json
@@ -73,7 +73,15 @@ def check(bundle):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('--check',action='store_true',required=True)
+    parser.add_argument('--check',action='store_true')
     parser.add_argument('--bundle',type=Path,required=True)
+    parser.add_argument('--output-dir',type=Path)
+    parser.add_argument('--host')
+    parser.add_argument('--port',type=int)
     args=parser.parse_args()
-    print(json.dumps(check(args.bundle)))
+    if args.check:print(json.dumps(check(args.bundle)))
+    else:
+        if not args.output_dir or not args.host or not args.port:
+            parser.error('Native capture requires --output-dir, --host and --port')
+        from capture import execute
+        execute(args.bundle,args.output_dir,args.host,args.port,check(args.bundle))

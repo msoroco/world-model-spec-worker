@@ -31,6 +31,7 @@ def prove():
         folder=CASE/entry['bundle']
         if entry['sha256']!={name:sha(folder/name) for name in entry['sha256']}:
             raise ValueError('LVMC copied bundle bytes differ')
+        compile((folder/'capture.py').read_text(),str(folder/'capture.py'),'exec')
         result=run(folder)
         if result.returncode!=0:raise AssertionError(result.stderr)
         checked=json.loads(result.stdout)

@@ -25,6 +25,7 @@ def build():
                 'island-geometry.json':NATIVE/'island-geometry.json',
                 'measurement-contract.json':NATIVE/'measurement-contract.json',
                 'runner.py':NATIVE/'runner.py',
+                'capture.py':NATIVE/'capture.py',
                 'measure_saved.py':NATIVE/'measure_saved.py',
                 'triggers.py':NATIVE/'triggers.py',
                 'compare_saved.py':NATIVE/'compare_saved.py',
