@@ -17,6 +17,14 @@ def original_measure(attempt,source,samples,state,config):
     if state=='faulted' and not fault['fault_readback']:
         raise ValueError('Original fault did not read back')
     p=policy(state,config['candidate_id'])
+    if (fault.get('fault_start_frame'),fault.get('fault_end_frame')) != (80,360):
+        raise ValueError('Original fault interval differs')
+    expected_frames=280 if state=='faulted' else 0
+    if fault.get('fault_observed_frames')!=expected_frames:
+        raise ValueError('Original fault duration differs')
+    if any(r['fault_injection_applied'] !=
+           (state=='faulted' and 80<=i<360) for i,r in enumerate(samples)):
+        raise ValueError('Original fault row interval differs')
     test=samples[100:p['propulsion_test_end_frame']]
     if len(test)<60 or any(r['throttle_command']<.4 or r['brake_command']!=0 for r in test):
         raise ValueError('Original propulsion test command missing')

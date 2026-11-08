@@ -1,0 +1,240 @@
+{
+  "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__exception_b_faulted",
+  "measured_values": {
+    "bicycle_lane_occupied_frames_100_240": 140,
+    "propulsion_test_displacement_m": 0.0
+  },
+  "target_checks": [
+    {
+      "target": "source-bound disabled-vehicle response",
+      "requested": "faulted",
+      "measured": {
+        "case_suffix": "exception_b_faulted",
+        "candidate_id": "fallback1",
+        "fault_readback_frames": 280,
+        "propulsion_test_frames": 60,
+        "propulsion_test_displacement_m": 0.0,
+        "bicycle_lane_occupied_frames_100_240": 140,
+        "synthetic_fault_response": true,
+        "original_native_disabled_state_verified": false,
+        "legal_exception_verified": false,
+        "accepted": false
+      },
+      "method": "saved source-hashed drivetrain, command and body join",
+      "tolerance": "engineering diagnostic only",
+      "matched": false,
+      "physical_cause_confirmed": false,
+      "cause_evidence": [
+        "exception_b_native_samples.jsonl",
+        "exception-b-source-manifest.json"
+      ],
+      "legal_disability_confirmed": false
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": true,
+  "maneuver_completed": true,
+  "termination_reason": "full source duration retained",
+  "physical_failure_flags": [
+    "legal_disability_operating_or_parking_and_facility_designation_unverified"
+  ],
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "overview.mkv",
+    "approach.mkv",
+    "reference_corner.mkv",
+    "driver_reference.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "st.bicycle_lane_or_path",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Authored facility bounds and original Native lane readback; legal designation requires independent review",
+        "time_window": "entire original 24 s / 480-frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision and unresolved exceptions"
+      },
+      {
+        "name": "st.driveway_or_alley_entrance",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Authored alley bounds and original Native road/lane survey",
+        "time_window": "entire original 24 s / 480-frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision and unresolved exceptions"
+      },
+      {
+        "name": "rel.occupies",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native four-vertex vehicle body and source-bound facility polygon",
+        "time_window": "entire original 24 s / 480-frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision and unresolved exceptions"
+      },
+      {
+        "name": "kin.extent",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native body vertices",
+        "time_window": "entire original 24 s / 480-frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision and unresolved exceptions"
+      },
+      {
+        "name": "kin.position",
+        "unit": "m",
+        "sampling_rate_hz": 20,
+        "method": "Original Native ego center",
+        "time_window": "entire original 24 s / 480-frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision and unresolved exceptions"
+      },
+      {
+        "name": "ego_speed",
+        "unit": "m/s",
+        "sampling_rate_hz": 20,
+        "method": "Original Native ego velocity norm",
+        "time_window": "entire original 24 s / 480-frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision and unresolved exceptions"
+      },
+      {
+        "name": "drv.standing_or_parked",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original speed and requested stop point; two-second interval measured after save",
+        "time_window": "entire original 24 s / 480-frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision and unresolved exceptions"
+      },
+      {
+        "name": "exception_context",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Requested scene context only; observed exception status unresolved",
+        "time_window": "entire original 24 s / 480-frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision and unresolved exceptions"
+      },
+      {
+        "name": "native_body_pose_control",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native pose, body, road/lane and applied controller request",
+        "time_window": "entire original 24 s / 480-frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision and unresolved exceptions"
+      },
+      {
+        "name": "camera_frame_join",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Each source camera frame joined to original Native frame and time",
+        "time_window": "entire original 24 s / 480-frame attempt",
+        "reference_frame": "surveyed Native map and original frame",
+        "uncertainty": "50 ms sampling, body/map precision and unresolved exceptions"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "surveyed_bicycle_facility_and_alley",
+        "unit": "structured",
+        "method": "Authored geometry plus Native waypoint readback; legal designation pending"
+      },
+      {
+        "name": "requested_exception_context",
+        "unit": "structured",
+        "method": "Six requested scene flags; independent absence proof pending"
+      }
+    ],
+    "limitations": [
+      "Authored facility and waypoint type do not establish statutory designation",
+      "Requested false exception flags do not prove observed absence",
+      "Pedestrian yield duty and cross-reference remain separate from occupancy measurement",
+      "Physical stopping and original camera coverage remain unverified"
+    ]
+  },
+  "recording_evidence": [
+    {
+      "name": "st.bicycle_lane_or_path",
+      "unit": "structured",
+      "reference": "channels/st.bicycle_lane_or_path.jsonl"
+    },
+    {
+      "name": "st.driveway_or_alley_entrance",
+      "unit": "structured",
+      "reference": "channels/st.driveway_or_alley_entrance.jsonl"
+    },
+    {
+      "name": "rel.occupies",
+      "unit": "structured",
+      "reference": "channels/rel.occupies.jsonl"
+    },
+    {
+      "name": "kin.extent",
+      "unit": "structured",
+      "reference": "channels/kin.extent.jsonl"
+    },
+    {
+      "name": "kin.position",
+      "unit": "m",
+      "reference": "channels/kin.position.jsonl"
+    },
+    {
+      "name": "ego_speed",
+      "unit": "m/s",
+      "reference": "channels/ego_speed.jsonl"
+    },
+    {
+      "name": "drv.standing_or_parked",
+      "unit": "structured",
+      "reference": "channels/drv.standing_or_parked.jsonl"
+    },
+    {
+      "name": "exception_context",
+      "unit": "structured",
+      "reference": "channels/exception_context.jsonl"
+    },
+    {
+      "name": "native_body_pose_control",
+      "unit": "structured",
+      "reference": "channels/native_body_pose_control.jsonl"
+    },
+    {
+      "name": "camera_frame_join",
+      "unit": "structured",
+      "reference": "channels/camera_frame_join.jsonl"
+    },
+    {
+      "name": "surveyed_bicycle_facility_and_alley",
+      "unit": "structured",
+      "reference": "context.json"
+    },
+    {
+      "name": "requested_exception_context",
+      "unit": "structured",
+      "reference": "exception_context.json"
+    }
+  ],
+  "realized_observables": {
+    "bicycle_lane_occupied_frames_100_240": {
+      "value": 140,
+      "unit": "frames",
+      "method": "saved ego full-body bicycle-lane overlap",
+      "time_window": "frame 100 to 239",
+      "statistic": "occupied frames",
+      "reference": "exception_b_native_samples.jsonl",
+      "sample_window_s": [
+        5,
+        12
+      ]
+    }
+  },
+  "provenance_kind": "native",
+  "accepted": false,
+  "legal_verdict_claimed": false
+}

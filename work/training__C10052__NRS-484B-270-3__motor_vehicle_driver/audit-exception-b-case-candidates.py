@@ -36,7 +36,7 @@ def main():
             names=[channel['name'] for channel in config['recording_description']['channels']]
             assert len(names)==len(set(names)) and 'ru.bicycle' not in names and 'ru.pedestrian' not in names and 'ru.vehicle' not in names
             runner=files['runner.py']
-            assert "fault_readback,original_physics=apply_fault(ego,response=='faulted')" in runner
+            assert "fault_readback,_=apply_fault(ego,True)" in runner
             assert 'exception_b_native_samples.jsonl' in runner
             assert 'exception-b-source-manifest.json' in runner
             for module in ('exception_b_engineering','exception_b_geometry','exception_b_native','finalize_exception_b'):

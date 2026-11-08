@@ -164,8 +164,8 @@ def execute(config,output,host,port):
         initial=body_xy(ego)
         if not all(-5<y<-3 for x,y in initial):
             raise RuntimeError('Original vehicle body not contained in bicycle lane at spawn')
-        fault_readback,original_physics=apply_fault(ego,response=='faulted')
-        write_new(output/'fault-application.json',fault_readback)
+        baseline_readback,original_physics=apply_fault(ego,False)
+        fault_readback=baseline_readback
         wheels=ego.get_physics_control().wheels
         if len(wheels)!=4:raise RuntimeError('Native vehicle wheel geometry unverified')
         wheelbase=(max(w.position.x for w in wheels)-min(w.position.x for w in wheels))/100
@@ -178,7 +178,8 @@ def execute(config,output,host,port):
             'initial_body_xy_native_m':initial,
             'requested_end_xy_m':[15,-4.0],
             'requested_route_points':len(native_route),
-            'fault_readback':fault_readback,
+            'baseline_readback':baseline_readback,
+            'planned_fault_window':[engineering['fault_start_frame'],engineering['fault_end_frame']],
             'physical_success_claimed':False})
         for spec in alley_camera_plan(candidate):
             camera_bp=world.get_blueprint_library().find('sensor.camera.rgb')
@@ -226,6 +227,12 @@ def execute(config,output,host,port):
              (output/'body_history.jsonl').open('x') as body_file, \
              (output/'video_frames.jsonl').open('x') as frame_file:
             for index in range(config['duration_s']*config['rate_hz']):
+                if response=='faulted' and index==engineering['fault_start_frame']:
+                    fault_readback,_=apply_fault(ego,True)
+                if response=='faulted' and index==engineering['fault_end_frame']:
+                    restore_fault(ego,original_physics)
+                fault_active=(response=='faulted' and
+                    engineering['fault_start_frame']<=index<engineering['fault_end_frame'])
                 before=ego.get_transform();velocity=ego.get_velocity()
                 speed=math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
                 throttle=.45 if 100<=index<engineering['propulsion_test_end_frame'] else 0.0
@@ -251,12 +258,14 @@ def execute(config,output,host,port):
                 capture.capture(frame,time_s,extra={'c10052_native':sample})
                 native_file.write(json.dumps(sample,allow_nan=False)+'\n')
                 physics_rpm=ego.get_physics_control().max_rpm
+                if (physics_rpm<=1.1)!=fault_active:
+                    raise RuntimeError('Original Native drivetrain window/readback differs')
                 disabled_row={'native_frame':frame,'time_s':time_s,
                     'ego_center_xy':[pose.location.x,pose.location.y],
                     'ego_body_xy':body,'throttle_command':throttle,'brake_command':brake,
-                    'fault_injection_applied':response=='faulted',
+                    'fault_injection_applied':fault_active,
                     'powertrain_readback':{'max_rpm':physics_rpm,
-                        'fault_code':'propulsion_limit_applied' if response=='faulted' else None},
+                        'fault_code':'propulsion_limit_applied' if fault_active else None},
                     'ego_native_road_id':lane.road_id,'ego_native_lane_id':lane.lane_id}
                 traffic_file.write(json.dumps(disabled_row,allow_nan=False)+'\n')
                 vertices=ego.bounding_box.get_world_vertices(pose)
@@ -294,6 +303,13 @@ def execute(config,output,host,port):
                 frame_file.write(json.dumps(frame_map_row(index,frame,time_s))+'\n')
                 frames+=1
         if frames!=480:raise RuntimeError('Original frame count incomplete')
+        write_new(output/'fault-application.json',{
+            **fault_readback,
+            'fault_start_frame':engineering['fault_start_frame'],
+            'fault_end_frame':engineering['fault_end_frame'],
+            'fault_observed_frames':sum(1 for row in
+                (json.loads(line) for line in (output/'exception_b_native_samples.jsonl').read_text().splitlines())
+                if row['fault_injection_applied'])})
         write_new(output/'exception-b-source-manifest.json',{
             'format':'c10052-original-disabled-vehicle-sources-v1',
             'source_kind':'original_native','accepted':False,
