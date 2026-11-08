@@ -203,7 +203,8 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
         sign = json.loads(sign_source.read_text())
         if sign['code'] != 'no_u_turn' or sign['governs_road'] != 1 or sign['governs_lane'] != -1:
             raise RuntimeError('Authored sign source differs from Native survey contract')
-        if len(survey['landmark_readback']) != 1:
+        if (len(survey['landmark_readback']) != 1 or
+                abs(survey['landmark_readback'][0]['s_m'] - sign['station_m']) > .5):
             raise RuntimeError('Native authored sign landmark readback incomplete')
         shutil.copyfile(sign_source, output / 'authored-sign.json')
         native_xml = mapping.to_opendrive()

@@ -27,6 +27,9 @@ assert exception["exact_phrase"] in review["exact_text"]
 assert mounted["controlled_case_ids"] == [c["case_id"] for c in plan["cases"]]
 assert mounted["status"] == "cpu_runnable_synthetic_pending_original_and_delivery"
 assert exception["status"] == "pending_physical_and_legal_review"
+assert review["authored_sign_station_m"] == 72.0
+sign = json.loads((HERE/"draft-native-sources/authored-sign.json").read_text())
+assert sign["station_m"] == review["authored_sign_station_m"]
 assert not review["sign_authorization_proven"] and not review["original_native_observed"]
 assert not review["selected_strict_v2_passed"] and not review["accepted"]
 for name, digest in review["proof_sha256"].items():

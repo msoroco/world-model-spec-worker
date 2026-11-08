@@ -10,6 +10,8 @@ import subprocess
 
 
 def measure(rider, native, mapping, sign):
+    if sign.get('code') != 'no_u_turn' or sign.get('station_m') != 72.0:
+        raise ValueError('Authored sign code or station differs from road')
     if not (len(rider) == len(native) == len(mapping) == 480):
         raise ValueError('Expected 480 joined source frames')
     actor = rider[0]['actor_id']
@@ -104,6 +106,12 @@ def qualify_original(attempt, output):
     if capture.get('frames') != 480 or not capture.get('extraction_confirmed'):
         raise ValueError('Original capture is not sealed for 480 frames')
     sign = json.loads(sign_path.read_text())
+    survey = json.loads((root/'road_geometry.json').read_text())
+    landmark = survey.get('landmark_readback', [])
+    if (len(landmark) != 1 or landmark[0].get('id') != '1140080' or
+            landmark[0].get('road_id') != sign['governs_road'] or
+            abs(landmark[0].get('s_m', -1) - sign['station_m']) > .5):
+        raise ValueError('Saved Native sign station readback differs')
     rider = read_rows(rider_path)
     native = read_rows(root/'native_samples.jsonl')
     mapping = read_rows(root/'video_frames.jsonl')
@@ -128,7 +136,8 @@ def qualify_original(attempt, output):
                'source_sha256': {name: sha(root/name) for name in
                    ('rider-source-manifest.json', 'rider_native_samples.jsonl',
                     'authored-sign.json', 'native_samples.jsonl',
-                    'video_frames.jsonl', 'capture/manifest.json')},
+                    'video_frames.jsonl', 'capture/manifest.json',
+                    'road_geometry.json')},
                'original_native_capture_executed': True,
                'mounted_posture_observed': None,
                'sign_authorization_proven': False,

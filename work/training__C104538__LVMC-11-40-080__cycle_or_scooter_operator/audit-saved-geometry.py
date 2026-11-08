@@ -3,6 +3,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
 HERE = Path(__file__).resolve().parent
 PROOF = HERE/'draft-saved-geometry-proof.json'
@@ -18,7 +19,7 @@ def rows(path):
 
 proof = json.loads(PROOF.read_text())
 assert proof['scope'] == 'unselected synthetic source rows with posture labels erased'
-assert proof['positive_count'] == 8 and proof['negative_count'] == 40
+assert proof['positive_count'] == 8 and proof['negative_count'] == 48
 assert not any(proof[x] for x in ('original_native_capture_executed', 'posture_reviewed',
                                   'legal_verdict_claimed', 'accepted'))
 seen = set()
@@ -34,6 +35,10 @@ for entry in proof['entries']:
     native = rows(folder/'native_samples.jsonl')
     mapping = rows(folder/'video_frames.jsonl')
     sign = json.loads((folder/'authored-sign.json').read_text())
+    road = ET.fromstring((folder/'road.xodr').read_text()).find('road')
+    signal = road.find('signals/signal')
+    assert signal.attrib['id'] == '1140080'
+    assert sign['station_m'] == float(signal.attrib['s']) == 72.0
     assert len(rider) == len(native) == len(mapping) == 480
     assert all(r['actor_id'] == rider[0]['actor_id'] and r['sign_id'] == sign['id'] and
                r['frame'] == i and r['time_s'] == n['time_s'] == m['time_s'] and
@@ -59,10 +64,11 @@ for entry in proof['entries']:
         'changed_actor': 'Rider actor/sign/frame identity differs',
         'changed_sign': 'Rider actor/sign/frame identity differs',
         'changed_frame': 'Native/camera time or frame join differs',
-        'changed_center': 'Rider and Native centers differ'}
+        'changed_center': 'Rider and Native centers differ',
+        'changed_station': 'Authored sign code or station differs from road'}
 assert len(seen) == 8
 result = {'passed': True, 'scope': 'independent retained raw-row geometry audit',
-    'positives': 8, 'negative_rejections': 40, 'controlled_pairs': 4,
+    'positives': 8, 'negative_rejections': 48, 'controlled_pairs': 4,
     'proof_sha256': sha(PROOF), 'original_native_capture_executed': False,
     'legal_verdict_claimed': False, 'accepted': False}
 target = HERE/'draft-saved-geometry-audit.json'

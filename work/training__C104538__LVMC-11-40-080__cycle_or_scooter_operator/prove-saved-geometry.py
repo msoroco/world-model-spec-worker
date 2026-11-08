@@ -38,6 +38,8 @@ def rejected(rider, native, mapping, sign, change):
         m[250]['video_frame'] = 249
     elif change == 'changed_center':
         n[250] = {**n[250], 'native_center_xy_m': [999, 999]}
+    elif change == 'changed_station':
+        sign = {**sign, 'station_m': 42.0}
     else:
         raise ValueError(change)
     try:
@@ -62,7 +64,8 @@ def main():
             if measurement['u_turn_geometry_observed'] != (kind == 'mounted_turn'):
                 raise ValueError('Controlled saved geometry contrast differs')
             negatives = {name: rejected(rider, native, mapping, sign, name) for name in
-                ('filled_posture', 'changed_actor', 'changed_sign', 'changed_frame', 'changed_center')}
+                ('filled_posture', 'changed_actor', 'changed_sign', 'changed_frame',
+                 'changed_center', 'changed_station')}
             if not all(negatives.values()):
                 raise ValueError('Altered saved source was accepted')
             entries.append({'kind': kind, 'candidate_id': candidate,
@@ -70,12 +73,12 @@ def main():
                 'measurement': measurement, 'negative_rejections': negatives})
     result = {'format': 'c104538-lvmc-saved-geometry-diagnostic-v1',
         'scope': 'unselected synthetic source rows with posture labels erased',
-        'entries': entries, 'positive_count': 8, 'negative_count': 40,
+        'entries': entries, 'positive_count': 8, 'negative_count': 48,
         'original_native_capture_executed': False, 'posture_reviewed': False,
         'legal_verdict_claimed': False, 'accepted': False}
     target = HERE/'draft-saved-geometry-proof.json'
     target.write_text(json.dumps(result, indent=2, sort_keys=True)+'\n')
-    print(json.dumps({'positives': 8, 'negatives': 40, 'sha256': sha(target)}))
+    print(json.dumps({'positives': 8, 'negatives': 48, 'sha256': sha(target)}))
 
 
 if __name__ == '__main__':

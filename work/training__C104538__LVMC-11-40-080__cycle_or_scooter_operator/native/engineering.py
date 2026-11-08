@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SIGN = {"id": "c104538-no-u-turn-1", "code": "no_u_turn",
-        "governs_road": 1, "governs_lane": -1, "station_m": 42.0,
+        "governs_road": 1, "governs_lane": -1, "station_m": 72.0,
         "authorization_proven": False, "scope": "authored proposal"}
 VARIANTS = {
     "primary": {"start_x_m": -35.0, "turn_start_frame": 220, "scripted_visibility": .9},

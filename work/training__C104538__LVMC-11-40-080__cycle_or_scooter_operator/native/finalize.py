@@ -54,7 +54,8 @@ def finalize(attempt, output):
     if manifest.get("sign_sha256") != sha(root/"authored-sign.json"):
         raise ValueError("Sign packet hash differs")
     sign = json.loads((root/"authored-sign.json").read_text())
-    if sign.get("code") != "no_u_turn" or sign.get("authorization_proven") is not False:
+    if (sign.get("code") != "no_u_turn" or sign.get("station_m") != 72.0 or
+            sign.get("authorization_proven") is not False):
         raise ValueError("Synthetic sign scope differs")
     turn_frames = mounted_turn_frames = 0
     for i, (n, m, r, t, e, b) in enumerate(zip(native, mapping, rider, trace, evidence, body)):

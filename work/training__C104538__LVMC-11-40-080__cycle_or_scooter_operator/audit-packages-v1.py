@@ -45,7 +45,9 @@ for item in index["results"]:
     assert sign["code"] == "no_u_turn" and sign["authorization_proven"] is False
     road = ET.fromstring((folder/"road.xodr").read_text()).find("road")
     assert road is not None and road.attrib["id"] == "1"
-    assert road.find("signals/signal").attrib["id"] == "1140080"
+    signal = road.find("signals/signal")
+    assert signal.attrib["id"] == "1140080"
+    assert sign["station_m"] == float(signal.attrib["s"]) == 72.0
     rider = rows(folder/"rider_native_samples.jsonl")
     native = rows(folder/"native_samples.jsonl")
     mapping = rows(folder/"video_frames.jsonl")

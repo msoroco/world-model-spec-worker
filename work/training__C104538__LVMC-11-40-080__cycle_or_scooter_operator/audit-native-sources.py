@@ -1,7 +1,9 @@
 """Independent raw-row audit for the unselected C104538 rider proposal."""
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parent
 source = ROOT/"draft-native-source-manifest.json"
@@ -12,6 +14,12 @@ assert hashlib.sha256(sign_path.read_bytes()).hexdigest() == manifest["sign_sha2
 sign = json.loads(sign_path.read_text())
 assert sign["code"] == "no_u_turn" and sign["governs_road"] == 1
 assert sign["governs_lane"] == -1 and sign["authorization_proven"] is False
+geometry_spec = importlib.util.spec_from_file_location("c104538_lvmc_geometry_audit", ROOT/"native/geometry.py")
+geometry = importlib.util.module_from_spec(geometry_spec)
+geometry_spec.loader.exec_module(geometry)
+landmark = ET.fromstring(geometry.open_drive()).find("road/signals/signal")
+assert landmark is not None and landmark.attrib["id"] == "1140080"
+assert sign["station_m"] == float(landmark.attrib["s"]) == 72.0
 assert len(manifest["entries"]) == 12
 observed = {}
 negative_count = 0
