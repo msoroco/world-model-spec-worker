@@ -5,8 +5,16 @@
   "frames": 240,
   "case_variable": "observed circulating lane while the subject actually exits left or completes a U-turn",
   "fixed_context": "same actor, roundabout map, entry, target exit, weather, frame timing and requested speed within each candidate pair",
-  "left_lane_request": {"witness": "witness_1", "native_lane_id": -1, "center_radius_m": 23.75},
-  "right_lane_request": {"witness": "witness_2", "native_lane_id": -2, "center_radius_m": 27.25},
+  "left_lane_request": {
+    "witness": "witness_1",
+    "native_lane_id": -1,
+    "center_radius_m": 23.75
+  },
+  "right_lane_request": {
+    "witness": "witness_2",
+    "native_lane_id": -2,
+    "center_radius_m": 27.25
+  },
   "fallback1": "slow passage if fewer than 20 of first 40 saved camera frames show the entry and left lane",
   "fallback2": "add elevated overview camera if saved lane-center deviation exceeds 0.2 m",
   "fallback3": "stop before exit if physical roundabout, exit connector, or lane marking is unverified",
@@ -18,16 +26,36 @@
     "source-hashed same-condition inner versus outer lane comparison"
   ],
   "connected_request": {
-    "road_ids": {"entry": 10, "circulation": 11, "exit": 12},
-    "saved_phase_measurements": ["entry_frame_count", "circulation_frame_count", "exit_frame_count", "full_body_circulation_lane_frames", "left_lane_visible_frames"],
+    "road_ids": {
+      "entry": 10,
+      "circulation": 11,
+      "exit": 12
+    },
+    "saved_phase_measurements": [
+      "entry_frame_count",
+      "circulation_frame_count",
+      "exit_frame_count",
+      "full_body_circulation_lane_frames",
+      "left_lane_visible_frames"
+    ],
     "stop_policy": "fallback3 remains on entry road; the other six candidate requests reach the authored exit road"
   },
   "native_capture_contract": {
     "entrypoint": "runner.py --bundle BUNDLE --output-dir NEW_DIR --host HOST --port PORT",
     "world": "exclusive idle asynchronous CARLA world; generate connected-road.xodr and restore prior world after attempt",
-    "outputs": ["native-map-readback.json", "native-raw-actors.jsonl", "video_frames.jsonl", "forward.mkv", "overview.mkv", "native-capture-report.json", "PipelineCapture rows"],
-    "capture_limit": "Free-driving controller attempts the connected path; observed poses, body vertices, lane IDs and synchronized videos require later original saved processing and source-backed physical/legal review"
+    "outputs": [
+      "native-map-readback.json",
+      "native-raw-actors.jsonl",
+      "video_frames.jsonl",
+      "forward.mkv",
+      "overview.mkv",
+      "native-capture-report.json",
+      "PipelineCapture rows"
+    ],
+    "capture_limit": "Free-driving controller attempts connected route. A raw-to-saved processor and original-observation measurement path now exist, but CARLA execution, human frame review, physical roundabout/lane allocation and legal disposition have not been proved."
   },
   "request_limit": "The copied bundle retains the earlier ring-only trace for comparison and includes a connected entry, arc, and exit request. Both remain authored or synthetic CPU evidence; neither establishes a physical roundabout, original Native left exit, or legal verdict",
-  "status": "cpu_request_unselected"
+  "status": "cpu_request_unselected",
+  "raw_to_saved_processor": "prepare_connected_raw.py: exact connected request, Native map/capture report, 240 actor/video/human-review joins, FFV1 frame counts and source hashes; preserve observed road/lane/pose and classify actual phases",
+  "original_saved_measurement": "measure_exit_saved.py: original route uses observed road phases and actor/body/camera joins, verifies entry-to-exit phase order, full-body circulating lane occupancy and 60\u2013120 degree entry-to-exit heading change; physical/legal verification remains separate"
 }

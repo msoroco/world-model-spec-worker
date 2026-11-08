@@ -21,6 +21,12 @@ def saved_run(folder,script,witness=None):
     if witness:cmd.append(str(folder/'saved-fixtures'/witness))
     return subprocess.run(cmd,capture_output=True,text=True,timeout=20)
 
+def prepared_run(folder,raw,output):
+    return subprocess.run([sys.executable,str(folder/'prepare_connected_raw.py'),
+        '--bundle',str(folder),'--raw-folder',str(raw),
+        '--output-dir',str(output),'--synthetic-cpu'],
+        capture_output=True,text=True,timeout=20)
+
 def audit():
     manifest_path=CASE/'offline'/'manifest.json'
     proof_path=CASE/'offline'/'proof-compatibility.json'
@@ -34,7 +40,7 @@ def audit():
         proof['format']!='c131364-compatibility-proof-v1' or
         proof['manifest_sha256']!=sha(manifest_path) or
         len(proof['positives'])!=8 or len(proof['negatives'])!=40 or
-        len(proof['saved_positives'])!=32 or len(proof['saved_negatives'])!=16 or
+        len(proof['saved_positives'])!=40 or len(proof['saved_negatives'])!=24 or
         manifest['delivery_ready'] or proof['delivery_ready']):
         raise ValueError('C131364 exact package coverage differs')
     seen=set();checks=0;negatives=0;saved_checks=0;saved_negatives=0
@@ -55,6 +61,8 @@ def audit():
                  'runner.py':NATIVE/'runner.py',
                  'measure_saved.py':NATIVE/'measure_saved.py',
                  'measure_exit_saved.py':NATIVE/'measure_exit_saved.py',
+                 'prepare_connected_raw.py':NATIVE/'prepare_connected_raw.py',
+                 'fixture_connected_raw.py':NATIVE/'fixture_connected_raw.py',
                  'triggers.py':NATIVE/'triggers.py',
                  'compare_saved.py':NATIVE/'compare_saved.py',
                  'assignment-source.json':ROOT/'inputs'/CASE.name/'assignment.json',
@@ -83,6 +91,28 @@ def audit():
         if receipt.returncode!=0 or json.loads(receipt.stdout)['delivery_ready']:
             raise ValueError('C131364 copied connected saved check differs')
         saved_checks+=1
+        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            base=Path(temporary);raw=base/'raw';saved=base/'saved'
+            generated=subprocess.run([sys.executable,str(folder/'fixture_connected_raw.py'),
+                '--bundle',str(folder),'--output-dir',str(raw)],
+                capture_output=True,text=True,timeout=20)
+            if generated.returncode or prepared_run(folder,raw,saved).returncode:
+                raise ValueError('C131364 copied raw-to-saved replay failed')
+            source=[json.loads(x) for x in (raw/'native-raw-actors.jsonl').read_text().splitlines()]
+            derived=[json.loads(x) for x in (saved/'native-observed.jsonl').read_text().splitlines()]
+            if len(source)!=240 or len(derived)!=240 or any(
+                row['ego']['center_native_xyz_m'][:2]!=[item['ego_x_m'],item['ego_y_m']] or
+                row['ego']['body_native_xyz_m'][0][:2]!=item['ego_body_xy_m'][0] or
+                row['observed_road_id']!=item['road_id']
+                for row,item in zip(source,derived)):
+                raise ValueError('C131364 independent raw coordinate/road join differs')
+            saved_checks+=1
+            path=raw/'left-lane-review.jsonl';lines=path.read_text().splitlines()
+            changed=json.loads(lines[27]);changed['review_provenance']='human_frame_review'
+            lines[27]=json.dumps(changed);path.write_text('\n'.join(lines)+'\n')
+            if prepared_run(folder,raw,base/'rejected').returncode==0:
+                raise ValueError('C131364 altered raw review accepted')
+            saved_negatives+=1
         with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
             altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
             path=altered/'saved-fixtures'/witness/'lane-readback.json'

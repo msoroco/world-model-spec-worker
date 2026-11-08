@@ -19,6 +19,12 @@ def saved_run(folder,script,witness=None):
     if witness:cmd.append(str(folder/'saved-fixtures'/witness))
     return subprocess.run(cmd,capture_output=True,text=True,timeout=20)
 
+def prepared_run(folder,raw,output):
+    return subprocess.run([sys.executable,str(folder/'prepare_connected_raw.py'),
+        '--bundle',str(folder),'--raw-folder',str(raw),
+        '--output-dir',str(output),'--synthetic-cpu'],
+        capture_output=True,text=True,timeout=20)
+
 def prove():
     manifest_path=CASE/'offline'/'manifest.json'
     manifest=json.loads(manifest_path.read_text())
@@ -48,6 +54,28 @@ def prove():
             raise AssertionError('C131364 connected saved CPU check failed: '+connected.stderr)
         saved_positives.append({'case_id':entry['case_id'],'candidate_id':entry['candidate_id'],
                                 'script':'measure_exit_saved.py','passed':True})
+        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            base=Path(temporary);raw=base/'raw'
+            generated=subprocess.run([sys.executable,str(folder/'fixture_connected_raw.py'),
+                '--bundle',str(folder),'--output-dir',str(raw)],
+                capture_output=True,text=True,timeout=20)
+            if generated.returncode:raise AssertionError(generated.stderr)
+            prepared=prepared_run(folder,raw,base/'saved')
+            if prepared.returncode:raise AssertionError(prepared.stderr)
+            receipt=json.loads(prepared.stdout)
+            if receipt['source_kind']!='synthetic_cpu' or receipt['delivery_ready']:
+                raise AssertionError('C131364 raw-to-saved positive differs')
+            saved_positives.append({'case_id':entry['case_id'],
+                'candidate_id':entry['candidate_id'],
+                'script':'prepare_connected_raw.py','passed':True})
+            path=raw/'video_frames.jsonl';lines=path.read_text().splitlines()
+            changed=json.loads(lines[51]);changed['native_frame']+=1
+            lines[51]=json.dumps(changed);path.write_text('\n'.join(lines)+'\n')
+            if prepared_run(folder,raw,base/'rejected').returncode==0:
+                raise AssertionError('C131364 altered raw frame map accepted')
+            saved_negatives.append({'case_id':entry['case_id'],
+                'candidate_id':entry['candidate_id'],
+                'mutation':'changed_raw_frame_map','rejected':True})
         with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
             altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
             path=altered/'saved-fixtures'/witness/'lane-readback.json'

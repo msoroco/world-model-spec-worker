@@ -27,6 +27,8 @@ def build():
                      'runner.py':NATIVE/'runner.py',
                      'measure_saved.py':NATIVE/'measure_saved.py',
                      'measure_exit_saved.py':NATIVE/'measure_exit_saved.py',
+                     'prepare_connected_raw.py':NATIVE/'prepare_connected_raw.py',
+                     'fixture_connected_raw.py':NATIVE/'fixture_connected_raw.py',
                      'triggers.py':NATIVE/'triggers.py',
                      'compare_saved.py':NATIVE/'compare_saved.py',
                      'assignment-source.json':ROOT/'inputs'/CASE.name/'assignment.json',
