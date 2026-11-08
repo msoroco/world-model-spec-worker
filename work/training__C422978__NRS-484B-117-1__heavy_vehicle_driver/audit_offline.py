@@ -60,6 +60,8 @@ def audit():
                     'road.xodr': HERE/'native/road.xodr',
                     'runner.py': HERE/'native/runner.py',
                     'triggers.py': HERE/'native/triggers.py',
+                    'measure_saved.py': HERE/'native/measure_saved.py',
+                    'measurement-contract.json': HERE/'native/measurement-contract.json',
                     'config.json': HERE/'native/drafts'/case/candidate/'config.json',
                     'requested-tracks.jsonl': HERE/'native/drafts'/case/candidate/'requested-tracks.jsonl'}
         if set(entry['file_sha256']) != set(expected):

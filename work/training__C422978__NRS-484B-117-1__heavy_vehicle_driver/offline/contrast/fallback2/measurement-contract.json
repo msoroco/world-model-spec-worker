@@ -1,0 +1,33 @@
+{
+  "format": "c422978-heavy-sidewalk-measurement-contract-v1",
+  "assignment_id": "training__C422978__NRS-484B-117-1__heavy_vehicle_driver",
+  "cases": ["reference", "contrast"],
+  "candidates": ["primary", "fallback1", "fallback2", "fallback3"],
+  "sampling_rate_hz": 20,
+  "expected_frames": 480,
+  "window_s": 24,
+  "entrypoint": "measure_saved.py",
+  "required_source_files": [
+    "native-observed.jsonl",
+    "native-map-readback.json",
+    "video_frames.jsonl",
+    "capture/evidence.jsonl",
+    "native-capture-report.json"
+  ],
+  "source_binding": "SHA-256 of each complete saved source; Native, camera and PipelineCapture frames must join one-to-one at 20 Hz",
+  "reference_frame": "Native CARLA coordinates of the exact imported OpenDRIVE road; sidewalk road 1 lane -2, positive y 3.5 to 7.5 metres, longitudinal x 0 to 140 metres",
+  "body_method": "Four observed world XY corners of the heavy vehicle; width must agree with Native map readback within 0.2 metre",
+  "motion_threshold_mps": 0.1,
+  "metrics": [
+    {"name": "moving_sidewalk_overlap_frames", "unit": "20 Hz frames", "method": "moving body rectangle intersects authored sidewalk polygon"},
+    {"name": "first_moving_sidewalk_overlap_frame", "unit": "zero-based frame index or null", "method": "first moving overlap"},
+    {"name": "longest_moving_sidewalk_overlap_frames", "unit": "20 Hz frames", "method": "longest consecutive moving overlap run"},
+    {"name": "full_body_inside_sidewalk_frames", "unit": "20 Hz frames", "method": "moving body rectangle wholly within authored sidewalk polygon"},
+    {"name": "native_sidewalk_lane_readback_frames", "unit": "20 Hz frames", "method": "Native actor-center lane readback equals -2"},
+    {"name": "observed_body_width_m", "unit": "metres", "method": "Native blueprint world bounding box readback"}
+  ],
+  "time_uncertainty": "one 50 ms frame bracket plus Native sensor synchronization; no subframe onset claim",
+  "spatial_uncertainty": "world XY bounding-box geometry and imported OpenDRIVE lane bounds only; City sidewalk boundary and driveway or alley authority require separate source-bound evidence",
+  "legal_scope": "No legal violation or statutory exception is inferred from synthetic rows or authored OpenDRIVE alone",
+  "status": "cpu_contract_unselected"
+}

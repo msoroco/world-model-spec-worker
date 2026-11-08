@@ -48,6 +48,8 @@ def build():
                      'case-plan.json': plan, 'road.xodr': road,
                      'runner.py': NATIVE/'runner.py',
                      'triggers.py': NATIVE/'triggers.py',
+                     'measure_saved.py': NATIVE/'measure_saved.py',
+                     'measurement-contract.json': NATIVE/'measurement-contract.json',
                      'config.json': source/'config.json',
                      'requested-tracks.jsonl': source/'requested-tracks.jsonl'}
             for name, original in files.items():
