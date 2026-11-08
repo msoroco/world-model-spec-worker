@@ -17,11 +17,15 @@ def audit():
            'branch_source_sha256':ROOT/'inputs/coverage/branch-sources.json',
            'case_plan_sha256':CASE/'case-plan.json',
            'construction_manifest_sha256':CASE/'native/drafts/manifest.json'}
+    saved_path=CASE/'native/saved-proof.json'
+    saved_proof=json.loads(saved_path.read_text())
+    saved={item['case']:item['measurement'] for item in saved_proof['positives']}
     source=json.loads(paths['branch_source_sha256'].read_text())['laws']['NRS-484B-220-2']
     assignment=json.loads(paths['assignment_sha256'].read_text())
     if (review['format']!='c234827-statutory-review-v1' or
             review['assignment_id']!=CASE.name or
             any(review[key]!=sha(value) for key,value in paths.items()) or
+            review['saved_proof_sha256']!=sha(saved_path) or
             source['law']['text']!=assignment['law_record']['text'] or
             review['topic_count']!=2 or len(review['candidate_topic_rows'])!=4 or
             review['accepted_originals_replayed']!=0 or
@@ -38,9 +42,14 @@ def audit():
             raise ValueError('Rotary statutory topic/case coverage differs')
         seen.add((topic,case))
         frozen=source['topics'][topic]
+        metric=saved[case]
         if (item['topic_kind']!=frozen['kind'] or
                 item['topic_text']!=frozen['text'] or
                 item['requested_island_side']!=('left' if case=='reference' else 'right') or
+                item['saved_actor_sha256']!=metric['source_hashes']['native-observed.jsonl'] or
+                item['synthetic_angular_progress_rad']!=metric['angular_progress_rad'] or
+                item['synthetic_requested_side_continuous']!=metric['continuous_requested_side'] or
+                item['synthetic_minimum_body_clearance_m']!=metric['minimum_body_island_clearance_m'] or
                 item['status']!='pending_original_island_and_judgment' or
                 not item['existing_membership_only'] or
                 item['physical_island_verified'] or
