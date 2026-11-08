@@ -60,8 +60,65 @@ def check(bundle):
             row.get('ego_speed_mps')!=(0 if candidate=='fallback3' and speed*time_s>12 else speed) or
             row.get('actual_exit_observed') is not False):
             raise ValueError(f'C131364 copied request row differs at {i}')
+    connected=json.loads((bundle/'connected-config.json').read_text())
+    if (connected.get('format')!='c131364-connected-left-exit-request-v1' or
+        connected.get('assignment_id')!=config['assignment_id'] or
+        connected.get('case_id')!=config['case_id'] or
+        connected.get('candidate_id')!=candidate or
+        connected.get('requested_lane_id')!=lane or
+        connected.get('camera_policy')!=camera or
+        connected.get('connected_exit_authored') is not True or
+        connected.get('actual_exit_observed') is not False or
+        connected.get('original_native_observed') is not False or
+        connected.get('roundabout_verified') is not False or
+        connected.get('status')!='unselected_native_request'):
+        raise ValueError('C131364 connected request scope differs')
+    for key,name in {'assignment_sha256':'assignment-source.json',
+                     'case_plan_sha256':'case-plan.json',
+                     'road_sha256':'connected-road.xodr',
+                     'tracks_sha256':'connected-requested-tracks.jsonl'}.items():
+        if connected.get(key)!=sha(bundle/name):
+            raise ValueError('C131364 connected source hash differs')
+    connected_roads={int(r.attrib['id']):r for r in ET.parse(bundle/'connected-road.xodr').getroot().findall('road')}
+    if set(connected_roads)!={10,11,12}:
+        raise ValueError('C131364 connected roads differ')
+    for ident,previous,next_ in ((10,None,11),(11,10,12),(12,11,None)):
+        road=connected_roads[ident]
+        for relation,target in (('predecessor',previous),('successor',next_)):
+            link=road.find('./link/'+relation)
+            if (link is None)!=(target is None) or (target is not None and int(link.attrib['elementId'])!=target):
+                raise ValueError('C131364 connected road link differs')
+        if {int(x.attrib['id']):x.attrib['type'] for x in road.findall('./lanes/laneSection/right/lane')}!={-1:'driving',-2:'driving'}:
+            raise ValueError('C131364 connected driving lanes differ')
+    connected_rows=[json.loads(line) for line in (bundle/'connected-requested-tracks.jsonl').read_text().splitlines()]
+    if len(connected_rows)!=240:raise ValueError('C131364 connected frame count differs')
+    phases=set()
+    for i,row in enumerate(connected_rows):
+        time_s=(i+1)/20
+        travel=min(12,speed*time_s) if candidate=='fallback3' else speed*time_s
+        if travel<30:
+            phase='entry';road_id=10;x=-30+travel;y=-radius;heading=0
+        elif travel<30+radius*math.pi/2:
+            phase='circulation';road_id=11;theta=-math.pi/2+(travel-30)/radius
+            x=radius*math.cos(theta);y=radius*math.sin(theta);heading=math.degrees(theta+math.pi/2)
+        else:
+            phase='exit';road_id=12;x=radius;y=travel-30-radius*math.pi/2;heading=90
+        if (row.get('frame')!=i or abs(row.get('time_s',-1)-time_s)>1e-6 or
+            row.get('witness')!=witness or row.get('candidate_id')!=candidate or
+            row.get('phase')!=phase or row.get('road_id')!=road_id or
+            row.get('lane_id')!=lane or
+            abs(row.get('ego_x_m',1e9)-x)>1e-5 or
+            abs(row.get('ego_y_m',1e9)-y)>1e-5 or
+            abs(row.get('ego_heading_deg',1e9)-heading)>1e-5 or
+            row.get('actual_exit_observed') is not False or
+            row.get('roundabout_verified') is not False):
+            raise ValueError(f'C131364 connected request row differs at {i}')
+        phases.add(phase)
+    if phases!=({'entry'} if candidate=='fallback3' else {'entry','circulation','exit'}):
+        raise ValueError('C131364 connected route phases differ')
     return {'format':'c131364-copied-runner-check-v1','case_id':config['case_id'],
             'candidate_id':candidate,'requested_frames':240,
+            'connected_requested_frames':240,'connected_phases':sorted(phases),
             'carla_imported':False,'actual_exit_observed':False,
             'delivery_ready':False}
 

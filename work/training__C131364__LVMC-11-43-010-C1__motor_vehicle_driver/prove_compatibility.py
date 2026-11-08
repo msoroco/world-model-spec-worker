@@ -42,6 +42,12 @@ def prove():
             saved_positives.append({'case_id':entry['case_id'],
                                     'candidate_id':entry['candidate_id'],
                                     'script':script,'passed':True})
+        connected=subprocess.run([sys.executable,str(folder/'measure_exit_saved.py'),str(folder)],
+                                 capture_output=True,text=True,timeout=20)
+        if connected.returncode!=0 or json.loads(connected.stdout)['delivery_ready']:
+            raise AssertionError('C131364 connected saved CPU check failed: '+connected.stderr)
+        saved_positives.append({'case_id':entry['case_id'],'candidate_id':entry['candidate_id'],
+                                'script':'measure_exit_saved.py','passed':True})
         with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
             altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
             path=altered/'saved-fixtures'/witness/'lane-readback.json'
@@ -53,9 +59,22 @@ def prove():
             saved_negatives.append({'case_id':entry['case_id'],
                                     'candidate_id':entry['candidate_id'],
                                     'mutation':'changed_lane_readback','rejected':True})
+        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
+            path=altered/'connected-saved'/'camera-frames.jsonl'
+            rows=[json.loads(line) for line in path.read_text().splitlines()]
+            rows[80]['camera_frame']+=1
+            path.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            receipt=subprocess.run([sys.executable,str(altered/'measure_exit_saved.py'),str(altered)],
+                                   capture_output=True,text=True,timeout=20)
+            if receipt.returncode==0:raise AssertionError('C131364 changed connected camera join accepted')
+            saved_negatives.append({'case_id':entry['case_id'],'candidate_id':entry['candidate_id'],
+                                    'mutation':'changed_connected_camera_join','rejected':True})
         for mutation,name in (('track_bytes','requested-tracks.jsonl'),
                               ('assignment_bytes','assignment-source.json'),
-                              ('road_bytes','road.xodr')):
+                              ('road_bytes','road.xodr'),
+                              ('connected_track_bytes','connected-requested-tracks.jsonl'),
+                              ('connected_road_bytes','connected-road.xodr')):
             with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
                 altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
                 path=altered/name;path.write_bytes(path.read_bytes()+b' ')

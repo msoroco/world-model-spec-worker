@@ -20,13 +20,19 @@ def build():
             mapping={'config.json':source/'config.json',
                      'requested-tracks.jsonl':source/'requested-tracks.jsonl',
                      'road.xodr':NATIVE/'road.xodr',
+                     'connected-config.json':NATIVE/'exit-network-drafts'/witness/candidate/'config.json',
+                     'connected-requested-tracks.jsonl':NATIVE/'exit-network-drafts'/witness/candidate/'requested-tracks.jsonl',
+                     'connected-road.xodr':NATIVE/'left-exit-road.xodr',
                      'measurement-contract.json':NATIVE/'measurement-contract.json',
                      'runner.py':NATIVE/'runner.py',
                      'measure_saved.py':NATIVE/'measure_saved.py',
+                     'measure_exit_saved.py':NATIVE/'measure_exit_saved.py',
                      'triggers.py':NATIVE/'triggers.py',
                      'compare_saved.py':NATIVE/'compare_saved.py',
                      'assignment-source.json':ROOT/'inputs'/CASE.name/'assignment.json',
                      'case-plan.json':CASE/'case-plan.json'}
+            for name in ('native-observed.jsonl','camera-frames.jsonl','lane-readback.json'):
+                mapping[f'connected-saved/{name}']=NATIVE/'exit-saved-fixtures'/witness/candidate/name
             for saved_witness in ('witness_1','witness_2'):
                 for name in ('native-observed.jsonl','lane-readback.json','camera-frames.jsonl'):
                     relative=f'saved-fixtures/{saved_witness}/{name}'
@@ -40,6 +46,7 @@ def build():
                             'status':'unselected_native_request'})
     result={'format':'c131364-exact-offline-v1','assignment_id':CASE.name,
             'construction_manifest_sha256':sha(NATIVE/'drafts'/'manifest.json'),
+            'connected_manifest_sha256':sha(NATIVE/'exit-network-drafts'/'manifest.json'),
             'entries':entries,'original_native_observed':False,
             'actual_left_exit_observed':False,'delivery_ready':False}
     (CASE/'offline'/'manifest.json').write_text(json.dumps(result,indent=2)+'\n')
