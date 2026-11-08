@@ -108,6 +108,25 @@ def audit():
     park_proof=json.loads(park_run.stdout)
     assert park_proof['passed'] is True and len(park_proof['candidate_pairs'])==4
     assert park_proof['legal_park_observed'] is False
+    rider=next(b for b in branches if b['branch_id'].endswith('__yield_riders'))
+    rider_types=('bicycle','electric_bicycle','electric_scooter')
+    expected_rider_cases={ASSIGNMENT+'__rider_'+kind+'_'+response
+                          for kind in rider_types for response in ('clear','conflict')}
+    assert rider['status']=='pending_review'
+    assert set(rider['case_ids'])==expected_rider_cases<=cases
+    assert set(rider['comparison_ids'])=={
+        ASSIGNMENT+'__comparison_rider_'+kind for kind in rider_types}
+    for kind in rider_types:
+        cid=ASSIGNMENT+'__comparison_rider_'+kind
+        assert set(comparisons[cid]['case_ids'])=={
+            ASSIGNMENT+'__rider_'+kind+'_'+response for response in ('clear','conflict')}
+    assert all(sha(work/name)==digest for name,digest in rider['cpu_proofs'].items())
+    rider_run=subprocess.run([sys.executable,str(work/'audit-rider-yield-timing.py')],
+                             cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert rider_run.returncode==0,(rider_run.stdout,rider_run.stderr)
+    rider_proof=json.loads(rider_run.stdout)
+    assert rider_proof['passed'] and rider_proof['controlled_pairs']==3
+    assert rider_proof['legal_yield_observed'] is False
     shared=json.loads((ROOT/'work/_shared/branch-review.json').read_text())
     assert shared['coverage_sha256']==sha(matrix_path)
     assert LAW in shared['missing_branches']
