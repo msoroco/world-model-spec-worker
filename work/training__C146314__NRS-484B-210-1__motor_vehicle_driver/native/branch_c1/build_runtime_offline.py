@@ -14,8 +14,11 @@ def put(path,value):
 
 
 TEST='''import unittest
+import tempfile
 from pathlib import Path
 from check import check
+from fixture_raw import build as fixture
+from saved import prepare, measure
 
 class ExactC1Boundary(unittest.TestCase):
     def test_source_and_inclusive_boundary(self):
@@ -31,6 +34,16 @@ class ExactC1Boundary(unittest.TestCase):
             self.assertEqual(result['requested_right_ahead_frames'],0)
         else:
             self.assertGreater(result['requested_right_ahead_frames'],0)
+
+    def test_synthetic_raw_to_saved_distance(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder)
+            fixture(Path.cwd(),root/'raw')
+            receipt=prepare(Path.cwd(),root/'raw',root/'saved',True)
+            measured=measure(Path.cwd(),root/'saved')
+            self.assertEqual(receipt['source_kind'],'synthetic_cpu')
+            self.assertFalse(measured['requested_distance_is_observed_distance'])
+            self.assertFalse(measured['delivery_ready'])
 '''
 
 
@@ -42,7 +55,7 @@ def build():
             bundle=HERE/'offline/bundles'/witness/candidate
             names=('assignment-source.json','case-plan.json','unmarked-pass.xodr',
                 'config.json','requested-tracks.jsonl','build.py','check.py',
-                'capture.py','measurement-contract.json')
+                'capture.py','measurement-contract.json','saved.py','fixture_raw.py')
             files=[{'path':name,'content':(bundle/name).read_text()} for name in names]
             files.append({'path':'tests/test_exact.py','content':TEST})
             construction={'case_id':CASE.name+'__'+witness,

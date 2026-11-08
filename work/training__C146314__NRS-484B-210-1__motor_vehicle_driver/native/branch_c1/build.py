@@ -52,7 +52,7 @@ def build():
             values=[]
             for i in range(240):
                 t=(i+1)/20;x=min(stop or 300,5+speed*t)
-                blend=max(0,min(1,(x-15)/5,(exit_x+5-x)/5))
+                blend=max(0,min(1,(x-16.2)/5,(exit_x+3.8-x)/5))
                 y=-1.75-3.5*blend
                 values.append({'frame':i,'time_s':t,
                     'source_kind':'authored_native_request',
@@ -99,6 +99,8 @@ def build():
         'case_plan_sha256':sha(CASE/'case-plan.json'),
         'road_sha256':sha(road_path),
         'capture_sha256':sha(HERE/'capture.py'),
+        'saved_sha256':sha(HERE/'saved.py'),
+        'fixture_raw_sha256':sha(HERE/'fixture_raw.py'),
         'measurement_contract_sha256':sha(HERE/'measurement-contract.json'),
         'entries':entries,
         'original_native_observed':False,'delivery_ready':False}

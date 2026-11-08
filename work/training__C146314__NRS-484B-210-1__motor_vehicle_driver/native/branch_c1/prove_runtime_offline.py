@@ -30,13 +30,13 @@ def prove():
             response=json.loads(result.stdout);log=output/'offline.log'
             if not(response['offline_passed'] and
                 response['simulation_started'] is False and
-                'Ran 2 tests' in log.read_text() and '\nOK\n' in log.read_text()):
+                'Ran 3 tests' in log.read_text() and '\nOK\n' in log.read_text()):
                 raise ValueError('paragraph (c)(1) pinned receipt')
             selection=json.loads((output/'candidate-selection.json').read_text())
             entries.append({'case_id':case_id,'candidate_id':candidate,
                 'construction_sha256':selection['construction_sha256'],
                 'materialized_dir':str(output.relative_to(ROOT)),
-                'log_sha256':sha(log),'tests':2,'exit_code':0,
+                'log_sha256':sha(log),'tests':3,'exit_code':0,
                 'simulation_started':False})
     receipt={'format':'c146314-paragraph-c1-pinned-offline-v1',
         'manifest_sha256':sha(manifest),'entries':entries,'passed':True,

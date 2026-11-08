@@ -65,7 +65,7 @@ def check(bundle):
     pass_frames=0
     for i,row in enumerate(track):
         t=(i+1)/20;x=min(stop or 300,5+speed*t)
-        blend=max(0,min(1,(x-15)/5,(exit_x+5-x)/5))
+        blend=max(0,min(1,(x-16.2)/5,(exit_x+3.8-x)/5))
         y=-1.75-3.5*blend
         require(row['frame']==i and row['time_s']==t and
             row['source_kind']=='authored_native_request' and

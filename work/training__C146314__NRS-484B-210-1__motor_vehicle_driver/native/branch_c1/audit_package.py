@@ -25,6 +25,8 @@ def audit():
         construction['case_plan_sha256']==sha(plan) and
         construction['road_sha256']==sha(HERE/'unmarked-pass.xodr') and
         construction['capture_sha256']==sha(HERE/'capture.py') and
+        construction['saved_sha256']==sha(HERE/'saved.py') and
+        construction['fixture_raw_sha256']==sha(HERE/'fixture_raw.py') and
         construction['measurement_contract_sha256']==sha(HERE/'measurement-contract.json') and
         offline['construction_sha256']==sha(HERE/'manifest.json') and
         proof['positives']==16 and proof['negatives']==40 and
@@ -47,7 +49,8 @@ def audit():
             'requested-tracks.jsonl':HERE/'drafts'/witness/candidate/'requested-tracks.jsonl',
             'build.py':HERE/'build.py','check.py':HERE/'check.py',
             'capture.py':HERE/'capture.py',
-            'measurement-contract.json':HERE/'measurement-contract.json'}
+            'measurement-contract.json':HERE/'measurement-contract.json',
+            'saved.py':HERE/'saved.py','fixture_raw.py':HERE/'fixture_raw.py'}
         if set(sources)!=set(entry['file_sha256']):
             raise ValueError('copy set')
         for name,source in sources.items():
@@ -71,7 +74,7 @@ def audit():
             raise ValueError('independent numerical/control policy')
         for i,row in enumerate(track):
             t=(i+1)/20;x=min(stop or 300,5+speed*t)
-            blend=max(0,min(1,(x-15)/5,(exit_x+5-x)/5))
+            blend=max(0,min(1,(x-16.2)/5,(exit_x+3.8-x)/5))
             if not(row['frame']==i and row['road_id']==212 and
                 math.isclose(row['ego_x_m'],x,abs_tol=1e-6) and
                 math.isclose(row['ego_y_m'],-1.75-3.5*blend,abs_tol=1e-6) and
