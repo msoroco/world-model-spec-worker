@@ -74,9 +74,36 @@ def main():
             else:
                 mutate(target,edit)
             negatives.append({'name':name,'error':expect_reject(pair/'absent',pair/'present',expected)})
+    package_proof=json.loads((HERE/'traffic-pair-package-proof.json').read_text())
+    manifest=HERE/'draft-exception-execution-manifest.json'
+    if (package_proof.get('passed') is not True or package_proof.get('selected') is not False or
+        package_proof.get('manifest_sha256')!=hashlib.sha256(manifest.read_bytes()).hexdigest() or
+        len(package_proof.get('candidate_pairs',[]))!=4):
+        raise ValueError('Exact pair package proof or manifest differs')
+    package_rows=[]
+    for item in package_proof['candidate_pairs']:
+        candidate=item['candidate']
+        if (candidate not in ('primary','fallback1','fallback2','fallback3') or
+            len(item.get('construction_sha256',[]))!=2 or
+            item.get('hypothetical_overlap_frames')!=len(independently) or
+            item.get('observed_overlap_frames')!=0 or
+            'Missing saved motion source' not in item.get('missing_actor_negative','')):
+            raise ValueError('Exact pair package receipt differs')
+        for suffix,claimed_sha in zip(('exception_1_1','exception_1_2'),item['construction_sha256']):
+            construction=HERE/'draft-candidates'/suffix/candidate/'construction.json'
+            if hashlib.sha256(construction.read_bytes()).hexdigest()!=claimed_sha:
+                raise ValueError('Exact pair package construction hash differs')
+            file_rows=json.loads(construction.read_text())['files']
+            processor=[row['content'] for row in file_rows if row['path']=='traffic_counterfactual.py']
+            if len(processor)!=1 or hashlib.sha256(processor[0].encode()).hexdigest()!=item['processor_sha256']:
+                raise ValueError('Exact pair embedded saved processor differs')
+        package_rows.append(candidate)
+    if len(set(package_rows))!=4:
+        raise ValueError('Exact pair candidates are not distinct')
     return {'format':'lvmc-traffic-counterfactual-audit-v1','passed':True,
             'independent_overlap_frames':independently,'negative_cases':negatives,
-            'source_hashes':actual,'physical_or_legal_necessity_claimed':False}
+            'source_hashes':actual,'exact_package_pairs':package_rows,
+            'physical_or_legal_necessity_claimed':False}
 
 
 if __name__=='__main__':
