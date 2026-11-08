@@ -198,6 +198,8 @@ def execute(bundle,output,host,port):
                     'ego':pose(ego),'lead':pose(lead),
                     'requested_lead_left_signal':lead_signal,
                     'observed_lead_light_state':int(lead.get_light_state()),
+                    'observed_lead_left_blinker':bool(
+                        lead.get_light_state() & carla.VehicleLightState.LeftBlinker),
                     'obstruction':None if obstruction is None else pose(obstruction),
                     'one_way_designation_verified':False,
                     'pavement_condition_verified':False,

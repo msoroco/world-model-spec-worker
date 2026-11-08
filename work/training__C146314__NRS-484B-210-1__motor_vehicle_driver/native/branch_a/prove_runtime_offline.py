@@ -26,14 +26,14 @@ def prove():
                 raise RuntimeError('paragraph (a) pinned offline: '+result.stdout+result.stderr)
             response=json.loads(result.stdout);log=output/'offline.log'
             if (not response['offline_passed'] or response['simulation_started'] or
-                    'Ran 2 tests' not in log.read_text() or
+                    'Ran 5 tests' not in log.read_text() or
                     '\nOK\n' not in log.read_text()):
                 raise ValueError('paragraph (a) offline receipt')
             choice=json.loads((output/'candidate-selection.json').read_text())
             entries.append({'case_id':case_id,'candidate_id':candidate,
                 'construction_sha256':choice['construction_sha256'],
                 'materialized_dir':str(output.relative_to(ROOT)),
-                'log_sha256':sha(log),'tests':2,'exit_code':0,
+                'log_sha256':sha(log),'tests':5,'exit_code':0,
                 'simulation_started':False})
     proof={'format':'c146314-paragraph-a-pinned-offline-v1',
         'manifest_sha256':sha(MANIFEST),'entries':entries,'passed':True,
