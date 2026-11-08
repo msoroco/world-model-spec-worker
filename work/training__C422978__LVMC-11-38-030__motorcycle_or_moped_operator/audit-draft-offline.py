@@ -25,6 +25,7 @@ def audit():
         'triggers.py': (HERE / 'native/triggers.py').read_text(),
         'measure_saved.py': (HERE / 'native/measure_saved.py').read_text(),
         'measure_context.py': (HERE / 'native/measure_context.py').read_text(),
+        'prepare_city_context.py': (HERE / 'native/prepare_city_context.py').read_text(),
         'finalize.py': (HERE / 'native/finalize.py').read_text(),
         'authored-road.xodr': (HERE / 'native/road.xodr').read_text(),
         'assignment-source.json': (ROOT / 'inputs' / HERE.name / 'assignment.json').read_text(),
@@ -41,7 +42,7 @@ def audit():
             assert construction['case_id'] == case['case_id']
             assert construction['status'] == 'unselected_cpu_draft'
             files = {item['path']: item['content'] for item in construction['files']}
-            assert len(files) == len(construction['files']) == 10
+            assert len(files) == len(construction['files']) == 11
             for name, content in source.items(): assert files[name] == content
             config = json.loads(files['config.json'])
             assert config['case_id'] == case['case_id']
@@ -58,7 +59,7 @@ def audit():
             assert receipt['command_log_sha256'] == sha(HERE / receipt['command_log'])
             assert receipt['unit_log_sha256'] == sha(HERE / receipt['unit_log'])
             log = (HERE / receipt['unit_log']).read_text()
-            assert 'Ran 3 tests' in log and 'OK' in log
+            assert 'Ran 4 tests' in log and 'OK' in log
             assert 'simulation_started": false' in (HERE / receipt['command_log']).read_text().lower()
             assert not construction.get('physical_success_claimed', False)
             audited.append({'case_id': case['case_id'], 'candidate_id': candidate,
