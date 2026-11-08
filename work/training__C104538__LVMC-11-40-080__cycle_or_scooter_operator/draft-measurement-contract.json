@@ -1,0 +1,23 @@
+{
+  "format": "c104538-lvmc-1140080-draft-measurement-contract-v1",
+  "scope": "unselected synthetic CPU diagnostic",
+  "law_id": "LVMC-11-40-080",
+  "cell_id": "C104538",
+  "actor": "cycle_or_scooter_operator",
+  "controlled_cases": ["mounted_obey", "mounted_turn"],
+  "exception_control": "dismounted_turn",
+  "source_inputs": ["draft-native-source-manifest.json", "draft-native-sources/authored-sign.json", "draft-native-sources/*.jsonl"],
+  "sample_rate_hz": 20,
+  "frames_per_source": 480,
+  "positive_cpu_checks": ["frame/time and rider-machine identity joins", "governing sign ID/road/lane join", "mounted posture during turning", "dismount before exception turn", "four fixed-context controlled triplets"],
+  "negative_cpu_checks": ["changed sign ID", "changed frame identity", "contradictory posture"],
+  "fallback_triggers": {
+    "fallback1": {"metric": "approach_runway_m", "threshold": "under 35 m", "primary": 27, "fallback": 42},
+    "fallback2": {"metric": "release_error_frames", "threshold": "over 3 frames", "primary": 0, "fallback": 5},
+    "fallback3": {"metric": "scripted_visibility", "threshold": "below 0.95", "primary": 0.9, "fallback": 1.0}
+  },
+  "original_proofs_required": ["Native sign asset and authorization provenance", "Native sign orientation and governed approach", "Native rider and bicycle actor readback", "original mounted/dismounted posture and machine motion", "original hill crest and road/lane survey", "four original source cameras and decoded sign/rider visibility", "pedestrian-rule compliance for exception"],
+  "delivery_proofs_required": ["exact pinned offline primary and three distinct fallback bundles", "saved positive and changed-source negative compatibility", "independent original-source audit", "selected strict v2 receipt", "accepted delivery audit"],
+  "legal_outcome": "unresolved",
+  "ready": false
+}

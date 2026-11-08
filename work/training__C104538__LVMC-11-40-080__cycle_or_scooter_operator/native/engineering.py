@@ -19,6 +19,22 @@ VARIANTS = {
 KINDS = ("mounted_obey", "mounted_turn", "dismounted_turn")
 
 
+def parameters(kind: str, name: str) -> dict:
+    """Native capture policy; the saved trigger rows remain synthetic only."""
+    if kind not in ("mounted_obey", "mounted_turn") or name not in VARIANTS:
+        raise ValueError("Unknown mounted Native construction")
+    from geometry import native_route
+    return {"case_suffix": kind, "candidate_id": name,
+            "native_route_xy_m": native_route(kind, VARIANTS[name]["start_x_m"]),
+            "start_x_m": VARIANTS[name]["start_x_m"],
+            "release_frame": VARIANTS[name]["turn_start_frame"],
+            "target_speed_mps": 3.5 if name == "fallback1" else 5.0,
+            "lookahead_m": 5.5 if name == "fallback2" else 4.0,
+            "sign_camera_xyz_m": [-12, 11, 6] if name == "fallback3" else [-12, 9, 5],
+            "rate_hz": 20, "duration_s": 24,
+            "actor_blueprint": "vehicle.bh.crossbike", "selected": False}
+
+
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
