@@ -33,12 +33,21 @@ def run_comparison(bundle, first, second):
                           text=True,capture_output=True,timeout=20)
 
 
+def run_preparation(bundle, base, output):
+    return subprocess.run([sys.executable,str(bundle/'prepare_one_way.py'),
+        '--raw-folder',str(base/'raw'),'--review',str(base/'sign-review.json'),
+        '--designation',str(base/'designation-source.json'),
+        '--config',str(bundle/'config.json'),'--output',str(output)],
+        text=True,capture_output=True,timeout=20)
+
+
 def prove():
     manifest_path=CASE/'offline'/'manifest.json'
     manifest=json.loads(manifest_path.read_text())
     positives=[];negatives=[];saved_positives=[];saved_negatives=[]
     trigger_positives=[];trigger_negatives=[]
     comparison_positives=[];comparison_negatives=[]
+    preparation_positives=[];preparation_negatives=[]
     for entry in manifest['entries']:
         folder=CASE/entry['bundle']
         if {name:sha(folder/name) for name in entry['sha256']}!=entry['sha256']:
@@ -63,6 +72,24 @@ def prove():
         if entry['candidate_id']=='primary':
             case=entry['case_id'].removeprefix(CASE.name+'__')
             saved=CASE/'native'/'saved-fixtures'/case
+            base=CASE/'native'/'preparation-fixtures'/case
+            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+                prepared=run_preparation(folder,base,Path(temporary)/'prepared')
+                if prepared.returncode!=0:raise AssertionError(prepared.stderr)
+                made=json.loads(prepared.stdout)
+                if (made['source_kind']!='synthetic_cpu' or
+                        made['measurement']['case']!=case or made['delivery_ready']):
+                    raise AssertionError('Copied one-way preparation differs')
+                preparation_positives.append({'case_id':entry['case_id'],
+                    'saved_hashes':made['saved_hashes'],'passed':True})
+            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+                altered=Path(temporary)/'fixture';shutil.copytree(base,altered)
+                path=altered/'raw'/'forward-video-stub.txt'
+                path.write_bytes(path.read_bytes()+b'changed')
+                if run_preparation(folder,altered,Path(temporary)/'prepared').returncode==0:
+                    raise AssertionError('Copied one-way preparer accepted altered video')
+                preparation_negatives.append({'case_id':entry['case_id'],
+                    'mutation':'changed_video','rejected':True})
             result=run_saved(folder,saved)
             if result.returncode!=0:raise AssertionError(result.stderr)
             measured=json.loads(result.stdout)
@@ -117,6 +144,8 @@ def prove():
             'copied_trigger_negatives':trigger_negatives,
             'copied_comparison_positives':comparison_positives,
             'copied_comparison_negatives':comparison_negatives,
+            'copied_preparation_positives':preparation_positives,
+            'copied_preparation_negatives':preparation_negatives,
             'original_native_observed':False,'delivery_ready':False}
     (CASE/'offline'/'proof-compatibility.json').write_text(json.dumps(result,indent=2)+'\n')
     return result

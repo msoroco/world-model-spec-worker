@@ -195,8 +195,13 @@ def execute(bundle, output, host, port):
                     x=direction*request['ego_speed_mps'], y=0, z=0))
                 frame = world.tick()
                 time_s = world.get_snapshot().timestamp.elapsed_seconds-start
+                waypoint = mapping.get_waypoint(ego.get_transform().location,
+                    project_to_road=False, lane_type=carla.LaneType.Driving)
+                if waypoint is None or waypoint.road_id != 1 or waypoint.lane_id not in (-2, -1):
+                    raise RuntimeError('Native ego driving-lane readback absent')
                 row = {'frame': i, 'native_frame': frame, 'time_s': time_s,
                        'source_kind': 'original_native', 'ego': pose_record(ego),
+                       'native_lane_id': waypoint.lane_id,
                        'physical_sign_review': 'pending',
                        'designation_authority_review': 'pending',
                        'legal_verdict': None}

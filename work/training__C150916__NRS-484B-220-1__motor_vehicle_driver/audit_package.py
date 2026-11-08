@@ -35,6 +35,14 @@ def run_comparison(bundle, first, second):
                           text=True,capture_output=True,timeout=20)
 
 
+def run_preparation(bundle, base, output):
+    return subprocess.run([sys.executable,str(bundle/'prepare_one_way.py'),
+        '--raw-folder',str(base/'raw'),'--review',str(base/'sign-review.json'),
+        '--designation',str(base/'designation-source.json'),
+        '--config',str(bundle/'config.json'),'--output',str(output)],
+        text=True,capture_output=True,timeout=20)
+
+
 def audit():
     manifest_path=CASE/'offline'/'manifest.json'
     proof_path=CASE/'offline'/'proof-compatibility.json'
@@ -55,6 +63,9 @@ def audit():
             len(proof.get('copied_comparison_positives',[]))!=1 or
             len(proof.get('copied_comparison_negatives',[]))!=1 or
             proof['copied_comparison_negatives'][0]['rejected'] is not True or
+            len(proof.get('copied_preparation_positives',[]))!=2 or
+            len(proof.get('copied_preparation_negatives',[]))!=2 or
+            not all(item['rejected'] is True for item in proof['copied_preparation_negatives']) or
             not all(item['rejected'] is True for item in proof['copied_trigger_negatives']) or
             not all(item['rejected'] is True for item in proof['copied_saved_negatives']) or
             not all(item['rejected'] is True for item in proof['negatives'])):
@@ -62,6 +73,7 @@ def audit():
     seen=set();checks=0;rejections=0;saved_checks=0;saved_rejections=0
     trigger_checks=0;trigger_rejections=0
     comparison_checks=0;comparison_rejections=0
+    preparation_checks=0;preparation_rejections=0
     for entry in manifest['entries']:
         case=entry['case_id'].removeprefix(CASE.name+'__');candidate=entry['candidate_id']
         if (case,candidate) not in expected or (case,candidate) in seen:
@@ -76,6 +88,7 @@ def audit():
                  'runner.py':NATIVE/'runner.py',
                  'measure_saved.py':NATIVE/'measure_saved.py',
                  'compare_saved.py':NATIVE/'compare_saved.py',
+                 'prepare_one_way.py':NATIVE/'prepare_one_way.py',
                  'triggers.py':NATIVE/'triggers.py',
                  'assignment-source.json':ROOT/'inputs'/CASE.name/'assignment.json',
                  'case-plan.json':CASE/'case-plan.json'}
@@ -97,6 +110,26 @@ def audit():
                 rejections+=1
         if candidate=='primary':
             saved=NATIVE/'saved-fixtures'/case
+            base=NATIVE/'preparation-fixtures'/case
+            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+                made=run_preparation(folder,base,Path(temporary)/'prepared')
+                if made.returncode!=0:
+                    raise ValueError('Copied one-way preparer failed: '+made.stderr)
+                receipt=next(item for item in proof['copied_preparation_positives']
+                             if item['case_id']==entry['case_id'])
+                prepared=json.loads(made.stdout)
+                if (prepared['source_kind']!='synthetic_cpu' or
+                        prepared['saved_hashes']!=receipt['saved_hashes'] or
+                        prepared['measurement']['case']!=case):
+                    raise ValueError('Copied one-way preparation receipt differs')
+                preparation_checks+=1
+            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+                altered=Path(temporary)/'fixture';shutil.copytree(base,altered)
+                path=altered/'raw'/'forward-video-stub.txt'
+                path.write_bytes(path.read_bytes()+b'changed')
+                if run_preparation(folder,altered,Path(temporary)/'prepared').returncode==0:
+                    raise ValueError('Copied one-way preparer accepted changed video')
+                preparation_rejections+=1
             result=run_saved(folder,saved)
             if result.returncode!=0:
                 raise ValueError('Copied one-way saved processor failed: '+result.stderr)
@@ -159,6 +192,8 @@ def audit():
              'copied_trigger_rejections_replayed':trigger_rejections,
              'copied_comparison_checks':comparison_checks,
              'copied_comparison_rejections_replayed':comparison_rejections,
+             'copied_preparation_checks':preparation_checks,
+             'copied_preparation_rejections_replayed':preparation_rejections,
              'original_native_observed':False,'delivery_ready':False}
     (CASE/'offline'/'package-audit.json').write_text(json.dumps(receipt,indent=2)+'\n')
     return receipt

@@ -26,6 +26,7 @@ def build():
                     'runner.py':NATIVE/'runner.py',
                     'measure_saved.py':NATIVE/'measure_saved.py',
                     'compare_saved.py':NATIVE/'compare_saved.py',
+                    'prepare_one_way.py':NATIVE/'prepare_one_way.py',
                     'triggers.py':NATIVE/'triggers.py',
                     'assignment-source.json':ROOT/'inputs'/CASE.name/'assignment.json',
                     'case-plan.json':CASE/'case-plan.json'}
