@@ -169,6 +169,27 @@ def audit():
         proof=json.loads((work/receipt).read_text())
         assert proof['passed'] and proof[count_key]==8
         assert proof['original_native_capture_executed'] is False
+    exception_e=next(b for b in branches if b['branch_id'].endswith('__exception_e'))
+    exception_e_cases={ASSIGNMENT+'__exception_e_directed',ASSIGNMENT+'__exception_e_routine'}
+    assert exception_e['status']=='pending_review'
+    assert set(exception_e['case_ids'])==exception_e_cases<=cases
+    assert exception_e['comparison_ids']==[ASSIGNMENT+'__comparison_exception_e']
+    assert set(comparisons[exception_e['comparison_ids'][0]]['case_ids'])==exception_e_cases
+    assert all(sha(work/name)==digest for name,digest in exception_e['cpu_proofs'].items())
+    exception_e_run=subprocess.run([sys.executable,str(work/'audit-exception-e-source.py')],
+                                   cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert exception_e_run.returncode==0,(exception_e_run.stdout,exception_e_run.stderr)
+    exception_e_proof=json.loads((work/'exception-e-independent-audit.json').read_text())
+    assert exception_e_proof['passed'] and exception_e_proof['positive_sources']==8
+    assert exception_e_proof['controlled_directed_routine_pairs']==4
+    assert exception_e_proof['negative_rejections']==64
+    assert exception_e_proof['original_native_police_direction_verified'] is False
+    assert exception_e_proof['legal_compliance_verified'] is False
+    exception_e_geometry=subprocess.run([sys.executable,str(work/'native/exception_e_geometry.py')],
+                                        cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert exception_e_geometry.returncode==0,(exception_e_geometry.stdout,exception_e_geometry.stderr)
+    geometry_proof=json.loads(exception_e_geometry.stdout)
+    assert geometry_proof['routes']==8 and geometry_proof['original_native_readback'] is False
     exception_f=next(b for b in branches if b['branch_id'].endswith('__exception_f'))
     exception_f_cases={ASSIGNMENT+'__exception_f_emergency',ASSIGNMENT+'__exception_f_routine'}
     assert exception_f['status']=='pending_review'
