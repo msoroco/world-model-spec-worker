@@ -28,10 +28,11 @@ def audit():
     assert statuses['prohibition_enter']=='runnable'
     assert statuses['prohibition_stop_stand']=='runnable'
     assert statuses['prohibition_drive']=='runnable'
+    assert statuses['prohibition_park']=='runnable'
     assert statuses['exception_a']=='runnable'
     assert all(status=='pending_review' for name,status in statuses.items()
                if name not in ('prohibition_enter','prohibition_stop_stand',
-                               'prohibition_drive','exception_a'))
+                               'prohibition_drive','prohibition_park','exception_a'))
     mapping={b['branch_id'].split('__')[-1]:set(b['topic_ids']) for b in branches}
     assert mapping['prohibition_stop_stand']=={'text-1','reviewed-scope-0'}
     assert all(mapping[name]=={'text-1'} for name in
@@ -94,11 +95,24 @@ def audit():
                for row in exception_proof['exact_candidate_pairs'])
     assert exception_proof['controlled_near']['simultaneous_moving_overlap_frames']==27
     assert exception_proof['controlled_away']['simultaneous_moving_overlap_frames']==0
+    park=next(b for b in branches if b['branch_id'].endswith('__prohibition_park'))
+    park_cases={ASSIGNMENT+'__probe_park_released',ASSIGNMENT+'__probe_park_held'}
+    assert set(park['case_ids'])==park_cases<=cases
+    park_comparison=ASSIGNMENT+'__comparison_park_act'
+    assert park['comparison_ids']==[park_comparison]
+    assert set(comparisons[park_comparison]['case_ids'])==park_cases
+    assert all(sha(work/name)==digest for name,digest in park['cpu_proofs'].items())
+    park_run=subprocess.run([sys.executable,str(work/'audit-park-distinct-packages.py')],
+                            cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert park_run.returncode==0,(park_run.stdout,park_run.stderr)
+    park_proof=json.loads(park_run.stdout)
+    assert park_proof['passed'] is True and len(park_proof['candidate_pairs'])==4
+    assert park_proof['legal_park_observed'] is False
     shared=json.loads((ROOT/'work/_shared/branch-review.json').read_text())
     assert shared['coverage_sha256']==sha(matrix_path)
     assert LAW in shared['missing_branches']
-    return {'passed':True,'law_id':LAW,'topics':9,'pending_branches':8,
-            'runnable_branches':4,'coverage_sha256':sha(matrix_path)}
+    return {'passed':True,'law_id':LAW,'topics':9,'pending_branches':7,
+            'runnable_branches':5,'coverage_sha256':sha(matrix_path)}
 
 
 if __name__=='__main__':

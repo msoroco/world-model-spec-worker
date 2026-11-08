@@ -153,6 +153,74 @@
           "measured_trigger": "reference body visible fraction < 0.95"
         }
       ]
+    },
+    {
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_park_held",
+      "target_law_id": "NRS-484B-270-3",
+      "kind": "planned_only",
+      "target_type": "parking_control_candidate",
+      "physical_target": "hold the original Native hand brake for at least 2 s while stopped within the surveyed facility",
+      "comparison_variable": "sustained_applied_hand_brake_at_same_facility_stop",
+      "planning_status": "unselected_distinct_exact_cpu_diagnostic",
+      "recorded_value": null,
+      "comparison_unit": "seconds of continuous observed hand-brake control with stopped full-body facility overlap",
+      "measurement_status": "two distinct exact park cases: pinned offline, full synthetic v1 positive/changed-control negative, measured fallback and independent audits pass; original Native/statutory/strict selected v2 pending",
+      "candidate_plans": [
+        {
+          "id": "primary",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "initial authored route, occupancy and capture check"
+        },
+        {
+          "id": "fallback1",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "less than 15 m approach before lateral shift or route survey failure"
+        },
+        {
+          "id": "fallback2",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "stop target error over 0.25 m or stationary duration under 2.0 s"
+        },
+        {
+          "id": "fallback3",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "full body and facility edge visible in under 95% of stopped frames"
+        }
+      ]
+    },
+    {
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_park_released",
+      "target_law_id": "NRS-484B-270-3",
+      "kind": "planned_only",
+      "target_type": "stationary_stop_control",
+      "physical_target": "remain stopped within the same facility footprint without a sustained hand-brake act",
+      "comparison_variable": "sustained_applied_hand_brake_at_same_facility_stop",
+      "planning_status": "unselected_distinct_exact_cpu_diagnostic",
+      "recorded_value": null,
+      "comparison_unit": "seconds of continuous observed hand-brake control with stopped full-body facility overlap",
+      "measurement_status": "two distinct exact park cases: pinned offline, full synthetic v1 positive/changed-control negative, measured fallback and independent audits pass; original Native/statutory/strict selected v2 pending",
+      "candidate_plans": [
+        {
+          "id": "primary",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "initial authored route, occupancy and capture check"
+        },
+        {
+          "id": "fallback1",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "less than 15 m approach before lateral shift or route survey failure"
+        },
+        {
+          "id": "fallback2",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "stop target error over 0.25 m or stationary duration under 2.0 s"
+        },
+        {
+          "id": "fallback3",
+          "status": "unselected_exact_offline_and_v1_package_passed",
+          "measured_trigger": "full body and facility edge visible in under 95% of stopped frames"
+        }
+      ]
     }
   ],
   "comparisons": [
@@ -183,6 +251,21 @@
       ],
       "evidence": "no-entry-comparison-proof.json plus exact alley and no-entry package audits",
       "status": "unselected_synthetic_cpu_comparison"
+    },
+    {
+      "comparison_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__comparison_park_act",
+      "case_ids": [
+        "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_park_released",
+        "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_park_held"
+      ],
+      "deliberate_differences": [
+        "sustained applied hand brake during identical proposed inside-facility stop"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, law, proposed route geometry, body footprint, 20 Hz 24 s capture and four source views"
+      ],
+      "evidence": "park-distinct-audit.json: eight exact offline and v1 package pairs, source-hashed held/released control contrast, measured fallback trigger crossings",
+      "status": "unselected_synthetic_cpu_comparison_passed"
     }
   ],
   "observations": [

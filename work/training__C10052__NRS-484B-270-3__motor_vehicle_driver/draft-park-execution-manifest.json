@@ -1,0 +1,122 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver",
+  "runtime_manifest_sha256": "391baee19ccece687c5632aa2cc64ba3b958c8b492045b30e4bfc4caa131c235",
+  "status": "draft_not_selected",
+  "cases": [
+    {
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_park_released",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native stop, applied control, facility designation and statutory exceptions need saved review"
+      },
+      "measurement_contract": "draft-park-cases/probe_park_released/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10052-full-saved-occupancy-diagnostic-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-park-cases/probe_park_released/fallback1/construction.json",
+          "construction_sha256": "26309f5e5482d4e29639b9f3dff10bb2294a836311b193ca6f9403c03bf77537",
+          "trigger": {
+            "source": "original Native pose and route start survey",
+            "metric": "usable approach distance before lateral shift",
+            "failure_condition": "primary has less than 15 m before shift or spawn/route survey fails"
+          },
+          "changed_knobs": [
+            "approach start x -45 m to -55 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-park-cases/probe_park_released/fallback2/construction.json",
+          "construction_sha256": "d4e8d6168546a9484dbd7eb9d8a096727e4218616fe57a191c110cfe083252cc",
+          "trigger": {
+            "source": "original Native pose, velocity and full-body trace",
+            "metric": "stopped-body target error and stationary duration",
+            "failure_condition": "target center error exceeds 0.25 m or 2.0 s under 0.1 m/s is absent"
+          },
+          "changed_knobs": [
+            "braking onset 6 m to 9 m before stop"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-park-cases/probe_park_released/fallback3/construction.json",
+          "construction_sha256": "36ac8c61132f27d41218f010166911808ca2851909c43d69c91e131fb09b9d8d",
+          "trigger": {
+            "source": "four original source videos joined to Native frames",
+            "metric": "fraction of stopped frames showing full body and facility edge",
+            "failure_condition": "fraction falls below 0.95 in any required view"
+          },
+          "changed_knobs": [
+            "facility/overview camera FOV 90 to 105 degrees and elevated mount"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-park-cases/probe_park_released/primary/construction.json",
+      "construction_sha256": "6d826a70b836380c7749035a6699741bf8586d2a571fc4f719d652fdd8658342"
+    },
+    {
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_park_held",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native stop, applied control, facility designation and statutory exceptions need saved review"
+      },
+      "measurement_contract": "draft-park-cases/probe_park_held/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10052-full-saved-occupancy-diagnostic-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-park-cases/probe_park_held/fallback1/construction.json",
+          "construction_sha256": "3e6a77278fbdbb6388eb82b4e721d41a7cd2ccb876eff56dcb706804ff51e8bd",
+          "trigger": {
+            "source": "original Native pose and route start survey",
+            "metric": "usable approach distance before lateral shift",
+            "failure_condition": "primary has less than 15 m before shift or spawn/route survey fails"
+          },
+          "changed_knobs": [
+            "approach start x -45 m to -55 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-park-cases/probe_park_held/fallback2/construction.json",
+          "construction_sha256": "f911efa4eb9c3bf7da3a459653f8dabdbbc29801ccbb8342b7c2c18adb7ab0b5",
+          "trigger": {
+            "source": "original Native pose, velocity and full-body trace",
+            "metric": "stopped-body target error and stationary duration",
+            "failure_condition": "target center error exceeds 0.25 m or 2.0 s under 0.1 m/s is absent"
+          },
+          "changed_knobs": [
+            "braking onset 6 m to 9 m before stop"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-park-cases/probe_park_held/fallback3/construction.json",
+          "construction_sha256": "884d8e1a2b60a874ab1a7f54b42453e032c65544c137456574e9064a7344f78b",
+          "trigger": {
+            "source": "four original source videos joined to Native frames",
+            "metric": "fraction of stopped frames showing full body and facility edge",
+            "failure_condition": "fraction falls below 0.95 in any required view"
+          },
+          "changed_knobs": [
+            "facility/overview camera FOV 90 to 105 degrees and elevated mount"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-park-cases/probe_park_held/primary/construction.json",
+      "construction_sha256": "34fbf05d9dbeb3be67275c57e9aa4897d9952e3267b55b56c7bd3956443251f5"
+    }
+  ]
+}

@@ -37,6 +37,8 @@ def build():
                 'status': 'draft_not_selected', 'cases': []}
     for draft in plan['cases']:
         suffix = draft['case_id'].rsplit('__', 1)[-1]
+        if suffix not in ('probe_a', 'probe_b'):
+            continue  # Other case families have their own exact builders.
         entry = {'case_id': draft['case_id'], 'kind': 'draft_not_selected',
                  'candidate_risk': {'status': 'physical',
                      'reason': 'Native bicycle designation, lateral route tracking, stop placement, exception observations and source framing require original evidence'},

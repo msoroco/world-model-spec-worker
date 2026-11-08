@@ -1,0 +1,61 @@
+{
+  "format": "c10052-park-control-diagnostic-contract-v1",
+  "law_id": "NRS-484B-270-3",
+  "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_park_held",
+  "status": "unselected_synthetic_cpu_diagnostic",
+  "source_join": {
+    "rate_hz": 20,
+    "duration_s": 24,
+    "frames": 480,
+    "required_files": [
+      "native_samples.jsonl",
+      "native_controls.jsonl",
+      "road_geometry.json",
+      "park-act-sources.json"
+    ],
+    "source_manifest": "park-act-sources.json",
+    "original_key": [
+      "native_frame",
+      "time_s"
+    ]
+  },
+  "procedure": "finalize.py invokes measure_park_act.measure on source-hashed original frame joins; package compatibility then runs Native validation, Core/Lean, render and final decode",
+  "act_candidate": {
+    "speed_mps_max": 0.1,
+    "throttle_max": 0.01,
+    "hand_brake": true,
+    "facility_body_overlap_m2_min_exclusive": 0.01,
+    "minimum_contiguous_frames": 40,
+    "reported_fields": [
+      "park_control_candidate",
+      "first_held_native_frame",
+      "held_duration_s",
+      "max_held_facility_overlap_m2"
+    ]
+  },
+  "controlled_contrast": {
+    "held": "hand_brake true during frames 160-439 on the inside-facility stop",
+    "released": "hand_brake false on the same 480 pose, geometry and source-video frames",
+    "held_duration_s": 14.0,
+    "released_duration_s": 0.0,
+    "candidate_ids": [
+      "primary",
+      "fallback1",
+      "fallback2",
+      "fallback3"
+    ],
+    "target_held_control": true
+  },
+  "negative_controls": [
+    "changed native_controls.jsonl byte must reject against park-act-sources.json",
+    "missing exception_context.json must reject before result emission",
+    "missing entry-sources.json must reject before result emission"
+  ],
+  "unresolved": [
+    "original Native parking act and statutory facility designation",
+    "applicable statutory exceptions and legal parking determination",
+    "selected strict v2 compatibility and independent delivery acceptance"
+  ],
+  "selected": false,
+  "accepted": false
+}
