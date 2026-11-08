@@ -64,6 +64,7 @@ def audit():
                     'measure_camera.py': HERE/'native/measure_camera.py',
                     'measure_context.py': HERE/'native/measure_context.py',
                     'prepare_context.py': HERE/'native/prepare_context.py',
+                    'measure_exception.py': HERE/'native/measure_exception.py',
                     'measurement-contract.json': HERE/'native/measurement-contract.json',
                     'config.json': HERE/'native/drafts'/case/candidate/'config.json',
                     'requested-tracks.jsonl': HERE/'native/drafts'/case/candidate/'requested-tracks.jsonl'}
@@ -87,6 +88,12 @@ def audit():
                                     str(saved_fixture)),capture_output=True,text=True,check=True)
         if json.loads(saved_run.stdout)['frames'] != 480:
             raise ValueError('Offline packaged saved processing differs')
+        exception_run = subprocess.run((sys.executable,str(expected_bundle/'measure_exception.py'),
+                                        '--attempt',str(saved_fixture),'--packet',
+                                        str(saved_fixture/'exception-evidence.json')),
+                                       capture_output=True,text=True,check=True)
+        if json.loads(exception_run.stdout)['exception_applies'] is not None:
+            raise ValueError('Offline packaged exception scope differs')
         context_run = subprocess.run((sys.executable,str(expected_bundle/'measure_context.py'),
                                       '--attempt',str(saved_fixture),'--context',
                                       str(saved_fixture/'city-context.json')),
@@ -143,6 +150,7 @@ def audit():
         target = OFFLINE/case/candidate
         if (row['bundle_sha256'] != {name:digest(target/name) for name in expected} or
                 row['packaged_saved_frames'] != 480 or
+                row['packaged_exception_pending'] is not True or
                 row['packaged_spatial_outside_entrance_frames'] != next(p['measurement']['moving_city_sidewalk_outside_entrance_frames'] for p in json.loads((HERE/'native/context-proof.json').read_text())['positives'] if p['case'] == case and p['candidate'] == candidate) or
                 row['packaged_spatial_preparation_positive'] is not True or
                 row['packaged_survey_hash_negative'] is not True or

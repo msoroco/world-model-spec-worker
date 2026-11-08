@@ -39,6 +39,12 @@ def prove():
         saved_measure = json.loads(saved_run.stdout)
         if saved_measure['frames'] != 480 or saved_measure['source_kind'] != 'synthetic_cpu':
             raise AssertionError('Packaged saved processor positive failed')
+        exception_run = subprocess.run([sys.executable, str(bundle/'measure_exception.py'),
+                                        '--attempt', str(saved_fixture), '--packet',
+                                        str(saved_fixture/'exception-evidence.json')],
+                                       text=True, capture_output=True, check=True)
+        if json.loads(exception_run.stdout)['exception_applies'] is not None:
+            raise AssertionError('Packaged exception processor scope differs')
         context_run = subprocess.run([sys.executable, str(bundle/'measure_context.py'),
                                       '--attempt', str(saved_fixture), '--context',
                                       str(saved_fixture/'city-context.json')],
@@ -79,6 +85,7 @@ def prove():
         positives.append({'case': case, 'candidate': candidate,
                           'bundle_sha256': {name: sha(bundle/name) for name in entry['file_sha256']},
                           'packaged_saved_frames':saved_measure['frames'],
+                          'packaged_exception_pending':True,
                           'packaged_spatial_outside_entrance_frames':context_measure['moving_city_sidewalk_outside_entrance_frames'],
                           'packaged_spatial_preparation_positive':True,
                           'packaged_survey_hash_negative':True,

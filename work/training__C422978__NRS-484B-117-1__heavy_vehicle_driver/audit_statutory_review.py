@@ -45,6 +45,7 @@ def audit():
              'branch_source_sha256':ROOT/'inputs/coverage/branch-sources.json',
              'case_plan_sha256':CASE/'case-plan.json',
              'saved_proof_sha256':CASE/'native/saved-proof.json'}
+    paths['exception_proof_sha256'] = CASE/'native/exception-proof.json'
     if (review['format'] != 'c422978-heavy-statutory-review-v1' or
             review['assignment_id'] != AID or
             any(review[key] != sha(path) for key,path in paths.items()) or
@@ -60,6 +61,8 @@ def audit():
     expected = {(topic,case,candidate) for topic in TOPICS for case in CASES for candidate in CANDIDATES}
     seen, source_rows = set(), 0
     cached = {}
+    exception_index = {(row['case'],row['candidate']):row['measurement']
+                       for row in json.loads(paths['exception_proof_sha256'].read_text())['positives']}
     for row in review['candidate_topic_rows']:
         key = (row['topic_id'],row['case'],row['candidate'])
         if key not in expected or key in seen:
@@ -77,6 +80,11 @@ def audit():
             source_rows += 480
         if (row['saved_actor_sha256'],row['synthetic_measurement']) != cached[pair]:
             raise ValueError('Statutory measurement differs from saved actor rows')
+        exception = exception_index[pair]
+        if (row['synthetic_reported_exception_pattern'] != exception['reported_exception_pattern'] or
+                row['exception_packet_sha256'] != sha(CASE/'native/saved-fixtures'/pair[0]/pair[1]/'exception-evidence.json') or
+                exception['exception_applies'] is not None or exception['legal_verdict'] is not None):
+            raise ValueError('Statutory exception packet differs')
     if seen != expected or source_rows != 3840:
         raise ValueError('Statutory topic cross product incomplete')
     result = {'format':'c422978-heavy-independent-statutory-audit-v1',

@@ -34,16 +34,22 @@ def build():
     source_path = ROOT/'inputs/coverage/branch-sources.json'
     plan_path = CASE/'case-plan.json'
     proof_path = CASE/'native/saved-proof.json'
+    exception_path = CASE/'native/exception-proof.json'
     assignment = json.loads(assignment_path.read_text())
     source = json.loads(source_path.read_text())['laws']['NRS-484B-117-1']
     plan = json.loads(plan_path.read_text())
     saved = json.loads(proof_path.read_text())
+    exception = json.loads(exception_path.read_text())
+    exception_index = {(row['case'],row['candidate']):row['measurement']
+                       for row in exception['positives']}
     topics = source['topics']
     if (source['original_assignment_id'] != AID or
             source['law']['text'] != assignment['law_record']['text'] or
             set(topics) != set(TOPICS) or
             {d['requirement'] for d in plan['requirement_dispositions']} != set(TOPICS) or
-            len(saved['positives']) != 8):
+            len(saved['positives']) != 8 or len(exception_index) != 8 or
+            any(row['source_kind'] != 'synthetic_cpu' or row['exception_applies'] is not None
+                for row in exception_index.values())):
         raise ValueError('Frozen sidewalk statutory scope differs')
     entries = []
     for topic_id, topic in topics.items():
@@ -60,13 +66,16 @@ def build():
                                 'full_body_inside_frames':metric['full_body_inside_sidewalk_frames'],
                                 'native_lane_readback_frames':metric['native_sidewalk_lane_readback_frames']},
                             'saved_actor_sha256':metric['source_hashes']['native-observed.jsonl'],
+                            'synthetic_reported_exception_pattern':exception_index[(positive['case'],positive['candidate'])]['reported_exception_pattern'],
+                            'exception_packet_sha256':exception_index[(positive['case'],positive['candidate'])]['source_hashes']['exception-evidence.json'],
                             'required_original_evidence':TOPICS[topic_id],
                             'status':'pending_original_and_context',
                             'legal_verdict':None})
     review = {'format':'c422978-heavy-statutory-review-v1',
               'assignment_id':AID, 'assignment_sha256':sha(assignment_path),
               'branch_source_sha256':sha(source_path), 'case_plan_sha256':sha(plan_path),
-              'saved_proof_sha256':sha(proof_path), 'topic_count':len(topics),
+              'saved_proof_sha256':sha(proof_path),
+              'exception_proof_sha256':sha(exception_path), 'topic_count':len(topics),
               'candidate_topic_rows':entries,
               'original_native_observed':False,'legal_coverage_ready':False,
               'delivery_ready':False}
