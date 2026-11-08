@@ -34,6 +34,13 @@ def route(start_x=-45.0):
     return points
 
 
+def route_no_entry(start_x=-45.0):
+    """Remain in the driving lane while passing the alley and facility."""
+    if start_x not in (-45.0,-55.0):raise ValueError('Unknown approach start')
+    return [(round(start_x+i*.1,6),-1.5)
+            for i in range(round((15.0-start_x)/.1)+1)]
+
+
 def check():
     root=ET.fromstring(open_drive())
     assert root.find("road[@id='1']/lanes/laneSection/right/lane[@id='-2']").get('type')=='biking'
@@ -42,6 +49,9 @@ def check():
     assert points[0]==(-45.0,-1.5) and points[-1]==(0.0,-12.0)
     assert route(-55.0)[0]==(-55.0,-1.5)
     assert max(math.dist(a,b) for a,b in zip(points,points[1:]))<.102
+    away=route_no_entry()
+    assert away[0]==(-45.0,-1.5) and away[-1]==(15.0,-1.5)
+    assert max(math.dist(a,b) for a,b in zip(away,away[1:]))<.102
     facility=(-60,-5,60,-3);alley=(-3,-14,3,-5)
     # Prospective body is aligned to the local route tangent.
     facility_frames=alley_frames=both_frames=0
@@ -54,8 +64,10 @@ def check():
         in_alley=overlap_area(shape,alley)>.01
         facility_frames+=in_facility;alley_frames+=in_alley;both_frames+=in_facility and in_alley
     assert facility_frames>0 and alley_frames>0 and both_frames>0
+    assert all(overlap_area(body(*center),facility)<=.01 for center in away)
     return {'format':'c10052-alley-native-geometry-proposal-v1',
         'route_points':len(points),'radius_m':5.0,
+        'no_entry_route_points':len(away),
         'prospective_facility_body_samples':facility_frames,
         'prospective_alley_body_samples':alley_frames,
         'prospective_simultaneous_body_samples':both_frames,

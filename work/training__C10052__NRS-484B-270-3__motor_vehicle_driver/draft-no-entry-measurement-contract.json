@@ -1,0 +1,17 @@
+{
+  "format": "worker-measurement-contract-v1",
+  "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__probe_d_no_entry",
+  "requirements": [{
+    "requirement": "NRS-484B-270-3 prohibition on entering a bicycle facility",
+    "source": "NRS 484B.270(3)",
+    "output_key": "moving_entry_measured",
+    "method": "measure_entry.measure",
+    "value_type": "boolean",
+    "kind": "measured",
+    "expected_diagnostic": false,
+    "inputs": ["native_samples.jsonl", "road_geometry.json", "entry-sources.json"]
+  }],
+  "negative": {"remove": ["entry-sources.json"],
+               "error_contains": "Missing required source: entry-sources.json"},
+  "limitations": "The straight-through route and synthetic false entry do not prove original Native motion, statutory designation, or exception absence."
+}

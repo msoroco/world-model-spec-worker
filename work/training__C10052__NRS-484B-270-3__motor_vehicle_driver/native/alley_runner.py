@@ -18,7 +18,7 @@ import traceback
 from cameras import camera_plan
 from controller import EngineeringKnobs,PathController
 from alley_engineering import parameters
-from alley_geometry import check as geometry_check,open_drive,route
+from alley_geometry import check as geometry_check,open_drive,route,route_no_entry
 from geometry import (ALLEY_ENTRANCE_BOUNDS_M,BICYCLE_BOUNDS_M,
                       BICYCLE_LANE_ID,DRIVING_LANE_ID,ROAD_ID)
 
@@ -46,14 +46,14 @@ def frame_map_row(index,frame,time_s):
 
 def check(config):
     geometry=geometry_check();suffix=config['case_suffix'];candidate=config['candidate_id']
-    if suffix!='probe_c_alley_entry' or candidate not in ('primary','fallback1','fallback2','fallback3'):
+    if suffix not in ('probe_c_alley_entry','probe_d_no_entry') or candidate not in ('primary','fallback1','fallback2','fallback3'):
         raise ValueError('Unknown exact case or candidate')
     if config['case_id'].rsplit('__',1)[-1]!=suffix or config['cell_id']!='C10052' or config['law_id']!='NRS-484B-270-3':
         raise ValueError('Wrong source-bound case identity')
     if config['duration_s']!=24 or config['rate_hz']!=20:
         raise ValueError('Original capture timing changed')
     engineering=parameters(candidate)
-    route(engineering['approach_start_x_m'])
+    (route if suffix=='probe_c_alley_entry' else route_no_entry)(engineering['approach_start_x_m'])
     cameras=alley_camera_plan(candidate)
     if [(c['name'],c['width'],c['height']) for c in cameras] != [
         ('overview',1920,1080),('approach',1280,720),
@@ -174,14 +174,15 @@ def execute(config,output,host,port):
         knobs=EngineeringKnobs(target_speed_mps=engineering['turn_speed_mps'],
             final_brake_mps2=engineering['turn_speed_mps']**2/(2*6.0),
             final_margin_m=0)
-        native_route=[list(p) for p in route(start)]
+        native_route=[list(p) for p in
+                      (route if suffix=='probe_c_alley_entry' else route_no_entry)(start)]
         controller=PathController(native_route,wheelbase,max_steer,knobs)
         write_new(output/'native-construction-context.json',{
             'case_id':config['case_id'],'candidate_id':candidate,
             'native_map_sha256':native_hash,'vehicle_blueprint':ego.type_id,
             'wheelbase_m':wheelbase,'max_steer_deg':max_steer,
             'initial_body_xy_native_m':initial,'controller_knobs':vars(knobs),
-            'requested_stop_xy_m':[0,-12],
+            'requested_stop_xy_m':([0,-12] if suffix=='probe_c_alley_entry' else [15,-1.5]),
             'requested_route_points':len(native_route),
             'pedestrian_control_blueprint':pedestrian.type_id,
             'physical_success_claimed':False})
@@ -244,7 +245,7 @@ def execute(config,output,host,port):
                     'rel.occupies':body,'kin.extent':{'body_xy_m':body},
                     'kin.position':sample['native_center_xy_m'],'ego_speed':speed,
                     'drv.standing_or_parked':{'observed_speed_mps':speed,
-                        'requested_stop_xy_m':[0,-12]},
+                        'requested_stop_xy_m':([0,-12] if suffix=='probe_c_alley_entry' else [15,-1.5])},
                     'ru.pedestrian':{'native_actor_id':pedestrian.id,
                         'native_xy_m':[pedestrian.get_location().x,pedestrian.get_location().y]},
                     'exception_context':{'source':'exception_context.json',
