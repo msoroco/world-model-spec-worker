@@ -153,6 +153,17 @@ def audit():
     candidate_proof=json.loads(candidate_run.stdout)
     assert candidate_proof['cases']==6 and candidate_proof['candidates_per_case']==4
     assert candidate_proof['original_native_actor_verified'] is False
+    pedestrian=next(b for b in branches if b['branch_id'].endswith('__yield_qualifying_pedestrian'))
+    assert pedestrian['status']=='pending_review'
+    assert all(sha(work/name)==digest for name,digest in pedestrian['cpu_proofs'].items())
+    pedestrian_run=subprocess.run([sys.executable,str(work/'audit-pedestrian-qualification.py')],
+                                  cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert pedestrian_run.returncode==0,(pedestrian_run.stdout,pedestrian_run.stderr)
+    pedestrian_proof=json.loads((work/'pedestrian-qualification-independent-audit.json').read_text())
+    assert len(pedestrian_proof['pairs'])==4
+    assert pedestrian_proof['qualification_negatives']==16
+    assert pedestrian_proof['changed_frame_join_negatives']==8
+    assert pedestrian_proof['original_native_verified'] is False
     shared=json.loads((ROOT/'work/_shared/branch-review.json').read_text())
     assert shared['coverage_sha256']==sha(matrix_path)
     assert LAW in shared['missing_branches']
