@@ -20,6 +20,11 @@ def run(folder):
                           text=True,capture_output=True,timeout=20)
 
 
+def run_saved(bundle,saved):
+    return subprocess.run([sys.executable,str(bundle/'measure_saved.py'),str(saved)],
+                          text=True,capture_output=True,timeout=20)
+
+
 def audit():
     manifest_path=CASE/'offline'/'manifest.json'
     proof_path=CASE/'offline'/'proof-compatibility.json'
@@ -33,9 +38,12 @@ def audit():
             proof['manifest_sha256']!=sha(manifest_path) or
             any(item['delivery_ready'] or item['original_native_observed'] for item in (manifest,proof)) or
             len(proof['positives'])!=8 or len(proof['negatives'])!=24 or
+            len(proof.get('copied_saved_positives',[]))!=2 or
+            len(proof.get('copied_saved_negatives',[]))!=2 or
+            not all(item['rejected'] is True for item in proof['copied_saved_negatives']) or
             not all(item['rejected'] is True for item in proof['negatives'])):
         raise ValueError('One-way offline proof provenance or coverage differs')
-    seen=set();checks=0;rejections=0
+    seen=set();checks=0;rejections=0;saved_checks=0;saved_rejections=0
     for entry in manifest['entries']:
         case=entry['case_id'].removeprefix(CASE.name+'__');candidate=entry['candidate_id']
         if (case,candidate) not in expected or (case,candidate) in seen:
@@ -48,6 +56,7 @@ def audit():
                  'road.xodr':NATIVE/'road.xodr',
                  'measurement-contract.json':NATIVE/'measurement-contract.json',
                  'runner.py':NATIVE/'runner.py',
+                 'measure_saved.py':NATIVE/'measure_saved.py',
                  'assignment-source.json':ROOT/'inputs'/CASE.name/'assignment.json',
                  'case-plan.json':CASE/'case-plan.json'}
         if (entry['bundle']!=str(folder.relative_to(CASE)) or
@@ -66,11 +75,33 @@ def audit():
                 if run(altered).returncode==0:
                     raise ValueError('One-way altered copied source accepted')
                 rejections+=1
+        if candidate=='primary':
+            saved=NATIVE/'saved-fixtures'/case
+            result=run_saved(folder,saved)
+            if result.returncode!=0:
+                raise ValueError('Copied one-way saved processor failed: '+result.stderr)
+            measured=json.loads(result.stdout)
+            receipt=next(item for item in proof['copied_saved_positives']
+                         if item['case_id']==entry['case_id'])
+            if (measured['source_hashes']!=receipt['source_hashes'] or
+                    measured['direction_matches_designation']!=(case=='designated') or
+                    measured['delivery_ready']):
+                raise ValueError('Copied one-way saved measurement differs')
+            saved_checks+=1
+            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+                altered=Path(temporary)/'saved';shutil.copytree(saved,altered)
+                path=altered/'sign-frames.jsonl'
+                path.write_text('\n'.join(path.read_text().splitlines()[:-1])+'\n')
+                if run_saved(folder,altered).returncode==0:
+                    raise ValueError('Copied one-way saved processor accepted missing sign frame')
+                saved_rejections+=1
     if seen!=expected:raise ValueError('One-way offline bundle coverage incomplete')
     receipt={'format':'c150916-independent-package-audit-v1',
              'assignment_id':CASE.name,'manifest_sha256':sha(manifest_path),
              'proof_sha256':sha(proof_path),'bundles_checked':checks,
              'negative_rejections_replayed':rejections,
+             'copied_saved_checks':saved_checks,
+             'copied_saved_rejections_replayed':saved_rejections,
              'original_native_observed':False,'delivery_ready':False}
     (CASE/'offline'/'package-audit.json').write_text(json.dumps(receipt,indent=2)+'\n')
     return receipt

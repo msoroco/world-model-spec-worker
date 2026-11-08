@@ -24,6 +24,8 @@ def build():
                     'road.xodr':NATIVE/'road.xodr',
                     'measurement-contract.json':NATIVE/'measurement-contract.json',
                     'runner.py':NATIVE/'runner.py',
+                    'measure_saved.py':NATIVE/'measure_saved.py',
+                    'triggers.py':NATIVE/'triggers.py',
                     'assignment-source.json':ROOT/'inputs'/CASE.name/'assignment.json',
                     'case-plan.json':CASE/'case-plan.json'}
             for name,path in inputs.items():shutil.copy2(path,target/name)
