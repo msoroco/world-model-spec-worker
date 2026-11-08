@@ -28,7 +28,7 @@ def audit():
         manifest['construction_sha256']!=sha(NATIVE/'manifest.json') or
         proof['manifest_sha256']!=sha(manifest_path) or
         len(proof['positives'])!=8 or len(proof['negatives'])!=32 or
-        len(proof['saved_positives'])!=16 or len(proof['saved_negatives'])!=16 or
+        len(proof['saved_positives'])!=24 or len(proof['saved_negatives'])!=32 or
         manifest['delivery_ready'] or proof['delivery_ready']):
         raise ValueError('C132497 proof coverage differs')
     road=ET.parse(NATIVE/'right-exit-road.xodr').getroot()
@@ -54,6 +54,9 @@ def audit():
             'measurement-contract.json':NATIVE/'measurement-contract.json',
             'check.py':NATIVE/'check.py','measure_saved.py':NATIVE/'measure_saved.py',
             'triggers.py':NATIVE/'triggers.py',
+            'prepare_raw.py':NATIVE/'prepare_raw.py',
+            'fixture_raw.py':NATIVE/'fixture_raw.py',
+            'measure_prepared.py':NATIVE/'measure_prepared.py',
             'capture.py':NATIVE/'capture.py',
             'assignment-source.json':ROOT/'inputs'/CASE.name/'assignment.json',
             'case-plan.json':CASE/'case-plan.json'}
@@ -75,6 +78,47 @@ def audit():
         if routed.returncode or json.loads(routed.stdout)['delivery_ready']:
             raise ValueError('C132497 copied trigger replay differs')
         saved_checks+=1
+        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            raw=Path(temporary)/'raw';prepared=Path(temporary)/'prepared'
+            if run(bundle,'fixture_raw.py',['--bundle',bundle,'--output-dir',raw]).returncode:
+                raise ValueError('C132497 copied raw fixture differs')
+            converted=run(bundle,'prepare_raw.py',['--bundle',bundle,
+                '--raw-folder',raw,'--output-dir',prepared,'--synthetic-cpu'])
+            measured_raw=run(bundle,'measure_prepared.py',
+                ['--bundle',bundle,'--saved-dir',prepared])
+            if converted.returncode or measured_raw.returncode:
+                raise ValueError('C132497 copied raw conversion differs')
+            converted_data=json.loads(converted.stdout)
+            prepared_data=json.loads(measured_raw.stdout)
+            source=rows(raw/'native-raw-actors.jsonl')
+            saved_rows=rows(prepared/'native-observed.jsonl')
+            if (converted_data['delivery_ready'] or prepared_data['delivery_ready'] or
+                not (len(source)==len(saved_rows)==240)):
+                raise ValueError('C132497 raw CPU proof overclaims or lacks frames')
+            for a,b in zip(source,saved_rows):
+                if (b['ego_x_m']!=a['ego']['center_native_xyz_m'][0] or
+                    b['ego_y_m']!=a['ego']['center_native_xyz_m'][1] or
+                    b['ego_actor_id']!=a['ego']['actor_id'] or
+                    b['road_id']!=a['observed_road_id'] or
+                    b['lane_id']!=a['observed_lane_id'] or
+                    b['ego_body_xy_m']!=[p[:2] for p in a['ego']['body_native_xyz_m']]):
+                    raise ValueError('C132497 raw-to-saved coordinates differ')
+            saved_checks+=1
+            review=raw/'right-lane-review.jsonl'
+            lines=review.read_text().splitlines();line=json.loads(lines[71])
+            line['review_provenance']='human_frame_review';lines[71]=json.dumps(line)
+            review.write_text('\n'.join(lines)+'\n')
+            if run(bundle,'prepare_raw.py',['--bundle',bundle,'--raw-folder',raw,
+                '--output-dir',Path(temporary)/'bad','--synthetic-cpu']).returncode==0:
+                raise ValueError('C132497 changed raw review accepted')
+            saved_rejections+=1
+            fresh=Path(temporary)/'fresh_raw'
+            if run(bundle,'fixture_raw.py',['--bundle',bundle,'--output-dir',fresh]).returncode:
+                raise ValueError('C132497 second raw fixture differs')
+            if run(bundle,'prepare_raw.py',['--bundle',bundle,'--raw-folder',fresh,
+                '--output-dir',Path(temporary)/'missing_media']).returncode==0:
+                raise ValueError('C132497 original mode accepted missing FFV1 media')
+            saved_rejections+=1
         for name in ('requested-tracks.jsonl','assignment-source.json','right-exit-road.xodr','case-plan.json'):
             with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
                 altered=Path(temporary)/'bundle';shutil.copytree(bundle,altered)

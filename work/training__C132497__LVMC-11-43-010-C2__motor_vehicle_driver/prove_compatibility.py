@@ -38,6 +38,40 @@ def prove():
         saved_positives.append({'case_id':entry['case_id'],
             'candidate_id':entry['candidate_id'],'script':'triggers.py','passed':True})
         with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            raw=Path(temporary)/'raw';prepared=Path(temporary)/'prepared'
+            fixture=run(folder,'fixture_raw.py',['--bundle',folder,'--output-dir',raw])
+            if fixture.returncode:raise AssertionError('C132497 raw fixture failed: '+fixture.stderr)
+            converted=run(folder,'prepare_raw.py',['--bundle',folder,
+                '--raw-folder',raw,'--output-dir',prepared,'--synthetic-cpu'])
+            measured_prepared=run(folder,'measure_prepared.py',
+                ['--bundle',folder,'--saved-dir',prepared])
+            if (converted.returncode or measured_prepared.returncode or
+                json.loads(converted.stdout)['delivery_ready'] or
+                json.loads(measured_prepared.stdout)['delivery_ready']):
+                raise AssertionError('C132497 raw-to-saved proof failed: '+
+                    converted.stderr+measured_prepared.stderr)
+            saved_positives.append({'case_id':entry['case_id'],
+                'candidate_id':entry['candidate_id'],
+                'script':'prepare_raw.py + measure_prepared.py','passed':True})
+            lines=(raw/'video_frames.jsonl').read_text().splitlines()
+            row=json.loads(lines[71]);row['native_frame']+=1
+            lines[71]=json.dumps(row)
+            (raw/'video_frames.jsonl').write_text('\n'.join(lines)+'\n')
+            if run(folder,'prepare_raw.py',['--bundle',folder,'--raw-folder',raw,
+                '--output-dir',Path(temporary)/'altered','--synthetic-cpu']).returncode==0:
+                raise AssertionError('C132497 changed raw video join accepted')
+            saved_negatives.append({'case_id':entry['case_id'],
+                'candidate_id':entry['candidate_id'],'mutation':'raw_video_frame','rejected':True})
+        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            raw=Path(temporary)/'raw'
+            if run(folder,'fixture_raw.py',['--bundle',folder,'--output-dir',raw]).returncode:
+                raise AssertionError('C132497 raw fixture missing')
+            if run(folder,'prepare_raw.py',['--bundle',folder,'--raw-folder',raw,
+                '--output-dir',Path(temporary)/'original']).returncode==0:
+                raise AssertionError('C132497 missing original FFV1 media accepted')
+            saved_negatives.append({'case_id':entry['case_id'],
+                'candidate_id':entry['candidate_id'],'mutation':'missing_original_media','rejected':True})
+        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
             altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
             path=altered/'saved'/'camera-frames.jsonl'
             lines=path.read_text().splitlines();row=json.loads(lines[71]);row['camera_frame']+=1
