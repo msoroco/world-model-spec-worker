@@ -39,7 +39,7 @@ def audit():
     assert set(branch['case_ids']) <= {c['case_id'] for c in plan['cases']}
     assert set(branch['case_ids']) <= set(plan['comparisons'][0]['case_ids'])
     assert review['coverage_sha256'] == sha(coverage_path)
-    assert LAW in review['missing_branches']  # Eleven other clauses are pending.
+    assert LAW in review['missing_branches']  # Other clauses remain pending.
     assert set(branch['cpu_proofs']) == set(PROOFS)
     assert all(branch['cpu_proofs'][name] == sha(WORK / name) for name in PROOFS)
     manifest = read(WORK / 'draft-execution-manifest.json')

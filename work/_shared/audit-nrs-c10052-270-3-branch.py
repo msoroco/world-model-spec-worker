@@ -27,8 +27,11 @@ def audit():
     statuses={b['branch_id'].split('__')[-1]:b['status'] for b in branches}
     assert statuses['prohibition_enter']=='runnable'
     assert statuses['prohibition_stop_stand']=='runnable'
+    assert statuses['prohibition_drive']=='runnable'
+    assert statuses['exception_a']=='runnable'
     assert all(status=='pending_review' for name,status in statuses.items()
-               if name not in ('prohibition_enter','prohibition_stop_stand'))
+               if name not in ('prohibition_enter','prohibition_stop_stand',
+                               'prohibition_drive','exception_a'))
     mapping={b['branch_id'].split('__')[-1]:set(b['topic_ids']) for b in branches}
     assert mapping['prohibition_stop_stand']=={'text-1','reviewed-scope-0'}
     assert all(mapping[name]=={'text-1'} for name in
@@ -62,11 +65,40 @@ def audit():
         assert summary['manifest_sha256']==sha(work/'draft-no-entry-execution-manifest.json')
         assert summary['positive_receipt_sha256']
         assert summary['negative_exit_code']!=0 and summary['trigger_negative_exit_code']!=0
+    drive=next(b for b in branches if b['branch_id'].endswith('__prohibition_drive'))
+    assert set(drive['case_ids'])=={ASSIGNMENT+'__probe_a',ASSIGNMENT+'__probe_b'}
+    assert drive['comparison_ids']==[ASSIGNMENT+'__comparison']
+    assert all(sha(work/name)==digest for name,digest in drive['cpu_proofs'].items())
+    drive_run=subprocess.run([sys.executable,str(work/'audit-drive-within-cpu.py')],
+                             cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert drive_run.returncode==0,(drive_run.stdout,drive_run.stderr)
+    drive_proof=json.loads(drive_run.stdout)
+    assert drive_proof['passed'] is True and len(drive_proof['candidate_pairs'])==4
+    assert all(row['reference']['moving_occupied_frames']==0 and
+               row['contrast']['moving_occupied_frames']==71 and
+               row['speed_magnitude_different_frames']==40
+               for row in drive_proof['candidate_pairs'])
+    exception=next(b for b in branches if b['branch_id'].endswith('__exception_a'))
+    assert set(exception['case_ids'])==expected_cases
+    assert exception['comparison_ids']==[expected_comparison]
+    assert all(sha(work/name)==digest for name,digest in exception['cpu_proofs'].items())
+    exception_run=subprocess.run([sys.executable,str(work/'audit-exception-a-cpu.py')],
+                                 cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert exception_run.returncode==0,(exception_run.stdout,exception_run.stderr)
+    exception_proof=json.loads(exception_run.stdout)
+    assert exception_proof['passed'] is True and len(exception_proof['exact_candidate_pairs'])==4
+    assert exception_proof['legal_exception_observed'] is False
+    assert all(row['alley']['time_bounded_geometry_candidate'] and
+               row['no_entry']['moving_facility_occupied_frames']==0 and
+               row['longitudinal_trace_identical'] is False
+               for row in exception_proof['exact_candidate_pairs'])
+    assert exception_proof['controlled_near']['simultaneous_moving_overlap_frames']==27
+    assert exception_proof['controlled_away']['simultaneous_moving_overlap_frames']==0
     shared=json.loads((ROOT/'work/_shared/branch-review.json').read_text())
     assert shared['coverage_sha256']==sha(matrix_path)
     assert LAW in shared['missing_branches']
-    return {'passed':True,'law_id':LAW,'topics':9,'pending_branches':10,
-            'runnable_branches':2,'coverage_sha256':sha(matrix_path)}
+    return {'passed':True,'law_id':LAW,'topics':9,'pending_branches':8,
+            'runnable_branches':4,'coverage_sha256':sha(matrix_path)}
 
 
 if __name__=='__main__':

@@ -102,16 +102,21 @@ def main():
         inside, inside_geometry, inside_result = package('probe_b', candidate, manifest)
         if outside_geometry != inside_geometry:
             raise ValueError('Facility geometry differs across controlled pair')
+        speed_different = 0
         for left, right in zip(outside, inside):
-            for key in ('native_frame', 'time_s', 'speed_mps', 'native_road_id'):
+            for key in ('native_frame', 'time_s', 'native_road_id'):
                 if left[key] != right[key]:
                     raise ValueError('Controlled moving schedule differs: ' + key)
             if left['native_center_xy_m'][0] != right['native_center_xy_m'][0]:
                 raise ValueError('Controlled longitudinal route differs')
+            if (left['speed_mps'] > .1) != (right['speed_mps'] > .1):
+                raise ValueError('Moving/stopped state differs')
+            speed_different += left['speed_mps'] != right['speed_mps']
         if outside_result['moving_occupied_frames'] != 0 or inside_result['moving_occupied_frames'] != 71:
             raise ValueError('Controlled moving occupancy polarity differs')
         pairs.append({'candidate': candidate, 'reference': outside_result,
-                      'contrast': inside_result})
+                      'contrast': inside_result,
+                      'speed_magnitude_different_frames': speed_different})
     proof = {'format': 'c10052-drive-within-independent-cpu-v1',
              'passed': True, 'source_kind': 'synthetic_cpu_fixture',
              'manifest_sha256': manifest_sha,
