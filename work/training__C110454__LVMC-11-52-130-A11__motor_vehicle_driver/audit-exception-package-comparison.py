@@ -68,7 +68,7 @@ def main():
             offline=json.loads((folder/'command-offline.log').read_text())
             if not offline['offline_passed'] or offline['case_id']!=entry['case_id'] or offline['candidate_id']!=candidate:
                 raise ValueError('Exact exception offline proof differs')
-            expected_tests=11 if suffix in ('exception_2_2','exception_3_2') else 10
+            expected_tests=12 if suffix in ('exception_2_2','exception_3_2') else 11
             if f'Ran {expected_tests} tests' not in (folder/'offline.log').read_text():
                 raise ValueError('Exception bundle tests incomplete')
             receipt=json.loads((folder/'diagnostic-compatibility.json').read_text())

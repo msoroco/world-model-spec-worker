@@ -90,9 +90,12 @@ def main():
                     altered_rows[index].update(mutation)
                     ego.write_text(''.join(json.dumps(r)+'\n' for r in altered_rows))
                     assert rejected(negative,suffix,frames,expected)
+                ego.unlink()
+                assert rejected(negative,suffix,frames,'Missing required source: ego_response_history.jsonl')
         checked.append({'case_suffix':suffix,'branch':branch,'polarity':polarity,
                         'source_sha256':sha(path),'positive':True,
-                        'controlled_negative':True,'truncated_join_negative':True})
+                        'controlled_negative':True,'truncated_join_negative':True,
+                        'ego_response_negatives':4 if suffix=='exception_1_2' else 0})
     proof={'format':'c110454-retained-exception-source-audit-v1','passed':True,
            'synthetic_only':True,'physical_or_legal_applicability':False,'rows':checked}
     (HERE/'retained-exception-source-audit.json').write_text(json.dumps(proof,indent=2)+'\n')
