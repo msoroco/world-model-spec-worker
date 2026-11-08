@@ -52,6 +52,36 @@ def transform(points, matrix):
     return [(a[0]*x+a[1]*y+a[2],b[0]*x+b[1]*y+b[2]) for x,y in points]
 
 
+def surveyed_polygons(survey):
+    if survey.get('type') != 'FeatureCollection' or not isinstance(survey.get('features'), list):
+        raise ValueError('Survey GeoJSON collection absent')
+    features={}
+    for feature in survey['features']:
+        if not isinstance(feature,dict) or not isinstance(feature.get('id'),str) or feature['id'] in features:
+            raise ValueError('Survey feature identity differs')
+        geometry=feature.get('geometry')
+        if not isinstance(geometry,dict) or geometry.get('type')!='Polygon' or not isinstance(geometry.get('coordinates'),list) or len(geometry['coordinates'])!=1:
+            raise ValueError('Survey feature geometry unsupported')
+        ring=geometry['coordinates'][0]
+        if not isinstance(ring,list) or len(ring)<4 or ring[0]!=ring[-1]:
+            raise ValueError('Survey feature ring unclosed')
+        polygon(ring[:-1])
+        features[feature['id']]=ring[:-1]
+    if 'city_boundary' not in features or 'sidewalk' not in features:
+        raise ValueError('Survey City or sidewalk feature absent')
+    entrances=[]
+    for identity,points in features.items():
+        if identity in ('city_boundary','sidewalk'):
+            continue
+        kind,separator,name=identity.partition(':')
+        if separator!=':' or kind not in ('driveway','alley') or not name:
+            raise ValueError('Unclassified survey feature')
+        entrances.append({'id':identity,'kind':kind,'polygon':points})
+    return {'city_boundary_polygon':features['city_boundary'],
+            'sidewalk_polygon':features['sidewalk'],
+            'entrance_polygons':sorted(entrances,key=lambda item:item['id'])}
+
+
 def measure(folder, context_path):
     folder,context_path=Path(folder),Path(context_path)
     saved=measure_saved(folder)
@@ -69,9 +99,15 @@ def measure(folder, context_path):
         raise ValueError('Spatial provenance absent')
     survey=json.loads(survey_path.read_text())
     calibration=json.loads(calibration_path.read_text())
-    if survey.get('source_crs')!=provenance['crs'] or calibration.get('source_crs')!=provenance['crs'] or calibration.get('native_to_context_affine')!=packet.get('native_to_context_affine'):
+    if (survey.get('source_crs')!=provenance['crs'] or calibration.get('source_crs')!=provenance['crs'] or
+            calibration.get('native_to_context_affine')!=packet.get('native_to_context_affine') or
+            calibration.get('map_readback_sha256')!=sha(folder/'native-map-readback.json') or
+            calibration.get('calibration_source')!=provenance['calibration_source']):
         raise ValueError('Survey CRS or calibration differs')
-    if survey.get('sidewalk_polygon')!=packet.get('sidewalk_polygon') or survey.get('city_boundary_polygon')!=packet.get('city_boundary_polygon') or survey.get('entrance_polygons')!=packet.get('entrance_polygons'):
+    if survey.get('source_kind')!=('synthetic_cpu' if packet['authority_kind']=='synthetic_cpu' else 'surveyed_city_source'):
+        raise ValueError('Survey provenance differs')
+    geometry=surveyed_polygons(survey)
+    if any(geometry[key]!=packet.get(key) for key in geometry):
         raise ValueError('Survey geometry differs')
     affine=packet.get('native_to_context_affine')
     transform([(0,0)],affine)

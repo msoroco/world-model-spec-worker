@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 import tempfile
-from measure_context import measure
+from measure_context import measure, surveyed_polygons
 
 HERE=Path(__file__).resolve().parent
 CASES=('reference','contrast')
@@ -15,12 +15,17 @@ def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def packet(folder):
-    survey={'source_crs':'synthetic-local-metres',
-            'city_boundary_polygon':[[-20,-20],[180,-20],[180,20],[-20,20]],
-            'sidewalk_polygon':[[0,3.5],[140,3.5],[140,7.5],[0,7.5]],
-            'entrance_polygons':[{'id':'synthetic-driveway-1','kind':'driveway',
-                                  'polygon':[[50,3.5],[60,3.5],[60,7.5],[50,7.5]]}]}
-    calibration={'source_crs':'synthetic-local-metres','native_to_context_affine':[[1,0,0],[0,1,0]]}
+    def feature(identity,vertices):
+        return {'type':'Feature','id':identity,'properties':{},
+                'geometry':{'type':'Polygon','coordinates':[vertices+[vertices[0]]]}}
+    survey={'type':'FeatureCollection','source_crs':'synthetic-local-metres',
+            'source_kind':'synthetic_cpu',
+            'features':[feature('city_boundary',[[-20,-20],[180,-20],[180,20],[-20,20]]),
+                        feature('sidewalk',[[0,3.5],[140,3.5],[140,7.5],[0,7.5]]),
+                        feature('driveway:synthetic-1',[[50,3.5],[60,3.5],[60,7.5],[50,7.5]])]}
+    calibration={'source_crs':'synthetic-local-metres','native_to_context_affine':[[1,0,0],[0,1,0]],
+                 'map_readback_sha256':sha(folder/'native-map-readback.json'),
+                 'calibration_source':'synthetic identity diagnostic'}
     (folder/'city-survey-source.geojson').write_text(json.dumps(survey,indent=2)+'\n')
     (folder/'city-calibration.json').write_text(json.dumps(calibration,indent=2)+'\n')
     return {'format':'c422978-heavy-spatial-context-v1','law_id':'NRS-484B-117-1',
@@ -28,9 +33,7 @@ def packet(folder):
             'entrance_authority_reviewed':False,
             'map_readback_sha256':sha(folder/'native-map-readback.json'),
             'native_to_context_affine':[[1,0,0],[0,1,0]],
-            'city_boundary_polygon':survey['city_boundary_polygon'],
-            'sidewalk_polygon':survey['sidewalk_polygon'],
-            'entrance_polygons':survey['entrance_polygons'],
+            **surveyed_polygons(survey),
             'source_provenance':{'source_sha256':sha(folder/'city-survey-source.geojson'),
                                  'calibration_sha256':sha(folder/'city-calibration.json'),
                                  'crs':'synthetic-local-metres',

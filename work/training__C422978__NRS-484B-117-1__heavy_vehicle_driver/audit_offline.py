@@ -63,6 +63,7 @@ def audit():
                     'measure_saved.py': HERE/'native/measure_saved.py',
                     'measure_camera.py': HERE/'native/measure_camera.py',
                     'measure_context.py': HERE/'native/measure_context.py',
+                    'prepare_context.py': HERE/'native/prepare_context.py',
                     'measurement-contract.json': HERE/'native/measurement-contract.json',
                     'config.json': HERE/'native/drafts'/case/candidate/'config.json',
                     'requested-tracks.jsonl': HERE/'native/drafts'/case/candidate/'requested-tracks.jsonl'}
@@ -96,6 +97,25 @@ def audit():
                                  for p in json.loads((HERE/'native/context-proof.json').read_text())['positives']
                                  if p['case'] == case and p['candidate'] == candidate)):
             raise ValueError('Offline packaged spatial processing differs')
+        with tempfile.TemporaryDirectory(dir=OFFLINE) as temporary:
+            fresh = Path(temporary)/'attempt'
+            shutil.copytree(saved_fixture,fresh)
+            for name in ('city-context.json','city-survey-source.geojson','city-calibration.json'):
+                (fresh/name).unlink()
+            survey=saved_fixture/'city-survey-source.geojson'
+            calibration=saved_fixture/'city-calibration.json'
+            prep=[sys.executable,str(expected_bundle/'prepare_context.py'),
+                  '--attempt',str(fresh),'--survey',str(survey),
+                  '--survey-sha256',digest(survey),'--calibration',str(calibration),
+                  '--diagnostic']
+            result=subprocess.run(prep,capture_output=True,text=True,check=True)
+            if json.loads(result.stdout)['measurement']['frames']!=480 or digest(fresh/'city-context.json')!=digest(saved_fixture/'city-context.json'):
+                raise ValueError('Offline packaged spatial preparation differs')
+            for name in ('city-context.json','city-survey-source.geojson','city-calibration.json'):
+                (fresh/name).unlink()
+            prep[prep.index('--survey-sha256')+1]='0'*64
+            if subprocess.run(prep,capture_output=True,text=True).returncode==0:
+                raise ValueError('Offline packaged altered survey hash accepted')
         if candidate == 'fallback3':
             camera = HERE/'native/camera-fixtures'/case/'clear'
             camera_run = subprocess.run((sys.executable,str(expected_bundle/'measure_camera.py'),
@@ -124,6 +144,8 @@ def audit():
         if (row['bundle_sha256'] != {name:digest(target/name) for name in expected} or
                 row['packaged_saved_frames'] != 480 or
                 row['packaged_spatial_outside_entrance_frames'] != next(p['measurement']['moving_city_sidewalk_outside_entrance_frames'] for p in json.loads((HERE/'native/context-proof.json').read_text())['positives'] if p['case'] == case and p['candidate'] == candidate) or
+                row['packaged_spatial_preparation_positive'] is not True or
+                row['packaged_survey_hash_negative'] is not True or
                 row['packaged_clear_camera_visible_frames'] != (420 if candidate == 'fallback3' else None)):
             raise ValueError('Offline packaged processor recorded positive differs')
     if {(n['case'],n['candidate'],n['altered_file']) for n in proof['negatives']} != {

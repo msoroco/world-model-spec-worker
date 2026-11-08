@@ -44,7 +44,7 @@ def audit():
                 entrance=xmax>=50 and xmin<=60 and ymax>=3.5 and ymin<=7.5
                 if city:expected['moving_city_intersection_frames']+=1
                 if sidewalk:expected['moving_sidewalk_intersection_frames']+=1
-                if entrance:expected['moving_entrance_intersection_frames']+=1;touched.add('synthetic-driveway-1')
+                if entrance:expected['moving_entrance_intersection_frames']+=1;touched.add('driveway:synthetic-1')
                 if city and sidewalk and not entrance:
                     expected['moving_city_sidewalk_outside_entrance_frames']+=1;outside.append(row['frame'])
             actual=measure(folder,context)

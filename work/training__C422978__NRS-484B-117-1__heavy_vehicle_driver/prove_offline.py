@@ -46,6 +46,26 @@ def prove():
         context_measure = json.loads(context_run.stdout)
         if context_measure['frames'] != 480 or context_measure['authority_kind'] != 'synthetic_cpu':
             raise AssertionError('Packaged spatial processor positive failed')
+        with tempfile.TemporaryDirectory(dir=OFFLINE) as temporary:
+            fresh = Path(temporary)/'attempt'
+            shutil.copytree(saved_fixture, fresh)
+            for name in ('city-context.json','city-survey-source.geojson','city-calibration.json'):
+                (fresh/name).unlink()
+            survey = saved_fixture/'city-survey-source.geojson'
+            calibration = saved_fixture/'city-calibration.json'
+            prep_cmd = [sys.executable, str(bundle/'prepare_context.py'),
+                        '--attempt', str(fresh), '--survey', str(survey),
+                        '--survey-sha256', sha(survey), '--calibration', str(calibration),
+                        '--diagnostic']
+            prepared = subprocess.run(prep_cmd,text=True,capture_output=True,check=True)
+            if json.loads(prepared.stdout)['measurement']['frames'] != 480 or sha(fresh/'city-context.json') != sha(saved_fixture/'city-context.json'):
+                raise AssertionError('Packaged spatial preparation positive failed')
+            for name in ('city-context.json','city-survey-source.geojson','city-calibration.json'):
+                (fresh/name).unlink()
+            prep_cmd[prep_cmd.index('--survey-sha256')+1] = '0'*64
+            changed = subprocess.run(prep_cmd,text=True,capture_output=True)
+            if changed.returncode == 0:
+                raise AssertionError('Packaged altered survey hash accepted')
         camera_visible = None
         if candidate == 'fallback3':
             camera = CASE/'native/camera-fixtures'/case/'clear'
@@ -60,6 +80,8 @@ def prove():
                           'bundle_sha256': {name: sha(bundle/name) for name in entry['file_sha256']},
                           'packaged_saved_frames':saved_measure['frames'],
                           'packaged_spatial_outside_entrance_frames':context_measure['moving_city_sidewalk_outside_entrance_frames'],
+                          'packaged_spatial_preparation_positive':True,
+                          'packaged_survey_hash_negative':True,
                           'packaged_clear_camera_visible_frames':camera_visible})
         for name in SOURCES:
             with tempfile.TemporaryDirectory(dir=OFFLINE) as temporary:

@@ -51,6 +51,7 @@ def build():
                      'measure_saved.py': NATIVE/'measure_saved.py',
                      'measure_camera.py': NATIVE/'measure_camera.py',
                      'measure_context.py': NATIVE/'measure_context.py',
+                     'prepare_context.py': NATIVE/'prepare_context.py',
                      'measurement-contract.json': NATIVE/'measurement-contract.json',
                      'config.json': source/'config.json',
                      'requested-tracks.jsonl': source/'requested-tracks.jsonl'}
