@@ -119,6 +119,22 @@ def audit():
         proof=json.loads((work/receipt).read_text())
         assert proof['passed'] and proof[count_key]==8
         assert proof['original_native_capture_executed'] is False
+    exception_b=next(b for b in branches if b['branch_id'].endswith('__exception_b'))
+    exception_b_cases={ASSIGNMENT+'__exception_b_faulted',ASSIGNMENT+'__exception_b_healthy'}
+    assert exception_b['status']=='pending_review'
+    assert set(exception_b['case_ids'])==exception_b_cases<=cases
+    assert exception_b['comparison_ids']==[ASSIGNMENT+'__comparison_exception_b']
+    assert set(comparisons[exception_b['comparison_ids'][0]]['case_ids'])==exception_b_cases
+    assert all(sha(work/name)==digest for name,digest in exception_b['cpu_proofs'].items())
+    exception_b_run=subprocess.run([sys.executable,str(work/'audit-exception-b-source.py')],
+                                   cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert exception_b_run.returncode==0,(exception_b_run.stdout,exception_b_run.stderr)
+    exception_b_proof=json.loads((work/'exception-b-independent-audit.json').read_text())
+    assert exception_b_proof['passed'] and exception_b_proof['positive_sources']==8
+    assert exception_b_proof['fault_state_negatives']==8
+    assert exception_b_proof['changed_frame_negatives']==8
+    assert exception_b_proof['controlled_fault_healthy_pairs']==4
+    assert exception_b_proof['original_native_disabled_state_verified'] is False
     park=next(b for b in branches if b['branch_id'].endswith('__prohibition_park'))
     park_cases={ASSIGNMENT+'__probe_park_released',ASSIGNMENT+'__probe_park_held'}
     assert set(park['case_ids'])==park_cases<=cases
