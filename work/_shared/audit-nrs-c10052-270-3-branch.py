@@ -144,6 +144,22 @@ def audit():
         proof=json.loads((work/receipt).read_text())
         assert proof['passed'] and proof[count_key]==8
         assert proof['original_native_capture_executed'] is False
+    exception_f=next(b for b in branches if b['branch_id'].endswith('__exception_f'))
+    exception_f_cases={ASSIGNMENT+'__exception_f_emergency',ASSIGNMENT+'__exception_f_routine'}
+    assert exception_f['status']=='pending_review'
+    assert set(exception_f['case_ids'])==exception_f_cases<=cases
+    assert exception_f['comparison_ids']==[ASSIGNMENT+'__comparison_exception_f']
+    assert set(comparisons[exception_f['comparison_ids'][0]]['case_ids'])==exception_f_cases
+    assert all(sha(work/name)==digest for name,digest in exception_f['cpu_proofs'].items())
+    exception_f_run=subprocess.run([sys.executable,str(work/'audit-exception-f-source.py')],
+                                   cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert exception_f_run.returncode==0,(exception_f_run.stdout,exception_f_run.stderr)
+    exception_f_proof=json.loads((work/'exception-f-independent-audit.json').read_text())
+    assert exception_f_proof['passed'] and exception_f_proof['positive_sources']==8
+    assert exception_f_proof['controlled_emergency_routine_pairs']==4
+    assert exception_f_proof['negative_rejections']==40
+    assert exception_f_proof['original_native_emergency_verified'] is False
+    assert exception_f_proof['legal_exception_verified'] is False
     park=next(b for b in branches if b['branch_id'].endswith('__prohibition_park'))
     park_cases={ASSIGNMENT+'__probe_park_released',ASSIGNMENT+'__probe_park_held'}
     assert set(park['case_ids'])==park_cases<=cases
