@@ -32,6 +32,10 @@ class SidewalkConstructionTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             check(Path('.'), config['case_suffix'], 'unsupported')
 
+    def test_context_preparer_is_packaged(self):
+        import prepare_city_context
+        self.assertTrue(callable(prepare_city_context.prepare))
+
 
 if __name__ == '__main__':
     unittest.main()
@@ -60,6 +64,7 @@ def build():
     triggers = (NATIVE / 'triggers.py').read_text()
     saved_meter = (NATIVE / 'measure_saved.py').read_text()
     context_meter = (NATIVE / 'measure_context.py').read_text()
+    context_preparer = (NATIVE / 'prepare_city_context.py').read_text()
     finalizer = (NATIVE / 'finalize.py').read_text()
     for case in ('witness_1', 'witness_2'):
         case_id = AID + '__' + case
@@ -79,6 +84,7 @@ def build():
                 ('runner.py', runner), ('triggers.py', triggers),
                 ('measure_saved.py', saved_meter),
                 ('measure_context.py', context_meter),
+                ('prepare_city_context.py', context_preparer),
                 ('finalize.py', finalizer),
                 ('assignment-source.json', assignment), ('authored-road.xodr', road),
                 ('requested-tracks.jsonl', (source / 'requested-tracks.jsonl').read_text()),
