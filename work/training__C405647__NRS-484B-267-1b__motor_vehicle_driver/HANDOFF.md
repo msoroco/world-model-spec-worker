@@ -58,8 +58,13 @@ three CPU tests into each of
 eight unselected bundles. All eight pinned `runtime.py offline` commands pass;
 `audit-draft-offline.py` independently checks source equality, construction
 hashes, measured fallback triggers, log hashes and three tests per bundle.
-This is exact CPU feasibility, not portable saved-analysis compatibility or
-physical delivery acceptance.
+The bundle now includes `native/finalize.py`. Eight exact synthetic saved
+finalizations emit analysis, a native-result shape and three recording channels;
+eight altered actor/trace/video frame joins reject. `prove-finalization.py`
+retains the results and `audit-finalization.py` independently checks the
+receipts. Eight exact saved-processor positives and removed-source negatives
+also pass with an independent audit. The full Core/Lean/video compatibility
+path and physical delivery acceptance remain unproved.
 
 ## Source review
 
@@ -71,4 +76,4 @@ emergency approach with fixed signal context; edge/shoulder exceptions separatel
 
 ## Blocker and resumption
 
-Original CARLA capture and portable positive/negative compatibility proofs are still absent; exact statutory exceptions and historical equivalence remain unverified. Continue with original-source bridge positive proof, mandatory portable processing, independent delivery and comparison audits. Keep unsupported exception branches explicit. Only then set `ready`/`delivery_prepared` and add the exact GPU queue commands. Do not infer legal verdicts from CPU fixtures.
+Original CARLA capture and full Core/Lean/video positive/negative compatibility proofs are still absent; exact statutory exceptions and historical equivalence remain unverified. Continue with original-source bridge positive proof, full portable processing, independent delivery and comparison audits. Keep unsupported exception branches explicit. Only then set `ready`/`delivery_prepared` and add the exact GPU queue commands. Do not infer legal verdicts from CPU fixtures.

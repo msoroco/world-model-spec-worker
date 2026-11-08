@@ -5,7 +5,7 @@ from pathlib import Path
 
 FOLDER = Path(__file__).resolve().parent
 NATIVE = FOLDER / 'native'
-SOURCES = {'runner.py', 'build.py', 'measure_saved.py', 'prepare_original.py'}
+SOURCES = {'runner.py', 'build.py', 'measure_saved.py', 'prepare_original.py', 'finalize.py'}
 CANDIDATES = {'primary', 'fallback1', 'fallback2', 'fallback3'}
 
 
@@ -29,6 +29,9 @@ def audit():
         suffix = case_id.rsplit('__', 1)[-1]
         if suffix not in ('reference', 'contrast') or entry['kind'] != 'draft_not_selected':
             raise ValueError('wrong controlled case')
+        if entry['measurement_procedure'] != {'entrypoint': 'finalize.py',
+                                               'output_schema': 'c405647-1b-saved-analysis-v1'}:
+            raise ValueError('portable finalization path differs')
         refs = [{'id': 'primary', 'construction': entry['construction'],
                  'construction_sha256': entry['construction_sha256']}, *entry['candidates']]
         if {ref['id'] for ref in refs} != CANDIDATES:

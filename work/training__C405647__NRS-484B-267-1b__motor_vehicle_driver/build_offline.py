@@ -9,7 +9,7 @@ NATIVE = FOLDER / 'native'
 AID = FOLDER.name
 CASES = ('reference', 'contrast')
 CANDIDATES = ('primary', 'fallback1', 'fallback2', 'fallback3')
-SOURCES = ('runner.py', 'build.py', 'measure_saved.py', 'prepare_original.py')
+SOURCES = ('runner.py', 'build.py', 'measure_saved.py', 'prepare_original.py', 'finalize.py')
 TEST = '''import json
 from pathlib import Path
 import unittest
@@ -66,8 +66,8 @@ def build():
         case_id = AID + '__' + case
         entry = {'case_id': case_id, 'kind': 'draft_not_selected',
                  'measurement_contract': 'native/measurement-contract.json',
-                 'measurement_procedure': {'entrypoint': 'measure_saved.py',
-                                           'output_schema': 'c405647-1b-saved-geometry-v1'},
+                 'measurement_procedure': {'entrypoint': 'finalize.py',
+                                           'output_schema': 'c405647-1b-saved-analysis-v1'},
                  'candidate_risk': {'status': 'physical',
                                     'reason': 'Native edge behavior, authority and original lamp pixels require review'},
                  'candidates': []}
@@ -114,7 +114,7 @@ def build():
                             'law_id': 'NRS-484B-267-1b', 'actor': 'motor_vehicle_driver',
                             'entrypoint': 'runner.py', 'files': files,
                             'measurement_plan': {'method': 'saved original actor/body and pixel review',
-                                                 'status': 'prototype_not_runtime_compatible'},
+                                                 'status': 'portable_saved_finalizer_cpu_draft'},
                             'recording_description': recording,
                             'static_checks': ['paired OpenDRIVE tracks and exact candidate CPU preflight'],
                             'termination_rules': ['480 original actor/video frame joins',
