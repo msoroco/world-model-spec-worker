@@ -129,7 +129,7 @@ def measure(folder, context):
     if len(rows) != 480:
         raise ValueError('Context observation frame count differs')
     kinds = {row.get('source_kind') for row in rows}
-    if len(kinds) != 1 or not kinds <= {'synthetic_cpu', 'native_original'}:
+    if len(kinds) != 1 or not kinds <= {'synthetic_cpu', 'original_native'}:
         raise ValueError('Context observation provenance differs')
     sidewalk_frames, city_frames, driveway_frames, qualifying_geometry = [], [], [], []
     for index, row in enumerate(rows):
