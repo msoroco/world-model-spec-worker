@@ -45,7 +45,7 @@ for entry in manifest["cases"]:
         assert {"ru.bicycle", "ru.rider_posture"}.issubset(config["required_atoms"])
         assert {"ru.bicycle", "ru.rider_posture"}.issubset(config["mandatory_channels"])
         assert len(config["cameras"]) == 4
-        receipt_path = construction_path.parent/"offline-receipt.json"
+        receipt_path = construction_path.parent/"draft-receipt.json"
         receipt = json.loads(receipt_path.read_text())
         assert receipt["construction_sha256"] == sha(construction_path)
         assert receipt["candidate_id"] == name and receipt["case_id"] == case_id

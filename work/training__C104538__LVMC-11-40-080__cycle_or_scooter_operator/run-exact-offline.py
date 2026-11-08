@@ -48,7 +48,7 @@ def main():
                        "unit_log": retained.relative_to(HERE).as_posix() if retained.is_file() else None,
                        "unit_log_sha256": sha(retained) if retained.is_file() else None,
                        "selected": False, "simulation_started": False}
-            (directory/"offline-receipt.json").write_text(json.dumps(receipt, indent=2)+"\n")
+            (directory/"draft-receipt.json").write_text(json.dumps(receipt, indent=2)+"\n")
             receipts.append(receipt)
             print(kind, name, result.returncode, flush=True)
     summary = {"format": "c104538-lvmc-exact-offline-summary-v1",

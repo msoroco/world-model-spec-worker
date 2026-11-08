@@ -59,7 +59,7 @@ def finalize(attempt, output):
     turn_frames = mounted_turn_frames = 0
     for i, (n, m, r, t, e, b) in enumerate(zip(native, mapping, rider, trace, evidence, body)):
         frame, time = n["native_frame"], n["time_s"]
-        if (r["frame"] != i or r["time_s"] != i/20 or r["actor_id"] != "rider-1" or
+        if (r["frame"] != i or r["time_s"] != time or r["actor_id"] != "rider-1" or
             r["machine_class"] != "bicycle" or r["sign_id"] != sign["id"] or
             r["road_id"] != sign["governs_road"] or r["approach_lane_id"] != sign["governs_lane"]):
             raise ValueError("Rider/sign/frame source join differs")
