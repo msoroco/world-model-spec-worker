@@ -78,6 +78,9 @@ def audit():
                 not cfg['original_native_observed'] and
                 len(track) == 240, 'unselected request')
         assert cfg['right_lane_obstruction_requested'] == (witness == 'witness_2')
+        require(cfg['obstruction_y_m'] == (-6.8 if witness == 'witness_2' else None)
+                and cfg['obstruction_radius_m'] ==
+                (0.2 if witness == 'witness_2' else None), 'object geometry')
         expected_speed = 7 if candidate == 'fallback1' else 8
         expected_stop = 45 if candidate == 'fallback3' else None
         expected_camera = 'elevated_overview' if candidate == 'fallback2' else 'standard'
@@ -99,6 +102,10 @@ def audit():
                     (witness == 'witness_2') and
                     row['obstruction_x_m'] ==
                     (55 if witness == 'witness_2' else None) and
+                    row['obstruction_y_m'] ==
+                    (-6.8 if witness == 'witness_2' else None) and
+                    row['obstruction_radius_m'] ==
+                    (0.2 if witness == 'witness_2' else None) and
                     not row['actual_right_pass_observed'] and
                     not row['one_way_designation_verified'] and
                     not row['unobstructed_pavement_verified'] and

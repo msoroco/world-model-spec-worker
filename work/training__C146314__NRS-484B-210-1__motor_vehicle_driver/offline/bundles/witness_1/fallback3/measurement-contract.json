@@ -1,0 +1,24 @@
+{
+  "format": "c146314-right-pass-measurement-contract-v1",
+  "assignment_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver",
+  "source_law_id": "NRS-484B-210-1",
+  "activation": "ego body overtakes and clears lead body on the lead's right",
+  "source_rows": ["native-observed.jsonl", "camera-frames.jsonl", "readback.json"],
+  "rate_hz": 20,
+  "frames": 240,
+  "metrics": {
+    "passing_right_geometry_frames": "Count ego rear beyond lead front while ego body lies wholly to lead's right",
+    "min_ego_body_to_obstruction_clearance_m": "Minimum Euclidean gap from observed ego body rectangle to observed object radius over all source frames",
+    "object_pixel_reviewed": "Original camera review must resolve object visibility before a physical or legal claim",
+    "one_way_designation_verified": "Independent original source must establish legal one-way designation",
+    "pavement_condition_verified": "Original source must establish unobstructed width for the full pass"
+  },
+  "fallback_triggers": {
+    "fallback1": "Measured object clearance below 0.5 m in a pass attempt calls for slower controlled retry",
+    "fallback2": "Object or lane pixels not reviewed calls for elevated overview retry",
+    "fallback3": "One-way designation or pavement condition unverified calls for stop-before-obstruction retry"
+  },
+  "unresolved_statutory_branches": ["NRS 484B.210(1)(a)", "NRS 484B.210(1)(b)", "NRS 484B.210(1)(c)", "NRS 484B.210(4)"],
+  "synthetic_fixture_establishes_physical_clearance": false,
+  "legal_verdict_from_geometry_alone": false
+}
