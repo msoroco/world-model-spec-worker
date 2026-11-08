@@ -26,6 +26,32 @@ observed CARLA trajectories, original camera pixels, qualifying lamps,
 vehicle authority, a finding that the response was legally immediate, or a
 legal judgment of “as close as possible.”
 
+## Native and saved processing
+
+`native/runner.py` now has a CPU preflight and an unexecuted original CARLA
+capture path. It requires an idle exclusive server, imports the exact authored
+OpenDRIVE, checks starting lanes and four-wheel control geometry, records
+observed actor centers, four-vertex body footprints, headings and speeds, and
+captures four synchronized original RGB cameras as FFV1 at 20 Hz. The capture
+report retains restoration/error state and explicitly sets accepted=false.
+`native/prove_runner.py` passes all eight exact candidate preflights and three
+wrong-identity/hash negatives without importing CARLA.
+
+`native/prepare_original.py` is the saved-only bridge for a future original
+capture. It requires a sealed 480-frame capture and map readback, exact bundle
+identity, all four camera source hashes, decoded FFV1 dimensions and frame
+counts, and actor/video frame joins before reflecting Native coordinates into
+authored OpenDRIVE coordinates. `native/prove_original_bridge.py` passes three
+missing/inconsistent original-source negatives. It has no original-capture
+positive yet.
+`native/measure_saved.py` computes saved motion, body-edge, heading, stop and
+catch-up diagnostics without a legal verdict. `native/prove_saved.py` passes
+eight synthetic 480-frame positives and six corrupted-source negatives;
+`native/audit_saved.py` independently recomputes the paired edge/catch-up
+contrast. `native/measurement-contract.json` names the required original
+channels and the unresolved source/legal observations. Synthetic CPU packets
+are not original video or accepted delivery evidence.
+
 ## Source review
 
 Law: NRS 484B.267(1)(b); with NRS 484B.210(4). Exact text and topic inventory are referenced by hashes in `case-plan.json`. The 1 supplied witness row(s) are planning context, not execution proof. Membership rows: {'full-train': 0}. No accepted equivalence receipt was verified.
@@ -36,4 +62,4 @@ emergency approach with fixed signal context; edge/shoulder exceptions separatel
 
 ## Blocker and resumption
 
-Exact CARLA runner, four-camera original capture, pinned offline package and portable positive/negative compatibility proofs are still absent; exact statutory exceptions and historical equivalence remain unverified. Continue with executable capture, full mandatory saved processing, independent audits, and comparison audit. Keep unsupported exception branches explicit. Only then set `ready`/`delivery_prepared` and add the exact GPU queue commands. Do not infer legal verdicts from CPU fixtures.
+Original CARLA capture, pinned offline package and portable positive/negative compatibility proofs are still absent; exact statutory exceptions and historical equivalence remain unverified. Continue with original-source bridge proof, mandatory portable processing, independent delivery and comparison audits. Keep unsupported exception branches explicit. Only then set `ready`/`delivery_prepared` and add the exact GPU queue commands. Do not infer legal verdicts from CPU fixtures.
