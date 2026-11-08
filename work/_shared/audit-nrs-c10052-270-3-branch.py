@@ -190,6 +190,15 @@ def audit():
     assert exception_e_geometry.returncode==0,(exception_e_geometry.stdout,exception_e_geometry.stderr)
     geometry_proof=json.loads(exception_e_geometry.stdout)
     assert geometry_proof['routes']==8 and geometry_proof['original_native_readback'] is False
+    for script, receipt, count_key in (
+        ('audit-exception-e-case-candidates.py', 'exception-e-case-independent-audit.json', 'candidates'),
+        ('audit-exception-e-packages-v1.py', 'exception-e-package-audit-v1.json', 'positive_package_receipts')):
+        completed=subprocess.run([sys.executable,str(work/script)],cwd=ROOT,
+                                 capture_output=True,text=True,timeout=120)
+        assert completed.returncode==0,(completed.stdout,completed.stderr)
+        proof=json.loads((work/receipt).read_text())
+        assert proof['passed'] and proof[count_key]==8
+        assert proof['original_native_capture_executed'] is False
     exception_f=next(b for b in branches if b['branch_id'].endswith('__exception_f'))
     exception_f_cases={ASSIGNMENT+'__exception_f_emergency',ASSIGNMENT+'__exception_f_routine'}
     assert exception_f['status']=='pending_review'
