@@ -50,6 +50,8 @@ def measure(folder, expected_hashes=None):
     expected_heading = 0 if case == 'designated' else 180
     expected_direction = 1 if case == 'designated' else -1
     sign_visible = {101: 0, 102: 0}
+    entry_visible = 0
+    max_lane_offset = 0.0
     occupied = 0
     for i, (row, sign) in enumerate(zip(rows, signs)):
         t = (i+1)/20
@@ -76,6 +78,9 @@ def measure(folder, expected_hashes=None):
         if not isinstance(visible, list) or any(value not in (101,102) for value in visible):
             raise ValueError('Saved one-way sign frame differs')
         for value in set(visible): sign_visible[value] += 1
+        if i < 40 and visible: entry_visible += 1
+        lane_center = -1.75 if row['lane_id'] == -1 else -5.25
+        max_lane_offset = max(max_lane_offset, abs(row['ego_y_m']-lane_center))
         if i:
             displacement = row['ego_x_m']-rows[i-1]['ego_x_m']
             expected = row['ego_velocity_x_mps']/20
@@ -94,6 +99,9 @@ def measure(folder, expected_hashes=None):
             'designated_direction_x':designation['designated_direction_x'],
             'direction_matches_designation':expected_direction==designation['designated_direction_x'],
             'visible_sign_frame_counts':{str(key):value for key,value in sign_visible.items()},
+            'entry_visible_sign_frames':entry_visible,
+            'maximum_lane_center_deviation_m':round(max_lane_offset,3),
+            'designation_record_status':designation['status'],
             'designation_authority_verified':False,
             'physical_sign_verified':False,
             'legal_verdict':None,'delivery_ready':False}

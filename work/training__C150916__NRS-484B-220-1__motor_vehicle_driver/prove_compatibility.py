@@ -28,11 +28,17 @@ def run_triggers(bundle,saved):
                           text=True,capture_output=True,timeout=20)
 
 
+def run_comparison(bundle, first, second):
+    return subprocess.run([sys.executable,str(bundle/'compare_saved.py'),str(first),str(second)],
+                          text=True,capture_output=True,timeout=20)
+
+
 def prove():
     manifest_path=CASE/'offline'/'manifest.json'
     manifest=json.loads(manifest_path.read_text())
     positives=[];negatives=[];saved_positives=[];saved_negatives=[]
     trigger_positives=[];trigger_negatives=[]
+    comparison_positives=[];comparison_negatives=[]
     for entry in manifest['entries']:
         folder=CASE/entry['bundle']
         if {name:sha(folder/name) for name in entry['sha256']}!=entry['sha256']:
@@ -86,6 +92,22 @@ def prove():
                     raise AssertionError('Copied one-way triggers accepted missing sign frame')
                 trigger_negatives.append({'case_id':entry['case_id'],
                                           'mutation':'missing_sign_frame','rejected':True})
+            if case == 'designated':
+                opposite=CASE/'native'/'saved-fixtures'/'opposite'
+                pair=run_comparison(folder,saved,opposite)
+                if pair.returncode!=0:raise AssertionError(pair.stderr)
+                compared=json.loads(pair.stdout)
+                if compared['paired_frames']!=240 or compared['accepted_comparison']:
+                    raise AssertionError('Copied saved comparison differs')
+                comparison_positives.append({'bundle':entry['bundle'],
+                    'source_hashes':compared['source_hashes'],'passed':True})
+                with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+                    altered=Path(temporary)/'opposite';shutil.copytree(opposite,altered)
+                    path=altered/'designation-record.json'
+                    path.write_bytes(path.read_bytes()+b' ')
+                    if run_comparison(folder,saved,altered).returncode==0:
+                        raise AssertionError('Copied comparison accepted altered designation')
+                    comparison_negatives.append({'mutation':'designation_bytes','rejected':True})
     result={'format':'c150916-exact-compatibility-proof-v1',
             'assignment_id':CASE.name,'manifest_sha256':sha(manifest_path),
             'positives':positives,'negatives':negatives,
@@ -93,6 +115,8 @@ def prove():
             'copied_saved_negatives':saved_negatives,
             'copied_trigger_positives':trigger_positives,
             'copied_trigger_negatives':trigger_negatives,
+            'copied_comparison_positives':comparison_positives,
+            'copied_comparison_negatives':comparison_negatives,
             'original_native_observed':False,'delivery_ready':False}
     (CASE/'offline'/'proof-compatibility.json').write_text(json.dumps(result,indent=2)+'\n')
     return result
