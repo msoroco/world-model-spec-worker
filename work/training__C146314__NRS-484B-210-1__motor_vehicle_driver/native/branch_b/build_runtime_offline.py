@@ -16,10 +16,14 @@ def put(path,value):
 
 
 TEST='''import unittest
+import tempfile
 from pathlib import Path
 from check import check
 from measure_saved import measure
 from route_fallbacks import route
+from fixture_raw import build as raw_fixture
+from prepare_raw import prepare
+from measure_prepared import measure as prepared_measure
 
 class ExactParagraphB(unittest.TestCase):
     def test_four_lane_parked_source(self):
@@ -46,6 +50,17 @@ class ExactParagraphB(unittest.TestCase):
         self.assertEqual(set(result['triggers']),
                          {'fallback1','fallback2','fallback3'})
         self.assertIsNone(result['selected_fallback'])
+
+    def test_raw_to_saved_parked_state(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder)
+            raw_fixture(Path.cwd(),root/'raw')
+            receipt=prepare(Path.cwd(),root/'raw',root/'prepared',
+                            synthetic_cpu=True)
+            result=prepared_measure(Path.cwd(),root/'prepared')
+            self.assertEqual(receipt['source_kind'],'synthetic_cpu')
+            self.assertEqual(result['frames'],240)
+            self.assertFalse(result['delivery_ready'])
 '''
 
 
@@ -58,7 +73,8 @@ def build():
             names=('config.json','requested-tracks.jsonl','four-lane-pass.xodr',
                 'assignment-source.json','case-plan.json','measurement-contract.json',
                 'build.py','check.py','capture.py','measure_saved.py',
-                'route_fallbacks.py','saved/native-observed.jsonl',
+                'route_fallbacks.py','fixture_raw.py','prepare_raw.py',
+                'measure_prepared.py','saved/native-observed.jsonl',
                 'saved/camera-frames.jsonl','saved/readback.json')
             files=[{'path':name,'content':(bundle/name).read_text()} for name in names]
             files.append({'path':'tests/test_exact.py','content':TEST})

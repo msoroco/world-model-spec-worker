@@ -27,6 +27,56 @@ def proof():
             '--bundle',str(bundle)],capture_output=True,text=True)
         if capture.returncode:raise ValueError('capture preflight failed: '+capture.stderr)
         positive+=2
+        with tempfile.TemporaryDirectory() as tmp:
+            raw=Path(tmp)/'raw';prepared=Path(tmp)/'prepared'
+            generated=subprocess.run([sys.executable,str(bundle/'fixture_raw.py'),
+                '--bundle',str(bundle),'--output-dir',str(raw)],
+                capture_output=True,text=True)
+            converted=subprocess.run([sys.executable,str(bundle/'prepare_raw.py'),
+                '--bundle',str(bundle),'--raw-folder',str(raw),
+                '--output-dir',str(prepared),'--synthetic-cpu'],
+                capture_output=True,text=True)
+            measured=subprocess.run([sys.executable,str(bundle/'measure_prepared.py'),
+                '--bundle',str(bundle),'--saved',str(prepared)],
+                capture_output=True,text=True)
+            if generated.returncode or converted.returncode or measured.returncode:
+                raise ValueError('raw-to-saved positive failed: '+
+                    generated.stderr+converted.stderr+measured.stderr)
+            if json.loads(measured.stdout)['frames']!=240:
+                raise ValueError('raw-to-saved frame coverage')
+            positive+=1
+            for kind in ('video_join','parked_speed','review_provenance','missing_original_media'):
+                changed=Path(tmp)/('raw-'+kind);shutil.copytree(raw,changed)
+                if kind=='video_join':
+                    path=changed/'video_frames.jsonl';lines=path.read_text().splitlines()
+                    obj=json.loads(lines[0]);obj['native_frame']+=1
+                    lines[0]=json.dumps(obj);path.write_text('\n'.join(lines)+'\n')
+                elif kind=='parked_speed' and json.loads((bundle/'config.json').read_text())['parked_vehicle_requested']:
+                    path=changed/'native-raw-actors.jsonl';lines=path.read_text().splitlines()
+                    obj=json.loads(lines[0]);obj['parked_vehicle']['speed_mps']=2
+                    lines[0]=json.dumps(obj);path.write_text('\n'.join(lines)+'\n')
+                elif kind=='parked_speed':
+                    path=changed/'native-raw-actors.jsonl';lines=path.read_text().splitlines()
+                    obj=json.loads(lines[0]);obj['parked_vehicle']={'actor_id':999}
+                    lines[0]=json.dumps(obj);path.write_text('\n'.join(lines)+'\n')
+                elif kind=='review_provenance':
+                    path=changed/'frame-review.jsonl';lines=path.read_text().splitlines()
+                    obj=json.loads(lines[0]);obj['review_provenance']='unverified'
+                    lines[0]=json.dumps(obj);path.write_text('\n'.join(lines)+'\n')
+                elif kind=='missing_original_media':
+                    path=changed/'native-map-readback.json'
+                    obj=json.loads(path.read_text());obj['source_kind']='original_native'
+                    path.write_text(json.dumps(obj)+'\n')
+                result=subprocess.run([sys.executable,str(bundle/'prepare_raw.py'),
+                    '--bundle',str(bundle),'--raw-folder',str(changed),
+                    '--output-dir',str(Path(tmp)/('out-'+kind))]+
+                    ([] if kind=='missing_original_media' else ['--synthetic-cpu']),
+                    capture_output=True,text=True)
+                if result.returncode==0:
+                    raise ValueError('raw-to-saved tamper accepted: '+kind)
+                if kind=='missing_original_media' and 'forward.mkv' not in result.stderr:
+                    raise ValueError('original media negative failed at another check')
+                negative+=1
         saved=subprocess.run([sys.executable,str(bundle/'measure_saved.py'),
             '--bundle',str(bundle),'--saved',str(bundle/'saved')],
             capture_output=True,text=True)

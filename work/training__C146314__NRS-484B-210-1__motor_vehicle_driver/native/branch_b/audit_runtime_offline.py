@@ -39,8 +39,8 @@ def audit():
                 selection['case_id']==row['case_id'] and
                 selection['candidate_id']==row['candidate_id'] and
                 sha(output/'offline.log')==row['log_sha256'] and
-                'Ran 4 tests' in log and '\nOK\n' in log and
-                row['tests']==4 and row['exit_code']==0 and
+                'Ran 5 tests' in log and '\nOK\n' in log and
+                row['tests']==5 and row['exit_code']==0 and
                 row['simulation_started'] is False,
                 'paragraph (b) materialized receipt')
         for item in construction['files']:

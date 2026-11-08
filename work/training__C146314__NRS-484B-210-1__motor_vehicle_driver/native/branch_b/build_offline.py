@@ -10,6 +10,7 @@ ROOT=CASE.parents[1]
 NAMES=('assignment-source.json','case-plan.json','four-lane-pass.xodr',
        'config.json','requested-tracks.jsonl','build.py','check.py','capture.py',
        'measurement-contract.json','measure_saved.py','route_fallbacks.py',
+       'fixture_raw.py','prepare_raw.py','measure_prepared.py',
        'saved/native-observed.jsonl','saved/camera-frames.jsonl',
        'saved/readback.json')
 
@@ -37,6 +38,9 @@ def build():
             'measurement-contract.json':HERE/'measurement-contract.json',
             'measure_saved.py':HERE/'measure_saved.py',
             'route_fallbacks.py':HERE/'route_fallbacks.py',
+            'fixture_raw.py':HERE/'fixture_raw.py',
+            'prepare_raw.py':HERE/'prepare_raw.py',
+            'measure_prepared.py':HERE/'measure_prepared.py',
             'saved/native-observed.jsonl':HERE/'saved-fixtures'/witness/candidate/'native-observed.jsonl',
             'saved/camera-frames.jsonl':HERE/'saved-fixtures'/witness/candidate/'camera-frames.jsonl',
             'saved/readback.json':HERE/'saved-fixtures'/witness/candidate/'readback.json',

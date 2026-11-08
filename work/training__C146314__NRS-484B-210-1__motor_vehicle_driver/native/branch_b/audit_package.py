@@ -3,7 +3,12 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import tempfile
 import xml.etree.ElementTree as ET
+
+from fixture_raw import build as build_raw
+from prepare_raw import prepare
+from measure_prepared import measure as measure_prepared
 
 HERE=Path(__file__).resolve().parent
 CASE=HERE.parent.parent
@@ -26,7 +31,7 @@ def audit():
     manifest=read(HERE/'manifest.json')
     offline=read(HERE/'offline/manifest.json')
     proof=read(HERE/'offline/proof-compatibility.json')
-    if proof['positives']!=32 or proof['negatives']!=48 or len(offline['entries'])!=8:
+    if proof['positives']!=40 or proof['negatives']!=80 or len(offline['entries'])!=8:
         raise ValueError('copied proof counts')
     if offline['construction_sha256']!=sha(HERE/'manifest.json'):
         raise ValueError('construction provenance')
@@ -39,7 +44,7 @@ def audit():
     if manifest['capture_sha256']!=sha(HERE/'capture.py') or \
             manifest['measurement_contract_sha256']!=sha(HERE/'measurement-contract.json'):
         raise ValueError('capture or measurement provenance')
-    seen={};all_rows={};measurements={}
+    seen={};all_rows={};measurements={};raw_rows=0
     for entry in offline['entries']:
         bundle=HERE/entry['bundle']
         witness=entry['case_id'].split('__')[-1]
@@ -55,6 +60,9 @@ def audit():
             'measurement-contract.json':HERE/'measurement-contract.json',
             'measure_saved.py':HERE/'measure_saved.py',
             'route_fallbacks.py':HERE/'route_fallbacks.py',
+            'fixture_raw.py':HERE/'fixture_raw.py',
+            'prepare_raw.py':HERE/'prepare_raw.py',
+            'measure_prepared.py':HERE/'measure_prepared.py',
             'saved/native-observed.jsonl':HERE/'saved-fixtures'/witness/candidate/'native-observed.jsonl',
             'saved/camera-frames.jsonl':HERE/'saved-fixtures'/witness/candidate/'camera-frames.jsonl',
             'saved/readback.json':HERE/'saved-fixtures'/witness/candidate/'readback.json'}
@@ -117,6 +125,35 @@ def audit():
             pass_frames+=int(min(p[0] for p in body)>lead_x+2 and
                 all(-7<=p[1]<=-3.5 for p in body))
         measurements[(witness,candidate)]=pass_frames
+        with tempfile.TemporaryDirectory() as temporary:
+            temporary=Path(temporary)
+            raw=temporary/'raw';prepared=temporary/'prepared'
+            build_raw(bundle,raw)
+            receipt=prepare(bundle,raw,prepared,synthetic_cpu=True)
+            measured=measure_prepared(bundle,prepared)
+            if (receipt['source_kind']!='synthetic_cpu' or
+                receipt['raw_hashes']!={name:sha(raw/name) for name in
+                    ('native-map-readback.json','native-raw-actors.jsonl',
+                     'video_frames.jsonl','frame-review.jsonl',
+                     'native-capture-report.json')} or
+                measured['full_body_right_pass_frames']!=pass_frames or
+                measured['parked_actor_frames']!=(240 if parked else 0) or
+                measured['human_reviewed_condition_frames']!=0):
+                raise ValueError('raw-to-saved independent receipt')
+            raw_actor=rows(raw/'native-raw-actors.jsonl')
+            saved_actor=rows(prepared/'native-observed.jsonl')
+            frames=rows(prepared/'camera-frames.jsonl')
+            reviews=rows(prepared/'frame-review.jsonl')
+            for i,(original,converted,frame,view) in enumerate(zip(
+                    raw_actor,saved_actor,frames,reviews)):
+                if not(original['frame']==converted['frame']==frame['frame']==view['frame']==i and
+                    original['native_frame']==converted['native_frame']==frame['native_frame']==view['native_frame'] and
+                    original['ego']==converted['ego'] and
+                    original['lead']==converted['lead'] and
+                    original['parked_vehicle']==converted['parked_vehicle'] and
+                    view['review_provenance']=='synthetic_cpu'):
+                    raise ValueError(f'independent raw-to-saved row {i}')
+                raw_rows+=1
     if len(seen)!=8:raise ValueError('pair coverage')
     if any((measurements[(witness,candidate)]==0)!=(candidate=='fallback3')
            for witness in ('exception_2_1','exception_2_2')
@@ -134,10 +171,11 @@ def audit():
     result={'format':'c146314-paragraph-b-independent-package-audit-v1',
         'bundles':8,'controlled_pairs':4,'request_rows_recomputed':1920,
         'saved_rows_recomputed':1920,
+        'raw_to_saved_rows_recomputed':raw_rows,
         'right_pass_frames_by_candidate':{
             candidate:measurements[('exception_2_2',candidate)]
             for candidate in ('primary','fallback1','fallback2','fallback3')},
-        'copied_positives':32,'rejected_negatives':48,
+        'copied_positives':40,'rejected_negatives':80,
         'original_native_observed':False,'delivery_ready':False}
     (HERE/'offline/package-audit.json').write_text(json.dumps(result,indent=2)+'\n')
     return result
