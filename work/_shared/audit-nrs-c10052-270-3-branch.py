@@ -160,6 +160,15 @@ def audit():
     assert exception_f_proof['negative_rejections']==40
     assert exception_f_proof['original_native_emergency_verified'] is False
     assert exception_f_proof['legal_exception_verified'] is False
+    for script, receipt, count_key in (
+        ('audit-exception-f-case-candidates.py', 'exception-f-case-independent-audit.json', 'candidates'),
+        ('audit-exception-f-packages-v1.py', 'exception-f-package-audit-v1.json', 'positive_package_receipts')):
+        completed=subprocess.run([sys.executable,str(work/script)],cwd=ROOT,
+                                 capture_output=True,text=True,timeout=120)
+        assert completed.returncode==0,(completed.stdout,completed.stderr)
+        proof=json.loads((work/receipt).read_text())
+        assert proof['passed'] and proof[count_key]==8
+        assert proof['original_native_capture_executed'] is False
     park=next(b for b in branches if b['branch_id'].endswith('__prohibition_park'))
     park_cases={ASSIGNMENT+'__probe_park_released',ASSIGNMENT+'__probe_park_held'}
     assert set(park['case_ids'])==park_cases<=cases

@@ -54,7 +54,7 @@ def check(config):
         raise ValueError('Original capture timing changed')
     response=suffix.removeprefix('exception_f_')
     engineering=policy(response,candidate)
-    route((-60.0 if candidate=='fallback1' else -50.0),response,(165 if candidate=='fallback2' else 140))
+    route((-60.0 if candidate=='fallback1' else -50.0),response,(135 if candidate=='fallback2' else 120))
     cameras=alley_camera_plan(candidate)
     if [(c['name'],c['width'],c['height']) for c in cameras] != [
         ('overview',1920,1080),('approach',1280,720),
@@ -185,7 +185,7 @@ def execute(config,output,host,port):
             final_brake_mps2=target_speed**2/(2*6.0),
             final_margin_m=0)
         native_route=[list(p) for p in route(start,response,
-                                             (165 if candidate=='fallback2' else 140))]
+                                             (135 if candidate=='fallback2' else 120))]
         controller=PathController(native_route,wheelbase,max_steer,knobs)
         write_new(output/'native-construction-context.json',{
             'case_id':config['case_id'],'candidate_id':candidate,
