@@ -58,9 +58,14 @@ def build():
     road = (NATIVE / 'road.xodr').read_text()
     runner = (NATIVE / 'runner.py').read_text()
     triggers = (NATIVE / 'triggers.py').read_text()
+    saved_meter = (NATIVE / 'measure_saved.py').read_text()
+    finalizer = (NATIVE / 'finalize.py').read_text()
     for case in ('witness_1', 'witness_2'):
         case_id = AID + '__' + case
         entry = {'case_id': case_id, 'kind': 'draft_not_selected',
+                 'measurement_contract': 'native/measurement-contract.json',
+                 'measurement_procedure': {'entrypoint': 'finalize.py',
+                                           'output_schema': 'c422978-sidewalk-analysis-v1'},
                  'candidate_risk': {'status': 'physical',
                                     'reason': 'Original Native sidewalk lane, motorcycle body and four cameras unverified'},
                  'candidates': []}
@@ -68,9 +73,12 @@ def build():
             source = NATIVE / 'drafts' / case / candidate
             config = json.loads((source / 'config.json').read_text())
             config['case_suffix'] = case
+            config['required_atoms'] = ['kin.velocity', 'rel.occupies']
             files = [{'path': name, 'content': content} for name, content in (
                 ('runner.py', runner), ('triggers.py', triggers),
-                ('assignment-source.json', assignment), ('road.xodr', road),
+                ('measure_saved.py', saved_meter),
+                ('finalize.py', finalizer),
+                ('assignment-source.json', assignment), ('authored-road.xodr', road),
                 ('requested-tracks.jsonl', (source / 'requested-tracks.jsonl').read_text()),
                 ('config.json', json.dumps(config, indent=2) + '\n'),
                 ('tests/test_construction.py', TEST))]
@@ -106,6 +114,14 @@ def build():
                 entry['candidates'].append(ref)
         manifest['cases'].append(entry)
     write(FOLDER / 'draft-execution-manifest.json', manifest)
+    write(FOLDER / 'proposals/cases.json', {
+        'cell_id': 'C422978', 'actor': 'motorcycle_or_moped_operator',
+        'status': 'unselected_cpu_draft',
+        'cases': [{'case_id': entry['case_id'],
+                   'target_law_id': 'LVMC-11-38-030', 'target_type': 'attempt',
+                   'recording_description': json.loads(
+                       (FOLDER / entry['construction']).read_text())['recording_description']}
+                  for entry in manifest['cases']]})
     return manifest
 
 
