@@ -144,6 +144,31 @@ def audit():
         proof=json.loads((work/receipt).read_text())
         assert proof['passed'] and proof[count_key]==8
         assert proof['original_native_capture_executed'] is False
+    exception_d=next(b for b in branches if b['branch_id'].endswith('__exception_d'))
+    exception_d_cases={ASSIGNMENT+'__exception_d_duty',ASSIGNMENT+'__exception_d_routine'}
+    assert exception_d['status']=='pending_review'
+    assert set(exception_d['case_ids'])==exception_d_cases<=cases
+    assert exception_d['comparison_ids']==[ASSIGNMENT+'__comparison_exception_d']
+    assert set(comparisons[exception_d['comparison_ids'][0]]['case_ids'])==exception_d_cases
+    assert all(sha(work/name)==digest for name,digest in exception_d['cpu_proofs'].items())
+    exception_d_run=subprocess.run([sys.executable,str(work/'audit-exception-d-source.py')],
+                                   cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert exception_d_run.returncode==0,(exception_d_run.stdout,exception_d_run.stderr)
+    exception_d_proof=json.loads((work/'exception-d-independent-audit.json').read_text())
+    assert exception_d_proof['passed'] and exception_d_proof['positive_sources']==8
+    assert exception_d_proof['controlled_duty_routine_pairs']==4
+    assert exception_d_proof['negative_rejections']==48
+    assert exception_d_proof['original_native_official_duty_verified'] is False
+    assert exception_d_proof['legal_exception_verified'] is False
+    for script, receipt, count_key in (
+        ('audit-exception-d-case-candidates.py', 'exception-d-case-independent-audit.json', 'candidates'),
+        ('audit-exception-d-packages-v1.py', 'exception-d-package-audit-v1.json', 'positive_package_receipts')):
+        completed=subprocess.run([sys.executable,str(work/script)],cwd=ROOT,
+                                 capture_output=True,text=True,timeout=120)
+        assert completed.returncode==0,(completed.stdout,completed.stderr)
+        proof=json.loads((work/receipt).read_text())
+        assert proof['passed'] and proof[count_key]==8
+        assert proof['original_native_capture_executed'] is False
     exception_f=next(b for b in branches if b['branch_id'].endswith('__exception_f'))
     exception_f_cases={ASSIGNMENT+'__exception_f_emergency',ASSIGNMENT+'__exception_f_routine'}
     assert exception_f['status']=='pending_review'
