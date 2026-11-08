@@ -22,6 +22,34 @@ def rows(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
 
+def measure_immediate_approach(scope, geometry):
+    return {'source_kind': scope['source_kind'],
+            'approach_catchup_frame': geometry['approach_catchup_frame'],
+            'authority_verified': False, 'qualifying_lamps_verified': False,
+            'officer_direction_reviewed': False}
+
+
+def measure_shoulder_sign_exception(scope, geometry):
+    return {'source_kind': scope['source_kind'],
+            'stop_outer_body_y_m': geometry['stop_outer_body_y_m'],
+            'lawful_shoulder_sign_verified': False}
+
+
+def measure_transit_bus_exception(scope, geometry):
+    return {'source_kind': scope['source_kind'],
+            'observed_approach_catchup_frame': geometry['approach_catchup_frame'],
+            'public_transit_bus_identity_verified': False,
+            'signed_shoulder_use_verified': False}
+
+
+def measure_right_edge(scope, geometry):
+    return {'source_kind': scope['source_kind'],
+            'first_edge_target_frame': geometry['first_edge_target_frame'],
+            'edge_before_catchup': geometry['edge_before_catchup'],
+            'stop_center_xy_m': geometry['stop_center_xy_m'],
+            'as_close_as_possible_verified': False}
+
+
 def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / 'result.json').exists() or (attempt / 'channels').exists():
@@ -75,11 +103,21 @@ def finalize(attempt, output):
                 stream.write(json.dumps({'time_s': m['time_s'], 'value': values[name]}) + '\n')
         evidence.append({'name': name, 'unit': channel['unit'],
                          'reference': 'channels/' + path.name})
+    selected_measurements = (
+        ('immediate_approach_context', measure_immediate_approach, ('source-scope.json', 'actor-frames.jsonl')),
+        ('shoulder_sign_exception', measure_shoulder_sign_exception, ('source-scope.json', 'actor-frames.jsonl')),
+        ('transit_bus_exception', measure_transit_bus_exception, ('source-scope.json', 'actor-frames.jsonl')),
+        ('right_edge_position', measure_right_edge, ('source-scope.json', 'actor-frames.jsonl')),
+    )
     report = {'format': 'c405647-1b-saved-analysis-v1', 'case_id': case_id,
               'selected': False, 'draft_only': True,
               'measurements': {'right_edge_geometry': {
                   'method': 'measure', 'value': measurement,
-                  'sources': {name: sha(attempt / name) for name in SOURCES}}},
+                  'sources': {name: sha(attempt / name) for name in SOURCES}},
+                  **{key: {
+                  'method': method.__name__, 'value': method(scope, measurement),
+                  'sources': {name: sha(attempt / name) for name in inputs}}
+                  for key, method, inputs in selected_measurements}},
               'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
     result = {'case_id': case_id, 'measured_values': {
                   key: value for key, value in measurement.items()

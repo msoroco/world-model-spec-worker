@@ -65,7 +65,7 @@ def build():
     for case in CASES:
         case_id = AID + '__' + case
         entry = {'case_id': case_id, 'kind': 'draft_not_selected',
-                 'measurement_contract': 'native/measurement-contract.json',
+                 'measurement_contract': 'native/selected-measurement-contract.json',
                  'measurement_procedure': {'entrypoint': 'finalize.py',
                                            'output_schema': 'c405647-1b-saved-analysis-v1'},
                  'candidate_risk': {'status': 'physical',
