@@ -26,6 +26,7 @@ def build():
                 'measurement-contract.json':NATIVE/'measurement-contract.json',
                 'runner.py':NATIVE/'runner.py',
                 'measure_saved.py':NATIVE/'measure_saved.py',
+                'prepare_rotary.py':NATIVE/'prepare_rotary.py',
                 'triggers.py':NATIVE/'triggers.py',
                 'compare_saved.py':NATIVE/'compare_saved.py',
                 'assignment-source.json':ROOT/'inputs'/CASE.name/'assignment.json',

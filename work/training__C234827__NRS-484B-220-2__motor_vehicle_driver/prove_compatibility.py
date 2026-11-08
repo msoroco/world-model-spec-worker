@@ -33,12 +33,20 @@ def run_comparison(bundle,first,second):
                           text=True,capture_output=True,timeout=20)
 
 
+def run_preparation(bundle,raw,review,output):
+    return subprocess.run([sys.executable,str(bundle/'prepare_rotary.py'),
+        '--raw-folder',str(raw),'--review',str(review),
+        '--config',str(bundle/'config.json'),'--output',str(output)],
+        text=True,capture_output=True,timeout=20)
+
+
 def prove():
     manifest_path=CASE/'offline'/'manifest.json'
     manifest=json.loads(manifest_path.read_text())
     positives=[];negatives=[];saved_positives=[];saved_negatives=[]
     trigger_positives=[];trigger_negatives=[]
     comparison_positives=[];comparison_negatives=[]
+    preparation_positives=[];preparation_negatives=[]
     for entry in manifest['entries']:
         folder=CASE/entry['bundle']
         if entry['sha256']!={name:sha(folder/name) for name in entry['sha256']}:
@@ -64,6 +72,25 @@ def prove():
                     'mutation':mutation,'rejected':True})
         if entry['candidate_id']=='primary':
             case=entry['case_id'].removeprefix(CASE.name+'__')
+            fixture=CASE/'native'/'preparation-fixtures'/case
+            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+                prepared=Path(temporary)/'saved'
+                result=run_preparation(folder,fixture/'raw',fixture/'review.json',prepared)
+                if result.returncode!=0:raise AssertionError(result.stderr)
+                receipt=json.loads(result.stdout)
+                if receipt['delivery_ready'] or receipt['source_kind']!='synthetic_cpu':
+                    raise AssertionError('Copied rotary preparer overclaims readiness')
+                preparation_positives.append({'case_id':entry['case_id'],
+                    'saved_hashes':receipt['saved_hashes'],'passed':True})
+            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+                altered=Path(temporary)/'raw';shutil.copytree(fixture/'raw',altered)
+                path=altered/'video_frames.jsonl'
+                path.write_text('\n'.join(path.read_text().splitlines()[:-1])+'\n')
+                if run_preparation(folder,altered,fixture/'review.json',
+                                   Path(temporary)/'saved').returncode==0:
+                    raise AssertionError('Copied rotary preparer accepted missing video frame')
+                preparation_negatives.append({'case_id':entry['case_id'],
+                    'mutation':'missing_video_frame','rejected':True})
             saved=CASE/'native'/'saved-fixtures'/case
             measurement=run_saved(folder,saved)
             routing=run_triggers(folder,saved)
@@ -116,6 +143,8 @@ def prove():
         'copied_trigger_negatives':trigger_negatives,
         'copied_comparison_positives':comparison_positives,
         'copied_comparison_negatives':comparison_negatives,
+        'copied_preparation_positives':preparation_positives,
+        'copied_preparation_negatives':preparation_negatives,
         'accepted_originals_replayed':0,
         'original_native_observed':False,'delivery_ready':False}
     (CASE/'offline'/'proof-compatibility.json').write_text(json.dumps(proof,indent=2)+'\n')

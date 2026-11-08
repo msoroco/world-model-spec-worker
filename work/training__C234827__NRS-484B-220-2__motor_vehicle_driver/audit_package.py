@@ -35,6 +35,13 @@ def run_comparison(bundle,first,second):
                           text=True,capture_output=True,timeout=20)
 
 
+def run_preparation(bundle,raw,review,output):
+    return subprocess.run([sys.executable,str(bundle/'prepare_rotary.py'),
+        '--raw-folder',str(raw),'--review',str(review),
+        '--config',str(bundle/'config.json'),'--output',str(output)],
+        text=True,capture_output=True,timeout=20)
+
+
 def audit():
     manifest_path=CASE/'offline'/'manifest.json'
     proof_path=CASE/'offline'/'proof-compatibility.json'
@@ -54,9 +61,12 @@ def audit():
             len(proof.get('copied_trigger_negatives',[]))!=2 or
             len(proof.get('copied_comparison_positives',[]))!=1 or
             len(proof.get('copied_comparison_negatives',[]))!=1 or
+            len(proof.get('copied_preparation_positives',[]))!=2 or
+            len(proof.get('copied_preparation_negatives',[]))!=2 or
             proof['copied_comparison_negatives'][0]['rejected'] is not True or
             not all(item['rejected'] is True for item in
-                    proof['copied_saved_negatives']+proof['copied_trigger_negatives']) or
+                    proof['copied_saved_negatives']+proof['copied_trigger_negatives']+
+                    proof['copied_preparation_negatives']) or
             any(not item['rejected'] for item in proof['negatives']) or
             manifest['accepted_originals_replayed']!=0 or
             proof['accepted_originals_replayed']!=0 or
@@ -65,6 +75,7 @@ def audit():
     seen=set();checks=0;rejections=0;saved_checks=0;saved_rejections=0
     trigger_checks=0;trigger_rejections=0
     comparison_checks=0;comparison_rejections=0
+    preparation_checks=0;preparation_rejections=0
     for entry in manifest['entries']:
         case=entry['case_id'].removeprefix(CASE.name+'__')
         candidate=entry['candidate_id']
@@ -80,6 +91,7 @@ def audit():
             'measurement-contract.json':NATIVE/'measurement-contract.json',
             'runner.py':NATIVE/'runner.py',
             'measure_saved.py':NATIVE/'measure_saved.py',
+            'prepare_rotary.py':NATIVE/'prepare_rotary.py',
             'triggers.py':NATIVE/'triggers.py',
             'compare_saved.py':NATIVE/'compare_saved.py',
             'assignment-source.json':ROOT/'inputs'/CASE.name/'assignment.json',
@@ -100,6 +112,27 @@ def audit():
                     raise ValueError('Rotary changed copied source accepted')
                 rejections+=1
         if candidate=='primary':
+            fixture=NATIVE/'preparation-fixtures'/case
+            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+                prepared=Path(temporary)/'saved'
+                result=run_preparation(folder,fixture/'raw',fixture/'review.json',prepared)
+                if result.returncode!=0:
+                    raise ValueError('Copied rotary raw preparer failed: '+result.stderr)
+                receipt=json.loads(result.stdout)
+                expected_receipt=next(row for row in proof['copied_preparation_positives']
+                    if row['case_id']==entry['case_id'])
+                if (receipt['saved_hashes']!=expected_receipt['saved_hashes'] or
+                        receipt['delivery_ready'] or receipt['source_kind']!='synthetic_cpu'):
+                    raise ValueError('Copied rotary preparation receipt differs')
+                preparation_checks+=1
+            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+                altered=Path(temporary)/'raw';shutil.copytree(fixture/'raw',altered)
+                path=altered/'video_frames.jsonl'
+                path.write_text('\n'.join(path.read_text().splitlines()[:-1])+'\n')
+                if run_preparation(folder,altered,fixture/'review.json',
+                                   Path(temporary)/'saved').returncode==0:
+                    raise ValueError('Copied rotary preparer accepted missing video frame')
+                preparation_rejections+=1
             saved=NATIVE/'saved-fixtures'/case
             measured=run_saved(folder,saved)
             routed=run_triggers(folder,saved)
@@ -155,6 +188,8 @@ def audit():
         'copied_trigger_rejections_replayed':trigger_rejections,
         'copied_comparison_checks':comparison_checks,
         'copied_comparison_rejections_replayed':comparison_rejections,
+        'copied_preparation_checks':preparation_checks,
+        'copied_preparation_rejections_replayed':preparation_rejections,
         'accepted_originals_replayed':0,
         'original_native_observed':False,'delivery_ready':False}
     (CASE/'offline'/'package-audit.json').write_text(json.dumps(receipt,indent=2)+'\n')
