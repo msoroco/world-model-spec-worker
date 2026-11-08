@@ -155,7 +155,19 @@ def audit():
     assert candidate_proof['original_native_actor_verified'] is False
     pedestrian=next(b for b in branches if b['branch_id'].endswith('__yield_qualifying_pedestrian'))
     assert pedestrian['status']=='pending_review'
+    pedestrian_cases={ASSIGNMENT+'__pedestrian_clear',ASSIGNMENT+'__pedestrian_conflict'}
+    pedestrian_comparison=ASSIGNMENT+'__comparison_pedestrian_yield'
+    assert set(pedestrian['case_ids'])==pedestrian_cases<=cases
+    assert pedestrian['comparison_ids']==[pedestrian_comparison]
+    assert set(comparisons[pedestrian_comparison]['case_ids'])==pedestrian_cases
     assert all(sha(work/name)==digest for name,digest in pedestrian['cpu_proofs'].items())
+    pedestrian_exact_run=subprocess.run([sys.executable,str(work/'audit-pedestrian-case-candidates.py')],
+                                        cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert pedestrian_exact_run.returncode==0,(pedestrian_exact_run.stdout,pedestrian_exact_run.stderr)
+    pedestrian_exact=json.loads(pedestrian_exact_run.stdout)
+    assert pedestrian_exact['passed'] and pedestrian_exact['candidates']==8
+    assert pedestrian_exact['changed_construction_rejected']
+    assert pedestrian_exact['original_native_capture_executed'] is False
     pedestrian_run=subprocess.run([sys.executable,str(work/'audit-pedestrian-qualification.py')],
                                   cwd=ROOT,capture_output=True,text=True,timeout=120)
     assert pedestrian_run.returncode==0,(pedestrian_run.stdout,pedestrian_run.stderr)

@@ -425,6 +425,74 @@
           "measured_trigger": "rider and ego bodies visible in under 95% of conflict frames"
         }
       ]
+    },
+    {
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_clear",
+      "target_law_id": "NRS-484B-270-3",
+      "kind": "planned_only",
+      "target_type": "qualifying_pedestrian_yield_timing_probe",
+      "physical_target": "observe sidewalk obstruction and impassable buffer, pedestrian lane path and ego entry after pedestrian clearance",
+      "comparison_variable": "ego_entry_relative_to_qualifying_pedestrian_clearance",
+      "planning_status": "unselected_exact_offline_cpu_proven",
+      "recorded_value": null,
+      "comparison_unit": "original Native frames of simultaneous full-body conflict occupancy",
+      "measurement_status": "eight exact bundles pass pinned offline; synthetic source geometry and trigger receipts only; original Native qualification and package proofs pending",
+      "candidate_plans": [
+        {
+          "id": "primary",
+          "status": "unselected_exact_offline_passed_synthetic_trigger_only",
+          "measured_trigger": "baseline authored route and original sidewalk survey"
+        },
+        {
+          "id": "fallback1",
+          "status": "unselected_exact_offline_passed_synthetic_trigger_only",
+          "measured_trigger": "source runway 36 m below 40 m trigger; extended route 46 m"
+        },
+        {
+          "id": "fallback2",
+          "status": "unselected_exact_offline_passed_synthetic_trigger_only",
+          "measured_trigger": "source ego entry error five frames above three-frame trigger"
+        },
+        {
+          "id": "fallback3",
+          "status": "unselected_exact_offline_passed_synthetic_trigger_only",
+          "measured_trigger": "synthetic visibility 0.888889 below 0.95; moved-view annotation 1.0; original pixels pending"
+        }
+      ]
+    },
+    {
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_conflict",
+      "target_law_id": "NRS-484B-270-3",
+      "kind": "planned_only",
+      "target_type": "qualifying_pedestrian_yield_timing_probe",
+      "physical_target": "observe sidewalk obstruction and impassable buffer, pedestrian lane path and ego entry during pedestrian occupancy",
+      "comparison_variable": "ego_entry_relative_to_qualifying_pedestrian_clearance",
+      "planning_status": "unselected_exact_offline_cpu_proven",
+      "recorded_value": null,
+      "comparison_unit": "original Native frames of simultaneous full-body conflict occupancy",
+      "measurement_status": "eight exact bundles pass pinned offline; synthetic source geometry and trigger receipts only; original Native qualification and package proofs pending",
+      "candidate_plans": [
+        {
+          "id": "primary",
+          "status": "unselected_exact_offline_passed_synthetic_trigger_only",
+          "measured_trigger": "baseline authored route and original sidewalk survey"
+        },
+        {
+          "id": "fallback1",
+          "status": "unselected_exact_offline_passed_synthetic_trigger_only",
+          "measured_trigger": "source runway 36 m below 40 m trigger; extended route 46 m"
+        },
+        {
+          "id": "fallback2",
+          "status": "unselected_exact_offline_passed_synthetic_trigger_only",
+          "measured_trigger": "source ego entry error five frames above three-frame trigger"
+        },
+        {
+          "id": "fallback3",
+          "status": "unselected_exact_offline_passed_synthetic_trigger_only",
+          "measured_trigger": "synthetic visibility 0.888889 below 0.95; moved-view annotation 1.0; original pixels pending"
+        }
+      ]
     }
   ],
   "comparisons": [
@@ -515,6 +583,21 @@
       ],
       "evidence": "rider-timing-prototype.json and rider-timing-independent-audit.json; synthetic prototype only",
       "status": "planned_unselected_prototype"
+    },
+    {
+      "comparison_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__comparison_pedestrian_yield",
+      "case_ids": [
+        "training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_clear",
+        "training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_conflict"
+      ],
+      "deliberate_differences": [
+        "ego conflict entry relative to the same pedestrian lane occupancy"
+      ],
+      "fixed_conditions": [
+        "frozen cell, law, actor, sidewalk/buffer obstruction source polygons, pedestrian body trace, 20 Hz 24 s source contract"
+      ],
+      "evidence": "pedestrian-qualification-independent-audit.json and exact offline receipts; synthetic source timing only",
+      "status": "planned_unselected_exact_offline_cpu_proven"
     }
   ],
   "observations": [
