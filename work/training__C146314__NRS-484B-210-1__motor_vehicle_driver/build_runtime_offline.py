@@ -19,6 +19,7 @@ import tempfile
 from fixture_raw import build as build_raw
 from prepare_raw import prepare
 from measure_prepared import measure as measure_raw
+from statutory_scope import BOOL_FACTS, evaluate
 from check import check
 from measure_saved import measure
 from route_fallbacks import route
@@ -50,6 +51,16 @@ class ExactConstruction(unittest.TestCase):
             measured=measure_raw(Path.cwd(),root/'prepared')
             self.assertEqual(measured['frames'],240)
             self.assertFalse(measured['delivery_ready'])
+
+    def test_statutory_source_and_or_alternatives(self):
+        facts={key:False for key in BOOL_FACTS}
+        facts.update(overtakes_on_right=True,pavement_unobstructed=True,
+            pavement_unmarked=True,no_parked_vehicles=True,
+            no_intersection_or_private_way_crossed=True,
+            unmarked_excursion_m=61.01)
+        result=evaluate(Path.cwd()/'case-plan.json',facts)
+        self.assertTrue(result['branches']['1c'])
+        self.assertIsNone(result['legal_verdict'])
 '''
 
 
@@ -64,6 +75,7 @@ def build():
                 'assignment-source.json','case-plan.json','measurement-contract.json',
                 'check.py','capture.py','fixture_raw.py','prepare_raw.py',
                 'measure_prepared.py',
+                'statutory_scope.py',
                 'measure_saved.py','route_fallbacks.py',
                 'saved/native-observed.jsonl','saved/camera-frames.jsonl',
                 'saved/readback.json'):
