@@ -24,6 +24,11 @@ def saved_run(folder,script,witness=None):
     if witness:cmd.append(str(folder/'saved-fixtures'/witness))
     return subprocess.run(cmd,text=True,capture_output=True,timeout=20)
 
+def prepared_run(folder,raw,output):
+    return subprocess.run([sys.executable,str(folder/'prepare_raw.py'),
+        '--bundle',str(folder),'--raw-folder',str(raw),'--output-dir',str(output),
+        '--synthetic-cpu'],text=True,capture_output=True,timeout=20)
+
 
 def audit():
     manifest_path=CASE/'offline'/'manifest.json'
@@ -38,7 +43,7 @@ def audit():
             proof['format']!='c234827-lvmc-compatibility-proof-v1' or
             proof['manifest_sha256']!=sha(manifest_path) or
             len(proof['positives'])!=8 or len(proof['negatives'])!=24 or
-            len(proof['saved_positives'])!=24 or len(proof['saved_negatives'])!=8 or
+            len(proof['saved_positives'])!=32 or len(proof['saved_negatives'])!=16 or
             any(not row['rejected'] for row in proof['negatives']) or
             manifest['accepted_originals_replayed']!=0 or
             proof['accepted_originals_replayed']!=0 or
@@ -60,6 +65,8 @@ def audit():
             'measurement-contract.json':NATIVE/'measurement-contract.json',
             'runner.py':NATIVE/'runner.py',
             'capture.py':NATIVE/'capture.py',
+            'prepare_raw.py':NATIVE/'prepare_raw.py',
+            'fixture_raw.py':NATIVE/'fixture_raw.py',
             'measure_saved.py':NATIVE/'measure_saved.py',
             'triggers.py':NATIVE/'triggers.py',
             'compare_saved.py':NATIVE/'compare_saved.py',
@@ -83,6 +90,31 @@ def audit():
             if receipt.returncode!=0 or json.loads(receipt.stdout)['delivery_ready']:
                 raise ValueError('Copied LVMC saved CPU check differs')
             saved_checks+=1
+        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            base=Path(temporary);raw=base/'raw';saved=base/'saved'
+            generated=subprocess.run([sys.executable,str(folder/'fixture_raw.py'),
+                '--bundle',str(folder),'--output-dir',str(raw)],
+                text=True,capture_output=True,timeout=20)
+            if generated.returncode or prepared_run(folder,raw,saved).returncode:
+                raise ValueError('Copied raw-to-saved replay failed')
+            originals=[json.loads(x) for x in (raw/'native-raw-actors.jsonl').read_text().splitlines()]
+            derived=[json.loads(x) for x in (saved/'native-observed.jsonl').read_text().splitlines()]
+            if len(originals)!=240 or len(derived)!=240 or any(
+                source['ego']['center_native_xyz_m'][:2]!=
+                [target['ego_x_m'],target['ego_y_m']] or
+                source['ego']['body_native_xyz_m'][0][:2]!=target['ego_body_xy_m'][0]
+                for source,target in zip(originals,derived)):
+                raise ValueError('Independent raw-to-saved coordinate join differs')
+            receipt=json.loads((saved/'preparation-receipt.json').read_text())
+            if receipt['delivery_ready'] or receipt['source_kind']!='synthetic_cpu':
+                raise ValueError('Raw-to-saved replay overclaims readiness')
+            saved_checks+=1
+            path=raw/'roundabout-review.jsonl';lines=path.read_text().splitlines()
+            row=json.loads(lines[27]);row['review_provenance']='human_frame_review'
+            lines[27]=json.dumps(row);path.write_text('\n'.join(lines)+'\n')
+            if prepared_run(folder,raw,base/'rejected').returncode==0:
+                raise ValueError('Altered synthetic review accepted')
+            saved_rejections+=1
         with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
             altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
             path=altered/'saved-fixtures'/witness/'roundabout-readback.json'

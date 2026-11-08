@@ -22,6 +22,11 @@ def saved_run(folder,script,witness=None):
     if witness:cmd.append(str(folder/'saved-fixtures'/witness))
     return subprocess.run(cmd,text=True,capture_output=True,timeout=20)
 
+def prepared_run(folder,raw,output):
+    return subprocess.run([sys.executable,str(folder/'prepare_raw.py'),
+        '--bundle',str(folder),'--raw-folder',str(raw),'--output-dir',str(output),
+        '--synthetic-cpu'],text=True,capture_output=True,timeout=20)
+
 
 def prove():
     manifest_path=CASE/'offline'/'manifest.json'
@@ -53,6 +58,28 @@ def prove():
             raise AssertionError('Copied LVMC controlled saved pair failed')
         saved_positives.append({'case_id':entry['case_id'],
             'candidate_id':entry['candidate_id'],'script':'compare_saved.py','passed':True})
+        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            base=Path(temporary);raw=base/'raw'
+            generated=subprocess.run([sys.executable,str(folder/'fixture_raw.py'),
+                '--bundle',str(folder),'--output-dir',str(raw)],
+                text=True,capture_output=True,timeout=20)
+            if generated.returncode:raise AssertionError(generated.stderr)
+            prepared=prepared_run(folder,raw,base/'saved')
+            if prepared.returncode:raise AssertionError(prepared.stderr)
+            receipt=json.loads(prepared.stdout)
+            if (receipt['source_kind']!='synthetic_cpu' or receipt['delivery_ready'] or
+                    not receipt['measurement']['continuous_requested_rotation']):
+                raise AssertionError('Copied raw-to-saved positive differs')
+            saved_positives.append({'case_id':entry['case_id'],
+                'candidate_id':entry['candidate_id'],'script':'prepare_raw.py','passed':True})
+            path=raw/'video_frames.jsonl';lines=path.read_text().splitlines()
+            row=json.loads(lines[41]);row['native_frame']+=1;lines[41]=json.dumps(row)
+            path.write_text('\n'.join(lines)+'\n')
+            if prepared_run(folder,raw,base/'rejected').returncode==0:
+                raise AssertionError('Altered raw camera frame accepted')
+            saved_negatives.append({'case_id':entry['case_id'],
+                'candidate_id':entry['candidate_id'],'mutation':'raw_camera_frame',
+                'rejected':True})
         with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
             altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
             path=altered/'saved-fixtures'/witness/'roundabout-readback.json'
