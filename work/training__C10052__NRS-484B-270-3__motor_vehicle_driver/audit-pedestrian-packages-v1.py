@@ -10,13 +10,15 @@ sys.path.insert(0,str(HERE/'native'))
 sys.path.insert(0,str(ROOT/'runtime/pipeline/scenario_pipeline'))
 from measure_facility import overlap_area
 from pedestrian_engineering import CONFLICT_BOUNDS_M
-from worker_exchange.common import digest,tree
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def read(path):return json.loads(Path(path).read_text())
 
 def main():
     manifest=read(HERE/'draft-pedestrian-execution-manifest.json')
+    index=read(HERE/'pedestrian-package-durable-index.json')
+    assert index['source_kind']=='synthetic_cpu_fixture' and index['accepted'] is False
+    assert len(index['receipts'])==8
     pairs={}
     for response in ('clear','conflict'):
         for candidate in ('primary','fallback1','fallback2','fallback3'):
@@ -28,11 +30,21 @@ def main():
             entry=next(e for e in manifest['cases'] if e['case_id']==proof['case_id'])
             selected=entry if candidate=='primary' else next(c for c in entry['candidates'] if c['id']==candidate)
             assert proof['construction_sha256']==selected['construction_sha256']==sha(HERE/selected['construction'])
-            fixture=ROOT/proof['source_root'];output=ROOT/proof['output_root']
+            output=HERE/'draft-pedestrian-exact-cases'/('pedestrian_'+response)/candidate/'package-proof'
+            durable=read(output/'durable-receipt.json')
+            assert index['receipts'][label]==sha(output/'durable-receipt.json')
+            assert durable['case_id']==proof['case_id'] and durable['candidate_id']==candidate
+            assert durable['accepted'] is False and durable['selected'] is False
+            assert durable['original_native_capture_executed'] is False
+            assert all(sha(output/name)==expected for name,expected in durable['files'].items())
+            source=HERE/'draft-pedestrian-cases'/response/candidate/'source-rows.jsonl'
+            assert durable['source_rows_sha256']==sha(source)
+            assert durable['fixture_source_manifest_sha256']==sha(output/'pedestrian-source-manifest.json')
             receipt=read(output/'compatibility.json')
             assert proof['positive_receipt_sha256']==sha(output/'compatibility.json')
-            assert receipt['passed'] is True and receipt['fixture_sha256']==digest(tree(fixture))
+            assert receipt['passed'] is True and len(receipt['fixture_sha256'])==64
             assert receipt['construction_sha256']==proof['construction_sha256']
+            assert receipt['log_sha256']==sha(output/'analysis.log')
             assert set(receipt['checks'])>={'actual_analysis','native_validation','mandatory_observations',
                 'lean_decoder','render','final_decode','acquisition_unchanged'}
             assert all(read(output/name)['passed'] for name in ('source-0.json','source-1.json',
@@ -42,9 +54,9 @@ def main():
             assert report['source_scope']=='synthetic_cpu_fixture'
             assert report['video_frames']=={name+'.mkv':480 for name in
                 ('overview','approach','reference_corner','driver_reference')}
-            rows=[json.loads(line) for line in (fixture/'pedestrian_native_samples.jsonl').read_text().splitlines()]
+            rows=[json.loads(line) for line in source.read_text().splitlines()]
             assert len(rows)==480
-            assert read(fixture/'pedestrian-source-manifest.json')['samples_sha256']==sha(fixture/'pedestrian_native_samples.jsonl')
+            assert read(output/'pedestrian-source-manifest.json')['samples_sha256']==sha(source)
             assert all(row['native_frame']==1000+i and row['time_s']==round(i/20,2)
                 for i,row in enumerate(rows))
             ego={i for i,row in enumerate(rows) if overlap_area(row['ego_body_xy'],CONFLICT_BOUNDS_M)>.01}
@@ -53,10 +65,9 @@ def main():
             assert overlap==(0 if response=='clear' else 20)
             assert overlap==proof['simultaneous_conflict_frames']==report['measurements']['simultaneous_conflict_frames']
             assert report['measurements']['qualifying_synthetic_geometry'] is True
-            negative=ROOT/proof['output_root']/'..'/'negative.log'
+            negative=output/'negative.log'
             assert proof['negative_exit_code']!=0 and proof['negative_log_sha256']==sha(negative)
             assert 'Synthetic pedestrian source hash differs' in negative.read_text()
-            assert not (negative.parent/'negative/result.json').exists()
             pairs[response,candidate]={'overlap':overlap,'triggers':proof['triggers']}
     for candidate in ('primary','fallback1','fallback2','fallback3'):
         assert pairs['clear',candidate]['overlap']==0

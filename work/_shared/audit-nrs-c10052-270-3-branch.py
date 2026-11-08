@@ -168,6 +168,14 @@ def audit():
     assert pedestrian_exact['passed'] and pedestrian_exact['candidates']==8
     assert pedestrian_exact['changed_construction_rejected']
     assert pedestrian_exact['original_native_capture_executed'] is False
+    pedestrian_package_run=subprocess.run([sys.executable,str(work/'audit-pedestrian-packages-v1.py')],
+                                          cwd=ROOT,capture_output=True,text=True,timeout=120)
+    assert pedestrian_package_run.returncode==0,(pedestrian_package_run.stdout,pedestrian_package_run.stderr)
+    pedestrian_package=json.loads(pedestrian_package_run.stdout)
+    assert pedestrian_package['passed'] and pedestrian_package['positive_package_receipts']==8
+    assert pedestrian_package['changed_source_negatives']==8
+    assert pedestrian_package['controlled_clear_conflict_pairs']==4
+    assert pedestrian_package['original_native_capture_executed'] is False
     pedestrian_run=subprocess.run([sys.executable,str(work/'audit-pedestrian-qualification.py')],
                                   cwd=ROOT,capture_output=True,text=True,timeout=120)
     assert pedestrian_run.returncode==0,(pedestrian_run.stdout,pedestrian_run.stderr)
