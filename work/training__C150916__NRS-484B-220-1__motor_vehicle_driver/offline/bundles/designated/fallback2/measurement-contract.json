@@ -1,0 +1,22 @@
+{
+  "format": "c150916-one-way-measurement-contract-v1",
+  "assignment_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver",
+  "sampling_rate_hz": 20,
+  "frames": 240,
+  "case_variable": "ego longitudinal movement direction relative to sourced highway designation and physically observed one-way signs",
+  "fixed_context": "same authored road bytes, two same-direction driving lanes, sign requests, ego blueprint, weather, capture profile and stationary background",
+  "measurements": {
+    "road_direction": "Native map topology and lane direction readback at every occupied ego frame",
+    "physical_sign": "camera-frame and map-actor identity, facing direction, text/code and visibility for sign 101 and sign 102",
+    "designation_authority": "source-hashed authoritative highway designation record separate from an authored map tag",
+    "ego_motion": "source-bound Native frame/time, transform, body vertices, heading, speed and signed longitudinal displacement",
+    "wrong_way": "actual motion opposite to the sourced designated direction while the body occupies the designated highway"
+  },
+  "fallback_routing": {
+    "fallback1": "measured sign occlusion at entry routes to a slower approach for sign review",
+    "fallback2": "measured lane-center or camera-framing failure routes to the outer same-direction lane",
+    "fallback3": "measured conflicting or absent designation authority routes to stop-before-entry request"
+  },
+  "legal_limit": "Authored OpenDRIVE R6-1 requests and synthetic rows do not establish actual sign visibility, government designation, a legal wrong-way verdict or accepted original evidence",
+  "status": "cpu_construction_unselected"
+}
