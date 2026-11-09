@@ -32,7 +32,7 @@
         "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_1",
         "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_2"
       ],
-      "evidence_or_gap": "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+      "evidence_or_gap": "Eight source-pinned Native requests exist for two controlled movements and four policies. Exact request proof (8+/32-), synthetic saved proof (8+/48- over 3,840 joins) and independent four-pair audit pass. Original CARLA signal/actor capture, measured fallback triggers, runtime compatibility, physical/legal yielding and outcome remain unverified."
     },
     {
       "requirement": "NRS-484B-307-9a",
@@ -335,7 +335,36 @@
       "reason": "the yield owed"
     }
   ],
-  "candidate_plans": [],
+  "candidate_plans": [
+    {
+      "candidate_id": "primary",
+      "approach_speed_mps": 8.0,
+      "camera_policy": "standard",
+      "pre_approach_dwell_s": 0.0,
+      "trigger": "baseline authored request; capture quality unmeasured"
+    },
+    {
+      "candidate_id": "fallback1",
+      "approach_speed_mps": 5.0,
+      "camera_policy": "standard",
+      "pre_approach_dwell_s": 0.0,
+      "trigger": "use if original entry speed prevents a legible arrow-to-movement join; measured trigger pending original capture"
+    },
+    {
+      "candidate_id": "fallback2",
+      "approach_speed_mps": 8.0,
+      "camera_policy": "elevated_overview",
+      "pre_approach_dwell_s": 0.0,
+      "trigger": "use if original standard overview occludes the signal or other vehicle; measured trigger pending original capture"
+    },
+    {
+      "candidate_id": "fallback3",
+      "approach_speed_mps": 8.0,
+      "camera_policy": "standard",
+      "pre_approach_dwell_s": 2.0,
+      "trigger": "use if original signal-to-entry window is too short; measured trigger pending original capture"
+    }
+  ],
   "existing_evidence": [],
   "sources": [
     {
@@ -350,11 +379,24 @@
     "Legal context and exceptions can be represented without substituting authored targets for measurements"
   ],
   "blockers": [
-    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+    "C111603 request and synthetic saved CPU proofs pass. Original CARLA signal and other-vehicle capture, measured fallback triggers, runtime compatibility, physical feasibility, source-hashed review and legal outcome remain unverified."
   ],
   "runtime_uncertainties": [
-    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
-    "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
+    "C111603 request and synthetic saved CPU proofs pass. Original CARLA signal and other-vehicle capture, measured fallback triggers, runtime compatibility, physical feasibility, source-hashed review and legal outcome remain unverified.",
+    "Exact Core atom mapping and capture channel support for source observation terms remain unverified. The cited two-cycle exception requires separate actor-scope review."
   ],
-  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts.",
+  "native_construction": {
+    "status": "unselected_cpu_request_proven",
+    "manifest": "native/manifest.json",
+    "exact_request_proof": "native/request-proof.json",
+    "independent_request_audit": "native/independent-audit.json",
+    "candidate_count": 8,
+    "original_native_observed": false,
+    "saved_processing_proven": true,
+    "delivery_ready": false,
+    "synthetic_saved_manifest": "native/saved-manifest.json",
+    "synthetic_saved_proof": "native/saved-proof.json",
+    "measurement_contract": "native/measurement-contract.json"
+  }
 }
