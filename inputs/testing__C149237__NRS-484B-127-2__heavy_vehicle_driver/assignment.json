@@ -1,0 +1,160 @@
+{
+  "assignment_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver",
+  "law_id": "NRS-484B-127-2",
+  "cell_id": "C149237",
+  "actor": "heavy_vehicle_driver",
+  "role": "testing",
+  "set_ids": [
+    "demo-test"
+  ],
+  "branches": [
+    {
+      "law_id": "NRS-484B-127-2",
+      "cell_id": "C149237",
+      "actor": "heavy_vehicle_driver",
+      "requirement": "NRS-484B-127-2",
+      "branch": "Qualifying truck following",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 332,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "coverage_status": "pending_review",
+      "recording_ids": [],
+      "law_partition": "training",
+      "scenario_partition": "testing"
+    }
+  ],
+  "objective": "Prepare complete CPU delivery simulations and branch coverage for NRS-484B-127-2 at C149237.",
+  "remaining_requirement": "Preserve accepted evidence and cover uncovered requirements; test all selected branches and comparisons.",
+  "dependency_review": "Read exact frozen law, witness, catalog cell and scope. Identify unavailable Native facts without inventing them.",
+  "external_imports": [
+    "carla"
+  ],
+  "local_snapshot": {
+    "scope_hashes": {
+      "demo-test": "fb28097eec8a56c0b0726e765f2716ffacc6de8175ba0158b272e142d67782de",
+      "full-test": "fe28b7b8e40c30d7984949ad15fe42c497852e16e1063cafb318975614b06218"
+    },
+    "memberships": {
+      "demo-test": [],
+      "full-test": []
+    },
+    "guidance": {},
+    "law_sha256": "9b10c46abc64b14c56f33b93d51369cb749d69bb637e9517ba6e0c4e8f1c3a32",
+    "cell_sha256": "f3bf35fdec0b44e20f6a0d364fa15b25a5aacb5178fa79eff06ae5c122cb4d42",
+    "law_policy_sha256": "77d7da97a21300aff4fc6560b6ea06defe41b5c9d4c4f5567f77571c94d9e5f6"
+  },
+  "cell": {
+    "cell_id": "C149237",
+    "layout": "one_way_road",
+    "maneuver": "follow",
+    "control": "truck",
+    "grounding": "plausible_ungrounded",
+    "source_laws": [],
+    "formation_basis": [
+      "general_domain"
+    ],
+    "candidate_ego_parties": [
+      "heavy_vehicle_driver"
+    ],
+    "actor_status": "compatible",
+    "provenance": {
+      "annotation_refs": [
+        "LVMC-11-12-080-A",
+        "NRS-484B-127-2",
+        "NRS-484B-127-3",
+        "NRS-484B-200-1",
+        "NRS-484B-220-1",
+        "NRS-484B-457-1",
+        "NRS-484B-493",
+        "NRS-484B-497",
+        "NRS-484B-650-1",
+        "NRS-484B-707-1",
+        "NRS-484B-710",
+        "NRS-484D-215-2"
+      ]
+    }
+  },
+  "law": {
+    "id": "NRS-484B-127-2",
+    "title": "Following too closely (2)",
+    "text": "The driver of any truck or combination of vehicles 80 inches or more in overall width, which is following a truck, or combination of vehicles 80 inches or more in overall width, shall, whenever conditions permit, leave a space of 500 feet so that an overtaking vehicle may enter and occupy such space without danger, but this shall not prevent a truck or combination of vehicles from overtaking and passing any vehicle or combination of vehicles. This subsection does not apply to any vehicle or combination of vehicles while moving on a highway on which there are two or more lanes available for traffic moving in the same direction.",
+    "source": "NRS 484B.127(2)"
+  },
+  "summary": {
+    "activation_conditions": [
+      "the subject is a truck or combination 80 inches or more in overall width",
+      "the vehicle ahead in the same lane is also a truck or combination 80 inches or more wide",
+      "the subject is following it",
+      "the highway has fewer than two lanes for traffic in the subject's direction"
+    ],
+    "exceptions": [
+      "while overtaking and passing another vehicle or combination",
+      "on a highway with two or more lanes available for traffic moving in the same direction",
+      "'whenever conditions permit' — the space need not be left where traffic or the road makes it impossible"
+    ],
+    "id": "NRS-484B-127-2",
+    "residue": [
+      "'whenever conditions permit' is a judgement element",
+      "overall width of a non-subject vehicle can only be estimated from kin.extent"
+    ],
+    "source": "NRS 484B.127(2)",
+    "subject": "truck_driver",
+    "theme": "following",
+    "tier": "Q",
+    "timing_requirements": [
+      {
+        "kind": "continuous",
+        "requirement": "the 500-foot space is a standing requirement while following, not a single-instant test"
+      },
+      {
+        "kind": "duration",
+        "requirement": "a momentary closure during and immediately after an overtake is excepted; a bound on how long the gap may be short must be declared"
+      }
+    ],
+    "title": "Following too closely (2)"
+  },
+  "summary_status": "provided_planning_context_full_text_remains_authoritative",
+  "selection_targets": [
+    "demo-test",
+    "full-test"
+  ],
+  "observation_terms_contract": "Summary required_observations are law-planning terms, not Core IDs. Map every term to measured evidence; put only supported pinned ontology IDs in config.required_atoms.",
+  "source_observation_terms": [
+    {
+      "term": "ru.truck",
+      "note": "both the subject and the vehicle it follows"
+    },
+    {
+      "term": "ru.trailer_or_combination",
+      "note": "a combination counts as well"
+    },
+    {
+      "term": "kin.extent",
+      "note": "overall width, to apply the 80-inch class"
+    },
+    {
+      "term": "drv.following",
+      "note": "the subject is following the lead truck"
+    },
+    {
+      "term": "rel.surface_gap",
+      "note": "the longitudinal space, against the 500-foot requirement"
+    },
+    {
+      "term": "rel.ahead_behind_in_lane",
+      "note": "same lane, subject behind"
+    },
+    {
+      "term": "drv.laned_roadway",
+      "note": "the exemption: two or more lanes in the same direction"
+    },
+    {
+      "term": "st.lane_adjacency",
+      "note": "the count of lanes in the subject's direction"
+    },
+    {
+      "term": "drv.overtaking",
+      "note": "the carve-out while overtaking"
+    }
+  ]
+}
