@@ -19,6 +19,7 @@ sys.path.insert(0, str(native))
 from build import check
 from saved import fixture, process
 from prove_original_processing import prove
+from fallback_quality import request_measurements, decide
 
 class ArrowRequest(unittest.TestCase):
     def setUp(self):
@@ -50,6 +51,15 @@ class ArrowRequest(unittest.TestCase):
         self.assertFalse(result["original_native_observed"])
         self.assertFalse(result["delivery_ready"])
 
+    def test_fallback_quality_preflight(self):
+        measured = request_measurements(self.bundle)
+        decision = decide(measured, allow_synthetic=True) if measured["camera_policy"] == "standard" else None
+        if decision is not None:
+            self.assertIsNone(decision["selected_candidate"])
+            self.assertFalse(decision["original_native_observed"])
+        with self.assertRaises(ValueError):
+            decide(measured)
+
     def test_rehashed_signal_mutation_rejected(self):
         with tempfile.TemporaryDirectory() as name:
             changed = Path(name)
@@ -79,6 +89,7 @@ def build():
                 files.append({"path": f"{PREFIX}/drafts/{suffix}/{candidate}/{name}",
                               "content": content})
             for name in ("build.py", "saved.py", "capture.py", "process_original.py",
+                         "fallback_quality.py",
                          "prove_original_processing.py", "road-template.xodr", "measurement-contract.json"):
                 files.append({"path": f"{PREFIX}/{name}", "content": (HERE / name).read_text()})
             files.extend((

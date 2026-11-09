@@ -12,6 +12,7 @@ sys.path.insert(0, str(native))
 from build import check
 from saved import fixture, process
 from prove_original_processing import prove
+from fallback_quality import request_measurements, decide
 
 class ArrowRequest(unittest.TestCase):
     def setUp(self):
@@ -42,6 +43,15 @@ class ArrowRequest(unittest.TestCase):
         self.assertEqual(result["negative_count"], 9)
         self.assertFalse(result["original_native_observed"])
         self.assertFalse(result["delivery_ready"])
+
+    def test_fallback_quality_preflight(self):
+        measured = request_measurements(self.bundle)
+        decision = decide(measured, allow_synthetic=True) if measured["camera_policy"] == "standard" else None
+        if decision is not None:
+            self.assertIsNone(decision["selected_candidate"])
+            self.assertFalse(decision["original_native_observed"])
+        with self.assertRaises(ValueError):
+            decide(measured)
 
     def test_rehashed_signal_mutation_rejected(self):
         with tempfile.TemporaryDirectory() as name:

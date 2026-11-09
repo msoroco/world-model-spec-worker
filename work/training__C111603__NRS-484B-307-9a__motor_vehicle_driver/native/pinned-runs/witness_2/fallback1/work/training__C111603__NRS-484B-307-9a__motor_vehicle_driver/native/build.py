@@ -68,10 +68,9 @@ def road():
     return ET.tostring(tree, encoding="unicode") + "\n"
 
 
-def requested_rows(movement, speed, dwell):
+def requested_rows(movement, speed, dwell, yield_s=3.0):
     rows = []
     approach_s = 45.0 / speed
-    yield_s = 3.0
     for frame in range(FRAMES):
         t = frame / RATE
         moving_t = max(0.0, t - dwell)
@@ -111,13 +110,14 @@ def build():
     entries = []
     for suffix, movement in CASES.items():
         for candidate, (speed, camera, dwell) in POLICIES.items():
+            yield_s = 5.0 if candidate == "fallback3" else 3.0
             bundle = HERE / "drafts" / suffix / candidate
             bundle.mkdir(parents=True, exist_ok=True)
             (bundle / "assignment-source.json").write_bytes(SOURCE.read_bytes())
             (bundle / "arrow-intersection.xodr").write_text(xml)
             rows_path = bundle / "requested-tracks.jsonl"
             rows_path.write_text("".join(json.dumps(row, sort_keys=True) + "\n"
-                                         for row in requested_rows(movement, speed, dwell)))
+                                         for row in requested_rows(movement, speed, dwell, yield_s)))
             cfg = {
                 "format": "c111603-3079a-native-request-v1", "assignment_id": CASE.name,
                 "assignment_sha256": SOURCE_SHA, "case_id": CASE.name + "__" + suffix,
@@ -127,7 +127,7 @@ def build():
                 "ego_blueprint": "vehicle.tesla.model3", "other_blueprint": "vehicle.audi.tt",
                 "requested_movement": movement, "approach_speed_mps": speed,
                 "camera_policy": camera, "pre_approach_dwell_s": dwell,
-                "yield_hold_s": 3.0, "signal_state_requested_only": True,
+                "yield_hold_s": yield_s, "signal_state_requested_only": True,
                 "status": "unselected_native_request", "original_native_observed": False,
                 "legal_verdict": None, "delivery_ready": False}
             write(bundle / "config.json", cfg)
@@ -157,7 +157,8 @@ def check(bundle):
             cfg["ego_blueprint"] != "vehicle.tesla.model3" or
             cfg["other_blueprint"] != "vehicle.audi.tt" or
             cfg["approach_speed_mps"] != speed or cfg["camera_policy"] != camera or
-            cfg["pre_approach_dwell_s"] != dwell or cfg["yield_hold_s"] != 3.0 or
+            cfg["pre_approach_dwell_s"] != dwell or
+            cfg["yield_hold_s"] != (5.0 if candidate == "fallback3" else 3.0) or
             cfg["frames"] != FRAMES or cfg["rate_hz"] != RATE or
             cfg["status"] != "unselected_native_request" or
             cfg["signal_state_requested_only"] is not True or
@@ -173,7 +174,8 @@ def check(bundle):
         raise ValueError("Requested signal pair missing")
     rows_path = bundle / "requested-tracks.jsonl"
     rows = [json.loads(line) for line in rows_path.read_text().splitlines()]
-    if digest(rows_path) != cfg["tracks_sha256"] or rows != requested_rows(CASES[suffix], speed, dwell):
+    if digest(rows_path) != cfg["tracks_sha256"] or rows != requested_rows(
+            CASES[suffix], speed, dwell, cfg["yield_hold_s"]):
         raise ValueError("Requested actor or signal tracks changed")
     return {"case_id": cfg["case_id"], "candidate_id": candidate,
             "frames": len(rows), "original_native_observed": False, "delivery_ready": False}
