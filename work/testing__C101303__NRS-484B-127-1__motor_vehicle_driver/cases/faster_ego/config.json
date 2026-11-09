@@ -1,0 +1,185 @@
+{
+  "law_id": "NRS-484B-127-1",
+  "cell_id": "C101303",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+  "supported_case_ids": [
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic"
+  ],
+  "case": {
+    "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_speed_mps",
+          "unit": "m/s",
+          "method": "Native actor.get_velocity magnitude each tick",
+          "time_window": "full recording, every tick",
+          "sampling_rate_hz": 20,
+          "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+          "uncertainty": "engine velocity; no sensor noise model"
+        },
+        {
+          "name": "lead_speed_mps",
+          "unit": "m/s",
+          "method": "Native actor.get_velocity magnitude of the control (lead) vehicle each tick",
+          "time_window": "full recording, every tick",
+          "sampling_rate_hz": 20,
+          "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+          "uncertainty": "engine velocity"
+        },
+        {
+          "name": "bumper_gap_m",
+          "unit": "m",
+          "method": "Road-frame distance from lead rear to ego front while the lead is ahead in the ego lane; -1 when none",
+          "time_window": "full recording, every tick",
+          "sampling_rate_hz": 20,
+          "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+          "uncertainty": "nominal bounding-box length; straight road so s equals x"
+        },
+        {
+          "name": "ego_lane_id",
+          "unit": "lane id",
+          "method": "Native waypoint lane_id readback at ego location",
+          "time_window": "full recording, every tick",
+          "sampling_rate_hz": 20,
+          "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+          "uncertainty": "lane assignment by native map projection"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "surface_context",
+          "unit": "structured record",
+          "method": "authored world setup plus native readback (wetness, friction, grade, crest, public-way declaration)"
+        }
+      ],
+      "limitations": [
+        "Reasonable and prudent following distance is a legal judgment and is not measured.",
+        "Public-way status is an authored declaration of a synthetic road.",
+        "Tire friction is an engine setting, not a measured real-world coefficient."
+      ]
+    }
+  },
+  "case_parameters": {
+    "ego_set_speed_mps": 17.9,
+    "lead_speed_mps": 17.9,
+    "initial_gap_m": 25.0,
+    "gap_hold_m": 25.0,
+    "lead_event": null,
+    "queued_vehicle": null,
+    "wetness": 0.0,
+    "precipitation_deposits": 0.0,
+    "precipitation": 0.0,
+    "tire_friction": 3.5,
+    "duration_s": 45.0
+  },
+  "required_atoms": [
+    "ru.subject",
+    "kin.speed",
+    "kin.position",
+    "rel.ahead_behind_in_lane",
+    "rel.surface_gap",
+    "st.lane",
+    "st.crest",
+    "st.grade"
+  ],
+  "source_packets": [],
+  "rate_hz": 20,
+  "duration_s": 45.0,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 70,
+      "pose_strategy": "airborne chase of the ego/lead midpoint, 45 m up, pitched 60 degrees down"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 80,
+      "pose_strategy": "trailing 12 m behind and 3.2 m above ego, looking forward"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 80,
+      "pose_strategy": "right-side corner view 12 m beside ego, aimed at the vehicles"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "driver eye point in ego cabin, forward"
+    }
+  ],
+  "public_way_road_ids": [
+    1
+  ],
+  "measurement_inputs": {
+    "public_way_context": {
+      "method": "public_way_context",
+      "inputs": [
+        "surface_context.json",
+        "following_samples.jsonl"
+      ]
+    },
+    "ego_lead_speeds": {
+      "method": "speed_profile",
+      "inputs": [
+        "following_samples.jsonl"
+      ]
+    },
+    "following_separation": {
+      "method": "separation_profile",
+      "inputs": [
+        "following_samples.jsonl"
+      ]
+    },
+    "surrounding_traffic": {
+      "method": "surrounding_traffic",
+      "inputs": [
+        "surface_context.json",
+        "following_samples.jsonl"
+      ]
+    },
+    "highway_condition": {
+      "method": "highway_condition",
+      "inputs": [
+        "surface_context.json",
+        "following_samples.jsonl"
+      ]
+    },
+    "following_interval_before_lane_change": {
+      "method": "following_interval",
+      "inputs": [
+        "following_samples.jsonl"
+      ]
+    },
+    "lane_change_route_crest": {
+      "method": "lane_change_route",
+      "inputs": [
+        "surface_context.json",
+        "following_samples.jsonl"
+      ]
+    },
+    "qualifying_vehicle_motion": {
+      "method": "qualifying_motion",
+      "inputs": [
+        "surface_context.json",
+        "following_samples.jsonl"
+      ]
+    }
+  }
+}

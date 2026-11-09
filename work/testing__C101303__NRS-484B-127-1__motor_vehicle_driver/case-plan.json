@@ -1,0 +1,927 @@
+{
+  "assignment_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver",
+  "law_id": "NRS-484B-127-1",
+  "cell_id": "C101303",
+  "actor": "motor_vehicle_driver",
+  "selected_branch": "Following before a lane change",
+  "law_text": "The driver of a vehicle shall not follow another vehicle more closely than is reasonable and prudent, having due regard for the speed of such vehicles and the traffic upon and the condition of the highway.",
+  "cases": [
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "variant": "base",
+      "rationale": "Reference following interval: equal speeds, authored 25 m bumper gap, then a position-triggered lane change over the crest.",
+      "variable_assignments": {},
+      "unresolved_judgment_calls": [
+        "Whether the following distance was reasonable and prudent"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity; no sensor noise model"
+          },
+          {
+            "name": "lead_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude of the control (lead) vehicle each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity"
+          },
+          {
+            "name": "bumper_gap_m",
+            "unit": "m",
+            "method": "Road-frame distance from lead rear to ego front while the lead is ahead in the ego lane; -1 when none",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "nominal bounding-box length; straight road so s equals x"
+          },
+          {
+            "name": "ego_lane_id",
+            "unit": "lane id",
+            "method": "Native waypoint lane_id readback at ego location",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "lane assignment by native map projection"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surface_context",
+            "unit": "structured record",
+            "method": "authored world setup plus native readback (wetness, friction, grade, crest, public-way declaration)"
+          }
+        ],
+        "limitations": [
+          "Reasonable and prudent following distance is a legal judgment and is not measured.",
+          "Public-way status is an authored declaration of a synthetic road.",
+          "Tire friction is an engine setting, not a measured real-world coefficient."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "variant": "closer",
+      "rationale": "Same as base with a smaller authored initial and held bumper gap (12 m).",
+      "variable_assignments": {
+        "gap_hold_m": {
+          "kind": "world_setup",
+          "value": 12.0
+        },
+        "initial_gap_m": {
+          "kind": "world_setup",
+          "value": 12.0
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Whether the following distance was reasonable and prudent"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity; no sensor noise model"
+          },
+          {
+            "name": "lead_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude of the control (lead) vehicle each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity"
+          },
+          {
+            "name": "bumper_gap_m",
+            "unit": "m",
+            "method": "Road-frame distance from lead rear to ego front while the lead is ahead in the ego lane; -1 when none",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "nominal bounding-box length; straight road so s equals x"
+          },
+          {
+            "name": "ego_lane_id",
+            "unit": "lane id",
+            "method": "Native waypoint lane_id readback at ego location",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "lane assignment by native map projection"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surface_context",
+            "unit": "structured record",
+            "method": "authored world setup plus native readback (wetness, friction, grade, crest, public-way declaration)"
+          }
+        ],
+        "limitations": [
+          "Reasonable and prudent following distance is a legal judgment and is not measured.",
+          "Public-way status is an authored declaration of a synthetic road.",
+          "Tire friction is an engine setting, not a measured real-world coefficient."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "variant": "faster_ego",
+      "rationale": "Same as base with a higher common travel speed (17.9 m/s) for ego and lead.",
+      "variable_assignments": {
+        "ego_set_speed_mps": {
+          "kind": "world_setup",
+          "value": 17.9
+        },
+        "lead_speed_mps": {
+          "kind": "world_setup",
+          "value": 17.9
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Whether the following distance was reasonable and prudent"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity; no sensor noise model"
+          },
+          {
+            "name": "lead_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude of the control (lead) vehicle each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity"
+          },
+          {
+            "name": "bumper_gap_m",
+            "unit": "m",
+            "method": "Road-frame distance from lead rear to ego front while the lead is ahead in the ego lane; -1 when none",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "nominal bounding-box length; straight road so s equals x"
+          },
+          {
+            "name": "ego_lane_id",
+            "unit": "lane id",
+            "method": "Native waypoint lane_id readback at ego location",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "lane assignment by native map projection"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surface_context",
+            "unit": "structured record",
+            "method": "authored world setup plus native readback (wetness, friction, grade, crest, public-way declaration)"
+          }
+        ],
+        "limitations": [
+          "Reasonable and prudent following distance is a legal judgment and is not measured.",
+          "Public-way status is an authored declaration of a synthetic road.",
+          "Tire friction is an engine setting, not a measured real-world coefficient."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "variant": "slower_lead",
+      "rationale": "Same as base with a slower lead (9 m/s); ego closes to the held gap.",
+      "variable_assignments": {
+        "lead_speed_mps": {
+          "kind": "world_setup",
+          "value": 9.0
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Whether the following distance was reasonable and prudent"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity; no sensor noise model"
+          },
+          {
+            "name": "lead_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude of the control (lead) vehicle each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity"
+          },
+          {
+            "name": "bumper_gap_m",
+            "unit": "m",
+            "method": "Road-frame distance from lead rear to ego front while the lead is ahead in the ego lane; -1 when none",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "nominal bounding-box length; straight road so s equals x"
+          },
+          {
+            "name": "ego_lane_id",
+            "unit": "lane id",
+            "method": "Native waypoint lane_id readback at ego location",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "lane assignment by native map projection"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surface_context",
+            "unit": "structured record",
+            "method": "authored world setup plus native readback (wetness, friction, grade, crest, public-way declaration)"
+          }
+        ],
+        "limitations": [
+          "Reasonable and prudent following distance is a legal judgment and is not measured.",
+          "Public-way status is an authored declaration of a synthetic road.",
+          "Tire friction is an engine setting, not a measured real-world coefficient."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "variant": "lead_brakes",
+      "rationale": "Same as base with the lead decelerating to 8 m/s at 2.5 m/s^2 from t=12 s.",
+      "variable_assignments": {
+        "lead_event": {
+          "kind": "world_setup",
+          "value": {
+            "kind": "brake",
+            "time_s": 12.0,
+            "speed_mps": 8.0,
+            "decel_mps2": 2.5
+          }
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Whether the following distance was reasonable and prudent"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity; no sensor noise model"
+          },
+          {
+            "name": "lead_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude of the control (lead) vehicle each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity"
+          },
+          {
+            "name": "bumper_gap_m",
+            "unit": "m",
+            "method": "Road-frame distance from lead rear to ego front while the lead is ahead in the ego lane; -1 when none",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "nominal bounding-box length; straight road so s equals x"
+          },
+          {
+            "name": "ego_lane_id",
+            "unit": "lane id",
+            "method": "Native waypoint lane_id readback at ego location",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "lane assignment by native map projection"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surface_context",
+            "unit": "structured record",
+            "method": "authored world setup plus native readback (wetness, friction, grade, crest, public-way declaration)"
+          }
+        ],
+        "limitations": [
+          "Reasonable and prudent following distance is a legal judgment and is not measured.",
+          "Public-way status is an authored declaration of a synthetic road.",
+          "Tire friction is an engine setting, not a measured real-world coefficient."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "variant": "wet_surface",
+      "rationale": "Same as base with wet-road weather and reduced wheel friction (engine settings).",
+      "variable_assignments": {
+        "precipitation": {
+          "kind": "world_setup",
+          "value": 60.0
+        },
+        "precipitation_deposits": {
+          "kind": "world_setup",
+          "value": 80.0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
+        },
+        "wetness": {
+          "kind": "world_setup",
+          "value": 80.0
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Whether the following distance was reasonable and prudent"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity; no sensor noise model"
+          },
+          {
+            "name": "lead_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude of the control (lead) vehicle each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity"
+          },
+          {
+            "name": "bumper_gap_m",
+            "unit": "m",
+            "method": "Road-frame distance from lead rear to ego front while the lead is ahead in the ego lane; -1 when none",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "nominal bounding-box length; straight road so s equals x"
+          },
+          {
+            "name": "ego_lane_id",
+            "unit": "lane id",
+            "method": "Native waypoint lane_id readback at ego location",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "lane assignment by native map projection"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surface_context",
+            "unit": "structured record",
+            "method": "authored world setup plus native readback (wetness, friction, grade, crest, public-way declaration)"
+          }
+        ],
+        "limitations": [
+          "Reasonable and prudent following distance is a legal judgment and is not measured.",
+          "Public-way status is an authored declaration of a synthetic road.",
+          "Tire friction is an engine setting, not a measured real-world coefficient."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "variant": "following_ends",
+      "rationale": "Same as base but the lead leaves the ego lane at s=250 m and accelerates away, ending the following relation before the ego lane change.",
+      "variable_assignments": {
+        "lead_event": {
+          "kind": "world_setup",
+          "value": {
+            "kind": "leave_lane",
+            "trigger_s_m": 250.0,
+            "accelerate_to_mps": 20.0
+          }
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Whether the following distance was reasonable and prudent"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity; no sensor noise model"
+          },
+          {
+            "name": "lead_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude of the control (lead) vehicle each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity"
+          },
+          {
+            "name": "bumper_gap_m",
+            "unit": "m",
+            "method": "Road-frame distance from lead rear to ego front while the lead is ahead in the ego lane; -1 when none",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "nominal bounding-box length; straight road so s equals x"
+          },
+          {
+            "name": "ego_lane_id",
+            "unit": "lane id",
+            "method": "Native waypoint lane_id readback at ego location",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "lane assignment by native map projection"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surface_context",
+            "unit": "structured record",
+            "method": "authored world setup plus native readback (wetness, friction, grade, crest, public-way declaration)"
+          }
+        ],
+        "limitations": [
+          "Reasonable and prudent following distance is a legal judgment and is not measured.",
+          "Public-way status is an authored declaration of a synthetic road.",
+          "Tire friction is an engine setting, not a measured real-world coefficient."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "boundary_probe",
+      "variant": "queued_traffic",
+      "rationale": "Same as base with a third vehicle queued ahead of the lead.",
+      "variable_assignments": {
+        "queued_vehicle": {
+          "kind": "world_setup",
+          "value": {
+            "extra_gap_m": 25.0
+          }
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Whether the following distance was reasonable and prudent"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity; no sensor noise model"
+          },
+          {
+            "name": "lead_speed_mps",
+            "unit": "m/s",
+            "method": "Native actor.get_velocity magnitude of the control (lead) vehicle each tick",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "engine velocity"
+          },
+          {
+            "name": "bumper_gap_m",
+            "unit": "m",
+            "method": "Road-frame distance from lead rear to ego front while the lead is ahead in the ego lane; -1 when none",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "nominal bounding-box length; straight road so s equals x"
+          },
+          {
+            "name": "ego_lane_id",
+            "unit": "lane id",
+            "method": "Native waypoint lane_id readback at ego location",
+            "time_window": "full recording, every tick",
+            "sampling_rate_hz": 20,
+            "reference_frame": "road frame (s along lane direction, lane ids from native waypoint readback)",
+            "uncertainty": "lane assignment by native map projection"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surface_context",
+            "unit": "structured record",
+            "method": "authored world setup plus native readback (wetness, friction, grade, crest, public-way declaration)"
+          }
+        ],
+        "limitations": [
+          "Reasonable and prudent following distance is a legal judgment and is not measured.",
+          "Public-way status is an authored declaration of a synthetic road.",
+          "Tire friction is an engine setting, not a measured real-world coefficient."
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "base_vs_closer",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer"
+      ],
+      "fixed_conditions": [
+        "road geometry, crest and lane widths",
+        "ego start position and lane-change position trigger",
+        "cameras, 20 Hz, 45 s",
+        "vehicle model and weather unless the variable is surface_condition",
+        "every authored parameter except: gap_hold_m, initial_gap_m"
+      ],
+      "deliberate_differences": [
+        "gap_hold_m",
+        "initial_gap_m"
+      ],
+      "variable": "initial_following_gap",
+      "reuse": "base is one shared reference recording reused by all seven comparisons"
+    },
+    {
+      "comparison_id": "base_vs_faster_ego",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego"
+      ],
+      "fixed_conditions": [
+        "road geometry, crest and lane widths",
+        "ego start position and lane-change position trigger",
+        "cameras, 20 Hz, 45 s",
+        "vehicle model and weather unless the variable is surface_condition",
+        "every authored parameter except: ego_set_speed_mps, lead_speed_mps"
+      ],
+      "deliberate_differences": [
+        "ego_set_speed_mps",
+        "lead_speed_mps"
+      ],
+      "variable": "common_travel_speed",
+      "reuse": "base is one shared reference recording reused by all seven comparisons"
+    },
+    {
+      "comparison_id": "base_vs_slower_lead",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead"
+      ],
+      "fixed_conditions": [
+        "road geometry, crest and lane widths",
+        "ego start position and lane-change position trigger",
+        "cameras, 20 Hz, 45 s",
+        "vehicle model and weather unless the variable is surface_condition",
+        "every authored parameter except: lead_speed_mps"
+      ],
+      "deliberate_differences": [
+        "lead_speed_mps"
+      ],
+      "variable": "lead_speed",
+      "reuse": "base is one shared reference recording reused by all seven comparisons"
+    },
+    {
+      "comparison_id": "base_vs_lead_brakes",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes"
+      ],
+      "fixed_conditions": [
+        "road geometry, crest and lane widths",
+        "ego start position and lane-change position trigger",
+        "cameras, 20 Hz, 45 s",
+        "vehicle model and weather unless the variable is surface_condition",
+        "every authored parameter except: lead_event"
+      ],
+      "deliberate_differences": [
+        "lead_event"
+      ],
+      "variable": "lead_longitudinal_event",
+      "reuse": "base is one shared reference recording reused by all seven comparisons"
+    },
+    {
+      "comparison_id": "base_vs_wet_surface",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface"
+      ],
+      "fixed_conditions": [
+        "road geometry, crest and lane widths",
+        "ego start position and lane-change position trigger",
+        "cameras, 20 Hz, 45 s",
+        "vehicle model and weather unless the variable is surface_condition",
+        "every authored parameter except: precipitation, precipitation_deposits, tire_friction, wetness"
+      ],
+      "deliberate_differences": [
+        "precipitation",
+        "precipitation_deposits",
+        "tire_friction",
+        "wetness"
+      ],
+      "variable": "surface_condition",
+      "reuse": "base is one shared reference recording reused by all seven comparisons"
+    },
+    {
+      "comparison_id": "base_vs_following_ends",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends"
+      ],
+      "fixed_conditions": [
+        "road geometry, crest and lane widths",
+        "ego start position and lane-change position trigger",
+        "cameras, 20 Hz, 45 s",
+        "vehicle model and weather unless the variable is surface_condition",
+        "every authored parameter except: lead_event"
+      ],
+      "deliberate_differences": [
+        "lead_event"
+      ],
+      "variable": "lead_lateral_event",
+      "reuse": "base is one shared reference recording reused by all seven comparisons"
+    },
+    {
+      "comparison_id": "base_vs_queued_traffic",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic"
+      ],
+      "fixed_conditions": [
+        "road geometry, crest and lane widths",
+        "ego start position and lane-change position trigger",
+        "cameras, 20 Hz, 45 s",
+        "vehicle model and weather unless the variable is surface_condition",
+        "every authored parameter except: queued_vehicle"
+      ],
+      "deliberate_differences": [
+        "queued_vehicle"
+      ],
+      "variable": "traffic_ahead_of_lead",
+      "reuse": "base is one shared reference recording reused by all seven comparisons"
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_speed_mps",
+      "unit": "m/s",
+      "mandatory": true
+    },
+    {
+      "name": "lead_speed_mps",
+      "unit": "m/s",
+      "mandatory": true
+    },
+    {
+      "name": "bumper_gap_m",
+      "unit": "m",
+      "mandatory": true
+    },
+    {
+      "name": "ego_lane_id",
+      "unit": "lane id",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json",
+      "sha256": "b446ce015776a334ae69a6758297d23d554a7844843242ae06d111b5d19a2999"
+    },
+    {
+      "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/witnesses.json",
+      "sha256": "470a56f09e4051776aca62a10c08514557774872c52cf6fbd954ede224c3815f"
+    },
+    {
+      "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/review-context/README.md",
+      "sha256": "bf7a1132bbc9af600a41c7bce161b847dcfc4a4a3a6c295baf2dbe81e08b2e87"
+    },
+    {
+      "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/review-context/review.json",
+      "sha256": "10624d235d9d22810bb494d6f102ea875817a3ccec5b9939c3056a068e7edbc0"
+    }
+  ],
+  "existing_evidence": [
+    "review-context README lists eight accepted imported recordings for this cell/law (base, closer, faster_ego, slower_lead, lead_brakes, wet_surface, following_ends, queued_traffic); not re-derived here and not reused as proof of this package."
+  ],
+  "runtime_uncertainties": [
+    "No CARLA/GPU in this clone: motion, lane-change completion, crest geometry, camera visibility and 45 s duration are unverified.",
+    "Wheel friction and weather are engine settings, not measured real-world values.",
+    "Camera poses are re-set before each tick and may trail by one tick.",
+    "Demo-train comparison preflight not performed: no accepted demo-train data is present in this clone."
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "Establish highway dedication and public availability (authored synthetic declaration)",
+      "source": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/witnesses.json#0.witness.required_context",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic"
+      ],
+      "evidence_or_gap": "Measured or authored-and-sourced by the finalizer; no reasonable-and-prudent cutoff is selected."
+    },
+    {
+      "requirement": "Both vehicle speeds throughout following",
+      "source": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/witnesses.json#0.witness.required_context",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic"
+      ],
+      "evidence_or_gap": "Measured or authored-and-sourced by the finalizer; no reasonable-and-prudent cutoff is selected."
+    },
+    {
+      "requirement": "Separation between the vehicles throughout following",
+      "source": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/witnesses.json#0.witness.required_context",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic"
+      ],
+      "evidence_or_gap": "Measured or authored-and-sourced by the finalizer; no reasonable-and-prudent cutoff is selected."
+    },
+    {
+      "requirement": "Surrounding traffic throughout following",
+      "source": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/witnesses.json#0.witness.required_context",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic"
+      ],
+      "evidence_or_gap": "Measured or authored-and-sourced by the finalizer; no reasonable-and-prudent cutoff is selected."
+    },
+    {
+      "requirement": "Highway condition (surface, grade, crest) throughout following",
+      "source": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/witnesses.json#0.witness.required_context",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic"
+      ],
+      "evidence_or_gap": "Measured or authored-and-sourced by the finalizer; no reasonable-and-prudent cutoff is selected."
+    },
+    {
+      "requirement": "Actual following interval behind a qualifying moving lead before the lane change",
+      "source": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/witnesses.json#0.witness.required_context",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic"
+      ],
+      "evidence_or_gap": "Measured or authored-and-sourced by the finalizer; no reasonable-and-prudent cutoff is selected."
+    },
+    {
+      "requirement": "Connected lanes supporting the lane change on a route containing the crest",
+      "source": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/witnesses.json#0.witness.required_context",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic"
+      ],
+      "evidence_or_gap": "Measured or authored-and-sourced by the finalizer; no reasonable-and-prudent cutoff is selected."
+    },
+    {
+      "requirement": "Both qualifying vehicles moving; ego driver identified",
+      "source": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/witnesses.json#0.witness.required_context",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic"
+      ],
+      "evidence_or_gap": "Measured or authored-and-sourced by the finalizer; no reasonable-and-prudent cutoff is selected."
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45.0,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego and lead bodies and crest",
+        "interval": "0-45 s"
+      },
+      {
+        "view": "approach",
+        "subject": "lead vehicle ahead of ego",
+        "interval": "0-45 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "ego lane change at the crest",
+        "interval": "0-45 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "forward road and lead from the ego driver",
+        "interval": "0-45 s"
+      }
+    ]
+  },
+  "source_observation_mapping": {}
+}

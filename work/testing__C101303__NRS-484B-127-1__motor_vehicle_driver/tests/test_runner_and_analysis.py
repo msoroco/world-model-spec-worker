@@ -14,9 +14,14 @@ import package_spec as P
 
 
 def env():
-    # Runtime helper packages (worker_exchange); supplied by runtime.py in real runs.
-    root = next(p for p in HERE.parents if (p / 'runtime/scenario_pipeline').is_dir())
-    return dict(os.environ, PYTHONPATH=os.pathsep.join([str(root / 'runtime/scenario_pipeline'), str(root / 'runtime/python'), str(HERE)]), PYTHONDONTWRITEBYTECODE='1')
+    """Runtime helper packages come from PYTHONPATH (runtime.py sets it); else locate this clone's runtime."""
+    paths = [str(HERE)]
+    try:
+        import worker_exchange  # noqa: F401
+    except ImportError:
+        root = next(p for p in HERE.parents if (p / 'runtime/scenario_pipeline').is_dir())
+        paths += [str(root / 'runtime/scenario_pipeline'), str(root / 'runtime/python')]
+    return dict(os.environ, PYTHONPATH=os.pathsep.join(paths + [os.environ.get('PYTHONPATH', '')]), PYTHONDONTWRITEBYTECODE='1')
 
 
 class RunnerCheck(unittest.TestCase):
