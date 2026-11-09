@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
@@ -43,14 +44,46 @@ def check(bundle):
     root = ET.parse(bundle / "zone-adjoining.xodr").getroot()
     roads = {x.get("id"): x for x in root.findall("./road")}
     junctions = root.findall("./junction")
-    marking = roads["217"].find("./lanes/laneSection/center/lane/roadMark")
-    connection = junctions[0].find("./connection") if len(junctions) == 1 else None
-    if (set(roads) != {"217", "218"} or marking.get("type") != "solid solid" or
-            marking.get("color") != "yellow" or connection is None or
-            connection.get("incomingRoad") != "217" or
-            connection.get("connectingRoad") != "218" or
-            connection.find("./laneLink").get("from") != "-1"):
-        raise ValueError("Authored stripe or adjoining road topology changed")
+    if set(roads) != {"217", "218", "219", "220", "221"} or len(junctions) != 1:
+        raise ValueError("Authored road set or junction changed")
+    for rid in ("217", "219", "220"):
+        marking = roads[rid].find("./lanes/laneSection/center/lane/roadMark")
+        if marking is None or marking.get("type") != "solid solid" or marking.get("color") != "yellow":
+            raise ValueError("No-passing striping discontinuity")
+    links = {
+        "217": (None, ("junction", "1", None)),
+        "219": (("junction", "1", None), None),
+        "218": (("junction", "1", None), None),
+        "220": (("road", "217", "end"), ("road", "219", "start")),
+        "221": (("road", "217", "end"), ("road", "218", "start")),
+    }
+    for rid, (predecessor, successor) in links.items():
+        r = roads[rid]
+        if r.get("junction") != ("1" if rid in ("220", "221") else "-1"):
+            raise ValueError("Connecting road junction membership")
+        for role, expected in (("predecessor", predecessor), ("successor", successor)):
+            actual = r.find("./link/" + role)
+            if expected is None:
+                if actual is not None:
+                    raise ValueError("Unexpected road link")
+            elif actual is None or (actual.get("elementType"), actual.get("elementId"),
+                    actual.get("contactPoint")) != expected:
+                raise ValueError("Road/junction linkage changed")
+    connections = [
+        (c.get("incomingRoad"), c.get("connectingRoad"), c.get("contactPoint"),
+         c.find("./laneLink").get("from"), c.find("./laneLink").get("to"))
+        for c in junctions[0].findall("./connection")]
+    if connections != [("217", "220", "start", "-1", "-1"),
+                       ("217", "221", "start", "-1", "-1"),
+                       ("219", "220", "end", "1", "1")]:
+        raise ValueError("Junction connection or lane links changed")
+    arc = roads["221"].find("./planView/geometry")
+    if (arc is None or abs(float(arc.get("length")) - 3.5 * math.pi / 2) > 1e-8 or
+            abs(float(arc.find("./arc").get("curvature")) - 1/3.5) > 1e-8 or
+            float(arc.get("x")) != 50 or float(arc.get("y")) != 0 or
+            float(roads["218"].find("./planView/geometry").get("x")) != 53.5 or
+            float(roads["218"].find("./planView/geometry").get("y")) != 3.5):
+        raise ValueError("Left turn arc/adjoining road geometry changed")
     speed, camera, stop = POLICIES[candidate]
     if (cfg["format"] != "c109137-zone-native-request-v1" or
             cfg["rate_hz"] != RATE or cfg["frames"] != FRAMES or

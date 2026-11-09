@@ -29,7 +29,10 @@ def run():
                     assert abs(r['time_s']-(i+1)/RATE)<1e-8
                     assert r['requested_ego_xy_m']==q[i]['requested_ego_xy_m']
                 m=process(bundle,raw,video,review,synthetic=True)
-                stripe=next((i for i,r in enumerate(a) if min(p[1] for p in r['ego']['body_native_xyz_m'])<=0<=max(p[1] for p in r['ego']['body_native_xyz_m'])),None)
+                stripe=next((i for i,r in enumerate(a) if
+                    min(p[1] for p in r['ego']['body_native_xyz_m'])<=0<=max(p[1] for p in r['ego']['body_native_xyz_m'])
+                    and max(p[0] for p in r['ego']['body_native_xyz_m'])>=0
+                    and min(p[0] for p in r['ego']['body_native_xyz_m'])<=55),None)
                 spur=next((i for i,r in enumerate(a) if r['observed_road_id']==218 and r['observed_lane_id']==-1),None)
                 signal=next((i for i,r in enumerate(a) if r['observed_left_indicator']),None)
                 assert (m['first_observed_stripe_frame'],m['first_adjoining_lane_frame'],m['first_observed_signal_frame'])==(stripe,spur,signal)

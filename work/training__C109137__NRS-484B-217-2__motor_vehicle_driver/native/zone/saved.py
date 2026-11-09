@@ -67,7 +67,8 @@ def process(bundle, raw, video, review, *, synthetic=False):
         mapping_path, report_path = raw.parent/'native-map-readback.json', raw.parent/'native-capture-report.json'
         mapping, report = json.loads(mapping_path.read_text()), json.loads(report_path.read_text())
         required_lanes = {'ego_approach': (217,-1), 'stripe_region': (217,-1),
-                          'oncoming': (217,1), 'adjoining': (218,-1)}
+                          'oncoming': (219,1), 'adjoining': (218,-1),
+                          'straight_connector': (220,-1), 'turn_connector': (221,-1)}
         if (mapping.get('source_kind') != 'original_native' or
             mapping.get('road_sha256') != sha(bundle/'zone-adjoining.xodr') or
             mapping.get('adjoining_connection_readback') is not True or
@@ -122,7 +123,9 @@ def process(bundle, raw, video, review, *, synthetic=False):
                 raise ValueError('Actor speed/displacement continuity')
             previous[key] = center
         ego_body = r['ego']['body_native_xyz_m']
-        stripe.append(min(p[1] for p in ego_body) <= 0 <= max(p[1] for p in ego_body))
+        stripe.append(min(p[1] for p in ego_body) <= 0 <= max(p[1] for p in ego_body)
+                      and max(p[0] for p in ego_body) >= 0
+                      and min(p[0] for p in ego_body) <= 55)
         adjoining.append(r.get('observed_road_id') == 218 and r.get('observed_lane_id') == -1)
         if type(r.get('observed_left_indicator')) is not bool or \
                 bool(r['ego'].get('light_state',0) & 32) != r['observed_left_indicator']:

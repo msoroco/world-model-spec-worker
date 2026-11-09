@@ -7,6 +7,7 @@ from pathlib import Path
 import queue
 import subprocess
 import traceback
+import xml.etree.ElementTree as ET
 
 from check import check
 from build import FRAMES
@@ -96,8 +97,8 @@ def capture(bundle, output, host, port):
         for name, x, y, road_id, lane_id in (
                 ("ego_approach", 20, -1.75, 217, -1),
                 ("stripe_region", 48, -1.75, 217, -1),
-                ("oncoming", 80, 1.75, 217, 1),
-                ("adjoining", 50, 15, 218, -1)):
+                ("oncoming", 80, 1.75, 219, 1),
+                ("adjoining", 55.25, 15, 218, -1)):
             wp = mapping.get_waypoint(carla.Location(x=x, y=y, z=1),
                                       project_to_road=False, lane_type=carla.LaneType.Any)
             surveyed[name] = None if wp is None else {
@@ -106,9 +107,27 @@ def capture(bundle, output, host, port):
             if wp is None or wp.road_id != road_id or wp.lane_id != lane_id or \
                     wp.lane_type != carla.LaneType.Driving:
                 raise RuntimeError("Generated main/adjoining lane readback differs: " + name)
+        for name, road_id, station in (("straight_connector", 220, 2.5),
+                                       ("turn_connector", 221, 2.5)):
+            wp = mapping.get_waypoint_xodr(road_id, -1, station)
+            surveyed[name] = None if wp is None else {
+                "road_id": wp.road_id, "lane_id": wp.lane_id,
+                "lane_type": "driving" if wp.lane_type == carla.LaneType.Driving else "other"}
+            if wp is None or wp.road_id != road_id or wp.lane_id != -1 or \
+                    wp.lane_type != carla.LaneType.Driving:
+                raise RuntimeError("Generated junction connector lane readback differs: " + name)
         generated = mapping.to_opendrive()
-        if 'incomingRoad="217"' not in generated or 'connectingRoad="218"' not in generated:
-            raise RuntimeError("Generated adjoining highway connection absent")
+        generated_xml = ET.fromstring(generated)
+        generated_roads = {r.get("id"): r for r in generated_xml.findall("./road")}
+        generated_junction = generated_xml.find("./junction[@id='1']")
+        connections = set() if generated_junction is None else {
+            (c.get("incomingRoad"), c.get("connectingRoad"))
+            for c in generated_junction.findall("./connection")}
+        if (set(generated_roads) != {"217", "218", "219", "220", "221"} or
+                {("217", "220"), ("217", "221"), ("219", "220")} - connections or
+                generated_roads["220"].get("junction") != "1" or
+                generated_roads["221"].get("junction") != "1"):
+            raise RuntimeError("Generated highway/adjoining junction topology absent")
         road_readback = surveyed
         library = world.get_blueprint_library()
         bp = library.find("vehicle.tesla.model3")
@@ -119,7 +138,7 @@ def capture(bundle, output, host, port):
             raise RuntimeError("Ego spawn failed")
         owned.append(ego)
         oncoming = world.try_spawn_actor(
-            bp, carla.Transform(carla.Location(x=130, y=1.75, z=1.5),
+            bp, carla.Transform(carla.Location(x=135, y=1.75, z=1.5),
                                 carla.Rotation(yaw=180)))
         following = world.try_spawn_actor(
             bp, carla.Transform(carla.Location(x=0, y=-1.75, z=1.5)))

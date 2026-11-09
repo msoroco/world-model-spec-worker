@@ -42,7 +42,7 @@ def fixture(bundle, folder):
             'ego':actor(1,center,velocity,32 if indicator else 0),
             'oncoming':actor(2,oncoming,[-4,0]),
             'following':actor(3,following,[2,0]),
-            'observed_road_id':218 if center[1]>=4 else 217,
+            'observed_road_id':218 if center[1]>=3.6 else (221 if center[0]>50 else 217),
             'observed_lane_id':-1,
             'zone_legally_designated':False,
             'traffic_impediment_reviewed':False,'legal_verdict':None}
