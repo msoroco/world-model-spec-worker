@@ -1,4 +1,4 @@
-"""Unaccepted original CARLA attempt for the C104496 grade-crest pair."""
+"""Unaccepted original CARLA attempt for the C104496 curved-grade branch."""
 import argparse
 import hashlib
 import json
@@ -8,9 +8,8 @@ import queue
 import subprocess
 import traceback
 
-from build import FRAMES, RATE, elevation
-from check import check
-from saved import observer_station
+from prove import FRAMES, RATE, RADIUS, elevation, curve_point, inverse_point, check
+from saved import observers
 
 
 def sha(path):
@@ -73,7 +72,7 @@ def capture(bundle, output, host, port):
     from scenario_pipeline.worker_exchange.world_restore import snapshot, restore
 
     bundle, output = Path(bundle).resolve(), Path(output).resolve()
-    checked = check(bundle)
+    check(bundle)
     cfg = json.loads((bundle / "config.json").read_text())
     requests = [json.loads(line) for line in (bundle / "requested-tracks.jsonl").read_text().splitlines()]
     client = carla.Client(host, int(port)); client.set_timeout(180)
@@ -86,7 +85,7 @@ def capture(bundle, output, host, port):
     owned, sensors, encoders, logs = [], {}, {}, {}
     changed = False; frames = 0; error = None; restoration = None; map_readback = None
     try:
-        world = client.generate_opendrive_world((bundle / "crest.xodr").read_text(),
+        world = client.generate_opendrive_world((bundle / "curve.xodr").read_text(),
             carla.OpendriveGenerationParameters(vertex_distance=.25, max_road_length=50,
                 wall_height=0, additional_width=0, smooth_junctions=False,
                 enable_mesh_visibility=True, enable_pedestrian_navigation=False))
@@ -97,29 +96,40 @@ def capture(bundle, output, host, port):
         world.set_weather(carla.WeatherParameters.ClearNoon)
         mapping = world.get_map(); map_readback = {}
         for name, lane_id, station in (("west_500ft", 1, 47.6), ("ego_approach", -1, 180),
-                                       ("crest", -1, 200), ("east_500ft", -1, 352.4)):
+                                       ("curve_crest", -1, 200), ("east_500ft", -1, 352.4)):
             wp = mapping.get_waypoint_xodr(407, lane_id, station)
             map_readback[name] = None if wp is None else {
                 "road_id": wp.road_id, "lane_id": wp.lane_id,
                 "lane_type": str(wp.lane_type), "native_xyz_m": xyz(wp.transform.location)}
             if wp is None or wp.road_id != 407 or wp.lane_id != lane_id or wp.lane_type != carla.LaneType.Driving:
-                raise RuntimeError("Generated crest lane readback differs: " + name)
+                raise RuntimeError("Generated curved-grade lane readback differs: " + name)
             if abs(wp.transform.location.z - elevation(station, cfg["grade_height_m"])) > 1.0:
                 raise RuntimeError("Generated grade elevation differs: " + name)
+            expected_x, expected_y = curve_point(station, lane_id * 2.25)
+            if math.dist((wp.transform.location.x, wp.transform.location.y),
+                         (expected_x, expected_y)) > 1.0:
+                raise RuntimeError("Generated curve plan-view readback differs: " + name)
         library = world.get_blueprint_library()
         ego_bp = library.find(cfg["ego_blueprint"])
         other_bp = library.find(cfg["other_vehicle_blueprint"])
+        ego_x, ego_y = curve_point(180, -1.75)
+        other_x, other_y = curve_point(47.6, 1.75)
         ego = world.try_spawn_actor(ego_bp, carla.Transform(carla.Location(
-            x=180, y=-1.75, z=elevation(180, cfg["grade_height_m"])+1.5)))
+            x=ego_x, y=ego_y, z=elevation(180, cfg["grade_height_m"])+1.5),
+            carla.Rotation(yaw=math.degrees(180/RADIUS))))
         other = world.try_spawn_actor(other_bp, carla.Transform(carla.Location(
-            x=47.6, y=1.75, z=elevation(47.6, cfg["grade_height_m"])+1.5)))
+            x=other_x, y=other_y, z=elevation(47.6, cfg["grade_height_m"])+1.5),
+            carla.Rotation(yaw=math.degrees(47.6/RADIUS))))
         if ego is None or other is None:
             raise RuntimeError("Ego or approaching-vehicle spawn failed")
         owned.extend((ego, other))
         elevated = cfg["camera_policy"] == "elevated_overview"
-        specs = (("west_view", 1280, 720, (47.6, 1.75, elevation(47.6, cfg["grade_height_m"])+1.4), 0, 0),
-                 ("east_view", 1280, 720, (352.4, -1.75, elevation(352.4, cfg["grade_height_m"])+1.4), 180, 0),
-                 ("overview", 1280, 720, (200, -25, elevation(200, cfg["grade_height_m"])+(50 if elevated else 35)), 90, -65))
+        west_x, west_y = curve_point(47.6, 1.75)
+        east_x, east_y = curve_point(352.4, -1.75)
+        center_x, center_y = curve_point(200, -25)
+        specs = (("west_view", 1280, 720, (west_x, west_y, elevation(47.6, cfg["grade_height_m"])+1.4), math.degrees(47.6/RADIUS), 0),
+                 ("east_view", 1280, 720, (east_x, east_y, elevation(352.4, cfg["grade_height_m"])+1.4), math.degrees(352.4/RADIUS)+180, 0),
+                 ("overview", 1280, 720, (center_x, center_y, elevation(200, cfg["grade_height_m"])+(50 if elevated else 35)), math.degrees(200/RADIUS)+90, -65))
         for name, width, height, location, yaw, pitch in specs:
             bp = library.find("sensor.camera.rgb")
             for key, value in (("image_size_x", width), ("image_size_y", height),
@@ -134,7 +144,7 @@ def capture(bundle, output, host, port):
                 "-r", str(RATE), "-i", "pipe:0", "-an", "-c:v", "ffv1",
                 str(output / (name + ".mkv"))], stdin=subprocess.PIPE, stderr=logs[name])
         (output / "native-map-readback.json").write_text(json.dumps({
-            "source_kind": "original_native", "road_sha256": sha(bundle / "crest.xodr"),
+            "source_kind": "original_native", "road_sha256": sha(bundle / "curve.xodr"),
             "native_map_sha256": hashlib.sha256(mapping.to_opendrive().encode()).hexdigest(),
             "lane_readback": map_readback, "ego_actor_id": ego.id, "other_actor_id": other.id,
             "legal_verdict": None}, indent=2) + "\n")
@@ -145,13 +155,15 @@ def capture(bundle, output, host, port):
             for i, request in enumerate(requests):
                 next_request = requests[min(i+5, FRAMES-1)]
                 ego.apply_control(control_for(ego, next_request, carla))
-                other.set_target_velocity(carla.Vector3D(x=4, y=0, z=0))
+                other_station, _ = inverse_point(other.get_location().x, other.get_location().y)
+                other_angle = other_station / RADIUS
+                other.set_target_velocity(carla.Vector3D(x=4*math.cos(other_angle),
+                                                         y=4*math.sin(other_angle), z=0))
                 native_frame = world.tick()
                 t = world.get_snapshot().timestamp.elapsed_seconds - start
                 ego_state = body(ego); other_state = body(other)
-                subject_x = ego_state["center_native_xyz_m"][0]
-                stations = [observer_station(subject_x, cfg["grade_height_m"], direction)
-                            for direction in (-1, 1)] if 0 <= subject_x <= 450 else [None, None]
+                subject_station, _ = inverse_point(*ego_state["center_native_xyz_m"][:2])
+                stations = observers(subject_station) if 0 <= subject_station <= 450 else [None, None]
                 rays = []
                 for station, lane_id in zip(stations, (1, -1)):
                     if station is None:
@@ -159,7 +171,7 @@ def capture(bundle, output, host, port):
                     else:
                         observer_wp = mapping.get_waypoint_xodr(407, lane_id, station)
                         if observer_wp is None or observer_wp.lane_type != carla.LaneType.Driving:
-                            raise RuntimeError("Generated 500-foot observer lane absent")
+                            raise RuntimeError("Generated curved 500-foot observer lane absent")
                         eye = observer_wp.transform.location + carla.Location(z=1.4)
                         rays.append(body_rays(world, ego, eye, carla))
                 wp = mapping.get_waypoint(ego.get_location(), project_to_road=False,
@@ -206,12 +218,12 @@ def capture(bundle, output, host, port):
             try: restoration = restore(client, saved_world)
             except BaseException as exc: error = error or {"restore_error": str(exc)}
         (output / "native-capture-report.json").write_text(json.dumps({
-            "case_id": checked["case_id"], "candidate_id": checked["candidate"],
+            "case_id": cfg["case_id"], "candidate_id": cfg["candidate_id"],
             "config_sha256": sha(bundle / "config.json"), "requested_frames": FRAMES,
             "observed_frames": frames, "restoration": restoration, "error": error,
             "accepted": False, "delivery_ready": False, "legal_verdict": None}, indent=2) + "\n")
     if error:
-        raise RuntimeError("C104496 original Native attempt failed; inspect capture report")
+        raise RuntimeError("C104496 curved-grade original Native attempt failed; inspect capture report")
 
 
 if __name__ == "__main__":
