@@ -74,7 +74,15 @@ def check(repo, complete=False, require_ready=False, assignment=None):
     if assignment is not None:
         require(assignment in items, 'Unknown assignment: '+assignment)
     all_items = items
-    files = tree(repo)
+    # Assignment checks run hundreds of times while a batch is being prepared.
+    # Frozen files were verified above; inspect only this assignment's editable
+    # tree here. The complete batch gate still hashes every returned file.
+    if assignment is None:
+        files = tree(repo)
+    else:
+        work = repo / 'work' / assignment
+        files = {f'work/{assignment}/{rel}': checksum
+                 for rel, checksum in tree(work).items()} if work.is_dir() else {}
     returned=[rel for rel in files if rel.startswith('work/')]
     require(len(returned)<=batch.get('max_return_files',1000), 'Return contains too many generated files')
     forbidden={'.png','.jpg','.jpeg','.pkl','.mkv','.webm','.mp4','.ass','.lock','.uasset','.uexp'}
