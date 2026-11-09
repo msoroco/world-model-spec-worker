@@ -1,6 +1,7 @@
 """Independently recompute synthetic crest joins and controlled grade contrast."""
 import hashlib
 import json
+import math
 from pathlib import Path
 import xml.etree.ElementTree as ET
 from build import CASES, HERE, POLICIES, SOURCE_SHA, put
@@ -44,16 +45,31 @@ def audit():
                 if row["frame"] != request["frame"] or row["requested_ego_xyz_m"] != request["requested_ego_xyz_m"]:
                     raise ValueError("Request/raw actor join drift")
                 x = request["requested_ego_xyz_m"][0]
-                # For a quadratic grade, maximum surface-to-eye-ray bulge is
-                # -c * D^2/4 - eye height when observer and body samples match.
-                analytic_gap = round(-c * 152.4 ** 2 / 4 - 1.4, 6)
-                if row["analytic_road_above_ray_m"] != [analytic_gap, analytic_gap]:
+                stations = row["observer_stations_m"]
+                gaps = []
+                for observer in stations:
+                    if observer is None:
+                        gaps.append(None)
+                        continue
+                    # Independent Simpson integration confirms that the stored
+                    # observer is 152.4 m away along the graded roadway.
+                    step = (x - observer) / 200
+                    arc = abs(step) / 3 * sum((1 if j in (0, 200) else 4 if j % 2 else 2) *
+                        math.sqrt(1 + (b + 2*c*(observer + j*step))**2) for j in range(201))
+                    if abs(arc - 152.4) > .002:
+                        raise ValueError("500-foot roadway arc distance changed")
+                    road_z = lambda station: b*station + c*station*station
+                    eye, target = road_z(observer)+1.4, road_z(x)+1.4
+                    margin = max(road_z(observer + (x-observer)*j/100) -
+                        (eye + (target-eye)*j/100) for j in range(101))
+                    gaps.append(round(margin, 6))
+                if row["analytic_road_above_ray_m"] != gaps:
                     raise ValueError("Independent analytic ray mismatch")
                 joins += 1
                 if request["requested_motion_phase"] in ("forward_left", "reverse_right", "forward_left_finish"):
                     turn += 1
-                    clear += analytic_gap <= 0
-                    blocked += analytic_gap > 0
+                    clear += all(g is not None and g <= 0 for g in gaps)
+                    blocked += not all(g is not None and g <= 0 for g in gaps)
             if (turn != saved["turn_frames"] or clear != saved["analytic_both_clear_turn_frames"] or
                     blocked != saved["analytic_road_above_ray_turn_frames"]):
                 raise ValueError("Independent saved totals mismatch")

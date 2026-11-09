@@ -7,12 +7,15 @@ from build import CASES, HERE, POLICIES
 CASE = HERE.parents[1]
 FILES = ("assignment-source.json", "case-plan.json", "crest.xodr", "config.json",
          "requested-tracks.jsonl", "build.py", "check.py", "saved.py",
+         "capture.py", "process_original.py", "prove_original_processing.py",
          "measurement-contract.json")
 TEST = '''import tempfile
 import unittest
 from pathlib import Path
 from check import check
 from saved import make_raw, process
+from prove_original_processing import fixture
+from process_original import process as process_capture
 from build import put
 
 class CrestExact(unittest.TestCase):
@@ -33,6 +36,14 @@ class CrestExact(unittest.TestCase):
             row = process(Path.cwd(), raw_path)
             self.assertEqual(row["frames_joined"], 700)
             self.assertFalse(row["delivery_ready"])
+    def test_synthetic_original_shape(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp) / "fixture"
+            review = fixture(Path.cwd(), directory)
+            row = process_capture(Path.cwd(), directory, review, synthetic_fixture=True)
+            self.assertEqual(row["frames_joined"], 700)
+            self.assertFalse(row["original_native_observed"])
+            self.assertFalse(row["delivery_ready"])
 '''
 
 
@@ -51,7 +62,7 @@ def build():
             files.append({"path": "tests/test_exact.py", "content": TEST})
             construction = {"case_id": CASE.name + "__" + suffix, "cell_id": "C104496",
                             "law_id": "NRS-484B-407", "actor": "motor_vehicle_driver",
-                            "entrypoint": "check.py", "files": files,
+                            "entrypoint": "capture.py", "files": files,
                             "status": "unselected_cpu_diagnostic",
                             "recording_description": "Authored grade crest and three-point request; original 500-foot body rays and human visibility unverified."}
             path = HERE / "runtime-drafts" / suffix / candidate / "construction.json"
