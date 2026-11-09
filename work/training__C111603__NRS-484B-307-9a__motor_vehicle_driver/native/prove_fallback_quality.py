@@ -17,14 +17,14 @@ def prove():
                                         "fallback3": False}
         assert measured["fallback1"]["approach_speed_mps"] < 7
         assert measured["fallback2"]["camera_policy"] == "elevated_overview"
-        assert measured["fallback3"]["signal_to_entry_window_s"] > baseline["metrics"]["signal_to_entry_window_s"]
+        assert measured["fallback3"]["yield_hold_to_entry_window_s"] > baseline["metrics"]["yield_hold_to_entry_window_s"]
         cases = [
             ("fallback1", {**measured["primary"], "approach_speed_mps": 8.0},
              {**measured["primary"], "approach_speed_mps": 5.0}),
             ("fallback2", {**measured["primary"], "signal_and_other_visible_fraction": .8},
              {**measured["primary"], "signal_and_other_visible_fraction": .95}),
-            ("fallback3", {**measured["primary"], "signal_to_entry_window_s": 2.5},
-             {**measured["primary"], "signal_to_entry_window_s": 4.5})]
+            ("fallback3", {**measured["primary"], "yield_hold_to_entry_window_s": 2.5},
+             {**measured["primary"], "yield_hold_to_entry_window_s": 4.5})]
         for candidate, on, off in cases:
             on_decision = decide(on, allow_synthetic=True)
             off_decision = decide(off, allow_synthetic=True)

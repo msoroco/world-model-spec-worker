@@ -11,8 +11,8 @@ native = root / "work" / "training__C111603__NRS-484B-307-9a__motor_vehicle_driv
 sys.path.insert(0, str(native))
 from build import check
 from saved import fixture, process
-from prove_original_processing import prove
-from fallback_quality import request_measurements, decide
+from prove_original_processing import prove, fixture as original_fixture
+from fallback_quality import request_measurements, decide, from_capture
 
 class ArrowRequest(unittest.TestCase):
     def setUp(self):
@@ -52,6 +52,21 @@ class ArrowRequest(unittest.TestCase):
             self.assertFalse(decision["original_native_observed"])
         with self.assertRaises(ValueError):
             decide(measured)
+
+    def test_capture_bound_quality_shape(self):
+        with tempfile.TemporaryDirectory() as name:
+            directory = Path(name)
+            review = original_fixture(self.bundle, directory)
+            value = json.loads(review.read_text())
+            value["quality_signal_other_visible_frames"] = list(range(480))
+            review.write_text(json.dumps(value))
+            if "fallback2" == "primary":
+                result = from_capture(self.bundle, directory, review, synthetic_fixture=True)
+                self.assertTrue(result["triggers"]["fallback1"])
+                self.assertFalse(result["original_native_observed"])
+            else:
+                with self.assertRaises(ValueError):
+                    from_capture(self.bundle, directory, review, synthetic_fixture=True)
 
     def test_rehashed_signal_mutation_rejected(self):
         with tempfile.TemporaryDirectory() as name:

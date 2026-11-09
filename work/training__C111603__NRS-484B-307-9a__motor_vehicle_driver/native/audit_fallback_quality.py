@@ -25,7 +25,7 @@ def audit():
             window = round((movement[0]["frame"] - hold[0]["frame"]) / 20, 4)
             cfg = json.loads((bundle / "config.json").read_text())
             if (len(rows) != 480 or saved["approach_speed_mps"] != speed or
-                    saved["signal_to_entry_window_s"] != window or
+                    saved["yield_hold_to_entry_window_s"] != window or
                     saved["camera_policy"] != cfg["camera_policy"] or
                     saved["original_native_observed"] is not False):
                 raise ValueError("Fallback measurement differs from request rows")
@@ -34,7 +34,7 @@ def audit():
             raise ValueError("Slower approach contrast missing")
         if measured["fallback2"]["camera_policy"] != "elevated_overview":
             raise ValueError("Overview contrast missing")
-        if measured["fallback3"]["signal_to_entry_window_s"] <= measured["primary"]["signal_to_entry_window_s"]:
+        if measured["fallback3"]["yield_hold_to_entry_window_s"] <= measured["primary"]["yield_hold_to_entry_window_s"]:
             raise ValueError("Longer signal window contrast missing")
     result = {"format": "c111603-3079a-fallback-quality-audit-v1",
               "measured_candidates": checked, "controlled_cases": len(proof["records"]),

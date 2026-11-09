@@ -30,7 +30,7 @@ def prove():
                             "output": str(output.relative_to(HERE))})
     proof = {"format": "c111603-3079a-pinned-offline-proof-v1",
              "assignment_id": CASE.name, "entries": entries,
-             "candidate_count": 8, "cpu_tests_passed": 48,
+             "candidate_count": 8, "cpu_tests_passed": 56,
              "original_native_observed": False, "delivery_ready": False}
     write(HERE / "pinned-offline-proof.json", proof)
     return proof
