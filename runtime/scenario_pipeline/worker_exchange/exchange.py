@@ -322,12 +322,30 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
                                     'cell': row['cell_id'], 'recording_ids': row.get('recording_ids', []),
                                     'coverage_status': row['coverage_status']}})
                     continue
-                if not row.get('source') or 'source_index' not in row:
+                if not row.get('source'):
                     raise ValueError('Assignment lacks exact witness provenance')
                 src = within(root, row['source'])
                 if sha(src) != row['source_sha256']:
                     raise ValueError('Witness source changed')
                 data = read(src)
+                if 'source_index' not in row:
+                    # Some reviewed split decisions are one JSON object rather
+                    # than an indexed witness list. Bind the exact reviewed
+                    # cell and conditional verdict before exporting it.
+                    cell_key = 'training_cell' if task['role'] == 'training' else 'testing_cell'
+                    if (not isinstance(data, dict) or
+                            data.get('law_id') != task['law_id'] or
+                            data.get('actor') != task['actor'] or
+                            data.get(cell_key) != task['cell_id'] or
+                            data.get('branch') != row.get('branch') or
+                            data.get('verdict') != row.get('relevance_review') or
+                            data.get('physical_feasibility') != row.get('physical_feasibility')):
+                        raise ValueError('Direct review identity/status mismatch')
+                    witnesses.append({'source': row['source'],
+                                      'source_sha256': row['source_sha256'],
+                                      'provenance_status': 'verified_direct_review',
+                                      'witness': data})
+                    continue
                 if isinstance(data, dict):
                     data = data.get('witnesses', data.get('coverage_witnesses', data.get('laws')))
                 if not isinstance(data, list):
