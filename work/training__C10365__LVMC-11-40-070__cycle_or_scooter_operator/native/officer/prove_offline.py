@@ -48,7 +48,7 @@ def prove():
               "positive_count": len(positives), "negative_count": len(negatives),
               "positives": positives, "negatives": negatives,
               "original_native_observed": False, "delivery_ready": False}
-    (HERE / "offline-proof.json").write_text(json.dumps(result, indent=2) + "\n")
+    (HERE / "request-proof.json").write_text(json.dumps(result, indent=2) + "\n")
     return result
 
 

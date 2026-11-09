@@ -22,14 +22,23 @@ def fixture(bundle, target):
         raw.append({
             "frame": i, "native_frame": i + 1000, "time_s": (i + 1) / 20,
             "source_kind": "synthetic_fixture", "officer_cue_requested": cfg["officer_cue_requested"],
+            "requested_rider_x_m": request["requested_rider_x_m"],
+            "requested_speed_mps": request["requested_speed_mps"],
             "observed_road_id": 365, "observed_lane_id": -1,
             "rider": {"actor_id": 17, "blueprint": cfg["rider_blueprint"],
-                      "center_native_xyz_m": [x, -1.75, 1.0], "speed_mps": speed,
+                      "center_native_xyz_m": [x, -1.75, 1.0],
+                      "velocity_native_xyz_mps": [speed, 0, 0],
+                      "speed_mps": speed,
                       "body_native_xyz_m": [[x + dx, -1.75 + dy, 1.0]
-                                             for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))]},
+                                             for dx in (-1, 1) for dy in (-.5, .5)
+                                             for _ in (0, 1)]},
             "officer_actor": {
                 "actor_id": 23, "blueprint": "walker.pedestrian.0001",
-                "center_native_xyz_m": [officer_x, officer_y, 1.0]},
+                "center_native_xyz_m": [officer_x, officer_y, 1.0],
+                "velocity_native_xyz_mps": [0, 0, 0], "speed_mps": 0,
+                "body_native_xyz_m": [[officer_x + dx, officer_y + dy, 1.0]
+                                      for dx in (-.3, .3) for dy in (-.3, .3)
+                                      for _ in (0, 1)]},
         })
         video.append({"video_frame": i, "native_frame": i + 1000, "time_s": (i + 1) / 20})
     review = {
@@ -38,6 +47,8 @@ def fixture(bundle, target):
         "device_id": "3651", "device_applicable": True, "rider_class": "bicycle",
         "officer_actor_id": 23,
         "officer_direction": "none_contrary" if cfg["case_id"].endswith("probe_a") else "proceed",
+        "direction_start_frame": None if cfg["case_id"].endswith("probe_a") else 100,
+        "direction_end_frame": None if cfg["case_id"].endswith("probe_a") else 150,
         "officer_authority_reviewed": cfg["case_id"].endswith("probe_b"),
         "direction_visible": cfg["case_id"].endswith("probe_b"),
         "officer_cue_visibility": .97,
@@ -83,6 +94,41 @@ def prove():
                     else:
                         raise AssertionError(f"{suffix}/{candidate}/{name} accepted")
                     path.write_text({raw: base_raw, video: base_video, review: base_review}[path])
+                raw.write_text(base_raw.replace('"source_kind": "synthetic_fixture"',
+                                                '"source_kind": "original_native"'))
+                review.write_text(base_review.replace('"source_kind": "synthetic_fixture"',
+                                                      '"source_kind": "original_native_review"'))
+                try:
+                    process(bundle, raw, video, review, synthetic=False)
+                except ValueError as exc:
+                    if "Original FFV1 camera missing" not in str(exc):
+                        raise
+                    negatives.append({"case": suffix, "candidate": candidate,
+                                      "mutation": "missing_original_media", "rejected": str(exc)})
+                else:
+                    raise AssertionError(f"{suffix}/{candidate}/missing_original_media accepted")
+                review.write_text(base_review)
+                structured = (
+                    ("rider_velocity", lambda rows: rows[0]["rider"].update(
+                        velocity_native_xyz_mps=[0, 0, 0])),
+                    ("officer_body", lambda rows: rows[0]["officer_actor"].update(
+                        body_native_xyz_m=[])),
+                    ("rider_displacement", lambda rows: rows[1]["rider"][
+                        "center_native_xyz_m"].__setitem__(0, 99.0)),
+                    ("source_time", lambda rows: rows[0].update(time_s=.4)),
+                    ("requested_source", lambda rows: rows[0].update(requested_speed_mps=99)),
+                )
+                for name, mutate in structured:
+                    rows = [json.loads(line) for line in base_raw.splitlines()]
+                    mutate(rows)
+                    write_rows(raw, rows)
+                    try:
+                        process(bundle, raw, video, review, synthetic=True)
+                    except (ValueError, KeyError) as exc:
+                        negatives.append({"case": suffix, "candidate": candidate,
+                                          "mutation": name, "rejected": str(exc)})
+                    else:
+                        raise AssertionError(f"{suffix}/{candidate}/{name} accepted")
     result = {"format": "c10365-synthetic-saved-proof-v1",
               "positive_count": len(positives), "negative_count": len(negatives),
               "positives": positives, "negatives": negatives,

@@ -18,11 +18,11 @@ def audit():
     assignment = ROOT / "inputs" / CASE.name / "assignment.json"
     plan = json.loads((CASE / "case-plan.json").read_text())
     manifest = json.loads((HERE / "manifest.json").read_text())
-    offline = json.loads((HERE / "offline-proof.json").read_text())
+    offline = json.loads((HERE / "request-proof.json").read_text())
     saved = json.loads((HERE / "saved-proof.json").read_text())
     if sha(assignment) != ASSIGNMENT_SHA or len(manifest["entries"]) != 8 or \
             offline["positive_count"] != 8 or offline["negative_count"] != 32 or \
-            saved["positive_count"] != 8 or saved["negative_count"] != 48:
+            saved["positive_count"] != 8 or saved["negative_count"] != 96:
         raise ValueError("Source or proof inventory differs")
     if plan["cases"][1]["target_type"] != "officer_exception_attempt":
         raise ValueError("Police exception falsely labeled as a violation")
@@ -59,11 +59,10 @@ def audit():
             raise ValueError("Baseline unexpectedly triggers a fallback")
         rows = read_rows(raw)
         for row in rows:
-            if row["rider"]["speed_mps"] == 0:
-                dx = 3.5
-                row["rider"]["center_native_xyz_m"][0] += dx
-                for vertex in row["rider"]["body_native_xyz_m"]:
-                    vertex[0] += dx
+            dx = 3.5
+            row["rider"]["center_native_xyz_m"][0] += dx
+            for vertex in row["rider"]["body_native_xyz_m"]:
+                vertex[0] += dx
         raw.write_text("".join(json.dumps(row) + "\n" for row in rows))
         from_margin = process(HERE / "drafts" / "probe_a" / "primary",
                               raw, video, review, synthetic=True)
@@ -71,10 +70,9 @@ def audit():
                 "fallback1": True, "fallback2": False, "fallback3": False}:
             raise ValueError("Measured stop-margin fallback trigger")
         for row in rows:
-            if row["rider"]["speed_mps"] == 0:
-                row["rider"]["center_native_xyz_m"][0] -= 3.5
-                for vertex in row["rider"]["body_native_xyz_m"]:
-                    vertex[0] -= 3.5
+            row["rider"]["center_native_xyz_m"][0] -= 3.5
+            for vertex in row["rider"]["body_native_xyz_m"]:
+                vertex[0] -= 3.5
         raw.write_text("".join(json.dumps(row) + "\n" for row in rows))
         visual = json.loads(review.read_text())
         visual["officer_cue_visibility"] = .8
@@ -85,12 +83,26 @@ def audit():
                 "fallback1": False, "fallback2": True, "fallback3": False}:
             raise ValueError("Measured visibility fallback trigger")
         raw3, video3, review3 = fixture(
-            HERE / "drafts" / "probe_a" / "fallback3", Path(tmp))
-        from_separation = process(HERE / "drafts" / "probe_a" / "fallback3",
+            HERE / "drafts" / "probe_a" / "primary", Path(tmp))
+        close_rows = read_rows(raw3)
+        for row in close_rows:
+            row["officer_actor"]["center_native_xyz_m"][1] = -5.0
+            for vertex in row["officer_actor"]["body_native_xyz_m"]:
+                vertex[1] += 3.0
+        raw3.write_text("".join(json.dumps(row) + "\n" for row in close_rows))
+        from_separation = process(HERE / "drafts" / "probe_a" / "primary",
                                   raw3, video3, review3, synthetic=True)
         if from_separation["fallback_triggers"] != {
                 "fallback1": False, "fallback2": False, "fallback3": True}:
             raise ValueError("Measured separation fallback trigger")
+        far_raw, far_video, far_review = fixture(
+            HERE / "drafts" / "probe_a" / "fallback3", Path(tmp))
+        mitigated_separation = process(HERE / "drafts" / "probe_a" / "fallback3",
+                                       far_raw, far_video, far_review, synthetic=True)
+        if (mitigated_separation["fallback_triggers"]["fallback3"] or
+                mitigated_separation["min_officer_rider_separation_m"] <=
+                baseline["min_officer_rider_separation_m"]):
+            raise ValueError("Fallback3 did not improve measured officer separation")
     result = {
         "format": "c10365-independent-cpu-audit-v1",
         "assignment_sha256": sha(assignment), "checked_candidates": len(checked),
@@ -102,7 +114,10 @@ def audit():
             "visibility": {"visibility": from_visibility["officer_cue_visibility"],
                            "trigger": from_visibility["fallback_triggers"]},
             "separation": {"distance_m": from_separation["min_officer_rider_separation_m"],
-                           "trigger": from_separation["fallback_triggers"]}},
+                           "trigger": from_separation["fallback_triggers"]},
+            "fallback3_mitigation": {
+                "distance_m": mitigated_separation["min_officer_rider_separation_m"],
+                "trigger": mitigated_separation["fallback_triggers"]}},
         "original_native_observed": False, "delivery_ready": False,
     }
     (HERE / "independent-audit.json").write_text(json.dumps(result, indent=2) + "\n")

@@ -15,7 +15,7 @@ POLICIES = {
     "primary": {"speed": 4.0, "view": "standard", "officer_x": 39.0, "officer_y": -8.0},
     "fallback1": {"speed": 2.5, "view": "standard", "officer_x": 39.0, "officer_y": -8.0},
     "fallback2": {"speed": 4.0, "view": "elevated", "officer_x": 39.0, "officer_y": -8.0},
-    "fallback3": {"speed": 4.0, "view": "standard", "officer_x": 35.0, "officer_y": -5.0},
+    "fallback3": {"speed": 4.0, "view": "standard", "officer_x": 35.0, "officer_y": -10.0},
 }
 CASES = {"probe_a": "no_contrary_direction", "probe_b": "proceed_request"}
 
