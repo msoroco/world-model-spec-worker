@@ -4,51 +4,48 @@
   "cell_id": "C215286",
   "actor": "motor_vehicle_driver",
   "role": "testing",
-  "branch": "on or over a crosswalk",
-  "witness": {
-    "actor": "motor_vehicle_driver",
-    "branch": "on or over a crosswalk",
-    "cell": "C215286",
-    "confidence": "low",
-    "covers": [
-      "NRS-484B-113-2"
-    ],
-    "decision": "conditional",
-    "quote": "Shall not back into an intersection, on or over a crosswalk, or around a street corner.",
-    "reason": "A residence-district crosswalk can be traversed by the fixed reverse task.",
-    "relevance_type": "specific_match",
-    "required_context": [
-      "Establish eligible vehicle classification and driver attribution.",
-      "Establish the residence-district setting, highway boundaries, and distinctly marked pedestrian crossing.",
-      "Highway boundaries and a distinctly marked pedestrian crossing.",
-      "Residence-district setting and qualifying motor vehicle with identified driver.",
-      "Retain time-aligned vehicle extent, motion, and crosswalk geometry without selecting a legal boundary-contact rule.",
-      "Specify physically supported backing on or over the crosswalk.",
-      "Supported backing route on or over the crosswalk.",
-      "Time-aligned vehicle footprint, motion and crosswalk geometry."
-    ],
-    "subject_reason": "The selected driver is in actual physical control of the vehicle being backed.",
-    "targeted_requirements": [],
-    "audit_status": "accepted",
-    "audit_receipt": "2b520b324a7a7853cc7317cfab89d8fd588f264532d904fb5ae64f5b89acd6f2",
-    "source_assignment_hash": "e55dd01f0063e63b4ab984ac4cd8266a4a54c62130fc1d11a2c9123928ab4dbd",
-    "law": "NRS-484B-113-2",
-    "splits": [
-      "training",
-      "testing",
-      "heldout"
-    ],
-    "readiness_score": 0,
-    "receipt": "95a0811eb7bfabe561c79f5d91d90a344d95d8f6beccd4fab773b05aad42c3fd",
-    "evidence_readiness": "unverified_proposal",
-    "split": "testing",
-    "requirement": "NRS-484B-113-2"
+  "set_ids": [
+    "demo-test"
+  ],
+  "branches": [
+    {
+      "law_id": "NRS-484B-113-2",
+      "cell_id": "C215286",
+      "actor": "motor_vehicle_driver",
+      "requirement": "NRS-484B-113-2",
+      "branch": "on or over a crosswalk",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 328,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "coverage_status": "pending_review",
+      "recording_ids": [],
+      "law_partition": "training",
+      "scenario_partition": "testing"
+    }
+  ],
+  "law_record_source": {
+    "path": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/inputs/catalog/vocabulary_catalog.json",
+    "sha256": "3065b94298c33a344da5b4fa78dbf2dd1bdd7a2c286d7bbd8b269b74a0eaece9"
   },
-  "law": {
-    "id": "NRS-484B-113-2",
-    "title": "Limitations on backing (2)",
-    "text": "The driver of a vehicle: Shall not back into an intersection, on or over a crosswalk, or around a street corner.",
-    "source": "NRS 484B.113(2)"
+  "objective": "Prepare complete CPU delivery simulations and branch coverage for NRS-484B-113-2 at C215286.",
+  "remaining_requirement": "Preserve accepted evidence and cover uncovered requirements; test all selected branches and comparisons.",
+  "dependency_review": "Read exact frozen law, witness, catalog cell and scope. Identify unavailable Native facts without inventing them.",
+  "external_imports": [
+    "carla"
+  ],
+  "local_snapshot": {
+    "scope_hashes": {
+      "demo-test": "fb28097eec8a56c0b0726e765f2716ffacc6de8175ba0158b272e142d67782de",
+      "full-test": "fe28b7b8e40c30d7984949ad15fe42c497852e16e1063cafb318975614b06218"
+    },
+    "memberships": {
+      "demo-test": [],
+      "full-test": []
+    },
+    "guidance": {},
+    "law_sha256": "3b2a2e59cfaa35b3439bbcc7df6020ade2a3e118f93708c926cb7376bdff5cbd",
+    "cell_sha256": "59ac9d4335459ad073ce5f5055293307281a75f2750e54c57357fe59f518fa79",
+    "law_policy_sha256": "77d7da97a21300aff4fc6560b6ea06defe41b5c9d4c4f5567f77571c94d9e5f6"
   },
   "cell": {
     "cell_id": "C215286",
@@ -92,7 +89,12 @@
       ]
     }
   },
-  "existing_evidence": [],
+  "law": {
+    "id": "NRS-484B-113-2",
+    "title": "Limitations on backing (2)",
+    "text": "The driver of a vehicle: Shall not back into an intersection, on or over a crosswalk, or around a street corner.",
+    "source": "NRS 484B.113(2)"
+  },
   "summary": {
     "activation_conditions": [
       "the subject is backing"
@@ -111,23 +113,17 @@
       },
       {
         "kind": "continuous",
-        "requirement": "backing and the region overlap must be simultaneous \u2014 reversing before the crosswalk and then driving forward through it is not this offence"
+        "requirement": "backing and the region overlap must be simultaneous — reversing before the crosswalk and then driving forward through it is not this offence"
       }
     ],
     "title": "Limitations on backing (2)"
   },
-  "template_provenance": "derive_fresh_from_exact_law_and_summary_using_supplied_contract",
-  "templates": [],
-  "external_imports": [
-    "carla",
-    "numpy",
-    "PIL",
-    "shapely",
-    "networkx",
-    "tqdm",
-    "matplotlib",
-    "pydot"
+  "summary_status": "provided_planning_context_full_text_remains_authoritative",
+  "selection_targets": [
+    "demo-test",
+    "full-test"
   ],
+  "observation_terms_contract": "Summary required_observations are law-planning terms, not Core IDs. Map every term to measured evidence; put only supported pinned ontology IDs in config.required_atoms.",
   "source_observation_terms": [
     {
       "term": "drv.backing",
@@ -147,26 +143,11 @@
     },
     {
       "term": "drv.turning",
-      "note": "'around a street corner' \u2014 a heading change while reversing"
+      "note": "'around a street corner' — a heading change while reversing"
     },
     {
       "term": "kin.heading",
       "note": "the heading change during the reverse movement"
     }
-  ],
-  "observation_terms_contract": "Source observation terms are law-planning requirements, not Core IDs. Map each to evidence and use only supported pinned ontology IDs in config.required_atoms.",
-  "local_snapshot": {
-    "scope_hashes": {
-      "demo-test": "c48496f07e3aa8d4ebde1c178712e9dca917bc5e3b9e45b076432cbe30a80ec6",
-      "full-test": "28ca803371eafe309465a39c13b162d0a3fa0a15773c8d23e1d2f7d132c3c52a"
-    },
-    "memberships": {
-      "demo-test": [],
-      "full-test": []
-    },
-    "guidance": {},
-    "law_sha256": "3b2a2e59cfaa35b3439bbcc7df6020ade2a3e118f93708c926cb7376bdff5cbd",
-    "cell_sha256": "59ac9d4335459ad073ce5f5055293307281a75f2750e54c57357fe59f518fa79",
-    "law_policy_sha256": "77d7da97a21300aff4fc6560b6ea06defe41b5c9d4c4f5567f77571c94d9e5f6"
-  }
+  ]
 }

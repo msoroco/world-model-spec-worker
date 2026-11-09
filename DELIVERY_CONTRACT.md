@@ -1,112 +1,63 @@
-# Complete delivery preparation (update 013)
+# Exact-case delivery handoff
 
-Prepare the selected cases for canonical delivery, not research-only capability.
-The worker supplies constructions, fallback candidates, commands and CPU proofs.
-It never accesses CARLA, NERSC or campaign SQLite.
+Preparation proves software readiness. Local execution, independent audits, and
+canonical acceptance remain separate. Never infer physical success from fixtures,
+expected labels, or successful process exit.
 
-## Required return
+Each selected case has kind `delivery`, executable measurement/finalization code,
+its exact construction hash, a measurement contract, explicit diagnostic sources,
+and offline and positive/negative compatibility receipts. Include the canonical
+semantic proposals and `proposals/semantic-index.json`; preserve source quotes,
+assignment identities, recording requirements, and comparison differences.
 
-Keep the reviewed assignment identities, branches, comparisons, and explicit
-recording reuses. Every selected `execution-manifest.json` case has
-`"kind":"delivery"`; every ready `result.json` has
-`"readiness_kind":"delivery_prepared"` and
-`first_gpu_delivery_command`. Do not use capability labels in selected cases or
-the GPU handoff. Failed diagnostic fixture runs are test evidence, not selected
-recordings.
+Every execution-manifest case includes `delivery_acceptance` with its `case_id`,
+exact target `sets`, and checks `native_source`, `all_participants`, `time_join`,
+`full_video_decode`, `actual_pixels`, and `physical_completion`. Bind the independent
+audit script (`script`, `script_sha256`), exact-case positive `command`, passing
+`test_exit_code`, `test_log`, `test_log_sha256`, and negative `negative_command`,
+nonzero `negative_exit_code`, `negative_expected_error`, `negative_log`, and
+`negative_log_sha256`. The negative log must contain the declared rejection.
 
-For every assignment, add `proposals/semantic-index.json`:
+Return `work/_shared/gpu-queue.json` with format `worker-ordered-gpu-queue`.
+List every exact case once in consecutive `order`, with `assignment_id`, `case_id`,
+`capture_command`, `postprocessing_command`, `owner_release_command`, and
+`additional_source_audit_command`. Canonical local dispatch additionally requires
+`prepare_command`, `execute_command`, and `accept_command`, using the corresponding
+prepare-delivery, execute-delivery, and accept-delivery local commands. Include
+`candidate_commands` keyed by each fallback ID, each preparing that exact candidate.
+Do not launch these GPU commands in the worker.
 
-```json
-{
-  "format": "worker-semantic-delivery-v1",
-  "assignment_id": "EXACT_ASSIGNMENT_ID",
-  "stages": {
-    "relevance_batch": {"path": "proposals/relevance_batch.json", "sha256": "SHA256"},
-    "relevance": {"path": "proposals/relevance.json", "sha256": "SHA256"},
-    "template": {"path": "proposals/template.json", "sha256": "SHA256"},
-    "judgment_observables": [{"path": "proposals/judgment-0.json", "sha256": "SHA256"}],
-    "bindings": {"path": "proposals/bindings.json", "sha256": "SHA256"},
-    "cases": {"path": "proposals/cases.json", "sha256": "SHA256"}
-  }
-}
-```
+Include one `comparison_audit_commands` entry per comparison with its assignment,
+comparison ID, and independent audit command. Test what stayed fixed as well as
+the declared measurement differences. Saved processing starts only after Native
+exit and owner release and must produce actionable failure feedback.
 
-Use an empty judgment-observables list only when the template has no judgment
-phrases. The shared `semantic_delivery.validate` runs the actual stage
-validators against the exported law/cell input. It requires an exact-law
-relevance decision, a complete template and active binding, a neutral baseline
-definition, and full canonical case metadata. The baseline is not a selected
-capture. Nonbaseline case IDs and recording descriptions must equal the
-execution manifest. A prior `proposals/cases.json` that only passes the older
-worker shape check is insufficient.
+For canonical dispatch, return one batch-level
+`work/_shared/local-integration-proof.json` with format
+`worker-local-integration-proof`, `passed: true`, a passing `exit_code`, command,
+and hashed log. Cover `primary_job`, `fallback_job`, `saved_processing`,
+`rejected_audit`, and acceptance into the exact target sets (`accepted_targets`,
+or `accepted_both_sets` for the paired demo-test/full-test delivery).
 
-For each selected manifest entry, add `delivery_acceptance`. Its `script` is a
-worker-authored, CPU-tested saved-evidence audit, with positive and negative
-fixture logs. The script writes `worker-delivery-audit-v1` JSON for the exact case, job,
-attempt and canonical recording. Required entry fields:
+Run `worker_check.py --complete --require-delivery-ready`. Ready means CPU-prepared;
+physical realization, complete evidence, and local canonical acceptance remain
+unconfirmed until the authorized original recording is independently reviewed.
 
-```json
-{
-  "case_id": "EXACT_CASE_ID",
-  "sets": ["demo-test", "full-test"],
-  "checks": ["native_source", "all_participants", "time_join",
-             "full_video_decode", "actual_pixels", "physical_completion"],
-  "script": "delivery_audit.py",
-  "script_sha256": "SHA256",
-  "command": "python3.11 delivery_audit.py --case EXACT_CASE_ID ...",
-  "test_log": "receipts/delivery-positive.log",
-  "test_log_sha256": "SHA256",
-  "test_exit_code": 0,
-  "negative_command": "python3.11 delivery_audit.py --case EXACT_CASE_ID ...",
-  "negative_log": "receipts/delivery-negative.log",
-  "negative_log_sha256": "SHA256",
-  "negative_exit_code": 1,
-  "negative_expected_error": "specific rejected defect"
-}
-```
+## Source-bound acceptance audit
 
-The actual audit JSON must contain `format`, `passed`, `case_id`, `job_id`,
-`attempt`, `recording_id`, `frames`, `source_result_sha256`, relative `video`
-and `trace` paths, their SHA-256 values, and a `checks` object with all six
-named checks true. It must fail when original evidence, timestamps, required
-participants, complete decoding, relevant visible pixels, or physical outcome
-fails. A positive CPU fixture proves code behavior only. Include at least one negative fixture that
-actually exercises each independent audit implementation across the return.
+The saved independent audit uses format `worker-delivery-audit` and binds the
+exact case, job, attempt, recording ID, sealed Native result hash, frame count,
+video/trace references and hashes, and the required checks. Include
+`auditor_path` and `auditor_sha256`, plus `source_decode_receipt_path`,
+`source_decode_receipt_sha256`, and `source_decode_auditor_sha256`. The auditor
+must be named `delivery_audit.py`; it and its decode receipt live under the
+batch's local `state/operations/worker_exchange/` directory. Acceptance verifies
+the receipt against the promoted video bytes, complete frame count, original
+frame map, and current media auditor. It rejects missing or stale bindings
+instead of falling back to a legacy audit path or decoding unchanged footage
+again. Software fixtures cannot establish physical acceptance.
 
-The ordered `work/_shared/gpu-queue.json` must contain every selected case
-once and every comparison audit once. Preserve exact IDs, participant histories,
-duration, evidence channels, and same-cell comparison controls. The queue is
-the declared execution order, not a record of completed recordings. Declare
-both test-set targets for each case and hash-bind explicit reference reuse;
-recording IDs are not known during CPU preparation.
-
-Update 008 requires each queue row to include `prepare_command`,
-`execute_command`, `accept_command`, and `candidate_commands` keyed by every
-declared fallback. Preparation selects one exact case and candidate, freezing
-a separate run and input revision. Execution selects only its returned
-job ID. Acceptance requires a completed canonical attempt and independent
-saved audit; a portable `.runtime-work/` capture is not canonical evidence.
-Commands use variables
-for database, host, port, Native Python, job ID and attempt number. The worker
-must not assume NERSC paths or invent job IDs.
-
-Write `work/_shared/local-integration-proof.json` with format
-`worker-local-integration-proof-v1`, `passed: true`, a tested `command`,
-`exit_code: 0`, `log`, `log_sha256`, and `scenarios` containing `primary_job`,
-`fallback_job`, `saved_processing`, `rejected_audit`, and
-`accepted_both_sets`. Its synthetic local fixture must show one accepted
-recording ID in both test selections and no membership from a failed audit.
-This is a software integration proof.
-
-The integration proof must exercise a repeat import from the `local_checkout`
-path in the import receipt. That imported layout is independent of `.git` and
-the remote worker repository.
-
-## Completion gate
-
-Run `python3.11 worker_check.py --complete --require-delivery-ready` after the
-full runtime selftest, exact offline checks, compatibility recipes, fallback
-proofs and saved-audit fixture tests. Return only when all assignments are
-delivery prepared. Report only worker-owned CPU results and blockers. Record
-unverified physical assumptions in the required package fields without
-describing another agent's tasks.
+A CPU fixture tests the physical-completion and lifecycle checkers, not realized
+CARLA motion. Partial/blocked packages may checkpoint missing proofs and must
+state the exact gaps. Existing-evidence-only dispositions follow the coverage
+contract and add no GPU job. Every ready executable case retains all proofs.

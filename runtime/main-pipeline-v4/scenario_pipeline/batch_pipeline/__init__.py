@@ -1,1 +1,0 @@
-"""Autonomous, local scenario pipeline."""
