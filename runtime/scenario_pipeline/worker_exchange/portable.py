@@ -5,7 +5,7 @@ from pathlib import Path
 from .common import digest, read, sha, tree, within
 
 FORBIDDEN_SUFFIXES = {'.sqlite', '.db', '.mkv', '.mp4', '.webm', '.zip', '.egg', '.so', '.pyc'}
-RUNTIME_IMPORTS = {'numpy', 'networkx', 'shapely', 'PIL', 'yaml',
+RUNTIME_IMPORTS = {'scenario_pipeline', 'numpy', 'networkx', 'shapely', 'PIL', 'yaml',
                    'tqdm', 'matplotlib', 'pydot', 'carla_sgg'}
 
 

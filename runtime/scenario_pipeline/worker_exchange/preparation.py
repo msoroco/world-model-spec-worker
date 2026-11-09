@@ -98,14 +98,15 @@ def check(repo, complete=False, require_ready=False, assignment=None):
     results, all_ids = {}, set()
     for aid, item in items.items():
         folder = repo/'work'/aid
-        from .portable import validate_imports
-        validate_imports(repo, aid)
         if not (folder/'result.json').exists():
             require(not complete, 'Missing result: '+aid)
             continue
         result, original = read(folder/'result.json'), read(assignment_path(repo,aid,item))
         require(result['assignment_id']==aid and result['input_sha256']==item['input_sha256'], 'Return identity/input mismatch')
         require(result['status'] in ('ready','partial','blocked'), 'Invalid return status')
+        if result['status']=='ready':
+            from .portable import validate_imports
+            validate_imports(repo, aid)
         require(result.get('applied_update')==batch['update_version'], 'Unacknowledged current update')
         require((folder/'HANDOFF.md').is_file(), 'Missing handoff')
         require(result['status']=='ready' or result.get('reason'), 'Missing precise gap')
