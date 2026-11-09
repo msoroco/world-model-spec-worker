@@ -7,3 +7,17 @@ The old proofs are historical because the runtime, Core representation and valid
 If a draft fails the new checker, repair that assignment and record the diagnosis in its HANDOFF.md. Keep frozen assignments and partition membership unchanged. Continue independent assignments while a particular one remains blocked.
 
 The prior runtime fixture files removed from the current runtime remain in the parent Git commit. Their exact paths and SHA-256 values are in the migration receipt; no assignment-owned work file other than the 253 result markers changed.
+
+## Runner handoff after the active agent stops
+
+Wait for the current checkpoint timer to finish and confirm `worker/full-train-delivery` still points to `d237df7eddddc779c693533cd0384130867940e9`. Then, in the worker checkout:
+
+```sh
+git fetch origin worker/full-train-delivery worker/full-train-runtime-refresh
+git switch worker/full-train-delivery
+git merge --ff-only origin/worker/full-train-runtime-refresh
+git push origin worker/full-train-delivery
+scripts/run-worker.sh
+```
+
+If the active return head has advanced, do not force-push, reset, or resolve result-file conflicts by discarding work. Keep the checkpoint and have the update branch rebuilt from that head before restarting. Demo-test and held-out use separate checkouts and `scripts/run-worker.sh` on their respective branches.
