@@ -1,0 +1,45 @@
+{
+  "format": "worker-c101303-proof-gaps",
+  "assignment_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver",
+  "missing_sources": [
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "failure": "FileNotFoundError: absent; statutory topic join and full-branch source coverage cannot be proved"
+    },
+    {
+      "path": "inputs/coverage/candidate-cells.json",
+      "failure": "FileNotFoundError: absent; any needed supplemental-cell eligibility cannot be checked"
+    },
+    {
+      "path": "runtime/scenario_pipeline/pipeline.py",
+      "failure": "FileNotFoundError: absent; canonical local prepare/execute/accept delivery cannot run in this worker clone"
+    },
+    {
+      "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/review-context/testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base--ecf51981fe22/video.webm",
+      "failure": "README links this original video, but the review-context export contains only README.md and review.json; original-pixel comparison against prior accepted footage cannot run here"
+    }
+  ],
+  "runtime_failures": [
+    {
+      "path": "/tmp/c101303-py311/bin/lake",
+      "failure": "FileNotFoundError during runtime.py build-decoder; full Core validator and positive converter compatibility unavailable",
+      "command": "python3.11 runtime.py build-decoder --library runtime/library --output .runtime-work/c101303-decoder --lake /tmp/c101303-py311/bin/lake",
+      "exit_code": 1,
+      "log": "decoder-build.log",
+      "log_sha256": "bad497af2bf6ed1db0ef58e989757c7216d5a2cfbe505180b5e60fac13c102cf"
+    }
+  ],
+  "unproven": [
+    "Native crest discovery, motion, all-participant camera visibility and 900-frame duration",
+    "positive case-specific Core conversion, Lean decode and rendered-video processing",
+    "canonical semantic adoption, local integration, original-pixel scene_feature and acceptance into demo-test/full-test",
+    "Physical-preparation three-outcome Native provenance receipt and full saved positive compatibility receipt are absent; worker_check.py stops at missing physical_preparation.receipt"
+  ],
+  "strict_gate": {
+    "command": "python3.11 worker_check.py --complete --require-delivery-ready",
+    "exit_code": 1,
+    "log": "worker-check.log",
+    "log_sha256": "c54474dd804013d94a5fc5d23dff983f617c48532a0aa82d2661dcb70b94b648",
+    "failure": "KeyError: 'receipt' at runtime/scenario_pipeline/worker_exchange/physical_preparation.py:5; no Native-provenance three-outcome physical preparation receipt is claimed"
+  }
+}

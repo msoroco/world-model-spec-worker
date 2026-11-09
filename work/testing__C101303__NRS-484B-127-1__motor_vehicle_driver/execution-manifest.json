@@ -1,0 +1,245 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "325e642c2e2c150ec6d008a0de04fd1f1030b3b12c807c534d558e650237b904",
+  "cases": [
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__crest_follow-0000",
+      "kind": "delivery",
+      "construction": "cases/crest_follow-0000/primary/construction.json",
+      "construction_sha256": "5d7b8cd02701b2b8cf428e33174ff22c23c5f4b5e2a4ed3c540cf91abafc8127",
+      "measurement_contract": "cases/crest_follow-0000/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "env.wet_road": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "ego.body": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "lead.body": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "ego.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "lead.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "following.separation": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "ego.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "lead.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "road.weather": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Steering with a short lookahead can oscillate on the measured hill crest and prevent a completed Native lane transition"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/crest_follow-0000/fallback1/construction.json",
+          "construction_sha256": "483fa150cecb3c4a4b370094d122ccae25933a33487dd82576fdc1674490aee1",
+          "trigger": {
+            "source": "following_samples.jsonl and original camera frames",
+            "metric": "ego lane ID after lane-change request and visible body path",
+            "failure_condition": "No sustained target-lane occupancy or visible steering oscillation before completion"
+          },
+          "changed_knobs": [
+            "controller.lookahead_m: 6.0 to 9.0"
+          ],
+          "offline": {
+            "command": "python3.11 runtime.py offline --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__crest_follow-0000 --output .runtime-work/c101303-v7-crest_follow-0000-fallback1 --python /tmp/c101303-py311/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "cases/crest_follow-0000/fallback1/offline.log",
+            "log_sha256": "a2af97fdea865eb0005905d4c55fc21cdc2c1bf707cb0b3f94aecd731428fda3",
+            "construction_sha256": "483fa150cecb3c4a4b370094d122ccae25933a33487dd82576fdc1674490aee1"
+          }
+        }
+      ],
+      "offline": {
+        "command": "python3.11 runtime.py offline --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__crest_follow-0000 --output .runtime-work/c101303-v7-crest_follow-0000-primary --python /tmp/c101303-py311/bin/python --candidate primary",
+        "exit_code": 0,
+        "log": "cases/crest_follow-0000/primary/offline.log",
+        "log_sha256": "d0de15d1028eb986ae49e1e535471c4ec7c00ddd81f6f34328f5c1b7d17caabc",
+        "construction_sha256": "5d7b8cd02701b2b8cf428e33174ff22c23c5f4b5e2a4ed3c540cf91abafc8127"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 runtime.py process-saved --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__crest_follow-0000 --attempt \"$ATTEMPT\" --output \"$DERIVED\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RECEIPT\"",
+        "feedback_command": "cat \"$DERIVED\"/v0001/feedback.json",
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "300e50716798803bbd780d065c14da1c4aca33a01eaf14250fa0b1e6eacd4019",
+        "test_exit_code": 0,
+        "scope": "missing-source feedback fixture only; successful conversion not established"
+      }
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__crest_follow-0001",
+      "kind": "delivery",
+      "construction": "cases/crest_follow-0001/primary/construction.json",
+      "construction_sha256": "68b7af747a0f751f82bb9219af06d28af7a7d1b5103eb9ce91cfdf29cac20622",
+      "measurement_contract": "cases/crest_follow-0001/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "env.wet_road": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "ego.body": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "lead.body": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "ego.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "lead.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "following.separation": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "ego.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "lead.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        },
+        "road.weather": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture plus original Native actor/body readback",
+          "evidence": "capture/evidence.jsonl and following_samples.jsonl"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Steering with a short lookahead can oscillate on the measured hill crest and prevent a completed Native lane transition"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/crest_follow-0001/fallback1/construction.json",
+          "construction_sha256": "9db613245a8d1e305c428fbe891bfbf22e823796ddbdda81777886244f9d7a5a",
+          "trigger": {
+            "source": "following_samples.jsonl and original camera frames",
+            "metric": "ego lane ID after lane-change request and visible body path",
+            "failure_condition": "No sustained target-lane occupancy or visible steering oscillation before completion"
+          },
+          "changed_knobs": [
+            "controller.lookahead_m: 6.0 to 9.0"
+          ],
+          "offline": {
+            "command": "python3.11 runtime.py offline --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__crest_follow-0001 --output .runtime-work/c101303-v7-crest_follow-0001-fallback1 --python /tmp/c101303-py311/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "cases/crest_follow-0001/fallback1/offline.log",
+            "log_sha256": "e6c74a719aa450e00b719892cee8f97592ac3da6ba74be4e094fd3915833dd92",
+            "construction_sha256": "9db613245a8d1e305c428fbe891bfbf22e823796ddbdda81777886244f9d7a5a"
+          }
+        }
+      ],
+      "offline": {
+        "command": "python3.11 runtime.py offline --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__crest_follow-0001 --output .runtime-work/c101303-v7-crest_follow-0001-primary --python /tmp/c101303-py311/bin/python --candidate primary",
+        "exit_code": 0,
+        "log": "cases/crest_follow-0001/primary/offline.log",
+        "log_sha256": "d0de15d1028eb986ae49e1e535471c4ec7c00ddd81f6f34328f5c1b7d17caabc",
+        "construction_sha256": "68b7af747a0f751f82bb9219af06d28af7a7d1b5103eb9ce91cfdf29cac20622"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 runtime.py process-saved --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__crest_follow-0001 --attempt \"$ATTEMPT\" --output \"$DERIVED\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RECEIPT\"",
+        "feedback_command": "cat \"$DERIVED\"/v0001/feedback.json",
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "300e50716798803bbd780d065c14da1c4aca33a01eaf14250fa0b1e6eacd4019",
+        "test_exit_code": 0,
+        "scope": "missing-source feedback fixture only; successful conversion not established"
+      }
+    }
+  ]
+}
