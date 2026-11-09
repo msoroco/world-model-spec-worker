@@ -60,12 +60,17 @@ def capture(bundle, output, host, port):
         settings.max_substep_delta_time=.01;settings.max_substeps=10
         world.apply_settings(settings);world.set_weather(carla.WeatherParameters.ClearNoon)
         mapping=world.get_map();lane_rows={}
-        for lane,y in ((-1,-1.75),(-2,-5.25)):
-            wp=mapping.get_waypoint(carla.Location(x=50,y=y,z=1),
-                project_to_road=False,lane_type=carla.LaneType.Any)
-            lane_rows[str(lane)]=None if wp is None else {'road_id':wp.road_id,'lane_id':wp.lane_id}
-            if wp is None or wp.road_id!=374 or wp.lane_id!=lane:
-                raise RuntimeError('Generated alley lane differs')
+        for x in (20,50,80):
+            for lane,y in ((-1,-1.75),(-2,-5.25)):
+                wp=mapping.get_waypoint(carla.Location(x=x,y=y,z=1),
+                    project_to_road=False,lane_type=carla.LaneType.Any)
+                expected=(carla.LaneType.Sidewalk if x==50 and lane==-1
+                          else carla.LaneType.Driving)
+                lane_rows[f'{x}:{lane}']=None if wp is None else {
+                    'road_id':wp.road_id,'lane_id':wp.lane_id,
+                    'lane_type':'sidewalk' if wp.lane_type==carla.LaneType.Sidewalk else 'driving'}
+                if wp is None or wp.road_id!=374 or wp.lane_id!=lane or wp.lane_type!=expected:
+                    raise RuntimeError('Generated pedestrian-only zone lane differs')
         lanes_verified=True
         bp=world.get_blueprint_library().find('vehicle.tesla.model3')
         bp.set_attribute('role_name','c10374_ego')

@@ -72,7 +72,9 @@ def prepare(bundle,raw,output,synthetic=False):
             type(mapping.get('native_map_sha256')) is str and
             len(mapping['native_map_sha256'])==64 and
             mapping.get('lane_readback')=={
-                str(lane):{'road_id':374,'lane_id':lane} for lane in (-1,-2)} and
+                f'{x}:{lane}':{'road_id':374,'lane_id':lane,
+                    'lane_type':'sidewalk' if x==50 and lane==-1 else 'driving'}
+                for x in (20,50,80) for lane in (-1,-2)} and
             mapping.get('generated_alley_lanes_verified') is True and
             mapping.get('zone_rectangle_xy_m')==cfg['zone_rectangle_xy_m'] and
             type(mapping.get('ego_actor_id')) is int and

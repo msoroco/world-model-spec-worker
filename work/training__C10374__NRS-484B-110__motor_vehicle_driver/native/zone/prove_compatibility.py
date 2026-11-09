@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import shutil
 import tempfile
+import hashlib
 
 from check import check
 
@@ -30,6 +31,16 @@ def edit_track(path,key,value):
     path.write_text('\n'.join(lines)+'\n')
 
 
+def remove_pedestrian_section(bundle):
+    road=bundle/'alley-zone.xodr'
+    content=road.read_text()
+    changed=content.replace('<lane id="-1" type="sidewalk"',
+                            '<lane id="-1" type="driving"')
+    if changed==content:raise ValueError('missing pedestrian section')
+    road.write_text(changed)
+    edit_json(bundle/'config.json','road_sha256',hashlib.sha256(road.read_bytes()).hexdigest())
+
+
 def prove():
     entries=json.loads((HERE/'offline/manifest.json').read_text())['entries']
     positives=negatives=0
@@ -46,6 +57,7 @@ def prove():
             lambda d:edit_json(d/'config.json','requested_zone_route',not checked['requested_zone_route']),
             lambda d:edit_track(d/'requested-tracks.jsonl','requested_ego_y_m',0),
             lambda d:(d/'alley-zone.xodr').write_text((d/'alley-zone.xodr').read_text().replace('id="374"','id="375"')),
+            remove_pedestrian_section,
         )
         for change in changes:
             if not rejected(bundle,change):raise ValueError('tamper accepted')

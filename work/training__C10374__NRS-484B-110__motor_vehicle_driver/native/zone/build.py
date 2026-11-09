@@ -33,10 +33,18 @@ def put_rows(path, values):
 def road():
     return '''<?xml version="1.0" encoding="UTF-8"?>
 <OpenDRIVE><header revMajor="1" revMinor="4" name="C10374 alley safety zone" version="1.00" date="2026-11-08" north="0" south="-7" east="150" west="0" vendor="worker"/>
-<road name="alley with two parallel travel lines and marked safety zone" length="150" id="374" junction="-1">
+<road name="alley with pedestrian-only safety-zone request" length="150" id="374" junction="-1">
 <type s="0" type="town"><speed max="20" unit="mph"/></type>
 <planView><geometry s="0" x="0" y="0" hdg="0" length="150"><line/></geometry></planView>
 <lanes><laneSection s="0"><center><lane id="0" type="none" level="false"><roadMark sOffset="0" type="solid" color="yellow" width="0.15"/></lane></center><right>
+<lane id="-1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane>
+<lane id="-2" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane>
+</right></laneSection>
+<laneSection s="40"><center><lane id="0" type="none" level="false"><roadMark sOffset="0" type="solid" color="yellow" width="0.15"/></lane></center><right>
+<lane id="-1" type="sidewalk" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.20"/></lane>
+<lane id="-2" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane>
+</right></laneSection>
+<laneSection s="60"><center><lane id="0" type="none" level="false"><roadMark sOffset="0" type="solid" color="yellow" width="0.15"/></lane></center><right>
 <lane id="-1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane>
 <lane id="-2" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane>
 </right></laneSection></lanes><objects/><signals/></road></OpenDRIVE>

@@ -32,7 +32,7 @@ def audit():
         construction['fixture_raw_sha256']!=sha(HERE/'fixture_raw.py') or
         construction['route_fallbacks_sha256']!=sha(HERE/'route_fallbacks.py') or
         copied['construction_sha256']!=sha(HERE/'manifest.json') or
-        proof['positives']!=8 or proof['negatives']!=48 or len(copied['entries'])!=8):
+        proof['positives']!=8 or proof['negatives']!=56 or len(copied['entries'])!=8):
         raise ValueError('construction source/proof')
     by_pair={}
     total=0
@@ -55,10 +55,13 @@ def audit():
         if suffix not in CASES or candidate not in POLICIES or len(track)!=240:
             raise ValueError('case and track count')
         root=ET.parse(bundle/'alley-zone.xodr').getroot()
-        lanes=root.findall('./road/lanes/laneSection/right/lane')
-        if root.find('./road').get('id')!='374' or \
-           [(lane.get('id'),lane.get('type')) for lane in lanes]!=[
-               ('-1','driving'),('-2','driving')]:
+        sections=root.findall('./road/lanes/laneSection')
+        topology=[(section.get('s'),[(lane.get('id'),lane.get('type'))
+                   for lane in section.findall('./right/lane')]) for section in sections]
+        if root.find('./road').get('id')!='374' or topology!=[
+            ('0',[('-1','driving'),('-2','driving')]),
+            ('40',[('-1','sidewalk'),('-2','driving')]),
+            ('60',[('-1','driving'),('-2','driving')])]:
             raise ValueError('Native alley lanes')
         speed,camera,stop=POLICIES[candidate]
         through=suffix==CASES[0]
@@ -83,7 +86,7 @@ def audit():
         raise ValueError('four controlled pairs')
     return {'format':'c10374-safety-zone-independent-package-audit-v1',
             'copied_bundles':8,'controlled_pairs':4,'rows_recomputed':total,
-            'positive':8,'tamper_negative':48,'physical_zone_verified':False,
+            'positive':8,'tamper_negative':56,'physical_zone_verified':False,
             'delivery_ready':False}
 
 

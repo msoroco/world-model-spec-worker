@@ -35,9 +35,13 @@ def check(bundle):
         raise ValueError('copied source hashes')
     root = ET.parse(bundle/'alley-zone.xodr').getroot()
     roads = root.findall('./road')
-    if len(roads) != 1 or roads[0].get('id') != '374' or \
-       [(lane.get('id'), lane.get('type')) for lane in roads[0].findall('./lanes/laneSection/right/lane')] != \
-           [('-1','driving'),('-2','driving')]:
+    sections=roads[0].findall('./lanes/laneSection') if len(roads)==1 else []
+    topology=[(section.get('s'),[(lane.get('id'),lane.get('type'))
+               for lane in section.findall('./right/lane')]) for section in sections]
+    if len(roads) != 1 or roads[0].get('id') != '374' or topology != [
+        ('0',[('-1','driving'),('-2','driving')]),
+        ('40',[('-1','sidewalk'),('-2','driving')]),
+        ('60',[('-1','driving'),('-2','driving')])]:
         raise ValueError('alley lane topology')
     speed,camera,stop = POLICIES[candidate]
     through = suffix == CASES[0]

@@ -27,7 +27,9 @@ def build(bundle,output):
     put(output/'native-map-readback.json',{
         'source_kind':'synthetic_cpu','road_sha256':sha(bundle/'alley-zone.xodr'),
         'native_map_sha256':hashlib.sha256(b'synthetic-c10374-road374').hexdigest(),
-        'lane_readback':{str(lane):{'road_id':374,'lane_id':lane} for lane in (-1,-2)},
+        'lane_readback':{f'{x}:{lane}':{'road_id':374,'lane_id':lane,
+            'lane_type':'sidewalk' if x==50 and lane==-1 else 'driving'}
+            for x in (20,50,80) for lane in (-1,-2)},
         'ego_actor_id':101,'generated_alley_lanes_verified':True,
         'native_zone_delimiters':markers,'zone_rectangle_xy_m':cfg['zone_rectangle_xy_m'],
         'physical_zone_designation_verified':False,'legal_verdict':None})
