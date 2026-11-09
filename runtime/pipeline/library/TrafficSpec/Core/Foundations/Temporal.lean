@@ -66,8 +66,10 @@ def prevAll (first : R) (φ : Array R) : Array R :=
 -- ---------------------------------------------------------------------------------------------
 -- Metric windows: positions per instant (time or path), a length d, per-instant values.
 -- ---------------------------------------------------------------------------------------------
-/-- φ at every observation in the window of length `d` behind each instant. Unknown where the
-    window is not covered, not adequately sampled, or a position inside it is missing. -/
+/-- φ at every observation in the window of length `d` behind each instant. Unknown where a
+    position inside the window is missing; where the window is not covered, false on a false
+    already observed inside it and unknown otherwise; unknown where it is covered but not
+    adequately sampled. -/
 def holdsForAll (pos : Array (Option Q)) (d : Q) (op : String) (missing : UnknownReason) (φ : Array R) : Array R :=
   let wins := Time.backWindows pos d
   let agg := RangeAgg.build φ
@@ -75,7 +77,7 @@ def holdsForAll (pos : Array (Option Q)) (d : Q) (op : String) (missing : Unknow
     match wins[i]! with
     | none => R.u missing
     | some w =>
-      if !w.covered then truncated op
+      if !w.covered then (if (agg.all w.j0 i).v = .f then R.f else truncated op)
       else if !w.adequate then R.u (.samplingGap op)
       else agg.all w.j0 i
 
@@ -229,16 +231,13 @@ def countEdgesAll (op : String) (edge sinceφ : Array R) : Array (Except Unknown
         match edgeVal[nextU[j + 1]!]! with | .error e => .error e | _ => .error (.malformed op)
       else .ok (prefT[i + 1]! - prefT[j + 1]!)
 
-/-- φ true here and false at the previous observation: unknown at the first observation (the
-    previous one is unobserved) and where either value is unknown. -/
+/-- φ here and not at the previous observation, as a three-valued conjunction: false where φ is
+    false here, or true at the previous observation; true where φ is true here and false before;
+    unknown otherwise, with the reasons of the values it could not settle, the unobserved past
+    before the first observation among them. -/
 def risesAll (φ : Array R) : Array R :=
   (Array.range φ.size).map fun i =>
-    if i = 0 then truncated "rises"
-    else match φ[i]!.v, φ[i - 1]!.v with
-      | .u, _ => φ[i]!
-      | _, .u => φ[i - 1]!
-      | .t, .f => R.t
-      | _, _ => R.f
+    R.and φ[i]! (R.not (if i = 0 then truncated "rises" else φ[i - 1]!))
 
 /-- Seconds since φ last became true: from the start of the latest run of true values; unknown
     where that run reaches the trace start or none is observed. -/
@@ -265,6 +264,113 @@ def firstTrueAll (vals : Array R) : Array (Except UnknownReason (Option Nat)) :=
         | .f => .ok none
         | .u => .error (vals[i]!.why.head?.getD (.malformed "first"))
     (acc.1.push st, st)) (Array.mkEmpty n, .ok none)).1
+
+
+-- ---------------------------------------------------------------------------------------------
+-- Lengths: every operator returns one value per observation of the array it walks.
+-- ---------------------------------------------------------------------------------------------
+section Lengths
+
+/-- A left fold whose step keeps the length of the array it carries keeps the initial length. -/
+theorem size_foldl_carry {α β : Type} (l : List Nat) (f : Array α × β → Nat → Array α × β)
+    (hf : ∀ acc i, (f acc i).1.size = acc.1.size) (init : Array α × β) :
+    (l.foldl f init).1.size = init.1.size := by
+  induction l generalizing init with
+  | nil => rfl
+  | cons x xs ih => simp only [List.foldl]; rw [ih, hf]
+
+theorem size_const (n : Nat) (r : R) : (const n r).size = n := by simp [const]
+theorem size_zipAnd (a b : Array R) : (zipAnd a b).size = min a.size b.size := by simp [zipAnd]
+theorem size_zipOr (a b : Array R) : (zipOr a b).size = min a.size b.size := by simp [zipOr]
+theorem size_zipImplies (a b : Array R) : (zipImplies a b).size = min a.size b.size := by simp [zipImplies]
+theorem size_mapNot (a : Array R) : (mapNot a).size = a.size := by simp [mapNot]
+
+private theorem size_backward (tail : R) (step : R → R → R) (vals : Array R) :
+    (backward tail step vals).size = vals.size := by
+  unfold backward; rw [size_foldl_carry] <;> simp
+
+private theorem size_forward (head : R) (step : R → R → R) (vals : Array R) :
+    (forward head step vals).size = vals.size := by
+  unfold forward; rw [size_foldl_carry] <;> simp
+
+theorem size_alwaysAll (φ : Array R) : (alwaysAll φ).size = φ.size := size_backward _ _ _
+theorem size_eventuallyAll (φ : Array R) : (eventuallyAll φ).size = φ.size := size_backward _ _ _
+theorem size_onceAll (φ : Array R) : (onceAll φ).size = φ.size := size_forward _ _ _
+theorem size_untilAll (φ ψ : Array R) : (untilAll φ ψ).size = ψ.size := by
+  unfold untilAll; rw [size_foldl_carry] <;> simp
+theorem size_sinceAll (φ ψ : Array R) : (sinceAll φ ψ).size = ψ.size := by
+  unfold sinceAll; rw [size_foldl_carry] <;> simp
+theorem size_prevAll (first : R) (φ : Array R) : (prevAll first φ).size = φ.size := by simp [prevAll]
+theorem size_holdsForAll (pos : Array (Option Q)) (d : Q) (op : String) (w : UnknownReason) (φ : Array R) :
+    (holdsForAll pos d op w φ).size = φ.size := by simp [holdsForAll]
+theorem size_atLastAll (pos : Array (Option Q)) (d : Q) (op : String) (w : UnknownReason) (ψ φ : Array R) :
+    (atLastAll pos d op w ψ φ).size = φ.size := by simp [atLastAll]
+theorem size_withinAll (pos : Array (Option Q)) (d : Q) (op : String) (w : UnknownReason) (φ : Array R) :
+    (withinAll pos d op w φ).size = φ.size := by simp [withinAll]
+theorem size_untilWithinAll (pos : Array (Option Q)) (d : Q) (op : String) (w : UnknownReason) (φ ψ : Array R) :
+    (untilWithinAll pos d op w φ ψ).size = φ.size := by simp [untilWithinAll]
+theorem size_distanceWhileAll (pathPos : Array (Option Q)) (holds : Array R) :
+    (distanceWhileAll pathPos holds).size = holds.size := by simp [distanceWhileAll]
+theorem size_countEdgesAll (op : String) (edge sinceφ : Array R) :
+    (countEdgesAll op edge sinceφ).size = edge.size := by simp [countEdgesAll]
+theorem size_risesAll (φ : Array R) : (risesAll φ).size = φ.size := by simp [risesAll]
+theorem size_sinceRiseAll (times : Array Q) (φ : Array R) : (sinceRiseAll times φ).size = φ.size := by
+  simp [sinceRiseAll]
+
+end Lengths
+
+-- ---------------------------------------------------------------------------------------------
+-- A window that reaches past the trace start: false only on an observed false, else unknown.
+-- ---------------------------------------------------------------------------------------------
+section HoldsFor
+
+theorem holdsForAll_getElem! (pos : Array (Option Q)) (d : Q) (op : String) (missing : UnknownReason)
+    (φ : Array R) (i : Nat) (hi : i < φ.size) :
+    (holdsForAll pos d op missing φ)[i]! =
+      match (Time.backWindows pos d)[i]! with
+      | none => R.u missing
+      | some w =>
+        if !w.covered then (if ((RangeAgg.build φ).all w.j0 i).v = .f then R.f else truncated op)
+        else if !w.adequate then R.u (.samplingGap op)
+        else (RangeAgg.build φ).all w.j0 i := by
+  unfold holdsForAll
+  rw [getElem!_pos _ i (by simpa using hi)]
+  simp
+
+/-- At an instant whose window is not covered, a false observation `j` with `w.j0 ≤ j ≤ i` makes
+    the result false. -/
+theorem holdsForAll_uncovered_of_f (pos : Array (Option Q)) (d : Q) (op : String) (missing : UnknownReason)
+    (φ : Array R) (i : Nat) (w : Time.Back) (hi : i < φ.size) (hw : (Time.backWindows pos d)[i]! = some w)
+    (hc : w.covered = false) (j : Nat) (hj0 : w.j0 ≤ j) (hji : j ≤ i) (hf : φ[j]!.v = .f) :
+    (holdsForAll pos d op missing φ)[i]! = R.f := by
+  rw [holdsForAll_getElem! pos d op missing φ i hi, hw]
+  simp [hc, RangeAgg.all_f_of_witness φ w.j0 i j hi hj0 hji hf, R.f]
+
+/-- At an instant whose window is not covered and holds no false observation in `[w.j0, i]`, the
+    result is the truncation, with its reason. -/
+theorem holdsForAll_uncovered_of_no_f (pos : Array (Option Q)) (d : Q) (op : String) (missing : UnknownReason)
+    (φ : Array R) (i : Nat) (w : Time.Back) (hi : i < φ.size) (hw : (Time.backWindows pos d)[i]! = some w)
+    (hc : w.covered = false) (hn : ∀ j, w.j0 ≤ j → j ≤ i → φ[j]!.v ≠ .f) :
+    (holdsForAll pos d op missing φ)[i]! = truncated op := by
+  rw [holdsForAll_getElem! pos d op missing φ i hi, hw]
+  have : ((RangeAgg.build φ).all w.j0 i).v ≠ .f := fun hf =>
+    let ⟨j, h1, h2, _, h3⟩ := RangeAgg.all_f_witness φ w.j0 i hf
+    hn j h1 h2 h3
+  simp [hc, this]
+
+/-- A false at an instant whose window is not covered has a false observation inside the window. -/
+theorem holdsForAll_uncovered_f (pos : Array (Option Q)) (d : Q) (op : String) (missing : UnknownReason)
+    (φ : Array R) (i : Nat) (w : Time.Back) (hi : i < φ.size) (hw : (Time.backWindows pos d)[i]! = some w)
+    (hc : w.covered = false) (hf : (holdsForAll pos d op missing φ)[i]!.v = .f) :
+    ∃ j, w.j0 ≤ j ∧ j ≤ i ∧ j < φ.size ∧ φ[j]!.v = .f := by
+  rw [holdsForAll_getElem! pos d op missing φ i hi, hw] at hf
+  simp only [hc, Bool.not_false, if_true] at hf
+  split at hf
+  · obtain ⟨j, h1, h2, _, h3⟩ := RangeAgg.all_f_witness φ w.j0 i ‹_›
+    exact ⟨j, h1, h2, by omega, h3⟩
+  · simp [truncated, R.u] at hf
+
+end HoldsFor
 
 end Temporal
 end TrafficSpec

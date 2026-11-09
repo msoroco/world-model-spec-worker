@@ -18,7 +18,7 @@ def validate(folder, assignment, manifest):
 
     folder = Path(folder)
     index = read(folder / 'proposals/semantic-index.json')
-    if index.get('format') != 'worker-semantic-delivery-v1' or index.get('assignment_id') != assignment['assignment_id']:
+    if index.get('format') != 'worker-semantic-delivery' or index.get('assignment_id') != assignment['assignment_id']:
         raise ValueError('Wrong semantic delivery identity')
     references = index.get('stages')
     if not isinstance(references, dict) or set(references) != set(STAGES):
@@ -33,7 +33,7 @@ def validate(folder, assignment, manifest):
         return deepcopy(read(path))
 
     law_id, cell_id, actor = (assignment[key] for key in ('law_id', 'cell_id', 'actor'))
-    law = assignment.get('law_record', assignment.get('law'))
+    law = assignment.get('law')
     if not isinstance(law, dict) or law.get('id') != law_id or not law.get('text'):
         raise ValueError('Assignment lacks exact law text')
     cell = assignment.get('cell')

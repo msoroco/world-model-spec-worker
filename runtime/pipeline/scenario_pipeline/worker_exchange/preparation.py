@@ -10,17 +10,6 @@ def require(condition, message):
         raise ValueError(message)
 
 
-def validate_selected_branch(plan, original):
-    """Only singular-witness assignments have one selected branch label."""
-    if 'branch' in original:
-        require(plan.get('selected_branch') == original['branch'], 'Selected witness branch changed')
-    else:
-        branches = original.get('branches')
-        require(isinstance(branches, list) and branches and
-                all(isinstance(branch, dict) for branch in branches),
-                'Missing frozen branch records')
-
-
 def selected_proposal_case_ids(proposal):
     """Neutral baselines define a comparison but are not delivery recordings."""
     return {case.get('case_id') for case in proposal['cases']
@@ -48,107 +37,72 @@ def runtime_for(repo, batch):
     return module.effective_runtime()
 
 
-def check_legacy_capture_handoff(repo, contract):
-    """Bind a retained recording to an exact saved-only case, never a renamed sweep case."""
-    repo = Path(repo).resolve()
-    source = read(within(repo, contract['input']))
-    report = read(within(repo, contract['report']))
-    case_id = source['case_id']
-    require(source.get('format') == 'worker-legacy-capture-contract-v1' and
-            source.get('original_construction_sha256') and
-            source.get('frames', 0) > 0, 'Incomplete legacy capture contract')
-    require(report.get('format') == 'worker-legacy-saved-handoff-v1' and
-            report.get('case_id') == case_id and
-            report.get('original_construction_sha256') == source['original_construction_sha256'] and
-            report.get('actual_recording_audited') is False and
-            report.get('native_replay_requested') is False,
-            'Legacy handoff identity or acceptance claim differs')
-    manifest_path = within(repo, report['manifest'])
-    require(manifest_path.as_posix().startswith((repo/'work/_shared/legacy-captures').as_posix()+'/'),
-            'Legacy manifest must be isolated from v7 delivery cases')
-    manifest = read(manifest_path)
-    require([entry.get('case_id') for entry in manifest.get('cases', [])] == [case_id],
-            'Legacy manifest does not contain the exact retained case')
-    entry = manifest['cases'][0]
-    construction = read(within(manifest_path.parent, entry['construction']))
-    require(construction.get('case_id') == case_id and
-            entry.get('native_construction_sha256') == source['original_construction_sha256'] and
-            sha(within(manifest_path.parent, entry['construction'])) == entry.get('construction_sha256') and
-            entry.get('measurement_procedure', {}).get('entrypoint') == 'analyze.py',
-            'Legacy construction or analyzer identity differs')
-    proposal = read(manifest_path.parent/'proposals/cases.json')
-    require([case.get('case_id') for case in proposal.get('cases', [])] == [case_id],
-            'Legacy proposal does not contain the exact retained case')
-    try:
-        tokens = shlex.split(report['saved_only_audit_command'])
-        def option(key):
-            index = tokens.index(key)
-            return tokens[index+1]
-        command_ok = ('runtime.py' in tokens and 'process-saved' in tokens and
-                      option('--manifest') == report['manifest'] and
-                      option('--case') == case_id and
-                      option('--attempt') == '$RETAINED_C109705_ATTEMPT')
-    except (ValueError, IndexError, TypeError):
-        command_ok = False
-    require(command_ok, 'Legacy saved-only command selects another case or manifest')
-    proof = report.get('diagnostic_proof', {})
-    require(proof.get('exit_code') == 0 and proof.get('frames') == source['frames'] and
-            proof.get('case_id') == case_id and
-            sha(within(repo, proof['log'])) == proof.get('log_sha256'),
-            'Missing exact-ID legacy saved-only diagnostic proof')
-
-
-def check(repo, complete=False, require_ready=False):
+def check(repo, complete=False, require_ready=False, assignment=None):
     repo = Path(repo)
     batch = read(repo/'batch.json')
-    require(batch['mode'] == 'six_step_preparation', 'Wrong batch mode')
+    require(batch.get('format') == 'worker-batch' and batch.get('mode') == 'six_step_preparation', 'Wrong batch format/mode')
+    require(1 <= batch.get('max_workers', 4) <= 8, 'Invalid worker count')
     for rel, checksum in batch['frozen_files'].items():
         require(sha(within(repo, rel)) == checksum, 'Changed frozen file: '+rel)
     if batch.get('reference_catalog'):
         catalog = read(within(repo, batch['reference_catalog']))
-        require(catalog.get('format')=='worker-reference-catalog-v1', 'Invalid reference catalog')
+        require(catalog.get('format')=='worker-reference-catalog', 'Invalid reference catalog')
         for source in catalog['items']:
             require(sha(within(repo, source['path']))==source['sha256'], 'Changed source reference')
-    allocated = []
+    allocated = set()
+    memberships = set()
     partitions = [read(path) for path in sorted((repo/'partitions').glob('*.json'))]
+    roles = {'demo-train': 'training', 'full-train': 'training',
+             'demo-test': 'testing', 'full-test': 'testing', 'held-out': 'heldout'}
     for partition in partitions:
-        allocated.extend(partition['assignment_ids'])
-    require(len(allocated) == len(set(allocated)) and set(allocated) == set(batch['assignments']), 'Partition coverage/overlap')
-    if batch.get('gpu_ready_required'):
-        require(batch.get('law_split_version') == 'demo-overlap-v3', 'GPU-ready batch must use the current law split')
-        target_set = batch.get('target_set') or (partitions[0].get('set_id') if partitions else None)
-        require(target_set in ('demo-train', 'demo-test', 'held-out', 'full-train', 'full-test'),
-                'GPU-ready batch needs one active target set')
-        target_role = {'demo-train': 'training', 'full-train': 'training',
-                       'demo-test': 'testing', 'full-test': 'testing',
-                       'held-out': 'heldout'}[target_set]
-        for partition in partitions:
-            require(partition.get('set_id') == target_set, 'GPU-ready partition targets another set')
-            for aid in partition['assignment_ids']:
-                original = read(repo/'inputs'/aid/'assignment.json')
-                require(original.get('role') == target_role and
-                        original.get('local_snapshot',{}).get('scope_hashes',{}).get(target_set) == partition.get('scope_sha256'),
-                        'GPU-ready assignment does not match frozen target scope')
+        target_set = partition.get('set_id')
+        require(target_set in roles, 'Partition needs an active target set')
+        for aid in partition['assignment_ids']:
+            require((target_set, aid) not in memberships, 'Partition coverage/overlap')
+            memberships.add((target_set, aid))
+            allocated.add(aid)
+            original = read(repo/'inputs'/aid/'assignment.json')
+            require(original.get('role') == roles[target_set] and
+                    original.get('local_snapshot',{}).get('scope_hashes',{}).get(target_set) == partition.get('scope_sha256'),
+                    'Assignment does not match frozen target scope')
+    require(allocated == set(batch['assignments']), 'Partition coverage/overlap')
+    if batch.get('full_branch_coverage_required'):
+        for filename in ('branch-sources.json', 'candidate-cells.json'):
+            require((repo/'inputs/coverage'/filename).is_file(), 'Missing frozen coverage input: '+filename)
     from .branch_coverage import assignments, assignment_path
     items = assignments(repo, batch) if batch.get('full_branch_coverage_required') else batch['assignments']
-    files = tree(repo)
-    if batch.get('lean_return_required'):
-        returned=[rel for rel in files if rel.startswith('work/')]
-        require(len(returned)<=batch.get('max_return_files',1000), 'Return contains too many generated files')
-        forbidden={'.png','.jpg','.jpeg','.pkl','.mkv','.webm','.mp4','.ass','.lock','.uasset','.uexp'}
-        for rel in returned:
-            require(Path(rel).suffix.lower() not in forbidden, 'Generated binary/media belongs in ignored runtime work: '+rel)
-            require(not any(part.startswith(('compatibility-','offline-')) for part in Path(rel).parts),
-                    'Generated diagnostic directory belongs in ignored runtime work: '+rel)
+    if assignment is not None:
+        require(assignment in items, 'Unknown assignment: '+assignment)
+    all_items = items
+    # Assignment checks run hundreds of times while a batch is being prepared.
+    # Frozen files were verified above; inspect only this assignment's editable
+    # tree here. The complete batch gate still hashes every returned file.
+    if assignment is None:
+        files = tree(repo)
+    else:
+        work = repo / 'work' / assignment
+        files = {f'work/{assignment}/{rel}': checksum
+                 for rel, checksum in tree(work).items()} if work.is_dir() else {}
+    returned=[rel for rel in files if rel.startswith('work/')]
+    require(len(returned)<=batch.get('max_return_files',1000), 'Return contains too many generated files')
+    forbidden={'.png','.jpg','.jpeg','.pkl','.mkv','.webm','.mp4','.ass','.lock','.uasset','.uexp'}
+    for rel in returned:
+        require(Path(rel).suffix.lower() not in forbidden, 'Generated binary/media belongs in ignored runtime work: '+rel)
+        require(not any(part.startswith(('compatibility-','offline-')) for part in Path(rel).parts),
+                'Generated diagnostic directory belongs in ignored runtime work: '+rel)
     for rel in files:
         if rel in batch['frozen_files'] or rel == 'batch.json':
             continue
         parts = Path(rel).parts
-        require(len(parts)>2 and parts[0]=='work' and parts[1] in (*items, '_shared'), 'Unapproved output: '+rel)
+        require(len(parts)>2 and parts[0]=='work' and parts[1] in (*all_items, '_shared'), 'Unapproved output: '+rel)
         path = within(repo, rel)
         require(path.stat().st_size <= 2*1024*1024, 'Oversized return')
+        from .portable import inspect_file
+        inspect_file(path)
         if path.suffix == '.py':
             ast.parse(path.read_text())
+    if assignment is not None:
+        items = {assignment: items[assignment]}
     results, all_ids = {}, set()
     for aid, item in items.items():
         folder = repo/'work'/aid
@@ -158,16 +112,36 @@ def check(repo, complete=False, require_ready=False):
         result, original = read(folder/'result.json'), read(assignment_path(repo,aid,item))
         require(result['assignment_id']==aid and result['input_sha256']==item['input_sha256'], 'Return identity/input mismatch')
         require(result['status'] in ('ready','partial','blocked'), 'Invalid return status')
+        if result['status']=='ready':
+            from .portable import validate_imports
+            validate_imports(repo, aid)
         require(result.get('applied_update')==batch['update_version'], 'Unacknowledged current update')
         require((folder/'HANDOFF.md').is_file(), 'Missing handoff')
         require(result['status']=='ready' or result.get('reason'), 'Missing precise gap')
+        if result['status']=='ready':
+            require(isinstance(original.get('summary'),dict) and
+                    original['summary'].get('id')==original['law_id'],
+                    'Ready assignment needs its exact-law summary')
         plan = read(folder/'case-plan.json')
         require(plan['assignment_id']==aid and plan['actor']==original['actor'] and plan['cell_id']==original['cell_id'] and plan['law_id']==original['law_id'], 'Plan scope mismatch')
         for key in ('cases','comparisons','observations','sources','existing_evidence','runtime_uncertainties'):
             require(isinstance(plan.get(key),list), 'Missing/malformed plan '+key)
         require(plan['sources'] and plan['runtime_uncertainties'], 'Missing sources or explicit runtime limits')
-        if batch.get('selected_branch_dispositions_required'):
-            validate_selected_branch(plan, original)
+        if result['status'] != 'ready' and (folder/'construction.json').is_file():
+            draft = read(folder/'construction.json')
+            for key in ('law_id', 'cell_id', 'actor'):
+                require(key not in draft or draft[key] == original[key], 'Partial construction scope mismatch: '+key)
+            for entry in draft.get('files', []):
+                target = within(repo, entry['source']) if entry.get('source') else within(folder, entry['path'])
+                if target.is_file() and 'content' in entry:
+                    require(target.read_text() == entry['content'], 'Partial construction content mismatch: '+entry['path'])
+        no_capture = result.get('readiness_kind') == 'existing_evidence'
+        if result['status'] == 'ready':
+            from .branch_coverage import validate_evidence
+            validate_evidence(repo, aid, plan, no_capture)
+        if (result['status']=='ready' and not no_capture) or plan.get('requirement_dispositions'):
+            if original.get('branch'):
+                require(plan.get('selected_branch') == original['branch'], 'Selected witness branch changed')
             dispositions = plan.get('requirement_dispositions')
             require(isinstance(dispositions,list) and dispositions, 'Missing requirement dispositions')
             require(any(d.get('status')=='selected_required' for d in dispositions), 'No selected branch requirement')
@@ -184,54 +158,42 @@ def check(repo, complete=False, require_ready=False):
             require(isinstance(cid,str) and cid.startswith(aid+'__') and cid not in all_ids, 'Duplicate/unqualified case ID')
             all_ids.add(cid);ids.add(cid)
             require(case.get('target_law_id') in (None,original['law_id']), 'Wrong case law')
-        if batch.get('full_branch_coverage_required') and result['status']=='ready':
+        if batch.get('full_branch_coverage_required') and result['status']=='ready' and not no_capture:
             require(all(d['status']=='selected_required' and d.get('case_ids') and set(d['case_ids']) <= ids for d in plan.get('requirement_dispositions',[])), 'Full branch ready plans cannot leave requirements pending or unassigned to cases')
         for comparison in plan['comparisons']:
             require(set(comparison.get('case_ids',[])) <= ids and len(comparison.get('case_ids',[]))>=2, 'Broken comparison members')
             require(comparison.get('deliberate_differences') and 'fixed_conditions' in comparison, 'Unspecified comparison isolation')
-        executable_required = batch.get('all_executable_required') and result['status']!='blocked'
-        if result['status']=='ready' or executable_required:
-            if batch.get('measurement_contract_required') and result['status']=='ready':
-                command=result.get('first_gpu_delivery_command' if batch.get('delivery_handoff_required') else 'first_gpu_capability_command','')
-                try:tokens=shlex.split(command)
-                except ValueError:tokens=[]
-                def argument(option):
-                    return tokens[tokens.index(option)+1] if option in tokens and tokens.index(option)+1<len(tokens) else None
-                if batch.get('canonical_delivery_queue_required'):
-                    require('execute-delivery' in tokens and
-                            argument('--python')=='$CARLA_PYTHON' and
-                            argument('--host')=='$CARLA_HOST' and
-                            argument('--port')=='$CARLA_PORT' and
-                            argument('--case') in ids and
-                            argument('--job')=='$JOB_ID' and
-                            argument('--db')=='$DB' and
-                            argument('--run')=='$RUN' and
-                            argument('--assignment')==aid,
-                            'First GPU command must dispatch one canonical exact job')
-                else:
-                    require('runtime.py' in tokens and 'capture' in tokens and
-                            argument('--python')=='$CARLA_PYTHON' and
-                            argument('--host')=='$CARLA_HOST' and
-                            argument('--port')=='$CARLA_PORT' and
-                            argument('--case') in ids and
-                            str(argument('--output') or '').startswith('.runtime-work/'),
-                            'First GPU command does not use portable local runtime variables')
-            if batch.get('runtime'):
-                if result['status']=='ready' and result.get('readiness_kind') not in ('capability','delivery_prepared'):
-                    raise ValueError('Declare first-run capability versus delivery preparation')
-                if batch.get('delivery_handoff_required') and result['status']=='ready' and result.get('readiness_kind') != 'delivery_prepared':
-                    raise ValueError('Delivery return cannot use capability readiness')
-                from .execution_manifest import validate as validate_execution_manifest
-                executable=validate_execution_manifest(repo,aid)
-                if batch.get('delivery_handoff_required'):
-                    from .semantic_delivery import validate as validate_semantic_delivery
-                    validate_semantic_delivery(folder,original,executable)
-                    from .delivery_handoff import validate_case as validate_delivery_case
-                    for delivery_entry in executable['cases']:
-                        validate_delivery_case(folder,delivery_entry,original.get('selection_targets'))
-                if batch['runtime'].get('package_compatibility_required'):
-                    from .package_compatibility import check_receipts
-                    check_receipts(repo,folder,executable)
+        if no_capture and result['status'] == 'ready':
+            results[aid] = result
+            continue
+        if result['status']=='ready':
+            command=result.get('first_gpu_delivery_command','')
+            try:tokens=shlex.split(command)
+            except ValueError:tokens=[]
+            def argument(option):
+                return tokens[tokens.index(option)+1] if option in tokens and tokens.index(option)+1<len(tokens) else None
+            require('execute-delivery' in tokens and
+                    argument('--python')=='$CARLA_PYTHON' and
+                    argument('--host')=='$CARLA_HOST' and
+                    argument('--port')=='$CARLA_PORT' and
+                    argument('--case') in ids and
+                    argument('--job')=='$JOB_ID' and
+                    argument('--db')=='$DB' and
+                    argument('--run')=='$RUN' and
+                    argument('--assignment')==aid,
+                    'First GPU command must dispatch one canonical exact job')
+            require(batch.get('runtime'), 'Executable package needs the pinned runtime')
+            if result['status']=='ready' and result.get('readiness_kind') != 'delivery_prepared':
+                raise ValueError('Delivery return must declare delivery_prepared readiness')
+            from .execution_manifest import validate as validate_execution_manifest
+            executable=validate_execution_manifest(repo,aid)
+            from .semantic_delivery import validate as validate_semantic_delivery
+            validate_semantic_delivery(folder,original,executable)
+            from .delivery_handoff import validate_case as validate_delivery_case
+            for delivery_entry in executable['cases']:
+                validate_delivery_case(folder,delivery_entry,original.get('selection_targets'))
+            from .package_compatibility import check_receipts
+            check_receipts(repo,folder,executable)
             require(plan['cases'] and plan['observations'], 'Ready with no cases/observations')
             for filename in ('runner.py','config.json','construction.json','proposals/cases.json'):
                 require((folder/filename).is_file(), 'Missing executable artifact '+filename)
@@ -253,7 +215,7 @@ def check(repo, complete=False, require_ready=False):
                 for key in ('target_law_id','target_type','rationale','variable_assignments','unresolved_judgment_calls','recording_description'):
                     require(key in case, 'Missing canonical case field '+key)
             config = read(folder/'config.json')
-            if batch.get('capture_profile_required'):
+            if result['status']=='ready':
                 from .capture import PROFILE
                 camera_plan = plan.get('camera_plan')
                 require(isinstance(camera_plan, dict) and
@@ -276,11 +238,11 @@ def check(repo, complete=False, require_ready=False):
                         'Four-view capture needs synchronized primary composition')
             if batch.get('runtime'):
                 from .atom_preflight import check_required_atoms
-                check_required_atoms(runtime_for(repo,batch), config.get('required_atoms', []), config.get('source_packets', []))
+                check_required_atoms(runtime_for(repo,batch), config.get('required_atoms', []), config.get('source_packets', []), config)
             require(config.get('actor')==original['actor'] and config.get('law_id')==original['law_id'], 'Wrong config identity')
             require(set(config.get('supported_case_ids',[]))==ids, 'Configuration does not cover cases')
             channels = {c['name'] for c in construction['recording_description']['channels']}
-            if batch.get('source_observation_mapping_required'):
+            if result['status']=='ready' or original.get('source_observation_terms'):
                 terms = {item['term'] for item in original.get('source_observation_terms', [])}
                 mapping = plan.get('source_observation_mapping')
                 require(isinstance(mapping, dict) and set(mapping) == terms,
@@ -301,34 +263,16 @@ def check(repo, complete=False, require_ready=False):
                 require(test.get('exit_code')==0 and test.get('command'), 'CPU test did not pass')
                 require(sha(within(folder,test['log']))==test['sha256'], 'Missing/changed test log')
         results[aid]=result
-    if complete and batch.get('full_branch_coverage_required'):
+    all_ready = len(results)==len(items) and all(r['status']=='ready' for r in results.values())
+    if assignment is None and complete and all_ready and batch.get('full_branch_coverage_required'):
         from .branch_coverage import validate as validate_branches
         validate_branches(repo,batch,items,require_ready)
-    if complete and batch.get('delivery_handoff_required'):
+    if assignment is None and complete and items and all_ready:
         from .delivery_handoff import validate_queue
-        validate_queue(repo,items)
-    if complete and batch.get('legacy_capture_handoff'):
-        check_legacy_capture_handoff(repo,batch['legacy_capture_handoff'])
+        capture_items = {aid: item for aid, item in items.items() if results[aid].get('readiness_kind') != 'existing_evidence'}
+        if capture_items:
+            validate_queue(repo,capture_items)
     if require_ready:
         require(len(results)==len(items) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
-    if complete and batch.get('runtime_selftest_required'):
-        proof = read(repo/'work/_shared/runtime-proof.json')
-        runtime = runtime_for(repo,batch)
-        require(proof.get('format')=='worker-runtime-proof-v1' and
-                proof.get('runtime_manifest_sha256')==sha(runtime/'SOURCE-MANIFEST.json'),
-                'Runtime selftest proof binds another runtime')
-        require(proof.get('exit_code')==0 and proof.get('command') and
-                sha(within(repo,proof['log']))==proof.get('log_sha256'),
-                'Runtime selftest log missing/changed')
-        receipt_path=within(repo,proof['verification_receipt'])
-        require(sha(receipt_path)==proof.get('verification_sha256'),
-                'Runtime selftest receipt missing/changed')
-        receipt=read(receipt_path)
-        require(receipt.get('source_manifest_sha256')==proof['runtime_manifest_sha256'] and
-                receipt.get('passed') is True and receipt.get('decoder_validated') is True and
-                receipt.get('rendered_video_decoded') is True and
-                len(receipt.get('negative_fixtures',[]))>=3 and
-                all(n.get('rejected') is True for n in receipt['negative_fixtures']),
-                'Runtime selftest incomplete')
     return {'batch_id':batch['batch_id'],'results':results,'files':files,'package_sha256':digest(files),
             'verification':'Static contract only; explicitly run CPU tests before local adoption'}

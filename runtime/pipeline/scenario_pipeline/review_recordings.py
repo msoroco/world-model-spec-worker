@@ -311,9 +311,9 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);p.add_argument('--workers',type=int,default=4);p.add_argument('--previews',action='store_true',help='Also render optional focused previews separately from the full review');args=p.parse_args()
     index=json.loads((args.output/'delivery_index.json').read_text());errors=[];tasks=[]
     from delivery_definitions import resolve
-    from workspaces import campaign_path, semantic_directory
+    from workspaces import semantic_directory
     def sibling(run):
-        return campaign_path(run,args.output.parents[2]) if args.output.parent.name=='_campaigns' else args.output.parent/run
+        return args.output.parent/run
     for entry in index['cells']:
         root=sibling(entry.get('run_id',index['run_id']))
         cases={c['case_id']:c for c in json.loads((semantic_directory(root,entry['cell_id'],entry.get('actor','motor_vehicle_driver'))/'cases.json').read_text())['cases']}

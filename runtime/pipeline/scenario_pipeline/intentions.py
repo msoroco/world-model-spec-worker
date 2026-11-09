@@ -64,8 +64,13 @@ def validate_records(records, tracks=None, regions=None):
 
 def validate_scene_intents(scene):
     check_assumption_ids(scene.get('assumptions', []))
-    return validate_records(scene.get('intents', []), {u['track'] for u in scene['users']},
-                            {r['id'] for r in scene['structures']})
+    regions={r['id']:r['kind'] for r in scene['structures']}
+    records=validate_records(scene.get('intents', []), {u['track'] for u in scene['users']}, set(regions))
+    for record in records:
+        if any(k in ('int.lane_change_left','int.lane_change_right') for k,_ in record['values']):
+            if regions[record['target']] not in ('lane','turn_lane','reserved_lane','centre_turn_lane'):
+                raise ValueError('Lane-change intention target must be a lane')
+    return records
 
 
 def validate_context(context, *, resolve_bindings=True):

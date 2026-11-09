@@ -1,6 +1,7 @@
 """Optional local-only stage adoption. Never included in worker repositories."""
 import json
 import shutil
+import time
 from pathlib import Path
 from .common import digest, read, sha, within, write
 from .exchange import check_return, import_return
@@ -19,7 +20,7 @@ def adopt(root, repo, batch_id, db, run, plan_file):
     plan = read(plan_file)
     imported = import_return(root, repo, batch_id)
     aid = plan['assignment_id']
-    if aid not in imported['destinations'] or imported['results'][aid]['status'] not in ('prepared', 'ready'):
+    if aid not in imported['destinations'] or imported['results'][aid]['status'] != 'ready':
         raise ValueError('Only a prepared, imported assignment can be adopted')
     proposal_path = within(Path(repo) / 'work' / aid, plan['proposal'])
     proposal = read(proposal_path)
@@ -30,7 +31,8 @@ def adopt(root, repo, batch_id, db, run, plan_file):
     store = Store(db)
     try:
         # Store.claim recovery is global; require an idle database before calling it.
-        if store.db.execute("SELECT 1 FROM jobs WHERE status='running' LIMIT 1").fetchone() or store.db.execute('SELECT 1 FROM resource_leases LIMIT 1').fetchone():
+        if (store.db.execute("SELECT 1 FROM jobs WHERE status='running' LIMIT 1").fetchone()
+                or store.db.execute("SELECT 1 FROM resource_leases WHERE owner!='unavailable' AND expires>? LIMIT 1", (time.time(),)).fetchone()):
             raise ValueError('Stage adoption requires idle local jobs/resources')
         job = store.job(plan['job_id'])
         if not job or job['stage'] not in stages.SKILLS or job['cache_key'] != plan['expected_cache_key']:
@@ -96,7 +98,8 @@ def freeze(root, repo, batch_id, db, run, base_revision, config_file, assignment
         raise ValueError('Database must belong to the specified artifact root')
     store = Store(db)
     try:
-        if store.db.execute("SELECT 1 FROM jobs WHERE status='running' LIMIT 1").fetchone() or store.db.execute('SELECT 1 FROM resource_leases LIMIT 1').fetchone():
+        if (store.db.execute("SELECT 1 FROM jobs WHERE status='running' LIMIT 1").fetchone()
+                or store.db.execute("SELECT 1 FROM resource_leases WHERE owner!='unavailable' AND expires>? LIMIT 1", (time.time(),)).fetchone()):
             raise ValueError('Freeze requires idle local state')
         base = job_revision(store, run, base_revision)
         config = read(config_file)
@@ -130,7 +133,14 @@ def freeze(root, repo, batch_id, db, run, base_revision, config_file, assignment
         for directory in ('runtime', 'inputs'):
             source, target = Path(repo) / directory, bundle_root / directory
             if target.exists():
-                if tree(target) != tree(source):
+                frozen_files = tree(target)
+                if directory == 'runtime':
+                    # Freeze writes its derived effective runtime below this
+                    # directory. Compare the imported source snapshot here;
+                    # the effective runtime has its own check below.
+                    frozen_files = {name: digest for name, digest in frozen_files.items()
+                                    if not name.startswith('effective/')}
+                if frozen_files != tree(source):
                     raise ValueError('Frozen runtime/input dependencies changed')
             else:
                 shutil.copytree(source, target)
@@ -160,7 +170,7 @@ def freeze(root, repo, batch_id, db, run, base_revision, config_file, assignment
         config['runtime_dependencies'] = snapshot(dependency_paths)
         catalog = dict(base['catalog'], law_records=dict(base['catalog']['law_records']))
         for assignment in assignments:
-            law = assignment.get('law_record', assignment.get('law'))
+            law = assignment.get('law')
             if law is not None:
                 catalog['law_records'][assignment['law_id']] = law
         revision = freeze_job_revision(store, run, catalog, config,
@@ -220,7 +230,8 @@ def prepare_manifest_jobs(root,repo,batch_id,db,run,assignment_id,cases_job_id,c
     if Path(db).resolve().parent != Path(root).resolve()/'state':raise ValueError('Wrong artifact database')
     store=Store(db)
     try:
-        if store.db.execute("SELECT 1 FROM jobs WHERE status='running' LIMIT 1").fetchone() or store.db.execute('SELECT 1 FROM resource_leases LIMIT 1').fetchone():
+        if (store.db.execute("SELECT 1 FROM jobs WHERE status='running' LIMIT 1").fetchone()
+                or store.db.execute("SELECT 1 FROM resource_leases WHERE owner!='unavailable' AND expires>? LIMIT 1", (time.time(),)).fetchone()):
             raise ValueError('Prepare jobs while local pipeline is idle')
         parent=store.job(cases_job_id)
         if not parent or parent['stage']!='cases' or parent['status']!='completed':raise ValueError('Completed canonical cases job required')

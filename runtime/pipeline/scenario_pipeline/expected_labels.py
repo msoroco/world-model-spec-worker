@@ -148,21 +148,14 @@ def expectation(case, attempt, review, context):
     return record
 
 
-def scene_context(case,attempt, *, legacy=True):
-    ident=case['case_id'];ctx={'provenance':'Explicit synthetic scenario assumptions authorized in repair plan; native observations remain separately preserved' if legacy else 'Explicit frozen case/construction assumptions; no context inferred from case names or controller intentions'}
-    if legacy and '-413-2-' in ident:ctx['district']='business_or_residential' if '-100-' in ident else 'other_area'
-    if legacy and '-lanes-' in ident:
-        ctx['fixed_non_swept_conditions']={'markings':'Clearly marked lanes are an explicit synthetic applicability assumption; native lane topology is observed, while painted markings are not established in the saved rendering','appropriate_signal':'Correct left indicator, continuously enabled well before movement; fixed test assumption','safety':'Empty destination lane and road, complete simulator participant inventory; driver ascertains this authored clear condition (scenario assumption, not inferred mental state)'}
-    if legacy and '-450-2-' in ident:
-        original=load(attempt/'context.json');ref=original['ordered_stopping_references']['physical_candidate']
-        ctx['stopping_reference']={'branch':'marked_stop_line','physical_reference':ref,'crosswalk_absent_on_tested_approach':'Authored synthetic applicability fact; native marked-crosswalk inventory checked separately','unmarked_crosswalk_absent':'Explicit synthetic test assumption, not inferred from lack of map annotation'}
-    if legacy and '-307-6a-' in ident:ctx['intersection_entry_convention']='First body overlap of native intersection surface'
+def scene_context(case,attempt):
+    ctx={'provenance':'Explicit frozen case/construction assumptions; no context inferred from case names or expected outcomes'}
     declarations=[case.get('scene_assumptions',{}),case.get('expected_label_specification',{}).get('scene_assumptions',{})]
     config_path=attempt/'config.json'
     if config_path.exists():
         configuration=load(config_path)
         declarations.append(configuration.get('scene_assumptions',{}))
-        if not legacy:declarations.append(configuration.get('authored_test_context',{}))
+        declarations.append(configuration.get('authored_test_context',{}))
     for declaration in declarations:
         if isinstance(declaration,list) and all(isinstance(v,str) for v in declaration):
             ctx.setdefault('declarations',[]).extend(v for v in declaration if v not in ctx.get('declarations',[]))

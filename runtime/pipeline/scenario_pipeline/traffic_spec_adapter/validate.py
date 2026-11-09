@@ -28,9 +28,11 @@ def main (args : List String) : IO UInt32 := do
       | _ => throw (IO.userError "expected trace and manifest, optionally --intentions-only")
     let trace ← readData Decode.trace tracePath
     let manifest ← readData Decode.manifest manifestPath
-    if !intentionsOnly && !manifest.complete then throw (IO.userError "manifest is not complete")
+    let completeExceptHand := (atomIds.filter (· != "sig.hand_signal")).all
+      (fun id => manifest.entries.any (fun e => e.1 == id)) &&
+      manifest.entries.all (fun e => atomIds.contains e.1)
+    if !intentionsOnly && !completeExceptHand then throw (IO.userError "manifest is not complete except unsupported hand signals")
     let mut intentCount := 0
-    let mut sourceClassCount := 0
     for scene in trace do
       let tracks := scene.users.map (·.track)
       let regions := scene.structures.map (·.id)
@@ -44,19 +46,18 @@ def main (args : List String) : IO UInt32 := do
       if !(scene.subject.map trackSet.contains).getD false then throw (IO.userError "subject not in users")
       if !(scene.occupies.all fun (t, r) => trackSet.contains t && regionSet.contains r) then throw (IO.userError "dangling occupancy")
       if !(scene.devices.all fun d => d.governs.all regionSet.contains) then throw (IO.userError "dangling device governs")
-      for u in scene.users do
-        if u.sourceClassifications.isSome then sourceClassCount := sourceClassCount + 1
       for reference in scene.references do
         let present := match reference.kind with
           | .track => trackSet.contains reference.id
           | .region => regionSet.contains reference.id
           | .device => deviceSet.contains reference.id
         if !present then throw (IO.userError s!"dangling reference: {reference.place}")
-        if let some kind := reference.structureKind then
-          if !((regionKinds.get? reference.id).map fun actual => structureRefines actual kind).getD false then
+        if !reference.structureKinds.isEmpty then
+          if !((regionKinds.get? reference.id).map fun actual => reference.structureKinds.any (actual.refines ·)).getD false then
             throw (IO.userError s!"wrong reference kind: {reference.place}")
       for st in scene.structures do
-        if let some lanes := st.entranceOf then
+        if st.entranceObserved then
+          let lanes := st.entranceOf
           if st.kind != .stopLine && st.kind != .crosswalk then
             throw (IO.userError "entrance_of on unsupported region")
           if lanes.length != lanes.eraseDups.length then
@@ -69,7 +70,7 @@ def main (args : List String) : IO UInt32 := do
         if ids.length != ids.eraseDups.length then throw (IO.userError "duplicate intention id")
         if !(ids.all IntId.wellFormed) then throw (IO.userError "malformed intention id")
         intentCount := intentCount + 1
-    IO.println s!"decoded_frames={trace.length}; decoded_intents={intentCount}; source_classifications={sourceClassCount}; source_capabilities={manifest.sourceEntries.length}; manifest_complete={manifest.complete}; full_core=true; intentions_only={intentionsOnly}"
+    IO.println s!"decoded_frames={trace.length}; decoded_intents={intentCount}; manifest_complete={manifest.complete}; full_core=true; intentions_only={intentionsOnly}"
     return (0 : UInt32)
   catch error =>
     IO.eprintln error
@@ -79,9 +80,14 @@ def main (args : List String) : IO UInt32 := do
 
 def build_validator(library, workspace, lake):
     library,workspace,lake=map(lambda p:Path(p).resolve(),(library,workspace,lake))
+    if workspace == library or library in workspace.parents:
+        raise ValueError('Build workspace must be outside the source library')
+    for ancestor in library.parents:
+        if ancestor.name=='nevada_sydney' and (workspace==ancestor or ancestor in workspace.parents):
+            raise ValueError('The supplied TrafficSpec checkout is read-only')
     from intentions import core_contract
     contract=core_contract(library)
-    workspace.mkdir(parents=True,exist_ok=False)
+    workspace.mkdir(parents=True,exist_ok=True)
     # Copy only Core .lean source. Overlay the actual full-split files on the
     # common modules; never activate a split in the supplied repository.
     for p in (library/'TrafficSpec/Core').rglob('*.lean'):
@@ -109,11 +115,17 @@ def validate_output(output, validator):
     output=Path(output).resolve()
     from intentions import validate_scene_intents
     from trace_json import scenes
-    expected_intents=sum(len(validate_scene_intents(scene)) for scene,_ in scenes(output/'trace.json'))
+    from .roadways import validate_map
+    expected_intents=0
+    for scene,_ in scenes(output/'trace.json'):
+        validate_map(scene.get('structures', []))
+        expected_intents+=len(validate_scene_intents(scene))
     result=subprocess.run([str(Path(validator).resolve()),str(output/'trace.json'),str(output/'manifest.json')],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True)
     (output/'decoder.stdout.log').write_text(result.stdout)
     (output/'decoder.stderr.log').write_text(result.stderr)
     report=json.loads((output/'adapter_report.json').read_text())
+    from .adapter import sha
+    report['roadway_check_trace_sha256']=sha(output/'trace.json')
     report['decoder_validation']={'passed':result.returncode==0,'exit_code':result.returncode,'executable':str(Path(validator).resolve()),'output':result.stdout.strip(),'scope':'full Core decoding and entity references; no law evaluation'}
     (output/'adapter_report.json').write_text(json.dumps(report,indent=2)+'\n')
     if result.returncode:raise RuntimeError('TrafficSpec decoder rejected output: '+result.stderr.strip())

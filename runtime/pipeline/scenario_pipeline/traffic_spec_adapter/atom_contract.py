@@ -31,6 +31,8 @@ def inventory(library, capabilities, markdown=None):
         family, term = atom.split('.')
         scope = {'ru': 'road user', 'kin': 'road user', 'st': 'region', 'dev': 'device',
                  'sig': 'road user', 'env': 'scene', 'rel': 'relation'}[family]
+        if atom=='st.sight_along_way':scope='observer and way'
+        if atom=='st.sight_distance':scope='subject-associated region in this scene'
         path = json_paths(name, definitions)
         attributes={key:{'lean_definition':key,'contract':value.strip(),
                          'core_json_field':json_paths(key,definitions),
@@ -45,10 +47,11 @@ def inventory(library, capabilities, markdown=None):
                      'scene_graph_representation': 'canonical native attributes/geometry and observed_evidence packet; no duplicate alias entity' if available else None,
                      'measurement_method': source(atom) if available else None,
                      'units': units(atom), 'uncertainty': capability.split(':', 1)[1] if ':' in capability else None,
-                     'limitation': ('TurnSide cannot represent an observed off/hazard indicator; raw lamp bits survive, but Core direction remains unknown.' if atom=='sig.turn_indicator' else 'Per-frame/entity availability must be checked; capability is not observed presence.') if available else 'No validated end-to-end source implementation; unknown, never false.',
+                     'limitation': ('Native light state maps to off/left/right; hazard is separate and missing state remains unknown.' if atom=='sig.turn_indicator' else 'Per-frame/entity availability must be checked; capability is not observed presence.') if available else 'No validated end-to-end source implementation; unknown, never false.',
                      'mapping_source': 'Pinned Lean accessor and implemented adapter capability, not a union of term names'})
     return {'version': 2, 'implementation_sha256': digest(__file__), 'sources': {str(p): digest(p) for p in [docs, core/'Vocab/Atoms.lean', core/'Vocab/Ontology/Ids.lean', core/'Runtime/Decode.lean']},
-            'atoms': rows, 'complete_inventory': True,
+            'atoms': rows, 'ontology_inventory_complete': True,
+            'physical_inventory_completeness': 'requires per-recording source evidence',
             'complete_observation_support': all(r['capability'] != 'absent' for r in rows)}
 
 
@@ -63,6 +66,8 @@ def json_paths(name, definitions):
           'dev':'devices[]','sig':'users[]','env':'env','rel':'relations[]'}[family]
     body=definitions[name]
     if name=='kin_time':return 't'
+    if name=='st_sight_along_way':return 'users[].sight_along_way: [highway_region_id, metres] pairs'
+    if name=='st_travel_region':return 'Core union of lane, roadway, shoulder, bicycle_lane_or_path and intersection kinds'
     if name=='ru_subject':return 'subject + users[].track'
     if family=='ru' and ('hasClass' in body or name=='ru_aggregate'):
         return 'users[].classes + users[].unobserved_classes'
@@ -105,10 +110,18 @@ def json_paths(name, definitions):
 
 
 def source(atom):
+    if atom=='st.highway':return 'Measured native full-surface envelope; original public designation or explicit authored road-access convention, preserving private exclusions and verified way identity'
+    if atom=='st.on_way':return 'Verified native road identity, exact native strip intervals and source-bound entrance relationships; never containment or nearest-road guessing'
+    if atom=='st.bicycle_lane_or_path':return 'Complete native biking-lane inventory and verified source facility roles; an empty inventory emits no object'
+    if atom=='dev.lane_control_signal':return 'Complete retained native control taxonomy and verified constructed asset roles; no overhead lane controller is instantiated by this source version'
+    if atom=='ru.child':return 'Native walker age where available; the ontology excludes users observed not to be pedestrians'
+    if atom=='st.lane_direction':return 'Native constant heading or measured local chord on a sampled curved-lane partition'
+    if atom=='st.lane_connectivity':return 'Explicit native lane links, verified unique road continuations, and observed terminal ends in complete generated maps'
     if atom.startswith('kin.'): return 'Original live actor telemetry/applied state; finite differences where explicitly declared'
     if atom.startswith('sig.'): return 'Original actor.get_light_state; no inference from controls'
     if atom.startswith('dev.'): return 'Native recorded device/landmark state and observed controlsTrafficOf edges'
     if atom.startswith('ru.'): return 'Recorded CARLA actor identity and supported blueprint classification'
+    if atom == 'st.sight_distance': return 'Original incoming-lane virtual-eye rays to nine actual subject-body samples; minimum sampled clear-side bound, with declared height, brackets and censoring retained'
     if atom == 'rel.visible': return 'Original subject-reference-to-actual-body collision rays; retained blockers and method'
     if atom.startswith('rel.'): return 'Recorded body/lane geometry; only contract-permitted Core computation or measured relation'
     if atom.startswith('st.'): return 'Recorded native OpenDRIVE/graph/map facts and declared spatial measurement'
@@ -125,23 +138,36 @@ def units(atom):
             'rel.longitudinal_overlap':'m'}.get(atom, 'typed field/enum/bool; see pinned contract')
 
 
-def required_coverage(required, capability, scenes, inventory_observations=None):
+def required_coverage(required, capability, scenes, inventory_observations=None, entrance_references=None):
     """Check source scope plus per-frame values, never just a decoder receipt."""
     checks = {}; missing = []
     for atom in sorted(set(required)):
         cap = capability['atoms'].get(atom)
         if cap is None:
-            source_cap = capability.get('source_capabilities', {}).get(atom)
-            if source_cap is None:
-                raise ValueError('Unknown required atom: ' + atom)
-            checks[atom] = {'passed': False, 'capability': 'absent',
-                            'source_capability': source_cap,
-                            'reason': 'retired_source_atom_not_in_current_ontology'}
-            missing.append(atom)
-            continue
+            if atom != 'sig.hand_signal':raise ValueError('Unknown required atom: '+atom)
+            cap='absent'
         reason = None
         if cap == 'absent': reason = 'unsupported_atom'
         elif not scenes: reason = 'empty_trace'
+        elif atom == 'st.entrance_of':
+            refs = entrance_references or []
+            if not refs:
+                reason = 'missing_case_entrance_reference'
+            else:
+                for ref in refs:
+                    for index in range(ref['start_frame'], ref['end_frame'] + 1):
+                        if index >= len(scenes):
+                            reason = 'entrance_reference_outside_trace'; break
+                        region = next((r for r in scenes[index].get('structures', [])
+                                       if r['id'] == ref['region_id']), None)
+                        if region is None or region['kind'] not in ('stop_line', 'crosswalk'):
+                            reason = 'case_entrance_reference_missing'; break
+                        association = region.get('entrance_of')
+                        if association is None:
+                            reason = 'case_entrance_association_unknown'; break
+                        if association == [] and ref.get('empty_receipts', {}).get(index) != 'observed_empty':
+                            reason = 'unverified_empty_entrance_association'; break
+                    if reason: break
         else:
             inventory = (inventory_observations or {}).get(atom)
             if inventory is not None and len(inventory) != len(scenes):
@@ -200,7 +226,7 @@ def observed(scene, atom, cap):
         return any(s['kind']==term and term not in s.get('unobserved_kinds', []) for s in structures)
     if family == 'dev':
         devices=scene.get('devices', [])
-        if term in ('position','governs'):return bool(devices) and all(d.get(term) for d in devices)
+        if term in ('position','governs'):return bool(devices) and all(d.get(term) is not None for d in devices)
         matching=[d for d in devices if d['kind']==term]
         if term=='traffic_signal':return bool(matching) and all(d.get('indications') for d in matching)
         if term=='speed_limit_sign':return bool(matching) and all(d.get('speed_value') is not None for d in matching)
@@ -208,3 +234,28 @@ def observed(scene, atom, cap):
     if family == 'rel':
         return bool(users) and all(all(u.get('kin',{}).get(k) is not None for k in ('position','heading','extent')) for u in users)
     return False
+
+
+def gaps(scene, required):
+    """Conservative field diagnostics, separate from inventory and rule support."""
+    from traffic_spec_adapter.atom_contract import observed
+    out=[]
+    for atom in required:
+        if atom=='sig.hand_signal':known=False
+        elif atom=='st.entrance_of':
+            marks=[r for r in scene.get('structures',[])if r['kind']in ('stop_line','crosswalk')]
+            known=all(r.get('entrance_of')is not None for r in marks)
+        elif atom=='st.on_way':
+            carriers=[r for r in scene.get('structures',[])if r['kind']in
+                ('lane','roadway','one_way_roadway','shoulder','crosswalk','stop_line','median_or_divider','intersection','bicycle_lane_or_path')]
+            known=all(r.get('ways')is not None for r in carriers)
+        elif atom=='st.sight_along_way':
+            known=all(bool(u.get('sight_along_way'))for u in scene.get('users',[]))
+        elif atom=='dev.governs':
+            known=all(d.get('governs')is not None for d in scene.get('devices',[]))
+        elif atom in ('dev.traffic_signal','dev.inoperative'):
+            heads=[d for d in scene.get('devices',[])if d['kind']=='traffic_signal']
+            known=all(bool(d.get('indications'))if atom=='dev.traffic_signal'else d.get('inoperative')is not None for d in heads)
+        else:known=observed(scene,atom,'exact')
+        if not known:out.append(atom)
+    return out

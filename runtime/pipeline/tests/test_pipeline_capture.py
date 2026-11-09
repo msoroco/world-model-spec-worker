@@ -56,8 +56,29 @@ class CaptureTests(unittest.TestCase):
             self.assertEqual(event['original_frame'],event['replay_frame'])
             self.assertEqual(event['original_observations']['participants'][0]['speed_mps'],5.)
             self.assertEqual(event['original_observations']['participants'][0]['accel_longitudinal_mps2'],0.)
+            self.assertIn('stop waypoints and trigger geometry', event['original_observations']['control_inventory'])
             self.assertEqual(event['ego']['speed_mps'],5.)
             self.assertEqual(event['ego']['speed_provenance'],'original_trace_actor_get_velocity')
+
+    def test_native_control_geometry_is_recorded_without_controller_inference(self):
+        path=Path(__file__).resolve().parents[1]/'python/original_observations.py'
+        spec=importlib.util.spec_from_file_location('original_controls_under_test',path)
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        vector=lambda x,y,z:types.SimpleNamespace(x=x,y=y,z=z)
+        transform=types.SimpleNamespace(location=vector(0,0,0))
+        waypoint=types.SimpleNamespace(road_id=2,section_id=0,lane_id=-1,s=11.5,
+            transform=types.SimpleNamespace(location=vector(11.5,1,0)),
+            is_junction=False,junction_id=-1)
+        light=types.SimpleNamespace(id=5,type_id='traffic.traffic_light',get_transform=lambda:transform,
+            get_stop_waypoints=lambda:[waypoint],get_affected_lane_waypoints=lambda:[waypoint])
+        sign=types.SimpleNamespace(id=6,type_id='traffic.stop',get_transform=lambda:transform,
+            trigger_volume=types.SimpleNamespace(get_world_vertices=lambda t:
+                [vector(x,y,z) for x in (0,2) for y in (0,2) for z in (0,1)]))
+        self.assertEqual(module.device_state(light)['stop_waypoints'][0]['position_m'],[11.5,1,0])
+        self.assertEqual(len(module.device_state(sign)['trigger_vertices_m']),8)
+        del sign.trigger_volume
+        with self.assertRaisesRegex(RuntimeError,'no trigger volume'):
+            module.device_state(sign)
 
     def test_visibility_requirements_override_optional_false_flag(self):
         import os

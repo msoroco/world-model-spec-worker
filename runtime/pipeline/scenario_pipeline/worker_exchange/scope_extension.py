@@ -1,7 +1,7 @@
-"""Apply validated supplemental test bindings as a versioned scope extension."""
+"""Apply validated supplemental bindings to each originating assignment's sets."""
 from pathlib import Path
 import shutil
-from .common import read, write, sha, digest
+from .common import read, write, sha, digest, SETS
 
 
 def _link_selections(root, version, batch_id, proposed):
@@ -48,35 +48,43 @@ def apply(root, repo, batch_id):
     checked = check_return(root, repo, batch_id)
     batch = read(repo/'batch.json'); items = assignments(repo,batch)
     additional = [read(assignment_path(repo,aid,item)) for aid,item in items.items() if item.get('supplemental')]
+    if not additional: return {'batch_id':batch_id,'additional_bindings':0,'scope_changed':False}
     candidates = read(repo/'inputs/coverage/candidate-cells.json')
     if sha(root/'inputs/catalog/vocabulary_catalog.json') != candidates['catalog_sha256']:
         raise ValueError('Local cell catalog changed since export')
-    target_set = batch.get('target_set') or next(iter({row['set_id'] for row in
-        (read(p) for p in (repo/'partitions').glob('*.json'))}))
-    targets = {'demo-train': ('demo-train','full-train'), 'full-train': ('full-train',),
-               'demo-test': ('demo-test','full-test'), 'full-test': ('full-test',),
-               'held-out': ('held-out',)}[target_set]
-    conflicting = ({'demo-test','full-test','held-out'} if target_set in ('demo-train','full-train')
-                   else {'demo-train','full-train','held-out'} if target_set in ('demo-test','full-test')
-                   else {'demo-train','full-train','demo-test','full-test'})
-    forbidden = set()
-    for sid in conflicting:
-        forbidden.update(read(root/'sets'/sid/'scope.json')['scope_cell_ids'])
-    if any(a['cell_id'] in forbidden for a in additional):
-        raise ValueError('Supplemental binding conflicts with current training or held-out allocation')
-    if not additional: return {'batch_id':batch_id,'additional_bindings':0,'scope_changed':False}
+    from .exchange import role
+    bindings = {b['assignment_id']: b for b in read(repo/'work/_shared/branch-coverage.json')['additional_bindings']}
+    by_set = {}
+    proposed_roles = {}
+    for assignment in additional:
+        origin = bindings[assignment['assignment_id']]['original_assignment_id']
+        targets = set(batch['assignments'][origin]['set_ids'])
+        for demo, full in (('demo-train','full-train'), ('demo-test','full-test')):
+            if demo in targets:
+                targets.add(full)
+        if not targets or any(role(sid) != assignment['role'] for sid in targets):
+            raise ValueError('Supplemental binding target role mismatch')
+        cell_roles = proposed_roles.setdefault(assignment['cell_id'], set())
+        cell_roles.add(assignment['role'])
+        for sid in SETS:
+            if role(sid) != assignment['role'] and assignment['cell_id'] in read(root/'sets'/sid/'scope.json')['scope_cell_ids']:
+                raise ValueError('Supplemental binding conflicts with another role allocation')
+        for sid in targets:
+            by_set.setdefault(sid, []).append(assignment)
+    if any(len(roles) != 1 for roles in proposed_roles.values()):
+        raise ValueError('Supplemental bindings allocate one cell to conflicting roles')
     version = root/'inputs/planning'/('worker-coverage-'+batch_id)
     proposed = {}
-    for sid in targets:
+    for sid, additions in sorted(by_set.items()):
         path=root/'sets'/sid/'scope.json'; scope=read(path)
         existing={(a['law_id'],a['cell_id'],a['actor']) for a in scope['assignments']}
-        for a in additional:
+        for a in additions:
             key=(a['law_id'],a['cell_id'],a['actor'])
             if key not in existing:
                 scope['assignments'].append({'law_id':a['law_id'],'cell_id':a['cell_id'],'actor':a['actor'],
                     'branch':a['branch'],'worker_binding':{'batch_id':batch_id,'package_sha256':checked['package_sha256']}})
                 existing.add(key)
-        cells=sorted(set(scope['scope_cell_ids'])|{a['cell_id'] for a in additional})
+        cells=sorted(set(scope['scope_cell_ids'])|{a['cell_id'] for a in additions})
         scope.update(scope_cell_ids=cells,precomputed_cell_ids=cells,coverage_extension=batch_id,
                      precomputed_cells_source=str((version/(sid+'-cells.json')).relative_to(root)))
         proposed[sid]=scope
@@ -98,6 +106,6 @@ def apply(root, repo, batch_id):
         write(root/'sets'/sid/'scope.json',scope)
     write(receipt_path,receipt)
     _link_selections(root, version, batch_id, proposed)
-    from organize_work import refresh_workspaces
+    from review_workspaces import refresh_workspaces
     refresh_workspaces(root)
     return receipt

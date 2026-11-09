@@ -7,6 +7,24 @@ from .media import audit,compose_four_views
 
 SKIP={'result.json','analysis-report.json','channels','traffic_spec','converted','compatibility.json','processing.json','feedback.json'}
 
+def original_sources(attempt):
+    """Hash acquisition and implementation, excluding delivered converter copies.
+
+    Derived converter directories may contain the shared-manifest link. They are
+    never copied or edited by saved processing; acquisition symlinks remain invalid.
+    """
+    attempt = Path(attempt)
+    files = {}
+    for path in sorted(attempt.iterdir()):
+        if path.name in ('traffic_spec', 'converted'):
+            continue
+        within(attempt, path.name)
+        if path.is_dir():
+            files.update((path.name+'/'+name, value) for name, value in tree(path).items())
+        elif path.is_file():
+            files[path.name] = sha(path)
+    return files
+
 def record_native_exit(attempt):
     attempt=Path(attempt)
     if not (attempt/'capture-seal.json').is_file():
@@ -63,7 +81,7 @@ def run(manifest,case,attempt,output,library,validator,owner_receipt=None):
     index=1
     while (output/('v%04d'%index)).exists():index+=1
     version=output/('v%04d'%index);version.mkdir()
-    before=tree(attempt)
+    before=original_sources(attempt)
     try:
         entry=next(e for e in read(manifest)['cases'] if e['case_id']==case)
         selection_path=attempt/'candidate-selection.json'
@@ -79,20 +97,9 @@ def run(manifest,case,attempt,output,library,validator,owner_receipt=None):
             raise ValueError('Fallback attempt lacks candidate-selection receipt')
         original=read(attempt/'construction.json');config=read(attempt/'config.json')
         if original['case_id']!=case or config.get('selected_case_id',config.get('case',{}).get('case_id'))!=case:raise ValueError('Wrong Native case identity')
-        if candidate_id!='primary' and original!=construction:
-            raise ValueError('Fallback attempt construction differs from selected candidate')
+        if original!=construction:
+            raise ValueError('Attempt construction differs from selected candidate')
         provenance=provenance_record(attempt)
-        legacy_binding=None
-        if entry.get('native_construction_sha256'):
-            capture_manifest=read(attempt/'capture/manifest.json')
-            if config.get('case',{}).get('case_id')!=case or capture_manifest.get('case_id')!=case:
-                raise ValueError('Legacy embedded case identity differs')
-            expected_native=entry['native_construction_sha256'];actual_native=sha(attempt/'construction.json')
-            diagnostic_marker=read(attempt/'acquisition-provenance.json') if (attempt/'acquisition-provenance.json').is_file() else {}
-            diagnostic_exception=(diagnostic_marker.get('diagnostic_fixture') is True and diagnostic_marker.get('provenance_kind')=='native')
-            if actual_native!=expected_native and not diagnostic_exception:
-                raise ValueError('Legacy Native construction hash differs from frozen retained capture')
-            legacy_binding={'expected_native_construction_sha256':expected_native,'actual_native_construction_sha256':actual_native,'original_hash_matched':actual_native==expected_native,'explicit_diagnostic_exception':actual_native!=expected_native and diagnostic_exception,'actual_recording_audited':False}
         _closure(attempt,owner_receipt,provenance['provenance_kind'],provenance['diagnostic_fixture'])
         stage=_workspace(attempt,version,construction,entry['measurement_procedure']['entrypoint'])
         if not (stage/'raw.mkv').exists():
@@ -114,7 +121,7 @@ def run(manifest,case,attempt,output,library,validator,owner_receipt=None):
                 write(stage/'result.json',result)
             result['analysis_complete']=False
             write(stage/'result.json',result)
-            write(stage/'analysis-report.json',{'format':'worker-analysis-report-v1','case_id':case,'measurements':{},'physical_checks':result['physical_checks'],'realized_observables':result['realized_observables'],'provenance_kind':result['provenance_kind'],'diagnostic_fixture':result['diagnostic_fixture'],'limitations':['Selected law analysis could not complete: '+error[-2000:]],'analysis_complete':False})
+            write(stage/'analysis-report.json',{'format':'worker-analysis-report','case_id':case,'measurements':{},'physical_checks':result['physical_checks'],'realized_observables':result['realized_observables'],'provenance_kind':result['provenance_kind'],'diagnostic_fixture':result['diagnostic_fixture'],'limitations':['Selected law analysis could not complete: '+error[-2000:]],'analysis_complete':False})
             write(version/'feedback.json',{'recorded_only':True,'native_replay_requested':False,'classification':'incomplete_or_unavailable_law_evidence','physical_status':result['physical_checks']['maneuver']['status'],'error':error[-2000:]})
         else:result=read(stage/'result.json')
         from .native_output import validate_result
@@ -141,8 +148,8 @@ def run(manifest,case,attempt,output,library,validator,owner_receipt=None):
                 final_video=audit(video['video'],len(rows),receipt=version/'partial-final-decode.json')
             except Exception as partial_error:
                 write(version/'partial-media-feedback.json',{'recorded_only':True,'error':str(partial_error),'law_analysis_complete':False,'native_replay_requested':False})
-        if tree(attempt)!=before:raise ValueError('Saved processing rewrote original acquisition or prior results')
-        receipt={'format':'worker-saved-processing-v2','case_id':case,'passed':True,'recorded_only':True,
+        if original_sources(attempt)!=before:raise ValueError('Saved processing rewrote original acquisition or prior results')
+        receipt={'format':'worker-saved-processing','case_id':case,'passed':True,'recorded_only':True,
           'version':str(version),'analysis_directory':str(stage),'result':str(stage/'result.json'),
           'native_revision':{'construction_sha256':sha(attempt/'construction.json'),'analyzer_sha256':sha(attempt/entry['measurement_procedure']['entrypoint']) if (attempt/entry['measurement_procedure']['entrypoint']).is_file() else None},
           'candidate_id':candidate_id,
@@ -152,9 +159,8 @@ def run(manifest,case,attempt,output,library,validator,owner_receipt=None):
           'missing_evidence':missing,'physical_acceptance_claimed':False,'legal_acceptance_claimed':False,
           'events':['saved_processing_started','selected_analysis_executed','originals_verified'],
           'remaining':['original pixels and actual physical completion review','unresolved legal judgments']}
-        if legacy_binding is not None:receipt['legacy_native_binding']=legacy_binding
         write(version/'processing.json',receipt);return receipt
     except Exception as error:
         write(version/'feedback.json',{'case_id':case,'recorded_only':True,'error_type':type(error).__name__,'error':str(error),'manifest_sha256':sha(manifest),'native_replay_requested':False})
-        if tree(attempt)!=before:raise ValueError('Original source preservation failed') from error
+        if original_sources(attempt)!=before:raise ValueError('Original source preservation failed') from error
         raise

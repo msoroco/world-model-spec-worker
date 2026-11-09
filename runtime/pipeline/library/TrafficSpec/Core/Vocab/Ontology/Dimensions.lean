@@ -62,7 +62,8 @@ def ofPrimitive : List (String × Option Dim × List Dim) := [
   ("prim_closest_approach_time", some ⟨0, 1, 0⟩, [⟨0, 1, 0⟩]),
   ("prim_closest_approach_distance", some ⟨1, 0, 0⟩, [⟨0, 1, 0⟩]),
   ("prim_conditions_hold", none, []),
-  ("prim_region_lateral_offset", some ⟨1, 0, 0⟩, [])
+  ("prim_region_lateral_offset", some ⟨1, 0, 0⟩, []),
+  ("prim_region_offset_along", some ⟨1, 0, 0⟩, [])
 ]
 end Dimensions
 

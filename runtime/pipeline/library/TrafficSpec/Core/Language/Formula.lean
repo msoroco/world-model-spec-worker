@@ -99,6 +99,10 @@ mutual
     | add (a b : Term)
     | sub (a b : Term)
     | mul (a b : Term)
+    /-- `a / b`, unknown wherever `b` is zero. Its divisor reads no measured atom: a measurement can
+        be zero (a straight way's curvature, a halted road user's speed), so a bound on a ratio is
+        written as a bound on a product (a ratio below a bound is the dividend below the bound
+        times the divisor). -/
     | div (a b : Term)
     | neg (a : Term)
     | abs (a : Term)

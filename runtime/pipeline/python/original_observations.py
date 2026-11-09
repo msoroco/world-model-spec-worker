@@ -63,6 +63,17 @@ def device_state(actor):
     if hasattr(actor,'get_state'):record['state']=str(actor.get_state()).split('.')[-1]
     if hasattr(actor,'get_affected_lane_waypoints'):
         record['affected_lanes']=[[w.road_id,w.section_id,w.lane_id] for w in actor.get_affected_lane_waypoints()]
+    if actor.type_id.startswith('traffic.traffic_light'):
+        if not hasattr(actor,'get_stop_waypoints'):
+            raise RuntimeError('Traffic light has no stop-waypoint API')
+        record['stop_waypoints']=[{'road_id':w.road_id,'section_id':w.section_id,
+            'lane_id':w.lane_id,'s_m':w.s,'position_m':xyz(w.transform.location),
+            'junction_id':w.junction_id if w.is_junction else None}
+            for w in actor.get_stop_waypoints()]
+    if actor.type_id.startswith('traffic.stop'):
+        if not hasattr(actor,'trigger_volume'):
+            raise RuntimeError('Stop sign has no trigger volume')
+        record['trigger_vertices_m']=[xyz(v) for v in actor.trigger_volume.get_world_vertices(transform)]
     if hasattr(actor,'get_opendrive_id'):
         value=actor.get_opendrive_id()
         if value:record['landmark_id']=str(value)
@@ -81,7 +92,8 @@ def observe(world, subject, frame, time_s, visibility=False, physical_registry=N
     settings=world.get_settings()if hasattr(world,'get_settings')else None
     data={'rgb_sensors':sensors,'world_settings':{'no_rendering_mode':getattr(settings,'no_rendering_mode',None)},'frame':frame,'time_s':time_s,'devices':devices,'participants':[actor_state(a) for a in actors],
           'relations': [visible_relation(world,subject,a) for a in actors if a.id!=subject.id] if visibility else [],
-          'participant_inventory':'all original live vehicle/walker actors; camera visibility independent'}
+          'participant_inventory':'all original live vehicle/walker actors; camera visibility independent',
+          'control_inventory':'all original live traffic light and stop-sign actors; stop waypoints and trigger geometry captured in this frame'}
     if world.get_snapshot().frame!=frame:raise RuntimeError('World advanced during original observations')
     if physical_registry:
         from traffic_spec_adapter.physical_actors import observe_actor,validate_frame

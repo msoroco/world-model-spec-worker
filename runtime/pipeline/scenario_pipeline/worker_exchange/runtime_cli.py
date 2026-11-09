@@ -7,6 +7,8 @@ import argparse
 import json
 import os
 import subprocess
+import shutil
+import importlib
 import sys
 from pathlib import Path
 from .common import read, sha, within, write
@@ -17,6 +19,35 @@ def verify(runtime):
     for rel, checksum in read(runtime/'SOURCE-MANIFEST.json')['files'].items():
         if sha(within(runtime,rel))!=checksum:raise ValueError('Runtime source changed: '+rel)
     return {'runtime_sources_verified':True}
+
+
+def cpu_preflight(runtime):
+    runtime = Path(runtime).resolve()
+    if sys.version_info < (3, 11):
+        raise ValueError('Worker CPU preparation requires Python 3.11+')
+    verify(runtime)
+    for module in ('numpy','shapely','networkx','PIL','yaml','tqdm','matplotlib','pydot'):
+        try:
+            importlib.import_module(module)
+        except ImportError as error:
+            raise ValueError('Missing CPU dependency '+module+'; install runtime/requirements-cpu.txt') from error
+    from shapely import set_precision  # The current adapter requires Shapely 2.
+    for command in ('ffmpeg','ffprobe'):
+        if not shutil.which(command):
+            raise ValueError('Missing CPU tool: '+command)
+    toolchain = (runtime/'library/lean-toolchain').read_text().strip()
+    candidates = [shutil.which('lake'), str(Path.home()/'.elan/bin/lake'),
+                  str(Path.home()/'.elan/toolchains'/toolchain.replace(':','---').replace('/','--')/'bin/lake')]
+    for candidate in dict.fromkeys(candidates):
+        if candidate and Path(candidate).is_file():
+            probe = subprocess.run([candidate,'--version'],cwd=runtime/'library',
+                                   capture_output=True,text=True,timeout=60)
+            if probe.returncode == 0 and toolchain.rsplit(':',1)[-1].lstrip('v') in probe.stdout:
+                return {'python':sys.executable, 'lake':str(Path(candidate).resolve()),
+                        'lean_toolchain':toolchain, 'cpu_preflight_passed':True,
+                        'simulation_started':False}
+    raise ValueError('Pinned Lean toolchain unavailable: '+toolchain+
+                     '; install with elan toolchain install '+toolchain)
 
 
 def materialize(manifest, case_id, destination, candidate='primary'):
@@ -30,7 +61,7 @@ def materialize(manifest, case_id, destination, candidate='primary'):
     for entry in proposal['files']:
         target=within(destination,entry['path']);target.parent.mkdir(parents=True,exist_ok=True);target.write_text(entry['content'])
     write(destination/'construction.json',proposal)
-    write(destination/'candidate-selection.json',{'format':'worker-candidate-selection-v1',
+    write(destination/'candidate-selection.json',{'format':'worker-candidate-selection',
           'case_id':case_id,'candidate_id':selected['id'],'construction_sha256':selected['construction_sha256'],
           'manifest_sha256':sha(path)})
     return proposal
@@ -40,7 +71,7 @@ def materialize(manifest, case_id, destination, candidate='primary'):
 def execution_env():
     pipeline=Path(__file__).resolve().parents[1];runtime=pipeline.parent
     env=dict(os.environ)
-    env['PYTHONPATH']=os.pathsep.join([str(runtime),str(pipeline),str(runtime/'python'),env.get('PYTHONPATH','')])
+    env['PYTHONPATH']=os.pathsep.join([str(pipeline),str(runtime/'python'),env.get('PYTHONPATH','')])
     return env
 
 
@@ -129,10 +160,10 @@ def read_rows(path):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);sub=p.add_subparsers(dest='command',required=True)
+    a=sub.add_parser('fixture');a.add_argument('--recipe',required=True);a.add_argument('--output',required=True)
+    a=sub.add_parser('preflight');a.add_argument('--runtime',default=str(Path(__file__).resolve().parents[2]))
     a=sub.add_parser('selftest');a.add_argument('--runtime',default=str(Path(__file__).resolve().parents[2]));a.add_argument('--output',required=True);a.add_argument('--lake');a.add_argument('--validator');a.add_argument('--compare-to')
-    a=sub.add_parser('compatibility-example');a.add_argument('--output',required=True)
-    a=sub.add_parser('compatibility');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--fixture',required=True);a.add_argument('--output',required=True);a.add_argument('--library',required=True);a.add_argument('--validator',required=True);a.add_argument('--candidate',default='primary')
-    a=sub.add_parser('compatibility-recipe');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--output',required=True);a.add_argument('--library',required=True);a.add_argument('--validator',required=True);a.add_argument('--candidate',default='primary')
+    a=sub.add_parser('compatibility');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--output',required=True);a.add_argument('--library',required=True);a.add_argument('--validator',required=True);a.add_argument('--candidate',default='primary')
     a=sub.add_parser('verify');a.add_argument('--runtime',type=Path,required=True)
     a=sub.add_parser('materialize');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--output',required=True);a.add_argument('--candidate',default='primary')
     a=sub.add_parser('offline');a.add_argument('--manifest',required=True);a.add_argument('--case',required=True);a.add_argument('--output',required=True);a.add_argument('--python',default=sys.executable);a.add_argument('--candidate',default='primary')
@@ -147,19 +178,20 @@ def main():
     a=sub.add_parser('expand');a.add_argument('--proposal',required=True);a.add_argument('--templates',required=True);a.add_argument('--bindings',required=True);a.add_argument('--output',required=True)
     a=sub.add_parser('build-decoder');a.add_argument('--library',required=True);a.add_argument('--output',required=True);a.add_argument('--lake',required=True)
     args=p.parse_args()
-    if args.command=='selftest':
+    if args.command=='fixture':
+        from .fixture_recipe import materialize as materialize_fixture
+        repo = Path.cwd().resolve()
+        output = Path(args.output).resolve()
+        if repo/'.runtime-work' not in output.parents:
+            raise ValueError('Generated diagnostics belong in .runtime-work')
+        result=materialize_fixture(repo,Path(args.recipe).resolve(),output)
+    elif args.command=='preflight':result=cpu_preflight(args.runtime)
+    elif args.command=='selftest':
         from .runtime_verify import run
         result=run(args.runtime,args.output,args.validator,args.lake,args.compare_to)
-    elif args.command=='compatibility-example':
-        from .compatibility_example import build
-        m,c,f=build(Path(__file__).resolve().parents[2],args.output)
-        result={'manifest':str(m),'case':c,'fixture':str(f),'scope':'software diagnostic only'}
     elif args.command=='compatibility':
         from .package_compatibility import run
-        result=run(args.manifest,args.case,args.fixture,args.output,args.library,args.validator,args.candidate)
-    elif args.command=='compatibility-recipe':
-        from .package_compatibility import run_recipe
-        result=run_recipe(args.manifest,args.case,args.output,args.library,args.validator,args.candidate)
+        result=run(args.manifest,args.case,args.output,args.library,args.validator,args.candidate)
     elif args.command=='verify':result=verify(args.runtime)
     elif args.command=='materialize':result=materialize(args.manifest,args.case,args.output,args.candidate);result={'case_id':result['case_id'],'candidate_id':args.candidate,'materialized':True}
     elif args.command=='offline':result=offline(args.manifest,args.case,args.output,args.python,args.candidate)

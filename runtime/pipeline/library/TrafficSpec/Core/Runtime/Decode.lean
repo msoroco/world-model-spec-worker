@@ -17,9 +17,10 @@
                     "links": [[old, new]...]? } ] }
   Field names follow the structures of World.lean in snake_case; see the decoders below. A
   device's `governs` absent or null is not observed (`governsObserved` false, so whether it
-  governs a region is unknown); `[]` is observed and governs nothing. An intent record has
-  exactly its four keys, and a non-empty `source`, which names where the declaration comes from
-  and is not kept in the scene.
+  governs a region is unknown); `[]` is observed and governs nothing. A structure's `entrance_of`
+  is read the same way: absent or null, which carriers it marks is not observed (`entranceObserved`
+  false); `[]` is observed and marks none. An intent record has exactly its four keys, and a
+  non-empty `source`, which names where the declaration comes from and is not kept in the scene.
 
   A formula, a term and an argument decode strictly from the JSON Export.lean writes: the
   decoder is that encoder's inverse, so a decoded formula exported again is the canonical form.
@@ -67,12 +68,6 @@ def vec (path : String) (j : Json) : D Vec := do
   match ← arr path j with
   | [x, y] => pure (← num (path ++ "[0]") x, ← num (path ++ "[1]") y)
   | _ => fail path "expected [x, y]"
-/-- Direction carriers accept any nonzero vector; position and velocity may be zero. -/
-def directionVec (path : String) (j : Json) : D Vec := do
-  let v ← vec path j
-  if Q.isZero v.1 && Q.isZero v.2 then fail path "direction must be nonzero"
-  else pure v
-
 def enum {α : Type} (ofString : String → Option α) (path : String) (j : Json) : D α := do
   let s ← str path j
   match ofString s with | some v => pure v | none => fail path s!"unknown value {s}"
@@ -105,7 +100,7 @@ def pair {α β : Type} (da : String → Json → D α) (db : String → Json �
 -- ---------------------------------------------------------------------------------------------
 def kin (path : String) (j : Json) : D Kin := do
   pure { position := ← opt j path "position" vec
-         heading := ← opt j path "heading" directionVec
+         heading := ← opt j path "heading" vec
          velocity := ← opt j path "velocity" vec
          speed := ← opt j path "speed" num
          accelLongitudinal := ← opt j path "accel_longitudinal" num
@@ -148,14 +143,8 @@ def signals (path : String) (j : Json) : D Signals := do
          doorsOpen := ← optList j path "doors_open" (enum DoorSide.ofString)
          compressionBrake := ← opt j path "compression_brake" bool }
 
-def sourceClassifications (path : String) (j : Json) : D SourceClassifications := do
-  pure { schema := ← req j path "schema" str
-         classes := ← optList j path "classes" str
-         unobservedClasses := ← optList j path "unobserved_classes" str }
-
 def roadUser (path : String) (j : Json) : D RoadUser := do
   pure { track := ← req j path "track" nat
-         sourceClassifications := ← opt j path "source_classifications" sourceClassifications
          classes := ← optList j path "classes" (enum RoadUserClass.ofString)
          unobservedClasses := ← list j path "unobserved_classes" (enum RoadUserClass.ofString)
          emergencyKind := ← opt j path "emergency_kind" (enum EmergencyKind.ofString)
@@ -171,7 +160,7 @@ def marking (path : String) (j : Json) : D (MarkingType × MarkingColour) :=
   pair (enum MarkingType.ofString) (enum MarkingColour.ofString) path j
 
 def laneInfo (path : String) (j : Json) : D LaneInfo := do
-  pure { direction := ← opt j path "direction" directionVec
+  pure { direction := ← opt j path "direction" vec
          leftNeighbour := ← opt j path "left" nat
          rightNeighbour := ← opt j path "right" nat
          ordinalFromLeft := ← opt j path "ordinal" nat
@@ -188,7 +177,6 @@ def structure' (path : String) (j : Json) : D Structure := do
          unobservedKinds := ← list j path "unobserved_kinds" (enum StructureKind.ofString)
          position := ← opt j path "position" vec
          boundary := ← optList j path "boundary" vec
-         entranceOf := ← optList j path "entrance_of" nat
          lane := ← opt j path "lane" laneInfo
          paved := ← opt j path "paved" bool
          opening := ← opt j path "opening" bool
@@ -197,6 +185,8 @@ def structure' (path : String) (j : Json) : D Structure := do
          grade := ← opt j path "grade" num
          sightDistance := ← opt j path "sight_distance" num
          ways := ← optList j path "ways" nat
+         entranceOf := ← list j path "entrance_of" nat
+         entranceObserved := (field? j "entrance_of").isSome
          reservedClass := ← opt j path "reserved_class" (enum ReservedClass.ofString)
          turnSide := ← opt j path "turn_side" (enum TurnSide.ofString)
          parkingAngle := ← opt j path "parking_angle" num
@@ -368,12 +358,7 @@ def manifest (j : Json) : D Manifest := do
     | some (.obj kvs) => kvs.toArray.toList.mapM fun (k, v) => do pure (k, ← capability s!"manifest.atoms.{k}" v)
     | some _ => fail "manifest.atoms" "expected an object"
     | none => fail "manifest.atoms" "required"
-  let sourceAtoms ← match field? j "source_capabilities" with
-    | none => pure []
-    | some (.obj kvs) => kvs.toArray.toList.mapM fun (k, v) => do pure (k, ← capability s!"manifest.source_capabilities.{k}" v)
-    | some _ => fail "manifest.source_capabilities" "expected an object"
   pure { source := ← req j "manifest" "source" str
-         sourceEntries := sourceAtoms
          entries := atoms
          reidGap := (← opt j "manifest" "reid_gap" num).getD Q.zero }
 

@@ -7,21 +7,15 @@ from batch_pipeline.store import atomic
 def assumptions(context):
  from intentions import validate_context
  validate_context(context)
- result=[]
- district=context.get('district')
- if district:
-  result.extend([['asm.business_district',district=='business_or_residential'],['asm.residential_district',False],['asm.other_area',district=='other_area']])
- if context.get('stopping_reference'):result.append(['asm.no_crosswalk_on_approach',True])
- if context.get('fixed_non_swept_conditions') and (context.get('maneuver') == 'lane_change' or not context.get('core_assumptions')):
-  result.extend([['asm.driver_ascertained_lane_change_safe',True],['asm.appropriate_signal_fixed',True],['asm.clearly_marked_lanes',True]])
+ from context_catalogue import declared_assumptions
  for pair in context.get('core_assumptions', []):
   if not isinstance(pair,list) or len(pair)!=2 or not isinstance(pair[0],str) or not pair[0] or not isinstance(pair[1],bool):raise ValueError('Explicit Core assumptions require [name, boolean]')
-  result.append(pair)
+ result=declared_assumptions(context)
  if len({pair[0] for pair in result})!=len(result):raise ValueError('Duplicate Core assumption identity')
  return result
 
 
-def inject(attempt,context,validator):
+def inject(attempt,context,validator,*,backup=None):
  """Project explicit context per frame; keep scene facts and intent separate."""
  from expected_labels import sha,load
  from traffic_spec_adapter.validate import validate_output
@@ -29,7 +23,11 @@ def inject(attempt,context,validator):
  from trace_json import scenes,replace_field
  values=assumptions(context);root=attempt/'traffic_spec';path=root/'trace.json'
  if not values and not context.get('intent_declarations'):return
- temporary=root/'trace.context-pending.json';before=sha(path);count=0;changed=False
+ before=sha(path);count=0;changed=False
+ backup=Path(backup) if backup is not None else Path(__file__).resolve().parents[2]/'world-model-spec_back'
+ staging=backup/'context-projection'/hashlib.sha256(str(attempt.resolve()).encode()).hexdigest()[:16]
+ staging.mkdir(parents=True,exist_ok=True)
+ temporary=staging/(before+'.pending.json')
  mapping_path=attempt/'video_frames.jsonl';mapping=[]
  if mapping_path.exists():
   with mapping_path.open() as f:mapping=[json.loads(line) for line in f if line.strip()]
@@ -55,7 +53,7 @@ def inject(attempt,context,validator):
   expected=load(root/'adapter_report.json')['frames']
   if count!=expected:raise ValueError('Context projection frame count mismatch')
   if not changed:temporary.unlink();return
-  archive=root/'trace.before-expected-context.json'
+  archive=staging/(before+'.json')
   if archive.exists():raise ValueError('Context projection archive already exists')
   os.replace(path,archive);os.replace(temporary,path)
   try:validate_output(root,validator)

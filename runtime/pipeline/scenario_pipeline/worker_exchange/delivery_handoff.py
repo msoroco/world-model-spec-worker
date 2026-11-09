@@ -44,7 +44,7 @@ def validate_case(folder, entry, expected_sets=None):
 def validate_queue(repo, assignments):
     repo = Path(repo)
     queue = read(repo / 'work/_shared/gpu-queue.json')
-    if queue.get('format') != 'worker-ordered-gpu-queue-v1':
+    if queue.get('format') != 'worker-ordered-gpu-queue':
         raise ValueError('Wrong exact delivery queue format')
     expected_cases = set()
     expected_comparisons = set()
@@ -64,42 +64,45 @@ def validate_queue(repo, assignments):
                     'additional_source_audit_command'):
             if not row.get(key) or row['case_id'] not in row[key]:
                 raise ValueError('Incomplete exact delivery queue command: '+row['case_id'])
-        if read(repo / 'batch.json').get('canonical_delivery_queue_required'):
-            for key, command in (('prepare_command', 'prepare-delivery'),
-                                 ('execute_command', 'execute-delivery'),
-                                 ('accept_command', 'accept-delivery')):
-                value = row.get(key, '')
-                if command not in value or row['case_id'] not in value:
-                    raise ValueError('Missing canonical '+key+': '+row['case_id'])
-            entry = next(item for item in read(repo/'work'/row['assignment_id']/'execution-manifest.json')['cases']
-                         if item['case_id'] == row['case_id'])
-            candidate_commands = row.get('candidate_commands')
-            if not isinstance(candidate_commands, dict) or set(candidate_commands) != {
-                    item['id'] for item in entry.get('candidates', [])}:
-                raise ValueError('Queue does not cover exact fallback candidates: '+row['case_id'])
-            for candidate_id, command in candidate_commands.items():
-                if (candidate_id not in command or row['case_id'] not in command
-                        or 'prepare-delivery' not in command):
-                    raise ValueError('Fallback lacks canonical preparation command: '+row['case_id'])
+        for key, command in (('prepare_command', 'prepare-delivery'),
+                             ('execute_command', 'execute-delivery'),
+                             ('accept_command', 'accept-delivery')):
+            value = row.get(key, '')
+            if command not in value or row['case_id'] not in value:
+                raise ValueError('Missing canonical '+key+': '+row['case_id'])
+        entry = next(item for item in read(repo/'work'/row['assignment_id']/'execution-manifest.json')['cases']
+                     if item['case_id'] == row['case_id'])
+        candidate_commands = row.get('candidate_commands')
+        if not isinstance(candidate_commands, dict) or set(candidate_commands) != {
+                item['id'] for item in entry.get('candidates', [])}:
+            raise ValueError('Queue does not cover exact fallback candidates: '+row['case_id'])
+        for candidate_id, command in candidate_commands.items():
+            if (candidate_id not in command or row['case_id'] not in command
+                    or 'prepare-delivery' not in command):
+                raise ValueError('Fallback lacks canonical preparation command: '+row['case_id'])
     comparisons = queue.get('comparison_audit_commands', [])
     actual_comparisons = [(row.get('assignment_id'), row.get('comparison_id')) for row in comparisons]
     if (len(actual_comparisons) != len(set(actual_comparisons))
             or set(actual_comparisons) != expected_comparisons
             or any(not row.get('command') for row in comparisons)):
         raise ValueError('Delivery queue omits a comparison audit')
-    if read(repo / 'batch.json').get('canonical_delivery_queue_required'):
-        proof_path = repo/'work/_shared/local-integration-proof.json'
-        proof = read(proof_path)
-        needed = {'primary_job', 'fallback_job', 'saved_processing', 'rejected_audit'}
-        target_set = read(repo/'batch.json').get('target_set')
-        needed.add('accepted_targets' if target_set in ('demo-train', 'full-train', 'held-out')
-                   else 'accepted_both_sets')
-        if (proof.get('format') != 'worker-local-integration-proof-v1'
-                or proof.get('passed') is not True
-                or not needed <= set(proof.get('scenarios', []))
-                or proof.get('exit_code') != 0
-                or not proof.get('command')
-                or sha(within(repo, proof.get('log', ''))) != proof.get('log_sha256')):
-            raise ValueError('Missing tested canonical delivery integration proof')
+    proof_path = repo/'work/_shared/local-integration-proof.json'
+    proof = read(proof_path)
+    needed = {'primary_job', 'fallback_job', 'saved_processing', 'rejected_audit'}
+    batch = read(repo/'batch.json')
+    target_sets = {sid for aid in assignments for sid in
+                   batch.get('assignments', {}).get(aid, {}).get('set_ids', [])}
+    paired_test = bool(target_sets & {'demo-test','full-test'})
+    if paired_test:
+        needed.add('accepted_both_sets')
+    if not target_sets or target_sets & {'demo-train','full-train','held-out'}:
+        needed.add('accepted_targets')
+    if (proof.get('format') != 'worker-local-integration-proof'
+            or proof.get('passed') is not True
+            or not needed <= set(proof.get('scenarios', []))
+            or proof.get('exit_code') != 0
+            or not proof.get('command')
+            or sha(within(repo, proof.get('log', ''))) != proof.get('log_sha256')):
+        raise ValueError('Missing tested canonical delivery integration proof')
     return {'cases': len(rows), 'comparisons': len(comparisons),
             'queue_sha256': sha(repo / 'work/_shared/gpu-queue.json')}

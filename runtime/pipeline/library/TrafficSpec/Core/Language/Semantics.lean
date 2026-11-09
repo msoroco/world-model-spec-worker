@@ -131,9 +131,9 @@ def evalAtomE (s : Scene) (name : String) (args : List DArg) (ps : List Q) : Exc
   | "st_lane_adjacency_left", [r, r'] => pure (b (st_lane_left_of s (← ent r) (← ent r')) name)
   | "st_lane_adjacency_right", [r, r'] => pure (b (st_lane_right_of s (← ent r) (← ent r')) name)
   | "st_lane_connectivity", [r, r'] => pure (b ((st_lane_connectivity s (← ent r)).map (·.contains (← ent r'))) name)
-  | "st_entrance_of", [r, l] => pure (b ((st_entrance_of s (← ent r)).map (·.contains (← ent l))) name)
   | "st_lane_enters", [r, i] => pure (b ((st_lane_enters s (← ent r)).map (· == (← ent i))) name)
   | "st_on_way", [r, w] => pure (b ((st_on_way s (← ent r)).map (·.contains (← ent w))) name)
+  | "st_entrance_of", [l, a] => pure (b (st_entrance_of s (← ent l) (← ent a)) name)
   | "st_lane_marking", [r, sd, t] =>
     match sd with
     | .s "left" => pure (eqEnum ((st_lane_marking_left s (← ent r)).map (·.1)) (← enumLit MarkingType.ofString t) name)
@@ -244,7 +244,7 @@ where
     "st_road_edge_paved", "st_shoulder_paved", "st_median_or_divider_opening",
     "st_crosswalk_marked", "st_reserved_lane_class", "st_turn_lane_side", "st_parking_space_designation",
     "st_curb_zone_kind", "st_curb_zone_colour", "st_obstruction_kind", "st_lane_adjacency", "st_lane_adjacency_left",
-    "st_lane_adjacency_right", "st_lane_connectivity", "st_lane_enters", "st_entrance_of", "st_on_way", "st_lane_marking", "st_lane_marking_left", "st_lane_marking_right",
+    "st_lane_adjacency_right", "st_lane_connectivity", "st_lane_enters", "st_on_way", "st_entrance_of", "st_lane_marking", "st_lane_marking_left", "st_lane_marking_right",
     "rel_occupies", "dev_traffic_signal_shows", "dev_traffic_signal_uncovered", "dev_pedestrian_signal_state",
     "dev_pedestrian_signal_countdown", "dev_lane_control_signal_state", "dev_speed_limit_beacon_flashing",
     "dev_crossing_warning_signal_active", "dev_speed_limit_sign_kind", "dev_regulatory_sign_code",
@@ -291,7 +291,7 @@ def evalMeasure (s : Scene) (name : String) (args : List DArg) : QR := do
   | "ru_occupant_count", [x] => qn (ru_occupant_count s (← ent x)) name
   | "ru_rider_posture_hands_on_controls", [x] => qn (ru_rider_posture_hands_on_controls s (← ent x)) name
   | "ru_electric_bicycle_class", [x] => qn (ru_electric_bicycle_class s (← ent x)) name
-  | "st_lane_direction", [r, k] => comp (st_lane_direction s (← ent r)) k name
+  | "st_lane_direction", [r, k] => comp ((st_lane_direction s (← ent r)).bind Geom.unit) k name
   | "st_lane_adjacency", [r, k] =>
     match k with
     | .s "ordinal" => qn (st_lane_adjacency_ordinal s (← ent r)) name
@@ -320,12 +320,11 @@ def evalMeasure (s : Scene) (name : String) (args : List DArg) : QR := do
     | .s "year" => qn (ct.map (·.year)) name
     | _ => .error (.malformed "civil time field")
   | "rel_centre_distance", [a, a'] => q (rel_centre_distance s (← ent a) (← ent a')) name
-  | "rel_surface_gap", [a, a'] => q (rel_surface_gap_min s (← ent a) (← ent a')) name
+  | "rel_surface_gap", [a, a'] => q (rel_surface_gap_distance s (← ent a) (← ent a')) name
   | "rel_surface_gap", [a, a', k] =>
     match k with
     | .s "longitudinal" => q (rel_surface_gap_longitudinal s (← ent a) (← ent a')) name
     | .s "lateral" => q (rel_surface_gap_lateral s (← ent a) (← ent a')) name
-    | .s "min" => q (rel_surface_gap_min s (← ent a) (← ent a')) name
     | _ => .error (.malformed "gap component")
   | "rel_longitudinal_overlap", [a, a'] => q (rel_longitudinal_overlap s (← ent a) (← ent a')) name
   | "rel_bearing", [a, a', k] => comp (rel_bearing s (← ent a) (← ent a')) k name
@@ -362,7 +361,8 @@ def atomArgSorts (name : String) : Option (List (Option EntityKind)) :=
   | "dev_school_bus_signal_on_track" => some [d, t]
   | "st_region_geometry_distance" | "st_sight_along_way" => some [t, r]
   | "st_lane_adjacency" => some [r, none, r]
-  | "st_lane_adjacency_left" | "st_lane_adjacency_right" | "st_lane_connectivity" | "st_lane_enters" | "st_entrance_of" | "st_on_way" => some [r, r]
+  | "st_lane_adjacency_left" | "st_lane_adjacency_right" | "st_lane_connectivity" | "st_lane_enters" | "st_on_way"
+  | "st_entrance_of" => some [r, r]
   | "st_lane_marking" => some [r, none, none, none]
   | "rel_oncoming" | "rel_same_direction" | "rel_ahead_behind_in_lane" | "rel_ahead_in_lane"
   | "rel_behind_in_lane" | "rel_contact" | "rel_visible" | "rel_centre_distance" | "rel_longitudinal_overlap" => some [t, t]
@@ -381,13 +381,13 @@ def defName (id : String) : String := id.replace "." "_"
 -- ---------------------------------------------------------------------------------------------
 -- The evaluator: every subformula once, over the whole trace.
 -- ---------------------------------------------------------------------------------------------
-private def constU (n : Nat) (w : UnknownReason) : Array R := const n (R.u w)
-private def constE (n : Nat) (w : UnknownReason) : Array QR := Array.replicate n (.error w)
-private def liftA (n : Nat) (e : Except UnknownReason (Array R)) : Array R :=
+def constU (n : Nat) (w : UnknownReason) : Array R := const n (R.u w)
+def constE (n : Nat) (w : UnknownReason) : Array QR := Array.replicate n (.error w)
+def liftA (n : Nat) (e : Except UnknownReason (Array R)) : Array R :=
   match e with | .ok a => a | .error w => constU n w
-private def liftQ (n : Nat) (e : Except UnknownReason (Array QR)) : Array QR :=
+def liftQ (n : Nat) (e : Except UnknownReason (Array QR)) : Array QR :=
   match e with | .ok a => a | .error w => constE n w
-private def qzip (f : Q → Q → Q) (a b : Array QR) : Array QR :=
+def qzip (f : Q → Q → Q) (a b : Array QR) : Array QR :=
   Array.zipWith (fun x y => do pure (f (← x) (← y))) a b
 
 /-- A term that names no instant: a literal, a parameter or arithmetic over those. Only such a
@@ -399,7 +399,7 @@ partial def Term.isConstant : Term → Bool
   | _ => false
 
 /-- The single value of a constant term's per-instant array. -/
-private def constOf (t : Term) (arr : Array QR) : Except UnknownReason Q := do
+def constOf (t : Term) (arr : Array QR) : Except UnknownReason Q := do
   if !Term.isConstant t then throw (.malformed "parameter is not a constant term")
   arr[0]?.getD (.error .outOfRange)
 
@@ -409,8 +409,8 @@ def subjectFor (β : Binding) (m : Measure) (v : String) : Except UnknownReason 
   | .time => .ok 0
   | .path => match β.track v with | some t => .ok t | none => .error (.unboundVariable v)
 
-/-- Every region a quantifier over a kind ranges over in some scene of the trace: those of the
-    kind, and those whose kind the source cannot tell. -/
+/-- Every region a quantifier over a kind ranges over in some scene of the trace: those whose
+    membership of the kind is not false there (`regionCandidates`). -/
 def regionsOf (c : SemCtx) (k : StructureKind) : List RegionId :=
   (c.scenes.toList.flatMap fun s => regionCandidates s k).eraseDups
 def devicesOf (c : SemCtx) (k : DeviceKind) : List DeviceId :=
@@ -428,12 +428,12 @@ def usersOf (c : SemCtx) : List TrackId :=
 
 /-- The kind a quantifier ranges over: a spelling of the ontology. A variable here is a concept's
     literal formal that no expansion filled. -/
-private def regionKindOf (a : Arg) : Except UnknownReason StructureKind :=
+def regionKindOf (a : Arg) : Except UnknownReason StructureKind :=
   match a with
   | .lit s => match StructureKind.ofString s with | some k => .ok k | none => .error (.malformed s!"region kind {s}")
   | .var v => .error (.malformed s!"region kind `{v}` is a variable")
   | .nat _ => .error (.malformed "region kind")
-private def deviceKindOf (a : Arg) : Except UnknownReason DeviceKind :=
+def deviceKindOf (a : Arg) : Except UnknownReason DeviceKind :=
   match a with
   | .lit s => match DeviceKind.ofString s with | some k => .ok k | none => .error (.malformed s!"device kind {s}")
   | .var v => .error (.malformed s!"device kind `{v}` is a variable")
@@ -441,7 +441,7 @@ private def deviceKindOf (a : Arg) : Except UnknownReason DeviceKind :=
 
 /-- φ where the precondition holds; undefined where it is false; the precondition's reasons where
     it is unknown. -/
-private def definedWhenR (pre x : R) : R :=
+def definedWhenR (pre x : R) : R :=
   match pre.v with
   | .t => x
   | .f => R.u (.undefined "defined_when")
@@ -449,7 +449,7 @@ private def definedWhenR (pre x : R) : R :=
 
 /-- A selection at one instant: the branch the guard picks; where the guard is unknown, the
     branches' common value, else unknown with the guard's reasons. -/
-private def condAt (g : R) (a b : QR) : QR :=
+def condAt (g : R) (a b : QR) : QR :=
   match g.v with
   | .t => a
   | .f => b
@@ -459,7 +459,7 @@ private def condAt (g : R) (a b : QR) : QR :=
 
 /-- An aggregate over the members present at one instant: unknown when a member's membership is
     unknown or a member's value is; `count` on an empty set is zero, the others are undefined. -/
-private def aggregateAt (op : AggOp) (xs : List (R × QR)) : QR :=
+def aggregateAt (op : AggOp) (xs : List (R × QR)) : QR :=
   match xs.find? (fun (f, _) => f.v == .u) with
   | some (f, _) => .error (f.why.head?.getD (.malformed "aggregate"))
   | none =>
@@ -492,7 +492,7 @@ def aggregateMembership (s : Scene) (t : TrackId) (a : LegalAggregate) : R :=
     | none => R.u (.absentAtom "ru_aggregate")
 
 /-- Kleene aggregate at each instant over the evaluated members present in that scene. -/
-private def perScene (c : SemCtx) (evaluated : List (Nat × Array R))
+def perScene (c : SemCtx) (evaluated : List (Nat × Array R))
     (presentIn : Scene → Nat → Bool) (agg : List R → R) : Array R :=
   (Array.range c.n).map fun i =>
     let s := c.scenes[i]!
@@ -580,9 +580,16 @@ mutual
       | .error w, _ | _, .error w => constU c.n w
       | _, _ => constU c.n (.malformed "same: entities expected")
     | .not φ => mapNot (evalAll c φ)
-    | .and φ ψ => zipAnd (evalAll c φ) (evalAll c ψ)
-    | .or φ ψ => zipOr (evalAll c φ) (evalAll c ψ)
-    | .implies φ ψ => zipImplies (evalAll c φ) (evalAll c ψ)
+    -- a connective whose left operand settles it at every instant does not evaluate its right one
+    | .and φ ψ =>
+      let a := evalAll c φ
+      if a.all (·.v == .f) then a.map (fun _ => R.f) else zipAnd a (evalAll c ψ)
+    | .or φ ψ =>
+      let a := evalAll c φ
+      if a.all (·.v == .t) then a.map (fun _ => R.t) else zipOr a (evalAll c ψ)
+    | .implies φ ψ =>
+      let a := evalAll c φ
+      if a.all (·.v == .f) then a.map (fun _ => R.t) else zipImplies a (evalAll c ψ)
     | .always φ => alwaysAll (evalAll c φ)
     | .eventually φ => eventuallyAll (evalAll c φ)
     | .until φ ψ => untilAll (evalAll c φ) (evalAll c ψ)
@@ -661,6 +668,136 @@ def eval (c : SemCtx) (i : Nat) (φ : Formula) : R := (evalAll c φ)[i]?.getD (R
 def evalTri (c : SemCtx) (i : Nat) (φ : Formula) : Tri := (eval c i φ).v
 
 -- ---------------------------------------------------------------------------------------------
+-- Lengths: every formula and every term has exactly one value per observation of the trace.
+-- ---------------------------------------------------------------------------------------------
+section Lengths
+
+private theorem n_bindVar (c : SemCtx) (v : String) (x : Val) : (c.bindVar v x).n = c.n := rfl
+private theorem size_constU (n : Nat) (w : UnknownReason) : (constU n w).size = n := by
+  simp [constU, Temporal.size_const]
+private theorem size_constE (n : Nat) (w : UnknownReason) : (constE n w).size = n := by simp [constE]
+private theorem size_liftA (n : Nat) (e : Except UnknownReason (Array R))
+    (h : ∀ a, e = .ok a → a.size = n) : (liftA n e).size = n := by
+  unfold liftA; cases e with
+  | ok a => exact h a rfl
+  | error w => exact size_constU n w
+private theorem size_liftQ (n : Nat) (e : Except UnknownReason (Array QR))
+    (h : ∀ a, e = .ok a → a.size = n) : (liftQ n e).size = n := by
+  unfold liftQ; cases e with
+  | ok a => exact h a rfl
+  | error w => exact size_constE n w
+private theorem size_qzip (f : Q → Q → Q) (a b : Array QR) : (qzip f a b).size = min a.size b.size := by
+  simp [qzip]
+private theorem size_perScene (c : SemCtx) (ev : List (Nat × Array R)) (p : Scene → Nat → Bool)
+    (agg : List R → R) : (perScene c ev p agg).size = c.n := by simp [perScene]
+
+mutual
+  theorem size_evalTAll (c : SemCtx) : ∀ t : Term, (evalTAll c t).size = c.n
+    | .lit _ _ => by rw [evalTAll]; simp
+    | .param _ => by rw [evalTAll]; simp
+    | .measure _ _ => by rw [evalTAll]; split <;> simp [size_constE, SemCtx.n, SemCtx.scenes, Primitives.Ctx.n]
+    | .quantity _ args ps => by
+        rw [evalTAll]; apply size_liftQ; intro a h
+        cases hv : constParams c ps <;> cases hr : resolveAll c.β args <;>
+          simp only [hv, hr, bind, Except.bind] at h <;> try contradiction
+        exact Primitives.size_evalQ _ _ _ _ _ h
+    | .distanceWhile s φ => by
+        rw [evalTAll]; split
+        · exact size_constE _ _
+        · rw [Primitives.size_distanceWhile]; exact size_evalAll c φ
+    | .sinceRise φ => by rw [evalTAll, Temporal.size_sinceRiseAll]; exact size_evalAll c φ
+    | .aggregate _ _ _ _ => by rw [evalTAll]; simp
+    | .add a b => by rw [evalTAll, size_qzip, size_evalTAll c a, size_evalTAll c b, Nat.min_self]
+    | .sub a b => by rw [evalTAll, size_qzip, size_evalTAll c a, size_evalTAll c b, Nat.min_self]
+    | .mul a b => by rw [evalTAll, size_qzip, size_evalTAll c a, size_evalTAll c b, Nat.min_self]
+    | .div a b => by rw [evalTAll, Array.size_zipWith, size_evalTAll c a, size_evalTAll c b, Nat.min_self]
+    | .neg a => by rw [evalTAll, Array.size_map]; exact size_evalTAll c a
+    | .abs a => by rw [evalTAll, Array.size_map]; exact size_evalTAll c a
+    | .cond _ _ _ => by rw [evalTAll]; simp
+  termination_by t => sizeOf t
+
+  theorem size_evalAll (c : SemCtx) : ∀ φ : Formula, (evalAll c φ).size = c.n
+    | .tt => by rw [evalAll]; exact Temporal.size_const _ _
+    | .ff => by rw [evalAll]; exact Temporal.size_const _ _
+    | .atom name args ps => by
+        rw [evalAll]; apply size_liftA; intro a h
+        cases hv : constParams c ps <;> cases hr : resolveAll c.β args <;>
+          simp only [hv, hr, bind, Except.bind] at h <;> try contradiction
+        split at h
+        · cases h; split
+          · split
+            · exact Temporal.size_const _ _
+            · split
+              · exact Temporal.size_const _ _
+              · simp [SemCtx.n, SemCtx.scenes, Primitives.Ctx.n]
+          · exact Temporal.size_const _ _
+        · cases h; simp [SemCtx.n, SemCtx.scenes, Primitives.Ctx.n]
+    | .cmp l _ r => by rw [evalAll, Array.size_zipWith, size_evalTAll c l, size_evalTAll c r, Nat.min_self]
+    | .asm _ => by rw [evalAll]; simp [SemCtx.n, SemCtx.scenes, Primitives.Ctx.n]
+    | .intent _ who target => by
+        cases who <;> cases target <;> rw [evalAll] <;> (repeat' split) <;>
+          simp [size_constU, SemCtx.n, SemCtx.scenes, Primitives.Ctx.n]
+    | .same a b => by
+        rw [evalAll]; split <;> simp [size_constU, Temporal.size_const]
+    | .not φ => by rw [evalAll, Temporal.size_mapNot]; exact size_evalAll c φ
+    | .and φ ψ => by
+        rw [evalAll]; split
+        · rw [Array.size_map]; exact size_evalAll c φ
+        · rw [Temporal.size_zipAnd, size_evalAll c φ, size_evalAll c ψ, Nat.min_self]
+    | .or φ ψ => by
+        rw [evalAll]; split
+        · rw [Array.size_map]; exact size_evalAll c φ
+        · rw [Temporal.size_zipOr, size_evalAll c φ, size_evalAll c ψ, Nat.min_self]
+    | .implies φ ψ => by
+        rw [evalAll]; split
+        · rw [Array.size_map]; exact size_evalAll c φ
+        · rw [Temporal.size_zipImplies, size_evalAll c φ, size_evalAll c ψ, Nat.min_self]
+    | .always φ => by rw [evalAll, Temporal.size_alwaysAll]; exact size_evalAll c φ
+    | .eventually φ => by rw [evalAll, Temporal.size_eventuallyAll]; exact size_evalAll c φ
+    | .until φ ψ => by rw [evalAll, Temporal.size_untilAll]; exact size_evalAll c ψ
+    | .since φ ψ => by rw [evalAll, Temporal.size_sinceAll]; exact size_evalAll c ψ
+    | .holdsFor m d s φ => by
+        rw [evalAll]; apply size_liftA; intro a h
+        cases hx : subjectFor c.β m s <;> cases hd : constOf d (evalTAll c d) <;>
+          simp only [hx, hd, bind, Except.bind, pure, Except.pure] at h <;> try contradiction
+        cases h; rw [Temporal.size_holdsForAll]; exact size_evalAll c φ
+    | .within m d s φ => by
+        rw [evalAll]; apply size_liftA; intro a h
+        cases hx : subjectFor c.β m s <;> cases hd : constOf d (evalTAll c d) <;>
+          simp only [hx, hd, bind, Except.bind, pure, Except.pure] at h <;> try contradiction
+        cases h; rw [Temporal.size_withinAll]; exact size_evalAll c φ
+    | .untilWithin m d s φ ψ => by
+        rw [evalAll]; apply size_liftA; intro a h
+        cases hx : subjectFor c.β m s <;> cases hd : constOf d (evalTAll c d) <;>
+          simp only [hx, hd, bind, Except.bind, pure, Except.pure] at h <;> try contradiction
+        cases h; rw [Temporal.size_untilWithinAll]; exact size_evalAll c φ
+    | .atLast m d s ψ φ => by
+        rw [evalAll]; apply size_liftA; intro a h
+        cases hx : subjectFor c.β m s <;> cases hd : constOf d (evalTAll c d) <;>
+          simp only [hx, hd, bind, Except.bind, pure, Except.pure] at h <;> try contradiction
+        cases h; rw [Temporal.size_atLastAll]; exact size_evalAll c φ
+    | .count edge sφ _ _ => by rw [evalAll, Array.size_map, Temporal.size_countEdgesAll]; exact size_evalAll c edge
+    | .rises φ => by rw [evalAll, Temporal.size_risesAll]; exact size_evalAll c φ
+    | .definedWhen pre φ => by rw [evalAll, Array.size_zipWith, size_evalAll c pre, size_evalAll c φ, Nat.min_self]
+    | .derived _ args ps => by
+        rw [evalAll]; apply size_liftA; intro a h
+        cases hv : constParams c ps <;> cases hr : resolveAll c.β args <;>
+          simp only [hv, hr, bind, Except.bind] at h <;> try contradiction
+        exact Primitives.size_evalB _ _ _ _ _ h
+    | .rule _ _ => by rw [evalAll]; split <;> simp_all [size_constU]
+    | .ruleApplies _ _ => by rw [evalAll]; split <;> simp_all [size_constU]
+    | .existsUser _ _ => by rw [evalAll]; exact size_perScene _ _ _ _
+    | .forallUser _ _ => by rw [evalAll]; exact size_perScene _ _ _ _
+    | .existsRegion _ _ _ => by rw [evalAll]; split; exact size_constU _ _; exact size_perScene _ _ _ _
+    | .forallRegion _ _ _ => by rw [evalAll]; split; exact size_constU _ _; exact size_perScene _ _ _ _
+    | .existsDevice _ _ _ => by rw [evalAll]; split; exact size_constU _ _; exact size_perScene _ _ _ _
+    | .forallDevice _ _ _ => by rw [evalAll]; split; exact size_constU _ _; exact size_perScene _ _ _ _
+  termination_by φ => sizeOf φ
+end
+
+end Lengths
+
+-- ---------------------------------------------------------------------------------------------
 -- Unfolding lemmas: the connectives are the pointwise three-valued operations of Unknown.lean.
 -- ---------------------------------------------------------------------------------------------
 section Lemmas
@@ -669,9 +806,46 @@ variable (c : SemCtx) (φ ψ : Formula)
 theorem evalAll_tt : evalAll c .tt = const c.n R.t := by rw [evalAll]
 theorem evalAll_ff : evalAll c .ff = const c.n R.f := by rw [evalAll]
 theorem evalAll_not : evalAll c (.not φ) = (evalAll c φ).map R.not := by rw [evalAll]; rfl
-theorem evalAll_and : evalAll c (.and φ ψ) = Array.zipWith R.and (evalAll c φ) (evalAll c ψ) := by rw [evalAll]; rfl
-theorem evalAll_or : evalAll c (.or φ ψ) = Array.zipWith R.or (evalAll c φ) (evalAll c ψ) := by rw [evalAll]; rfl
-theorem evalAll_implies : evalAll c (.implies φ ψ) = Array.zipWith R.implies (evalAll c φ) (evalAll c ψ) := by rw [evalAll]; rfl
+private theorem and_of_f (a b : R) (h : a.v = .f) : R.and a b = R.f := by
+  rcases a with ⟨av, aw⟩; subst h; simp [R.and, R.settle, Tri.and, R.f]
+private theorem or_of_t (a b : R) (h : a.v = .t) : R.or a b = R.t := by
+  rcases a with ⟨av, aw⟩; subst h; simp [R.or, R.settle, Tri.or, R.t]
+private theorem implies_of_f (a b : R) (h : a.v = .f) : R.implies a b = R.t := by
+  rcases a with ⟨av, aw⟩; subst h; simp [R.implies, R.not, R.or, R.settle, Tri.not, Tri.or, R.t]
+
+/-- A connective is the pointwise three-valued operation of its operands' arrays, whether or not
+    its right operand was evaluated: where the left one settles it at every instant, both arrays
+    have one value per observation and every pointwise value is the settled one. -/
+theorem evalAll_and : evalAll c (.and φ ψ) = Array.zipWith R.and (evalAll c φ) (evalAll c ψ) := by
+  rw [evalAll]; split
+  · rename_i h
+    rw [Array.all_eq_true] at h
+    apply Array.ext
+    · simp [size_evalAll]
+    · intro i h1 h2
+      simp only [Array.getElem_map, Array.getElem_zipWith]
+      rw [and_of_f _ _ (by simpa using h i (by simpa using h1))]
+  · rfl
+theorem evalAll_or : evalAll c (.or φ ψ) = Array.zipWith R.or (evalAll c φ) (evalAll c ψ) := by
+  rw [evalAll]; split
+  · rename_i h
+    rw [Array.all_eq_true] at h
+    apply Array.ext
+    · simp [size_evalAll]
+    · intro i h1 h2
+      simp only [Array.getElem_map, Array.getElem_zipWith]
+      rw [or_of_t _ _ (by simpa using h i (by simpa using h1))]
+  · rfl
+theorem evalAll_implies : evalAll c (.implies φ ψ) = Array.zipWith R.implies (evalAll c φ) (evalAll c ψ) := by
+  rw [evalAll]; split
+  · rename_i h
+    rw [Array.all_eq_true] at h
+    apply Array.ext
+    · simp [size_evalAll]
+    · intro i h1 h2
+      simp only [Array.getElem_map, Array.getElem_zipWith]
+      rw [implies_of_f _ _ (by simpa using h i (by simpa using h1))]
+  · rfl
 theorem evalAll_always : evalAll c (.always φ) = alwaysAll (evalAll c φ) := by rw [evalAll]
 theorem evalAll_eventually : evalAll c (.eventually φ) = eventuallyAll (evalAll c φ) := by rw [evalAll]
 theorem evalAll_until : evalAll c (.until φ ψ) = untilAll (evalAll c φ) (evalAll c ψ) := by rw [evalAll]

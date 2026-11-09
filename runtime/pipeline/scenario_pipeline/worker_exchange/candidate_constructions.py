@@ -100,7 +100,7 @@ def validate(folder, entry, law_id, cell_id, required=False, require_alternate=F
             if sha(receipt) != spec['sha256']:
                 raise ValueError('Fallback compatibility receipt changed')
             result = read(receipt)
-            if (result.get('format') != 'worker-package-compatibility-v2' or result.get('passed') is not True
+            if (result.get('format') != 'worker-package-compatibility' or result.get('passed') is not True
                     or result.get('case_id') != entry['case_id'] or result.get('candidate_id') != ident
                     or result.get('construction_sha256') != candidate['construction_sha256']
                     or not {'selected_measurements', 'negative_case_source', 'lean_decoder', 'final_decode'}

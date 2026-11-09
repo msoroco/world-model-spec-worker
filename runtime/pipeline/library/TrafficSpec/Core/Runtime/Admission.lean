@@ -1,7 +1,9 @@
 /-
   TrafficSpec.Core.Runtime.Admission
   What a trace must satisfy, as written, before any rule is evaluated on it: the declared facts
-  (assumptions and intentions) name what their scene holds, each once, by well-formed ids, and the
+  (assumptions and intentions) name what their scene holds, each once, by well-formed ids; no
+  structure is labelled with an abstract kind or lists one among the kinds its source cannot tell
+  (an abstract kind is the union of the kinds refining it, read only by a formula); and the
   accepted re-identification links are one-to-one.
 
   The checks are exact and read no geometry, so a recorded trace, a JSON case and a Lean witness
@@ -28,6 +30,10 @@ def sceneDefects (s : Scene) : List String :=
     ((duplicates (d.values.map (·.1))).map fun id => s!"{who}: `{id}` listed more than once") ++
     ((d.values.map (·.1)).eraseDups.filter (!IntId.wellFormed ·) |>.map fun id => s!"{who}: `{id}` is not a well-formed intention id")) ++
   ((duplicates (s.intents.map fun d => (d.vehicle, d.target))).map fun (v, r) => s!"{at_}: more than one intent record for ({v}, {r})") ++
+  (s.structures.flatMap fun st =>
+    (if st.kind.isAbstract then [s!"{at_}: structure {st.id} is labelled `{st.kind}`, an abstract kind; label it with a kind that refines `{st.kind}`"] else []) ++
+    ((st.unobservedKinds.filter (·.isAbstract)).eraseDups.map fun k =>
+      s!"{at_}: structure {st.id} lists `{k}` among unobserved_kinds, an abstract kind; list the kinds refining it that the source cannot tell")) ++
   ((duplicates (s.assumptions.map (·.1))).map fun id => s!"{at_}: assumption `{id}` listed more than once") ++
   ((s.assumptions.map (·.1)).eraseDups.filter (!AsmId.wellFormed ·) |>.map fun id => s!"{at_}: `{id}` is not a well-formed assumption id")
 

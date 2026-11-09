@@ -13,6 +13,8 @@ from .runtime_cli import verify,process,render
 def run(runtime,output,validator=None,lake=None,compare_to=None):
     runtime=Path(runtime).resolve();output=Path(output).resolve()
     verify(runtime)
+    if not (runtime/'fixtures/retained-speed').is_dir():
+        raise ValueError('Optional runtime smoke fixture was not exported; run exact case compatibility instead')
     if output.exists():raise ValueError('Use a fresh verification output')
     output.mkdir(parents=True)
     if validator is None:
@@ -43,7 +45,7 @@ def run(runtime,output,validator=None,lake=None,compare_to=None):
     p=subprocess.run([str(Path(validator).resolve()),str(bad),str(converted/'manifest.json')],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True)
     if not p.returncode:raise ValueError('Decoder accepted dangling identity')
     negatives.append({'fixture':'dangling_core_identity','rejected':True,'reason':p.stderr.strip()})
-    env=dict(os.environ,PYTHONPATH=os.pathsep.join([str(runtime),str(runtime/'scenario_pipeline'),str(runtime/'python')]),PYTHONDONTWRITEBYTECODE='1')
+    env=dict(os.environ,PYTHONPATH=os.pathsep.join([str(runtime/'scenario_pipeline'),str(runtime/'python')]),PYTHONDONTWRITEBYTECODE='1')
     with (output/'existing-regressions.log').open('w') as log:
         subprocess.run([sys.executable,'-m','unittest','discover','-s',str(runtime/'tests'),'-v'],cwd=output,env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
     equivalent=None

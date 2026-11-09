@@ -35,7 +35,7 @@ abbrev Vec := Q × Q
     to a vehicle's controls, which an instrumented source observes on its own vehicle. -/
 structure Kin where
   position : Option Vec := none          -- m
-  heading : Option Vec := none           -- finite nonzero vector; unit length recommended
+  heading : Option Vec := none           -- unit vector
   velocity : Option Vec := none          -- m/s
   speed : Option Q := none               -- m/s
   accelLongitudinal : Option Q := none   -- m/s², signed along heading
@@ -81,17 +81,8 @@ structure Signals where
   compressionBrake : Option Bool := none
   deriving Repr, Inhabited
 
-/-- Source classifications retained verbatim during a versioned schema migration.
-    These labels are provenance, not new legal atoms or aliases for current classes. -/
-structure SourceClassifications where
-  schema : String
-  classes : Option (List String) := none
-  unobservedClasses : Option (List String) := none
-  deriving Repr, Inhabited
-
 structure RoadUser where
   track : TrackId
-  sourceClassifications : Option SourceClassifications := none
   classes : Option (List RoadUserClass) := none   -- a user may be several (a school bus is a bus)
   /-- Classes the source cannot tell for this user: membership in them is unknown, not false. -/
   unobservedClasses : List RoadUserClass := []
@@ -105,6 +96,16 @@ structure RoadUser where
   sightAlongWay : Option (List (RegionId × Q)) := none   -- per way, m
   deriving Repr, Inhabited
 
+/-- The kinds that carry an entrance into an intersection (`lane.enters_intersection`, an
+    `entrance_of` entry): these and every kind refining them. A roadway, one-way roadway, shoulder or
+    bicycle lane or path that carries one is a directed approach segment entering that one
+    intersection. -/
+def StructureKind.entranceCarriers : List StructureKind := [.lane, .roadway, .shoulder, .bicycleLaneOrPath]
+
+/-- The kinds of a way along which a road user's sight is given (`sight_along_way`): these and every
+    kind refining them. -/
+def StructureKind.sightWays : List StructureKind := [.highway]
+
 /-- Lane attributes (ATOMS.md `st.lane_*`). -/
 structure LaneInfo where
   direction : Option Vec := none
@@ -113,7 +114,7 @@ structure LaneInfo where
   ordinalFromLeft : Option Nat := none
   countInDirection : Option Nat := none
   leadsTo : Option (List RegionId) := none
-  entersIntersection : Option RegionId := none   -- the intersection this lane is an approach to
+  entersIntersection : Option RegionId := none   -- the intersection this carrier is an approach to
   markingLeft : Option (MarkingType × MarkingColour) := none
   markingRight : Option (MarkingType × MarkingColour) := none
   width : Option Q := none
@@ -128,15 +129,23 @@ structure Structure where
   unobservedKinds : List StructureKind := []
   position : Option Vec := none             -- reference point (point-like structures)
   boundary : Option (List Vec) := none      -- polygon, for regions
-  entranceOf : Option (List RegionId) := none -- stop line/crosswalk entrance associations
   lane : Option LaneInfo := none
   paved : Option Bool := none
   opening : Option Bool := none
   marked : Option Bool := none
   curvature : Option Q := none              -- 1/m
   grade : Option Q := none                  -- ratio
-  sightDistance : Option Q := none          -- m
+  /-- Operational regional sight-distance estimate in m under the source's declared convention.
+      May be the minimum sampled incoming virtual-observer clear-side distance to the current
+      subject's measured body, scoped to its occupied region in this scene. Brackets, heights,
+      sampling and censoring remain source evidence; a lower bound is not an exact cutoff. -/
+  sightDistance : Option Q := none
   ways : Option (List RegionId) := none     -- the highway regions it lies on
+  /-- For a stop line or a crosswalk: the carriers whose entrance into an intersection it marks.
+      `entranceObserved` says the list is complete; where it is not, which carriers the line marks is
+      unknown and `entranceOf` is empty. -/
+  entranceOf : List RegionId := []
+  entranceObserved : Bool := false
   reservedClass : Option ReservedClass := none
   turnSide : Option TurnSide := none
   parkingAngle : Option Q := none           -- deg
@@ -222,9 +231,9 @@ structure MeasuredRelation where
   a : TrackId
   b : TrackId
   centreDistance : Option Q := none
-  surfaceGap : Option (Q × Q) := none        -- longitudinal, lateral, in a's frame
+  surfaceGap : Option (Q × Q) := none        -- nearest-point gap along, across a's heading; ≥ 0
   aAheadOfB : Option Bool := none
-  longitudinalOverlap : Option Q := none
+  longitudinalOverlap : Option Q := none     -- shared length of the projections on a's heading
   oncoming : Option Bool := none
   sameDirection : Option Bool := none
   bearing : Option Vec := none               -- b relative to a, in a's frame (long, lat)
@@ -274,25 +283,26 @@ end Scene
 -- split may omit is named on a line of its own.
 -- ---------------------------------------------------------------------------------------------
 /-- A reference a scene makes to an entity: where it is written, the kind of entity it names, the
-    id, and the structure kind that entity must have when the field requires one. -/
+    id, and the structure kinds of which that entity must have one (by refinement) when the field
+    requires one. -/
 structure Reference where
   place : String
   kind : EntityKind
   id : Nat
-  structureKind : Option StructureKind := none
+  structureKinds : List StructureKind := []
   deriving Repr, Inhabited
 
 namespace Structure
 /-- The regions a structure's own fields name: its lane's neighbours, successors and intersection,
-    and the ways it lies on. -/
+    the ways it lies on, and the carriers whose entrance it marks. -/
 def references (st : Structure) : List Reference :=
   let at_ := fun (f : String) => s!"structure {st.id} {f}"
   (st.lane.bind (·.leftNeighbour)).toList.map (fun r => { place := at_ "lane.left", kind := .region, id := r })
   ++ (st.lane.bind (·.rightNeighbour)).toList.map (fun r => { place := at_ "lane.right", kind := .region, id := r })
   ++ ((st.lane.bind (·.leadsTo)).getD []).map (fun r => { place := at_ "lane.leads_to", kind := .region, id := r })
   ++ (st.lane.bind (·.entersIntersection)).toList.map (fun r => { place := at_ "lane.enters_intersection", kind := .region, id := r })
-  ++ (st.entranceOf.getD []).map (fun r => { place := at_ "entrance_of", kind := .region, id := r, structureKind := some .lane })
   ++ (st.ways.getD []).map (fun r => { place := at_ "ways", kind := .region, id := r })
+  ++ st.entranceOf.map (fun r => { place := at_ "entrance_of", kind := .region, id := r, structureKinds := StructureKind.entranceCarriers })
 end Structure
 
 namespace Scene
@@ -306,7 +316,7 @@ def references (s : Scene) : List Reference :=
   ++ (s.devices.flatMap fun d => d.onTrack.toList.map fun t => { place := s!"device {d.id} on_track", kind := .track, id := t })
   ++ (s.structures.flatMap Structure.references)
   ++ (s.users.flatMap fun u => (u.sightAlongWay.getD []).map fun (w, _) =>
-       { place := s!"user {u.track} sight_along_way", kind := .region, id := w, structureKind := some .highway })
+       { place := s!"user {u.track} sight_along_way", kind := .region, id := w, structureKinds := StructureKind.sightWays })
 end Scene
 
 namespace Device

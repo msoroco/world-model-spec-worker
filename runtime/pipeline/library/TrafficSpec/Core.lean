@@ -3,7 +3,8 @@
   the layers above it in this list.
   Foundations: three-valued logic with reasons, units, time, the temporal operators, the handles
     that name tracks, regions, devices and assumptions.
-  Vocab: the ontology enumerations, the world, the atoms, assumptions, parameters, primitives.
+  Vocab: the ontology enumerations, the world, the atoms, assumptions, parameters, the region
+    tables, primitives.
   Language: formulas and their semantics, rules, concepts, the static check, export.
   Runtime: grounding, manifests, the monitor, decoding.
   Evidence: builders and adequacy for the witnesses; the lint of a written trace and the
@@ -26,6 +27,7 @@ import TrafficSpec.Core.Vocab.Assumptions
 import TrafficSpec.Core.Vocab.Intentions
 import TrafficSpec.Core.Vocab.Params
 import TrafficSpec.Core.Vocab.Atoms
+import TrafficSpec.Core.Vocab.RegionTable
 import TrafficSpec.Core.Vocab.Primitives
 import TrafficSpec.Core.Language.Formula
 import TrafficSpec.Core.Language.Semantics

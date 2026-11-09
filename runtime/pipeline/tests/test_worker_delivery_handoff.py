@@ -71,8 +71,8 @@ class DeliveryHandoffTests(unittest.TestCase):
                 'cases': self.proposal('cases', {'cell_id': 'C1', 'actor': 'motor_vehicle_driver',
                                                 'status': 'draft', 'cases': cases, 'sweep_specs': []})}
         write(self.folder / 'proposals/semantic-index.json',
-              {'format': 'worker-semantic-delivery-v1', 'assignment_id': self.aid, 'stages': refs})
-        manifest = {'cases': []}
+              {'format': 'worker-semantic-delivery', 'assignment_id': self.aid, 'stages': refs})
+        manifest = {'runtime_manifest_sha256':'a'*64,'cases': []}
         for cid in self.case_ids:
             path = 'cases/' + cid + '/construction.json'
             write(self.folder / path, {'recording_description': self.description})
@@ -106,6 +106,7 @@ class DeliveryHandoffTests(unittest.TestCase):
             validate_case(self.folder, {'case_id': case, 'delivery_acceptance': receipt})
 
     def test_complete_queue(self):
+        write(self.repo/'batch.json', {'assignments': {self.aid: {'set_ids': ['demo-test']}}})
         write(self.folder/'execution-manifest.json', {'cases': [{'case_id': cid} for cid in self.case_ids]})
         write(self.folder/'case-plan.json', {'comparisons': [{'comparison_id': 'halt'}]})
         rows = [{'order': i, 'assignment_id': self.aid, 'case_id': cid,
@@ -113,13 +114,25 @@ class DeliveryHandoffTests(unittest.TestCase):
                                           'owner_release_command', 'additional_source_audit_command')}}
                 for i, cid in enumerate(self.case_ids, 1)]
         write(self.repo/'work/_shared/gpu-queue.json',
-              {'format': 'worker-ordered-gpu-queue-v1', 'cases': rows,
+              {'format': 'worker-ordered-gpu-queue', 'cases': rows,
                'comparison_audit_commands': [{'assignment_id': self.aid,
                                               'comparison_id': 'halt', 'command': 'audit halt'}]})
+        for row in rows:
+            row.update(prepare_command='prepare-delivery --case '+row['case_id'],
+                       execute_command='execute-delivery --case '+row['case_id'],
+                       accept_command='accept-delivery --case '+row['case_id'],candidate_commands={})
+        write(self.repo/'work/_shared/gpu-queue.json',
+              {'format':'worker-ordered-gpu-queue','cases':rows,
+               'comparison_audit_commands':[{'assignment_id':self.aid,'comparison_id':'halt','command':'audit halt'}]})
+        log=self.repo/'work/_shared/integration.log';log.write_text('integration checked')
+        write(self.repo/'work/_shared/local-integration-proof.json',
+              {'format':'worker-local-integration-proof','passed':True,'exit_code':0,
+               'command':'integration-test','log':'work/_shared/integration.log','log_sha256':sha(log),
+               'scenarios':['primary_job','fallback_job','saved_processing','rejected_audit','accepted_both_sets']})
         self.assertEqual(validate_queue(self.repo, {self.aid: {}})['cases'], 2)
         rows.pop()
         write(self.repo/'work/_shared/gpu-queue.json',
-              {'format': 'worker-ordered-gpu-queue-v1', 'cases': rows,
+              {'format': 'worker-ordered-gpu-queue', 'cases': rows,
                'comparison_audit_commands': []})
         with self.assertRaisesRegex(ValueError, 'every exact case'):
             validate_queue(self.repo, {self.aid: {}})
@@ -134,7 +147,7 @@ class DeliveryHandoffTests(unittest.TestCase):
                     'owner_release_command','additional_source_audit_command')}}
               for i,cid in enumerate(self.case_ids,1)]
         write(self.repo/'work/_shared/gpu-queue.json',
-              {'format':'worker-ordered-gpu-queue-v1','cases':rows,
+              {'format':'worker-ordered-gpu-queue','cases':rows,
                'comparison_audit_commands':[]})
         with self.assertRaisesRegex(ValueError, 'canonical prepare_command'):
             validate_queue(self.repo,{self.aid:{}})
@@ -177,7 +190,7 @@ class DeliveryHandoffTests(unittest.TestCase):
               patch('worker_exchange.local.import_return',return_value=imported),
               patch('worker_exchange.local_delivery.assignments',return_value={self.aid:{}}),
               patch('worker_exchange.execution_manifest.validate',return_value=manifest),
-              patch('worker_exchange.candidate_constructions.select',return_value=(None,{},None)),
+              patch('worker_exchange.candidate_constructions.select',return_value=(None,{'construction_sha256':'b'*64},None)),
               patch('worker_exchange.local_delivery.freeze',side_effect=freeze_one),
               patch('worker_exchange.local_delivery.prepare_manifest_jobs',
                     return_value={'exact_execution_job_ids':[]}),
@@ -228,6 +241,23 @@ class DeliveryHandoffTests(unittest.TestCase):
 
     @unittest.skipUnless((pathlib.Path(__file__).resolve().parents[1]/'pipeline.py').is_file(),
                          'Local campaign integration is outside portable worker runtime')
+    def test_training_selection_targets_follow_frozen_scope(self):
+        from worker_exchange.local_delivery import _selection_targets
+        root=self.repo/'training-artifacts'
+        assignment={'assignment_id':'training__C1__LAW-1__motor_vehicle_driver',
+                    'role':'training','law_id':'LAW-1','cell_id':'C1',
+                    'actor':'motor_vehicle_driver',
+                    'selection_targets':['demo-train','full-train']}
+        for sid in assignment['selection_targets']:
+            write(root/'sets'/sid/'scope.json',{'assignments':[{'law_id':'LAW-1',
+                  'cell_id':'C1','actor':'motor_vehicle_driver'}]})
+        self.assertEqual(_selection_targets(root,assignment),['demo-train','full-train'])
+        write(root/'sets/demo-train/scope.json',{'assignments':[]})
+        with self.assertRaisesRegex(ValueError,'absent from demo-train scope'):
+            _selection_targets(root,assignment)
+
+    @unittest.skipUnless((pathlib.Path(__file__).resolve().parents[1]/'pipeline.py').is_file(),
+                         'Local campaign integration is outside portable worker runtime')
     def test_local_acceptance_references_one_recording_in_both_sets(self):
         from worker_exchange.local_delivery import accept
         root=self.repo/'artifacts';(root/'state').mkdir(parents=True)
@@ -235,23 +265,39 @@ class DeliveryHandoffTests(unittest.TestCase):
         write(self.repo/'batch.json',{'assignments':{self.aid:{}}})
         write(self.repo/'inputs'/self.aid/'assignment.json',self.assignment)
         for sid in ('demo-test','full-test'):
+            write(root/'sets'/sid/'scope.json',{'assignments':[{'law_id':'LAW-1',
+                  'cell_id':'C1','actor':'motor_vehicle_driver'}]})
             write(root/'sets'/sid/'selection.json',{'frozen':True,'members':[],
                                                    'selection_version':'before'})
+        write(root/'work/index.json',{'format':'set-review-workspaces-v2','entries':[],'sets':[]})
         rid='a'*64;attempt=root/'recordings'/rid/'evidence';attempt.mkdir(parents=True)
         write(attempt.parent/'metadata.json',{'recording_id':rid,'campaign':'run',
               'job_id':7,'attempt':1,'cell_id':'C1','actor':'motor_vehicle_driver',
               'case_id':self.case_ids[0],'status':'recording','phases':{}})
         write(attempt/'result.json',{'completion':{'binding':{}}})
-        write(attempt/'trace.json',{'scenes':[{'t':50}]})
-        (attempt/'video.webm').write_bytes(b'fixture-video')
+        write(attempt/'traffic_spec/trace.json',{'scenes':[{'t':50}]})
+        (attempt/'raw.mkv').write_bytes(b'fixture-video')
         (attempt/'video_frames.jsonl').write_text(json.dumps({'video_frame':0,'time_s':0.05})+'\n')
-        audit={'format':'worker-delivery-audit-v1','passed':True,
+        auditor=root/'state/operations/worker_exchange/batch/audit/delivery_audit.py'
+        auditor.parent.mkdir(parents=True,exist_ok=True)
+        auditor.write_text('AUDITOR_VERSION = 1\n')
+        audit={'format':'worker-delivery-audit','passed':True,
                'case_id':self.case_ids[0],'job_id':7,'attempt':1,'recording_id':rid,
                'frames':1,'source_result_sha256':sha(attempt/'result.json'),
-               'video':'video.webm','video_sha256':sha(attempt/'video.webm'),
-               'trace':'trace.json','trace_sha256':sha(attempt/'trace.json'),
+               'auditor_sha256':sha(auditor),
+               'video':'raw.mkv','video_sha256':sha(attempt/'raw.mkv'),
+               'trace':'traffic_spec/trace.json','trace_sha256':sha(attempt/'traffic_spec/trace.json'),
                'checks':{key:True for key in ('native_source','all_participants','time_join',
                         'full_video_decode','actual_pixels','physical_completion')}}
+        from worker_exchange import media
+        decode_path=auditor.parent/'source-decode.json'
+        write(decode_path,{'format':'source-decode','passed':True,'auditor_sha256':sha(pathlib.Path(media.__file__)),
+                           'video_sha256':audit['video_sha256'],'frames':1,
+                           'mapping_sha256':sha(attempt/'video_frames.jsonl'),
+                           'checks':{'frame_count':'all-decoded-frames'}})
+        audit.update(auditor_path=str(auditor),source_decode_receipt_path=str(decode_path),
+                     source_decode_receipt_sha256=sha(decode_path),
+                     source_decode_auditor_sha256=sha(pathlib.Path(media.__file__)))
         write(attempt/'audit.json',audit)
         job={'id':7,'stage':'execution','status':'completed','attempts':1,
              'actor':'motor_vehicle_driver','artifact_id':'artifact',
@@ -271,8 +317,8 @@ class DeliveryHandoffTests(unittest.TestCase):
               patch('worker_exchange.delivery_handoff.validate_case'),
               patch('recording_store.stored_attempt_path',return_value=attempt),
               patch('batch_pipeline.completion.verify'),
-              patch('worker_exchange.media.audit'),
-              patch('organize_work.refresh_workspaces')):
+              patch('worker_exchange.media.audit') as decode_video,
+              patch('review_workspaces.refresh_workspaces')):
             audit['passed']=False
             write(attempt/'audit.json',audit)
             with self.assertRaisesRegex(ValueError,'audit incomplete'):
@@ -282,7 +328,12 @@ class DeliveryHandoffTests(unittest.TestCase):
             audit['passed']=True
             write(attempt/'audit.json',audit)
             result=accept(root,self.repo,'batch',db,'run',self.aid,self.case_ids[0],7,1,attempt/'audit.json')
+            decode_video.assert_not_called()
+            auditor.write_text('AUDITOR_VERSION = 2\n')
+            with self.assertRaisesRegex(ValueError,'auditor revision changed'):
+                accept(root,self.repo,'batch',db,'run',self.aid,self.case_ids[0],7,1,attempt/'audit.json')
         self.assertEqual(result['recording_id'],rid)
+        self.assertEqual(read(attempt/'delivery-primary-bound-audit.json')['video_sha256'],sha(attempt/'raw.mkv'))
         for sid in ('demo-test','full-test'):
             self.assertEqual(read(root/'sets'/sid/'selection.json')['members'][0]['recording_id'],rid)
 

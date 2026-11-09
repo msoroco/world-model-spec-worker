@@ -42,7 +42,7 @@ class FrameMap:
     def __enter__(self):return self
     def __exit__(self,*args):self.close()
 
-"""Source-bound physical event assessment for migration002, CPU only.
+"""Source-bound physical event assessment, CPU only.
 
 Criteria are explicit engineering completion checks, never legal definitions.
 Fixture generation is separate: no assessment branch inspects a fixture label.
@@ -63,7 +63,7 @@ def _get(obj,path,default=None):
  except (KeyError,TypeError,IndexError,ValueError):return default
 
 def default_descriptor(cfg):
- law=cfg['law_id'];d={'format':'worker-physical-completion-criteria-v002','criterion':'travel_progress','motion_source':'trace.jsonl','position_key':'position_m','minimum_progress_m':.25,'minimum_samples':2,'engineering_tolerances_not_legal':True,'context_sources':[]}
+ law=cfg['law_id'];d={'format':'worker-physical-completion-criteria','criterion':'travel_progress','motion_source':'trace.jsonl','position_key':'position_m','minimum_progress_m':.25,'minimum_samples':2,'engineering_tolerances_not_legal':True,'context_sources':[]}
  if law in ('NRS-484B-400-2a','NRS-484B-400-2b'):
   d.update(criterion='intersection_clearance',motion_source='body_history.jsonl',body_key='body_vertices_m',context_sources=['road_geometry.json'],exit_axis=1,exit_sign=-1)
  elif law=='NRS-484B-253':
@@ -135,7 +135,7 @@ def assess_physical(root,cfg,target_checks=None):
   else:missing.append(name)
  if missing:
   detail={'criterion':d,'reason':'Required original source is missing'}
-  return {'physical_checks':{k:_check('unverified','source-bound '+k+' assessment v002',sources,[],detail,sorted(set(missing))) for k in ('setup','target','maneuver')},'realized_observables':{},'setup_confirmed':False,'behavior_attempted':False,'maneuver_completed':False}
+  return {'physical_checks':{k:_check('unverified','source-bound '+k+' assessment',sources,[],detail,sorted(set(missing))) for k in ('setup','target','maneuver')},'realized_observables':{},'setup_confirmed':False,'behavior_attempted':False,'maneuver_completed':False}
  try:
   mapping=_rows(root/'video_frames.jsonl');rows=_rows(root/d['motion_source'])
   if not isinstance(rows,list) or len(rows)<d.get('minimum_samples',2):raise ValueError('Insufficient original motion samples')
@@ -222,17 +222,17 @@ def assess_physical(root,cfg,target_checks=None):
    destination=d.get('destination_lane',-1);met=lanes[0]!=destination and any(v==destination and b for v,b in zip(lanes,inside)) and lanes[-1]==destination and path>=minimum
    detail.update(entrant_lane_ids=lanes,whole_entrant_between_pair=inside,destination_lane=destination)
   else:raise ValueError('Unsupported authored physical criterion: '+criterion)
-  maneuver=_check('met' if met else 'not_met','original sampled '+criterion+' v002',sources,intervals,detail)
+  maneuver=_check('met' if met else 'not_met','original sampled '+criterion+'',sources,intervals,detail)
   expected_count=round(float(cfg['duration_s'])*float(cfg['rate_hz']));expected_span=max(0,(expected_count-1)/float(cfg['rate_hz']))
   actual_span=mapping[-1]['time_s']-mapping[0]['time_s'];complete_capture=len(mapping)==expected_count and len(rows)==len(mapping) and abs(actual_span-expected_span)<=1e-4
-  setup=_check('met' if complete_capture else 'not_met','source identity/timestamp joins plus full planned recording count and duration v002',sources,intervals,{'joined_motion_samples':len(rows),'planned_frame_count':expected_count,'observed_frame_count':len(mapping),'planned_observation_span_s':expected_span,'observed_observation_span_s':actual_span,'legal_scope_not_accepted':True})
+  setup=_check('met' if complete_capture else 'not_met','source identity/timestamp joins plus full planned recording count and duration',sources,intervals,{'joined_motion_samples':len(rows),'planned_frame_count':expected_count,'observed_frame_count':len(mapping),'planned_observation_span_s':expected_span,'observed_observation_span_s':actual_span,'legal_scope_not_accepted':True})
   target_status='unverified' if not target_checks else ('met' if all(t.get('matched') is True for t in target_checks) else 'not_met')
-  target=_check(target_status,'selected analyzer measured target matching v002; no causation inference',sources,intervals,{'checks':target_checks or []})
+  target=_check(target_status,'selected analyzer measured target matching; no causation inference',sources,intervals,{'checks':target_checks or []})
  except (OSError,ValueError,TypeError,KeyError,IndexError,ZeroDivisionError) as error:
   errors.append(str(error));detail={'criterion':d,'errors':errors}
-  setup=_check('unverified','source identity and timestamp join v002',sources,intervals,detail)
-  target=_check('unverified','selected analyzer measured target matching v002',sources,intervals,detail)
-  maneuver=_check('unverified','original sampled motion assessment v002',sources,intervals,detail)
+  setup=_check('unverified','source identity and timestamp join',sources,intervals,detail)
+  target=_check('unverified','selected analyzer measured target matching',sources,intervals,detail)
+  maneuver=_check('unverified','original sampled motion assessment',sources,intervals,detail)
  return {'physical_checks':{'setup':setup,'target':target,'maneuver':maneuver},'realized_observables':observables,'setup_confirmed':setup['status']=='met','behavior_attempted':target['status']=='met','maneuver_completed':maneuver['status']=='met'}
 
 """Saved C109705 physical motion evidence, distinct from legal acceptance.
@@ -334,7 +334,7 @@ def assess_left_turn(attempt):
     except (OSError, ValueError, KeyError, TypeError, IndexError) as error:
         return outcome('unverified', str(error))
 
-# Migration002: source provenance, capture sealing and evidence-backed results.
+# Source provenance, capture sealing and evidence-backed results.
 def provenance_kind(root):
     root=Path(root)
     for filename in ('acquisition-provenance.json','capture-seal.json'):
@@ -377,7 +377,7 @@ def seal_capture(attempt,*,frames,restoration,errors,encoder_exit_codes=None,con
     if not (root/'trace.jsonl').is_file() or not (root/'video_frames.jsonl').is_file():raise ValueError('Cannot seal missing original acquisition')
     write(root/'acquisition-context.json',context or {})
     sources=tree(root)
-    receipt={'format':'worker-sealed-capture-v2','provenance_kind':'native','diagnostic_fixture':json.loads((root/'acquisition-provenance.json').read_text()).get('diagnostic_fixture',False) if (root/'acquisition-provenance.json').is_file() else False,
+    receipt={'format':'worker-sealed-capture','provenance_kind':'native','diagnostic_fixture':json.loads((root/'acquisition-provenance.json').read_text()).get('diagnostic_fixture',False) if (root/'acquisition-provenance.json').is_file() else False,
        'frames':frames,'restoration':restoration,'encoder_exit_codes':codes,'sources':sources,
        'native_revision':{'construction_sha256':sha(root/'construction.json'),'runner_sha256':sha(root/'runner.py')},
        'events':['capture_finished','encoders_closed','restoration_verified'],'source_digest':digest(sources),

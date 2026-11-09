@@ -28,8 +28,6 @@ inductive Capability
 structure Manifest where
   source : String
   entries : List (String × Capability)     -- atom id in ATOMS.md form ↦ capability
-  /-- Retired source capabilities retained for provenance; never current observation support. -/
-  sourceEntries : List (String × Capability) := []
   /-- The longest tracker break the source's re-identification links may bridge (seconds). -/
   reidGap : Q := Q.zero
   deriving Repr, Inhabited
@@ -67,11 +65,31 @@ def atomIdOf (name : String) : Option String :=
     | none => some id
     | some a => if id.length > a.length then some id else some a) none
 
+/-- The atom ids a read of `id` depends on: itself, and for a read of a region kind or of a relation
+    that reads kind membership, the kinds whose masks its verdict follows (a kind's ancestors; a
+    lane relation's lane kind; an entrance's line kinds, stop line and crosswalk). No source
+    declares an abstract kind: a read of one depends on the kinds refining it directly, and no read
+    depends on an abstract ancestor. -/
+def kindDependencies (id : String) : List String :=
+  let kinds (ks : List StructureKind) := (ks.filter (!·.isAbstract)).map fun k => s!"st.{k}"
+  let ofKind (k : StructureKind) :=
+    if k.isAbstract then kinds (StructureKind.all.filter (·.parent? == some k))
+    else kinds (k :: k.ancestors)
+  match id with
+  | "rel.ahead_behind_in_lane" => id :: ofKind .lane
+  | "st.entrance_of" => id :: ofKind .stopLine ++ ofKind .crosswalk
+  | _ =>
+    if id.startsWith "st." then
+      match StructureKind.ofString ((id.drop 3).toString) with
+      | some k => ofKind k
+      | none => [id]
+    else [id]
+
 /-- The atom ids a formula list reads, through atoms and primitives (a concept call is expanded first). -/
 def formulaAtomIds (fs : List Formula) : List String :=
   ((fs.flatMap Formula.atoms).flatMap fun n =>
     if n.startsWith "prim_" then (Primitives.reads n).filterMap atomIdOf
-    else (atomIdOf n).toList).eraseDups
+    else (atomIdOf n).toList).flatMap kindDependencies |>.eraseDups
 
 /-- The atom ids a rule reads, through its atoms, its primitives and, transitively, the
     rules it composes. -/
@@ -177,7 +195,6 @@ def structure' (id : String) (st : Structure) : Option Structure :=
   | "st.lane_adjacency" => some { st with lane := st.lane.map fun l =>
       { l with leftNeighbour := none, rightNeighbour := none, ordinalFromLeft := none, countInDirection := none } }
   | "st.lane_connectivity" => some { st with lane := st.lane.map fun l => { l with leadsTo := none } }
-  | "st.entrance_of" => some { st with entranceOf := none }
   | "st.lane_enters" => some { st with lane := st.lane.map fun l => { l with entersIntersection := none } }
   | "st.lane_marking" => some { st with lane := st.lane.map fun l => { l with markingLeft := none, markingRight := none } }
   | "st.lane_width" => some { st with lane := st.lane.map fun l => { l with width := none } }
@@ -185,11 +202,14 @@ def structure' (id : String) (st : Structure) : Option Structure :=
   | "st.grade" => some { st with grade := none }
   | "st.sight_distance" => some { st with sightDistance := none }
   | "st.on_way" => some { st with ways := none }
+  | "st.entrance_of" => some { st with entranceOf := [], entranceObserved := false }
   | "st.region_geometry" => some { st with position := none, boundary := none }
   | _ =>
-    -- a kind atom: the source cannot tell this kind, so no region is known to be or not be one
+    -- a kind atom: the source cannot tell this kind; a kind that refines another is unknown only on
+    -- the regions labelled with one of its ancestors (`Structure.isOfKind`); an abstract kind is
+    -- never declared: what a source cannot tell of it is what it cannot tell of the kinds refining it
     match StructureKind.ofString ((id.drop 3).toString) with
-    | some k => some { st with unobservedKinds := k :: st.unobservedKinds }
+    | some k => if k.isAbstract then some st else some { st with unobservedKinds := k :: st.unobservedKinds }
     | none => some st
 
 def device (id : String) (d : Device) : Option Device :=

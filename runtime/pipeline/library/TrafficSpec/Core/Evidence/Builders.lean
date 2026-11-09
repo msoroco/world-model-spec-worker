@@ -135,7 +135,9 @@ end Build
     of timestamps; the whole trace when absent). A lookback window is truncated at the start of
     every finite trace, so a witness about a rule with one names the instants it speaks about.
     A witness is a test of the rule, not evidence about the law: it shows the formulas reach the
-    verdict it names, on a scene its author built. -/
+    verdict it names, on a scene its author built. A history-boundary witness (`boundary` names the
+    history its trace lacks) shows that the rule stays unknown where the trace does not reach back
+    far enough to decide it. -/
 structure Scenario where
   name : String
   rule : String
@@ -146,14 +148,23 @@ structure Scenario where
   regions : List (String × RegionId) := []   -- an instance's region formals, each a region of the trace
   expected : Verdict
   window : Option (Timestamp × Timestamp) := none
+  boundary : String := ""
   deriving Repr, Inhabited
 
 namespace Scenario
+/-- The operators that look back from the observation they judge, by the tag their truncation at the
+    start of a trace carries: only these leave a history-boundary witness unknown. -/
+def pastOps : List String :=
+  ["since", "since_rise", "rises", "once", "holdsFor", "atLast", "count", "distance_while", "prim_heading_change"]
+
 /-- The witness holds when the rule's episode verdict on its grounding has the expected tag, and
     the verdict is reached for the reason the witness is about: a `notApplicable` witness needs an
     instant at which every bound track is present (a track that never appears leaves any rule not
     engaged); an `unknown` witness must be unknown only for atoms its manifest masks (an unbound
-    variable, a truncated window or a missing parameter is a defect, not a masked observation).
+    variable, a truncated window or a missing parameter is a defect, not a masked observation),
+    except that a history-boundary witness is unknown for a window truncated at the start of its
+    trace, at least once, and otherwise only for masked atoms; a boundary is declared on an
+    `unknown` witness only.
     The rules are evaluated with their concept calls expanded over `concepts`. A trace the
     admission rejects, or a region formal given a region no scene of the trace holds, fails. -/
 def run (rules : List Rule) (sc : Scenario) (concepts : List Concept := []) : Except String Verdict := do
@@ -174,6 +185,8 @@ def run (rules : List Rule) (sc : Scenario) (concepts : List Concept := []) : Ex
     | some (a, b) => a ≤ t && t ≤ b
     | none => true
   let got := Grounding.episode (rows.map (·.2))
+  if !sc.boundary.isEmpty && sc.expected.tag != "unknown" then
+    throw s!"{sc.name}: a history boundary is declared on a witness that expects {sc.expected.tag}, not unknown"
   if got.tag != sc.expected.tag then
     throw s!"{sc.name}: expected {sc.expected.tag}, got {got.tag} {(got.reasons.map UnknownReason.tag)}"
   match sc.expected with
@@ -182,11 +195,15 @@ def run (rules : List Rule) (sc : Scenario) (concepts : List Concept := []) : Ex
     else throw s!"{sc.name}: not applicable, but no instant has every bound track present"
   | .unknown _ =>
     let absent := sc.manifest.absentIds
+    let truncated := fun (w : UnknownReason) => match w with | .windowTruncated op => pastOps.contains op | _ => false
     let stray := got.reasons.filter fun w => match w with
       | .absentAtom n => !(atomIdOf n).any absent.contains
-      | _ => true
-    if stray.isEmpty then pure got
-    else throw s!"{sc.name}: unknown for {(stray.map UnknownReason.tag)}, not for an atom the manifest masks"
+      | w => sc.boundary.isEmpty || !truncated w
+    if !stray.isEmpty then
+      throw s!"{sc.name}: unknown for {(stray.map UnknownReason.tag)}, not for an atom the manifest masks{if sc.boundary.isEmpty then "" else " or a window truncated at the trace start"}"
+    else if !sc.boundary.isEmpty && !got.reasons.any truncated then
+      throw s!"{sc.name}: a history-boundary witness, but no window is truncated at the trace start"
+    else pure got
   | _ => pure got
 end Scenario
 

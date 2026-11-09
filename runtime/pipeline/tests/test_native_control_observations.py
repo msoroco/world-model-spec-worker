@@ -16,7 +16,8 @@ class NativeControlTests(unittest.TestCase):
         self.write('native_incoming_lane_topology.json',{'schema':'native-incoming-lane-topology-v1','map_sha256':self.map_hash,'instrumentation_sha256':self.code_hash,'connections':[{'incoming_road':1,'incoming_lane':-1,'connecting_road':2,'incoming_observed':True,'connected_junction_observed':True}]})
         self.row={'schema':'native-control-inventory-v1','frame':7,'time_s':.05,'map_sha256':self.map_hash,'instrumentation_sha256':self.code_hash,'scope':'entire_recorded_world','map_name':'Carla/Maps/OpenDriveMap','api_queries':['World.get_actors','World.get_environment_objects:TrafficLight','World.get_environment_objects:TrafficSigns'],'traffic_actor_inventory':[],'environment_light_inventory':[],'environment_sign_inventory':[],'unclassified_actor_types':[]}
         self.save_row();self.telemetry=[{'frame':7,'time_s':.05}];self.regions=[{'id':1,'kind':'lane','lane':{'enters_intersection':23}},{'id':2,'kind':'lane','lane':{}}];self.scene={'devices':[],'structures':self.regions,'users':[]}
-        self.verify=patch('batch_pipeline.completion.verify');self.verify.start();self.addCleanup(self.verify.stop)
+        self.verify=patch('traffic_spec_adapter.inventory_observations.Evidence');reader=self.verify.start();self.addCleanup(self.verify.stop)
+        reader.return_value.path.side_effect=lambda name:self.root/name
     def write(self,name,value,raw=False):
         (self.root/name).write_text(value if raw else json.dumps(value))
     def save_row(self):self.write('native_control_inventory.jsonl',json.dumps(self.row)+'\n',raw=True)

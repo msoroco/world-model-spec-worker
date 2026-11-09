@@ -4,8 +4,9 @@ import sys
 from pathlib import Path
 from .common import digest, read, sha, tree, within
 
-TERMINAL = ('prepared', 'partial', 'blocked')
 FORBIDDEN_SUFFIXES = {'.sqlite', '.db', '.mkv', '.mp4', '.webm', '.zip', '.egg', '.so', '.pyc'}
+RUNTIME_IMPORTS = {'scenario_pipeline', 'numpy', 'networkx', 'shapely', 'PIL', 'yaml',
+                   'tqdm', 'matplotlib', 'pydot', 'carla_sgg'}
 
 
 def inspect_file(path):
@@ -23,65 +24,29 @@ def inspect_file(path):
 
 
 def check(repo, *, complete=False):
-    repo = Path(repo)
-    batch = read(repo / 'batch.json')
-    if batch.get('mode') == 'six_step_preparation':
-        from .preparation import check as preparation_check
-        return preparation_check(repo, complete=complete)
-    expected = batch['frozen_files']
-    if batch.get('format') != 'worker-batch-v1' or not 1 <= batch['max_workers'] <= 8:
-        raise ValueError('Invalid worker batch')
-    actual = tree(repo)
-    for rel, checksum in expected.items():
-        if actual.get(rel) != checksum:
-            raise ValueError('Frozen input changed/missing: ' + rel)
-    for rel in actual:
-        if rel in expected or rel == 'batch.json':
-            continue
-        parts = Path(rel).parts
-        if len(parts) < 3 or parts[0] != 'work' or parts[1] not in batch['assignments']:
-            raise ValueError('Unapproved package file: ' + rel)
-        inspect_file(within(repo, rel))
-    results = {}
-    for aid in batch['assignments']:
-        result_path = repo / 'work' / aid / 'result.json'
-        if not result_path.exists():
-            if complete:
-                raise ValueError('Missing result: ' + aid)
-            continue
-        if not (repo / 'work' / aid / 'HANDOFF.md').is_file():
-            raise ValueError('Missing assignment handoff: ' + aid)
-        value = read(result_path)
-        if value.get('assignment_id') != aid or value.get('status') not in TERMINAL:
-            raise ValueError('Invalid result identity/status: ' + aid)
-        if value.get('input_sha256') != sha(repo / 'inputs' / aid / 'assignment.json'):
-            raise ValueError('Result binds stale inputs: ' + aid)
-        if not isinstance(value.get('remaining_gpu_checks'), list) or not isinstance(value.get('tests'), list):
-            raise ValueError('Missing test/uncertainty report: ' + aid)
-        if value['status'] in ('blocked', 'partial') and not value.get('reason'):
-            raise ValueError('Partial/blocked result needs a reason')
-        if value['status'] == 'prepared':
-            if not value['tests'] or not value['remaining_gpu_checks']:
-                raise ValueError('Prepared work needs CPU test evidence and explicit GPU checks')
-            for test in value['tests']:
-                if not test.get('command') or test.get('exit_code') != 0:
-                    raise ValueError('Prepared work has missing/failing tests')
-                log = within(repo / 'work' / aid, test['log'])
-                if not log.is_file() or sha(log) != test['sha256']:
-                    raise ValueError('Missing/changed test log')
-        # No test command or proposed code is executed by this validator.
-        validate_imports(repo, aid)
-        results[aid] = value
-    return {'batch_id': batch['batch_id'], 'results': results,
-            'package_sha256': digest(actual), 'files': actual,
-            'verification': 'Static validation only; worker test claims are not independent acceptance'}
+    """Use the current preparation contract; plans-only returns are retired."""
+    from .preparation import check as preparation_check
+    return preparation_check(repo, complete=complete)
 
 
 def validate_imports(repo, aid):
     """Catch ordinary undeclared imports. Dynamic imports remain a declared limitation."""
     source = Path(repo) / 'work' / aid
     inputs = read(Path(repo) / 'inputs' / aid / 'assignment.json')
-    allowed = set(sys.stdlib_module_names) | set(inputs.get('external_imports', [])) | {'worker_exchange'}
+    # These modules are pinned by the portable runtime itself. Assignment
+    # declarations cover imports beyond that fixed dependency set.
+    allowed = (set(sys.stdlib_module_names) | RUNTIME_IMPORTS |
+               set(inputs.get('external_imports', [])) | {'worker_exchange'})
+    batch = read(Path(repo) / 'batch.json')
+    if batch.get('runtime'):
+        from .preparation import runtime_for
+        runtime = runtime_for(repo, batch)
+        manifest = runtime / 'SOURCE-MANIFEST.json'
+        if manifest.is_file():
+            for relative in read(manifest)['files']:
+                parts = Path(relative).parts
+                if len(parts) >= 2 and parts[0] in ('scenario_pipeline', 'python'):
+                    allowed.add(Path(parts[1]).stem)
     python = list(source.rglob('*.py'))
     allowed |= {p.stem for p in python} | {p.parent.name for p in python}
     for path in python:

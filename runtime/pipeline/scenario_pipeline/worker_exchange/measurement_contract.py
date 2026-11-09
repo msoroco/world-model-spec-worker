@@ -9,7 +9,7 @@ COMMON={'trace.jsonl','raw.mkv','video_frames.jsonl','capture/evidence.jsonl'}
 
 
 def validate(contract, dispositions, analysis_code, case_id=None):
-    if contract.get('format')!='worker-measurement-contract-v1':
+    if contract.get('format')!='worker-measurement-contract':
         raise ValueError('Unknown measurement contract')
     selected={i for i,d in enumerate(dispositions) if d['status']=='selected_required' and (case_id is None or not d.get('case_ids') or case_id in d['case_ids'])}
     rows=contract.get('requirements')

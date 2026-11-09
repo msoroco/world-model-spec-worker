@@ -212,7 +212,7 @@ class RecordingReadmes:
         paths = [Path(dest)]
         index = read(self.root/'work/index.json') if (self.root/'work/index.json').exists() else {}
         for entry in index.get('entries', []):
-            if entry['path'] == str(Path(dest).relative_to(self.root)):
+            if entry.get('path') == str(Path(dest).relative_to(self.root)):
                 paths += [self.root/p for p in entry.get('sources', [])]
         receipts = set()
         selections = set()

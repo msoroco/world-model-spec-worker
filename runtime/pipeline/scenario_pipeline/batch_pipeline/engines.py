@@ -101,7 +101,7 @@ def prepare(store, run, job, engine, snapshot, hashes):
         atoms = required_capture_atoms({}, [], request['case'])
     atomic(directory / 'capture_requirements.json', {'required_atoms': atoms})
     project = Path(__file__).resolve().parents[2]
-    env = {'PYTHONPATH': os.pathsep.join(str(p) for p in (project/'scripts', project/'third_party/carla_scene_graphs', project/'carla/PythonAPI/carla')),
+    env = {'PYTHONPATH': os.pathsep.join(str(p) for p in (project/'scenario_pipeline', project/'scripts', project/'third_party/carla_scene_graphs', project/'carla/PythonAPI/carla')),
            'SCENARIO_REQUIRED_CAPTURE_ATOMS': json.dumps(atoms), 'PYTHONNOUSERSITE': '1', 'MPLBACKEND': 'Agg'}
     binding = {'run_id': run, 'job_id': job['id'], 'attempt_number': job['attempts'],
                'cell_id': request['cell']['cell_id'], 'actor': job['actor'], 'case_id': request['case']['case_id'],

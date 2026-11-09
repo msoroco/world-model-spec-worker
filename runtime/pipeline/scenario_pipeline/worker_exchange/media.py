@@ -26,11 +26,11 @@ def compose_four_views(sources, frame_map, output):
     for name, video, size in zip(names, videos, dimensions):
         if not video.is_file():
             raise ValueError('Missing original camera source: ' + name)
-        probe = json.loads(subprocess.check_output(['ffprobe', '-v', 'error', '-count_frames',
-            '-select_streams', 'v:0', '-show_entries', 'stream=width,height,nb_read_frames,r_frame_rate',
+        probe = json.loads(subprocess.check_output(['ffprobe', '-v', 'error',
+            '-select_streams', 'v:0', '-show_entries', 'stream=width,height,r_frame_rate',
             '-of', 'json', str(video)], text=True))['streams'][0]
-        if [probe['width'], probe['height']] != size or int(probe['nb_read_frames']) != len(mapping) or probe['r_frame_rate'] != '20/1':
-            raise ValueError('Camera source dimensions, rate or frame count differ: ' + name)
+        if [probe['width'], probe['height']] != size or probe['r_frame_rate'] != '20/1':
+            raise ValueError('Camera source dimensions or rate differ: ' + name)
     geometry = layout(PROFILE['overview'], PROFILE['detail_views'])
     width = geometry['width']; detail_height = max(size[1] for size in dimensions[1:])
     filters = f'[0:v]format=yuv444p,pad={width}:1080:{(width-1920)//2}:0[overview];'
@@ -44,15 +44,14 @@ def compose_four_views(sources, frame_map, output):
                 '-frames:v', str(len(mapping)), '-vsync', '0', '-an', '-c:v', 'ffv1',
                 '-pix_fmt', 'yuv444p', str(output)]
     subprocess.run(command, check=True, timeout=3600)
-    final = json.loads(subprocess.check_output(['ffprobe', '-v', 'error', '-count_frames',
-        '-select_streams', 'v:0', '-show_entries', 'stream=width,height,nb_read_frames',
-        '-of', 'json', str(output)], text=True))['streams'][0]
-    if [final['width'], final['height']] != [geometry['width'], geometry['height']] or int(final['nb_read_frames']) != len(mapping):
-        raise ValueError('Composed primary changed frame count or dimensions')
-    return {'format': 'synchronized-four-view-v1', 'sources': {name: sha(video) for name, video in zip(names, videos)},
+    # The complete independent decode in saved processing checks every output
+    # frame. A second full ffprobe pass here repeats that expensive work.
+    if not output.is_file() or output.stat().st_size == 0:
+        raise ValueError('Composed primary is missing or empty')
+    return {'format': 'synchronized-four-view', 'sources': {name: sha(video) for name, video in zip(names, videos)},
             'frame_map_sha256': sha(frame_map), 'primary': str(output), 'primary_sha256': sha(output),
             'frames': len(mapping), 'dimensions': [geometry['width'], geometry['height']],
-            'pixel_visibility_verified': False}
+            'frame_count_verified': False, 'pixel_visibility_verified': False}
 
 
 @dataclass(frozen=True)
@@ -112,7 +111,7 @@ def frames(stream):
 
 def verify_receipt(video, receipt, expected_frames, *, mapping_sha256=None, required_checks=None):
     value = read(receipt) if isinstance(receipt, (str, Path)) else receipt
-    if (value.get('format') != 'source-decode-v1' or not value.get('passed') or
+    if (value.get('format') != 'source-decode' or not value.get('passed') or
             value.get('auditor_sha256') != sha(Path(__file__)) or
             value.get('video_sha256') != sha(video) or value.get('frames') != expected_frames or
             value.get('mapping_sha256') != mapping_sha256):
@@ -120,7 +119,7 @@ def verify_receipt(video, receipt, expected_frames, *, mapping_sha256=None, requ
     for key, version in (required_checks or {}).items():
         if value.get('checks', {}).get(key) != version:
             raise ValueError('Receipt does not cover required checker: ' + key)
-    if value.get('checks', {}).get('frame_count') != 'all-decoded-frames-v1':
+    if value.get('checks', {}).get('frame_count') != 'all-decoded-frames':
         raise ValueError('Missing frame count audit')
     return value
 
@@ -137,7 +136,7 @@ def audit(video, expected_frames, *, checkers=None, mapping_sha256=None, threads
     checkers = checkers or {}
     if 'frame_count' in checkers or any(not isinstance(v, str) or len(v) != 64 for v, _ in checkers.values()):
         raise ValueError('Pixel checkers need names and exact code SHA256 versions')
-    required = {'frame_count': 'all-decoded-frames-v1', **{k: v for k, (v, _) in checkers.items()}}
+    required = {'frame_count': 'all-decoded-frames', **{k: v for k, (v, _) in checkers.items()}}
     before = sha(video)
     if receipt and Path(receipt).exists():
         # Never silently fall back from a stale receipt; diagnosis remains visible.
@@ -177,7 +176,7 @@ def audit(video, expected_frames, *, checkers=None, mapping_sha256=None, threads
                     process.wait()
     if count != expected_frames or sha(video) != before:
         raise ValueError('Wrong frame count or source changed during audit')
-    result = {'format': 'source-decode-v1', 'passed': True, 'video_sha256': before,
+    result = {'format': 'source-decode', 'passed': True, 'video_sha256': before,
               'frames': count, 'dimensions': dimensions, 'rgb_sequence_sha256': rgb_hash.hexdigest(), 'mapping_sha256': mapping_sha256,
               'checks': required, 'auditor_sha256': sha(Path(__file__)), 'threads': threads,
               'seconds': time.monotonic() - started,

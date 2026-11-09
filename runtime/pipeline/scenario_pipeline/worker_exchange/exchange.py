@@ -47,7 +47,7 @@ def partition(root, set_id, count, destination, selected=None):
     dest.mkdir(parents=True)
     for n in range(count):
         write(dest / f'{set_id}-{n+1:02d}.json', {
-            'format': 'worker-partition-v1', 'partition_id': f'{set_id}-{n+1:02d}',
+            'format': 'worker-partition', 'partition_id': f'{set_id}-{n+1:02d}',
             'set_id': set_id, 'scope_sha256': sha(scope_path(root, set_id)),
             'assignment_ids': ids[n::count]})
     return [str(p) for p in sorted(dest.glob('*.json'))]
@@ -100,12 +100,69 @@ def guidance_sources(root, a):
 
 def operation_directory(root, batch_id, package, aid):
     """Implementation/admin packages belong outside the editable review tree."""
-    from workspaces import campaign_path, work_index
     root = Path(root).resolve()
-    base = campaign_path('worker_exchange', root / 'work') if work_index(root).get('format') == 'set-review-workspaces-v2' else root / 'state/operations/worker_exchange'
+    base = root/'state/operations/worker_exchange'
     return base / name(batch_id) / name(package) / name(aid)
 
-def local_snapshot(root, a):
+def resolve_law(project, root, law_id, catalog_value=None):
+    """Resolve exact law text independently of the assignment's cell partition."""
+    catalog = Path(root)/'inputs/catalog/vocabulary_catalog.json'
+    law = (catalog_value if catalog_value is not None else read(catalog))['law_records'].get(law_id)
+    if law is not None:
+        return law, {'path': str(catalog), 'sha256': sha(catalog)}
+    base = Path(project)/'repo_prep/nevada_sydney/pipeline/traffic-spec-agent/laws/example'
+    matches = []
+    for partition in ('train', 'test'):
+        source = base/partition/'laws.jsonl'
+        if source.is_file():
+            for line in source.read_text().splitlines():
+                if line.strip():
+                    record = json.loads(line)
+                    if record.get('id') == law_id:
+                        matches.append((record, {'path': str(source), 'sha256': sha(source)}))
+    if not matches or any(row[0] != matches[0][0] for row in matches):
+        raise ValueError('Missing or conflicting exact law source: '+law_id)
+    return matches[0]
+
+
+def retained_binding(root, row, cache):
+    """Read retained data, not legacy executable code, from a verified import."""
+    reference = row['worker_binding']
+    batch, package = name(reference['batch_id']), name(reference['package_sha256'])
+    key = (batch, package)
+    if key not in cache:
+        receipt_path = Path(root)/'inputs/worker_exchange'/batch/('import-'+package+'.json')
+        receipt = read(receipt_path)
+        if receipt.get('package_sha256') != package or receipt.get('batch_id') != batch:
+            raise ValueError('Supplemental binding import identity mismatch')
+        checkout = operation_directory(root, batch, package, 'local-checkout')
+        if digest(tree(checkout)) != receipt.get('local_checkout_manifest_sha256'):
+            raise ValueError('Supplemental binding source changed: '+batch)
+        matrix_path = checkout/'work/_shared/branch-coverage.json'
+        review_path = checkout/'work/_shared/branch-review.json'
+        matrix, review = read(matrix_path), read(review_path)
+        if (review.get('coverage_sha256') != sha(matrix_path) or
+                review.get('missing_branches') != [] or not review.get('review_method')):
+            raise ValueError('Supplemental binding lacks a source-bound completed review')
+        cache[key] = (checkout, matrix, {'import_sha256': sha(receipt_path),
+                       'coverage_sha256': sha(matrix_path), 'review_sha256': sha(review_path),
+                       'reviewer': review.get('reviewer'), 'review_method': review['review_method']})
+    checkout, matrix, provenance = cache[key]
+    aid = assignment_id(row, row['_role'])
+    bindings = [b for b in matrix['additional_bindings'] if b['assignment_id'] == aid]
+    source = checkout/'work'/aid/'assignment.json'
+    assignment = read(source)
+    if (len(bindings) != 1 or not bindings[0].get('binding_reason') or
+            not bindings[0].get('original_cell_incompatibility') or
+            any(assignment.get(k) != row[k] for k in ('law_id','cell_id','actor')) or
+            assignment.get('branch') != row.get('branch')):
+        raise ValueError('Supplemental binding identity/reason mismatch: '+aid)
+    return {'source': str(source), 'source_sha256': sha(source),
+            'provenance_status': 'source_bound_imported_review', 'review': provenance,
+            'binding': bindings[0], 'witness': assignment}
+
+
+def local_snapshot(root, a, project=None):
     """Relevant membership + completion guidance, not global volatile job counts."""
     memberships, scopes = {}, {}
     for sid in SETS:
@@ -124,12 +181,7 @@ def local_snapshot(root, a):
     cell = next(c for c in catalog['cells'] if c['cell_id'] == a['cell_id'])
     pointer = Path(root) / 'sets/index.json'
     policy = read(pointer).get('law_split_manifest_sha256') if pointer.exists() else None
-    law_record = catalog['law_records'].get(a['law_id'])
-    if law_record is None:
-        corpus = root.parent.parent / 'repo_prep/nevada_sydney/pipeline/traffic-spec-agent/laws/example' / ('test' if a['role']=='heldout' else 'train') / 'laws.jsonl'
-        law_record = next((json.loads(line) for line in corpus.read_text().splitlines() if line.strip() and json.loads(line).get('id')==a['law_id']), None)
-        if law_record is None:
-            raise ValueError('Missing exact active law record')
+    law_record, _ = resolve_law(Path(project) if project else MODULE.parent.parent, root, a['law_id'], catalog)
     return {'scope_hashes': scopes, 'memberships': memberships, 'guidance': guidance,
             'law_sha256': digest(law_record), 'cell_sha256': digest(cell),
             'law_policy_sha256': policy}
@@ -185,7 +237,7 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
     tasks, partition_values = {}, []
     for path in partition_files:
         value = read(path)
-        if value['format'] != 'worker-partition-v1' or sha(scope_path(root, value['set_id'])) != value['scope_sha256']:
+        if value['format'] != 'worker-partition' or sha(scope_path(root, value['set_id'])) != value['scope_sha256']:
             raise ValueError('Stale/invalid partition: ' + str(path))
         name(value['partition_id'])
         if any(v['partition_id'] == value['partition_id'] for v in partition_values):
@@ -209,12 +261,7 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
     catalog_path = root / 'inputs/catalog/vocabulary_catalog.json'
     catalog = read(catalog_path)
     cells = {c['cell_id']: c for c in catalog['cells']}
-    training_laws_path = project / 'repo_prep/nevada_sydney/pipeline/traffic-spec-agent/laws/example/train/laws.jsonl'
-    training_laws = ({row['id']: row for line in training_laws_path.read_text().splitlines()
-                      if line.strip() for row in [json.loads(line)]}
-                     if training_laws_path.is_file() else {})
-    summaries_path = root / 'inputs/planning/exhaustive-20261016-v6/inputs/recovered-summaries.json'
-    summaries = read(summaries_path) if summaries_path.is_file() else {}
+    binding_cache, law_cache = {}, {}
     # Build off to the side; failures never leave a half-exported checkout.
     destination.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=destination.parent, prefix='.worker-export-') as temporary:
@@ -226,38 +273,22 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
             cfg = spec['assignments'][aid]
             if not cfg.get('objective') or not cfg.get('dependency_review'):
                 raise ValueError('Each assignment needs objective and explicit dependency_review')
-            snapshot = local_snapshot(root, task)
+            summary = cfg.get('summary')
+            if not isinstance(summary, dict) or summary.get('id') != task['law_id']:
+                raise ValueError('Each assignment needs its explicit exact-law summary; historical campaign defaults are retired')
+            snapshot = local_snapshot(root, task, project)
             accepted = any(m.get('status') == 'accepted' for ms in snapshot['memberships'].values() for m in ms)
             if accepted and not cfg.get('remaining_requirement'):
                 raise ValueError('Existing accepted evidence: specify the remaining requirement; do not replay: ' + aid)
-            law_record = catalog['law_records'].get(task['law_id'])
-            if law_record is None and task['role'] == 'training':
-                law_record = training_laws.get(task['law_id'])
-                if law_record is not None:
-                    task['law_record_source'] = {'path': str(training_laws_path.relative_to(project)),
-                                                 'sha256': sha(training_laws_path)}
-            if law_record is None:
-                raise ValueError('Assignment law missing from frozen catalog and role corpus: '+task['law_id'])
+            if task['law_id'] not in law_cache:
+                law_cache[task['law_id']] = resolve_law(project, root, task['law_id'], catalog)
+            law_record, task['law_record_source'] = law_cache[task['law_id']]
             task.update(objective=cfg['objective'], remaining_requirement=cfg.get('remaining_requirement'),
                         dependency_review=cfg['dependency_review'], external_imports=cfg.get('external_imports', []),
                         local_snapshot=snapshot, cell=cells[task['cell_id']],
-                        law_record=law_record)
-            variants = {}
-            for candidate in summaries.get(task['law_id'], []):
-                summary = candidate['summary']
-                variants.setdefault(digest(summary), {'summary': summary, 'runs': []})['runs'].append(candidate['run'])
-            if variants:
-                task['summary'] = next(iter(variants.values()))['summary']
-                task['summary_status'] = 'recovered_requires_source_review'
-                task['summary_candidates'] = list(variants.values())
-                task['summary_source_sha256'] = sha(summaries_path)
-            else:
-                task['summary'] = {'id': law_record['id'], 'title': law_record.get('title', law_record['id']),
-                    'source': law_record.get('source', law_record['id']), 'subject': 'driver', 'theme': 'following_distance',
-                    'tier': 'Q', 'activation_conditions': [], 'timing_requirements': [],
-                    'exceptions': [], 'residue': ['Unreviewed summary placeholder; derive requirements from the exact law text.']}
-                task['summary_status'] = 'draft_requires_source_review'
-                task['summary_candidates'] = []
+                        law=law_record)
+            task['summary'] = dict(summary)
+            task['summary_status'] = 'provided_planning_context_full_text_remains_authoritative'
             if task['role'] == 'training':
                 task['selection_targets'] = (['demo-train'] if aid in groups(root, 'demo-train') else []) + ['full-train']
             elif task['role'] == 'testing':
@@ -281,6 +312,9 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
                                    if key != 'required_observations'}
             witnesses = []
             for row in task['branches']:
+                if row.get('worker_binding'):
+                    witnesses.append(retained_binding(root, dict(row, _role=task['role']), binding_cache))
+                    continue
                 if row.get('source') == 'preserved_accepted_membership':
                     witnesses.append({'source': 'preserved_accepted_membership',
                         'provenance_status': 'membership_only_current_requirement_unreviewed',
@@ -288,12 +322,30 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
                                     'cell': row['cell_id'], 'recording_ids': row.get('recording_ids', []),
                                     'coverage_status': row['coverage_status']}})
                     continue
-                if not row.get('source') or 'source_index' not in row:
+                if not row.get('source'):
                     raise ValueError('Assignment lacks exact witness provenance')
                 src = within(root, row['source'])
                 if sha(src) != row['source_sha256']:
                     raise ValueError('Witness source changed')
                 data = read(src)
+                if 'source_index' not in row:
+                    # Some reviewed split decisions are one JSON object rather
+                    # than an indexed witness list. Bind the exact reviewed
+                    # cell and conditional verdict before exporting it.
+                    cell_key = 'training_cell' if task['role'] == 'training' else 'testing_cell'
+                    if (not isinstance(data, dict) or
+                            data.get('law_id') != task['law_id'] or
+                            data.get('actor') != task['actor'] or
+                            data.get(cell_key) != task['cell_id'] or
+                            data.get('branch') != row.get('branch') or
+                            data.get('verdict') != row.get('relevance_review') or
+                            data.get('physical_feasibility') != row.get('physical_feasibility')):
+                        raise ValueError('Direct review identity/status mismatch')
+                    witnesses.append({'source': row['source'],
+                                      'source_sha256': row['source_sha256'],
+                                      'provenance_status': 'verified_direct_review',
+                                      'witness': data})
+                    continue
                 if isinstance(data, dict):
                     data = data.get('witnesses', data.get('coverage_witnesses', data.get('laws')))
                 if not isinstance(data, list):
@@ -303,15 +355,38 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
                     raise ValueError('Witness law/actor does not match assignment')
                 witnesses.append({'source': row['source'], 'index': row['source_index'],
                                   'source_sha256': row['source_sha256'], 'witness': data[row['source_index']]})
+            recordings = {}
+            for sid, members in snapshot['memberships'].items():
+                for member in members:
+                    if member.get('status') != 'accepted':
+                        continue
+                    rid = name(member['recording_id'])
+                    entry = recordings.setdefault(rid, {'recording_id': rid, 'sets': [],
+                        'membership': member, 'coverage_status': 'requires_source_review', 'sources': []})
+                    entry['sets'].append(sid)
+                    metadata = root/'recordings'/rid/'metadata.json'
+                    if metadata.is_file() and not entry['sources']:
+                        target = out/'inputs'/aid/'accepted'/rid/'metadata.json'
+                        _copy_text(metadata, target)
+                        entry['sources'].append({'path': str(target.relative_to(out)),
+                                                 'sha256': sha(target)})
+            write(out/'inputs'/aid/'evidence.json', {
+                'recordings': list(recordings.values()),
+                'requested_remaining_requirement': cfg.get('remaining_requirement'),
+                'instruction': 'Review sources and full law; document exact demonstrated facts, unknowns and gaps. Accepted membership alone does not establish full statutory coverage.'})
             write(out / 'inputs' / aid / 'assignment.json', task)
             write(out / 'inputs' / aid / 'witnesses.json', witnesses)
             for source in snapshot['guidance']:
                 _copy_text(Path(source), out / 'inputs' / aid / 'prior' / Path(source).name)
             # Review files are editable user outputs, not locked freshness inputs.
             review = workspace(root, task, task['set_ids'])
-            for filename in ('README.md', 'review.json'):
-                if (review / filename).is_file():
-                    _copy_text(review / filename, out / 'inputs' / aid / 'review-context' / filename)
+            if (review / 'README.md').is_file():
+                _copy_text(review / 'README.md', out / 'inputs' / aid / 'review-context' / 'README.md')
+            relative=review.relative_to(root/'work')
+            if len(relative.parts)==2:
+                model=root/'state/review_models'/relative.parts[0]/(relative.parts[1]+'.json')
+                if model.is_file():
+                    _copy_text(model, out / 'inputs' / aid / 'review-context' / 'review.json')
             for entry in cfg.get('files', []):
                 # Inputs and implementation seeds have separate immutable locations.
                 source = dependency_source(project, root, entry)
@@ -322,10 +397,28 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
             (out / 'work' / aid).mkdir(parents=True)
             assignments[aid] = {'set_ids': task['set_ids'], 'partition_ids': [p['partition_id'] for p in partition_values if aid in p['assignment_ids']],
                                 'input_sha256': sha(out / 'inputs' / aid / 'assignment.json')}
+        laws = {task['law_id']: {'law': task['law'],
+                    'topics': {'exact-text': task['law']['text']},
+                    'source': task['law_record_source']} for task in tasks.values()}
+        write(out/'inputs/coverage/branch-sources.json', {'laws': laws})
+        allocations = {}
+        for sid in SETS:
+            path = scope_path(root, sid)
+            if path.is_file():
+                for row in read(path)['assignments']:
+                    allocations.setdefault(row['cell_id'], set()).add(sid)
+        write(out/'inputs/coverage/candidate-cells.json', {
+            'catalog_sha256': sha(catalog_path),
+            'cells': [dict(cell, allocated_sets=sorted(allocations.get(cell['cell_id'], [])))
+                      for cell in catalog['cells']]})
         for value in partition_values:
             write(out / 'partitions' / (value['partition_id'] + '.json'), value)
-        _runtime(project, out)
-        batch = {'format': 'worker-batch-v1', 'batch_id': batch_id, 'max_workers': max_workers,
+        runtime = _runtime(project, out)
+        batch = {'format': 'worker-batch', 'mode':'six_step_preparation', 'runtime':runtime,
+                 'full_branch_coverage_required': True, 'gpu_ready_required': True,
+                 'law_split_version': read(root/'sets/index.json').get('law_split_version') if (root/'sets/index.json').is_file() else None,
+                 'max_return_files': max(1000, len(assignments)*200),
+                 'update_version':0, 'batch_id': batch_id, 'max_workers': max_workers,
                  'return_branch': 'worker/' + batch_id, 'assignments': assignments,
                  'source_git': _git_identity(project), 'source_files': frozen_sources,
                  'policy': 'prepare_only_no_sqlite_no_gpu_no_canonical_acceptance',
@@ -353,7 +446,193 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
     return receipt
 
 
+# Cache only package readiness within one synchronous preparation command.
+# Local snapshots, dependencies and canonical recording checks still run each time.
+from contextvars import ContextVar
+from contextlib import contextmanager
+_readiness_cache = ContextVar('worker_return_readiness_cache', default=None)
+
+@contextmanager
+def preparation_validation_scope():
+    token = _readiness_cache.set({})
+    try:
+        yield
+    finally:
+        _readiness_cache.reset(token)
+
+def _ready_package(repo, checker):
+    cache = _readiness_cache.get()
+    base = Path(repo).resolve()
+    def fingerprint():
+        rows = []
+        for directory, dirs, files in os.walk(base):
+            relative_dir = Path(directory).relative_to(base)
+            dirs[:] = [part for part in dirs if part not in ('.git', '__pycache__', '.pytest_cache')
+                       and not (relative_dir == Path('.') and part in ('.venv', '.venv-cpu', '.runtime-work'))]
+            for name in sorted(dirs + files):
+                path = Path(directory)/name
+                if path.suffix == '.pyc':
+                    continue
+                st = path.lstat()
+                rows.append((str(path.relative_to(base)), st.st_dev, st.st_ino,
+                             st.st_mode, st.st_size, st.st_mtime_ns, st.st_ctime_ns,
+                             os.readlink(path) if path.is_symlink() else None))
+        return tuple(sorted(rows))
+    before = fingerprint()
+    key = str(base)
+    if cache is not None and key in cache:
+        saved, result = cache[key]
+        if saved != before:
+            raise ValueError('Imported package changed during preparation')
+        return result
+    # The imported checkout was fully validated when its immutable import
+    # receipt was created. Reuse that static result only while every source
+    # inode, size and modification/change timestamp still matches the
+    # validated snapshot. Local selection memberships are checked separately
+    # by _check_return on every call and may grow after acceptance.
+    cache_path = base.parent/'validated-static-return-v1.json' if base.name == 'local-checkout' else None
+    if cache_path is not None and cache_path.is_file():
+        saved = read(cache_path)
+        result = saved.get('result', {})
+        valid_receipt = (saved.get('format') == 'validated-static-return-v1'
+                         and saved.get('checkout') == str(base)
+                         and result.get('package_sha256') == base.parent.name
+                         and digest(result.get('files', {})) == result['package_sha256'])
+        if valid_receipt and saved.get('fingerprint_sha256') != digest(before):
+            # Directory timestamps can change as delivery work is materialized.
+            # Verify the imported file contents before adopting a new fast cache.
+            expected = result['files']
+            actual = {row[0] for row in before if (base / row[0]).is_file()}
+            if actual != set(expected) or any(
+                    not (base / relative).is_file() or sha(base / relative) != checksum
+                    for relative, checksum in expected.items()):
+                raise ValueError('Imported package differs from validated static snapshot')
+            if fingerprint() != before:
+                raise ValueError('Imported package changed during readiness validation')
+            saved['fingerprint_sha256'] = digest(before)
+            write(cache_path, saved)
+        if valid_receipt and saved.get('fingerprint_sha256') == digest(before):
+            if cache is not None:
+                cache[key] = (before, result)
+            return result
+        raise ValueError('Imported package differs from validated static snapshot')
+    result = checker(repo, complete=True, require_ready=True)
+    if fingerprint() != before:
+        raise ValueError('Imported package changed during readiness validation')
+    if cache_path is not None:
+        if result['package_sha256'] != base.parent.name:
+            raise ValueError('Validated local checkout differs from imported package')
+        write(cache_path, {'format': 'validated-static-return-v1', 'checkout': str(base),
+                           'fingerprint_sha256': digest(before), 'result': result})
+    if cache is not None:
+        cache[key] = (before, result)
+    return result
+
 def check_return(root, repo, batch_id):
+    # A preparation command adopts one validated starting snapshot. Its internal
+    # registrations only write local DB stages and frozen child inputs; they do
+    # not acquire new evidence or alter the imported return or set membership.
+    # Execution and acceptance run outside this scope and validate independently.
+    cache = _readiness_cache.get()
+    if cache is None:
+        return _check_return(root, repo, batch_id)
+    key = ('validated-starting-return', str(Path(root).resolve()),
+           str(Path(repo).resolve()), batch_id)
+    if key not in cache:
+        cache[key] = _check_return(root, repo, batch_id)
+    return cache[key]
+
+
+def _recording_identity(recording):
+    """Cheap identity of every accepted canonical file after full verification."""
+    rows = []
+    for directory, dirs, files in os.walk(recording):
+        dirs[:] = [part for part in dirs if part != '__pycache__']
+        for name in sorted(dirs + files):
+            path = Path(directory)/name
+            if path.suffix == '.pyc':
+                continue
+            st = path.lstat()
+            rows.append((str(path.relative_to(recording)), st.st_dev, st.st_ino,
+                         st.st_mode, st.st_size, st.st_mtime_ns, st.st_ctime_ns,
+                         os.readlink(path) if path.is_symlink() else None))
+    return digest(tuple(sorted(rows)))
+
+
+def _verify_accepted_once(recording, cache_dir):
+    from recording_store import verify_recording
+    recording = Path(recording).resolve()
+    cache_path = cache_dir/(recording.name + '.json')
+    before = _recording_identity(recording)
+    if cache_path.is_file():
+        saved = read(cache_path)
+        if (saved.get('format') == 'validated-accepted-recording-v1'
+                and saved.get('recording_id') == recording.name
+                and saved.get('identity_sha256') == before
+                and saved.get('metadata_sha256') == sha(recording/'metadata.json')):
+            return
+        # Evidence may be appended after an earlier cache was written. Recheck
+        # the complete canonical recording before refreshing its fast identity.
+        if (saved.get('format') != 'validated-accepted-recording-v1'
+                or saved.get('recording_id') != recording.name):
+            raise ValueError('Accepted canonical recording cache is invalid: '+recording.name)
+    verify_recording(recording)
+    if _recording_identity(recording) != before:
+        raise ValueError('Accepted canonical recording changed during validation: '+recording.name)
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    write(cache_path, {'format': 'validated-accepted-recording-v1',
+                       'recording_id': recording.name, 'identity_sha256': before,
+                       'metadata_sha256': sha(recording/'metadata.json')})
+
+
+def _reconcile_memberships(root, repo, assignment, expected, actual, batch_id, package):
+    """Permit only canonical deliveries from this return, for its exact target sets."""
+    from collections import Counter
+    aid = assignment['assignment_id']
+    previous, current = expected['memberships'], actual['memberships']
+    targets = set(assignment['selection_targets'])
+    if not targets or any(role(sid) != assignment['role'] for sid in targets):
+        raise ValueError('Post-export target role mismatch: '+aid)
+    manifest = read(Path(repo)/'work'/aid/'execution-manifest.json')
+    allowed = {case['case_id'] for case in manifest['cases'] if case.get('kind') == 'delivery'}
+    additions = {}
+    for sid in set(previous) | set(current):
+        before, after = previous.get(sid, []), current.get(sid, [])
+        old, new = Counter(digest(m) for m in before), Counter(digest(m) for m in after)
+        if old - new:
+            raise ValueError('Prior membership changed after export: '+aid)
+        remaining = old.copy(); additions[sid] = []
+        for member in after:
+            key = digest(member)
+            if remaining[key]:
+                remaining[key] -= 1
+            else:
+                additions[sid].append(member)
+        if additions[sid] and sid not in targets:
+            raise ValueError('Post-export membership outside target sets: '+aid)
+    for demo, full in (('demo-train','full-train'), ('demo-test','full-test')):
+        if {demo, full} <= targets and Counter(digest(m) for m in additions.get(demo, [])) != Counter(digest(m) for m in additions.get(full, [])):
+            raise ValueError('Post-export paired selections differ: '+aid)
+    verified = set()
+    for members in additions.values():
+        for member in members:
+            rid = member.get('recording_id')
+            if member.get('status') != 'accepted' or member.get('case_id') not in allowed or not isinstance(rid, str) or len(rid) != 64:
+                raise ValueError('Unrecognized post-export delivery member: '+aid)
+            recording = Path(root)/'recordings'/rid
+            metadata = read(recording/'metadata.json')
+            if (metadata.get('status') != 'accepted' or metadata.get('recording_id') != rid
+                    or metadata.get('case_id') != member['case_id']
+                    or any(metadata.get(key) != assignment[key] for key in ('cell_id','law_id','actor'))):
+                raise ValueError('Post-export member lacks matching canonical acceptance: '+aid)
+            if rid not in verified:
+                _verify_accepted_once(recording, Path(root)/'state/operations/worker_exchange'/batch_id/package/'validated-recordings')
+                verified.add(rid)
+    if dict(actual, memberships=previous) != expected:
+        raise ValueError('Local evidence or assignment changed after export: '+aid)
+
+
+def _check_return(root, repo, batch_id):
     baseline = read(Path(root) / 'inputs/worker_exchange' / name(batch_id) / 'export.json')
     if sha(Path(repo) / 'batch.json') != baseline['batch_sha256']:
         raise ValueError('Worker changed batch manifest')
@@ -369,25 +648,29 @@ def check_return(root, repo, batch_id):
             raise ValueError('Local dependency changed; reconcile before import: ' + source['source'])
     if baseline['batch'].get('gpu_ready_required'):
         from .preparation import check as check_preparation
-        result = check_preparation(repo, complete=True, require_ready=True)
+        result = _ready_package(repo, check_preparation)
     else:
         result = check(repo, complete=True)
     for aid in baseline['batch']['assignments']:
         a = read(Path(repo) / 'inputs' / aid / 'assignment.json')
         expected_snapshot = baseline.get('local_snapshots', {}).get(aid, a.get('local_snapshot'))
-        actual = local_snapshot(root, a)
+        actual = local_snapshot(root, a, baseline['project_root'])
         if expected_snapshot is not None and actual != expected_snapshot:
-            extension = Path(root)/'inputs/planning'/('worker-coverage-'+batch_id)/'receipt.json'
-            if not extension.exists():
-                raise ValueError('Local progress/scope changed; explicitly re-export/reconcile: ' + aid)
-            applied = read(extension)
-            if applied['package_sha256'] != result['package_sha256'] or any(
-                    digest(read(Path(root)/'sets'/sid/'scope.json')) != checksum
-                    for sid,checksum in applied['after'].items()):
-                raise ValueError('Scope differs from validated worker extension')
-            actual = dict(actual, scope_hashes=expected_snapshot['scope_hashes'])
+            if actual['scope_hashes'] != expected_snapshot['scope_hashes']:
+                extension = Path(root)/'inputs/planning'/('worker-coverage-'+batch_id)/'receipt.json'
+                if not extension.exists():
+                    raise ValueError('Local progress/scope changed; explicitly re-export/reconcile: '+aid)
+                applied = read(extension)
+                if applied['package_sha256'] != result['package_sha256'] or any(
+                        digest(read(Path(root)/'sets'/sid/'scope.json')) != checksum
+                        for sid,checksum in applied['after'].items()):
+                    raise ValueError('Scope differs from validated worker extension')
+                actual = dict(actual, scope_hashes=expected_snapshot['scope_hashes'])
             if actual != expected_snapshot:
-                raise ValueError('Local evidence or assignment changed after export: '+aid)
+                ready = result['results'][aid]
+                if ready['status'] != 'ready' or ready.get('readiness_kind') != 'delivery_prepared':
+                    raise ValueError('Local progress/scope changed; explicitly re-export/reconcile: '+aid)
+                _reconcile_memberships(root, repo, a, expected_snapshot, actual, batch_id, result['package_sha256'])
     return result
 
 
@@ -401,6 +684,15 @@ def preflight_return(root, repo, batch_id, native_python):
     from .runtime_cli import materialize
     runtime = runtime_for(repo, read(repo / 'batch.json'))
     project = Path(root).resolve().parents[1]
+    cache_key = digest({'package_sha256': checked['package_sha256'],
+                        'runtime_manifest_sha256': sha(runtime / 'SOURCE-MANIFEST.json'),
+                        'native_python': str(native_python),
+                        'native_python_sha256': sha(native_python)})
+    receipt = Path(root)/'state/operations/worker_exchange'/batch_id/'preflight-cache'/f'{cache_key}.json'
+    if receipt.is_file():
+        saved = read(receipt)
+        if saved.get('cache_key') == cache_key and saved.get('result', {}).get('cases'):
+            return saved['result']
     env = dict(os.environ)
     env['PYTHONPATH'] = os.pathsep.join((str(runtime / 'scenario_pipeline'), str(runtime / 'python'),
         str(project / 'scripts'), str(project / 'third_party/carla_scene_graphs'),
@@ -427,10 +719,13 @@ def preflight_return(root, repo, batch_id, native_python):
                 results.append({'case_id': case, 'construction_sha256': entry['construction_sha256'],
                                 'runner_sha256': sha(runner),
                                 'stdout_sha256': hashlib.sha256(run.stdout.encode()).hexdigest()})
-    return {'batch_id': batch_id, 'native_python': str(native_python),
+    result = {'batch_id': batch_id, 'native_python': str(native_python),
             'runtime_manifest_sha256': sha(runtime / 'SOURCE-MANIFEST.json'),
             'imports_passed': True, 'cases': results, 'carla_contacted': False,
             'campaign_attempt_created': False}
+    write(receipt, {'format': 'native-preflight-cache', 'cache_key': cache_key,
+                    'result': result})
+    return result
 
 
 def import_return(root, repo, batch_id):
@@ -442,7 +737,7 @@ def import_return(root, repo, batch_id):
         previous = read(receipt_path)
         local_checkout = Path(previous.get('local_checkout', '')).resolve()
         if (Path(repo).resolve() == local_checkout and previous.get('package_sha256') == package
-                and tree(repo) == checked['files']):
+                and digest(checked['files']) == previous.get('local_checkout_manifest_sha256')):
             return previous
     # Do not imply a commit identity if the return has uncommitted changes.
     git = _git_identity(repo)
@@ -494,7 +789,7 @@ def import_return(root, repo, batch_id):
             staging.rename(local_checkout)
     if tree(repo) != checked['files'] or _git_identity(repo) != git:
         raise ValueError('Return changed during import; no acceptance recorded')
-    receipt = {'format': 'worker-import-v1', 'batch_id': batch_id, 'package_sha256': package,
+    receipt = {'format': 'worker-import', 'batch_id': batch_id, 'package_sha256': package,
                'return_git': git, 'destinations': destinations,
         'local_checkout': str(local_checkout),
         'local_checkout_manifest_sha256': digest(checked['files']),
@@ -507,21 +802,29 @@ def import_return(root, repo, batch_id):
 
 
 def _runtime(project, out):
+    from .export_runtime import export as export_pipeline_runtime
+    runtime = out/'runtime'
+    export_pipeline_runtime(project, runtime)
     for skill in (*SKILLS, 'worker-preparation'):
-        _copy_text(project / 'scenario_pipeline/skills' / skill / 'SKILL.md',
-                   out / 'runtime/skills' / skill / 'SKILL.md')
-    for doc in ('storage.md', 'batch_pipeline.md', 'large_scale_production.md'):
-        _copy_text(project / 'scenario_pipeline/docs' / doc, out / 'runtime/docs' / doc)
+        _copy_text(project/'scenario_pipeline/skills'/skill/'SKILL.md',
+                   runtime/'skills'/skill/'SKILL.md')
+    for doc in ('storage.md', 'batch_pipeline.md', 'delivery_workflow.md'):
+        _copy_text(project/'scenario_pipeline/docs'/doc, runtime/'docs'/doc)
     from batch_pipeline.stages import CONTRACTS
-    write(out / 'runtime/stage_contracts.json', CONTRACTS)
-    for filename in ('__init__.py', 'common.py', 'portable.py', 'media.py', 'capture.py'):
-        target = out / 'runtime/worker_exchange' / filename
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text((MODULE / filename).read_text())
-    for filename in ('START_HERE.md', 'worker_check.py', 'test_portable.py'):
-        target = out / ('tests/test_portable.py' if filename == 'test_portable.py' else filename)
-        _copy_text(MODULE / 'templates' / filename, target)
-    (out / '.gitignore').write_text('__pycache__/\n*.py[cod]\n.pytest_cache/\n')
+    write(runtime/'stage_contracts.json', CONTRACTS)
+    for filename in ('START_HERE.md','FULL_BRANCH_CONTRACT.md','DELIVERY_CONTRACT.md',
+                     'worker_check.py','runtime_launcher.py','test_portable.py'):
+        target = out/('runtime.py' if filename=='runtime_launcher.py' else
+                      'tests/test_portable.py' if filename=='test_portable.py' else filename)
+        _copy_text(MODULE/'templates'/filename, target)
+    (out/'.gitignore').write_text('__pycache__/\n*.py[cod]\n.pytest_cache/\n.runtime-work/\n.venv*/\n')
+    # Skills and contracts are part of the same immutable runtime.
+    files = tree(runtime)
+    files.pop('SOURCE-MANIFEST.json', None)
+    write(runtime/'SOURCE-MANIFEST.json', {'source':'main scenario_pipeline','files':files,
+          'policy':'Source-hashed portable preparation; execution and acceptance remain local'})
+    return {'root':'runtime','source_manifest_sha256':sha(runtime/'SOURCE-MANIFEST.json'),
+            'package_compatibility_required':True}
 
 
 def init_worker(project, destination):
@@ -530,11 +833,12 @@ def init_worker(project, destination):
     if destination.exists():
         raise ValueError('Destination exists; refusing to overwrite')
     destination.mkdir(parents=True)
-    _runtime(Path(project), destination)
+    runtime = _runtime(Path(project), destination)
     for directory in ('partitions', 'inputs', 'work'):
         (destination / directory).mkdir(exist_ok=True)
     write(destination / 'batch.json', {
-        'format': 'worker-batch-v1', 'batch_id': 'unassigned', 'max_workers': 4,
+        'format': 'worker-batch', 'mode':'six_step_preparation', 'runtime':runtime,
+        'update_version':0, 'batch_id': 'unassigned', 'max_workers': 4,
         'return_branch': 'worker/unassigned', 'assignments': {},
         'policy': 'No tasks assigned. Stop after portable checks.',
         'frozen_files': tree(destination)})

@@ -1,5 +1,6 @@
 """Export exact pipeline code, observation library and optional small capture fixture."""
 import argparse
+import ast
 import json
 import shutil
 from pathlib import Path
@@ -71,14 +72,25 @@ def export(project,destination,fixture_attempt=None,capability_root=None):
     for folder in ('traffic_spec_adapter','batch_pipeline','worker_exchange'):
         target=destination/'scenario_pipeline'/folder;target.mkdir(parents=True)
         for p in (source/folder).glob('*.py'):shutil.copyfile(p,target/p.name)
-    for filename in ('catalog.py','delivery_definitions.py','demo_rule_evidence.py','intentions.py',
-                     'lean_work.py','migrate_law_split.py','organize_sets.py','organize_work.py',
-                     'pipeline.py','production_verdicts.py','recording_readmes.py','recover_core_evidence.py',
-                     'run_selected.py','production_metadata.py','trace_derivations.py','trace_json.py',
-                     'authored_context.py','control_evidence.py','delivery_contract.py','expected_labels.py',
-                     'review_recordings.py','trace_scope_audit.py','scenario_overlay.py','speed_overlay.py',
-                     'workspaces.py','pipeline_paths.py','law_split.py','recording_store.py','convert_demo_videos.py','lane_signal_measurement.py'):
-        shutil.copyfile(source/filename,destination/'scenario_pipeline'/filename)
+    # Include the local import closure, including imports inside functions.
+    modules = {p.stem: p for p in source.glob('*.py')}
+    selected = {'authored_context','control_evidence','delivery_contract','expected_labels',
+                'review_recordings','trace_scope_audit','scenario_overlay','speed_overlay',
+                'workspaces','pipeline_paths','law_split','recording_store',
+                'convert_demo_videos','lane_signal_measurement'}
+    pending = list(selected)
+    while pending:
+        for node in ast.walk(ast.parse(modules[pending.pop()].read_text())):
+            names = ([node.module.split('.')[0]]
+                     if isinstance(node, ast.ImportFrom) and node.module and not node.level
+                     else [alias.name.split('.')[0] for alias in node.names]
+                     if isinstance(node, ast.Import) else [])
+            for name in names:
+                if name in modules and name not in selected:
+                    selected.add(name)
+                    pending.append(name)
+    for name in sorted(selected):
+        shutil.copyfile(modules[name], destination/'scenario_pipeline'/modules[name].name)
     # Do not export bootstrap law corpora or local state merely to satisfy a directory layout.
     (destination/'scenario_pipeline/data').mkdir()
     shutil.copyfile(source/'data/canonical_parameter_aliases.json',destination/'scenario_pipeline/data/canonical_parameter_aliases.json')
@@ -94,11 +106,21 @@ def export(project,destination,fixture_attempt=None,capability_root=None):
     shutil.copyfile(library/'lean-toolchain',destination/'library/lean-toolchain')
     (destination/'ontology').mkdir()
     shutil.copyfile(library.parent/'ontology/ATOMS.md',destination/'ontology/ATOMS.md')
-    (destination/'requirements-cpu.txt').write_text('numpy==1.24.4\nshapely==1.8.5.post1\nnetworkx==2.6.3\nPillow==10.4.0\ntqdm==4.67.1\nmatplotlib==3.7.5\npydot==2.0.0\nscipy==1.10.1\n')
+    requirements = [line for line in (project/'requirements-pipeline.txt').read_text().splitlines()
+                    if line.strip() and not line.startswith('#') and not line.startswith('scipy==')]
+    (destination/'requirements-cpu.txt').write_text('\n'.join(requirements)+'\ntqdm==4.67.1\nmatplotlib==3.7.5\npydot==2.0.0\n')
+    fixtures = destination/'fixtures'
+    fixtures.mkdir(exist_ok=True)
+    shutil.copyfile(source/'worker_exchange/templates/fixture-example.json', fixtures/'example.json')
+    write(fixtures/'example-recipe.json', {
+        'format': 'worker-fixture-recipe',
+        'sources': [{'path': 'diagnostic-input.json', 'source': 'runtime/fixtures/example.json',
+                     'sha256': sha(fixtures/'example.json')}],
+        'generator': {'source': 'runtime/fixtures/example.json', 'sha256': sha(fixtures/'example.json')}})
     if fixture_attempt:fixture(fixture_attempt,destination/'fixtures/retained-speed')
     tests=destination/'tests';tests.mkdir()
     for name in ('test_traffic_spec_adapter.py','test_original_participant_projection.py','test_native_control_observations.py',
-                 'test_native_road_profile.py','test_control_portions.py','test_webm_export.py','test_lane_signal_measurement.py','test_full_footprint.py','test_optical_measurements.py','test_environment_relocation.py','test_runtime_handoff.py','test_native_output.py','test_world_restore.py','test_package_compatibility.py','test_worker_identity_preflight.py','test_worker_candidates.py','test_worker_delivery_handoff.py'):
+                 'test_native_road_profile.py','test_control_portions.py','test_webm_export.py','test_lane_signal_measurement.py','test_full_footprint.py','test_optical_measurements.py','test_environment_relocation.py','test_runtime_handoff.py','test_visibility.py','test_native_output.py','test_world_restore.py','test_package_compatibility.py','test_worker_identity_preflight.py','test_worker_candidates.py','test_worker_delivery_handoff.py'):
         shutil.copyfile(source/'tests'/name,tests/name)
     capture_test=source/'tests/test_pipeline_capture.py'
     text=capture_test.read_text().replace("parents[2]/'scripts/","parents[1]/'python/")

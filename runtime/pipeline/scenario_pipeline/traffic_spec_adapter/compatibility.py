@@ -8,22 +8,9 @@ import math
 PARENTS = {'turn_lane': 'lane', 'reserved_lane': 'lane',
            'centre_turn_lane': 'lane', 'one_way_roadway': 'roadway'}
 LANES = {'lane', 'turn_lane', 'reserved_lane', 'centre_turn_lane'}
+ENTRANCE_CARRIERS = LANES | {'roadway', 'one_way_roadway', 'shoulder', 'bicycle_lane_or_path'}
 GOVERNABLE = LANES | {'bicycle_lane_or_path', 'roadway', 'one_way_roadway',
                       'shoulder', 'intersection'}
-
-
-def refines(actual, requested):
-    return actual == requested or PARENTS.get(actual) == requested
-
-
-def kind_value(region, requested):
-    """Three-valued kind query; positive refinement is known even if flagged."""
-    if refines(region['kind'], requested):
-        return True
-    if any(refines(requested, unknown)
-           for unknown in region.get('unobserved_kinds', [])):
-        return None
-    return False
 
 
 def direction(value, place):
@@ -56,8 +43,8 @@ def validate(scene):
         if len(set(association)) != len(association):
             raise ValueError('Duplicate entrance association')
         for target in association:
-            if target not in regions or regions[target]['kind'] not in LANES:
-                raise ValueError('entrance_of must name an existing lane')
+            if target not in regions or regions[target]['kind'] not in ENTRANCE_CARRIERS:
+                raise ValueError('entrance_of must name an existing directed carrier')
     for device in scene.get('devices', []):
         targets = device.get('governs')
         if targets is None:

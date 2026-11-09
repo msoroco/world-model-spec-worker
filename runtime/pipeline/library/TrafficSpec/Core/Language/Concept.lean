@@ -22,6 +22,10 @@ namespace TrafficSpec
 inductive ArgSort
   | track
   | region
+  /-- A literal formal is read only where a spelling is expected: the kind of a quantifier, or a
+      literal argument of an atom or a primitive. No operator compares it with a spelling (`same`
+      compares two bound variables), so a body decides alike for every value except through such a
+      reading; notions that differ only by the value are separate concepts. -/
   | literal (values : List String)
   | nat
   deriving Repr, DecidableEq, Inhabited

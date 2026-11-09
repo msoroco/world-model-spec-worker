@@ -63,7 +63,7 @@ def publish(repo, notice_file, changed_files, receipt_root, push=False):
             raise ValueError('Trusted source missing or changed: '+source['source'])
     files=set(changed_files)
     for rel in files:
-        if not rel.startswith(('skills/','inputs/','runtime/','examples/','tests/','migration-candidates/','MIGRATION.md','README.md','runtime.py','overlay.py','.gitignore','START_HERE.md','FULL_BRANCH_CONTRACT.md','DELIVERY_CONTRACT.md','worker_check.py','update_status.py')):
+        if not rel.startswith(('skills/','inputs/','runtime/','examples/','tests/','README.md','runtime.py','overlay.py','.gitignore','START_HERE.md','FULL_BRANCH_CONTRACT.md','DELIVERY_CONTRACT.md','worker_check.py')):
             raise ValueError('Update file outside permitted inputs/code')
         within(repo,rel)
     dirty=set(git('diff','--name-only','HEAD').splitlines()) | set(git('ls-files','--others','--exclude-standard').splitlines())
@@ -75,9 +75,9 @@ def publish(repo, notice_file, changed_files, receipt_root, push=False):
     prior=f'updates/manifests/{old["update_version"]:03d}.json'
     write(repo/prior,old)
     notice_path=f'updates/{version:03d}.json';write(repo/notice_path,notice)
-    (repo/'UPDATE.md').write_text(f'# Updates\nProcess unseen numbered JSON notices in order through {version:03d}. Run python3 update_status.py.\n')
+    (repo/'UPDATE.md').write_text(f'# Updates\nProcess unseen numbered JSON notices in order through {version:03d}. Run python3 worker_check.py --updates.\n')
     changes=notice.get('batch_changes',{})
-    if set(changes)-{'return_branch','runtime','workflow','legacy_capture_handoff','delivery_handoff_required','delivery_fallbacks_required','canonical_delivery_queue_required'}:raise ValueError('Update cannot repartition or silently replace assignments')
+    if set(changes)-{'return_branch','runtime','workflow','delivery_fallbacks_required'}:raise ValueError('Update cannot repartition or silently replace assignments')
     batch=dict(old,update_version=version,parent_manifest_sha256=sha(repo/prior),**changes)
     batch['frozen_files']={k:v for k,v in tree(repo).items() if k!='batch.json' and not k.startswith('work/')}
     write(repo/'batch.json',batch)

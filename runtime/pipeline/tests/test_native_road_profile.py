@@ -19,10 +19,13 @@ class NativeRoadProfileTests(unittest.TestCase):
  def write(self,n,v):self.root.joinpath(n).write_text(json.dumps(v))
  def project(self):
   regions=[{'id':1,'kind':'roadway'}];polygons={}
-  with patch('batch_pipeline.completion.verify'):receipt=apply(self.root,self.telemetry,regions,polygons)
+  # Physical-profile tests isolate the reader; receipt integrity has separate tests.
+  with patch('traffic_spec_adapter.inventory_observations.Evidence') as reader:
+   reader.return_value.path.side_effect=lambda name:self.root/name
+   receipt=apply(self.root,self.telemetry,regions,polygons)
   return receipt,regions,polygons
- def test_local_grade_patches_and_ridge_preserve_unknown_global_grade(self):
-  receipt,regions,polygons=self.project();self.assertNotIn('grade',regions[0]);self.assertEqual(len(receipt['grade_patches']),300);self.assertEqual(receipt['physical_crests'][0]['station_m'],750);self.assertIsNone(receipt['physical_crests'][0]['legal_near_extent']);self.assertTrue(all(x['maximum_spatial_grade_error_ratio']<=.0008 for x in receipt['grade_patches']))
+ def test_profile_samples_do_not_create_extra_roadways(self):
+  receipt,regions,polygons=self.project();self.assertNotIn('grade',regions[0]);self.assertEqual(len(receipt['grade_samples']),300);self.assertEqual(sum(r['kind']=='roadway' for r in regions),1);self.assertEqual(receipt['physical_crests'][0]['station_m'],750);self.assertIsNone(receipt['physical_crests'][0]['legal_near_extent']);self.assertTrue(all(x['maximum_spatial_grade_error_ratio']<=.0008 for x in receipt['grade_samples']))
  def test_missing_frame_or_contradictory_local_slope_rejected(self):
   self.telemetry[0]['native_road_profile']['native_z_before_after_m']=[0,10]
   with self.assertRaisesRegex(ValueError,'slope'):self.project()

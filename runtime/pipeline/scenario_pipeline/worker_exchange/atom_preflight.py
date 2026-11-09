@@ -17,16 +17,12 @@ PACKET_PATHS = {
 }
 
 
-def check_required_atoms(runtime, required, source_packets=()):
+def check_required_atoms(runtime, required, source_packets=(), case_config=None):
     from traffic_spec_adapter.adapter import atom_ids, manifest
 
     library = Path(runtime) / 'library'
     ids = set(atom_ids(library))
-    capability = manifest(
-        library, original_live=True, visibility_observed=True,
-        extended_observations=True, road_user_visibility=True,
-        wheel_angles=True,
-    )['atoms']
+    capability = manifest(library)['atoms']
     if not isinstance(required, list) or any(not isinstance(atom, str) for atom in required):
         raise ValueError('Core required_atoms must be a list of ontology IDs')
     if len(required) != len(set(required)):
@@ -37,12 +33,19 @@ def check_required_atoms(runtime, required, source_packets=()):
     for atom in required:
         if atom not in ids:
             raise ValueError('Unknown Core required atom: ' + atom)
-        if capability[atom] == 'absent':
+        if atom in PACKET_PATHS or capability.get(atom, 'absent') == 'absent':
             needed = PACKET_PATHS.get(atom)
             if needed is None:
                 raise ValueError('Core atom lacks a supported adapter path: ' + atom)
             if not needed <= packets:
                 raise ValueError('Core atom needs source packets: '+atom+' '+','.join(sorted(needed-packets)))
+    if 'st.entrance_of' in required:
+        references = (case_config or {}).get('required_entrance_references')
+        if not isinstance(references, list) or not references:
+            raise ValueError('Required entrance atom needs declared native object references')
+        if any(not isinstance(ref, dict) or set(ref) != {'road_id','object_id','start_frame','end_frame'}
+               for ref in references):
+            raise ValueError('Malformed required entrance reference')
     return True
 
 
@@ -55,7 +58,7 @@ def main():
     parser.add_argument('--config', required=True, type=Path)
     args = parser.parse_args()
     config = json.loads(args.config.read_text())
-    check_required_atoms(args.runtime, config.get('required_atoms', []), config.get('source_packets', []))
+    check_required_atoms(args.runtime, config.get('required_atoms', []), config.get('source_packets', []), config)
     print(json.dumps({'config': str(args.config), 'core_atom_preflight': 'passed'}))
 
 

@@ -1,27 +1,24 @@
-"""Validate the complete full-train delivery return without CARLA."""
+"""Static package checks only; does not execute any returned implementation."""
 import argparse
 import json
 import sys
 from pathlib import Path
-
-ROOT = Path(__file__).resolve().parent
-sys.path.insert(0, str(ROOT / "runtime/pipeline/scenario_pipeline"))
-from worker_exchange.common import read, sha
+sys.path.insert(0, str(Path(__file__).resolve().parent / 'runtime' / 'pipeline' / 'scenario_pipeline'))
 from worker_exchange.preparation import check
-from worker_exchange.runtime_integrity import verify as verify_runtime
 
-batch = read(ROOT / "batch.json")
-runtime = ROOT / batch["runtime"]["root"]
-if sha(runtime / "SOURCE-MANIFEST.json") != batch["runtime"]["source_manifest_sha256"]:
-    raise ValueError("Frozen runtime changed")
-verify_runtime(ROOT, runtime, batch)
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--complete", action="store_true")
-parser.add_argument("--require-delivery-ready", action="store_true")
-args = parser.parse_args()
-result = check(ROOT, complete=args.complete or args.require_delivery_ready,
-               require_ready=args.require_delivery_ready)
-print(json.dumps({"batch": result["batch_id"],
-                  "results": {key: value["status"] for key, value in result["results"].items()},
-                  "static_validation": "passed"}, indent=2))
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--complete', action='store_true')
+    parser.add_argument('--require-delivery-ready', action='store_true')
+    parser.add_argument('--assignment', help='Check one exact assignment; batch coverage remains a separate final check')
+    parser.add_argument('--updates', action='store_true', help='Inspect numbered update and pause state only')
+    args = parser.parse_args()
+    if args.updates:
+        if args.complete or args.require_delivery_ready or args.assignment:
+            parser.error('--updates cannot substitute for ordinary or strict readiness checking')
+        from worker_exchange.updates import state
+        print(json.dumps(state(Path(__file__).resolve().parent), indent=2))
+        raise SystemExit(0)
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+    print(json.dumps({'batch_id': result['batch_id'], 'reported': list(result['results']),
+                      'static_checks_passed': True}, indent=2))

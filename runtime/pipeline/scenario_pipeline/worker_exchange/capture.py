@@ -1,5 +1,5 @@
 """Prospective capture contract; no change to existing frozen recordings."""
-PROFILE = {'version': 'overview1080-capability-v1', 'status': 'capability_only',
+PROFILE = {'version': 'overview1080-capability', 'status': 'capability_only',
            'fps': 20, 'overview': [1920, 1080],
            'detail_views': [[1280, 720], [1280, 720], [1280, 720]],
            'encoding': 'retain_existing_lossless',

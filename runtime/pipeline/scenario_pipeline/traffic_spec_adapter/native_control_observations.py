@@ -28,8 +28,10 @@ def read_observations(original, telemetry, lane_ids, regions, required):
     binding = result.get('completion', {}).get('binding')
     if not binding:
         raise ValueError('Native inventory requires a closed original attempt')
-    from batch_pipeline.completion import verify
-    verify(original, binding)
+    from .inventory_observations import Evidence
+    retained=Evidence(original.parent)
+    for name in ('native_control_inventory.jsonl','native_incoming_lane_topology.json','construction.json','runner.py','road.xodr','trace.jsonl'):
+        if retained.path(name) is None:raise ValueError('Unbound native control evidence: '+name)
     construction = json.loads((original/'construction.json').read_text())
     implementation = next(f['content'] for f in construction['files'] if f['path']=='runner.py')
     implementation_sha = hashlib.sha256(implementation.encode()).hexdigest()

@@ -87,7 +87,7 @@ class CandidateTests(unittest.TestCase):
         (self.root/'analysis.log').write_text('positive\n')
         (self.root/'negative.log').write_text('expected missing source\n')
         write(self.root/'compatibility.json', {
-            'format': 'worker-package-compatibility-v2', 'passed': True,
+            'format': 'worker-package-compatibility', 'passed': True,
             'case_id': self.case, 'candidate_id': 'fallback1',
             'construction_sha256': sha(self.root/'fallback.json'),
             'checks': ['selected_measurements', 'negative_case_source', 'lean_decoder', 'final_decode'],
@@ -110,6 +110,26 @@ class CandidateTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'candidate identity differs'):
             process_saved(self.root/'execution-manifest.json', self.case, target,
                           self.root/'processed', self.root/'library', self.root/'validator')
+
+    def test_four_distinct_plans_are_required_for_full_train(self):
+        with self.assertRaisesRegex(ValueError, 'required number of candidate plans'):
+            validate(self.root, self.entry, 'NRS-484B-127-1', 'C1', candidate_count=4)
+        for number, gain in ((2, 0.5), (3, 0.6)):
+            path = self.root / f'fallback{number}.json'
+            write(path, self.construction('subject_127_1', gain))
+            self.entry['candidates'].append({
+                'id': f'fallback{number}', 'construction': path.name,
+                'construction_sha256': sha(path),
+                'trigger': {'source': 'original lane history',
+                            'metric': 'destination_lane_reached',
+                            'failure_condition': 'false at final observation'},
+                'changed_knobs': [f'steering_gain 0.3 to {gain}']})
+        self.assertEqual(validate(self.root, self.entry, 'NRS-484B-127-1', 'C1',
+                                  candidate_count=4)['fallbacks'],
+                         ['fallback1', 'fallback2', 'fallback3'])
+        self.entry['candidates'][2]['construction_sha256'] = self.entry['candidates'][1]['construction_sha256']
+        with self.assertRaises(ValueError):
+            validate(self.root, self.entry, 'NRS-484B-127-1', 'C1', candidate_count=4)
 
 
 if __name__ == '__main__':

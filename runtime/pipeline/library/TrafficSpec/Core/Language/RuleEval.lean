@@ -4,10 +4,7 @@
 
   `verdicts` combines the binder classes, the applicability and the obligation per instant
   (Kleene, `verdictAt`). `check` finds from the syntax every defect the evaluator would otherwise
-  report as `malformed` or `unboundVariable`: unknown names, arities, literals no codec decodes,
-  variables of the wrong sort, non-constant parameters, undeclared assumptions and intentions, a
-  declared intention read ahead of the judged observation, compositions of rules not in the set or
-  mapping to names that are not the composed rule's binders. `checkReading`
+  report as `malformed` or `unboundVariable`; its doc comment lists them. `checkReading`
   names the parameters the reading lacks, over the rule and the rules it composes.
 
   `Concept.check` holds a concept to the same standard on every admissible instantiation of
@@ -19,13 +16,15 @@
 import TrafficSpec.Core.Language.Rule
 import TrafficSpec.Core.Language.Concept
 import TrafficSpec.Core.Language.Semantics
+import TrafficSpec.Core.Language.EvalFast
 
 namespace TrafficSpec
 namespace Rule
 open Semantics
 
-/-- A rule's formula as evaluated: every comparison over a `cond` decided by cases. -/
-def evalRuleFormula (c : SemCtx) (φ : Formula) : Array R := evalAll c (Formula.elimCond φ)
+/-- A rule's formula as evaluated: every comparison over a `cond` decided by cases, through the
+    sub-expression cache (`evalFastAll`, whose every stored value is the one `evalAll` gives). -/
+def evalRuleFormula (c : SemCtx) (φ : Formula) : Array R := evalFastAll c (Formula.elimCond φ)
 
 /-- Every binder's class holds for its bound track and the applicability holds, per instant. -/
 def engagedAll (r : Rule) (c : SemCtx) : Array R :=
@@ -219,9 +218,60 @@ mutual
     | _ => []
 end
 
-/-- Every defect a rule has before any trace. Empty for a rule the evaluator will never report
-    `malformed` or `unboundVariable` on. `regions` names variables the caller binds to regions:
-    the region formals of a concept's instance, which alone may then have no binder. -/
+-- The distance travelled since the trace began (`kin_path_length`), whose zero is the start of the
+-- recording, read where it can decide a search into the past: inside an operand of `since`, of
+-- `atLast` or of `count`, inside the formula of `sinceRise` or of `rises`, directly or through a
+-- composed rule that reads it. Everywhere else it is ordinary arithmetic; path windows and
+-- `distanceWhile` measure differences and are never this.
+mutual
+  partial def pathTerm (reads : String → Bool) (back : Bool) : Term → List String
+    | .measure "kin_path_length" _ =>
+      if back then ["the distance travelled since the trace began (`kin_path_length`) is read inside a search into the past (`since`, `sinceRise`, `atLast`, `count` or `rises`); the start of a recording is no event of a road user's history"] else []
+    | .quantity _ _ ps => ps.flatMap (pathTerm reads back)
+    | .distanceWhile _ φ => pathReads reads back φ
+    | .sinceRise φ => pathReads reads true φ
+    | .aggregate _ _ φ t => pathReads reads back φ ++ pathTerm reads back t
+    | .add a b | .sub a b | .mul a b | .div a b => pathTerm reads back a ++ pathTerm reads back b
+    | .neg a | .abs a => pathTerm reads back a
+    | .cond φ a b => pathReads reads back φ ++ pathTerm reads back a ++ pathTerm reads back b
+    | _ => []
+  partial def pathReads (reads : String → Bool) (back : Bool) : Formula → List String
+    | .rule id _ | .ruleApplies id _ =>
+      if back && reads id then [s!"`{id}` reads the distance travelled since the trace began and is composed inside a search into the past"] else []
+    | .atom _ _ ps | .derived _ _ ps => ps.flatMap (pathTerm reads back)
+    | .cmp l _ r => pathTerm reads back l ++ pathTerm reads back r
+    | .since φ ψ => pathReads reads true φ ++ pathReads reads true ψ
+    | .atLast _ d _ ψ φ => pathTerm reads back d ++ pathReads reads true ψ ++ pathReads reads true φ
+    | .count e sφ _ _ => pathReads reads true e ++ pathReads reads true sφ
+    | .rises φ => pathReads reads true φ
+    | .not φ | .always φ | .eventually φ => pathReads reads back φ
+    | .and φ ψ | .or φ ψ | .implies φ ψ | .until φ ψ | .definedWhen φ ψ => pathReads reads back φ ++ pathReads reads back ψ
+    | .holdsFor _ d _ φ | .within _ d _ φ => pathTerm reads back d ++ pathReads reads back φ
+    | .untilWithin _ d _ φ ψ => pathTerm reads back d ++ pathReads reads back φ ++ pathReads reads back ψ
+    | .existsRegion _ _ φ | .forallRegion _ _ φ | .existsDevice _ _ φ | .forallDevice _ _ φ
+    | .existsUser _ φ | .forallUser _ φ => pathReads reads back φ
+    | _ => []
+end
+
+/-- Whether a rule, or a rule it composes, reads `kin_path_length` anywhere. -/
+def readsPath (rules : List Rule) (r : Rule) : Bool :=
+  (closure rules r).any fun x => x.formulas.any fun φ => !(pathReads (fun _ => false) true φ).isEmpty
+
+/-- Every defect a rule has before any trace; empty for a rule the evaluator will never report
+    `malformed` or `unboundVariable` on: an empty id; no binder, or one unnamed or named twice;
+    an assumption or intention read but not declared, or an intention id ill-formed; an
+    operationalization bounded by nothing, or by a name that is no atom, primitive or concept; a
+    name no table knows; an atom, measure, primitive or concept given the wrong number of
+    arguments; an unbound variable, or one of the wrong sort where a track, region or device is
+    read (such a position takes a variable, never a spelling or a number; a literal position
+    takes no variable); a spelling no enumeration decodes; a quantifier kind that is not a
+    spelling; a parameter of an atom or a call, or a window's length, that is not a constant
+    term (a literal, a reading parameter, or arithmetic over them); a declared intention read
+    ahead of the judged observation; the distance travelled since the trace began read inside a
+    search into the past; a composed rule not in the set, or a map that names a variable not
+    bound to a track, misses one of its binders or names one it does not have. `regions` names
+    variables the caller binds to regions: the region formals of a concept's instance, which
+    alone may then have no binder. -/
 def check (rules : List Rule) (r : Rule) (regions : List String := []) : List String :=
   let scope : Scope := r.binderNames.map (fun n => (n, EntityKind.track)) ++ regions.map fun n => (n, EntityKind.region)
   let formed := if regions.isEmpty then r.wellFormed else r.wellFormedBody
@@ -233,6 +283,8 @@ def check (rules : List Rule) (r : Rule) (regions : List String := []) : List St
   checkFormula scope s!"{r.id} applicability" r.applicability ++
   checkFormula scope s!"{r.id} obligation" r.obligation ++
   (r.formulas.flatMap (futureReads reads false) |>.eraseDups.map fun e => s!"{r.id}: {e}") ++
+  (r.formulas.flatMap (pathReads (fun id => (rules.find? (·.id == id)).any (readsPath rules)) false)
+    |>.eraseDups.map fun e => s!"{r.id}: {e}") ++
   (r.formulas.flatMap Formula.compositions).flatMap (fun (id, map) =>
     match rules.find? (·.id == id) with
     | none => [s!"{r.id}: composes unknown rule `{id}`"]
@@ -325,9 +377,12 @@ def ruleCallDefects (cs : List Concept) (r : Rule) : List String :=
   callDefects cs scope s!"{r.id} obligation" r.obligation
 
 
-/-- Every defect a concept has before any trace: formals named once, parameters that are formal
-    (never a reading's), no composition, every referenced concept known and no cycle, and the
-    body well-formed on every admissible instantiation with its calls expanded. -/
+/-- Every defect a concept has before any trace: an empty id; a formal or a parameter named
+    twice; a parameter named as a reading's, or a body parameter that is no formal parameter; a
+    literal formal that admits no value; a composed rule or a declared intention in the body (a
+    concept reads neither); a referenced concept unknown, or a reference cycle; and, on every
+    admissible instantiation of its literal formals with its calls expanded, every defect
+    `Rule.check` finds in a formula and a call whose arguments do not fit the callee's formals. -/
 def check (cs : List Concept) (c : Concept) : List String :=
   let names := c.args.map (·.1)
   let pnames := c.paramNames
@@ -356,7 +411,9 @@ def check (cs : List Concept) (c : Concept) : List String :=
     | none => [s!"{c.id}: arity"]
     | some b =>
       let φ := match b with | .formula φ => φ | .quantity t => Formula.cmp t .eq t
-      callDefects cs scope c.id φ ++ Rule.checkFormula scope c.id (expand cs φ)
+      let φx := expand cs φ
+      callDefects cs scope c.id φ ++ Rule.checkFormula scope c.id φx ++
+        (Rule.pathReads (fun _ => false) false φx).map fun e => s!"{c.id}: {e}"
   structural ++ byInstance.eraseDups
 
 end Concept

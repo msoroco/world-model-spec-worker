@@ -9,6 +9,7 @@ namespace TrafficSpec
 /-- The `st.*` kinds of ATOMS.md, one constructor per class atom — generated; do not edit. -/
 inductive StructureKind
   | highway
+  | travelRegion
   | roadway
   | lane
   | centreLine
@@ -45,6 +46,7 @@ namespace StructureKind
 def ofString (s : String) : Option StructureKind :=
   match s with
   | "highway" => some .highway
+  | "travel_region" => some .travelRegion
   | "roadway" => some .roadway
   | "lane" => some .lane
   | "centre_line" => some .centreLine
@@ -78,6 +80,7 @@ def ofString (s : String) : Option StructureKind :=
   | _ => Option.none
 def toString : StructureKind → String
   | .highway => "highway"
+  | .travelRegion => "travel_region"
   | .roadway => "roadway"
   | .lane => "lane"
   | .centreLine => "centre_line"
@@ -109,6 +112,36 @@ def toString : StructureKind → String
   | .roundabout => "roundabout"
   | .obstruction => "obstruction"
 instance : ToString StructureKind := ⟨toString⟩
+/-- The kind this kind refines (its contract's **Refines:** clause); `none` for a kind that refines none. -/
+def parent? : StructureKind → Option StructureKind
+  | .roadway => some .travelRegion
+  | .lane => some .travelRegion
+  | .shoulder => some .travelRegion
+  | .oneWayRoadway => some .roadway
+  | .intersection => some .travelRegion
+  | .bicycleLaneOrPath => some .travelRegion
+  | .reservedLane => some .lane
+  | .centreTurnLane => some .lane
+  | .turnLane => some .lane
+  | _ => none
+/-- Every kind this kind refines, nearest first: its parent, the parent's parent, and so on. -/
+def ancestors : StructureKind → List StructureKind
+  | .roadway => [.travelRegion]
+  | .lane => [.travelRegion]
+  | .shoulder => [.travelRegion]
+  | .oneWayRoadway => [.roadway, .travelRegion]
+  | .intersection => [.travelRegion]
+  | .bicycleLaneOrPath => [.travelRegion]
+  | .reservedLane => [.lane, .travelRegion]
+  | .centreTurnLane => [.lane, .travelRegion]
+  | .turnLane => [.lane, .travelRegion]
+  | _ => []
+/-- Whether the kind is abstract (its contract's **Abstract.** mark): the union of the kinds refining it. -/
+def isAbstract : StructureKind → Bool
+  | .travelRegion => true
+  | _ => false
+/-- Every structure kind, in ontology order. -/
+def all : List StructureKind := [.highway, .travelRegion, .roadway, .lane, .centreLine, .roadEdge, .shoulder, .sidewalk, .medianOrDivider, .oneWayRoadway, .intersection, .crosswalk, .stopLine, .drivewayOrAlleyEntrance, .alley, .crest, .railwayCrossing, .controlledAccess, .elevatedStructure, .bicycleLaneOrPath, .reservedLane, .centreTurnLane, .turnLane, .parkingSpace, .curbZone, .transitStop, .safetyZone, .pedestrianGradeSeparation, .fireHydrant, .fireStationEntrance, .roundabout, .obstruction]
 end StructureKind
 
 /-- `st.lane_marking` **type** — generated from ATOMS.md; do not edit. -/

@@ -5,10 +5,11 @@
   scene, never a mapping of a law's words.
 
   `Case.check` admits a case only when:
-  - it uses the constructors of observable facts: no assumption, no reading parameter, no other
-    rule, no concept (a derived concept or quantity whose name is not a primitive's), no division
-    except by a non-zero literal, and no `ru_aggregate` (a case names a road user's concrete
-    classes, never a legal aggregate);
+  - it uses the constructors of observable facts and of facts the trace declares (an assumption or
+    a declared intention, each named in `case_declarations` with its kind): no reading parameter,
+    no other rule, no concept (a derived concept or quantity whose name is not a primitive's), no
+    division except by a non-zero literal, and no `ru_aggregate` (a case names a road user's
+    concrete classes, never a legal aggregate);
   - every atom and primitive it names is in the active vocabulary, with the arity and argument
     sorts the static check holds a rule to, every entity position filled by a bound variable;
   - its units agree: a measured atom and a primitive have the units the ontology states
@@ -232,12 +233,12 @@ def env : DimEnv :=
   { param := fun p => .error s!"`{p}` is a reading parameter; a case states facts, never a parameter"
     concept := fun c => .error (if c.startsWith "prim_" then s!"`{c}` is not in the case vocabulary" else notPrimitive c) }
 
-/-- A case's own prohibitions, apart from its units: no assumption, no other rule, no legal
-    aggregate, no division except by a non-zero literal, and no quantifier variable that reuses a
-    binder's or an entity's name. A declared intention is a fact of the trace a case may state. -/
+/-- A case's own prohibitions, apart from its units: no other rule, no legal aggregate, no division
+    except by a non-zero literal, and no quantifier variable that reuses a binder's or an entity's
+    name. An assumption and a declared intention are facts the trace declares, which a case may
+    state wherever it nests them. -/
 partial def policyErrors (reserved : List String) : Formula → List String
-  | .tt | .ff | .same _ _ | .intent .. => []
-  | .asm id => [s!"assumption `{id}`: a case states facts of the trace, never an assumption"]
+  | .tt | .ff | .same _ _ | .asm _ | .intent .. => []
   | .rule id _ | .ruleApplies id _ => [s!"rule `{id}`: a case names no other rule"]
   | .atom n _ ps =>
     (if n == "ru_aggregate" then ["`ru_aggregate`: a case names the road user's concrete classes, never a legal aggregate"] else [])
@@ -308,6 +309,11 @@ private def strs (xs : List String) : Json := Json.arr (xs.map Json.str).toArray
 private def triTag : Tri → String
   | .t => "true" | .f => "false" | .u => "unknown"
 private def reasons (rs : List UnknownReason) : Json := strs (rs.map UnknownReason.tag)
+/-- The declared-fact ids a case states, each once with its kind: `{"id", "kind": "asm" | "int"}`. -/
+def declarations (φ : Formula) : Json :=
+  Json.arr ((Formula.declared φ).eraseDups.map fun
+    | .inl a => Json.mkObj [("id", Json.str a), ("kind", "asm")]
+    | .inr i => Json.mkObj [("id", Json.str i), ("kind", "int")]).toArray
 
 /-- The case of a divergence from its JSON, `{"case": formula, "entities": {...}, "at": ms}`:
     every decoding error, or the case. -/
@@ -375,7 +381,7 @@ def record (rules : List Rule) (r : Rule) (ρ : Reading) (k : Nat) (traceText ca
     , ("case_decode_errors", strs caseErrs)
     , ("canonical_case", orNull (caseOpt.map (·.formula.toJson)))
     , ("case_atoms", orNull (caseOpt.map fun c => strs (Formula.atoms c.formula).eraseDups))
-    , ("case_declarations", orNull (caseOpt.map fun c => strs (Formula.intentions c.formula).eraseDups))
+    , ("case_declarations", orNull (caseOpt.map fun c => declarations c.formula))
     , ("lint_errors", orNull (lint.map strs))
     , ("witness_errors", orNull (witness.map strs))
     , ("case_check_errors", orNull (checked.map strs))

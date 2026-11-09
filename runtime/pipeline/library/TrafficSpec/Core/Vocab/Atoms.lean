@@ -37,15 +37,23 @@ def sqrtMicro (q : Q) : Q :=
     let scaled : Int := (q.num * 1000000000000) / (q.den : Int)   -- µm²
     Units.micrometres (Int.ofNat (isqrt scaled.toNat))
 def norm (a : Vec) : Q := sqrtMicro (normSq a)
-/-- Components of `v` in the frame of heading `h` (longitudinal, lateral); lateral positive = left. -/
-def inFrame (h v : Vec) : Option (Q × Q) :=
-  let n := norm h
-  if Q.isZero n then none
-  else some (Q.div (dot h v) n, Q.div (cross h v) n)
-/-- The unit vector along `a`; `none` for the zero vector. -/
+/-- The unit vector along `a`; `none` for the zero vector only. `a` is first divided by its larger
+    absolute component, so the vector normalised has length between 1 and √2 whatever `a`'s scale,
+    and then by that length taken to micrometres (`norm`). The result is the exact unit vector times
+    a factor of at least 1 and below 1 + 2·10⁻⁶, and is exact where the scaled length is a whole
+    number of micrometres (every axis-aligned direction). -/
 def unit (a : Vec) : Option Vec :=
-  let n := norm a
-  if Q.isZero n then none else some (Q.div a.1 n, Q.div a.2 n)
+  let m := Q.max (Q.abs a.1) (Q.abs a.2)
+  if Q.isZero m then none
+  else
+    let b := (Q.div a.1 m, Q.div a.2 m)
+    let n := norm b
+    some (Q.div b.1 n, Q.div b.2 n)
+/-- Components of `v` in the frame of heading `h` (longitudinal, lateral); lateral positive = left.
+    `h` is read as a direction (`unit`), whatever its length; `v` keeps its own. -/
+def inFrame (h v : Vec) : Option (Q × Q) := do
+  let u ← unit h
+  pure (dot u v, cross u v)
 /-- Distance from a point to a segment. -/
 def segmentDistance (p a b : Vec) : Q :=
   let ab := vsub b a
@@ -120,6 +128,72 @@ def nearestPoint (p : Vec) (poly : List Vec) : Option Vec :=
     cs.foldl (fun acc c => match acc with
       | none => some c
       | some b => if Q.lt (normSq (vsub p c)) (normSq (vsub p b)) then some c else some b) none
+/-- Every point of a polygon's boundary nearest a point: the nearest point of each edge whose
+    distance is the least, so a tie keeps every equally near point whatever the vertex order. -/
+def nearestPoints (p : Vec) (poly : List Vec) : List Vec :=
+  match poly with
+  | [] => []
+  | [a] => [a]
+  | _ =>
+    let n := poly.length
+    let cs := (List.range n).map fun i => segmentNearest p poly[i]! poly[(i + 1) % n]!
+    match cs.map fun c => normSq (vsub p c) with
+    | [] => []
+    | d :: ds =>
+      let m := ds.foldl Q.min d
+      cs.filter fun c => Q.eq (normSq (vsub p c)) m
+/-- The vector from the nearest point of polygon `p` to the nearest point of polygon `q`: zero when
+    they share a point (`polygonsOverlap`), otherwise the shortest vector joining a vertex of one to
+    the nearest point of the other's boundary, which for two convex polygons is the same for every
+    nearest pair. `none` for an empty polygon. -/
+def nearestOffset (p q : List Vec) : Option Vec :=
+  if polygonsOverlap p q then some (Q.zero, Q.zero)
+  else
+    let fromP := p.filterMap fun c => (nearestPoint c q).map (vsub · c)
+    let fromQ := q.filterMap fun c => (nearestPoint c p).map (vsub c ·)
+    (fromP ++ fromQ).foldl (fun acc d => match acc with
+      | none => some d
+      | some e => if Q.lt (normSq d) (normSq e) then some d else some e) none
+/-- The interval a polygon covers along the direction `u`, measured from `o`: (lowest, highest). -/
+def span (u o : Vec) (poly : List Vec) : Option (Q × Q) :=
+  match poly.map fun c => dot u (vsub c o) with
+  | [] => none
+  | x :: xs => some (xs.foldl Q.min x, xs.foldl Q.max x)
+/-- Twice the signed area of a polygon (the shoelace sum). -/
+def area2 (poly : List Vec) : Q :=
+  (edges poly).foldl (fun acc (a, b) => Q.add acc (cross a b)) Q.zero
+/-- Whether a polygon's boundary crosses or touches itself: two edges that are not neighbours
+    meet, or two neighbouring edges fold back along one line. -/
+def selfIntersects (poly : List Vec) : Bool :=
+  let es := (edges poly).toArray
+  let n := es.size
+  (List.range n).any fun i => (List.range n).any fun j =>
+    if j ≤ i then false
+    else
+      let (a, b) := es[i]!
+      let (c, d) := es[j]!
+      if j == i + 1 then orient a b d == 0 && Q.lt (dot (vsub b a) (vsub d c)) Q.zero
+      else if i == 0 && j + 1 == n then orient c d b == 0 && Q.lt (dot (vsub d c) (vsub b a)) Q.zero
+      else segmentsIntersect a b c d
+/-- A simple polygon: at least three vertices, a non-zero area, and a boundary that neither crosses
+    nor touches itself (a repeated vertex makes two edges that are not neighbours meet). -/
+def simplePolygon (poly : List Vec) : Bool :=
+  poly.length ≥ 3 && !Q.isZero (area2 poly) && !selfIntersects poly
+/-- Whether a point lies on a polygon's boundary. Exact. -/
+def onBoundary (p : Vec) (poly : List Vec) : Bool :=
+  (edges poly).any fun (a, b) => orient a b p == 0 && withinBox p a b
+/-- The parameters `t` at which the line `p + t·u` meets the polygon's boundary: one per edge it
+    crosses or touches, and both ends of an edge it runs along. `u` is not the zero vector. -/
+def lineCrossings (p u : Vec) (poly : List Vec) : List Q :=
+  (edges poly).flatMap fun (a, b) =>
+    let d := vsub b a
+    let w := vsub a p
+    let den := cross u d
+    if Q.isZero den then
+      if Q.isZero (cross u w) then [Q.div (dot w u) (dot u u), Q.div (dot (vsub b p) u) (dot u u)] else []
+    else
+      let s := Q.div (cross w u) den
+      if Q.le Q.zero s && Q.le s (Q.ofInt 1) then [Q.div (cross w d) den] else []
 end Geom
 
 -- ---------------------------------------------------------------------------------------------
@@ -195,20 +269,41 @@ def kin_service_brake (s : Scene) (x : TrackId) : Option Q := (s.user x).bind (�
 -- ---------------------------------------------------------------------------------------------
 -- Road structure and occupancy
 -- ---------------------------------------------------------------------------------------------
-/-- Specific structure kinds also satisfy their parent kind. -/
-def structureRefines (actual requested : StructureKind) : Bool :=
-  actual == requested || match actual, requested with
-  | .turnLane, .lane | .reservedLane, .lane | .centreTurnLane, .lane => true
-  | .oneWayRoadway, .roadway => true
-  | _, _ => false
+/-- Whether kind `a` refines kind `b`, reflexively and transitively. -/
+def StructureKind.refines (a b : StructureKind) : Bool := a == b || a.ancestors.contains b
 
-/-- Whether a region is of a kind: unknown where the source cannot tell that kind. -/
+/-- Whether a source that cannot tell kind `m` (it is among `unobservedKinds`) leaves this structure's
+    membership of `m`'s kinds open: always where `m` refines no kind other than an abstract one;
+    otherwise only where the structure is labelled `m` or a kind `m` refines, since a structure of any
+    other kind is known not to be one. -/
+def Structure.maskApplies (st : Structure) (m : StructureKind) : Bool :=
+  (m.parent?.filter (!·.isAbstract)).isNone || m.refines st.kind
+
+/-- Whether a structure is of kind `k`: unknown where a kind the source cannot tell, applying to this
+    structure, is `k` or a kind `k` refines (the label cannot be trusted for `k`); true where the
+    structure's kind refines `k`; unknown where a kind the source cannot tell, applying to this
+    structure, refines `k`; false otherwise. A parent never implies a kind refining it, two kinds
+    refining one parent never imply each other, and a kind the source cannot tell never makes a known
+    parent unknown. An abstract kind is the union of the kinds refining it: true where the structure
+    is of one of them, unknown where it is of none and unknown for one, false otherwise. -/
+def Structure.isOfKind (st : Structure) (k : StructureKind) : Option Bool :=
+  let masked := st.unobservedKinds.filter st.maskApplies
+  let concrete (k : StructureKind) : Option Bool :=
+    if masked.any (k.refines ·) then none
+    else if st.kind.refines k then some true
+    else if masked.any (·.refines k) then none
+    else some false
+  if k.isAbstract then
+    let vs := (StructureKind.all.filter (·.parent? == some k)).map concrete
+    if vs.contains (some true) then some true else if vs.contains none then none else some false
+  else concrete k
+
+/-- Whether a region is of a kind (`Structure.isOfKind`); unknown for a region not in the scene. -/
 def isKind (s : Scene) (r : RegionId) (k : StructureKind) : Option Bool :=
-  (s.structure? r).bind fun st =>
-    if structureRefines st.kind k then some true
-    else if st.unobservedKinds.any (structureRefines k) then none else some false
+  (s.structure? r).bind (·.isOfKind k)
 
 def st_highway (s : Scene) (r : RegionId) : Option Bool := isKind s r .highway
+def st_travel_region (s : Scene) (r : RegionId) : Option Bool := isKind s r .travelRegion
 def st_roadway (s : Scene) (r : RegionId) : Option Bool := isKind s r .roadway
 def st_lane (s : Scene) (r : RegionId) : Option Bool := isKind s r .lane
 def st_lane_direction (s : Scene) (r : RegionId) : Option Vec := (s.structure? r).bind (·.lane) |>.bind (·.direction)
@@ -234,10 +329,16 @@ def st_lane_right_of (s : Scene) (r r' : RegionId) : Option Bool :=
     | some o, some n => if o == n then some false else none
     | _, _ => none
 def st_lane_connectivity (s : Scene) (r : RegionId) : Option (List RegionId) := (st_lane_adjacency s r).bind (·.leadsTo)
-def st_entrance_of (s : Scene) (r : RegionId) : Option (List RegionId) := (s.structure? r).bind (·.entranceOf)
-
 def st_lane_enters (s : Scene) (r : RegionId) : Option RegionId := (st_lane_adjacency s r).bind (·.entersIntersection)
 def st_on_way (s : Scene) (r : RegionId) : Option (List RegionId) := (s.structure? r).bind (·.ways)
+/-- Whether line `l` marks carrier `a`'s entrance: decided where the line's entrances are observed,
+    false for a region known to be neither a stop line nor a crosswalk, unknown otherwise. -/
+def st_entrance_of (s : Scene) (l a : RegionId) : Option Bool :=
+  (s.structure? l).bind fun st =>
+    if st.entranceObserved then some (st.entranceOf.contains a)
+    else match isKind s l .stopLine, isKind s l .crosswalk with
+      | some false, some false => some false
+      | _, _ => none
 def st_lane_marking (s : Scene) (r : RegionId) : Option ((Option (MarkingType × MarkingColour)) × (Option (MarkingType × MarkingColour))) :=
   (st_lane_adjacency s r).map fun l => (l.markingLeft, l.markingRight)
 def st_lane_marking_left (s : Scene) (r : RegionId) : Option (MarkingType × MarkingColour) := (st_lane_adjacency s r).bind (·.markingLeft)
@@ -299,13 +400,10 @@ def footprint (s : Scene) (x : TrackId) : Option (List Vec) := do
   let p ← kin_position s x
   let h ← kin_heading s x
   let (hl, hw, _) ← kin_extent s x
-  let n := Geom.norm h
-  if Q.isZero n then none
-  else
-    let u := (Q.div h.1 n, Q.div h.2 n)
-    let v := (Q.neg u.2, u.1)
-    let corner (a b : Q) : Vec := Geom.vadd p (Q.add (Q.mul a u.1) (Q.mul b v.1), Q.add (Q.mul a u.2) (Q.mul b v.2))
-    pure [corner hl hw, corner hl (Q.neg hw), corner (Q.neg hl) (Q.neg hw), corner (Q.neg hl) hw]
+  let u ← Geom.unit h
+  let v := (Q.neg u.2, u.1)
+  let corner (a b : Q) : Vec := Geom.vadd p (Q.add (Q.mul a u.1) (Q.mul b v.1), Q.add (Q.mul a u.2) (Q.mul b v.2))
+  pure [corner hl hw, corner hl (Q.neg hw), corner (Q.neg hl) (Q.neg hw), corner (Q.neg hl) hw]
 
 /-- Ground distance from a road user's body to a region: zero when the footprint overlaps the
     boundary, otherwise the nearest approach between the two outlines. Without a footprint (no
@@ -325,13 +423,13 @@ def st_region_geometry_distance (s : Scene) (x : TrackId) (r : RegionId) : Optio
     match fp with
     | some poly => Geom.polygonDistance c poly
     | none => some (Geom.norm (Geom.vsub c p))
-/-- The regions of a kind present in the scene. -/
+/-- The regions present in the scene known to be of a kind (`Structure.isOfKind` true). -/
 def regionsOfKind (s : Scene) (k : StructureKind) : List RegionId :=
-  (s.structures.filter (·.kind == k)).map (·.id)
-/-- The regions a quantifier over a kind ranges over: those of the kind, and those whose kind the
-    source cannot tell, which may be of it. -/
+  (s.structures.filter (·.isOfKind k == some true)).map (·.id)
+/-- The regions a quantifier over a kind ranges over: those whose membership of the kind is not
+    false (`Structure.isOfKind`), the known members and those that may be members. -/
 def regionCandidates (s : Scene) (k : StructureKind) : List RegionId :=
-  (s.structures.filter fun st => st.kind == k || st.unobservedKinds.contains k).map (·.id)
+  (s.structures.filter (·.isOfKind k != some false)).map (·.id)
 
 def rel_occupies (s : Scene) (x : TrackId) (r : RegionId) : Option Bool :=
   if s.occupancyObserved.contains x then some (s.occupies.contains (x, r)) else none
@@ -450,44 +548,62 @@ private def relFrame (s : Scene) (a b : TrackId) : Option (Q × Q) := do
   let ha ← kin_heading s a
   Geom.inFrame ha (Geom.vsub pb pa)
 
-/-- Longitudinal and lateral clearance between the two bodies in `a`'s frame, approximating each
-    body by its extent along `a`'s axes; negative means overlap along that axis. -/
+/-- The gap between the two bodies: the vector from the nearest point of `a`'s footprint to the
+    nearest point of `b`'s, each footprint read with its own heading and extent, given as its
+    lengths along and across `a`'s heading (longitudinal, lateral). Neither is ever negative; both
+    are zero exactly when the footprints touch or overlap. `none` when either footprint is not
+    observed, and when a supplied gap has a negative component. -/
 def rel_surface_gap (s : Scene) (a b : TrackId) : Option (Q × Q) :=
   match (s.relation a b).bind (·.surfaceGap) with
-  | some g => some g
+  | some g => if Q.isNonneg g.1 && Q.isNonneg g.2 then some g else none
   | none => do
-    let (lon, lat) ← relFrame s a b
-    let (la, wa, _) ← kin_extent s a
-    let (lb, wb, _) ← kin_extent s b
-    pure (Q.sub (Q.abs lon) (Q.add la lb), Q.sub (Q.abs lat) (Q.add wa wb))
+    let fa ← footprint s a
+    let fb ← footprint s b
+    let d ← Geom.nearestOffset fa fb
+    let ha ← kin_heading s a
+    let (lon, lat) ← Geom.inFrame ha d
+    pure (Q.abs lon, Q.abs lat)
 def rel_surface_gap_longitudinal (s : Scene) (a b : TrackId) : Option Q := (rel_surface_gap s a b).map (·.1)
 def rel_surface_gap_lateral (s : Scene) (a b : TrackId) : Option Q := (rel_surface_gap s a b).map (·.2)
-/-- The smaller of the two clearances, as a scalar gap. -/
-def rel_surface_gap_min (s : Scene) (a b : TrackId) : Option Q := (rel_surface_gap s a b).map fun g => Q.min g.1 g.2
+/-- The distance between the nearest points of the two bodies, the gap's length: zero on contact
+    or overlap, never negative. -/
+def rel_surface_gap_distance (s : Scene) (a b : TrackId) : Option Q := (rel_surface_gap s a b).map Geom.norm
 
-/-- `a` and `b` share a lane and `a` is ahead of `b` along `a`'s heading. -/
+/-- `a` and `b` share a lane and `a` is ahead of `b` along `a`'s heading. The lane is any region both
+    occupy that is of kind lane (`Structure.isOfKind`): unknown when `a` is ahead and no shared region
+    is known to be a lane but one may be. -/
 def rel_ahead_behind_in_lane (s : Scene) (a b : TrackId) : Option Bool :=
   match (s.relation a b).bind (·.aAheadOfB) with
   | some v => some v
   | none => do
     let ra ← rel_occupies_regions s a
     let rb ← rel_occupies_regions s b
-    let lanes := regionsOfKind s .lane
-    let shared := lanes.any fun l => ra.contains l && rb.contains l
     let (lon, _) ← relFrame s a b
-    pure (shared && Q.lt lon Q.zero)
+    if !Q.lt lon Q.zero then some false
+    else
+      let shared := (s.structures.filter fun st => ra.contains st.id && rb.contains st.id).map (·.isOfKind .lane)
+      if shared.contains (some true) then some true
+      else if shared.contains none then none
+      else some false
 def rel_ahead_in_lane (s : Scene) (a b : TrackId) : Option Bool := rel_ahead_behind_in_lane s a b
 def rel_behind_in_lane (s : Scene) (a b : TrackId) : Option Bool := rel_ahead_behind_in_lane s b a
 
-/-- Signed overlap of the two bodies along `a`'s axis: positive when side by side. -/
+/-- Signed overlap of the two footprints along `a`'s heading, each read with its own heading and
+    extent: the length their projections on that axis share, positive when the bodies are side by
+    side, otherwise the gap between the projections negated. A projection: it reads nothing across
+    the axis, so a positive value is no contact and a negative one no distance between the bodies. -/
 def rel_longitudinal_overlap (s : Scene) (a b : TrackId) : Option Q :=
   match (s.relation a b).bind (·.longitudinalOverlap) with
   | some v => some v
   | none => do
-    let (lon, _) ← relFrame s a b
-    let (la, _, _) ← kin_extent s a
-    let (lb, _, _) ← kin_extent s b
-    pure (Q.sub (Q.add la lb) (Q.abs lon))
+    let pa ← kin_position s a
+    let ha ← kin_heading s a
+    let u ← Geom.unit ha
+    let fa ← footprint s a
+    let fb ← footprint s b
+    let (loA, hiA) ← Geom.span u pa fa
+    let (loB, hiB) ← Geom.span u pa fb
+    pure (Q.sub (Q.min hiA hiB) (Q.max loA loB))
 
 /-- Headings opposed (cosine below `-cosTol`) and the distance decreasing. -/
 def rel_oncoming (s : Scene) (a b : TrackId) (cosTol : Q) : Option Bool :=
@@ -500,12 +616,10 @@ def rel_oncoming (s : Scene) (a b : TrackId) (cosTol : Q) : Option Bool :=
     let pb ← kin_position s b
     let va ← kin_velocity s a
     let vb ← kin_velocity s b
-    let na := Geom.norm ha; let nb := Geom.norm hb
-    if Q.isZero na || Q.isZero nb then none
-    else
-      let cosθ := Q.div (Geom.dot ha hb) (Q.mul na nb)
-      let closing := Q.lt (Geom.dot (Geom.vsub pb pa) (Geom.vsub vb va)) Q.zero
-      pure (Q.lt cosθ (Q.neg cosTol) && closing)
+    let ua ← Geom.unit ha
+    let ub ← Geom.unit hb
+    let closing := Q.lt (Geom.dot (Geom.vsub pb pa) (Geom.vsub vb va)) Q.zero
+    pure (Q.lt (Geom.dot ua ub) (Q.neg cosTol) && closing)
 
 /-- Headings aligned (cosine above `cosTol`). -/
 def rel_same_direction (s : Scene) (a b : TrackId) (cosTol : Q) : Option Bool :=
@@ -514,9 +628,9 @@ def rel_same_direction (s : Scene) (a b : TrackId) (cosTol : Q) : Option Bool :=
   | none => do
     let ha ← kin_heading s a
     let hb ← kin_heading s b
-    let na := Geom.norm ha; let nb := Geom.norm hb
-    if Q.isZero na || Q.isZero nb then none
-    else pure (Q.gt (Q.div (Geom.dot ha hb) (Q.mul na nb)) cosTol)
+    let ua ← Geom.unit ha
+    let ub ← Geom.unit hb
+    pure (Q.gt (Geom.dot ua ub) cosTol)
 
 /-- `b` relative to `a` in `a`'s frame: (longitudinal, lateral), lateral positive to the left. -/
 def rel_bearing (s : Scene) (a b : TrackId) : Option Vec :=

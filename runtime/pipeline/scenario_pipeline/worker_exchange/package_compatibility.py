@@ -20,7 +20,7 @@ def check_source_packets(config, paths):
     missing={PACKET_FILES[p] for p in packets}-set(paths)
     if missing:raise ValueError('Diagnostic fixture missing declared source packet: '+','.join(sorted(missing)))
 
-def run(manifest,case,fixture,output,library,validator,candidate='primary'):
+def _process_fixture(manifest,case,fixture,output,library,validator,candidate='primary'):
     manifest=Path(manifest).resolve();output=Path(output).resolve();library=Path(library).resolve();validator=Path(validator).resolve()
     entries=[c for c in read(manifest)['cases'] if c['case_id']==case]
     if len(entries)!=1:raise ValueError('Select exact case')
@@ -59,11 +59,11 @@ def run(manifest,case,fixture,output,library,validator,candidate='primary'):
     process(output,output/'converted',library,validator)
     video=render(output,output/'converted',request['case'])
     audit(video['video'],count,receipt=output/'final-decode.json')
-    receipt={'format':'worker-package-compatibility-v1','case_id':case,'candidate_id':candidate,'construction_sha256':selected['construction_sha256'],'runtime_manifest_sha256':read(manifest)['runtime_manifest_sha256'],'fixture_sha256':fixture_hash,'passed':True,'checks':['actual_analysis','native_validation','mandatory_observations','lean_decoder','render','final_decode','acquisition_unchanged'],'scope':'diagnostic software compatibility only','analysis_sha256':sha(analysis),'fixture_manifest':tree(fixture),'log_sha256':sha(output/'compatibility-analysis.log')}
-    write(output/'compatibility.json',receipt);return receipt
+    receipt={'format':'worker-package-compatibility','case_id':case,'candidate_id':candidate,'construction_sha256':selected['construction_sha256'],'runtime_manifest_sha256':read(manifest)['runtime_manifest_sha256'],'fixture_sha256':fixture_hash,'passed':True,'checks':['actual_analysis','native_validation','mandatory_observations','lean_decoder','render','final_decode','acquisition_unchanged'],'scope':'diagnostic software compatibility only','analysis_sha256':sha(analysis),'fixture_manifest':tree(fixture),'log_sha256':sha(output/'compatibility-analysis.log')}
+    return receipt
 
 
-def run_recipe(manifest,case,output,library,validator,candidate='primary'):
+def run(manifest,case,output,library,validator,candidate='primary'):
     """Exercise selected measurements and a missing case source, then Core/video."""
     from .fixture_recipe import materialize
     from .measurement_contract import validate,verify_report
@@ -83,7 +83,7 @@ def run_recipe(manifest,case,output,library,validator,candidate='primary'):
     output.parent.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(dir=output.parent,prefix='fixture-') as temporary:
         fixture=Path(temporary)/'positive';source=materialize(repo,recipe_path,fixture)
-        receipt=run(manifest,case,fixture,output,library,validator,candidate)
+        receipt=_process_fixture(manifest,case,fixture,output,library,validator,candidate)
         measurements=verify_report(contract,read(output/'analysis-report.json'),fixture)
         negative=Path(temporary)/'negative'
         proposal=materialize_case(manifest,case,negative,fixture,candidate)
@@ -98,9 +98,11 @@ def run_recipe(manifest,case,output,library,validator,candidate='primary'):
         expected=contract['negative']['error_contains']
         if failure.returncode==0 or expected not in failure.stdout:
             raise ValueError('Negative case-source fixture did not fail as specified')
-    receipt.update(format='worker-package-compatibility-v2',
+    from . import fixture_generator
+    receipt.update(format='worker-package-compatibility',
+                   fixture_generator_sha256=sha(Path(fixture_generator.__file__)),
                    checks=receipt['checks']+['selected_measurements','negative_case_source'],
-                   fixture_recipe_sha256=source['recipe_sha256'],fixture_base_sha256=source['base_sha256'],
+                   fixture_recipe_sha256=source['recipe_sha256'],
                    measurement_contract_sha256=sha(contract_path),analysis_report_sha256=sha(output/'analysis-report.json'),
                    measurement_keys=sorted(measurements),measurement_examples=measurements,negative_removed=removed,
                    negative_error_contains=expected,negative_log_sha256=sha(output/'negative-analysis.log'))
@@ -122,41 +124,38 @@ CHECKS={'actual_analysis','native_validation','mandatory_observations','lean_dec
 
 def check_receipts(repo,folder,manifest):
     """Static receipt verification; local takeover independently reruns the command."""
-    batch=read(Path(repo)/'batch.json') if (Path(repo)/'batch.json').is_file() else {}
-    strict=batch.get('measurement_contract_required',False)
     for entry in manifest['cases']:
         spec=entry.get('compatibility',{})
-        if not spec.get('receipt') or not spec.get('sha256') or not spec.get('log') or (not strict and not spec.get('fixture')):raise ValueError('Missing package compatibility proof: '+entry['case_id'])
+        if not spec.get('receipt') or not spec.get('sha256') or not spec.get('log'):raise ValueError('Missing package compatibility proof: '+entry['case_id'])
         path=within(folder,spec['receipt'])
         if sha(path)!=spec['sha256']:raise ValueError('Compatibility receipt changed')
         proof=read(path)
-        if batch.get('update_version', 0) >= 4 and proof.get('candidate_id') != 'primary':
+        from . import fixture_generator
+        if proof.get('fixture_generator_sha256') != sha(Path(fixture_generator.__file__)):
+            raise ValueError('Compatibility diagnostic generator changed')
+        if proof.get('candidate_id') != 'primary':
             raise ValueError('Primary compatibility receipt selects another candidate')
-        expected_format='worker-package-compatibility-v2' if strict else 'worker-package-compatibility-v1'
-        required_checks=CHECKS|({'selected_measurements','negative_case_source'} if strict else set())
+        expected_format='worker-package-compatibility'
+        required_checks=CHECKS|{'selected_measurements','negative_case_source'}
         if proof.get('format')!=expected_format or proof.get('passed') is not True or not required_checks<=set(proof.get('checks',[])):raise ValueError('Incomplete package compatibility proof')
         for key,value in [('case_id',entry['case_id']),('construction_sha256',entry['construction_sha256']),('runtime_manifest_sha256',manifest['runtime_manifest_sha256'])]:
             if proof.get(key)!=value:raise ValueError('Stale compatibility '+key)
         if sha(within(folder,spec['log']))!=proof.get('log_sha256'):raise ValueError('Compatibility analysis log changed')
-        if strict:
-            from .fixture_recipe import materialize
-            from .measurement_contract import validate,verify_report
-            recipe=within(repo,entry['fixture_recipe'])
-            with tempfile.TemporaryDirectory() as temporary:
-                fixture=Path(temporary)/'fixture';source=materialize(repo,recipe,fixture)
-                if source['fixture_sha256']!=proof.get('fixture_sha256') or source['recipe_sha256']!=proof.get('fixture_recipe_sha256') or source['base_sha256']!=proof.get('fixture_base_sha256'):
-                    raise ValueError('Compatibility fixture recipe changed')
-                config_source=read(within(folder,entry['construction']))
-                config=json.loads(next(f['content'] for f in config_source['files'] if f['path']=='config.json'))
-                check_source_packets(config,tree(fixture))
-                contract_path=within(folder,entry['measurement_contract']);contract=read(contract_path)
-                plan=read(folder/'case-plan.json')
-                analysis_code=next(f['content'] for f in config_source['files'] if f['path']==entry['measurement_procedure']['entrypoint'])
-                validate(contract,plan['requirement_dispositions'],analysis_code,entry['case_id'])
-                verify_report(contract,{'measurements':proof.get('measurement_examples')},fixture)
-        else:
-            fixture=within(repo,spec['fixture'])
-            if digest(tree(fixture))!=proof.get('fixture_sha256'):raise ValueError('Compatibility fixture changed')
+        from .fixture_recipe import materialize
+        from .measurement_contract import validate,verify_report
+        recipe=within(repo,entry['fixture_recipe'])
+        with tempfile.TemporaryDirectory() as temporary:
+            fixture=Path(temporary)/'fixture';source=materialize(repo,recipe,fixture)
+            if source['fixture_sha256']!=proof.get('fixture_sha256') or source['recipe_sha256']!=proof.get('fixture_recipe_sha256'):
+                raise ValueError('Compatibility fixture recipe changed')
+            config_source=read(within(folder,entry['construction']))
+            config=json.loads(next(f['content'] for f in config_source['files'] if f['path']=='config.json'))
+            check_source_packets(config,tree(fixture))
+            contract_path=within(folder,entry['measurement_contract']);contract=read(contract_path)
+            plan=read(folder/'case-plan.json')
+            analysis_code=next(f['content'] for f in config_source['files'] if f['path']==entry['measurement_procedure']['entrypoint'])
+            validate(contract,plan['requirement_dispositions'],analysis_code,entry['case_id'])
+            verify_report(contract,{'measurements':proof.get('measurement_examples')},fixture)
         construction=read(within(folder,entry['construction']))
         analysis=entry['measurement_procedure']['entrypoint']
         files={f['path']:f['content'] for f in construction['files']}
@@ -164,15 +163,13 @@ def check_receipts(repo,folder,manifest):
         if analysis not in files or hashlib.sha256(files[analysis].encode()).hexdigest()!=proof.get('analysis_sha256'):raise ValueError('Compatibility analysis changed')
         acquisition=entry.get('acquisition',{})
         config=json.loads(files['config.json'])
-        if not strict:check_source_packets(config, tree(fixture))
-        if strict:
-            if proof.get('measurement_contract_sha256')!=sha(contract_path) or proof.get('measurement_keys')!=sorted(r['output_key'] for r in contract['requirements']):
-                raise ValueError('Selected measurement proof changed')
-            negative=entry.get('negative',{})
-            if sha(within(folder,negative['log']))!=proof.get('negative_log_sha256') or proof.get('negative_removed')!=contract['negative']['remove'][0] or proof.get('negative_error_contains')!=contract['negative']['error_contains']:
-                raise ValueError('Negative case-source proof changed')
-            if contract['negative']['error_contains'] not in within(folder,negative['log']).read_text():
-                raise ValueError('Negative log lacks expected case-source error')
+        if proof.get('measurement_contract_sha256')!=sha(contract_path) or proof.get('measurement_keys')!=sorted(r['output_key'] for r in contract['requirements']):
+            raise ValueError('Selected measurement proof changed')
+        negative=entry.get('negative',{})
+        if sha(within(folder,negative['log']))!=proof.get('negative_log_sha256') or proof.get('negative_removed')!=contract['negative']['remove'][0] or proof.get('negative_error_contains')!=contract['negative']['error_contains']:
+            raise ValueError('Negative case-source proof changed')
+        if contract['negative']['error_contains'] not in within(folder,negative['log']).read_text():
+            raise ValueError('Negative log lacks expected case-source error')
         required=set(config.get('required_atoms',[]))|{c['name'] for c in construction['recording_description']['channels']}
         if not required<=set(acquisition):raise ValueError('Mandatory observation lacks acquisition implementation')
         for atom in required:
@@ -181,10 +178,11 @@ def check_receipts(repo,folder,manifest):
     return True
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--manifest',required=True);p.add_argument('--case',required=True);p.add_argument('--fixture');p.add_argument('--output',required=True);p.add_argument('--library',required=True);p.add_argument('--validator',required=True);p.add_argument('--candidate',default='primary');p.add_argument('--recipe',action='store_true');a=p.parse_args()
-    if a.recipe:result=run_recipe(a.manifest,a.case,a.output,a.library,a.validator,a.candidate)
-    else:
-        if not a.fixture:p.error('--fixture required without --recipe')
-        result=run(a.manifest,a.case,a.fixture,a.output,a.library,a.validator,a.candidate)
-    print(json.dumps(result,indent=2))
+    p=argparse.ArgumentParser(description=__doc__)
+    for option in ('manifest','case','output','library','validator'):
+        p.add_argument('--'+option,required=True)
+    p.add_argument('--candidate',default='primary')
+    a=p.parse_args()
+    print(json.dumps(run(a.manifest,a.case,a.output,a.library,a.validator,a.candidate),indent=2))
+
 if __name__=='__main__':main()

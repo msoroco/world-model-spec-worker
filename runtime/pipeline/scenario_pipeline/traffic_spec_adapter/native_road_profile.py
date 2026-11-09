@@ -1,4 +1,4 @@
-"""Source-bound generated straight-road grade patches and physical crest ridge.
+"""Source-bound road profile samples and physical crest ridge.
 
 The ridge's narrow strip is a mesh-resolution representation of a maximum,
 never a statutory near-crest extent. Grade is a midpoint derivative estimate;
@@ -16,8 +16,10 @@ def apply(original,telemetry,regions,polygons):
  original=Path(original);path=original/'native_road_profile.json'
  if not path.exists():return None
  from shapely.geometry import Polygon
- from batch_pipeline.completion import verify
- result=json.loads((original/'result.json').read_text());verify(original,result['completion']['binding'])
+ from .inventory_observations import Evidence
+ retained=Evidence(original.parent)
+ for name in ('native_road_profile.json','construction.json','runner.py','road.xodr','native_hill_surface_survey.json','trace.jsonl'):
+  if retained.path(name) is None:raise ValueError('Unbound native road profile evidence: '+name)
  packet=json.loads(path.read_text());construction=json.loads((original/'construction.json').read_text());files={f['path']:f['content'] for f in construction['files']}
  if (packet.get('schema')!='native-straight-road-profile-v1' or packet['map_sha256']!=sha(original/'road.xodr') or packet['survey_sha256']!=sha(original/'native_hill_surface_survey.json') or packet['instrumentation_sha256']!=sha(original/'runner.py') or hashlib.sha256(files['runner.py'].encode()).hexdigest()!=sha(original/'runner.py')):raise ValueError('Native road profile provenance mismatch')
  root=ET.parse(original/'road.xodr').getroot();roads=root.findall('road')
@@ -43,7 +45,7 @@ def apply(original,telemetry,regions,polygons):
  patches=[]
  for start in range(450,1050,2):
   middle=start+1;e=max((x for x in elev if float(x.attrib['s'])<=middle),key=lambda x:float(x.attrib['s']));d=middle-float(e.attrib['s']);slope=derivative(e,middle);error=abs(2*float(e.attrib.get('c',0))+6*float(e.attrib.get('d',0))*d)+3*abs(float(e.attrib.get('d',0)))
-  patches.append({'region_id':region('roadway',start,start+2,grade=slope),'station_interval_m':[start,start+2],'midpoint_grade_ratio':slope,'maximum_spatial_grade_error_ratio':error})
+  patches.append({'station_interval_m':[start,start+2],'midpoint_grade_ratio':slope,'maximum_spatial_grade_error_ratio':error})
  crests=[]
  for i,e in enumerate(elev):
   if float(e.attrib.get('d',0))!=0:raise ValueError('Cubic profile needs separate crest derivation')
@@ -54,4 +56,4 @@ def apply(original,telemetry,regions,polygons):
     if not any(v['s_m']==peak and abs(derivative(e,peak))<1e-9 for v in survey['surface_samples']):raise ValueError('Physical crest lacks native peak survey')
     crests.append({'region_id':region('crest',peak-ridge_width/2,peak+ridge_width/2),'station_m':peak,'mesh_representation_width_m':ridge_width,'legal_near_extent':None})
  if not crests:raise ValueError('No surveyed physical crest')
- return {'source':str(path),'sha256':sha(path),'grade_patches':patches,'physical_crests':crests,'scope':'Native surveyed elevation geometry. Midpoint grades approximate local2m patches; narrow crest ridge represents physical maximum at mesh resolution. No statutory near extent, visibility or compliance judgment.'}
+ return {'source':str(path),'sha256':sha(path),'grade_samples':patches,'physical_crests':crests,'scope':'Native surveyed elevation geometry. Spatially varying grades remain source samples, not extra roadways or an invented constant whole-road grade. Crest ridge represents the surveyed maximum; no legal near extent or visibility judgment.'}

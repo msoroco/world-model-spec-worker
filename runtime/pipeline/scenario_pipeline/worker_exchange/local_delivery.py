@@ -7,7 +7,7 @@ import json
 import hashlib
 from pathlib import Path
 
-from .common import read, sha, write
+from .common import digest, read, sha, write
 from .branch_coverage import assignment_path, assignments
 from .local import adopt, freeze, prepare_manifest_jobs
 
@@ -59,6 +59,11 @@ def _adopt(root, repo, batch, db, run, aid, job, proposal):
 
 
 def prepare(root, repo, batch, db, assignment_id, case_id, candidate_id='primary'):
+    from .exchange import preparation_validation_scope
+    with preparation_validation_scope():
+        return _prepare(root, repo, batch, db, assignment_id, case_id, candidate_id)
+
+def _prepare(root, repo, batch, db, assignment_id, case_id, candidate_id='primary'):
     """Freeze one-law inputs and adopt every semantic/construction job exactly.
 
     A repeat invocation resumes the same run and verifies existing artifacts.
@@ -88,10 +93,13 @@ def prepare(root, repo, batch, db, assignment_id, case_id, candidate_id='primary
     if entry is None or entry['kind']!='delivery':
         raise ValueError('Select one exact delivery case')
     from .candidate_constructions import select
-    select(folder/'execution-manifest.json',case_id,candidate_id)
+    _, selected, _ = select(folder/'execution-manifest.json',case_id,candidate_id)
     _selection_targets(root, assignment)
 
-    case_key=hashlib.sha256((case_id+'|'+candidate_id).encode()).hexdigest()[:16]
+    # An actual source change creates a distinct run; historical attempts remain immutable.
+    case_key=hashlib.sha256(json.dumps({'case':case_id,'candidate':candidate_id,
+        'construction':selected['construction_sha256'],
+        'runtime':manifest['runtime_manifest_sha256']},sort_keys=True).encode()).hexdigest()[:16]
     run = 'worker-delivery-'+assignment['cell_id']+'-'+assignment['law_id']+'-'+assignment['actor']+'-'+case_key
     local = root/'inputs/worker_exchange'/batch/'local-run-inputs'/assignment_id
     law_path = local/'laws.jsonl'
@@ -113,7 +121,18 @@ def prepare(root, repo, batch, db, assignment_id, case_id, candidate_id='primary
     store = Store(db)
     try:
         if not store.db.execute('SELECT 1 FROM runs WHERE id=?',(run,)).fetchone():
-            catalog_id = pipeline.import_catalog(store,root/'inputs/catalog/vocabulary_catalog.json')
+            catalog_source = root/'inputs/catalog/vocabulary_catalog.json'
+            catalog = read(catalog_source)
+            existing = catalog['law_records'].get(assignment['law_id'])
+            if existing is not None and existing != assignment['law']:
+                raise ValueError('Imported delivery law conflicts with catalog')
+            if existing is None:
+                catalog['law_records'][assignment['law_id']] = assignment['law']
+                catalog_path = local/('catalog-'+case_key+'.json')
+                _same_file(catalog_path, catalog)
+            else:
+                catalog_path = catalog_source
+            catalog_id = pipeline.import_catalog(store,catalog_path)
             pipeline.create_run(store,run,catalog_id,output,summary_path,[],
                                 'worker-exchange-reviewed',simulator_context=context_path,laws=law_path)
         info = stages.run_info(store,run)
@@ -160,7 +179,28 @@ def prepare(root, repo, batch, db, assignment_id, case_id, candidate_id='primary
                 "SELECT j.* FROM jobs j JOIN run_jobs r ON r.job_id=j.id "
                 "WHERE r.run_id=? AND r.active=1 AND j.stage='judgment_observables' AND j.actor=?",
                 (run,actor)) if json.loads(row['payload']).get('phrase')==proposal['phrase']
-                and json.loads(row['payload']).get('note','')==proposal.get('note','')]
+                and json.loads(row['payload']).get('note','')==proposal.get('note','')
+                and json.loads(row['payload']).get('input_revision')==revision]
+            if not rows:
+                # A completed imported template can already contain observable
+                # requirements, so template expansion does not enqueue its
+                # judgment jobs. Create only the exact jobs backed by this
+                # template and the frozen worker proposal.
+                completed_template=store.job(template_job['id'])
+                if completed_template['status'] != 'completed' or not completed_template['artifact_id']:
+                    raise ValueError('Judgment proposal lacks completed template artifact')
+                template_result=store.artifact(completed_template['artifact_id'])['payload']
+                calls=template_result.get('structure',{}).get('judgment_calls_needed',[])
+                if len([j for j in calls if (j.get('phrase'),j.get('note','')) ==
+                        (proposal['phrase'],proposal.get('note',''))]) != 1:
+                    raise ValueError('Imported judgment differs from completed template')
+                entity=template_result['template_id']+':'+digest([
+                    proposal['phrase'],proposal.get('note','')])[:12]
+                jid=stages.enqueue(store,run,'judgment_observables',entity,actor,
+                    {'template_id':template_result['template_id'],
+                     'phrase':proposal['phrase'],'note':proposal.get('note',''),
+                     'template_version':digest(template_result)},[template_job['id']])
+                rows=[dict(store.job(jid))]
             if len(rows)!=1:raise ValueError('Missing exact judgment observables job')
             job=rows[0]
         finally:store.db.close()
@@ -190,8 +230,9 @@ def prepare(root, repo, batch, db, assignment_id, case_id, candidate_id='primary
              'package_sha256':checked['package_sha256'],'semantic_jobs_completed':True,
              'execution_job_ids':jobs['exact_execution_job_ids'],
              'native_dispatched':False,'recordings_accepted':0}
-    _same_file(root/'state/operations/worker_exchange'/batch/'prepared'/
-               (assignment_id+'-'+case_key+'.json'),receipt)
+    prepared_dir=root/'state/operations/worker_exchange'/batch/'prepared'
+    path=prepared_dir/(assignment_id+'-'+case_key+'-'+revision[:16]+'.json')
+    _same_file(path,receipt)
     return receipt
 
 
@@ -277,7 +318,7 @@ def accept(root, repo, batch, db, run, assignment_id, case_id, job_id, attempt_n
     if folder != root/'recordings'/folder.name or attempt not in audit_path.parents:
         raise ValueError('Audit and attempt must belong to one canonical recording')
     audit=read(audit_path)
-    if (audit.get('format')!='worker-delivery-audit-v1' or audit.get('passed') is not True
+    if (audit.get('format')!='worker-delivery-audit' or audit.get('passed') is not True
             or audit.get('case_id')!=case_id or audit.get('job_id')!=job_id
             or audit.get('attempt')!=attempt_number or audit.get('recording_id')!=folder.name
             or not CHECKS <= {key for key,value in audit.get('checks',{}).items() if value is True}):
@@ -299,8 +340,45 @@ def accept(root, repo, batch, db, run, assignment_id, case_id, job_id, attempt_n
             if frame.get('video_frame')!=index or scenes[index]['t']!=round(frame['time_s']*1000):
                 raise ValueError('Original frame/Core timestamp join failed')
         if index+1!=len(scenes):raise ValueError('Core trace exceeds original frame map')
-    from .media import audit as decode_video
-    decode_video(video,len(scenes),threads=4,receipt=attempt/'delivery-primary-decode.json')
+    # The independent delivery auditor already performed the complete video
+    # decode and pixel review. Bind that result to the exact promoted bytes so
+    # acceptance does not decode the same movie for a second time.
+    if not audit.get('auditor_path'):
+        raise ValueError('Missing source-bound independent auditor')
+    auditor = Path(audit['auditor_path']).resolve()
+    operations = root/'state/operations/worker_exchange'/batch
+    if operations not in auditor.parents or auditor.name != 'delivery_audit.py':
+        raise ValueError('Independent auditor escapes local delivery operations')
+    decode_path = Path(audit.get('source_decode_receipt_path','')).resolve()
+    if operations not in decode_path.parents or not decode_path.is_file():
+        raise ValueError('Missing source-bound full-decode receipt')
+    if file_sha(decode_path) != audit.get('source_decode_receipt_sha256'):
+        raise ValueError('Source-bound full-decode receipt changed')
+    from .media import verify_receipt
+    decoded = verify_receipt(video,decode_path,len(scenes),
+                             mapping_sha256=file_sha(attempt/'video_frames.jsonl'))
+    if decoded['auditor_sha256'] != audit.get('source_decode_auditor_sha256'):
+        raise ValueError('Full-decode auditor revision changed')
+    if not auditor.is_file() or audit.get('auditor_sha256') != file_sha(auditor):
+        raise ValueError('Independent auditor revision changed; run the source audit again')
+    if auditor.is_file() and audit.get('auditor_sha256') == file_sha(auditor):
+        binding_path = attempt/'delivery-primary-bound-audit.json'
+        binding = {'format':'delivery-primary-bound-audit',
+               'audit_sha256':file_sha(audit_path),
+               'auditor_sha256':file_sha(auditor),
+               'video_sha256':file_sha(video),
+               'trace_sha256':file_sha(trace),
+               'native_result_sha256':file_sha(attempt/'result.json'),
+               'frame_map_sha256':file_sha(attempt/'video_frames.jsonl'),
+               'frames':len(scenes),
+               'first_timestamp_ms':scenes[0]['t'],
+               'last_timestamp_ms':scenes[-1]['t'],
+                   'checks':{key:audit['checks'][key] for key in CHECKS}}
+        if binding_path.exists():
+            if read(binding_path)!=binding:
+                raise ValueError('Independent video/Core/source audit binding changed')
+        else:
+            write(binding_path,binding)
     record={'law_id':assignment['law_id'],'frames':len(scenes),
             'video_source':str(video),'video_sha256':audit['video_sha256'],
             'trace_source':str(trace),'trace_sha256':audit['trace_sha256'],
@@ -336,7 +414,9 @@ def accept(root, repo, batch, db, run, assignment_id, case_id, job_id, attempt_n
             _same_file(version/(sid+'-before.json'),before)
             _same_file(version/(sid+'-after.json'),after)
             atomic(path,after)
-    from organize_work import refresh_workspaces
+    from .review_materialization import materialize
+    materialize(root,repo,assignment,case_id,rid,targets)
+    from review_workspaces import refresh_workspaces
     refresh_workspaces(root)
     return {'recording_id':rid,'case_id':case_id,'job_id':job_id,'attempt':attempt_number,
             'accepted_in':targets,'audit_sha256':file_sha(audit_path)}

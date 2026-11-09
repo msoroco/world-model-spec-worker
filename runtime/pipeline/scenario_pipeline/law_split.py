@@ -71,3 +71,22 @@ def validate_partition_migration(member,metadata,root=None):
     before=json.loads(snapshot.read_text())
     if source not in before['members']:raise ValueError('Original membership not found')
     return True
+
+
+CORPUS = 'repo_prep/nevada_sydney/pipeline/traffic-spec-agent/laws'
+DEFAULT_POLICY = Path(__file__).parent/'data/law_splits/demo-overlap-v3.json'
+
+
+def check_current(root=None, policy_path=None):
+    """Read-only verification of installed policy and current review bindings."""
+    root = (Path(root) if root is not None else OUTPUT_ROOT).resolve()
+    expected = json.loads(Path(policy_path or DEFAULT_POLICY).read_text())
+    current = active_manifest(root)
+    if not current or current['version'] != expected['version']:
+        raise ValueError('Installed law split differs from current policy')
+    for key in ('training_law_ids', 'heldout_law_ids'):
+        if set(current[key]) != set(expected[key]):
+            raise ValueError('Active roster differs: ' + key)
+    from lean_work import verify
+    report = verify(root, root/'work', json.loads((root/'work/index.json').read_text()))
+    return {'version': current['version'], 'mode': 'verify', 'verification': report}

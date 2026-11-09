@@ -48,7 +48,7 @@ class PipelineCapture:
                      'required_observations': sorted(requirements),
                      'extraction_confirmed': False, 'sources': {},
                      'complete_driving_lanes': True,
-                     'observation_contract_version': 2,
+                     'observation_contract_version': 3,
                      'road_user_visibility_observed': 'rel.visible' in requirements,
                      'speed_source': 'original live actor.get_velocity telemetry',
                      'frame_join': 'same original simulation frame; replay_* field names retained for adapter compatibility',
