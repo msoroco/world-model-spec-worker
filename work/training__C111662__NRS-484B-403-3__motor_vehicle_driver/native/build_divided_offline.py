@@ -15,6 +15,7 @@ root=Path.cwd()
 native=root/'work'/'NAME'/'native'
 sys.path.insert(0,str(native))
 from divided_opening import check,measure
+from prove_original_divided import prove
 
 class DividedOpening(unittest.TestCase):
     def setUp(self):
@@ -35,6 +36,13 @@ class DividedOpening(unittest.TestCase):
         self.assertIn('type="median"',xml)
         self.assertIn('type="broken"',xml)
         self.assertEqual(xml.count('<road id='),3)
+
+    def test_original_processor_synthetic_source_shape(self):
+        result=prove(self.bundle)
+        self.assertEqual(result['positive_count'],1)
+        self.assertEqual(result['negative_count'],7)
+        self.assertFalse(result['original_native_observed'])
+        self.assertFalse(result['delivery_ready'])
 '''
 
 
@@ -52,7 +60,9 @@ def build():
                                "content": content},
                               {"path": name, "content": content}))
             for name in ("build.py", "check.py", "capture.py", "divided_opening.py",
-                         "capture_divided.py"):
+                         "capture_divided.py", "process_original.py",
+                         "process_original_divided.py", "prove_original_processing.py",
+                         "prove_original_divided.py"):
                 files.append({"path": f"{PREFIX}/{name}",
                               "content": (HERE / name).read_text()})
             files.extend((

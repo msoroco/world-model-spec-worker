@@ -49,7 +49,7 @@ def prove():
                     raise ValueError("Materialized source differs from pinned file")
                 checked += 1
             log = (output / "offline.log").read_text()
-            if "OK" not in log or "Ran 3 tests" not in log:
+            if "OK" not in log or "Ran 4 tests" not in log:
                 raise ValueError("Divided opening CPU tests missing")
             entries.append({"case_suffix": suffix, "candidate_id": choice["id"],
                             "offline_passed": True, "simulation_started": False})
@@ -57,7 +57,7 @@ def prove():
     if digest(first + b" ") == manifest["cases"][0]["construction_sha256"]:
         raise ValueError("Changed construction digest accepted")
     result = {"format": "c111662-4033-divided-offline-proof-v1",
-              "candidate_count": len(entries), "cpu_tests_passed": 3 * len(entries),
+              "candidate_count": len(entries), "cpu_tests_passed": 4 * len(entries),
               "materialized_files_checked": checked,
               "changed_construction_rejected": True, "entries": entries,
               "original_native_observed": False, "delivery_ready": False}

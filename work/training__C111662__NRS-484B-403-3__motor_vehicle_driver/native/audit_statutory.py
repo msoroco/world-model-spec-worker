@@ -16,17 +16,22 @@ def audit():
             any(fragment not in law for fragment in clauses.values()):
         raise ValueError('Exact statutory source or clause changed')
     cases={row['case_id'] for row in plan['cases']}
-    if cases!={CASE.name+'__reference',CASE.name+'__contrast'} or \
-            not any(row.get('status')=='exception_pending' and not row.get('case_ids')
+    intersection={CASE.name+'__reference',CASE.name+'__contrast'}
+    divided={CASE.name+'__divided_reference',CASE.name+'__divided_opening'}
+    if cases!=intersection|divided or \
+            not any(row.get('requirement')=='NRS-484B-403-3-divided-highway-opening'
+                    and row.get('status')=='selected_required'
+                    and set(row.get('case_ids',[]))==divided
                     for row in plan['requirement_dispositions']):
         raise ValueError('Statutory case or pending exception disposition changed')
     ledger=[]
     for name,fragment in clauses.items():
-        has_request=name!='divided_highway_opening_exception'
+        has_request=True
         ledger.append({'clause':name,'exact_text':fragment,
                        'authored_request_or_synthetic_measurement':has_request,
                        'original_physical_proof':False,'legal_applicability_proven':False,
-                       'case_ids':sorted(cases) if has_request else []})
+                       'case_ids':sorted(divided if name=='divided_highway_opening_exception'
+                                         else intersection)})
     result={'format':'c111662-4033-statutory-coverage-v1','assignment_id':CASE.name,
             'assignment_sha256':SOURCE_SHA,'clauses':ledger,'source_clause_count':len(ledger),
             'original_native_observed':False,'delivery_ready':False}

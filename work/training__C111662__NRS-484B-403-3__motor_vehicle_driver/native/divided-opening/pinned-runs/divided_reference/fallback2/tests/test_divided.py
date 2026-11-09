@@ -7,6 +7,7 @@ root=Path.cwd()
 native=root/'work'/'training__C111662__NRS-484B-403-3__motor_vehicle_driver'/'native'
 sys.path.insert(0,str(native))
 from divided_opening import check,measure
+from prove_original_divided import prove
 
 class DividedOpening(unittest.TestCase):
     def setUp(self):
@@ -27,3 +28,10 @@ class DividedOpening(unittest.TestCase):
         self.assertIn('type="median"',xml)
         self.assertIn('type="broken"',xml)
         self.assertEqual(xml.count('<road id='),3)
+
+    def test_original_processor_synthetic_source_shape(self):
+        result=prove(self.bundle)
+        self.assertEqual(result['positive_count'],1)
+        self.assertEqual(result['negative_count'],7)
+        self.assertFalse(result['original_native_observed'])
+        self.assertFalse(result['delivery_ready'])
