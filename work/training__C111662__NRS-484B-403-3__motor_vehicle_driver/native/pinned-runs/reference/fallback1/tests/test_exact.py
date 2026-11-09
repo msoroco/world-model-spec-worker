@@ -44,5 +44,7 @@ class ExactTurn(unittest.TestCase):
 
     def test_original_processor_synthetic_fixture(self):
         result=prove(self.bundle)
+        self.assertEqual(result['positive_count'],1)
+        self.assertEqual(result['negative_count'],7)
         self.assertFalse(result['original_native_observed'])
         self.assertFalse(result['delivery_ready'])
