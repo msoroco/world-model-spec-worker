@@ -35,7 +35,7 @@ def audit():
             if selection.get("candidate_id") != choice["id"]:
                 raise ValueError("Offline candidate mismatch")
             log = (output / "offline.log").read_text()
-            if "OK" not in log or "Ran 3 tests" not in log:
+            if "OK" not in log or "Ran 4 tests" not in log:
                 raise ValueError("Offline CPU tests missing")
     # Explicitly prove the digest comparison detects an altered construction.
     first = (HERE / manifest["cases"][0]["construction"]).read_bytes()

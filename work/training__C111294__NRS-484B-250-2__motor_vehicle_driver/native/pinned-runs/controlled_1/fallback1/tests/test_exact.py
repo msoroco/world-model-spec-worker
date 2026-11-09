@@ -9,6 +9,8 @@ native = root / "work" / "training__C111294__NRS-484B-250-2__motor_vehicle_drive
 sys.path.insert(0, str(native))
 from check import check
 from saved import make_raw, process
+from prove_original_processing import fixture
+from process_original import process as process_capture
 
 class ExactCrossroads(unittest.TestCase):
     def setUp(self):
@@ -42,3 +44,13 @@ class ExactCrossroads(unittest.TestCase):
             (bundle / "config.json").write_text(json.dumps(cfg))
             with self.assertRaises(ValueError):
                 check(bundle)
+
+    def test_original_shape_fixture_rejected_as_original(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            review = fixture(self.bundle, directory)
+            result = process_capture(self.bundle, directory, review, synthetic_fixture=True)
+            self.assertEqual(result["frames_joined"], 600)
+            self.assertFalse(result["original_native_observed"])
+            with self.assertRaises(ValueError):
+                process_capture(self.bundle, directory, review)

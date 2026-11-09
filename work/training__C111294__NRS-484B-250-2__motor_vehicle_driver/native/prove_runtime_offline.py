@@ -1,5 +1,6 @@
 """Run all eight C111294 draft constructions through the frozen offline runner."""
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -15,6 +16,8 @@ def prove():
     for suffix in ("controlled_1", "controlled_2"):
         for candidate in ("primary", "fallback1", "fallback2", "fallback3"):
             output = HERE / "pinned-runs" / suffix / candidate
+            if output.exists():
+                shutil.rmtree(output)
             command = [sys.executable, str(ROOT / "runtime.py"), "offline", "--manifest", str(manifest),
                        "--case", CASE + "__" + suffix, "--candidate", candidate,
                        "--output", str(output), "--python", sys.executable]
@@ -28,7 +31,7 @@ def prove():
                             "offline_passed": True, "simulation_started": False,
                             "output": str(output.relative_to(HERE))})
     proof = {"format": "c111294-2502-pinned-offline-proof-v1", "entries": entries,
-             "candidate_count": 8, "cpu_tests_passed": 24,
+             "candidate_count": 8, "cpu_tests_passed": 32,
              "original_native_observed": False, "delivery_ready": False}
     (HERE / "pinned-runtime-proof.json").write_text(json.dumps(proof, indent=2) + "\n")
     return proof

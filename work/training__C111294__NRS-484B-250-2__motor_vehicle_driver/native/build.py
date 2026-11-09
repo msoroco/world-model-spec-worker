@@ -67,12 +67,11 @@ def road():
 
 def ego_station(t, speed, yielding, stop):
     approach_time = 25 / speed
-    if stop:
-        return min(-50 + speed*t, -25), "stop_before_entry" if t >= approach_time else "approach"
-    if yielding and t >= approach_time:
-        if t < approach_time + 1:
-            return -25, "yield_wait"
-        t -= 1
+    if t >= approach_time:
+        hold = (2 if stop else 0) + (1 if yielding else 0)
+        if t < approach_time + hold:
+            return -25, "stop_before_entry" if stop else "yield_wait"
+        t -= hold
     station = min(-50 + speed*t, 50)
     return station, "approach" if station < -20 else "intersection" if station < 20 else "departure"
 
