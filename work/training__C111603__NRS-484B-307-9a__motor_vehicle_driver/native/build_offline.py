@@ -7,6 +7,7 @@ from build import CASE, HERE, ROOT, digest, write
 PREFIX = f"work/{CASE.name}/native"
 TEST = '''import hashlib
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -17,6 +18,7 @@ native = root / "work" / "NAME" / "native"
 sys.path.insert(0, str(native))
 from build import check
 from saved import fixture, process
+from prove_original_processing import prove
 
 class ArrowRequest(unittest.TestCase):
     def setUp(self):
@@ -32,6 +34,21 @@ class ArrowRequest(unittest.TestCase):
         self.assertEqual(saved["joined_video_frames"], 480)
         self.assertFalse(saved["original_native_observed"])
         self.assertIsNone(saved["legal_verdict"])
+
+    def test_capture_entrypoint_preflight(self):
+        completed = subprocess.run([sys.executable, str(native / "capture.py"),
+            "--check", "--bundle", str(self.bundle)], capture_output=True, text=True)
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        result = json.loads(completed.stdout)
+        self.assertEqual(result["frames"], 480)
+        self.assertFalse(result["original_native_observed"])
+
+    def test_original_processor_source_shape(self):
+        result = prove(self.bundle)
+        self.assertEqual(result["positive_count"], 1)
+        self.assertEqual(result["negative_count"], 9)
+        self.assertFalse(result["original_native_observed"])
+        self.assertFalse(result["delivery_ready"])
 
     def test_rehashed_signal_mutation_rejected(self):
         with tempfile.TemporaryDirectory() as name:
@@ -61,7 +78,8 @@ def build():
                 content = (bundle / name).read_text()
                 files.append({"path": f"{PREFIX}/drafts/{suffix}/{candidate}/{name}",
                               "content": content})
-            for name in ("build.py", "saved.py", "road-template.xodr", "measurement-contract.json"):
+            for name in ("build.py", "saved.py", "capture.py", "process_original.py",
+                         "prove_original_processing.py", "road-template.xodr", "measurement-contract.json"):
                 files.append({"path": f"{PREFIX}/{name}", "content": (HERE / name).read_text()})
             files.extend((
                 {"path": f"work/{CASE.name}/case-plan.json", "content": (CASE / "case-plan.json").read_text()},
@@ -73,7 +91,7 @@ def build():
             construction = {
                 "case_id": CASE.name + "__" + suffix, "cell_id": "C111603",
                 "law_id": "NRS-484B-307-9a", "actor": "motor_vehicle_driver",
-                "entrypoint": f"{PREFIX}/build.py", "files": files,
+                "entrypoint": f"{PREFIX}/capture.py", "files": files,
                 "status": "unselected_cpu_diagnostic",
                 "recording_description": "Authored red-plus-right-arrow request with other vehicle; original signal, physical yielding and legal verdict unverified."}
             path = HERE / "runtime-drafts" / suffix / candidate / "construction.json"

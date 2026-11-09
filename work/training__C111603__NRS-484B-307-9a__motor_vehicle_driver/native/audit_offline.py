@@ -28,7 +28,7 @@ def audit():
             if sha(raw) != choice["construction_sha256"]:
                 raise ValueError("Pinned construction digest differs")
             construction = json.loads(raw)
-            if construction["status"] != "unselected_cpu_diagnostic":
+            if construction["status"] != "unselected_cpu_diagnostic" or not construction["entrypoint"].endswith("/capture.py"):
                 raise ValueError("Unexpected selected status")
             output = HERE / "pinned-runs" / suffix / choice["id"]
             for item in construction["files"]:
@@ -40,7 +40,7 @@ def audit():
             if selection["candidate_id"] != choice["id"]:
                 raise ValueError("Pinned candidate differs")
             log = (output / "offline.log").read_text()
-            if "Ran 3 tests" not in log or "OK" not in log:
+            if "Ran 5 tests" not in log or "OK" not in log:
                 raise ValueError("Offline tests missing")
             candidates += 1
     first = (HERE / manifest["cases"][0]["construction"]).read_bytes()

@@ -151,8 +151,11 @@ def check(bundle):
     speed, camera, dwell = POLICIES[candidate]
     if (digest(SOURCE) != SOURCE_SHA or
             (bundle / "assignment-source.json").read_bytes() != SOURCE.read_bytes() or
+            cfg["format"] != "c111603-3079a-native-request-v1" or
             cfg["assignment_id"] != CASE.name or cfg["assignment_sha256"] != SOURCE_SHA or
             cfg["source_text"] != source_text() or cfg["requested_movement"] != CASES[suffix] or
+            cfg["ego_blueprint"] != "vehicle.tesla.model3" or
+            cfg["other_blueprint"] != "vehicle.audi.tt" or
             cfg["approach_speed_mps"] != speed or cfg["camera_policy"] != camera or
             cfg["pre_approach_dwell_s"] != dwell or cfg["yield_hold_s"] != 3.0 or
             cfg["frames"] != FRAMES or cfg["rate_hz"] != RATE or

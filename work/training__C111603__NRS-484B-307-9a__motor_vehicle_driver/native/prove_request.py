@@ -54,7 +54,13 @@ def prove():
                 lines[220] = json.dumps(row)
                 p.write_text("\n".join(lines) + "\n")
 
-            for mutation in (edit_config, edit_signal, edit_track, edit_actor):
+            def edit_blueprint(path):
+                p = path / "config.json"
+                data = json.loads(p.read_text())
+                data["other_blueprint"] = "vehicle.unknown"
+                write(p, data)
+
+            for mutation in (edit_config, edit_signal, edit_track, edit_actor, edit_blueprint):
                 reject(bundle, mutation)
                 negative += 1
 
