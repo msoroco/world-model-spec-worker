@@ -1,0 +1,140 @@
+{
+  "assignment_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C101303",
+  "law_id": "NRS-484B-127-1",
+  "selected_branch": "Following before a lane change",
+  "source_observation_mapping": {},
+  "cases": [
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__near_lead",
+      "target_law_id": "NRS-484B-127-1",
+      "initial_bumper_gap_m": 14.0,
+      "status": "construction_in_progress"
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__far_lead",
+      "target_law_id": "NRS-484B-127-1",
+      "initial_bumper_gap_m": 28.0,
+      "status": "construction_in_progress"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "initial_following_gap",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__near_lead",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__far_lead"
+      ],
+      "fixed_conditions": [
+        "same hill-crest two-lane map and route",
+        "same ego and moving lead vehicle models",
+        "same lane-change time and controller",
+        "same weather, surrounding traffic, camera plan, and capture duration"
+      ],
+      "deliberate_differences": [
+        "Measured initial bumper gap: 14 m versus 28 m; no legal cutoff is asserted."
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "actor_states",
+      "mandatory": true,
+      "description": "20 Hz Native ego and lead transforms, extents, velocities and lane IDs"
+    },
+    {
+      "name": "road_profile",
+      "mandatory": true,
+      "description": "Native waypoint elevations, road IDs, lane types and connectivity"
+    },
+    {
+      "name": "environment",
+      "mandatory": true,
+      "description": "Weather, highway status and surrounding traffic"
+    },
+    {
+      "name": "video",
+      "mandatory": true,
+      "description": "Synchronized original pixels for both vehicles and crest"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json",
+      "sha256": "b446ce015776a334ae69a6758297d23d554a7844843242ae06d111b5d19a2999"
+    },
+    {
+      "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/witnesses.json",
+      "sha256": "470a56f09e4051776aca62a10c08514557774872c52cf6fbd954ede224c3815f"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base",
+      "recording_id": "ecf51981fe2252ccb757a722ce424fbaf3b34c6539e217ac965266f09982c02a",
+      "status": "accepted",
+      "source": "frozen assignment local_snapshot; recording unavailable in this clone"
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer",
+      "recording_id": "c92e35af1a1901ba8c56b1bf1b1b8f558797f33ad5b627391ff34898f5e67aea",
+      "status": "accepted",
+      "source": "frozen assignment local_snapshot; recording unavailable in this clone"
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego",
+      "recording_id": "c0094c206abcea6916293c0d69e35b075f7bae317a90c8e8aef26a799871c36a",
+      "status": "accepted",
+      "source": "frozen assignment local_snapshot; recording unavailable in this clone"
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead",
+      "recording_id": "8b40f55cfcbcc150ad04e9dbea784333cd682fcf229d3542a0d1ec21327f4b22",
+      "status": "accepted",
+      "source": "frozen assignment local_snapshot; recording unavailable in this clone"
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes",
+      "recording_id": "842d67463b97f517610406e56d4ca8ce72a0d692ebbb0ce8296cd6dd739f70cd",
+      "status": "accepted",
+      "source": "frozen assignment local_snapshot; recording unavailable in this clone"
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface",
+      "recording_id": "f33584cee750d47356f4428f089b457d70e96eb2c3cdba5d229a73609725aff3",
+      "status": "accepted",
+      "source": "frozen assignment local_snapshot; recording unavailable in this clone"
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends",
+      "recording_id": "a1f0d07cbffa637e7c83b10b72509f0269c6fa4e95764741c14ea33ab91b23e9",
+      "status": "accepted",
+      "source": "frozen assignment local_snapshot; recording unavailable in this clone"
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic",
+      "recording_id": "39cb4a53e84f5fcdd2eb5eaf0a60131617a9cf7967d147261ca31ea2ff22ac52",
+      "status": "accepted",
+      "source": "frozen assignment local_snapshot; recording unavailable in this clone"
+    }
+  ],
+  "runtime_uncertainties": [
+    "No CARLA map or Native actor-state capture has been run; waypoint crest and lane connectivity remain unverified.",
+    "The accepted recording IDs in the frozen snapshot have no video/trace files here, so distinct physical situation and original pixels versus demo-train cannot be audited.",
+    "The source inventory inputs/coverage/branch-sources.json and inputs/coverage/candidate-cells.json are absent, so full statutory branch matrix cannot be source-joined.",
+    "A CARLA adapter, saved processing bundle, semantic proposals, and positive/negative compatibility receipts remain to be implemented."
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-127-1",
+      "source": "NRS 484B.127(1)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__near_lead",
+        "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__far_lead"
+      ],
+      "evidence_or_gap": "20 Hz gap, both speeds, traffic and highway condition are required; current CPU helper tests only geometry and trace calculations."
+    }
+  ]
+}
