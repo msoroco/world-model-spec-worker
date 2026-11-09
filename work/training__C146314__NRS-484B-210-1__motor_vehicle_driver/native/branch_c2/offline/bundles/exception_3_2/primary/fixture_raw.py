@@ -38,6 +38,11 @@ def build(bundle, output):
         'private_way_verified': cfg['private_way_requested'],
         'private_way_road_readback': ({'road_id': 214, 'lane_id': -1}
                                       if cfg['private_way_requested'] else None),
+        'generated_junction_connection_verified': cfg['private_way_requested'],
+        'private_way_full_window_survey': [
+            {'x_m': 10+step*.5,
+             'road_id': 214 if cfg['private_way_requested'] and 48<=10+step*.5<=50 else None}
+            for step in range(131)],
         'pavement_condition_verified': False, 'legal_verdict': None})
     actors, videos, reviews = [], [], []
     for i, request in enumerate(requests):

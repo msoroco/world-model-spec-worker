@@ -14,6 +14,9 @@ def sha(path):
 TEST = '''import unittest
 from pathlib import Path
 from check import check
+from fixture_raw import build as fixture
+from saved import prepare, measure
+from route_fallbacks import route
 
 class PrivateWayC2(unittest.TestCase):
     def test_copied_statute_and_spur(self):
@@ -32,6 +35,20 @@ class PrivateWayC2(unittest.TestCase):
         else:
             self.assertGreater(result['requested_right_ahead_frames'],0)
             self.assertGreater(result['requested_spur_zone_frames'],0)
+
+    def test_synthetic_raw_to_saved_crossing(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder)
+            fixture(Path.cwd(),root/'raw')
+            receipt=prepare(Path.cwd(),root/'raw',root/'saved',True)
+            measured=measure(Path.cwd(),root/'saved')
+            routing=route(Path.cwd(),root/'saved')
+            self.assertEqual(receipt['source_kind'],'synthetic_cpu')
+            self.assertFalse(measured['physical_private_way_crossing_verified'])
+            self.assertFalse(measured['delivery_ready'])
+            self.assertEqual(set(routing['triggers']),{'fallback1','fallback2','fallback3'})
+            self.assertIsNone(routing['selected_fallback'])
 '''
 
 

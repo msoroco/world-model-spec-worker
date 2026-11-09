@@ -90,6 +90,15 @@ def prepare(bundle, raw, output, synthetic=False):
     require(len(observed) == len(video) == len(reviews) == len(requests) == 240,
             '240-frame coverage')
     lane_map = {str(n): {'road_id': 212, 'lane_id': n} for n in (-2, -1)}
+    survey = mapping.get('private_way_full_window_survey')
+    require(type(survey) is list and len(survey) == 131 and
+            all(type(point) is dict and point.get('x_m') == 10+i*.5 and
+                (point.get('road_id') is None or type(point['road_id']) is int)
+                for i, point in enumerate(survey)) and
+            mapping.get('generated_junction_connection_verified') is
+                cfg['private_way_requested'] and
+            any(point['road_id'] == 214 for point in survey) is
+                cfg['private_way_requested'], 'full-window generated private-way survey')
     require(mapping.get('source_kind') == kind and
             mapping.get('road_sha256') == sha(bundle/'unmarked-pass.xodr') and
             type(mapping.get('native_map_sha256')) is str and
@@ -97,8 +106,10 @@ def prepare(bundle, raw, output, synthetic=False):
             mapping.get('driving_lane_readback') == lane_map and
             mapping.get('authored_shoulder_lane_readback') is True and
             mapping.get('private_way_verified') is cfg['private_way_requested'] and
-            mapping.get('private_way_road_readback') == (
-                {'road_id': 214, 'lane_id': -1} if cfg['private_way_requested'] else None) and
+            (mapping.get('private_way_road_readback') == {'road_id': 214, 'lane_id': -1}
+             if cfg['private_way_requested'] else
+             mapping.get('private_way_road_readback') is None or
+             mapping['private_way_road_readback'].get('road_id') != 214) and
             type(mapping.get('ego_actor_id')) is int and
             type(mapping.get('lead_actor_id')) is int and
             mapping['ego_actor_id'] != mapping['lead_actor_id'] and
@@ -203,7 +214,7 @@ def measure(bundle, saved_dir):
     observations, cameras, reviews = (rows(saved_dir/name) for name in names)
     require(len(observations) == len(cameras) == len(reviews) == 240,
             'prepared frame count')
-    full, pass_frames, reviewed, crossing_frames = [], 0, 0, []
+    full, pass_frames, reviewed, visible, crossing_frames = [], 0, 0, 0, []
     plane = cfg['private_way_x_m']
     for i, (row, cam, review) in enumerate(zip(observations, cameras, reviews)):
         require(row['frame'] == cam['frame'] == review['frame'] == i and
@@ -221,6 +232,8 @@ def measure(bundle, saved_dir):
         pass_frames += int(min(ex) > max(lx) and max(ey) < min(ly))
         reviewed += int(review['private_way_pixel_reviewed'] and
                         review['pavement_pixel_reviewed'])
+        visible += int(review['private_way_pixel_reviewed'] and
+                       review['private_way_visible'] is True)
         if occupied and min(ex) <= plane <= max(ex):
             crossing_frames.append(i)
     spans = []
@@ -247,6 +260,7 @@ def measure(bundle, saved_dir):
             'body_crossed_spur_plane': body_crossed,
             'right_pass_frames': pass_frames,
             'reviewed_private_way_pavement_frames': reviewed,
+            'reviewed_private_way_visible_frames': visible,
             'original_native_observed': receipt['original_native_observed'],
             'physical_private_way_crossing_verified': False,
             'legal_verdict': None, 'delivery_ready': False}

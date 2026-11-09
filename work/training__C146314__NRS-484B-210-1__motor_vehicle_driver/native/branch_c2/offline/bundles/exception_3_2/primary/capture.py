@@ -8,6 +8,7 @@ import queue
 import subprocess
 import sys
 import traceback
+import xml.etree.ElementTree as ET
 
 import check
 
@@ -111,9 +112,24 @@ def execute(bundle,output,host,port):
             project_to_road=False,lane_type=carla.LaneType.Any)
         spur_readback=None if spur_wp is None else {
             'road_id':spur_wp.road_id,'lane_id':spur_wp.lane_id}
-        private_way_verified=(spur_wp is not None and spur_wp.road_id==214)
+        generated=ET.fromstring(mapping.to_opendrive())
+        generated_roads={int(road.get('id')) for road in generated.findall('./road')}
+        connection=generated.find('./junction/connection[@incomingRoad="212"][@connectingRoad="214"]')
+        generated_junction_connection_verified=(214 in generated_roads and connection is not None)
+        survey=[]
+        for step in range(131):
+            x=10+step*.5
+            sampled=mapping.get_waypoint(carla.Location(x=x,y=-9,z=1),
+                project_to_road=False,lane_type=carla.LaneType.Any)
+            survey.append({'x_m':x,'road_id':None if sampled is None else sampled.road_id})
+        private_way_verified=(spur_wp is not None and spur_wp.road_id==214 and
+            generated_junction_connection_verified and
+            any(sample['road_id']==214 for sample in survey))
         if private_way_verified != cfg['private_way_requested']:
             raise RuntimeError('Generated Native private-way spur differs')
+        if not cfg['private_way_requested'] and (214 in generated_roads or
+                any(sample['road_id']==214 for sample in survey)):
+            raise RuntimeError('Unexpected private way in generated full-window survey')
         library=world.get_blueprint_library()
         vehicle_bp=library.find('vehicle.tesla.model3')
         vehicle_bp.set_attribute('role_name','c146314_ego')
@@ -143,6 +159,8 @@ def execute(bundle,output,host,port):
             'authored_shoulder_lane_readback':True,
             'private_way_road_readback':spur_readback,
             'private_way_verified':private_way_verified,
+            'generated_junction_connection_verified':generated_junction_connection_verified,
+            'private_way_full_window_survey':survey,
             'pavement_condition_verified':False,
             'legal_verdict':None})
         cameras=(('overview',1280,720,85,(60,-18,36)),

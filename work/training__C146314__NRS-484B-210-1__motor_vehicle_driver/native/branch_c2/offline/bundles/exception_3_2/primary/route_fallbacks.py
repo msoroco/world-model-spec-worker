@@ -23,7 +23,9 @@ def route(bundle, saved):
                                   m['reviewed_private_way_pavement_frames'],
                               'reason': 'fewer than 240 private-way/pavement reviewed frames'},
                 'fallback3': {'eligible': not m['original_native_observed'] or
-                              (m['private_way_requested'] and not crossing_complete),
+                              (m['private_way_requested'] and not crossing_complete) or
+                              (not m['private_way_requested'] and
+                               m['reviewed_private_way_visible_frames'] > 0),
                               'original_native_observed': m['original_native_observed'],
                               'reason': 'missing original Native evidence or incomplete crossing'}},
             'selected_fallback': None, 'delivery_ready': False}
