@@ -1,0 +1,170 @@
+{
+  "assignment_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver",
+  "law_id": "NRS-484B-257-2",
+  "cell_id": "C157964",
+  "actor": "motor_vehicle_driver",
+  "role": "testing",
+  "set_ids": [
+    "demo-test"
+  ],
+  "branches": [
+    {
+      "law_id": "NRS-484B-257-2",
+      "cell_id": "C157964",
+      "actor": "motor_vehicle_driver",
+      "branch": "Within-intersection instance plus unresolved approaching-hazard sweep.",
+      "worker_binding": {
+        "batch_id": "demo-test-full-branches-v7",
+        "package_sha256": "3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326"
+      }
+    }
+  ],
+  "objective": "Prepare complete CPU delivery simulations and branch coverage for NRS-484B-257-2 at C157964.",
+  "remaining_requirement": "Preserve accepted evidence and cover uncovered requirements; test all selected branches and comparisons.",
+  "dependency_review": "Read exact frozen law, witness, catalog cell and scope. Identify unavailable Native facts without inventing them.",
+  "external_imports": [
+    "carla"
+  ],
+  "local_snapshot": {
+    "scope_hashes": {
+      "demo-test": "fb28097eec8a56c0b0726e765f2716ffacc6de8175ba0158b272e142d67782de",
+      "full-test": "fe28b7b8e40c30d7984949ad15fe42c497852e16e1063cafb318975614b06218"
+    },
+    "memberships": {
+      "demo-test": [],
+      "full-test": []
+    },
+    "guidance": {},
+    "law_sha256": "8d98be469c85196d809e5456f5ea057ca364b6ae28d06d561c77e4f3b915d42d",
+    "cell_sha256": "aca5b3310c60c9d11a8836c473f5fdd206fa9e2e65738e0d0766c75303b58d30",
+    "law_policy_sha256": "77d7da97a21300aff4fc6560b6ea06defe41b5c9d4c4f5567f77571c94d9e5f6"
+  },
+  "cell": {
+    "cell_id": "C157964",
+    "layout": "one_way_to_two_way_intersection",
+    "maneuver": "straight",
+    "control": "police_officer",
+    "grounding": "plausible_ungrounded",
+    "source_laws": [],
+    "formation_basis": [
+      "general_domain"
+    ],
+    "candidate_ego_parties": [
+      "cycle_or_scooter_operator",
+      "motor_vehicle_driver"
+    ],
+    "actor_status": "compatible",
+    "provenance": {
+      "annotation_refs": [
+        "LVMC-11-40-070",
+        "NRS-484B-100",
+        "NRS-484B-223-4b",
+        "NRS-484B-300-1",
+        "NRS-484B-307-2a",
+        "NRS-484B-307-3a",
+        "NRS-484B-307-5a",
+        "NRS-484B-307-8d",
+        "NRS-484B-307-9b",
+        "NRS-484B-400-4",
+        "NRS-484B-560-7b"
+      ]
+    }
+  },
+  "law": {
+    "id": "NRS-484B-257-2",
+    "title": "Vehicle entering intersection marked stop or yield (2)",
+    "text": "Except when traffic is being controlled by a police officer or a traffic-control signal: The driver of a vehicle shall stop in obedience to a stop sign or yield in compliance with a yield sign, in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1], prior to entering an intersection if a stop sign or a yield sign is erected at one or more entrances thereto although not a part of a through highway and shall proceed cautiously, yielding to vehicles not so obligated to stop or yield and which are within the intersection or approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
+    "source": "NRS 484B.257(2)"
+  },
+  "summary": {
+    "activation_conditions": [
+      "a stop or yield sign is erected at one or more entrances to the intersection, although it is not part of a through highway",
+      "the subject approaches on a signed entrance",
+      "traffic is not controlled by a police officer or a signal"
+    ],
+    "exceptions": [
+      "when traffic is being controlled by a police officer",
+      "when traffic is being controlled by a traffic-control signal"
+    ],
+    "id": "NRS-484B-257-2",
+    "residue": [
+      "'proceed cautiously' and 'immediate hazard' are judgement elements",
+      "which other approaches carry signs decides who is 'not so obligated': every lane entering the intersection (st.lane_enters) and the devices governing each are read"
+    ],
+    "source": "NRS 484B.257(2)",
+    "subject": "driver",
+    "theme": "intersections_and_right_of_way",
+    "tier": "Q",
+    "timing_requirements": [
+      {
+        "kind": "ordering",
+        "requirement": "stop or yield before entering, then proceed"
+      },
+      {
+        "kind": "continuous",
+        "requirement": "the yield continues while the subject moves across or within the intersection"
+      }
+    ],
+    "title": "Vehicle entering intersection marked stop or yield (2)"
+  },
+  "summary_status": "provided_planning_context_full_text_remains_authoritative",
+  "selection_targets": [
+    "demo-test",
+    "full-test"
+  ],
+  "observation_terms_contract": "Summary required_observations are law-planning terms, not Core IDs. Map every term to measured evidence; put only supported pinned ontology IDs in config.required_atoms.",
+  "source_observation_terms": [
+    {
+      "term": "dev.stop_sign",
+      "note": "a stop sign at one or more entrances, outside a through-highway setting"
+    },
+    {
+      "term": "dev.yield_sign",
+      "note": "or a yield sign"
+    },
+    {
+      "term": "dev.governs",
+      "note": "which approach the sign faces"
+    },
+    {
+      "term": "st.lane_enters",
+      "note": "which lanes enter the intersection, so that 'one or more entrances thereto' and the other drivers' obligations can be read"
+    },
+    {
+      "term": "drv.stopped",
+      "note": "the halt before entering"
+    },
+    {
+      "term": "st.stop_line",
+      "note": "the reference point, as in the preceding subsection"
+    },
+    {
+      "term": "st.crosswalk",
+      "note": "the same"
+    },
+    {
+      "term": "drv.entering_intersection",
+      "note": "the entry the stop precedes"
+    },
+    {
+      "term": "drv.in_intersection",
+      "note": "vehicles already within"
+    },
+    {
+      "term": "drv.time_to_conflict",
+      "note": "operationalizes 'so closely as to constitute an immediate hazard'"
+    },
+    {
+      "term": "drv.yields_to",
+      "note": "the yield to vehicles not obliged to stop"
+    },
+    {
+      "term": "dev.human_direction",
+      "note": "the officer exception"
+    },
+    {
+      "term": "dev.traffic_signal",
+      "note": "the signal exception"
+    }
+  ]
+}

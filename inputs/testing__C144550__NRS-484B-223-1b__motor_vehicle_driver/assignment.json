@@ -1,0 +1,149 @@
+{
+  "assignment_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver",
+  "law_id": "NRS-484B-223-1b",
+  "cell_id": "C144550",
+  "actor": "motor_vehicle_driver",
+  "role": "testing",
+  "set_ids": [
+    "demo-test"
+  ],
+  "branches": [
+    {
+      "law_id": "NRS-484B-223-1b",
+      "cell_id": "C144550",
+      "actor": "motor_vehicle_driver",
+      "requirement": "NRS-484B-223-1b",
+      "branch": "Both conjunctive prerequisites before lane movement.",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 348,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "coverage_status": "pending_review",
+      "recording_ids": [],
+      "law_partition": "training",
+      "scenario_partition": "testing"
+    }
+  ],
+  "objective": "Prepare complete CPU delivery simulations and branch coverage for NRS-484B-223-1b at C144550.",
+  "remaining_requirement": "Preserve accepted evidence and cover uncovered requirements; test all selected branches and comparisons.",
+  "dependency_review": "Read exact frozen law, witness, catalog cell and scope. Identify unavailable Native facts without inventing them.",
+  "external_imports": [
+    "carla"
+  ],
+  "local_snapshot": {
+    "scope_hashes": {
+      "demo-test": "fb28097eec8a56c0b0726e765f2716ffacc6de8175ba0158b272e142d67782de",
+      "full-test": "fe28b7b8e40c30d7984949ad15fe42c497852e16e1063cafb318975614b06218"
+    },
+    "memberships": {
+      "demo-test": [],
+      "full-test": []
+    },
+    "guidance": {},
+    "law_sha256": "646e4408b1982c001c8581d40d13db2be5c10614470d315c3dd29481caee7ed1",
+    "cell_sha256": "2ed560a1d70498d16df508d3f2d9db3805a4923b81c4dd97dcf45da90c3f5e88",
+    "law_policy_sha256": "77d7da97a21300aff4fc6560b6ea06defe41b5c9d4c4f5567f77571c94d9e5f6"
+  },
+  "cell": {
+    "cell_id": "C144550",
+    "layout": "one_way_multilane",
+    "maneuver": "change_lane",
+    "control": "lane_marking",
+    "grounding": "plausible_ungrounded",
+    "source_laws": [],
+    "formation_basis": [
+      "shared_domain"
+    ],
+    "candidate_ego_parties": [
+      "motor_vehicle_driver"
+    ],
+    "actor_status": "compatible",
+    "shared_domains": [
+      "highway_multilane"
+    ],
+    "provenance": {
+      "annotation_refs": [
+        "LVMC-11-18-030-B",
+        "LVMC-11-42-030",
+        "NRS-484B-210-1",
+        "NRS-484B-223-1b",
+        "NRS-484B-223-2",
+        "NRS-484B-560-3",
+        "NRS-484B-587-2a",
+        "NRS-484B-587-2b",
+        "NRS-484B-650-1"
+      ]
+    }
+  },
+  "law": {
+    "id": "NRS-484B-223-1b",
+    "title": "Driving on highway having multiple marked lanes for traffic (1)(b)",
+    "text": "If a highway has two or more clearly marked lanes for traffic traveling in one direction, vehicles must: Not be moved from that lane until the driver has given the appropriate turn signal and ascertained that such movement can be made with safety.",
+    "source": "NRS 484B.223(1)(b)"
+  },
+  "summary": {
+    "activation_conditions": [
+      "the highway has two or more clearly marked lanes in the subject's direction",
+      "the subject moves out of its lane"
+    ],
+    "exceptions": [],
+    "id": "NRS-484B-223-1b",
+    "residue": [
+      "'ascertained … with safety' is a judgement element about the driver's check; the observable substitute is the gap the target lane offered"
+    ],
+    "source": "NRS 484B.223(1)(b)",
+    "subject": "driver",
+    "theme": "lanes",
+    "tier": "Q",
+    "timing_requirements": [
+      {
+        "kind": "ordering",
+        "requirement": "the signal precedes the lane change — the indicator must be on before the footprint starts to leave the lane"
+      },
+      {
+        "kind": "advance",
+        "requirement": "a lead time or distance for the signal must be declared; the text says only 'has given'"
+      }
+    ],
+    "title": "Driving on highway having multiple marked lanes for traffic (1)(b)"
+  },
+  "summary_status": "provided_planning_context_full_text_remains_authoritative",
+  "selection_targets": [
+    "demo-test",
+    "full-test"
+  ],
+  "observation_terms_contract": "Summary required_observations are law-planning terms, not Core IDs. Map every term to measured evidence; put only supported pinned ontology IDs in config.required_atoms.",
+  "source_observation_terms": [
+    {
+      "term": "drv.laned_roadway",
+      "note": "two or more marked lanes in the subject's direction"
+    },
+    {
+      "term": "st.lane",
+      "note": "the lane occupied"
+    },
+    {
+      "term": "drv.lane_change",
+      "note": "the movement out of the lane"
+    },
+    {
+      "term": "sig.turn_indicator",
+      "note": "the appropriate turn signal"
+    },
+    {
+      "term": "drv.distance_while",
+      "note": "the signal held before the movement begins"
+    },
+    {
+      "term": "drv.lane_change_feasible",
+      "note": "operationalizes 'ascertained that the movement can be made with safety'"
+    },
+    {
+      "term": "rel.surface_gap",
+      "note": "the gap in the target lane"
+    },
+    {
+      "term": "drv.time_to_conflict",
+      "note": "with users in the target lane"
+    }
+  ]
+}
