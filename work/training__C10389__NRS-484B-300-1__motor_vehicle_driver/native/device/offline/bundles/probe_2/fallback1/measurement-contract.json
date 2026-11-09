@@ -1,0 +1,16 @@
+{
+  "format": "c10389-device-measurement-contract-v1",
+  "source": "NRS 484B.300(1)",
+  "controlled_variable": "stop for one second before the same authored stop control versus pass the control without stopping",
+  "fixed_controls": ["same generated alley road 389", "same OpenDRIVE signal 3891 at s=50 m", "same ego blueprint and approach lane", "same 20 Hz duration", "same speed and camera policy within each pair"],
+  "primary_policy": "8 m/s with requested stop hold or continuous passage",
+  "fallbacks": {
+    "fallback1": "5 m/s if original pre-line stop or passage is physically ambiguous",
+    "fallback2": "elevated overview if sign face and stop-line pixels are not reviewed at encounter",
+    "fallback3": "remain stopped before the device if original device, body or placement evidence is insufficient"
+  },
+  "required_original_evidence": ["generated road 389 and lane -1 readback at x=20,45,55 m", "generated OpenDRIVE stop landmark 3891 readback at s=50 m", "original body, velocity and lane in each of 240 frames", "synchronized 240-frame forward and overview FFV1 videos", "source-hashed human review of sign face, applicability, stop line, and any police direction", "authoritative official placement provenance beyond authored OpenDRIVE bytes", "review of NRS 484B.307 signal-specific exception", "measured stop duration before line and front-body crossing", "independent controlled comparison and legal review"],
+  "authored_stop_signal_is_official_placement": false,
+  "original_native_observed": false,
+  "delivery_ready": false
+}
