@@ -1,0 +1,21 @@
+{
+  "format": "c109137-zone-measurement-contract-v1",
+  "frames": 400,
+  "rate_hz": 20,
+  "statutory_source": "Exact frozen NRS 484B.217(2) with subsections 3 and 4; the current controlled pair concerns only the adjoining-highway crossing exception.",
+  "physical_sources": "Original CARLA native raw actors, generated road and junction readback, three synchronized FFV1 cameras, and source-hashed independent human frame review.",
+  "requested_comparison": "Probe 1 requests a prior left turn signal and crossing toward adjoining road 218; probe 2 requests the same crossing without a signal. Four candidate policies preserve each comparison. No legal verdict is requested.",
+  "measurement_definitions": {
+    "stripe_body_frame": "An observed ego bounding box spans authored center stripe y=0 in a joined Native frame.",
+    "adjoining_lane_frame": "Native ego waypoint readback is road 218, lane -1.",
+    "prior_signal_lead_s": "(first observed stripe body frame minus first observed LeftBlinker frame)/20; positive lead is a measured timing diagnostic, not sufficient legal compliance.",
+    "other_traffic": "Original oncoming and following bodies, speed and video visibility must support independent no-impediment review; measured minimum speed is only a triage signal.",
+    "review_fraction": "Count of unique source-indexed frames independently reviewed for visible striping, divided by 400."
+  },
+  "fallback_triggers": {
+    "fallback1": "Observed signal lead exists and is under 2 seconds; use slower 3 m/s request to increase inspection and response time.",
+    "fallback2": "Reviewed stripe visibility below 90 percent; use a higher and wider overview camera.",
+    "fallback3": "No observed prior signal, no adjoining-road entry, or another vehicle slows below 1 m/s; stop before the stripe and inspect safety. This is a different trajectory."
+  },
+  "readiness": "Native road marking appearance, statutory zone designation, adjoining-highway identity, appropriate signal, no impediment, exceptions under subsections 3 and 4, safe left-turn alternative, original reviewed pixels and accepted controlled comparisons remain unverified. Synthetic CPU fixtures never establish these facts."
+}

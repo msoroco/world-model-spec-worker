@@ -1,0 +1,277 @@
+{
+  "assignment_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver",
+  "law_id": "NRS-484B-217-2",
+  "cell_id": "C109137",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "enter_road",
+    "control": "pavement_striping"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.217(2); with 484B.217(3), 484B.217(4)",
+    "text": "Except as otherwise provided in subsections 3 and 4, a driver shall not drive on the left side of the highway within such zone or drive across or on the left side of any pavement striping designed to mark such zone throughout its length. A driver may drive across a pavement striping marking such zone to an adjoining highway if the driver has first given the appropriate turn signal and there will be no impediment to oncoming or following traffic. Except where otherwise provided, a driver may drive across a pavement striping marking such a zone to make a left-hand turn if the driver has first given the appropriate turn signal in compliance with NRS 484B.413 [NRS-484B-413-2], if it is safe and if it would not be an impediment to oncoming or following traffic.",
+    "sha256": "740a06f434331d7d67c9c18c2a5f0c9f235186e543157ccfa2ad17ec14944022"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "crossing to adjoining highway"
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-217-2",
+      "source": "NRS 484B.217(2); with 484B.217(3), 484B.217(4)",
+      "branch": "crossing to adjoining highway",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_1",
+        "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_2"
+      ],
+      "evidence_or_gap": "Eight exact copied Native requests, source/compatibility and synthetic saved CPU proofs, independent audit, and pinned offline constructions now exist. Original CARLA generated-road/striping, reviewed crossing and signal, statutory zone designation, adjoining-highway identity, no-impediment and legal outcome remain unverified."
+    },
+    {
+      "requirement": "NRS-484B-217-2",
+      "source": "NRS 484B.217(2); with 484B.217(3), 484B.217(4)",
+      "branch": "subsections 3 and 4",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    },
+    {
+      "requirement": "NRS-484B-217-2",
+      "source": "NRS 484B.217(2); with 484B.217(3), 484B.217(4)",
+      "branch": "left-turn alternative",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    },
+    {
+      "requirement": "NRS-484B-217-2",
+      "source": "NRS 484B.217(2); with 484B.217(3), 484B.217(4)",
+      "branch": "oncoming and following traffic safety",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+    }
+  ],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; retained only as a proposal, not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_1",
+      "target_law_id": "NRS-484B-217-2",
+      "kind": "unselected_native_request",
+      "target_type": "below",
+      "physical_target": "signal and cross striping to adjoining highway without impediment",
+      "comparison_variable": "signal_before_zone_striping_crossing",
+      "source_branch": "crossing to adjoining highway",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "native_construction": "native/zone/draft-execution-manifest.json"
+    },
+    {
+      "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_2",
+      "target_law_id": "NRS-484B-217-2",
+      "kind": "unselected_native_request",
+      "target_type": "controlled_attempt",
+      "physical_target": "cross same striping without prior signal",
+      "comparison_variable": "signal_before_zone_striping_crossing",
+      "source_branch": "crossing to adjoining highway",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "native_construction": "native/zone/draft-execution-manifest.json"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__comparison",
+      "case_ids": [
+        "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_1",
+        "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_2"
+      ],
+      "deliberate_differences": [
+        "signal_before_zone_striping_crossing"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor and physical road context",
+        "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "st.lane_marking",
+      "purpose": "the pavement striping that marks the no-passing zone",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.zone_sign",
+      "purpose": "kind no_passing, where the zone is signed",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.within_signed_zone",
+      "purpose": "the subject is inside the zone, kind no_passing",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.centre_line",
+      "purpose": "the left side of the highway",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.occupies",
+      "purpose": "the footprint left of centre or across the striping",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.straddles_marking",
+      "purpose": "crossing the striping",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "sig.turn_indicator",
+      "purpose": "the appropriate turn signal given first",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.turning",
+      "purpose": "the left turn the crossing is for",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.driveway_or_alley_entrance",
+      "purpose": "the adjoining highway or way turned into",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "rel.oncoming",
+      "purpose": "oncoming traffic that must not be impeded",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.following",
+      "purpose": "following traffic that must not be impeded",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.hard_deceleration",
+      "purpose": "the impediment, evidenced by another user braking",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "candidate_plans": [
+    {
+      "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_1",
+      "primary": "native/zone/runtime-drafts/probe_1/primary/construction.json",
+      "fallbacks": [
+        "fallback1",
+        "fallback2",
+        "fallback3"
+      ],
+      "status": "unselected_cpu_diagnostic"
+    },
+    {
+      "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_2",
+      "primary": "native/zone/runtime-drafts/probe_2/primary/construction.json",
+      "fallbacks": [
+        "fallback1",
+        "fallback2",
+        "fallback3"
+      ],
+      "status": "unselected_cpu_diagnostic"
+    }
+  ],
+  "existing_evidence": [],
+  "sources": [
+    {
+      "path": "inputs/training__C109137__NRS-484B-217-2__motor_vehicle_driver/assignment.json",
+      "sha256": "a681240f21707409e973168946afc2944b800e337a04cc12580542df6657d6f0"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction"
+  ],
+  "blockers": [
+    "Eight exact copied Native requests, source/compatibility and synthetic saved CPU proofs, independent audit, and pinned offline constructions now exist. Original CARLA generated-road/striping, reviewed crossing and signal, statutory zone designation, adjoining-highway identity, no-impediment and legal outcome remain unverified.",
+    "Subsections 3 and 4, the distinct left-turn alternative and traffic safety branch require separate runnable controlled coverage."
+  ],
+  "selected_branch": null,
+  "observations": [
+    {
+      "name": "st.lane_marking",
+      "mandatory": true,
+      "reason": "the pavement striping that marks the no-passing zone"
+    },
+    {
+      "name": "dev.zone_sign",
+      "mandatory": true,
+      "reason": "kind no_passing, where the zone is signed"
+    },
+    {
+      "name": "drv.within_signed_zone",
+      "mandatory": true,
+      "reason": "the subject is inside the zone, kind no_passing"
+    },
+    {
+      "name": "st.centre_line",
+      "mandatory": true,
+      "reason": "the left side of the highway"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "reason": "the footprint left of centre or across the striping"
+    },
+    {
+      "name": "drv.straddles_marking",
+      "mandatory": true,
+      "reason": "crossing the striping"
+    },
+    {
+      "name": "sig.turn_indicator",
+      "mandatory": true,
+      "reason": "the appropriate turn signal given first"
+    },
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "reason": "the left turn the crossing is for"
+    },
+    {
+      "name": "st.driveway_or_alley_entrance",
+      "mandatory": true,
+      "reason": "the adjoining highway or way turned into"
+    },
+    {
+      "name": "rel.oncoming",
+      "mandatory": true,
+      "reason": "oncoming traffic that must not be impeded"
+    },
+    {
+      "name": "drv.following",
+      "mandatory": true,
+      "reason": "following traffic that must not be impeded"
+    },
+    {
+      "name": "drv.hard_deceleration",
+      "mandatory": true,
+      "reason": "the impediment, evidenced by another user braking"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Eight exact copied Native requests, source/compatibility and synthetic saved CPU proofs, independent audit, and pinned offline constructions now exist. Original CARLA generated-road/striping, reviewed crossing and signal, statutory zone designation, adjoining-highway identity, no-impediment and legal outcome remain unverified."
+  ]
+}
