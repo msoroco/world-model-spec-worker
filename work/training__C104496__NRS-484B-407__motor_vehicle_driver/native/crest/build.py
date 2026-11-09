@@ -7,8 +7,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 CASE = HERE.parents[1]
 ROOT = CASE.parents[1]
-SOURCE = ROOT / "inputs" / CASE.name / "assignment.json"
-PLAN = CASE / "case-plan.json"
+SOURCE = HERE / "assignment-source.json" if (HERE / "assignment-source.json").is_file() else ROOT / "inputs" / CASE.name / "assignment.json"
+PLAN = HERE / "case-plan.json" if (HERE / "case-plan.json").is_file() else CASE / "case-plan.json"
 SOURCE_SHA = "d1490ce9bff6b98b001e5e12eb8498bfb028d66a236c814f81cb9e8e222b0285"
 RATE = 20
 FRAMES = 700
@@ -82,10 +82,11 @@ def rows(suffix, candidate):
         t = frame / RATE
         distance = min(speed * t, 19.0) if stop else speed * t
         x, y, heading, phase = turn_pose(distance)
+        other_x = min(180.0, 47.6 + 4.0 * t)
         out.append({"frame": frame, "time_s": t, "requested_ego_xyz_m": [round(x, 6), round(y, 6), round(elevation(x, height), 6)],
                     "requested_heading_rad": round(heading, 6), "requested_speed_mps": 0 if stop and speed*t >= 19 else speed,
                     "requested_motion_phase": "stop_before_crest" if stop and speed*t >= 19 else phase,
-                    "requested_other_vehicle_xyz_m": [47.6, 1.75, round(elevation(47.6, height), 6)],
+                    "requested_other_vehicle_xyz_m": [round(other_x, 6), 1.75, round(elevation(other_x, height), 6)],
                     "requested_other_vehicle_approach": "west", "other_approach_virtual_camera_x_m": 352.4,
                     "original_body_rays_observed": False, "human_visibility_reviewed": False, "legal_verdict": None})
     return out

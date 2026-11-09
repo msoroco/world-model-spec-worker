@@ -5,7 +5,7 @@
   "actor": "motor_vehicle_driver",
   "source_law_text": "A vehicle shall not be turned so as to proceed in the opposite direction upon any curve, or upon the approach to or near the crest of a grade, where such vehicle cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet.",
   "source_law_citation": "NRS 484B.407",
-  "summary_status": "recovered_requires_source_review",
+  "summary_status": "native_cpu_request_proven_original_visibility_pending",
   "selected_branch": "curve or grade crest reversal",
   "cell_fixed_facts": {
     "layout": "hill_crest",
@@ -138,24 +138,24 @@
     {
       "case_id": "training__C104496__NRS-484B-407__motor_vehicle_driver__probe_01",
       "target_law_id": "NRS-484B-407",
-      "kind": "planned_only",
+      "kind": "unselected_native_request",
       "target_type": "controlled_attempt",
-      "physical_target": "reversal at physical crest with vehicle visible at 500 ft",
-      "comparison_variable": "visibility from both incoming approaches",
+      "physical_target": "three-point reversal at s=200 m crest on authored 0.8 m quadratic grade; analytic 500-foot centerline rays clear from both approaches",
+      "comparison_variable": "quadratic grade height at s=200 m",
       "selection_status": "not_selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "eight source-pinned requests and synthetic saved measurements CPU-proven; original physical visibility unverified"
     },
     {
       "case_id": "training__C104496__NRS-484B-407__motor_vehicle_driver__probe_02",
       "target_law_id": "NRS-484B-407",
-      "kind": "planned_only",
+      "kind": "unselected_native_request",
       "target_type": "controlled_attempt",
-      "physical_target": "reversal at same crest with grade-occluded sightline inside 500 ft",
-      "comparison_variable": "visibility from both incoming approaches",
+      "physical_target": "same plan-view crest and three-point path on authored 12 m quadratic grade; analytic 500-foot centerline rays intersect grade from both approaches",
+      "comparison_variable": "quadratic grade height at s=200 m",
       "selection_status": "not_selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "eight source-pinned requests and synthetic saved measurements CPU-proven; original physical visibility unverified"
     }
   ],
   "comparisons": [
@@ -166,15 +166,15 @@
         "training__C104496__NRS-484B-407__motor_vehicle_driver__probe_02"
       ],
       "deliberate_differences": [
-        "visibility from both incoming approaches"
+        "quadratic grade height at s=200 m: 0.8 m versus 12 m"
       ],
       "fixed_conditions": [
         "frozen cell and actor",
-        "physical route topology",
-        "participant identities",
-        "camera policy",
-        "recording rate and duration",
-        "nonvariable context"
+        "plan-view road topology and 4.5 m driving lanes",
+        "three-point requested path",
+        "physical other vehicle from west and virtual opposing approach",
+        "camera policy within candidate",
+        "20 Hz recording request and 700-frame duration"
       ]
     }
   ],
@@ -228,10 +228,10 @@
     "Accepted membership may already cover grade-crest variants, but no source-hashed equivalence to current requirement is present. Curve branch needs separate physical geometry and route proof."
   ],
   "runtime_gaps": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+    "Original CARLA generated grade/lane/body-ray and synchronized pixel review not yet captured.",
+    "Original-mode saved processing and original capture entrypoint are not implemented; synthetic analytic processing does not substitute.",
+    "No source-hashed equivalence receipt for accepted recordings in this worker package; membership remains contextual.",
+    "Curve branch needs distinct physical geometry and route proof."
   ],
   "observations": [
     {
@@ -303,12 +303,11 @@
     }
   ],
   "runtime_uncertainties": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage.",
-    "Accepted membership may already cover grade-crest variants, but no source-hashed equivalence to current requirement is present. Curve branch needs separate physical geometry and route proof.",
-    "No CARLA execution or accepted recording is claimed."
+    "Original CARLA generated grade/lane/body-ray and synchronized pixel review not yet captured.",
+    "Original-mode saved processing and original capture entrypoint are not implemented; synthetic analytic processing does not substitute.",
+    "No source-hashed equivalence receipt for accepted recordings in this worker package; membership remains contextual.",
+    "Curve branch needs distinct physical geometry and route proof.",
+    "No original CARLA execution or newly accepted recording is claimed."
   ],
   "requirement_dispositions": [
     {
@@ -320,7 +319,7 @@
         "training__C104496__NRS-484B-407__motor_vehicle_driver__probe_01",
         "training__C104496__NRS-484B-407__motor_vehicle_driver__probe_02"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Eight exact unselected native requests, synthetic grade-ray saved proof, independent audit, and eight pinned offline constructions pass; original 500-foot body rays, reviewed pixels and accepted comparison remain pending."
     },
     {
       "requirement": "demo:NRS-484B-407:681ce5085f4b",
@@ -346,5 +345,17 @@
       "case_ids": [],
       "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
     }
-  ]
+  ],
+  "native_construction": {
+    "manifest": "native/crest/manifest.json",
+    "request_proof": "native/crest/request-proof.json",
+    "saved_proof": "native/crest/saved-proof.json",
+    "independent_audit": "native/crest/independent-audit.json",
+    "measurement_contract": "native/crest/measurement-contract.json",
+    "selected": false,
+    "original_native_observed": false,
+    "synthetic_measurement_only": true,
+    "pinned_offline_proof": "native/crest/pinned-runtime-proof.json",
+    "pinned_offline_audit": "native/crest/pinned-runtime-audit.json"
+  }
 }

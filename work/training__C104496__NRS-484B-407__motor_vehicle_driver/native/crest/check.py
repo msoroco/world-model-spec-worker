@@ -63,9 +63,13 @@ def check(bundle):
         raise ValueError("Three-point reverse path absent")
     for r in actual:
         x, y, z = r["requested_ego_xyz_m"]
+        ox, oy, oz = r["requested_other_vehicle_xyz_m"]
         if not (0 <= x <= 450 and -4.5 <= y <= 4.5 and
-                abs(z - elevation(x, CASES[suffix])) < 2e-6):
+                abs(z - elevation(x, CASES[suffix])) < 2e-6 and
+                oy == 1.75 and abs(oz - elevation(ox, CASES[suffix])) < 2e-6):
             raise ValueError("Swept path outside authored road or grade")
+    if actual[100]["requested_other_vehicle_xyz_m"][0] <= actual[0]["requested_other_vehicle_xyz_m"][0]:
+        raise ValueError("Other vehicle is not approaching")
     return {"case_id": cfg["case_id"], "candidate": candidate,
             "requested_phases": sorted(phases), "original_visibility_verified": False,
             "delivery_ready": False}
