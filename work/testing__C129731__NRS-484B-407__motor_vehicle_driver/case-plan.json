@@ -1,0 +1,213 @@
+{
+  "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C129731",
+  "law_id": "NRS-484B-407",
+  "selected_branch": "Mountain-road curve with documented visibility circumstances.",
+  "cases": [
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__visible_curve",
+      "target_law_id": "NRS-484B-407",
+      "visibility_request": "visible_both"
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__occluded_curve",
+      "target_law_id": "NRS-484B-407",
+      "visibility_request": "occluded_one_or_both"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "turn_site_visibility",
+      "case_ids": [
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__visible_curve",
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__occluded_curve"
+      ],
+      "fixed_conditions": [
+        "same OpenDRIVE curve, crest, lanes, daylight, 20 Hz, 45 s, cameras, controller and approaching vehicle policy"
+      ],
+      "deliberate_differences": [
+        "U-turn station 180 m versus 200 m on the same curve; raw 500-foot visibility to be measured from the actual subject body"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "kin.position",
+      "rate_hz": 20,
+      "source": "original Native capture"
+    },
+    {
+      "name": "st.curvature",
+      "rate_hz": 20,
+      "source": "original Native capture"
+    },
+    {
+      "name": "st.grade",
+      "rate_hz": 20,
+      "source": "original Native capture"
+    },
+    {
+      "name": "st.sight_distance",
+      "rate_hz": 20,
+      "source": "original Native capture"
+    },
+    {
+      "name": "rel.oncoming",
+      "rate_hz": 20,
+      "source": "original Native capture"
+    },
+    {
+      "name": "drv.approaching",
+      "rate_hz": 20,
+      "source": "original Native capture"
+    },
+    {
+      "name": "drv.u_turn",
+      "rate_hz": 20,
+      "source": "original Native capture"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+      "sha256": "8ff09b4c8f5cc6e4a4b4b21bf1a843570a19dff64f256dc1e2cc1831125cda9e"
+    },
+    {
+      "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/witnesses.json",
+      "sha256": "c694b9d50902501d07c95d10451194bf2fa4a27b5a68039f0e14875da2a4fb2b"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "No accepted recordings for either target set",
+    "Actual CARLA turnout/body envelope and sightline outcome unconfirmed",
+    "st.sight_distance Core adapter explicitly unsupported",
+    "No pinned CPU packages installed in Python 3.11",
+    "inputs/coverage branch source files absent"
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "coverage": [
+      "subject body through reversal",
+      "approaching vehicle before and during turn",
+      "both approach sightlines",
+      "original four-camera synchronized pixels"
+    ]
+  },
+  "requirement_dispositions": [
+    {
+      "requirement": "reversal",
+      "source": "NRS 484B.407 and witness source_index 431",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__visible_curve",
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__occluded_curve"
+      ],
+      "evidence_or_gap": "Native source histories and saved finalizer; physical outcome unconfirmed"
+    },
+    {
+      "requirement": "curve or crest",
+      "source": "NRS 484B.407 and witness source_index 431",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__visible_curve",
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__occluded_curve"
+      ],
+      "evidence_or_gap": "Native source histories and saved finalizer; physical outcome unconfirmed"
+    },
+    {
+      "requirement": "500-foot visibility from either direction",
+      "source": "NRS 484B.407 and witness source_index 431",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__visible_curve",
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__occluded_curve"
+      ],
+      "evidence_or_gap": "Native source histories and saved finalizer; physical outcome unconfirmed"
+    },
+    {
+      "requirement": "approaching vehicle",
+      "source": "NRS 484B.407 and witness source_index 431",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__visible_curve",
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__occluded_curve"
+      ],
+      "evidence_or_gap": "Native source histories and saved finalizer; physical outcome unconfirmed"
+    }
+  ],
+  "source_observation_mapping": {
+    "drv.u_turn": {
+      "measurement": "turn",
+      "evidence": "original Native trace, histories, map and per-frame rays",
+      "channels": [
+        "drv.u_turn"
+      ],
+      "source_refs": [
+        "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.curvature": {
+      "measurement": "curve",
+      "evidence": "original Native trace, histories, map and per-frame rays",
+      "channels": [
+        "st.curvature"
+      ],
+      "source_refs": [
+        "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.grade": {
+      "measurement": "curve",
+      "evidence": "original Native trace, histories, map and per-frame rays",
+      "channels": [
+        "st.grade"
+      ],
+      "source_refs": [
+        "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.sight_distance": {
+      "measurement": "visibility_500ft",
+      "evidence": "original Native trace, histories, map and per-frame rays",
+      "channels": [
+        "st.sight_distance"
+      ],
+      "source_refs": [
+        "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.oncoming": {
+      "measurement": "approaching_vehicle",
+      "evidence": "original Native trace, histories, map and per-frame rays",
+      "channels": [
+        "rel.oncoming"
+      ],
+      "source_refs": [
+        "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.approaching": {
+      "measurement": "approaching_vehicle",
+      "evidence": "original Native trace, histories, map and per-frame rays",
+      "channels": [
+        "drv.approaching"
+      ],
+      "source_refs": [
+        "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.position": {
+      "measurement": "turn",
+      "evidence": "original Native trace, histories, map and per-frame rays",
+      "channels": [
+        "kin.position"
+      ],
+      "source_refs": [
+        "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  }
+}

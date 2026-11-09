@@ -1,0 +1,155 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
+  "runtime_manifest_sha256": "325e642c2e2c150ec6d008a0de04fd1f1030b3b12c807c534d558e650237b904",
+  "cases": [
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__visible_curve",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "a0f0be71d4dc4d1d08d9b83b1280b29241a46818d30eb25937581d54fc49a5bb",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tight mountain turnout and low-speed reversal may fail to complete or show a blocked sightline in Native."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/visible_curve/fallback1/construction.json",
+          "construction_sha256": "6cb78d3816a804d04ce6a6aa44b93e056d0d364a4b0b457127040de94cf829fb",
+          "trigger": {
+            "source": "turn_history.jsonl",
+            "metric": "observed cumulative heading change and body envelope",
+            "failure_condition": "Native sampled heading change remains below 150 degrees by the end of the planned 45 s, with no collision or source loss"
+          },
+          "changed_knobs": [
+            "shared controller maximum steering command 0.55 to 0.65",
+            "shared forward target speed 4.0 to 3.2 m/s",
+            "shared steering gain divisor 36 to 32 degrees"
+          ],
+          "offline": {
+            "command": "python3.11 runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__visible_curve --candidate fallback1 --output .runtime-work/c129731-visible_curve-fallback1-offline-v4 --python /usr/bin/python3.11",
+            "exit_code": 0,
+            "construction_sha256": "6cb78d3816a804d04ce6a6aa44b93e056d0d364a4b0b457127040de94cf829fb",
+            "log": "proofs/visible_curve-fallback1-offline.log",
+            "log_sha256": "425f2712689e130d3b9c4282658395a01c9a87351208c89d74d495b010d08fac"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__visible_curve --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT\"/v0001/feedback.json",
+        "test_exit_code": null
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__visible_curve",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b8a96145c7b42a5d9ef9860a43c3c2ce37649d22cfd9c5f443072748142ccfcb"
+      },
+      "offline": {
+        "command": "python3.11 runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__visible_curve --candidate primary --output .runtime-work/c129731-visible_curve-primary-offline-v4 --python /usr/bin/python3.11",
+        "exit_code": 0,
+        "construction_sha256": "a0f0be71d4dc4d1d08d9b83b1280b29241a46818d30eb25937581d54fc49a5bb",
+        "log": "proofs/visible_curve-primary-offline.log",
+        "log_sha256": "6219caa172a3e6b42ec6080b327779b7cc74ab83099fec63f70aac76d8d44f1b"
+      }
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__occluded_curve",
+      "kind": "delivery",
+      "construction": "cases/occluded_curve/construction.json",
+      "construction_sha256": "cd899026dd88bb105e190eb6fce6911270e9bd0507b8b07a737f395ea67b21c6",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tight mountain turnout and low-speed reversal may fail to complete or show a blocked sightline in Native."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/occluded_curve/fallback1/construction.json",
+          "construction_sha256": "78be728ed4beafb89f4f94d1743a1b7a2ee724fc29b0d495a30f893948d26774",
+          "trigger": {
+            "source": "turn_history.jsonl",
+            "metric": "observed cumulative heading change and body envelope",
+            "failure_condition": "Native sampled heading change remains below 150 degrees by the end of the planned 45 s, with no collision or source loss"
+          },
+          "changed_knobs": [
+            "shared controller maximum steering command 0.55 to 0.65",
+            "shared forward target speed 4.0 to 3.2 m/s",
+            "shared steering gain divisor 36 to 32 degrees"
+          ],
+          "offline": {
+            "command": "python3.11 runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__occluded_curve --candidate fallback1 --output .runtime-work/c129731-occluded_curve-fallback1-offline-v4 --python /usr/bin/python3.11",
+            "exit_code": 0,
+            "construction_sha256": "78be728ed4beafb89f4f94d1743a1b7a2ee724fc29b0d495a30f893948d26774",
+            "log": "proofs/occluded_curve-fallback1-offline.log",
+            "log_sha256": "b5f445350db9ba41534486c34298812ddea5f3b72c4e6e0510103391c66cbe30"
+          }
+        }
+      ],
+      "measurement_contract": "cases/occluded_curve/measurement-contract.json",
+      "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/cases/occluded_curve/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__occluded_curve --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT\"/v0001/feedback.json",
+        "test_exit_code": null
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__occluded_curve",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b8a96145c7b42a5d9ef9860a43c3c2ce37649d22cfd9c5f443072748142ccfcb"
+      },
+      "offline": {
+        "command": "python3.11 runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__occluded_curve --candidate primary --output .runtime-work/c129731-occluded_curve-primary-offline-v4 --python /usr/bin/python3.11",
+        "exit_code": 0,
+        "construction_sha256": "cd899026dd88bb105e190eb6fce6911270e9bd0507b8b07a737f395ea67b21c6",
+        "log": "proofs/occluded_curve-primary-offline.log",
+        "log_sha256": "5038d171fab9240558e0c9e3c2a5bfc526e1e8732a373844e0058186c86b8369"
+      }
+    }
+  ]
+}

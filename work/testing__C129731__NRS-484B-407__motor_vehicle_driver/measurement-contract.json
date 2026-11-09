@@ -1,0 +1,60 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "reversal",
+      "source": "NRS 484B.407 and witness source_index 431",
+      "output_key": "turn",
+      "kind": "measured",
+      "value_type": "object",
+      "method": "measure_turn",
+      "inputs": [
+        "turn_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "curve or crest",
+      "source": "NRS 484B.407 and witness source_index 431",
+      "output_key": "curve",
+      "kind": "measured",
+      "value_type": "object",
+      "method": "measure_curve",
+      "inputs": [
+        "curve_context.json",
+        "road.xodr"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "500-foot visibility from either direction",
+      "source": "NRS 484B.407 and witness source_index 431",
+      "output_key": "visibility_500ft",
+      "kind": "measured",
+      "value_type": "object",
+      "method": "measure_visibility",
+      "inputs": [
+        "visibility_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "approaching vehicle",
+      "source": "NRS 484B.407 and witness source_index 431",
+      "output_key": "approaching_vehicle",
+      "kind": "measured",
+      "value_type": "object",
+      "method": "measure_approach",
+      "inputs": [
+        "approach_history.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "visibility_history.jsonl"
+    ],
+    "error_contains": "Missing required source: visibility_history.jsonl"
+  }
+}

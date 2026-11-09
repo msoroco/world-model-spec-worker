@@ -1,0 +1,34 @@
+{
+  "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
+  "input_sha256": "8ff09b4c8f5cc6e4a4b4b21bf1a843570a19dff64f256dc1e2cc1831125cda9e",
+  "status": "partial",
+  "readiness_kind": "delivery_prepared",
+  "applied_update": 0,
+  "tests": [
+    {
+      "command": "python3.11 -m unittest discover -s work/testing__C129731__NRS-484B-407__motor_vehicle_driver/tests",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "d1aaab86fa02d87997171aeb3220b40f5e28046ec4d1674848f9ec5f589f297c"
+    },
+    {
+      "command": "python3.11 -m unittest discover -s tests",
+      "exit_code": 0,
+      "log": "proofs/baseline-tests.log",
+      "sha256": "921b60a7fd52e978fbb551cacd29df2d6708879400278e1fcc70fceeb0c6f8e0"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline python3.11 -m worker_exchange.atom_preflight --runtime runtime --config work/testing__C129731__NRS-484B-407__motor_vehicle_driver/config.json",
+      "exit_code": 0,
+      "log": "proofs/atom-preflight.log",
+      "sha256": "bab2078d8f2f618120dc1bddab6283801fefa7ad9730c46189804dbfda02d912"
+    }
+  ],
+  "remaining_gpu_checks": [
+    "Actual Native map/surface geometry and mountain occlusion",
+    "Subject full-body three-point reversal and approaching vehicle motion",
+    "Both-direction raw 500-foot rays and route coverage",
+    "Original four-camera pixels and full-video/Core independent acceptance"
+  ],
+  "reason": "Exact offline construction and source-only audit pass, but positive/negative full package compatibility, saved-only video/Core processing, canonical semantic proposals, and batch-level integration are unproved. The pinned Python 3.11 has no CPU dependencies; package_compatibility.py stops at the empty fixture recipe. The adapter marks st.sight_distance unsupported; inputs/coverage branch sources are absent. No CARLA/GPU execution or acceptance is claimed. The non-complete static gate stops at execution_manifest.py physical_preparation.receipt; strict batch gate first stops at a missing result for another assignment."
+}
