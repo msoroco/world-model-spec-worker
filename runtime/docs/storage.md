@@ -153,9 +153,12 @@ checks. Held-out laws can cite training/demo laws. Held-out vocabulary introduce
 
 ## Shared acquisition manifest
 
-`inputs/shared/manifest.json` describes current source acquisition capabilities.
-The four non-held-out sets and evaluated recordings link to this file with relative
-symlinks; set membership remains in `selection.json` and finalized `membership.json`.
+`inputs/shared/manifest.json` retains the collection’s initial acquisition profile.
+When a later adapter adds capabilities, newly projected traces link to an immutable
+`inputs/shared/manifests/<sha256>.json` profile instead of changing historical
+bindings. Canonical recordings and case reviews retain their own trace profile;
+set-level links are navigation defaults, not a substitute for the case manifest.
+All shared links are relative; set membership remains in `selection.json` and finalized `membership.json`.
 Unsupported hand signals are omitted, which Core treats as absent.
 A verified empty kind emits no placeholder object. Complete static inventories
 clear only their verified kind masks; unresolved legal road status and incomplete

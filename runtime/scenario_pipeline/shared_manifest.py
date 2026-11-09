@@ -1,4 +1,4 @@
-"""One acquisition manifest per collection; recordings contain relative links."""
+"""Immutable shared acquisition profiles; recordings contain hash-bound relative links."""
 import hashlib
 import json
 import os
@@ -19,6 +19,9 @@ def link(root, directory, capability=None):
     canonical=canonical_path(root)
     if capability is not None:
         data=encoded(capability)
+        if canonical.is_file() and canonical.read_bytes()!=data:
+            checksum=hashlib.sha256(data).hexdigest()
+            canonical=Path(root)/'inputs/shared/manifests'/(checksum+'.json')
         canonical.parent.mkdir(parents=True,exist_ok=True)
         temporary=None
         try:
@@ -27,7 +30,7 @@ def link(root, directory, capability=None):
             try:os.link(temporary,canonical)
             except FileExistsError:
                 if canonical.read_bytes()!=data:
-                    raise ValueError('Shared capability changed; migrate the collection before publishing')
+                    raise ValueError('Immutable acquisition profile changed')
         finally:
             if temporary is not None:temporary.unlink(missing_ok=True)
     if not canonical.is_file():raise ValueError('Canonical acquisition manifest missing')
@@ -42,9 +45,11 @@ def link(root, directory, capability=None):
 def verify(root, directory, expected_hash):
     path=Path(directory)/'manifest.json'
     target=canonical_path(root)
+    profile=Path(root)/'inputs/shared/manifests'/(expected_hash+'.json')
+    targets={target.resolve(),profile.resolve()}
     if (not path.is_symlink() or os.path.isabs(os.readlink(path)) or
-            path.resolve()!=target.resolve() or not target.is_file() or
-            hashlib.sha256(target.read_bytes()).hexdigest()!=expected_hash):
+            path.resolve() not in targets or not path.is_file() or
+            hashlib.sha256(path.read_bytes()).hexdigest()!=expected_hash):
         raise ValueError('Final manifest hash differs: '+str(directory))
 
 

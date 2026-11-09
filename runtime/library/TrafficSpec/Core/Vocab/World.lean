@@ -135,7 +135,11 @@ structure Structure where
   marked : Option Bool := none
   curvature : Option Q := none              -- 1/m
   grade : Option Q := none                  -- ratio
-  sightDistance : Option Q := none          -- m
+  /-- Operational regional sight-distance estimate in m under the source's declared convention.
+      May be the minimum sampled incoming virtual-observer clear-side distance to the current
+      subject's measured body, scoped to its occupied region in this scene. Brackets, heights,
+      sampling and censoring remain source evidence; a lower bound is not an exact cutoff. -/
+  sightDistance : Option Q := none
   ways : Option (List RegionId) := none     -- the highway regions it lies on
   /-- For a stop line or a crosswalk: the carriers whose entrance into an intersection it marks.
       `entranceObserved` says the list is complete; where it is not, which carriers the line marks is

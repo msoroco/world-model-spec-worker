@@ -141,8 +141,10 @@ def accept_recording(directory, record):
     collection = folder.parent.parent
     if canonical_path(collection).is_file():
         link_sets(collection)
-        link_manifest(collection, folder)
-        value['manifest_sha256'] = sha(canonical_path(collection))
+        source_manifest=Path(record['trace_source']).parent/'manifest.json'
+        capability=json.loads(source_manifest.read_text()) if source_manifest.is_file() else None
+        link_manifest(collection, folder, capability)
+        value['manifest_sha256'] = sha(folder/'manifest.json')
     atomic(path, value)
     return folder.name
 
@@ -199,8 +201,7 @@ def verify_recording(folder):
                 # relative manifest link may leave the recording directory.
                 from shared_manifest import canonical_path,verify as verify_manifest
                 collection=folder.parent.parent
-                if (name in ('manifest.json','evidence/traffic_spec/manifest.json')
-                        and path==canonical_path(collection).resolve()):
+                if name in ('manifest.json','evidence/traffic_spec/manifest.json'):
                     verify_manifest(collection,(base/name).parent,expected)
                     return
                 raise ValueError('Evidence changed: '+str(path))
@@ -348,11 +349,17 @@ def package_set(set_id, output, archive=False, root=None):
         capability = canonical_path(root)
         if capability.is_file():
             shutil.copy2(capability, stage/'manifest.json')
-            for rid in manifest['recording_ids']:
-                for directory in (stage/'recordings'/rid, stage/'recordings'/rid/'evidence/traffic_spec'):
-                    destination=directory/'manifest.json'
-                    if destination.exists() or destination.is_symlink():destination.unlink()
-                    if directory.is_dir():destination.symlink_to(os.path.relpath(stage/'manifest.json',directory))
+        for rid in manifest['recording_ids']:
+            source=root/'recordings'/rid/'manifest.json'
+            if not source.is_file():continue
+            checksum=sha(source)
+            profile=stage/'inputs/shared/manifests'/(checksum+'.json')
+            profile.parent.mkdir(parents=True,exist_ok=True)
+            if not profile.exists():shutil.copy2(source,profile)
+            for directory in (stage/'recordings'/rid,stage/'recordings'/rid/'evidence/traffic_spec'):
+                destination=directory/'manifest.json'
+                if destination.exists() or destination.is_symlink():destination.unlink()
+                if directory.is_dir():destination.symlink_to(os.path.relpath(profile,directory))
         with (stage / 'cases.csv').open('w', newline='') as stream:
             fields = ['campaign','law_id','cell_id','actor','case_id','split','status','recording_id','video','trace']
             writer = csv.DictWriter(stream, fields, extrasaction='ignore');writer.writeheader();writer.writerows(packaged['members'])

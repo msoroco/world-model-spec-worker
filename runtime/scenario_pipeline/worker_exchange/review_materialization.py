@@ -73,8 +73,8 @@ def materialize(root, repo, assignment, case_id, recording_id, targets):
         from shared_manifest import canonical_path, link as link_manifest, link_sets
         if canonical_path(root).is_file():
             link_sets(root)
-            link_manifest(root, full)
-            review['manifest_sha256'] = sha(canonical_path(root))
+            link_manifest(root, full, _read(canonical/'manifest.json'))
+            review['manifest_sha256'] = sha(full/'manifest.json')
         review_path = full / 'metadata.json'
         if review_path.exists():
             current = _read(review_path)

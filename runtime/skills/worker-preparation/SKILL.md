@@ -116,3 +116,16 @@ never claim its synthetic media as physical evidence. Use `worker_check.py
 for a finished assignment. Preserve partial progress and continue independent
 assignments. Review evidence.json and document exact gaps or source-backed reuse
 before adding captures. The final batch gate remains mandatory.
+
+## Operational sight distance
+
+`st.sight_distance` supports the declared incoming-lane virtual-observer proxy.
+Put it in required_atoms when needed: shared PipelineCapture activates the existing
+rays automatically. No measured real driver-eye pose is required. The default is
+1.4 m above lane waypoints, testing the measured ego bounding-box centre and eight
+corners. Capture all inventoried approaches, including opposing lanes; incomplete
+coverage or stale body samples leaves the value unknown. Preserve brackets and
+censoring: clear through 230 m is a lower bound, not an occluder at 230 m. Use the
+shared capture/projection, and test source-shaped packets with this declared
+convention before the GPU run. This does not establish actual driver perception,
+rel.visible, st.sight_along_way or legal compliance.

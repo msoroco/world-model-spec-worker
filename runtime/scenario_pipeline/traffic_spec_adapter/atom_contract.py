@@ -32,6 +32,7 @@ def inventory(library, capabilities, markdown=None):
         scope = {'ru': 'road user', 'kin': 'road user', 'st': 'region', 'dev': 'device',
                  'sig': 'road user', 'env': 'scene', 'rel': 'relation'}[family]
         if atom=='st.sight_along_way':scope='observer and way'
+        if atom=='st.sight_distance':scope='subject-associated region in this scene'
         path = json_paths(name, definitions)
         attributes={key:{'lean_definition':key,'contract':value.strip(),
                          'core_json_field':json_paths(key,definitions),
@@ -120,6 +121,7 @@ def source(atom):
     if atom.startswith('sig.'): return 'Original actor.get_light_state; no inference from controls'
     if atom.startswith('dev.'): return 'Native recorded device/landmark state and observed controlsTrafficOf edges'
     if atom.startswith('ru.'): return 'Recorded CARLA actor identity and supported blueprint classification'
+    if atom == 'st.sight_distance': return 'Original incoming-lane virtual-eye rays to nine actual subject-body samples; minimum sampled clear-side bound, with declared height, brackets and censoring retained'
     if atom == 'rel.visible': return 'Original subject-reference-to-actual-body collision rays; retained blockers and method'
     if atom.startswith('rel.'): return 'Recorded body/lane geometry; only contract-permitted Core computation or measured relation'
     if atom.startswith('st.'): return 'Recorded native OpenDRIVE/graph/map facts and declared spatial measurement'

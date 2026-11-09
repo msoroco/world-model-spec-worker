@@ -356,7 +356,7 @@ class ManifestAvailabilityTests(unittest.TestCase):
         atoms=adapter.manifest(library)['atoms']
         self.assertNotIn('sig.hand_signal',atoms)
         self.assertEqual(set(atoms),set(adapter.atom_ids(library))-{'sig.hand_signal'})
-        self.assertEqual(atoms['st.sight_distance'],'absent')
+        self.assertEqual(atoms['st.sight_distance'],'estimate:incoming_virtual_observer_to_subject_body')
         self.assertEqual(atoms['st.entrance_of'],'estimate:recorded_control_and_map_topology_join')
         with patch.object(adapter,'atom_ids',return_value=adapter.atom_ids(library)+['st.future_atom']):
             with self.assertRaisesRegex(ValueError,'lacks an explicit acquisition decision'):
@@ -448,6 +448,13 @@ class OfflineRepairTests(unittest.TestCase):
             verify(root,case,digest)
             with self.assertRaises(ValueError):link(root,case,{'source':'changed'})
             with self.assertRaises(ValueError):verify(root,case,'0'*64)
+            other=root/'recordings/new';other.mkdir()
+            link(root,other,{'source':'changed'})
+            other_hash=hashlib.sha256((other/'manifest.json').read_bytes()).hexdigest()
+            verify(root,other,other_hash)
+            verify(root,case,digest)
+            self.assertEqual(json.loads((root/'inputs/shared/manifest.json').read_text()),value)
+
 
 
 

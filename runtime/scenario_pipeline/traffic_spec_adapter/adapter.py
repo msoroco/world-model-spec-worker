@@ -1,7 +1,7 @@
 """Convert a raw recorded capture into TrafficSpec's runtime data, without laws.
 
 Native replay kinematics are not original telemetry. Incoming virtual-observer
-rays are not rel.visible or a static regional sight distance. Supplementary output retains every
+rays supply a disclosed, subject-relative regional sight-distance estimate, not rel.visible. Supplementary output retains every
 source evidence record, original telemetry record and a hashed raw-graph reference.
 Pickles must be trusted local captures; the loader is not a security sandbox.
 """
@@ -14,7 +14,7 @@ from pathlib import Path
 from .geometry import body, static_map, xy, painted_map_objects, native_centre_lines
 from .visibility import attach_visibility
 
-VERSION = 'traffic-spec-source-capabilities-v11'
+VERSION = 'traffic-spec-source-capabilities'
 
 # Every current ontology atom needs an explicit acquisition decision.  This is
 # deliberately exhaustive: adding an atom to Core cannot silently turn it into
@@ -31,7 +31,7 @@ sig.compression_brake sig.door_open sig.hand_signal sig.horn sig.siren sig.warni
 st.alley st.centre_turn_lane st.controlled_access st.curb_zone
 st.driveway_or_alley_entrance st.elevated_structure st.fire_hydrant st.fire_station_entrance
 st.parking_space st.pedestrian_grade_separation st.railway_crossing st.reserved_lane
-st.road_edge st.roundabout st.safety_zone st.sight_along_way st.sight_distance st.transit_stop
+st.road_edge st.roundabout st.safety_zone st.sight_along_way st.transit_stop
 st.travel_region st.turn_lane
 '''.split())
 
@@ -178,6 +178,7 @@ def manifest(library):
         'env.visibility':'estimate:retained_rendered_contrast_calibration',
         'env.ice_or_snow':'estimate:verified_native_surface',
         'st.crest':'estimate:surveyed_native_elevation',
+        'st.sight_distance':'estimate:incoming_virtual_observer_to_subject_body',
     })
     ids=atom_ids(library)
     if not ids:raise ValueError('No ontology atom IDs found')
@@ -666,16 +667,16 @@ def convert(capture, original, library, output):
             'native_road_profile_projection':native_road_profile,
             'native_painted_objects':[dict(o['source'],region_id=o['region']['id']) for o in painted],
             'native_centre_lines':[dict(o['source'],region_id=o['region']['id'])for o in centre_lines],
-            'adapter_sources':{p.name:sha(p) for p in (Path(__file__).parent/'adapter.py',Path(__file__).parent/'geometry.py',Path(__file__).parent/'control_portions.py',Path(__file__).parent/'scenario_geometry.py',Path(__file__).parent/'inventory_observations.py',Path(__file__).parent/'entrance_associations.py')},
+            'adapter_sources':{p.name:sha(p) for p in (Path(__file__).parent/'adapter.py',Path(__file__).parent/'geometry.py',Path(__file__).parent/'visibility.py',Path(__file__).parent/'control_portions.py',Path(__file__).parent/'scenario_geometry.py',Path(__file__).parent/'inventory_observations.py',Path(__file__).parent/'entrance_associations.py')},
             'methods':{'position':'body centre from recorded bounding-box vertices; CARLA y reflected',
                        'speed':'original live telemetry; mph multiplied by 0.44704',
                        'participant_motion':'original same-frame actor.get_velocity and body telemetry, including measured actors outside the graph crop; no visibility inferred' if participant_records else ('original live graph actor.get_velocity only' if acquisition=='original_live_run' else 'replay motion omitted; unknown'),
                        'yaw_rate':'unwrapped reflected heading; central/one-sided finite difference; degrees/s; subject-only estimate',
                        'path_length':'trapezoidal integration of original speed; gaps leave unknown',
                        'occupancy':'recorded convex body footprint intersects 2 m sampled OpenDRIVE lane/roadway polygons',
-                       'sight_distance':'omitted: retained incoming virtual-observer horizons do not establish a static roadway sight property; detailed rays remain evidence',
+                       'sight_distance':'subject-relative minimum sampled clear-side bound over inventoried incoming lanes; declared virtual eye height to nine actual body samples; censored bounds and rays retained',
                        'weather':'darkness: sun altitude < 0; precipitation/wetness: parameter > 0; classifications are estimates'},
-            'limitations':['Incoming virtual-observer horizons remain supplementary evidence; neither static roadway sight distance nor driver-to-way sight is established. rel.visible requires separate original subject-to-user body rays.',
+            'limitations':['Sight distance is a time-varying simulation proxy with declared eye-height/body samples and sampling uncertainty; it is not an exact physical cutoff, driver recognizability or st.sight_along_way. rel.visible requires separate original subject-to-user body rays.',
                            'Observed native light states include off; missing lamps are never inferred from controller signals.',
                            'Normalized steering control is not wheel angle; commanded gear is not observed gear.',
                            'Omitted device.governs is unknown; an observed empty list governs nothing.',
@@ -786,7 +787,7 @@ def convert(capture, original, library, output):
                 if key in weather:env[target]=test(weather[key])
             measured_environment, environmental_mapping=project_environment(environment_packet,row,e['original_frame'])
             env.update(measured_environment)
-            structures, visibility_mapping = attach_visibility(regions, polygons, footprint, e.get('visibility'))
+            structures, visibility_mapping = attach_visibility(regions, polygons, footprint, e.get('visibility'), lane_ids)
             if entrance_projection is not None:
                 for structure in structures:
                     association=entrance_projection['frames'][i]['associations'].get(structure['id'])
@@ -1024,6 +1025,15 @@ def source_packets(evidence, required=(), *, read_graphs=True):
             row=motion_packet.get('subject_motion',{})
             if abs(row.get('time_s',-1)-event['recording_time_s'])<=1e-6:
                 index_motion(motion_packet,dict(row,actor_id=event['actor_id']),'trace.jsonl:original_frame')
+        if event.get('visibility') is not None:
+            packet = at(event)
+            if packet is None or not same_frame({'frame':event.get('original_frame'),
+                    'time_s':event.get('recording_time_s')}, packet):
+                raise ValueError('Visibility frame/time differs from original telemetry')
+            vertices = event.get('ego', {}).get('body_vertices_m')
+            if vertices:
+                packet['subject_visibility'] = {'subject':event['actor_id'],
+                    'body_vertices_m':vertices, 'visibility':event['visibility']}
         measured=event.get('original_observations',{})
         if not measured.get('participants') and not measured.get('devices'):continue
         if measured.get('frame')!=event.get('original_frame'):
@@ -1092,11 +1102,24 @@ def yaw_estimates(trace):
 def repair_scene(scene, required, packet, fields, yaw, native_lanes=None):
     import collections
     changes = collections.Counter()
-    # This generator never acquired the static regional sight property. Legacy
-    # values came from subject-relative incoming virtual-observer horizons.
+    # Remove unbound values before reprojecting this frame from retained rays.
+    old_sight={r['id']:r['sight_distance'] for r in scene.get('structures',[]) if 'sight_distance' in r}
     for region in scene.get('structures', []):
-        if 'sight_distance' in region:
-            del region['sight_distance'];changes['B1_removed_subject_relative_sight_scalar']+=1
+        region.pop('sight_distance', None)
+    measured_sight = packet.get('subject_visibility')
+    if measured_sight and measured_sight['subject'] == scene.get('subject'):
+        from shapely.geometry import Polygon
+        _, _, footprint = body(measured_sight['body_vertices_m'], 0)
+        polygons = {r['id']: Polygon(r['boundary']) for r in scene.get('structures', [])
+                    if r.get('kind') in ('lane','roadway') and r.get('boundary')}
+        scene['structures'], mapping = attach_visibility(scene.get('structures', []), polygons,
+                                                         footprint, measured_sight['visibility'], native_lanes or {})
+    new_sight={r['id']:r['sight_distance'] for r in scene.get('structures',[]) if 'sight_distance' in r}
+    removed=len(set(old_sight)-set(new_sight))
+    projected=sum(old_sight.get(k)!=v for k,v in new_sight.items())
+    if removed:changes['removed_unbound_sight_distance'] += removed
+    if projected:changes['projected_measured_sight_distance'] += projected
+
     native_lanes=native_lanes or {}
     for user in scene.get('users', []):
         sig = user.get('sig', {})
