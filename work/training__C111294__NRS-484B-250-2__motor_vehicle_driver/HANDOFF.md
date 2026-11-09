@@ -1,15 +1,9 @@
 # NRS-484B-250-2 at C111294
 
-Actor: `motor_vehicle_driver`. Frozen cell: `intersection` / `travel` / `other_vehicle`.
+Frozen intersection/travel/other_vehicle cell; motor vehicle driver. Exact NRS 484B.250(2), with subsection (5), source text and hash are retained in `case-plan.json`.
 
-Exact source: NRS 484B.250(2); with 484B.250(5). The full text and source hash are retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branch: Left-hand ego and right-hand other vehicle with active entry-time variation and precedence actions..
+Two controlled cases have eight unselected Native requests: primary plus slower-entry, elevated-camera and stop-before-entry fallbacks. Six authored road regions join two crossing approaches. Each request has 600 frames at 20 Hz, two vehicle tracks and three camera channels. Exact copied-source/request compatibility, positive/negative synthetic raw-to-saved processing, independent audit and measured fallback-trigger checks are in `native/`. The capture entrypoint attempts original CARLA generation and writes actor, map, media and restoration receipts; it has not run.
 
-Controlled variable: `entry order and precedence at near-simultaneous arrival`. Requested pair: left-side vehicle yields to near-simultaneous right-side vehicle; left-side vehicle enters ahead of near-simultaneous right-side vehicle. These are construction requests, not measurements or legal verdicts. The baseline is unselected.
+The synthetic primary ego-minus-other front-entry gap is 1.0 s in controlled_1 and 0.0 s in controlled_2; slower fallback gaps are 4.75 s and 3.75 s. These are engineering diagnostics, not statutory simultaneity limits or legal verdicts. Original junction/lane readback, physical behavior, official-device governance, reviewed pixels, yielding, opposite-direction left-turn exclusion and subsection 4 remain worker-owned. Six accepted membership rows provide context only; no source-hashed equivalence is claimed.
 
-Statutory branch dispositions: 3. Review each exception and dependency against the exact text before physical selection. Accepted membership rows: 6; no source-hashed equivalence receipt is available, so reuse is unclaimed.
-
-Blocker: No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.
-
-Resume: build Native geometry, actor control, cameras and mandatory capture for each runnable branch; prepare four distinct source-preserving constructions per selected case; run exact pinned-runtime offline and compatibility checks, saved positive/negative fixtures and an independent audit. Set `ready` only after those CPU proofs pass.
-
-Source-context review: Require different highways, approximately simultaneous entry and left-versus-right approach. Device-controlled intersections, opposite-direction left turns and subsection 4 are exclusions/dependencies.
+The assignment remains blocked and unselected. Run `native/build.py`, `native/prove_request.py`, `native/saved.py`, `native/prove_saved.py`, `native/audit.py`, `native/prove_triggers.py`, then `native/build_runtime_offline.py` and the frozen offline runner. Select or mark ready only after the applicable original and CPU proofs pass.

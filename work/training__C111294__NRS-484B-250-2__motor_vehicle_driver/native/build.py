@@ -103,7 +103,7 @@ def build():
         raise ValueError("Frozen assignment changed")
     source = json.loads(SOURCE.read_text())
     plan = json.loads(PLAN.read_text())
-    if (plan["source_law_text"] != source["law_record"]["text"] or
+    if (plan["source_law"]["text"] != source["law_record"]["text"] or
             source["actor"] != "motor_vehicle_driver" or
             {k: source["cell"][k] for k in ("layout", "maneuver", "control")} !=
             {"layout": "intersection", "maneuver": "travel", "control": "other_vehicle"}):
