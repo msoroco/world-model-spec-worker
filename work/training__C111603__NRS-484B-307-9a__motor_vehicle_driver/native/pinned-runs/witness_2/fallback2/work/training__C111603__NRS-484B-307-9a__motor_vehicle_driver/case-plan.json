@@ -1,0 +1,406 @@
+{
+  "assignment_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver",
+  "law_id": "NRS-484B-307-9a",
+  "cell_id": "C111603",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "intersection",
+    "maneuver": "turn",
+    "control": "other_vehicle"
+  },
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "source": "NRS 484B.307(9)(a)",
+    "text": "Where the signal is a steady red with a green turn arrow: Except as otherwise provided in paragraph (b) [NRS-484B-307-9b], vehicular traffic facing the signal may enter the intersection only to make the movement indicated by the green turn arrow, but must yield the right-of-way to pedestrians lawfully within an adjacent crosswalk and to other traffic lawfully using the intersection. Drivers turning in the direction of the arrow are thereby advised that so long as the turn arrow is illuminated, oncoming or opposing traffic simultaneously faces a steady red signal.",
+    "sha256": "7bfc7317f79df9d14202d5e2b28ea783fa64cc47c6a5f40a2ef9d8ee1efb0543"
+  },
+  "summary_status": "recovered_requires_source_review",
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "witness_branches": [
+    "Turn with other intersection traffic"
+  ],
+  "selected_branch": null,
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-307-9a",
+      "source": "NRS 484B.307(9)(a)",
+      "branch": "Turn with other intersection traffic",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_1",
+        "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_2"
+      ],
+      "evidence_or_gap": "Eight source-pinned Native requests exist for two controlled movements and four policies. Exact request proof (8+/32-), synthetic saved proof (8+/48- over 3,840 joins), independent four-pair audit and eight frozen runtime.py offline packages (24 CPU tests, 88 audited copied files) pass. Original CARLA signal/actor capture, measured fallback triggers, physical/legal yielding and outcome remain unverified."
+    },
+    {
+      "requirement": "NRS-484B-307-9a",
+      "source": "NRS 484B.307(9)(a)",
+      "branch": "the two-cycle exception for motorcycles, mopeds and cycles the text cites",
+      "status": "exception_pending",
+      "case_ids": [
+        "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__exception_1_1",
+        "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__exception_1_2"
+      ],
+      "evidence_or_gap": "Exact cited-law scope, actor eligibility, construction and observed evidence of this exception remain unverified; these are planning targets only."
+    }
+  ],
+  "activation_conditions": [
+    "a steady red with a green turn arrow faces the subject",
+    "the subject enters the intersection"
+  ],
+  "timing_requirements": [
+    {
+      "kind": "continuous",
+      "requirement": "the permission lasts only while the arrow is illuminated"
+    },
+    {
+      "kind": "point_event",
+      "requirement": "entering for any movement other than the arrow's is the violation, at the moment the path departs from it"
+    }
+  ],
+  "unresolved_judgment_calls": [],
+  "neutral_baseline": {
+    "kind": "unselected_baseline",
+    "description": "Frozen cell and actor with target rule inactive or neutral; not a selected recording."
+  },
+  "cases": [
+    {
+      "case_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_1",
+      "target_law_id": "NRS-484B-307-9a",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver follows illuminated arrow movement",
+      "comparison_variable": "arrow_only_movement",
+      "source_branch": "Turn with other intersection traffic",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "intersection",
+          "maneuver": "turn",
+          "control": "other_vehicle"
+        },
+        "activation_conditions_to_verify": [
+          "a steady red with a green turn arrow faces the subject",
+          "the subject enters the intersection"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver follows illuminated arrow movement"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_2",
+      "target_law_id": "NRS-484B-307-9a",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver takes a movement different from the illuminated arrow",
+      "comparison_variable": "arrow_only_movement",
+      "source_branch": "Turn with other intersection traffic",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "intersection",
+          "maneuver": "turn",
+          "control": "other_vehicle"
+        },
+        "activation_conditions_to_verify": [
+          "a steady red with a green turn arrow faces the subject",
+          "the subject enters the intersection"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver takes a movement different from the illuminated arrow"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__exception_1_1",
+      "target_law_id": "NRS-484B-307-9a",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "hold selected activation with the two-cycle exception for motorcycles, mopeds and cycles the text cites absent",
+      "comparison_variable": "exception_1_applicability",
+      "source_branch": "the two-cycle exception for motorcycles, mopeds and cycles the text cites",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "intersection",
+          "maneuver": "turn",
+          "control": "other_vehicle"
+        },
+        "activation_conditions_to_verify": [
+          "a steady red with a green turn arrow faces the subject",
+          "the subject enters the intersection"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "hold selected activation with the two-cycle exception for motorcycles, mopeds and cycles the text cites absent"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__exception_1_2",
+      "target_law_id": "NRS-484B-307-9a",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "hold selected activation with the two-cycle exception for motorcycles, mopeds and cycles the text cites present",
+      "comparison_variable": "exception_1_applicability",
+      "source_branch": "the two-cycle exception for motorcycles, mopeds and cycles the text cites",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "intersection",
+          "maneuver": "turn",
+          "control": "other_vehicle"
+        },
+        "activation_conditions_to_verify": [
+          "a steady red with a green turn arrow faces the subject",
+          "the subject enters the intersection"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "hold selected activation with the two-cycle exception for motorcycles, mopeds and cycles the text cites present"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_comparison",
+      "case_ids": [
+        "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_1",
+        "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_2"
+      ],
+      "deliberate_differences": [
+        "arrow_only_movement"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "same map geometry except named comparison variable",
+        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+      ]
+    },
+    {
+      "comparison_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__exception_1_comparison",
+      "case_ids": [
+        "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__exception_1_1",
+        "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__exception_1_2"
+      ],
+      "deliberate_differences": [
+        "exception_1_applicability"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "same map geometry except named comparison variable",
+        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+      ]
+    }
+  ],
+  "mandatory_observation_terms": [
+    {
+      "term": "dev.traffic_signal",
+      "purpose": "state circular_red with green_arrow(dir)",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "dev.governs",
+      "purpose": "the head faces the subject",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.lane_enters",
+      "purpose": "the lane facing the signal enters the intersection turned through",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.turning",
+      "purpose": "the movement indicated by the arrow",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "kin.heading",
+      "purpose": "the direction actually taken",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.entering_intersection",
+      "purpose": "the entry",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "st.crosswalk",
+      "purpose": "the adjacent crosswalk",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "ru.pedestrian",
+      "purpose": "pedestrians lawfully within it",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.in_intersection",
+      "purpose": "other traffic lawfully using the intersection",
+      "status": "measurement_mapping_pending"
+    },
+    {
+      "term": "drv.yields_to",
+      "purpose": "the yield owed",
+      "status": "measurement_mapping_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "dev.traffic_signal",
+      "mandatory": true,
+      "reason": "state circular_red with green_arrow(dir)"
+    },
+    {
+      "name": "dev.governs",
+      "mandatory": true,
+      "reason": "the head faces the subject"
+    },
+    {
+      "name": "st.lane_enters",
+      "mandatory": true,
+      "reason": "the lane facing the signal enters the intersection turned through"
+    },
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "reason": "the movement indicated by the arrow"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "reason": "the direction actually taken"
+    },
+    {
+      "name": "drv.entering_intersection",
+      "mandatory": true,
+      "reason": "the entry"
+    },
+    {
+      "name": "st.crosswalk",
+      "mandatory": true,
+      "reason": "the adjacent crosswalk"
+    },
+    {
+      "name": "ru.pedestrian",
+      "mandatory": true,
+      "reason": "pedestrians lawfully within it"
+    },
+    {
+      "name": "drv.in_intersection",
+      "mandatory": true,
+      "reason": "other traffic lawfully using the intersection"
+    },
+    {
+      "name": "drv.yields_to",
+      "mandatory": true,
+      "reason": "the yield owed"
+    }
+  ],
+  "candidate_plans": [
+    {
+      "candidate_id": "primary",
+      "approach_speed_mps": 8.0,
+      "camera_policy": "standard",
+      "pre_approach_dwell_s": 0.0,
+      "trigger": "baseline authored request; capture quality unmeasured"
+    },
+    {
+      "candidate_id": "fallback1",
+      "approach_speed_mps": 5.0,
+      "camera_policy": "standard",
+      "pre_approach_dwell_s": 0.0,
+      "trigger": "use if original entry speed prevents a legible arrow-to-movement join; measured trigger pending original capture"
+    },
+    {
+      "candidate_id": "fallback2",
+      "approach_speed_mps": 8.0,
+      "camera_policy": "elevated_overview",
+      "pre_approach_dwell_s": 0.0,
+      "trigger": "use if original standard overview occludes the signal or other vehicle; measured trigger pending original capture"
+    },
+    {
+      "candidate_id": "fallback3",
+      "approach_speed_mps": 8.0,
+      "camera_policy": "standard",
+      "pre_approach_dwell_s": 2.0,
+      "trigger": "use if original signal-to-entry window is too short; measured trigger pending original capture"
+    }
+  ],
+  "existing_evidence": [],
+  "sources": [
+    {
+      "path": "inputs/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/assignment.json",
+      "sha256": "aa4cb76c4fc251e5dc1ad7f2e95776abc317c737f1dff66fc6ce41e8df1f3b8d"
+    }
+  ],
+  "unverified_physical_assumptions": [
+    "Native map realizes frozen layout, maneuver and control",
+    "Actor blueprints and controllers can produce proposed behavior",
+    "Four camera views and saved channels can establish every decisive relation",
+    "Legal context and exceptions can be represented without substituting authored targets for measurements"
+  ],
+  "blockers": [
+    "C111603 request, synthetic saved and frozen runtime offline CPU proofs pass. Original CARLA signal and other-vehicle capture, measured fallback triggers, physical feasibility, source-hashed review and legal outcome remain unverified."
+  ],
+  "runtime_uncertainties": [
+    "C111603 request, synthetic saved and frozen runtime offline CPU proofs pass. Original CARLA signal and other-vehicle capture, measured fallback triggers, physical feasibility, source-hashed review and legal outcome remain unverified.",
+    "Exact Core atom mapping and capture channel support for source observation terms remain unverified. The cited two-cycle exception requires separate actor-scope review."
+  ],
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts.",
+  "native_construction": {
+    "status": "unselected_cpu_request_proven",
+    "manifest": "native/manifest.json",
+    "exact_request_proof": "native/request-proof.json",
+    "independent_request_audit": "native/independent-audit.json",
+    "candidate_count": 8,
+    "original_native_observed": false,
+    "saved_processing_proven": true,
+    "delivery_ready": false,
+    "synthetic_saved_manifest": "native/saved-manifest.json",
+    "synthetic_saved_proof": "native/saved-proof.json",
+    "measurement_contract": "native/measurement-contract.json",
+    "pinned_offline_manifest": "native/draft-execution-manifest.json",
+    "pinned_offline_proof": "native/pinned-offline-proof.json",
+    "pinned_offline_audit": "native/pinned-offline-audit.json",
+    "runtime_offline_diagnostic": true
+  }
+}
