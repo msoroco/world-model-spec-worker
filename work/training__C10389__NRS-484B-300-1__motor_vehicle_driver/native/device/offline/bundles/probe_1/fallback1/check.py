@@ -5,7 +5,8 @@ import json
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
-from build import DEVICE_X, FRAMES, POLICIES, RATE, SUFFIXES, request, road
+from build import (DEVICE_X, EXACT_LAW_TEXT_SHA, FROZEN_ASSIGNMENT_SHA,
+                   FRAMES, POLICIES, RATE, SUFFIXES, request, road)
 
 
 def sha(path):
@@ -25,6 +26,8 @@ def check(bundle):
     candidate = cfg['candidate_id']
     law = a['law_record']['text']
     if (suffix not in SUFFIXES or candidate not in POLICIES or
+            sha(bundle / 'assignment-source.json') != FROZEN_ASSIGNMENT_SHA or
+            hashlib.sha256(law.encode()).hexdigest() != EXACT_LAW_TEXT_SHA or
             cfg['case_id'] != cfg['assignment_id'] + '__' + suffix or
             cfg['assignment_id'] != a['assignment_id'] or
             cfg['source_text'] != law or plan['source_law']['text'] != law or

@@ -67,7 +67,7 @@ def build(bundle, output):
             'forward_video_sha256': 'synthetic_cpu',
             'overview_video_sha256': 'synthetic_cpu',
             'device_face_pixel_reviewed': True, 'device_face_visible': True,
-            'stop_line_pixel_reviewed': True, 'stop_line_visible': True})
+            'approach_area_pixel_reviewed': True, 'approach_area_visible': True})
     write_rows(output / 'native-raw-actors.jsonl', actors)
     write_rows(output / 'video_frames.jsonl', videos)
     write_rows(output / 'frame-review.jsonl', reviews)

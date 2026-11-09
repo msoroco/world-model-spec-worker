@@ -1,4 +1,4 @@
-"""Prepare source-bound C10389 Native rows and measure stop-line behavior."""
+"""Prepare source-bound C10389 Native rows and measure device station behavior."""
 import argparse
 import hashlib
 import json
@@ -157,10 +157,10 @@ def prepare(bundle, raw, output, synthetic=False):
                 (type(review.get('device_face_visible')) is bool
                  if review['device_face_pixel_reviewed'] else
                  review.get('device_face_visible') is None) and
-                type(review.get('stop_line_pixel_reviewed')) is bool and
-                (type(review.get('stop_line_visible')) is bool
-                 if review['stop_line_pixel_reviewed'] else
-                 review.get('stop_line_visible') is None),
+                type(review.get('approach_area_pixel_reviewed')) is bool and
+                (type(review.get('approach_area_visible')) is bool
+                 if review['approach_area_pixel_reviewed'] else
+                 review.get('approach_area_visible') is None),
                 f'video/review join {i}')
         observed.append({'frame': i, 'native_frame': native, 'time_s': t,
                          'source_kind': kind, 'ego': row['ego'],
@@ -219,17 +219,17 @@ def measure(bundle, saved):
                 first_crossing = i
         face_reviewed += int(review['device_face_pixel_reviewed'] and
                              review['device_face_visible'] is True)
-        line_reviewed += int(review['stop_line_pixel_reviewed'] and
-                             review['stop_line_visible'] is True)
+        line_reviewed += int(review['approach_area_pixel_reviewed'] and
+                             review['approach_area_visible'] is True)
     return {'format': 'c10389-device-prepared-measurement-v1',
             'case_id': cfg['case_id'], 'candidate_id': cfg['candidate_id'],
             'source_kind': receipt['source_kind'],
             'requested_obey': cfg['requested_obey'],
             'stopped_before_device_frames': stopped_before,
-            'front_body_at_line_frames': crossed,
-            'first_body_at_line_frame': first_crossing,
+            'front_body_at_device_station_frames': crossed,
+            'first_body_at_device_station_frame': first_crossing,
             'reviewed_visible_device_face_frames': face_reviewed,
-            'reviewed_visible_stop_line_frames': line_reviewed,
+            'reviewed_visible_approach_area_frames': line_reviewed,
             'authored_signal_is_official_placement': False,
             'police_direction_verified': False,
             'signal_specific_exception_reviewed': False,

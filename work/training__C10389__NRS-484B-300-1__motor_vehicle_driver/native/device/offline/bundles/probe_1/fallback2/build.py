@@ -17,6 +17,8 @@ STOP_X = 44.0
 DEVICE_X = 50.0
 FRAMES = 240
 RATE = 20
+FROZEN_ASSIGNMENT_SHA = 'cac267c7efd21c4efa3f18a3531b2d3311be9d41d6abdc161aa6854ee050dbad'
+EXACT_LAW_TEXT_SHA = '0083bdf940bab787cf1d1cf789a93d1edf516df1df6de3b3e91cca237c6bbba8'
 
 
 def sha(path):
@@ -62,7 +64,7 @@ def request(speed, obey, policy):
                      'requested_ego_y_m': -1.75,
                      'requested_speed_mps': target_speed,
                      'requested_road_id': 389, 'requested_lane_id': -1,
-                     'requested_stop_line_x_m': DEVICE_X,
+                     'requested_device_station_x_m': DEVICE_X,
                      'requested_stop_hold': obey,
                      'official_placement_verified': False,
                      'police_direction_verified': False,
@@ -78,7 +80,9 @@ def build():
     plan_path = CASE / 'case-plan.json'
     plan = json.loads(plan_path.read_text())
     law = a['law_record']['text']
-    if (plan['source_law']['text'] != law or
+    if (sha(assignment) != FROZEN_ASSIGNMENT_SHA or
+            hashlib.sha256(law.encode()).hexdigest() != EXACT_LAW_TEXT_SHA or
+            plan['source_law']['text'] != law or
             a['cell']['layout'] != 'alley' or
             a['cell']['control'] != 'traffic_control_device' or
             a['actor'] != 'motor_vehicle_driver' or

@@ -40,6 +40,24 @@ def wrong_signal_with_rehash(bundle):
          hashlib.sha256(road.read_bytes()).hexdigest())
 
 
+def altered_law_with_rehashed_copies(bundle):
+    assignment = bundle / 'assignment-source.json'
+    plan = bundle / 'case-plan.json'
+    cfg = bundle / 'config.json'
+    source = json.loads(assignment.read_text())
+    changed = source['law_record']['text'] + ' Altered applicability sentence.'
+    source['law_record']['text'] = changed
+    assignment.write_text(json.dumps(source) + '\n')
+    planned = json.loads(plan.read_text())
+    planned['source_law']['text'] = changed
+    plan.write_text(json.dumps(planned) + '\n')
+    config = json.loads(cfg.read_text())
+    config['source_text'] = changed
+    config['assignment_sha256'] = hashlib.sha256(assignment.read_bytes()).hexdigest()
+    config['case_plan_sha256'] = hashlib.sha256(plan.read_bytes()).hexdigest()
+    cfg.write_text(json.dumps(config) + '\n')
+
+
 def rejected(bundle, change):
     with tempfile.TemporaryDirectory(prefix='c10389-request-negative-') as folder:
         target = Path(folder) / 'bundle'
@@ -69,6 +87,7 @@ def prove():
                            if result['requested_crossing'] else 'target'),
             lambda d: edit_row(d / 'requested-tracks.jsonl', 'requested_speed_mps', 99),
             wrong_signal_with_rehash,
+            altered_law_with_rehashed_copies,
             lambda d: edit(d / 'config.json', 'official_placement_verified', True),
         )
         for change in changes:

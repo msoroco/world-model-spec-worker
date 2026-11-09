@@ -32,6 +32,10 @@ def audit():
     assignment = ROOT / 'inputs' / CASE.name / 'assignment.json'
     plan = CASE / 'case-plan.json'
     law = read(assignment)['law_record']['text']
+    if (sha(assignment) != 'cac267c7efd21c4efa3f18a3531b2d3311be9d41d6abdc161aa6854ee050dbad' or
+            hashlib.sha256(law.encode()).hexdigest() !=
+            '0083bdf940bab787cf1d1cf789a93d1edf516df1df6de3b3e91cca237c6bbba8'):
+        raise ValueError('exact frozen statutory source')
     checks = {'assignment_sha256': assignment,
               'case_plan_sha256': plan,
               'road_sha256': HERE / 'alley-stop.xodr',
@@ -43,7 +47,7 @@ def audit():
     if (read(plan)['source_law']['text'] != law or
             any(construction[key] != sha(path) for key, path in checks.items()) or
             copied['construction_sha256'] != sha(HERE / 'manifest.json') or
-            proof['positives'] != 8 or proof['negatives'] != 56 or
+            proof['positives'] != 8 or proof['negatives'] != 64 or
             len(copied['entries']) != 8):
         raise ValueError('source, construction or compatibility proof')
     total = 0
@@ -105,7 +109,7 @@ def audit():
                     row['requested_speed_mps'] != velocity or
                     row['requested_road_id'] != 389 or
                     row['requested_lane_id'] != -1 or
-                    row['requested_stop_line_x_m'] != 50 or
+                    row['requested_device_station_x_m'] != 50 or
                     row['requested_stop_hold'] is not obey or
                     row['observed_device_obedience'] is not None):
                 raise ValueError('independent request row')
@@ -124,7 +128,7 @@ def audit():
     return {'format': 'c10389-device-independent-package-audit-v1',
             'copied_bundles': 8, 'controlled_pairs': 4,
             'rows_recomputed': total, 'positive': 8,
-            'tamper_negative': 56, 'official_placement_verified': False,
+            'tamper_negative': 64, 'official_placement_verified': False,
             'delivery_ready': False}
 
 

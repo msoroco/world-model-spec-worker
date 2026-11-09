@@ -1,4 +1,4 @@
-"""Prepare source-bound C10389 Native rows and measure stop-line behavior."""
+"""Prepare source-bound C10389 Native rows and measure device station behavior."""
 import argparse
 import hashlib
 import json
@@ -82,6 +82,11 @@ def prepare(bundle, raw, output, synthetic=False):
     kind = 'synthetic_cpu' if synthetic else 'original_native'
     require(len(actors) == len(videos) == len(reviews) == len(requests) == 240,
             '240 raw joins')
+    landmark = mapping.get('stop_landmark_readback')
+    require(type(landmark) is dict and landmark.get('id') == '3891' and
+            landmark.get('road_id') == 389 and
+            finite(landmark.get('s_m')) and abs(landmark['s_m']-50) < .5 and
+            landmark.get('type') == '206', 'generated stop landmark')
     require(mapping.get('source_kind') == kind and
             mapping.get('road_sha256') == sha(bundle / 'alley-stop.xodr') and
             type(mapping.get('native_map_sha256')) is str and
@@ -89,8 +94,6 @@ def prepare(bundle, raw, output, synthetic=False):
             mapping.get('lane_readback') == {str(x): {
                 'road_id': 389, 'lane_id': -1, 'lane_type': 'driving'}
                 for x in (20, 45, 55)} and
-            mapping.get('stop_landmark_readback') == {
-                'id': '3891', 'road_id': 389, 's_m': 50.0, 'type': '206'} and
             mapping.get('stop_landmark_verified') is True and
             type(mapping.get('ego_actor_id')) is int and
             mapping.get('official_placement_verified') is False and
@@ -113,6 +116,7 @@ def prepare(bundle, raw, output, synthetic=False):
     first = actors[0].get('native_frame')
     require(type(first) is int, 'first native frame')
     observed, camera = [], []
+    previous_center = None
     for i, (row, video, review, request) in enumerate(
             zip(actors, videos, reviews, requests)):
         native = first+i
@@ -129,6 +133,13 @@ def prepare(bundle, raw, output, synthetic=False):
                 row.get('observed_device_obedience') is None and
                 row.get('legal_verdict') is None, f'actor/request join {i}')
         validate_ego(row.get('ego'), mapping['ego_actor_id'])
+        center = row['ego']['center_native_xyz_m']
+        if previous_center is not None:
+            displacement = math.sqrt(sum((center[j]-previous_center[j])**2
+                                         for j in range(3)))
+            require(displacement <= row['ego']['speed_mps'] / 20 + .5,
+                    f'ego speed/displacement continuity {i}')
+        previous_center = center
         require(video.get('video_frame') == i and
                 video.get('native_frame') == native and
                 finite(video.get('time_s')) and abs(video['time_s']-t) < 1e-6 and
@@ -146,10 +157,10 @@ def prepare(bundle, raw, output, synthetic=False):
                 (type(review.get('device_face_visible')) is bool
                  if review['device_face_pixel_reviewed'] else
                  review.get('device_face_visible') is None) and
-                type(review.get('stop_line_pixel_reviewed')) is bool and
-                (type(review.get('stop_line_visible')) is bool
-                 if review['stop_line_pixel_reviewed'] else
-                 review.get('stop_line_visible') is None),
+                type(review.get('approach_area_pixel_reviewed')) is bool and
+                (type(review.get('approach_area_visible')) is bool
+                 if review['approach_area_pixel_reviewed'] else
+                 review.get('approach_area_visible') is None),
                 f'video/review join {i}')
         observed.append({'frame': i, 'native_frame': native, 'time_s': t,
                          'source_kind': kind, 'ego': row['ego'],
@@ -208,17 +219,17 @@ def measure(bundle, saved):
                 first_crossing = i
         face_reviewed += int(review['device_face_pixel_reviewed'] and
                              review['device_face_visible'] is True)
-        line_reviewed += int(review['stop_line_pixel_reviewed'] and
-                             review['stop_line_visible'] is True)
+        line_reviewed += int(review['approach_area_pixel_reviewed'] and
+                             review['approach_area_visible'] is True)
     return {'format': 'c10389-device-prepared-measurement-v1',
             'case_id': cfg['case_id'], 'candidate_id': cfg['candidate_id'],
             'source_kind': receipt['source_kind'],
             'requested_obey': cfg['requested_obey'],
             'stopped_before_device_frames': stopped_before,
-            'front_body_at_line_frames': crossed,
-            'first_body_at_line_frame': first_crossing,
+            'front_body_at_device_station_frames': crossed,
+            'first_body_at_device_station_frame': first_crossing,
             'reviewed_visible_device_face_frames': face_reviewed,
-            'reviewed_visible_stop_line_frames': line_reviewed,
+            'reviewed_visible_approach_area_frames': line_reviewed,
             'authored_signal_is_official_placement': False,
             'police_direction_verified': False,
             'signal_specific_exception_reviewed': False,

@@ -10,6 +10,8 @@ Statutory alternatives and exceptions still to cover or disposition: NRS 484B.30
 
 Accepted membership: 0 distinct recording IDs. Their contents and exact source-hashed equivalence are unavailable in this checkout, so reuse is not claimed.
 
-Blocker: No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified.
+Current CPU work: `native/device/` contains eight unselected source-bound OpenDRIVE stop-device requests for the obey/pass pair, primary and three distinct fallbacks, original CARLA capture, a measurement contract, synthetic raw-to-saved processing, copied compatibility and independent audits. The authored signal is not proof of official placement. The 484B.307 rule, police direction and placement provenance remain separate pending statutory topics.
 
-Resume: reconcile every branch against exact text and physical cell; construct Native routes and controllers, mandatory measurement mapping, four distinct plans per selected case, and execute pinned-runtime offline, compatibility, saved-only and independent audit proofs. Mark `ready` only after all CPU proofs pass.
+Current limitation: original Native sign readback, full synchronized videos, source-hashed human review, physical stopping and crossing, official placement, accepted equivalence and legal comparison are unverified. No candidate is selected and the assignment remains blocked.
+
+Resume: run the original Native attempt and human frame review, independently verify official placement and the remaining statutory alternatives, and compare accepted physical evidence. Keep all candidates unselected until these evidence paths and the strict gate pass.
