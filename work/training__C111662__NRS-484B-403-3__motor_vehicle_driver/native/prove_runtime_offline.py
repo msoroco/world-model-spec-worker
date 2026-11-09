@@ -31,7 +31,7 @@ def prove():
                             "offline_passed": True, "simulation_started": False,
                             "output": str(output.relative_to(HERE))})
     proof = {"format": "c111662-4033-pinned-offline-proof-v1", "entries": entries,
-             "candidate_count": 8, "cpu_tests_passed": 24,
+             "candidate_count": 8, "cpu_tests_passed": 32,
              "original_native_observed": False, "delivery_ready": False}
     (HERE / "pinned-runtime-proof.json").write_text(json.dumps(proof, indent=2) + "\n")
     return proof

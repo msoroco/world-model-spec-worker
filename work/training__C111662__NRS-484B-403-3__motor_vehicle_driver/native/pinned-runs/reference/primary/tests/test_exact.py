@@ -10,6 +10,7 @@ sys.path.insert(0,str(native))
 from check import check
 from saved import make_raw,process
 from capture import control
+from prove_original_processing import prove
 
 class ExactTurn(unittest.TestCase):
     def setUp(self):
@@ -40,3 +41,8 @@ class ExactTurn(unittest.TestCase):
             cfg['road_sha256']=hashlib.sha256(road.read_bytes()).hexdigest()
             (target/'config.json').write_text(json.dumps(cfg))
             with self.assertRaises(ValueError):check(target)
+
+    def test_original_processor_synthetic_fixture(self):
+        result=prove(self.bundle)
+        self.assertFalse(result['original_native_observed'])
+        self.assertFalse(result['delivery_ready'])

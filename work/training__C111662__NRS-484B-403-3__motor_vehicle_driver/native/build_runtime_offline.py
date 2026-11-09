@@ -19,6 +19,7 @@ sys.path.insert(0,str(native))
 from check import check
 from saved import make_raw,process
 from capture import control
+from prove_original_processing import prove
 
 class ExactTurn(unittest.TestCase):
     def setUp(self):
@@ -49,6 +50,11 @@ class ExactTurn(unittest.TestCase):
             cfg['road_sha256']=hashlib.sha256(road.read_bytes()).hexdigest()
             (target/'config.json').write_text(json.dumps(cfg))
             with self.assertRaises(ValueError):check(target)
+
+    def test_original_processor_synthetic_fixture(self):
+        result=prove(self.bundle)
+        self.assertFalse(result['original_native_observed'])
+        self.assertFalse(result['delivery_ready'])
 '''
 
 
@@ -67,7 +73,8 @@ def build():
                 content=(bundle/name).read_text()
                 files.append({'path':f'{PREFIX}/drafts/{suffix}/{candidate}/{name}','content':content})
                 files.append({'path':name,'content':content})
-            for name in ('build.py','check.py','saved.py','capture.py','measurement-contract.json'):
+            for name in ('build.py','check.py','saved.py','capture.py','process_original.py',
+                         'prove_original_processing.py','measurement-contract.json'):
                 files.append({'path':f'{PREFIX}/{name}','content':(HERE/name).read_text()})
             files.extend((
                 {'path':f'work/{CASE.name}/case-plan.json','content':(CASE/'case-plan.json').read_text()},
