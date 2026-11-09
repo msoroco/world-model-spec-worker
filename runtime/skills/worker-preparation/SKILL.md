@@ -54,6 +54,32 @@ register a recording, relabel research, or modify set membership. Run
 python3.11 worker_check.py --complete --require-delivery-ready before returning this batch. Follow the
 exact result format in START_HERE.md.
 
+## Finish the CPU preparation
+
+The stopping criterion for an executable assignment is its passing exact
+`worker_check.py --assignment ID --complete --require-delivery-ready` gate.
+A partial checkpoint or successful compatibility test does not complete it.
+Continue implementing CPU-solvable gaps after checkpoints and gate failures;
+reserve remaining_gpu_checks for actual physical realization and capture review.
+
+Use HANDOFF.md to map requirements and relevant statutory boundaries to exact
+cases/reuses, requested physical features to construction code, and every required
+proposal/proof/audit to its file and command. Test that requested occlusion has
+actual construction or governing map geometry and that approach directions use
+the correct lanes. Author and test semantic proposals and independent delivery/
+comparison audits before stopping. Do not manufacture legal cutoffs, duplicate
+accepted evidence, or change frozen comparisons to make these checks easier.
+
+Before declaring completion, review the original law and assignment for omissions
+independently of your own tests, repair gaps, and run the strict gate. A genuine
+blocker needs an exact failing command or source dependency, logs, attempted
+remedies and an external prerequisite/resume action. Missing implementation is
+unfinished work. Lack of a GPU is expected here and does not excuse CPU omissions.
+Continue independent assignments when one is blocked. If an actual execution
+limit ends a turn, preserve a partial checkpoint with exact next CPU actions;
+do not describe it as GPU-ready or reclassify CPU work as GPU verification.
+Never weaken validation or fabricate proof to satisfy the completion instruction.
+
 ## Shared runtime
 
 Read START_HERE.md and use the source-hashed runtime bound in batch.runtime. Reuse supplied

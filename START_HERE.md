@@ -52,6 +52,65 @@ operator and are intentionally absent from this repository.
    the return branch to origin. If Git authentication fails, preserve commits
    and state the exact failure; do not change credentials or force-push.
 
+## Completion and continuation
+
+Finish an assignment by passing:
+
+```sh
+.venv-cpu/bin/python worker_check.py --assignment ID --complete --require-delivery-ready
+```
+
+A valid partial result is a checkpoint, not completion. After each checkpoint,
+continue the remaining CPU work on that assignment. Read the exact gate failure,
+implement the missing deliverable, rerun the relevant tests, and repeat. Passing
+an offline construction check or synthetic compatibility check alone is not enough.
+Do not stop voluntarily with an actionable CPU to-do list.
+
+Track the following in the existing HANDOFF.md, using exact case IDs, file paths
+and proof commands; do not create another ledger or invent completion claims:
+
+- Coverage: every frozen requirement, statutory numeric boundary and intended
+  comparison maps to cases or source-backed existing-evidence reuse. Include
+  below/at/above probes where the statute and assigned scope call for them; do
+  not invent numeric legal thresholds for judgment phrases or change frozen scope.
+- Construction: every requested feature has an executable implementation. An
+  intended occluded case needs a constructed occluder or identified map geometry
+  that can cause it. A flag such as occluded=true does not create an occluder.
+  CPU tests should exercise creation/configuration calls and relevant geometry,
+  including both approach directions, rather than merely reread those flags.
+- Package: complete the semantic proposals, exact constructions, capture and
+  finalization code, measurement contracts, justified fallbacks and required
+  source-bound positive/negative proofs.
+- Audits: implement and CPU-test the independent delivery and comparison audits,
+  including rejection of missing evidence and checks of fixed conditions versus
+  declared differences. These audit implementations are CPU work.
+- Final review: reread the original law, assignment and contracts independently
+  of your implementation checklist. Find missing alternatives, boundaries,
+  unconstructed features and untested audit branches; repair them before the
+  assignment gate, then run the complete-batch strict gate.
+
+Implement all CPU-solvable work before deferring physical verification. Actual
+CARLA motion, realized occlusion, camera coverage, sight lines and capture quality
+remain remaining_gpu_checks; their being unverified does not prevent authoring
+and testing the runner, geometry, controllers, measurements or audits. No GPU,
+no main-project SQLite, and no actual CARLA recording on this host are expected.
+
+Use blocked only for a demonstrated external dependency or unresolved decision
+that prevents further preparation. In HANDOFF.md and result.reason, identify the
+exact failing command/source requirement, retained log, remedies attempted,
+external prerequisite and exact resume action. Missing code, missing cases,
+missing proposals and missing audit implementations are unfinished work, not
+external blockers. Check the current pinned runtime and supplied sources before
+repeating a limitation from an older trial. Do not drop requirements, weaken
+checks or fabricate receipts to obtain ready status.
+
+If one task has a genuine blocker, preserve its checkpoint and continue other
+independent assigned work. Stop only at completion, an explicit stop instruction,
+a genuine blocker affecting all remaining work, or an actual execution limit.
+At an execution limit, commit the partial checkpoint and exact next CPU actions;
+report incomplete preparation honestly so the next turn can resume. Never turn
+an execution limit into a claim that the remaining work requires a GPU.
+
 Every assignment needs HANDOFF.md (resume commands, dependencies, implementation
 limits, runtime checks) and result.json using this format:
 
