@@ -56,7 +56,7 @@ def _process_fixture(manifest,case,fixture,output,library,validator,candidate='p
     count=len((output/result['trace_reference']).read_text().splitlines())
     audits={ref:audit(within(output,ref),count,mapping_sha256=mapping_sha,receipt=output/('source-%d.json'%i)) for i,ref in enumerate(result['video_references'])}
     validate_attempt(output,request,proposal,{'recorded_exit_code':0},{},source_audits=audits)
-    process(output,output/'converted',library,validator)
+    process(output,output/'converted',library,validator,diagnostic_fixture=True)
     video=render(output,output/'converted',request['case'])
     audit(video['video'],count,receipt=output/'final-decode.json')
     receipt={'format':'worker-package-compatibility','case_id':case,'candidate_id':candidate,'construction_sha256':selected['construction_sha256'],'runtime_manifest_sha256':read(manifest)['runtime_manifest_sha256'],'fixture_sha256':fixture_hash,'passed':True,'checks':['actual_analysis','native_validation','mandatory_observations','lean_decoder','render','final_decode','acquisition_unchanged'],'scope':'diagnostic software compatibility only','analysis_sha256':sha(analysis),'fixture_manifest':tree(fixture),'log_sha256':sha(output/'compatibility-analysis.log')}

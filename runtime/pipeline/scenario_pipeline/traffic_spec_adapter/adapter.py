@@ -413,7 +413,7 @@ def recorded_traffic_props(text):
     return result
 
 
-def verify_join(evidence, telemetry, frames):
+def verify_join(evidence, telemetry, frames, *, diagnostic_fixture=False):
     if not evidence:raise ValueError('Empty capture')
     tmap={r['frame']:r for r in telemetry}; fmap={r['frame']:r for r in frames}
     if len(tmap)!=len(telemetry) or len(fmap)!=len(frames):raise ValueError('Duplicate source frame')
@@ -432,7 +432,9 @@ def verify_join(evidence, telemetry, frames):
         row=tmap[e['original_frame']]
         if abs(row['time_s']-e['recording_time_s'])>1e-6:raise ValueError('Original timestamp mismatch')
         if abs(fmap[e['replay_frame']]['simulation_time']-e['replay_simulation_time_s'])>1e-6:raise ValueError('Replay timestamp mismatch')
-        if e['ego'].get('speed_provenance')!='original_trace_actor_get_velocity':raise ValueError('Untrusted original speed provenance')
+        speed_source=e['ego'].get('speed_provenance')
+        if speed_source!='original_trace_actor_get_velocity' and not (diagnostic_fixture and speed_source=='synthetic_native_sample'):
+            raise ValueError('Untrusted original speed provenance')
         if abs(e['ego']['speed_mps']-row['speed_mph']*.44704)>1e-6:raise ValueError('Observed speed mismatch')
         if any(abs(a-b)>.001 for a,b in zip(e['ego']['position_m'],row['position_m'])):raise ValueError('Pose join mismatch')
     return tmap,fmap
@@ -456,7 +458,7 @@ def validate_scene(scene, library=None, *, check_numbers=True):
     if check_numbers:check_json(scene)
 
 
-def convert(capture, original, library, output):
+def convert(capture, original, library, output, *, diagnostic_fixture=False):
     """Convert once into a new directory; preserve all source evidence unchanged."""
     capture,original,library,output=map(lambda p:Path(p).resolve(),(capture,original,library,output))
     from intentions import project as project_intents, core_contract, validate_context
@@ -468,7 +470,7 @@ def convert(capture, original, library, output):
     from .classifications import project_user, known_classes
     canonical_classes=known_classes(library)
     evidence=rows(capture/'evidence.jsonl'); telemetry=rows(original/'trace.jsonl');frames=rows(capture/'native/frames.jsonl')
-    tmap,fmap=verify_join(evidence,telemetry,frames)
+    tmap,fmap=verify_join(evidence,telemetry,frames,diagnostic_fixture=diagnostic_fixture)
     source_manifest=json.loads((capture/'manifest.json').read_text())
     acquisition=source_manifest.get('acquisition')
     physical_registry=None

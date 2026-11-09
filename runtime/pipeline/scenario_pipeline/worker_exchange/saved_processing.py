@@ -101,6 +101,7 @@ def run(manifest,case,attempt,output,library,validator,owner_receipt=None):
             raise ValueError('Attempt construction differs from selected candidate')
         provenance=provenance_record(attempt)
         _closure(attempt,owner_receipt,provenance['provenance_kind'],provenance['diagnostic_fixture'])
+        diagnostic_fixture=provenance['provenance_kind']=='synthetic_fixture' and provenance['diagnostic_fixture'] is True
         stage=_workspace(attempt,version,construction,entry['measurement_procedure']['entrypoint'])
         if not (stage/'raw.mkv').exists():
             composition=compose_four_views({n:stage/(n+'.mkv') for n in ('overview','approach','reference_corner','driver_reference')},stage/'video_frames.jsonl',stage/'raw.mkv')
@@ -136,13 +137,13 @@ def run(manifest,case,attempt,output,library,validator,owner_receipt=None):
             proposal=next(c for c in read(manifest.parent/'proposals/cases.json')['cases'] if c['case_id']==case)
             validate_attempt(stage,{'case':proposal,'cell':{'cell_id':config['cell_id']},'actor':config['actor']},construction,{'recorded_exit_code':0},{},source_audits=audits)
             write(stage/'result.json',result)
-            process(stage,version/'converted',library,validator)
+            process(stage,version/'converted',library,validator,diagnostic_fixture=diagnostic_fixture)
             video=render(stage,version/'converted',proposal)
             final_video=audit(video['video'],len(rows),receipt=version/'final-decode.json')
         if missing and rows and mapping:
             try:
                 audit(stage/'raw.mkv',len(rows),mapping_sha256=sha(stage/'video_frames.jsonl'),receipt=version/'partial-source-decode.json')
-                process(stage,version/'converted',library,validator)
+                process(stage,version/'converted',library,validator,diagnostic_fixture=diagnostic_fixture)
                 proposal=next(c for c in read(manifest.parent/'proposals/cases.json')['cases'] if c['case_id']==case)
                 video=render(stage,version/'converted',proposal)
                 final_video=audit(video['video'],len(rows),receipt=version/'partial-final-decode.json')

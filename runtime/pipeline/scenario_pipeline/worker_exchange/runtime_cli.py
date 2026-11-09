@@ -127,11 +127,11 @@ def capture(manifest,case_id,destination,host,port,python,candidate='primary'):
     return {'case_id':case_id,'candidate_id':candidate,'attempt':str(destination),'native_preflight':preflight,'capture_executed':True,'acceptance_claimed':False}
 
 
-def process(attempt,output,library,validator=None):
+def process(attempt,output,library,validator=None,*,diagnostic_fixture=False):
     from traffic_spec_adapter.adapter import convert
     from traffic_spec_adapter.validate import validate_output
     attempt=Path(attempt).resolve();output=Path(output).resolve()
-    report=convert(attempt/'capture',attempt,Path(library),output)
+    report=convert(attempt/'capture',attempt,Path(library),output,diagnostic_fixture=diagnostic_fixture)
     if validator:validate_output(output,validator)
     if report.get('required_measurements_complete') is not True:
         raise ValueError('Mandatory observation coverage incomplete: '+str(report.get('atom_coverage',{}).get('missing')))

@@ -1,6 +1,8 @@
 # Full-train CPU delivery continuation
 
-Read UPDATE.md, MIGRATION.md, START_HERE.md, FULL_BRANCH_CONTRACT.md, DELIVERY_CONTRACT.md, batch.json and all eight partitions. Continue the 253 existing full-train assignments. Preserve authored plans, case definitions, constructions, comparison audits, handoffs and prior failure diagnoses; do not restart from blank work. Prior runtime-dependent receipts remain historical and must be regenerated before readiness under update 014.
+Read UPDATE.md, MIGRATION.md, START_HERE.md, FULL_BRANCH_CONTRACT.md, DELIVERY_CONTRACT.md, batch.json and all eight partitions. Continue the 253 existing full-train assignments. Preserve authored plans, case definitions, constructions, comparison audits, handoffs and prior failure diagnoses; do not restart from blank work. Prior runtime-dependent receipts remain historical and must be regenerated before readiness under the current runtime.
+
+For CPU fixtures, label invented speed `synthetic_native_sample`. Update 015 permits that label only in diagnostic compatibility and synthetic saved-processing checks. Never label invented speed as original CARLA velocity. Real recording conversion and acceptance still require measured Native provenance. Regenerate exact case proofs against update 015 before marking ready.
 
 Work autonomously and use up to eight disjoint assignment owners. Do not ask questions or pause for ordinary implementation errors. Promote each authored draft to exact selected delivery cases only after reviewing the law, frozen witness, existing accepted evidence and source dependencies. For every selected case, provide one primary and three distinct tested fallback constructions, actual controllers and camera setup, measurement contract, saved processing, positive and negative diagnostic proofs, and independent acceptance and comparison audits. Preserve historical accepted evidence and avoid replay plans for already accepted originals.
 

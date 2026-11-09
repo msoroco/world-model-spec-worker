@@ -147,12 +147,12 @@ prove that real bodies/devices are visible.
 
 ## Reproducible CPU diagnostics
 
-`runtime/fixtures/example.json` is a textual Native-shaped example with retained
+`runtime/pipeline/fixtures/example.json` is a textual Native-shaped example with retained
 telemetry shapes, reconstructed graphs, and synthetic color video. It is not a
 physical recording. Materialize the supplied example with:
 
 ```sh
-.venv-cpu/bin/python runtime.py fixture --recipe runtime/fixtures/example-recipe.json --output .runtime-work/example
+.venv-cpu/bin/python runtime.py fixture --recipe runtime/pipeline/fixtures/example-recipe.json --output .runtime-work/example
 ```
 
 For each case, copy/adapt that textual specification into

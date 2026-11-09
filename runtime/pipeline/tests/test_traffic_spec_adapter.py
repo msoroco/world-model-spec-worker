@@ -85,6 +85,9 @@ class AdapterTests(unittest.TestCase):
         t={'frame':1,'time_s':0,'speed_mph':1/.44704,'position_m':[0,0,0]}
         f={'frame':10,'simulation_time':2}
         with self.assertRaises(ValueError):verify_join([e],[t],[f])
+        e['ego']['speed_provenance']='synthetic_native_sample'
+        with self.assertRaises(ValueError):verify_join([e],[t],[f])
+        self.assertEqual(verify_join([e],[t],[f],diagnostic_fixture=True)[0][1],t)
         e['ego']['speed_provenance']='original_trace_actor_get_velocity'
         self.assertEqual(verify_join([e],[t],[f])[0][1],t)
         with self.assertRaises(ValueError):verify_join([e,e],[t],[f])
