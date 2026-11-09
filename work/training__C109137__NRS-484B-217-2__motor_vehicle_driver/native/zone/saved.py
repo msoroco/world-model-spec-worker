@@ -136,6 +136,9 @@ def process(bundle, raw, video, review, *, synthetic=False):
     if any(len(ids) != 1 for ids in identities.values()) or \
             len(set(next(iter(ids)) for ids in identities.values())) != 3:
         raise ValueError('Native actor identity continuity')
+    if not synthetic and any(mapping.get(key + '_actor_id') not in identities[key]
+                             for key in identities):
+        raise ValueError('Original actor/map identity mismatch')
     first_stripe = next((i for i,v in enumerate(stripe) if v), None)
     first_adjoining = next((i for i,v in enumerate(adjoining) if v), None)
     first_signal = next((i for i,v in enumerate(signal) if v), None)

@@ -39,27 +39,27 @@ def road():
 <link><successor elementType="junction" elementId="1"/></link>
 <type s="0" type="town"><speed max="25" unit="mph"/></type>
 <planView><geometry s="0" x="0" y="0" hdg="0" length="50"><line/></geometry></planView>
-<lanes><laneSection s="0"><center><lane id="0" type="none" level="false"><roadMark sOffset="0" type="solid solid" color="yellow" width="0.15"/></lane></center>
-<left><lane id="1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane></left>
+<lanes><laneSection s="0"><left><lane id="1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane></left>
+<center><lane id="0" type="none" level="false"><roadMark sOffset="0" type="solid solid" color="yellow" width="0.15"/></lane></center>
 <right><lane id="-1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane></right></laneSection></lanes><objects/><signals/></road>
 <road name="east two-way continuation" length="105" id="219" junction="-1">
 <link><predecessor elementType="junction" elementId="1"/></link>
 <type s="0" type="town"><speed max="25" unit="mph"/></type>
 <planView><geometry s="0" x="55" y="0" hdg="0" length="105"><line/></geometry></planView>
-<lanes><laneSection s="0"><center><lane id="0" type="none" level="false"><roadMark sOffset="0" type="solid solid" color="yellow" width="0.15"/></lane></center>
-<left><lane id="1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane></left>
+<lanes><laneSection s="0"><left><lane id="1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane></left>
+<center><lane id="0" type="none" level="false"><roadMark sOffset="0" type="solid solid" color="yellow" width="0.15"/></lane></center>
 <right><lane id="-1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane></right></laneSection></lanes><objects/><signals/></road>
 <road name="adjoining highway north" length="30" id="218" junction="-1">
 <link><predecessor elementType="junction" elementId="1"/></link>
 <type s="0" type="town"><speed max="20" unit="mph"/></type>
 <planView><geometry s="0" x="53.5" y="3.5" hdg="1.5707963267948966" length="30"><line/></geometry></planView>
-<lanes><laneSection s="0"><center><lane id="0" type="none" level="false"><roadMark sOffset="0" type="solid" color="yellow" width="0.15"/></lane></center>
+<lanes><laneSection s="0"><left><lane id="1" type="driving" level="false"><link><predecessor id="1"/><successor id="1"/></link><width sOffset="0" a="3.5" b="0" c="0" d="0"/></lane></left>
+<center><lane id="0" type="none" level="false"><roadMark sOffset="0" type="solid" color="yellow" width="0.15"/></lane></center>
 <right><lane id="-1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane></right></laneSection></lanes><objects/><signals/></road>
 <road name="junction straight connector with continued striping" length="5" id="220" junction="1">
 <link><predecessor elementType="road" elementId="217" contactPoint="end"/><successor elementType="road" elementId="219" contactPoint="start"/></link>
 <planView><geometry s="0" x="50" y="0" hdg="0" length="5"><line/></geometry></planView>
 <lanes><laneSection s="0"><center><lane id="0" type="none" level="false"><roadMark sOffset="0" type="solid solid" color="yellow" width="0.15"/></lane></center>
-<left><lane id="1" type="driving" level="false"><link><predecessor id="1"/><successor id="1"/></link><width sOffset="0" a="3.5" b="0" c="0" d="0"/></lane></left>
 <right><lane id="-1" type="driving" level="false"><link><predecessor id="-1"/><successor id="-1"/></link><width sOffset="0" a="3.5" b="0" c="0" d="0"/></lane></right></laneSection></lanes><objects/><signals/></road>
 <road name="junction left-turn connector" length="5.497787143782138" id="221" junction="1">
 <link><predecessor elementType="road" elementId="217" contactPoint="end"/><successor elementType="road" elementId="218" contactPoint="start"/></link>

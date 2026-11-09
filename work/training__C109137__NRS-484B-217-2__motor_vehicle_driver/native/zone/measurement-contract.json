@@ -6,7 +6,7 @@
   "physical_sources": "Original CARLA native raw actors, generated road and junction readback, three synchronized FFV1 cameras, and source-hashed independent human frame review.",
   "requested_comparison": "Probe 1 requests a prior left turn signal and crossing toward adjoining road 218; probe 2 requests the same crossing without a signal. Four candidate policies preserve each comparison. No legal verdict is requested.",
   "measurement_definitions": {
-    "stripe_body_frame": "An observed ego bounding box spans authored center stripe y=0 in a joined Native frame.",
+    "stripe_body_frame": "An observed ego bounding box spans authored center stripe y=0 with body x-range overlapping x=0..55 m (road 217 or straight connector 220); reviewed original pixels must establish the actual marking.",
     "adjoining_lane_frame": "Native ego waypoint readback is road 218, lane -1.",
     "prior_signal_lead_s": "(first observed stripe body frame minus first observed LeftBlinker frame)/20; positive lead is a measured timing diagnostic, not sufficient legal compliance.",
     "other_traffic": "Original oncoming and following bodies, speed and video visibility must support independent no-impediment review; measured minimum speed is only a triage signal.",
@@ -17,5 +17,6 @@
     "fallback2": "Reviewed stripe visibility below 90 percent; use a higher and wider overview camera.",
     "fallback3": "No observed prior signal, no adjoining-road entry, or another vehicle slows below 1 m/s; stop before the stripe and inspect safety. This is a different trajectory."
   },
-  "readiness": "Native road marking appearance, statutory zone designation, adjoining-highway identity, appropriate signal, no impediment, exceptions under subsections 3 and 4, safe left-turn alternative, original reviewed pixels and accepted controlled comparisons remain unverified. Synthetic CPU fixtures never establish these facts."
+  "readiness": "Native road marking appearance, statutory zone designation, adjoining-highway identity, appropriate signal, no impediment, exceptions under subsections 3 and 4, safe left-turn alternative, original reviewed pixels and accepted controlled comparisons remain unverified. Synthetic CPU fixtures never establish these facts.",
+  "authored_geometry": "Road 217 ends at x=50 m; connector 220 continues yellow solid center striping through x=55 m; connector 221 is a 3.5 m radius left arc to adjoining road 218; road 219 continues the two-way highway east of x=55 m. Formal OpenDRIVE links and lane-center endpoint continuity are checked independently, but CARLA generation and rendered striping remain unobserved."
 }
