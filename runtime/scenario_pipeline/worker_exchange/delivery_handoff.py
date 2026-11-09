@@ -93,7 +93,10 @@ def validate_queue(repo, assignments):
     target_sets = {sid for aid in assignments for sid in
                    batch.get('assignments', {}).get(aid, {}).get('set_ids', [])}
     paired_test = bool(target_sets & {'demo-test','full-test'})
-    needed.add('accepted_both_sets' if paired_test else 'accepted_targets')
+    if paired_test:
+        needed.add('accepted_both_sets')
+    if not target_sets or target_sets & {'demo-train','full-train','held-out'}:
+        needed.add('accepted_targets')
     if (proof.get('format') != 'worker-local-integration-proof'
             or proof.get('passed') is not True
             or not needed <= set(proof.get('scenarios', []))

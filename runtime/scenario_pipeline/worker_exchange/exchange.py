@@ -567,6 +567,53 @@ def _verify_accepted_once(recording, cache_dir):
                        'metadata_sha256': sha(recording/'metadata.json')})
 
 
+def _reconcile_memberships(root, repo, assignment, expected, actual, batch_id, package):
+    """Permit only canonical deliveries from this return, for its exact target sets."""
+    from collections import Counter
+    aid = assignment['assignment_id']
+    previous, current = expected['memberships'], actual['memberships']
+    targets = set(assignment['selection_targets'])
+    if not targets or any(role(sid) != assignment['role'] for sid in targets):
+        raise ValueError('Post-export target role mismatch: '+aid)
+    manifest = read(Path(repo)/'work'/aid/'execution-manifest.json')
+    allowed = {case['case_id'] for case in manifest['cases'] if case.get('kind') == 'delivery'}
+    additions = {}
+    for sid in set(previous) | set(current):
+        before, after = previous.get(sid, []), current.get(sid, [])
+        old, new = Counter(digest(m) for m in before), Counter(digest(m) for m in after)
+        if old - new:
+            raise ValueError('Prior membership changed after export: '+aid)
+        remaining = old.copy(); additions[sid] = []
+        for member in after:
+            key = digest(member)
+            if remaining[key]:
+                remaining[key] -= 1
+            else:
+                additions[sid].append(member)
+        if additions[sid] and sid not in targets:
+            raise ValueError('Post-export membership outside target sets: '+aid)
+    for demo, full in (('demo-train','full-train'), ('demo-test','full-test')):
+        if {demo, full} <= targets and Counter(digest(m) for m in additions.get(demo, [])) != Counter(digest(m) for m in additions.get(full, [])):
+            raise ValueError('Post-export paired selections differ: '+aid)
+    verified = set()
+    for members in additions.values():
+        for member in members:
+            rid = member.get('recording_id')
+            if member.get('status') != 'accepted' or member.get('case_id') not in allowed or not isinstance(rid, str) or len(rid) != 64:
+                raise ValueError('Unrecognized post-export delivery member: '+aid)
+            recording = Path(root)/'recordings'/rid
+            metadata = read(recording/'metadata.json')
+            if (metadata.get('status') != 'accepted' or metadata.get('recording_id') != rid
+                    or metadata.get('case_id') != member['case_id']
+                    or any(metadata.get(key) != assignment[key] for key in ('cell_id','law_id','actor'))):
+                raise ValueError('Post-export member lacks matching canonical acceptance: '+aid)
+            if rid not in verified:
+                _verify_accepted_once(recording, Path(root)/'state/operations/worker_exchange'/batch_id/package/'validated-recordings')
+                verified.add(rid)
+    if dict(actual, memberships=previous) != expected:
+        raise ValueError('Local evidence or assignment changed after export: '+aid)
+
+
 def _check_return(root, repo, batch_id):
     baseline = read(Path(root) / 'inputs/worker_exchange' / name(batch_id) / 'export.json')
     if sha(Path(repo) / 'batch.json') != baseline['batch_sha256']:
@@ -591,67 +638,21 @@ def _check_return(root, repo, batch_id):
         expected_snapshot = baseline.get('local_snapshots', {}).get(aid, a.get('local_snapshot'))
         actual = local_snapshot(root, a, baseline['project_root'])
         if expected_snapshot is not None and actual != expected_snapshot:
-            extension = Path(root)/'inputs/planning'/('worker-coverage-'+batch_id)/'receipt.json'
-            if not extension.exists():
-                raise ValueError('Local progress/scope changed; explicitly re-export/reconcile: ' + aid)
-            applied = read(extension)
-            if applied['package_sha256'] != result['package_sha256'] or any(
-                    digest(read(Path(root)/'sets'/sid/'scope.json')) != checksum
-                    for sid,checksum in applied['after'].items()):
-                raise ValueError('Scope differs from validated worker extension')
-            actual = dict(actual, scope_hashes=expected_snapshot['scope_hashes'])
+            if actual['scope_hashes'] != expected_snapshot['scope_hashes']:
+                extension = Path(root)/'inputs/planning'/('worker-coverage-'+batch_id)/'receipt.json'
+                if not extension.exists():
+                    raise ValueError('Local progress/scope changed; explicitly re-export/reconcile: '+aid)
+                applied = read(extension)
+                if applied['package_sha256'] != result['package_sha256'] or any(
+                        digest(read(Path(root)/'sets'/sid/'scope.json')) != checksum
+                        for sid,checksum in applied['after'].items()):
+                    raise ValueError('Scope differs from validated worker extension')
+                actual = dict(actual, scope_hashes=expected_snapshot['scope_hashes'])
             if actual != expected_snapshot:
-                # Accepted delivery recordings from this same return are expected
-                # to accumulate after export. Preserve the original snapshot for
-                # every other field and verify each added membership against its
-                # canonical recording and the frozen case manifest.
-                if a['role'] != 'testing':
-                    raise ValueError('Local evidence or assignment changed after export: '+aid)
-                manifest = read(Path(repo)/'work'/aid/'execution-manifest.json')
-                allowed = {case['case_id'] for case in manifest['cases']
-                           if case.get('kind') == 'delivery'}
-                previous = expected_snapshot['memberships']
-                current = actual['memberships']
-                additions = {}
-                for sid in ('demo-test', 'full-test'):
-                    before = previous.get(sid, [])
-                    after = current.get(sid, [])
-                    # Selection writers may reorder members while appending an
-                    # accepted recording. The exported members are immutable,
-                    # but their position in the growing selection is not.
-                    from collections import Counter
-                    old = Counter(digest(member) for member in before)
-                    new = Counter(digest(member) for member in after)
-                    if old - new:
-                        raise ValueError('Prior membership changed after export: '+aid)
-                    remaining = old.copy()
-                    additions[sid] = []
-                    for member in after:
-                        key = digest(member)
-                        if remaining[key]:
-                            remaining[key] -= 1
-                        else:
-                            additions[sid].append(member)
-                if Counter(digest(m) for m in additions['demo-test']) != Counter(digest(m) for m in additions['full-test']):
-                    raise ValueError('Post-export test selections differ: '+aid)
-                for member in additions['full-test']:
-                    rid = member.get('recording_id')
-                    if (member.get('status') != 'accepted' or member.get('case_id') not in allowed
-                            or not isinstance(rid, str) or len(rid) != 64):
-                        raise ValueError('Unrecognized post-export delivery member: '+aid)
-                    recording = Path(root)/'recordings'/rid
-                    metadata = read(recording/'metadata.json')
-                    if (metadata.get('status') != 'accepted' or metadata.get('recording_id') != rid
-                            or metadata.get('case_id') != member['case_id']
-                            or metadata.get('cell_id') != a['cell_id']
-                            or metadata.get('law_id') != a['law_id']
-                            or metadata.get('actor') != a['actor']):
-                        raise ValueError('Post-export member lacks matching canonical acceptance: '+aid)
-                    cache_dir = Path(root)/'state/operations/worker_exchange'/batch_id/result['package_sha256']/'validated-recordings'
-                    _verify_accepted_once(recording, cache_dir)
-                reconciled = dict(actual, memberships=previous)
-                if reconciled != expected_snapshot:
-                    raise ValueError('Local evidence or assignment changed after export: '+aid)
+                ready = result['results'][aid]
+                if ready['status'] != 'ready' or ready.get('readiness_kind') != 'delivery_prepared':
+                    raise ValueError('Local progress/scope changed; explicitly re-export/reconcile: '+aid)
+                _reconcile_memberships(root, repo, a, expected_snapshot, actual, batch_id, result['package_sha256'])
     return result
 
 
