@@ -32,8 +32,8 @@ law requirement to make the converter pass.
 The lead may delegate at most batch.max_workers independent assignment owners.
 Each subagent writes only work/<assignment-id>/; only the lead integrates shared
 changes and commits/pushes the return branch. Frozen runtime helpers cannot be
-edited. Portable repairs go through the tested, source-hashed shared overlay
-described by `overlay.py`. A shared demo/full assignment is one task even if multiple partitions
+edited. Propose shared-helper repairs inside the owning assignment for local review
+and integration; readiness proofs must pass the pinned exported runtime. A shared demo/full assignment is one task even if multiple partitions
 reference it. Process remaining partitions in waves; do not wait for conversation
 when independent work is available.
 
