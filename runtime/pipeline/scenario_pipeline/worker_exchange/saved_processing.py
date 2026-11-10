@@ -60,13 +60,26 @@ def _closure(attempt,owner_receipt,kind,diagnostic):
         if (attempt/'native-exit.json').is_file() and owner.get('native_exit_sha256')!=sha(attempt/'native-exit.json'):raise ValueError('Owner release references a different Native exit')
     elif kind=='native' and not diagnostic:raise ValueError('Supply an operator owner-release receipt before saved processing')
 
-def _workspace(attempt,version,construction,analysis_entry):
-    stage=version/'analysis';stage.mkdir()
+def copy_sources(attempt,stage):
+    """Stage acquisition only; selected analysis must rebuild derived outputs."""
     for p in attempt.iterdir():
         if p.name in SKIP or p.name.startswith(('source-','final-decode','primary','annotated')):continue
         q=stage/p.name
         if p.is_dir():shutil.copytree(p,q)
         else:shutil.copy2(p,q)
+
+def prepare_video(stage):
+    """Apply the same four-camera input contract to fixtures and saved captures."""
+    from .media import check_four_view_sources
+    sources={n:stage/(n+'.mkv') for n in ('overview','approach','reference_corner','driver_reference')}
+    if (stage/'raw.mkv').exists():
+        check_four_view_sources(sources)
+    else:
+        write(stage/'four-view-receipt.json',compose_four_views(sources,stage/'video_frames.jsonl',stage/'raw.mkv'))
+
+def _workspace(attempt,version,construction,analysis_entry):
+    stage=version/'analysis';stage.mkdir()
+    copy_sources(attempt,stage)
     # Keep original Native config/scene/runner. Select the current analyzer and helpers explicitly.
     for item in construction['files']:
         if item['path'].endswith('.py') and item['path']!='runner.py' and not item['path'].startswith('tests/'):
@@ -103,9 +116,7 @@ def run(manifest,case,attempt,output,library,validator,owner_receipt=None):
         _closure(attempt,owner_receipt,provenance['provenance_kind'],provenance['diagnostic_fixture'])
         diagnostic_fixture=provenance['provenance_kind']=='synthetic_fixture' and provenance['diagnostic_fixture'] is True
         stage=_workspace(attempt,version,construction,entry['measurement_procedure']['entrypoint'])
-        if not (stage/'raw.mkv').exists():
-            composition=compose_four_views({n:stage/(n+'.mkv') for n in ('overview','approach','reference_corner','driver_reference')},stage/'video_frames.jsonl',stage/'raw.mkv')
-            write(stage/'four-view-receipt.json',composition)
+        prepare_video(stage)
         analysis=within(stage,entry['measurement_procedure']['entrypoint'])
         staged_sources=tree(stage)
         with (version/'analysis.log').open('x') as log:

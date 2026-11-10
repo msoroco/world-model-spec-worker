@@ -425,10 +425,13 @@ def missing_evidence_result(root,error):
     sources={name:sha(root/name) for name in ('config.json','trace.jsonl','video_frames.jsonl') if (root/name).is_file()}
     check={'status':'unverified','method':'selected_analyzer_missing_required_evidence','intervals':[],
            'sources':sources,'missing':[str(error)]}
+    description=cfg.get('case',{}).get('recording_description')
+    if description is None:
+        raise ValueError('Selected analysis failed: '+str(error)+'; config.case.recording_description is missing')
     result={'case_id':cfg['selected_case_id'],'measured_values':{},'target_checks':[{'target':'required_evidence','requested':True,'measured':False,'method':check['method'],'tolerance':0,'matched':False,'physical_cause_confirmed':False,'cause_evidence':str(error)}],
       'setup_confirmed':False,'behavior_attempted':False,'maneuver_completed':False,'termination_reason':'Required evidence unavailable',
       'physical_checks':{k:dict(check) for k in ('setup','target','maneuver')},'realized_observables':{},'physical_observations':{'available_source_hashes':sources},
       'physical_failure_flags':{'detection_validated':False},'trace_reference':'trace.jsonl','video_references':['raw.mkv'],
-      'video_frame_map_reference':'video_frames.jsonl','recording_description':cfg['case']['recording_description'],'recording_evidence':[],
+      'video_frame_map_reference':'video_frames.jsonl','recording_description':description,'recording_evidence':[],
       'physical_acceptance_claimed':False,**provenance_record(root)}
     validate_result(result);write(root/'result.json',result);return result

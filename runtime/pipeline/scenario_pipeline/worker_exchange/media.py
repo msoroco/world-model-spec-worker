@@ -9,6 +9,24 @@ from pathlib import Path
 from .common import digest, read, sha, write
 
 
+def check_four_view_sources(sources):
+    """Validate named acquisition videos even when a composed primary exists."""
+    from .capture import PROFILE
+    names = ('overview', 'approach', 'reference_corner', 'driver_reference')
+    if set(sources) != set(names):
+        raise ValueError('Four named original camera sources are required')
+    videos = [Path(sources[name]) for name in names]
+    dimensions = [PROFILE['overview'], *PROFILE['detail_views']]
+    for name, video, size in zip(names, videos, dimensions):
+        if not video.is_file():
+            raise ValueError('Missing original camera source: ' + name)
+        probe = json.loads(subprocess.check_output(['ffprobe', '-v', 'error',
+            '-select_streams', 'v:0', '-show_entries', 'stream=width,height,r_frame_rate',
+            '-of', 'json', str(video)], text=True))['streams'][0]
+        if [probe['width'], probe['height']] != size or probe['r_frame_rate'] != '20/1':
+            raise ValueError('Camera source dimensions or rate differ: ' + name)
+
+
 def compose_four_views(sources, frame_map, output):
     """Compose four synchronized original sources into one lossless primary video."""
     from .capture import PROFILE, layout
@@ -22,15 +40,8 @@ def compose_four_views(sources, frame_map, output):
     output = Path(output).resolve()
     if output.exists():
         raise ValueError('Retain the prior composed source; choose a fresh attempt')
+    check_four_view_sources(sources)
     dimensions = [PROFILE['overview'], *PROFILE['detail_views']]
-    for name, video, size in zip(names, videos, dimensions):
-        if not video.is_file():
-            raise ValueError('Missing original camera source: ' + name)
-        probe = json.loads(subprocess.check_output(['ffprobe', '-v', 'error',
-            '-select_streams', 'v:0', '-show_entries', 'stream=width,height,r_frame_rate',
-            '-of', 'json', str(video)], text=True))['streams'][0]
-        if [probe['width'], probe['height']] != size or probe['r_frame_rate'] != '20/1':
-            raise ValueError('Camera source dimensions or rate differ: ' + name)
     geometry = layout(PROFILE['overview'], PROFILE['detail_views'])
     width = geometry['width']; detail_height = max(size[1] for size in dimensions[1:])
     filters = f'[0:v]format=yuv444p,pad={width}:1080:{(width-1920)//2}:0[overview];'
