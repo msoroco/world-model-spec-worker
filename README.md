@@ -1,26 +1,8 @@
-# Full-train worker continuation
+# Full-train worker
 
-This branch carries the refreshed CPU runtime and the existing 253 full-train assignments. Read [AGENT_PROMPT.md](AGENT_PROMPT.md), [START_HERE.md](START_HERE.md), [MIGRATION.md](MIGRATION.md), and `batch.json`. Historical drafts and receipts are starting material; rerun runtime-dependent proofs against the current pinned runtime before declaring readiness. CARLA execution and recording acceptance happen later in the local pipeline.
+This branch contains the 253 existing full-train assignments and the refreshed CPU runtime. Continue the authored work under `work/`; preserve prior plans and failures, and rerun runtime-dependent proofs before marking an assignment ready. Start with [AGENT_PROMPT.md](AGENT_PROMPT.md) and [START_HERE.md](START_HERE.md).
 
-## Which branch to run
-
-`worker/full-train-runtime-refresh` is a **staging branch**. Its `batch.json` names `worker/full-train-delivery` as the return branch, and `scripts/run-worker.sh` enforces that name. Cloning this staging branch and running the launcher directly will stop at the branch check.
-
-After the existing full-train worker has stopped and all work to retain is pushed, promote the staging branch to `worker/full-train-delivery` only if the delivery tip is an ancestor. Do not force-push or discard unpushed work:
-
-```bash
-git clone --branch worker/full-train-runtime-refresh --single-branch \
-  https://github.com/msoroco/world-model-spec-worker.git scenario-worker-full-train-refresh
-cd scenario-worker-full-train-refresh
-git fetch origin worker/full-train-delivery:refs/remotes/origin/worker/full-train-delivery
-git merge-base --is-ancestor origin/worker/full-train-delivery HEAD || {
-  echo 'Branches diverged: reconcile the delivery work before promotion' >&2
-  exit 1
-}
-git push origin HEAD:worker/full-train-delivery
-```
-
-If the ancestry check fails, reconcile on a separate branch and recheck the retained work before updating the delivery branch. Once the delivery branch contains the refreshed runtime, start the agent from a fresh checkout:
+## Start the agent
 
 ```bash
 git clone --branch worker/full-train-delivery --single-branch \
@@ -33,8 +15,6 @@ The launcher defaults to GPT-6-sol with medium reasoning. To use GPT-6.1-sol wit
 
 ## Progress and completion
 
-The launcher checks Git identity and a dry-run push, then starts a separate timer that commits and pushes changed `work/` files about every 15 minutes. Check `.runtime-work/worker-run.*/checkpoint.log` for publication errors. A successful launcher exit means the Codex process and final checkpoint finished; **it does not mean any assignment is ready**. Readiness requires current assignment proofs and a passing `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` gate.
+A separate timer commits and pushes changed `work/` files about every 15 minutes; see `.runtime-work/worker-run.*/checkpoint.log` for publication failures. A successful launcher exit means Codex and its final checkpoint ended. **Delivery readiness requires** current case proofs and `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` to pass.
 
-An isolated test of the refreshed runtime completed one selected case's synthetic speed, conversion, rendering, and saved-processing checks, but did not complete its assignment. The test found a useful order of work: make one primary case pass the full saved-processing path, including all four source views and channels derived from retained raw sources, before running its fallback sweep. After changing construction or finalization code, regenerate every affected fallback, comparison, and receipt; older green logs do not prove the current code. Keep generated diagnostic media under ignored `.runtime-work/`.
-
-Continue CPU work after partial checkpoints. If a genuine blocker or execution limit stops work, preserve the exact failure, affected cases, and next commands in `work/`; do not call a partial checkpoint delivery ready. No CARLA run or physical acceptance is claimed by the CPU gate.
+Prove a primary case through saved processing before its fallback sweep. The four named source-camera videos and observation channels derived from retained raw inputs must survive that path. Regenerate affected fallback and comparison proofs after changing construction or finalization code. Keep generated diagnostic media under ignored `.runtime-work/`. The CPU gate does not claim CARLA execution or physical acceptance.
