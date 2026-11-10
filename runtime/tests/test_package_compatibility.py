@@ -108,3 +108,84 @@ class ExactCaseIntegration(unittest.TestCase):
    self.assertTrue(read(output/'final-decode.json')['passed'])
    self.assertTrue((output/'converted/trace.json').is_file())
    self.assertEqual(tree(repo/'runtime'),frozen_runtime)
+
+class CleanInputRegressionTests(unittest.TestCase):
+ def test_finalizer_must_rebuild_fixture_channels(self):
+  import subprocess
+  from worker_exchange.saved_processing import copy_sources
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory);fixture=root/'fixture';stage=root/'stage'
+   (fixture/'channels').mkdir(parents=True);stage.mkdir()
+   (fixture/'channels/st.alley.jsonl').write_text('supplied answer')
+   (fixture/'observation.json').write_text('original observation')
+   copy_sources(fixture,stage)
+   reader="from pathlib import Path; print(Path('channels/st.alley.jsonl').read_text())"
+   failed=subprocess.run([sys.executable,'-c',reader],cwd=stage,capture_output=True,text=True)
+   self.assertNotEqual(failed.returncode,0)
+   self.assertIn('FileNotFoundError',failed.stderr)
+   rebuilt="from pathlib import Path; p=Path('channels'); p.mkdir(); (p/'st.alley.jsonl').write_text(Path('observation.json').read_text())"
+   subprocess.run([sys.executable,'-c',rebuilt],cwd=stage,check=True)
+   self.assertEqual((stage/'channels/st.alley.jsonl').read_text(),'original observation')
+   self.assertEqual((fixture/'channels/st.alley.jsonl').read_text(),'supplied answer')
+
+ def test_composed_video_does_not_hide_missing_sources(self):
+  from worker_exchange.saved_processing import prepare_video
+  with tempfile.TemporaryDirectory() as directory:
+   stage=Path(directory);(stage/'raw.mkv').write_bytes(b'existing composed source')
+   with self.assertRaisesRegex(ValueError,'Missing original camera source: overview'):
+    prepare_video(stage)
+   self.assertEqual((stage/'raw.mkv').read_bytes(),b'existing composed source')
+
+ def test_all_camera_sources_checked_with_existing_primary(self):
+  from unittest.mock import patch
+  from worker_exchange.saved_processing import prepare_video
+  # Exercise actual ffprobe checks with small videos, keeping this CPU test cheap.
+  with tempfile.TemporaryDirectory() as directory:
+   stage=Path(directory)
+   # Generate through the same portable recipe path used by workers.
+   from worker_exchange.fixture_recipe import materialize
+   source=stage/'work/a/spec.json'
+   names=('overview','approach','reference_corner','driver_reference')
+   write(source,{'files':{},'graphs':[], 'videos':[{'path':n+'.mkv','frames':3,'width':32,'height':24,'fps':20,'color':'black'} for n in names]})
+   recipe=stage/'work/a/recipe.json'
+   write(recipe,{'format':'worker-fixture-recipe','sources':[{'path':'spec.json','source':'work/a/spec.json','sha256':sha(source)}], 'generator':{'source':'work/a/spec.json','sha256':sha(source)}})
+   output=stage/'.runtime-work/videos';materialize(stage,recipe,output)
+   (output/'raw.mkv').write_bytes(b'preserve composed primary')
+   with patch('worker_exchange.capture.PROFILE',{'overview':[32,24],'detail_views':[[32,24]]*3}):
+    prepare_video(output)
+    (output/'driver_reference.mkv').unlink()
+    with self.assertRaisesRegex(ValueError,'Missing original camera source: driver_reference'):
+     prepare_video(output)
+
+ def test_missing_description_keeps_original_analysis_error(self):
+  from worker_exchange.native_output import missing_evidence_result
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory);write(root/'config.json',{'selected_case_id':'case','case':{}})
+   with self.assertRaisesRegex(ValueError,'Missing required source: channels/st.alley.jsonl.*recording_description is missing'):
+    missing_evidence_result(root,'Missing required source: channels/st.alley.jsonl')
+
+class ExportedExampleIntegration(unittest.TestCase):
+ def test_fresh_export_example_prepares_saved_video(self):
+  import os,subprocess
+  from worker_exchange.exchange import init_worker
+  project=Path(__file__).resolve().parents[2]
+  if not (project/'scenario_pipeline/worker_exchange').is_dir():
+   self.skipTest('Fresh export requires the authoritative source checkout')
+  with tempfile.TemporaryDirectory() as directory:
+   repo=Path(directory)/'worker';init_worker(project,repo)
+   env=dict(os.environ);env.pop('PYTHONPATH',None)
+   command=[sys.executable,'runtime.py','fixture','--recipe','runtime/fixtures/example-recipe.json','--output','.runtime-work/example']
+   result=subprocess.run(command,cwd=repo,env=env,capture_output=True,text=True,timeout=120)
+   self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+   code="""import sys
+from pathlib import Path
+sys.path.insert(0,'runtime/scenario_pipeline')
+from worker_exchange.saved_processing import prepare_video
+from worker_exchange.media import audit
+stage=Path('.runtime-work/example')
+prepare_video(stage)
+assert audit(stage/'raw.mkv',9)['passed']
+assert (stage/'four-view-receipt.json').is_file()
+"""
+   result=subprocess.run([sys.executable,'-c',code],cwd=repo,env=env,capture_output=True,text=True,timeout=180)
+   self.assertEqual(result.returncode,0,result.stdout+result.stderr)

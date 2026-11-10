@@ -149,7 +149,7 @@ prove that real bodies/devices are visible.
 
 `runtime/fixtures/example.json` is a textual Native-shaped example with retained
 telemetry shapes, reconstructed graphs, and synthetic color video. It is not a
-physical recording. Materialize the supplied example with:
+physical recording. It generates four named camera sources at the capture profile sizes; saved processing composes the primary video. These temporary CPU test videos are not recordings to return or evidence of physical visibility. Materialize the supplied example with:
 
 ```sh
 .venv-cpu/bin/python runtime.py fixture --recipe runtime/fixtures/example-recipe.json --output .runtime-work/example
