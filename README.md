@@ -1,12 +1,26 @@
-# Full-train worker batch
+# Full-train worker continuation
 
-Fresh portable CPU preparation checkout for the frozen `full-train` scope. It contains eight assignment partitions, exact law/cell inputs, one source-hashed runtime, small examples and no campaign database or canonical recordings. Start with [AGENT_PROMPT.md](AGENT_PROMPT.md).
+This branch carries the refreshed CPU runtime and the existing 253 full-train assignments. Read [AGENT_PROMPT.md](AGENT_PROMPT.md), [START_HERE.md](START_HERE.md), [MIGRATION.md](MIGRATION.md), and `batch.json`. Historical drafts and receipts are starting material; rerun runtime-dependent proofs against the current pinned runtime before declaring readiness. CARLA execution and recording acceptance happen later in the local pipeline.
 
-Selected CARLA cases are delivery cases. GPU execution and recording acceptance occur later in the main pipeline. This branch contains no earlier trial returns or versioned runtime copies.
+## Which branch to run
 
-## Start the agent
+`worker/full-train-runtime-refresh` is a **staging branch**. Its `batch.json` names `worker/full-train-delivery` as the return branch, and `scripts/run-worker.sh` enforces that name. Cloning this staging branch and running the launcher directly will stop at the branch check.
 
-On the machine that will run the worker agent:
+After the existing full-train worker has stopped and all work to retain is pushed, promote the staging branch to `worker/full-train-delivery` only if the delivery tip is an ancestor. Do not force-push or discard unpushed work:
+
+```bash
+git clone --branch worker/full-train-runtime-refresh --single-branch \
+  https://github.com/msoroco/world-model-spec-worker.git scenario-worker-full-train-refresh
+cd scenario-worker-full-train-refresh
+git fetch origin worker/full-train-delivery:refs/remotes/origin/worker/full-train-delivery
+git merge-base --is-ancestor origin/worker/full-train-delivery HEAD || {
+  echo 'Branches diverged: reconcile the delivery work before promotion' >&2
+  exit 1
+}
+git push origin HEAD:worker/full-train-delivery
+```
+
+If the ancestry check fails, reconcile on a separate branch and recheck the retained work before updating the delivery branch. Once the delivery branch contains the refreshed runtime, start the agent from a fresh checkout:
 
 ```bash
 git clone --branch worker/full-train-delivery --single-branch \
@@ -15,35 +29,12 @@ cd scenario-worker-full-train
 scripts/run-worker.sh
 ```
 
-The launcher uses **GPT-6-sol with medium reasoning**. To use GPT-6.1-sol,
-run `WORKER_CODEX_MODEL=gpt-6.1-sol WORKER_CODEX_REASONING=low scripts/run-worker.sh`
-instead. It checks Git identity and attempts a dry-run push before spending
-model time. A later push can still fail; the timer logs and retries it.
+The launcher defaults to GPT-6-sol with medium reasoning. To use GPT-6.1-sol with low reasoning, run `WORKER_CODEX_MODEL=gpt-6.1-sol WORKER_CODEX_REASONING=low scripts/run-worker.sh`.
 
-## Keep the long task active
+## Progress and completion
 
-If you use an interactive Codex session, set this Goal in that same session
-before giving the agent the task:
+The launcher checks Git identity and a dry-run push, then starts a separate timer that commits and pushes changed `work/` files about every 15 minutes. Check `.runtime-work/worker-run.*/checkpoint.log` for publication errors. A successful launcher exit means the Codex process and final checkpoint finished; **it does not mean any assignment is ready**. Readiness requires current assignment proofs and a passing `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` gate.
 
-```text
-/goal Complete the full-train-delivery work in AGENT_PROMPT.md. Continue through all independent assignments and finish with either a passing strict delivery gate or a best-effort return that identifies every unresolved blocker. Preserve frozen inputs and truthful readiness statuses.
-```
+An isolated test of the refreshed runtime completed one selected case's synthetic speed, conversion, rendering, and saved-processing checks, but did not complete its assignment. The test found a useful order of work: make one primary case pass the full saved-processing path, including all four source views and channels derived from retained raw sources, before running its fallback sweep. After changing construction or finalization code, regenerate every affected fallback, comparison, and receipt; older green logs do not prove the current code. Keep generated diagnostic media under ignored `.runtime-work/`.
 
-Then prompt: `Read AGENT_PROMPT.md and complete the work assigned in batch.json. Do not edit batch.json. Do not commit or push; the separate timer publishes Git checkpoints.`
-The launcher requests Goal creation in its ordinary prompt;
-it does not run `/goal` as a shell or CLI command. Goal support depends on the
-Codex build. A Goal helps maintain the objective across turns. It does not
-restart a stopped agent.
-
-
-## Notes
-### Progress checkpoints
-
-`scripts/run-worker.sh` starts a separate Git timer before Codex. Every
-15 minutes it commits changed files under `work/` and attempts to push the
-branch. No changed files means no new commit. Failures are recorded under
-ignored `.runtime-work/worker-run.*/checkpoint.log` and retried on later
-ticks. After Codex finishes, the timer makes one more attempt at its next
-scheduled tick, within 15 minutes, and stops. No Git command is triggered by
-the exit itself. The launcher reports a failed final checkpoint. Set
-`WORKER_CHECKPOINT_INTERVAL_SECONDS` to change the interval.
+Continue CPU work after partial checkpoints. If a genuine blocker or execution limit stops work, preserve the exact failure, affected cases, and next commands in `work/`; do not call a partial checkpoint delivery ready. No CARLA run or physical acceptance is claimed by the CPU gate.
