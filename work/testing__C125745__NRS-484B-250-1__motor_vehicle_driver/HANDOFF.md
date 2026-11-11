@@ -1,0 +1,9 @@
+# C125745 CPU handoff — NRS 484B.250(1)
+
+Status: **partial**. The frozen selected branch is other-first entry at the same statutory median-opening crossing; the assigned cell is controlled by a stop sign. Exact NRS 484B.250(1) excludes intersections controlled by official traffic-control devices except as provided in subsection 4. Consequently, other-first entry alone cannot be treated as a violation of this subsection in this cell. Frozen `evidence.json` has no accepted recordings; no reuse is claimed.
+
+`case-plan.json` maps other-first/ego-first order, other already inside and opposite-direction left-turn exception context. `stop_sign_control.py` searches real Native stop-sign actors and checks whether each trigger volume contains the approach waypoint; this uses the documented CARLA `TrafficSign.trigger_volume` and `BoundingBox.contains` API. `crossing_measurements.py` reads source-hashed Native sign/junction/highway context, body vertices and original-frame video mapping. It reports observed entry order, ego approach and speed while the other is inside, leaving official-device and right-of-way judgments unresolved. Three CPU tests passed in `cpu-tests.log`, including trigger calls and rejection of wrong governance or stale frame joins.
+
+Next CPU work: select an actual source-grounded median-opening junction, properly erected sign and two highway approaches; construct actors and stop/entry controllers; capture all four source cameras and raw map/device/motion evidence; implement saved finalizer, three distinct physical-risk fallbacks per case, semantic proposals and independent audits; run exact offline, compatibility, saved-processing and assignment strict proofs. Actual sign visibility, official status, crossing geometry and motion remain later physical checks, but all listed construction and CPU proofs remain worker-owned.
+
+The pinned CPU preflight passes. No frozen input, runtime or batch file was edited.

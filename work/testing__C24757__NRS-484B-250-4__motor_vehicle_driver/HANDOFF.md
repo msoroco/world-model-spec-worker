@@ -7,3 +7,5 @@ Status: **partial**. The exact law applies to an installed traffic-control signa
 Next CPU work: implement Native signal control and physical head visibility capture, select a source-grounded blind intersection and governed approaches, construct both vehicles and stop behavior, add crosswalk and nearest-view measurement paths, collect four source cameras plus raw telemetry, finish saved finalizer, three physical-risk fallbacks per selected case, semantic proposals and independent delivery/comparison audits. Run exact offline, compatibility, saved-processing and assignment strict proofs. Actual signal behavior, motion and visibility remain physical checks; all listed construction and CPU proofs are worker-owned.
 
 The pinned CPU preflight passes. No frozen input, runtime or batch file was edited.
+
+Checkpoint: assignment-scoped `worker_check.py --complete` passed; see `assignment-check.log`. The complete strict gate then failed at missing C378304 result in `strict-gate.log`; that assignment has since received a partial checkpoint.

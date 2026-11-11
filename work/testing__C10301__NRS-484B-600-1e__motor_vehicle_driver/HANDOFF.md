@@ -1,0 +1,17 @@
+# C10301 CPU handoff — NRS 484B.600(1)(e)
+
+Status: **partial**. The exact law prohibits a speed greater than 80 mph, an unconditional strict boundary at 35.7632 m/s. The assigned cell is alley/travel/access aisle. The frozen evidence inventory contains three accepted recordings. `evidence_audit.py` verifies their metadata hashes, identities, 900-frame counts and decoder flags; it does not claim source-backed reuse. The supplied review reports sampled maxima of 74.95 mph (`__below`), 79.73 mph (requested `__equal`) and 80.70 mph (`__above`). Its equality case did not measure exactly 80 mph. Original traces, videos and road-authority facts are absent from this standalone export, so between-sample maxima and public-way status remain unverified. Do not replay accepted originals.
+
+Implemented CPU components:
+
+- `speed_measurements.py` joins original `actor.get_velocity` vectors to video-frame identities and computes 3D speed against the strict 80 mph boundary. It rejects a stale join or target speed masquerading as measured velocity and leaves between-frame peaks and legal conclusions unresolved.
+- `speed_controller.py` calls `vehicle.get_velocity` and applies bounded throttle/brake through `vehicle.apply_control`, with engineering braking near route end. Targets are requests, never evidence of attained speed.
+- `route_construction.py` walks actual Native waypoints on a source-reviewed road/lane, rejects junctions and branches, and measures candidate corridor length. The road IDs, alley/access-aisle classification and minimum required length must be supplied from source review; no actual map corridor has been selected.
+- `finalizer.py` reads only saved raw sources and calls the pinned `worker_exchange.native_output.write_result`. It creates a source-hashed analysis report and Native result, leaving physical/road authority judgments unresolved. `measurement-contract.json` binds its peak-speed output to the selected requirement and specifies a missing-source negative test.
+- Eight CPU tests pass in `cpu-tests.log`: `.venv-cpu/bin/python -m unittest discover -s work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/tests -v`. They exercise the finalizer's positive/negative sources and pinned measurement contract.
+
+`case-plan.json` proposes fresh source-verified below/at/above boundary probes with distinct IDs, retaining accepted inventory separately and pending reuse decisions. Next CPU work: identify and source an actual Native alley/access-aisle route long enough for safe acceleration and braking; implement exact runner, four source cameras and raw motion/road capture; add three distinct physical-risk fallbacks per selected case, semantic proposals and independent delivery/comparison audits; run full exact offline, compatibility, saved-processing and assignment strict proofs. Physical feasibility of >80 mph in this cell and source-camera visibility remain later checks, but all listed construction and CPU proofs are worker-owned.
+
+The pinned CPU preflight passes. No frozen input, runtime or batch file was edited.
+
+Checkpoint: `.venv-cpu/bin/python worker_check.py --assignment testing__C10301__NRS-484B-600-1e__motor_vehicle_driver --complete` passed before the saved finalizer; rerun after current changes. The prior complete strict gate failed at missing C125697 in `strict-gate.log`; that assignment now has a partial checkpoint. The finalizer unit proof is narrower than `runtime.py compatibility` or `process-saved` and does not confer readiness.

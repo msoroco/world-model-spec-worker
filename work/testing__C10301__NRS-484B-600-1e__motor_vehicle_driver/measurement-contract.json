@@ -1,0 +1,25 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "absolute prohibition on speed greater than 80 miles per hour",
+      "source": "NRS 484B.600(1)(e)",
+      "output_key": "sampled_peak_speed_mph",
+      "method": "measure_peak_speed",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "subject_motion.jsonl",
+        "video_frames.jsonl",
+        "road_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "subject_motion.jsonl"
+    ],
+    "error_contains": "Missing required source: subject_motion.jsonl"
+  }
+}
