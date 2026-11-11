@@ -32,7 +32,8 @@ def directed_road_section(subject, opposite, *, join_tolerance_m=0.4):
         raise ValueError('Opposing mapped lane travel direction differs')
     if not (subject.lane_width > 0 and opposite.lane_width > 0):
         raise ValueError('Mapped lane width missing')
-    right = ty, -tx
+    # CARLA map coordinates use +y to the driver's right when travelling +x.
+    right = -ty, tx
     subject_xy = _xy(subject.transform.location)
     opposite_xy = _xy(opposite.transform.location)
     lateral = ((opposite_xy[0] - subject_xy[0]) * right[0] +

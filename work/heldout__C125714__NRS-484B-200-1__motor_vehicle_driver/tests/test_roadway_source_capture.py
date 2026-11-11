@@ -12,8 +12,8 @@ from test_directed_geometry import lane
 
 class SourceCaptureTests(unittest.TestCase):
     def test_original_rows_and_frame_rejection(self):
-        subject = lane(-1, 0, -1.5, 1)
-        subject.get_left_lane = lambda: lane(1, 0, 1.5, -1)
+        subject = lane(-1, 0, 1.5, 1)
+        subject.get_left_lane = lambda: lane(1, 0, -1.5, -1)
         vertices = [NS(x=i % 2, y=-1 + (i // 2) % 2, z=i // 4) for i in range(8)]
         ego = NS(id=19, get_transform=lambda: object(),
                  bounding_box=NS(get_world_vertices=lambda _: vertices))

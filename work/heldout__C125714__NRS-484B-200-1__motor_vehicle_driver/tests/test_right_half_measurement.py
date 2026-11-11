@@ -13,7 +13,7 @@ SPEC.loader.exec_module(measurement)
 
 def row(frame, direction, body_offsets):
     tangent = [direction, 0]
-    right_y = -direction
+    right_y = direction
     return {
         'ego_id': 'subject-vehicle-1', 'frame': frame, 'time_s': frame * .05,
         'roadway_center_point_xy': [0, 0], 'travel_tangent_xy': tangent,
@@ -57,7 +57,7 @@ class RightHalfMeasurementTest(unittest.TestCase):
 
     def test_rejects_inverted_directed_edges(self):
         bad = row(1, 1, [0, 0, 1, 1])
-        bad['right_road_edge_xy'] = [0, 3]
+        bad['right_road_edge_xy'] = [0, -3]
         with self.assertRaisesRegex(ValueError, 'straddle centerline'):
             self.measure([row(0, 1, [0, 0, 1, 1]), bad])
 

@@ -16,7 +16,8 @@ class TurnSignalMeasurementTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         self.motion = [{'frame': 40 + i, 'time_s': i / 20,
-                        'ego_yaw_deg': yaw} for i, yaw in enumerate((0, 0, 20))]
+                        'ego_yaw_deg': yaw, 'x_m': i, 'y_m': 0,
+                        'body_radius_m': 1} for i, yaw in enumerate((0, 0, 20))]
         self.signals = [{'frame': 40 + i, 'time_s': i / 20,
                          'listener_id': 'pedestrian_1',
                          'indicator_readback': 'left' if i else 'off',
@@ -27,7 +28,15 @@ class TurnSignalMeasurementTests(unittest.TestCase):
                         'vehicle_may_be_affected': True,
                         'vehicle_may_be_affected_source': 'reviewed conflict trajectory',
                         'listener_id': 'pedestrian_1',
-                        'listener_position_source': 'original actor transform'}
+                        'listener_position_source': 'original actor transform',
+                        'participant_geometry_source': 'original actor transforms and bounds',
+                        'participant_types': {'pedestrian_1': 'pedestrian',
+                                              'vehicle_1': 'vehicle'}}
+        self.participants = [
+            {'frame': 40 + i, 'time_s': i / 20,
+             'bodies': {'pedestrian_1': {'x_m': 5, 'y_m': 1, 'body_radius_m': .3},
+                        'vehicle_1': {'x_m': 8, 'y_m': 0, 'body_radius_m': 1}}}
+            for i in range(3)]
 
     def write(self):
         (self.root / 'ego_turn_motion.jsonl').write_text(
@@ -35,11 +44,14 @@ class TurnSignalMeasurementTests(unittest.TestCase):
         (self.root / 'ego_signal_audio.jsonl').write_text(
             ''.join(json.dumps(row) + '\n' for row in self.signals))
         (self.root / 'affected_participants.json').write_text(json.dumps(self.context))
+        (self.root / 'participant_bodies.jsonl').write_text(
+            ''.join(json.dumps(row) + '\n' for row in self.participants))
 
     def result(self):
         return measure(self.root / 'ego_turn_motion.jsonl',
                        self.root / 'ego_signal_audio.jsonl',
-                       self.root / 'affected_participants.json')
+                       self.root / 'affected_participants.json',
+                       self.root / 'participant_bodies.jsonl')
 
     def test_measures_pre_turn_audio_and_indicator_without_legal_label(self):
         self.write()
@@ -49,6 +61,12 @@ class TurnSignalMeasurementTests(unittest.TestCase):
         self.assertEqual(result['pre_turn_indicator_frames'], [41])
         self.assertAlmostEqual(result['max_pre_turn_listener_audio_rms'], .2)
         self.assertIsNone(result['clearly_audible_legal_judgment'])
+        self.assertAlmostEqual(result['participant_clearance']['vehicle_1']
+                               ['surface_gap_at_turn_onset_m'], 4)
+        self.assertAlmostEqual(result['participant_clearance']['vehicle_1']
+                               ['constant_velocity_proxy_at_turn_onset']
+                               ['closest_approach_time_s'], .3)
+        self.assertIn('participant_bodies.jsonl', result['sources'])
 
     def test_rejects_command_only_audio_and_wrong_listener(self):
         self.signals[1]['listener_audio_samples'] = []
@@ -87,6 +105,38 @@ class TurnSignalMeasurementTests(unittest.TestCase):
         self.signals[1]['time_s'] = float('nan')
         self.write()
         with self.assertRaisesRegex(ValueError, 'frame/time identity missing'):
+            self.result()
+
+    def test_rejects_missing_or_misaligned_participant_source(self):
+        self.write()
+        (self.root / 'participant_bodies.jsonl').unlink()
+        with self.assertRaisesRegex(ValueError, 'Missing required source'):
+            self.result()
+        self.participants[1]['frame'] = 99
+        self.write()
+        with self.assertRaisesRegex(ValueError, 'participant/body frame join'):
+            self.result()
+
+    def test_rejects_invalid_body_geometry_and_unsourced_types(self):
+        self.participants[1]['bodies']['vehicle_1']['body_radius_m'] = -1
+        self.write()
+        with self.assertRaisesRegex(ValueError, 'Invalid original body geometry'):
+            self.result()
+        self.participants[1]['bodies']['vehicle_1']['body_radius_m'] = 1
+        del self.context['participant_geometry_source']
+        self.write()
+        with self.assertRaisesRegex(ValueError, 'geometry source required'):
+            self.result()
+
+    def test_rejects_skipped_original_frame_with_regular_timestamps(self):
+        self.motion[1]['frame'] = 42
+        self.motion[2]['frame'] = 43
+        self.signals[1]['frame'] = 42
+        self.signals[2]['frame'] = 43
+        self.participants[1]['frame'] = 42
+        self.participants[2]['frame'] = 43
+        self.write()
+        with self.assertRaisesRegex(ValueError, 'not joined at 20 Hz'):
             self.result()
 
 

@@ -14,7 +14,86 @@
         "status": "physical",
         "reason": "Native topology, realized yield timing and four-camera visibility may fail"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-same_arrival_ending_yields-fallback1.json",
+          "construction_sha256": "f6e01f83f3c8f0eeb7975a64b76d296082b6c49ca286daab741727266a6f40c6",
+          "trigger": {
+            "source": "original Native route selection",
+            "metric": "eligible connected route pairs",
+            "failure_condition": "primary search finds no admissible connected route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --candidate fallback1 --output .runtime-work/c111294-same_arrival_ending_yields-fallback1-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "same_arrival_ending_yields-fallback1-offline.log",
+            "log_sha256": "e5397767e314b944218e5f28c06fb34df8dbec73735dbf67e1a7a85ff4312f41",
+            "construction_sha256": "f6e01f83f3c8f0eeb7975a64b76d296082b6c49ca286daab741727266a6f40c6"
+          },
+          "compatibility": {
+            "receipt": "same_arrival_ending_yields-fallback1-compatibility.json",
+            "sha256": "61af157f36bc2a85ec0e9017f079cdc837c4b21dd792c5ed0799287c9445cb6c",
+            "log": "same_arrival_ending_yields-fallback1-compat-analysis.log",
+            "negative_log": "same_arrival_ending_yields-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-same_arrival_ending_yields-fallback2.json",
+          "construction_sha256": "5dd4833257c63540bdef21d95fce33ca6bc7a0d1940195844d373b8e775e9832",
+          "trigger": {
+            "source": "original Native speed and body trace",
+            "metric": "speed settling and frame-to-frame acceleration",
+            "failure_condition": "primary gain produces unstable approach speed or misses authored entry timing"
+          },
+          "changed_knobs": [
+            "speed controller proportional gain 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --candidate fallback2 --output .runtime-work/c111294-same_arrival_ending_yields-fallback2-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "same_arrival_ending_yields-fallback2-offline.log",
+            "log_sha256": "b170f48fb6c023a1f5e61d52e540a80be50f5a6dac699dfa3950c2372c75bb0c",
+            "construction_sha256": "5dd4833257c63540bdef21d95fce33ca6bc7a0d1940195844d373b8e775e9832"
+          },
+          "compatibility": {
+            "receipt": "same_arrival_ending_yields-fallback2-compatibility.json",
+            "sha256": "7885678d152a59a7a3ef1f52663713057420db0bb9d77e76059332f8f2f881bb",
+            "log": "same_arrival_ending_yields-fallback2-compat-analysis.log",
+            "negative_log": "same_arrival_ending_yields-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-same_arrival_ending_yields-fallback3.json",
+          "construction_sha256": "fbc599f545848a8d71325003c60572d2014864d83601b6c0273f67e2b714e5b4",
+          "trigger": {
+            "source": "full-resolution overview source decode",
+            "metric": "both actor bodies visible in overview pixels",
+            "failure_condition": "primary overview mount crops either participant"
+          },
+          "changed_knobs": [
+            "overview mount x -9 m to -10 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --candidate fallback3 --output .runtime-work/c111294-same_arrival_ending_yields-fallback3-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "same_arrival_ending_yields-fallback3-offline.log",
+            "log_sha256": "2ca9f834ea140e379ec3f7a4533a03890c340a0c57abbe88d4a9c760b18039f0",
+            "construction_sha256": "fbc599f545848a8d71325003c60572d2014864d83601b6c0273f67e2b714e5b4"
+          },
+          "compatibility": {
+            "receipt": "same_arrival_ending_yields-fallback3-compatibility.json",
+            "sha256": "e0149c12196ab3cb6aece32ff3877cf3d61d2df5d06be6c3c8892b024ff3a04e",
+            "log": "same_arrival_ending_yields-fallback3-compat-analysis.log",
+            "negative_log": "same_arrival_ending_yields-fallback3-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-contract-ending-yields.json",
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --output .runtime-work/c111294-same_arrival_ending_yields-offline-landmarks --python \"$PWD/.venv-cpu/bin/python\"",
@@ -62,7 +141,86 @@
         "status": "physical",
         "reason": "Entry-order release may not produce a realized original-body contrast"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-same_arrival_ending_enters_first-fallback1.json",
+          "construction_sha256": "cf7ca170f2be11cd58eac94216f40ae8d1c7c0f34fccca46813d00e1e45dfa36",
+          "trigger": {
+            "source": "original Native route selection",
+            "metric": "eligible connected route pairs",
+            "failure_condition": "primary search finds no admissible connected route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first --candidate fallback1 --output .runtime-work/c111294-same_arrival_ending_enters_first-fallback1-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "same_arrival_ending_enters_first-fallback1-offline.log",
+            "log_sha256": "7a854aa66e838a57fd4a0b457b3dc66904982e5c411e31ef3a2e28d7c0ed9df0",
+            "construction_sha256": "cf7ca170f2be11cd58eac94216f40ae8d1c7c0f34fccca46813d00e1e45dfa36"
+          },
+          "compatibility": {
+            "receipt": "same_arrival_ending_enters_first-fallback1-compatibility.json",
+            "sha256": "6d64a8abecc71ad6fb7c594d7c2003e906494dbd1d97b9308d4d26664e97efc6",
+            "log": "same_arrival_ending_enters_first-fallback1-compat-analysis.log",
+            "negative_log": "same_arrival_ending_enters_first-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-same_arrival_ending_enters_first-fallback2.json",
+          "construction_sha256": "cb6659a7fddead561b9baeb2da30fa08a4d11ff4c47f5b2d9b5bae6c872d2248",
+          "trigger": {
+            "source": "original Native speed and body trace",
+            "metric": "speed settling and frame-to-frame acceleration",
+            "failure_condition": "primary gain produces unstable approach speed or misses authored entry timing"
+          },
+          "changed_knobs": [
+            "speed controller proportional gain 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first --candidate fallback2 --output .runtime-work/c111294-same_arrival_ending_enters_first-fallback2-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "same_arrival_ending_enters_first-fallback2-offline.log",
+            "log_sha256": "ac909266ba11f7fc90fe902250722a5a430bcceb3f10552dbd90a8ebbe17e916",
+            "construction_sha256": "cb6659a7fddead561b9baeb2da30fa08a4d11ff4c47f5b2d9b5bae6c872d2248"
+          },
+          "compatibility": {
+            "receipt": "same_arrival_ending_enters_first-fallback2-compatibility.json",
+            "sha256": "4e4f4fff62f7854421f6de307e3b1e8726304a807a8bab4364c5e6ff9c0adec2",
+            "log": "same_arrival_ending_enters_first-fallback2-compat-analysis.log",
+            "negative_log": "same_arrival_ending_enters_first-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-same_arrival_ending_enters_first-fallback3.json",
+          "construction_sha256": "b7dd38fb1b369b4ddd3753fdd6cbbd47b731ee0cb4e76ed70803fa7bb78d51ad",
+          "trigger": {
+            "source": "full-resolution overview source decode",
+            "metric": "both actor bodies visible in overview pixels",
+            "failure_condition": "primary overview mount crops either participant"
+          },
+          "changed_knobs": [
+            "overview mount x -9 m to -10 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first --candidate fallback3 --output .runtime-work/c111294-same_arrival_ending_enters_first-fallback3-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "same_arrival_ending_enters_first-fallback3-offline.log",
+            "log_sha256": "b874e8043798effeb6f9ad3fe5aad8f94c409f8d0a54ed498c4f94fc8dc5ed84",
+            "construction_sha256": "b7dd38fb1b369b4ddd3753fdd6cbbd47b731ee0cb4e76ed70803fa7bb78d51ad"
+          },
+          "compatibility": {
+            "receipt": "same_arrival_ending_enters_first-fallback3-compatibility.json",
+            "sha256": "c4e3ddd72c58dc5ba1e452a6c16edf21cb467b5400115a94a46b50e1bc36a2e2",
+            "log": "same_arrival_ending_enters_first-fallback3-compat-analysis.log",
+            "negative_log": "same_arrival_ending_enters_first-fallback3-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "intersection_occupancy": {
           "entrypoint": "ending_road_finalizer.py",
@@ -109,7 +267,86 @@
         "status": "physical",
         "reason": "Delayed release may not realize a distinct original-body arrival interval"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-separated_arrival-fallback1.json",
+          "construction_sha256": "98932391b4a1af86e34030f7d61b1ce465a6f5aedc613b5f5b50bd171c3b37aa",
+          "trigger": {
+            "source": "original Native route selection",
+            "metric": "eligible connected route pairs",
+            "failure_condition": "primary search finds no admissible connected route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival --candidate fallback1 --output .runtime-work/c111294-separated_arrival-fallback1-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "separated_arrival-fallback1-offline.log",
+            "log_sha256": "d2d5ff9aeb64489868e73242e3a92d160f140a17c9b713f67e5214bffce88c6e",
+            "construction_sha256": "98932391b4a1af86e34030f7d61b1ce465a6f5aedc613b5f5b50bd171c3b37aa"
+          },
+          "compatibility": {
+            "receipt": "separated_arrival-fallback1-compatibility.json",
+            "sha256": "227f008814cc24d13e0535892edbc77b032510b25dcbdd4bd27c49e4865e34a5",
+            "log": "separated_arrival-fallback1-compat-analysis.log",
+            "negative_log": "separated_arrival-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-separated_arrival-fallback2.json",
+          "construction_sha256": "939403438c66e0cdc72ef69f43bba568caae9f52612dfd82ef2c43a1afb64c4c",
+          "trigger": {
+            "source": "original Native speed and body trace",
+            "metric": "speed settling and frame-to-frame acceleration",
+            "failure_condition": "primary gain produces unstable approach speed or misses authored entry timing"
+          },
+          "changed_knobs": [
+            "speed controller proportional gain 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival --candidate fallback2 --output .runtime-work/c111294-separated_arrival-fallback2-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "separated_arrival-fallback2-offline.log",
+            "log_sha256": "c804527570dfb6d50b774645cf38b1b8c6efa08f6a99c0b64a201a65e376ed5b",
+            "construction_sha256": "939403438c66e0cdc72ef69f43bba568caae9f52612dfd82ef2c43a1afb64c4c"
+          },
+          "compatibility": {
+            "receipt": "separated_arrival-fallback2-compatibility.json",
+            "sha256": "a670c3e0e5d78728ddf4210e3c449f335311b6a6f2e02776cbb2c6dbc8aad8f5",
+            "log": "separated_arrival-fallback2-compat-analysis.log",
+            "negative_log": "separated_arrival-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-separated_arrival-fallback3.json",
+          "construction_sha256": "45107f06ae4a940d252b8ed20f5d112b375b8fb93b4bc3c43d93b72c956e4780",
+          "trigger": {
+            "source": "full-resolution overview source decode",
+            "metric": "both actor bodies visible in overview pixels",
+            "failure_condition": "primary overview mount crops either participant"
+          },
+          "changed_knobs": [
+            "overview mount x -9 m to -10 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival --candidate fallback3 --output .runtime-work/c111294-separated_arrival-fallback3-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "separated_arrival-fallback3-offline.log",
+            "log_sha256": "50231835b316f0e79fdcafe6e1acb6890e3c454f394588d70d1e339c076a6f88",
+            "construction_sha256": "45107f06ae4a940d252b8ed20f5d112b375b8fb93b4bc3c43d93b72c956e4780"
+          },
+          "compatibility": {
+            "receipt": "separated_arrival-fallback3-compatibility.json",
+            "sha256": "62f888a219c0efd8e8a2e6583c00fc48eb2df87b9e3a67037d3886cf9775b19e",
+            "log": "separated_arrival-fallback3-compat-analysis.log",
+            "negative_log": "separated_arrival-fallback3-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "intersection_occupancy": {
           "entrypoint": "ending_road_finalizer.py",
@@ -156,7 +393,86 @@
         "status": "physical",
         "reason": "Native map may lack a uniquely governed ending approach or visible signal"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-official_device_control-fallback1.json",
+          "construction_sha256": "1efbd83bf99b3a4bc56f722bec59b5a79c6d4f05f4b291c18c0a17faf89df82b",
+          "trigger": {
+            "source": "original Native route selection",
+            "metric": "eligible connected route pairs",
+            "failure_condition": "primary search finds no admissible connected route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control --candidate fallback1 --output .runtime-work/c111294-official_device_control-fallback1-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "official_device_control-fallback1-offline.log",
+            "log_sha256": "c1084c6113af73a7b163977379b500d1dacf33afe7a6673913567f252653f8c2",
+            "construction_sha256": "1efbd83bf99b3a4bc56f722bec59b5a79c6d4f05f4b291c18c0a17faf89df82b"
+          },
+          "compatibility": {
+            "receipt": "official_device_control-fallback1-compatibility.json",
+            "sha256": "7c214b7334bcef313c7a2b077909a6ce162607665342b07239a3510bcc427e24",
+            "log": "official_device_control-fallback1-compat-analysis.log",
+            "negative_log": "official_device_control-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-official_device_control-fallback2.json",
+          "construction_sha256": "b346ff35e80903fcea587b00c759386820467894a7957e57c213cce10964ab2d",
+          "trigger": {
+            "source": "original Native speed and body trace",
+            "metric": "speed settling and frame-to-frame acceleration",
+            "failure_condition": "primary gain produces unstable approach speed or misses authored entry timing"
+          },
+          "changed_knobs": [
+            "speed controller proportional gain 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control --candidate fallback2 --output .runtime-work/c111294-official_device_control-fallback2-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "official_device_control-fallback2-offline.log",
+            "log_sha256": "85ab4921b22d49ad3941821d8bbf9362c7eb4301f7a14d598d58161f9e5a055e",
+            "construction_sha256": "b346ff35e80903fcea587b00c759386820467894a7957e57c213cce10964ab2d"
+          },
+          "compatibility": {
+            "receipt": "official_device_control-fallback2-compatibility.json",
+            "sha256": "47e3726f036d5f42c590ffed531d267f983985941ef6c5ce47ca33e187684330",
+            "log": "official_device_control-fallback2-compat-analysis.log",
+            "negative_log": "official_device_control-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-official_device_control-fallback3.json",
+          "construction_sha256": "2733e6c42b5fd2c4e792c43d3e36124390bce318098dd72132992c33e2170b02",
+          "trigger": {
+            "source": "full-resolution overview source decode",
+            "metric": "both actor bodies visible in overview pixels",
+            "failure_condition": "primary overview mount crops either participant"
+          },
+          "changed_knobs": [
+            "overview mount x -9 m to -10 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control --candidate fallback3 --output .runtime-work/c111294-official_device_control-fallback3-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "official_device_control-fallback3-offline.log",
+            "log_sha256": "3c1908653edfa545b8b250f62fd8165f07de66e955e2a0ace9bc832a31aa3830",
+            "construction_sha256": "2733e6c42b5fd2c4e792c43d3e36124390bce318098dd72132992c33e2170b02"
+          },
+          "compatibility": {
+            "receipt": "official_device_control-fallback3-compatibility.json",
+            "sha256": "a4461d77ee50cbcb22806ded6972a218624c5410f4bdcc256f5ef0de7245ac3d",
+            "log": "official_device_control-fallback3-compat-analysis.log",
+            "negative_log": "official_device_control-fallback3-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "intersection_occupancy": {
           "entrypoint": "ending_road_finalizer.py",

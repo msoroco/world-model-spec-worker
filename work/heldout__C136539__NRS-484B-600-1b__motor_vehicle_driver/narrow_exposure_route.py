@@ -36,7 +36,7 @@ def exposed_position(route, *, waypoint_index=8, outside_edge_m=0.4):
     if norm < 1e-6:
         raise ValueError('Narrow-road tangent undefined')
     # Right-of-travel verge; the case remains measured, not assumed dangerous.
-    right = forward.y / norm, -forward.x / norm
+    right = -forward.y / norm, forward.x / norm
     point = waypoint.transform.location
     offset = waypoint.lane_width / 2 + outside_edge_m
     return [point.x + right[0] * offset, point.y + right[1] * offset, point.z]

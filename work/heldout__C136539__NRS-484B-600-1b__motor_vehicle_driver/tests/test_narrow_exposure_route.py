@@ -33,8 +33,8 @@ class NarrowRouteTests(unittest.TestCase):
     def test_participant_placement_follows_travel_direction(self):
         _, east = route_map(direction=1)
         _, west = route_map(direction=-1)
-        self.assertLess(exposed_position(east)[1], 0)
-        self.assertGreater(exposed_position(west)[1], 0)
+        self.assertGreater(exposed_position(east)[1], 0)
+        self.assertLess(exposed_position(west)[1], 0)
 
     def test_controller_uses_measured_velocity(self):
         slow = speed_control([0, 0], [1, 0], [0, 0], [5, 1], 2)

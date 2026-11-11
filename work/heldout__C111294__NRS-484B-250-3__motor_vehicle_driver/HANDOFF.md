@@ -102,3 +102,52 @@ The three ordinary inline constructions now bundle `ending_road_control_inventor
 The saved-proof scripts generate timestamped diagnostic paths; their `manifest_sha256` field predates the final post-capture log-hash update. They establish a passing saved path for the same construction bytes, but the final metadata binding needs a stable rerun before ready. The existing comparison proofs use unchanged fixture sources; rerun and bind the final manifest after remaining cases and fallbacks. `worker_check.py --assignment heldout__C111294__NRS-484B-250-3__motor_vehicle_driver --complete` exits 0 (`worker-check.log` SHA256 bf2dae36def332eca71b5cc39ea603d4ab388271e395331d28b4faa2fa64368a); strict readiness remains false on partial status. Next CPU steps are opposing-left-turn construction and exact proofs, final stable post-capture binding, fallbacks, proposals and independent audits.
 
 `opposing_left_route.py` now finds a connected same-junction pair with opposing entry headings and a leftward exit branch. CPU tests reject same-direction and right-turn geometry. It is a construction component only; no fifth exact runner, original turn-intent/trajectory capture or source-bound saved proof exists yet. The local suite passes 24 tests (`cpu-tests.log` SHA256 054a20fa1192b561fcc03d85beece79d56d23c0e389b86d8aae66878a64dfb3f). Next: connect this selector to an exact Native runner and a source-joined turn finalizer, add a compatible cell binding if the frozen travel cell cannot support the actual alternative, then run its exact proofs.
+
+## 2026-11-11 opposing-left original-source and control continuation
+
+Status remains **partial**. `opposing_left_source.py` now checks selected
+leftward and opposing Native successor paths at one junction, retains route
+waypoints and actor identities in `opposing_left_context.json`, and records
+original 20 Hz body corners and heading readbacks in
+`opposing_left_participants.jsonl`. `opposing_left_measurement.py` joins those
+rows to the original `video_frames.jsonl`, reports observed heading change and
+body-center separation, and rejects missing, stale or nonconsecutive originals.
+It leaves physical completion and legal exception status unresolved.
+`opposing_left_control.py` adds a prospective body-clearance controller: it
+holds the turning vehicle until the opposite body has entered and then fully
+left the authored conflict zone. CPU tests cover the release sequence and
+invalid conflict geometry. These are executable worker components, not an
+exact delivery construction or physical-motion proof.
+
+The exact test command `.venv-cpu/bin/python -m unittest discover -s
+work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/tests -v`
+passes **29** tests (`cpu-tests.log` SHA256
+`e5f39e4eabfbc39b6b00f2114416f179c5ffe25c95c7f58b095e7f8ad78bab22`).
+`.venv-cpu/bin/python worker_check.py --assignment
+heldout__C111294__NRS-484B-250-3__motor_vehicle_driver --complete` exits 0
+(`worker-check.log` SHA256
+`bf2dae36def332eca71b5cc39ea603d4ab388271e395331d28b4faa2fa64368a`).
+The same scoped command with `--require-delivery-ready` exits 1
+(`strict-gate.log` SHA256
+`89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`)
+because `result.json` truthfully remains partial.
+
+Next CPU step: bind the opposite-left branch to a compatible `left_turn` cell
+without changing C111294's frozen `travel` identity, then connect the selector,
+source recorder and body-clearance control in an exact Native runner. Write its
+saved finalizer and selected measurement contract; run exact offline,
+positive/missing-original compatibility and saved processing. Finish three
+risk-triggered fallbacks per case, semantic proposals, independent
+delivery/comparison audits and stable proof hashes before the scoped strict
+gate. The four prior primary exact case receipts were not changed by this
+component work. No CARLA or physical/legal verification was performed.
+
+## 2026-11-11 opposing-left provisional exact construction
+
+Status remains **partial**. The frozen C111294 cell is `intersection/travel/other_vehicle`, so it cannot itself designate a subject left turn. `inputs/coverage/candidate-cells.json` lists unallocated C293604 as `t_intersection/left_turn/other_vehicle`, motor_vehicle_driver compatible. The proposed branch binding is `heldout__C293604__NRS-484B-250-3__motor_vehicle_driver`, with the exact case `heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn`. This has **not** been allocated in `work/_shared/branch-coverage.json`, and no new assignment directory has been created by this C111294 owner. The batch owner must add the binding and package, preserving C111294's fixed travel identity.
+
+`opposing_left_runner.py` now constructs two connected opposite approaches and a left-turn route in a CARLA-lazy runner, holds the turning actor until the opposite body has entered and left the authored conflict polygon, records original Native route/body/heading sources at 20 Hz, and captures four synchronized named RGB sources. `opposing_left_finalizer.py` joins original route/body/heading, trace and frame-map rows, rejects missing or stale originals, writes a result through the pinned Native writer, and leaves physical/legal completion unclaimed. `tests/test_opposing_left_runner.py` and `tests/test_opposing_left_finalizer.py` exercise the binding/profile and saved source joins. The local command `.venv-cpu/bin/python -m unittest discover -s work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/tests -v` passes 32 tests (`cpu-tests.log`, SHA256 `cf0d5706f2ef5e131f41916bd242b965efdfef2632701542db3166990df4a619`). Fresh `.venv-cpu/bin/python runtime.py preflight` exits 0 with the pinned CPU packages, ffmpeg/ffprobe and Lean 4.28.0.
+
+The provisional exact bundle `construction-opposing-left.json` SHA256 is `654821404d8a082e450af500f5d99de85eaab8bf048ee9b5ef9a42da7ca79a7d`. The command `.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/opposing-left-provisional-manifest.json --case heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn --output .runtime-work/c111294-opposing-left-provisional-offline3 --python "$PWD/.venv-cpu/bin/python"` exits 0 and runs 10 bundled tests (`opposing-left-offline-tests.log`, SHA256 `8c4b1532288f3c2237a75b4778a19116380135ed2658033225c3d1a1a8446867`). The matching diagnostic source and recipe are `diagnostic-opposing-left.json` and `diagnostic-recipe-opposing-left.json`; they are synthetic software fixtures only. The first provisional offline attempt lacked an imported source module; the second bundled unrelated C111294 tests. Both failures are retained under ignored `.runtime-work/`; the third bundle resolves them.
+
+This provisional manifest is **not** an accepted C293604 assignment manifest and is not part of the C111294 execution manifest. To resume: add the C293604 binding and assignment per `FULL_BRANCH_CONTRACT.md`, place this bundle, diagnostic recipe, case proposal and selected measurement contract under that package, then run exact positive/missing-original compatibility and saved-only processing. Rerun the exact offline proof after any copy or source change. Finish three distinct risk-triggered fallback constructions per selected case and all independent audits/proposals. `.venv-cpu/bin/python worker_check.py --assignment heldout__C111294__NRS-484B-250-3__motor_vehicle_driver --complete` currently exits 0 (`worker-check.log`, SHA256 `bf2dae36def332eca71b5cc39ea603d4ab388271e395331d28b4faa2fa64368a`); this is only a checkpoint. Physical map suitability, motion, camera pixels and legal exception applicability remain unconfirmed local checks.

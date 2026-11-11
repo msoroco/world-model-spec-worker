@@ -111,3 +111,42 @@ The C111294 ordinary runner inventory was subsequently embedded into its three e
 After the ordinary-case rebind, the batch strict gate was rerun and exits 1 with `Preparation acceptance failed: partial/missing packages remain` (`work/_shared/strict-gate-latest.log`, SHA256 89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292). This is a truthful delivery failure; remaining CPU work is assigned to the worker.
 
 C111294 also gained `opposing_left_route.py`: a connected same-junction opposing approach and left-turn branch selector, with negative tests for same-direction and right-turn geometry. The complete local suite passes 24 tests (`cpu-tests.log` SHA256 054a20fa1192b561fcc03d85beece79d56d23c0e389b86d8aae66878a64dfb3f), and its scoped checkpoint exits 0 (`worker-check.log` SHA256 bf2dae36def332eca71b5cc39ea603d4ab388271e395331d28b4faa2fa64368a). This selector is not yet an exact fifth construction or proof; C111294 remains partial. The latest complete strict gate failure and remaining CPU steps above still apply.
+
+### Current 2026-11-11 environment and C111294 opposing-left construction checkpoint
+
+The updated environment passes `.venv-cpu/bin/python runtime.py preflight`
+(`preflight.log` SHA256
+`2b87cc5d38f93d9749c7f58160649ecc8ec758f6026a77f36e2993a71dfffdd9`),
+including pinned NumPy, FFmpeg/ffprobe and Lean/Lake. The repository suite
+passes six tests (`repository-tests.log` SHA256
+`83de4c80f1b9ebc1fbea8683bfe15d9bb2493660b62f8be07053af43c98ed203`).
+The complete checkpoint gate exits 0 (`complete-check.log` SHA256
+`b240d7e9206f7ce14c8a3993e3129987c0a88e4abdbae1a23fc38114833693b5`).
+The complete strict gate exits 1 (`strict-gate-latest.log` SHA256
+`89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`)
+with `Preparation acceptance failed: partial/missing packages remain`.
+The batch remains **51 assigned, 7 ready, 44 partial, 0 blocked**. Earlier
+missing-dependency and missing-tool diagnoses no longer apply.
+
+C111294 / NRS-484B-250-3 now has original-source acquisition and saved
+measurement components for the planned opposing-left exception branch.
+`opposing_left_source.py` checks the connected leftward and opposing routes,
+retains waypoint and actor identities, and writes original 20 Hz body/heading
+rows. `opposing_left_measurement.py` requires exact frame-map joins and reports
+observed heading change without declaring physical completion or a legal
+exception. `opposing_left_control.py` holds the turn until the opposite body
+enters and fully clears the conflict zone. The local suite passes 29 tests
+(`cpu-tests.log` SHA256
+`e5f39e4eabfbc39b6b00f2114416f179c5ffe25c95c7f58b095e7f8ad78bab22`),
+including changed/missing-source and body-clearance rejection paths. Its
+scoped checkpoint exits 0; its scoped strict gate exits 1 because the package
+is truthfully partial. The four earlier primary case bundles were not changed.
+
+Next CPU work is to bind the opposing-left case to a compatible left-turn
+cell, connect these components to a fifth exact runner and finalizer, and run
+offline, positive/negative compatibility and saved-processing proofs. Then
+complete its risk-triggered fallbacks, semantic proposals and independent
+delivery/comparison audits, followed by all other partial assignments and
+shared branch review, GPU queue and local integration proof. Actual Native
+motion, camera pixels and legal interpretation remain unconfirmed. No CARLA,
+NERSC, SQLite or Git action was taken; the separate timer publishes `work/`.

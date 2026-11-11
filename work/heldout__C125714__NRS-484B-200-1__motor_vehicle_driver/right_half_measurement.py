@@ -53,7 +53,7 @@ def measure(path):
         previous = frame, time_s
         centre = _point(row.get('roadway_center_point_xy'), 'roadway center point')
         tx, ty = _direction(row.get('travel_tangent_xy'))
-        right = ty, -tx
+        right = -ty, tx
         corners = row.get('ego_corners')
         if not isinstance(corners, list) or len(corners) != 4:
             raise ValueError('Original vehicle body needs four corners')

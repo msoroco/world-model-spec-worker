@@ -9,14 +9,16 @@ from test_directed_geometry import lane
 
 
 def mapped_route(opposite_gap=False, direction=1):
-    points = [lane(-1, i * 2.5 * direction, -1.5 * direction, direction) for i in range(14)]
+    subject_lane_id = -direction
+    points = [lane(subject_lane_id, i * 2.5 * direction,
+                   1.5 * direction, direction) for i in range(14)]
     for i, point in enumerate(points):
         point.is_junction = False
-        point.get_left_lane = lambda i=i: lane(1, i * 2.5 * direction,
-                                               (3 if opposite_gap else 1.5) * direction,
+        point.get_left_lane = lambda i=i: lane(-subject_lane_id, i * 2.5 * direction,
+                                               -(3 if opposite_gap else 1.5) * direction,
                                                -direction)
         point.next = lambda step, i=i: [points[i + 1]] if i + 1 < len(points) else []
-    world_map = NS(get_spawn_points=lambda: [NS(location=NS(x=0, y=-1.5 * direction))],
+    world_map = NS(get_spawn_points=lambda: [NS(location=NS(x=0, y=1.5 * direction))],
                    get_waypoint=lambda _: points[0])
     return world_map, points
 

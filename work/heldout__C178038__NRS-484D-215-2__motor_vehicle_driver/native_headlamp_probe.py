@@ -10,6 +10,7 @@ from pathlib import Path
 from headlamp_camera import CAMERAS, HeadlampCameraCapture, LosslessSourceSink
 from headlamp_follow_route import cruise_control, select_follow_route
 from headlamp_source_capture import HeadlampSourceRecorder
+from headlamp_roadway_capture import RoadwaySourceRecorder
 
 
 CASE_ID = 'heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_upper'
@@ -52,7 +53,7 @@ def run(config, output, host, port):
     world = client.get_world()
     original = world.get_settings()
     actors = []
-    recorder = pipeline = frame_map = cameras = None
+    recorder = roadway = pipeline = frame_map = cameras = None
     sinks = {}
     try:
         settings = world.get_settings()
@@ -77,6 +78,7 @@ def run(config, output, host, port):
         if not int(ego.get_light_state()) & int(carla.VehicleLightState.HighBeam):
             raise ValueError('Native upper-beam setup readback failed')
         recorder = HeadlampSourceRecorder(output, ego, lead)
+        roadway = RoadwaySourceRecorder(output, world, ego, carla)
         pipeline = PipelineCapture(client, ego, output, CASE_ID,
                                    required_observations=config.get('required_atoms', []))
         frame_map = FrameMap(output / 'video_frames.jsonl')
@@ -103,6 +105,7 @@ def run(config, output, host, port):
             if trace.get('frame') != frame or trace.get('time_s') != time_s:
                 raise ValueError('Native following trace/frame mismatch')
             recorder.append(frame, time_s, carla)
+            roadway.append(frame, time_s)
             frame_map.append(frame, time_s)
             frames.append(frame)
         cameras.verify(frames)
@@ -119,6 +122,8 @@ def run(config, output, host, port):
             frame_map.close()
         if recorder is not None:
             recorder.close()
+        if roadway is not None:
+            roadway.close()
         if pipeline is not None:
             pipeline.close(confirmed=False)
         if cameras is not None:

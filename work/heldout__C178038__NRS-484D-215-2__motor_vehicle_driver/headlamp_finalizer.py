@@ -37,24 +37,29 @@ def analyze(attempt):
     trace_path, trace_sha = _source(root, 'trace.jsonl')
     footprint_path, _ = _source(root, 'following_footprints.jsonl')
     lamp_path, _ = _source(root, 'headlamp_readbacks.jsonl')
+    roadway_path, roadway_sha = _source(root, 'roadway_environment.jsonl')
     context_path, _ = _source(root, 'lighting_context.json')
-    mapping, trace, footprints, lamps = (_rows(path) for path in
-                                        (map_path, trace_path, footprint_path, lamp_path))
-    if not mapping or len(mapping) != len(trace) or len(mapping) != len(footprints) or len(mapping) != len(lamps):
+    mapping, trace, footprints, lamps, roadway = (_rows(path) for path in
+        (map_path, trace_path, footprint_path, lamp_path, roadway_path))
+    if not mapping or len({len(rows) for rows in (mapping, trace, footprints, lamps, roadway)}) != 1:
         raise ValueError('Original headlamp source/frame-map length differs')
-    for index, (video, motion, footprint, lamp) in enumerate(zip(mapping, trace, footprints, lamps)):
+    for index, (video, motion, footprint, lamp, road) in enumerate(zip(mapping, trace, footprints, lamps, roadway)):
         identity = video.get('carla_frame'), video.get('time_s')
         if (video.get('video_frame') != index or
                 (motion.get('frame'), motion.get('time_s')) != identity or
                 (footprint.get('frame'), footprint.get('time_s')) != identity or
-                (lamp.get('frame'), lamp.get('time_s')) != identity):
+                (lamp.get('frame'), lamp.get('time_s')) != identity or
+                (road.get('frame'), road.get('time_s')) != identity or
+                road.get('ego_id') != footprint.get('ego_id')):
             raise ValueError('Original headlamp source/frame-map join failed')
     observed = measure(footprint_path, lamp_path, context_path)
     return {'format': 'worker-analysis-report', 'case_id': case_id,
             'measurements': {'headlamp_following_observation': {
                 'method': 'measure', 'value': observed,
                 'sources': {**observed['sources'], 'video_frames.jsonl': map_sha,
-                            'trace.jsonl': trace_sha}}},
+                            'trace.jsonl': trace_sha,
+                            'roadway_environment.jsonl': roadway_sha}}},
+            'roadway_environment_observations': roadway,
             'limitations': ['Original readbacks and geometry do not establish permissible beam distribution, safe illumination distance or physical visibility.'],
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 

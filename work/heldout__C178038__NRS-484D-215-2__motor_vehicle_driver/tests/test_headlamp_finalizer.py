@@ -30,6 +30,11 @@ def sources(root):
     (root / 'headlamp_readbacks.jsonl').write_text(''.join(json.dumps({
         'frame': i, 'time_s': i * .05, 'uppermost_distribution': False,
         'low_beam_readback': True}) + '\n' for i in range(2)))
+    (root / 'roadway_environment.jsonl').write_text(''.join(json.dumps({
+        'frame': i, 'time_s': i * .05, 'ego_id': 'ego-1',
+        'sun_altitude_angle_deg': -10, 'waypoint_present': True,
+        'road_id': 4, 'lane_id': 1, 'lane_type_readback': 'Driving'}) + '\n'
+        for i in range(2)))
     (root / 'lighting_context.json').write_text(json.dumps({
         'lighting_time_applies': True, 'time_source': 'cited clock premise'}))
 
@@ -45,6 +50,8 @@ class SavedHeadlampTests(unittest.TestCase):
             from worker_exchange.native_output import validate_result
             validate_result(native)
             self.assertFalse(native['physical_acceptance_claimed'])
+            self.assertIn('roadway_environment.jsonl', report['measurements']
+                          ['headlamp_following_observation']['sources'])
             self.assertTrue((root / 'headlamp_gap_ft.jsonl').is_file())
             (root / 'headlamp_readbacks.jsonl').unlink()
             with self.assertRaisesRegex(ValueError, 'Missing required source'):
@@ -58,6 +65,21 @@ class SavedHeadlampTests(unittest.TestCase):
             rows = [json.loads(line) for line in trace.read_text().splitlines()]
             rows[1]['frame'] = 17
             trace.write_text(''.join(json.dumps(item) + '\n' for item in rows))
+            with self.assertRaisesRegex(ValueError, 'join failed'):
+                analyze(root)
+
+    def test_missing_or_wrong_actor_roadway_source_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            sources(root)
+            road = root / 'roadway_environment.jsonl'
+            road.unlink()
+            with self.assertRaisesRegex(ValueError, 'Missing required source'):
+                analyze(root)
+            sources(root)
+            rows = [json.loads(line) for line in road.read_text().splitlines()]
+            rows[1]['ego_id'] = 'wrong'
+            road.write_text(''.join(json.dumps(item) + '\n' for item in rows))
             with self.assertRaisesRegex(ValueError, 'join failed'):
                 analyze(root)
 
