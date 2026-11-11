@@ -1,0 +1,53 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Initial yield to an opposing vehicle within the intersection or posing an immediate hazard",
+      "source": "NRS 484B.253",
+      "output_key": "approaching_no_yield_observation",
+      "method": "measure_approaching_no_yield",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "intersection_geometry.json",
+        "interaction_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "After yielding and signalling when required, subject begins the left turn",
+      "source": "NRS 484B.253",
+      "output_key": "signal_and_turn_sequence",
+      "method": "measure_signal_turn",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "intersection_geometry.json",
+        "interaction_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Later opposing driver yields to the subject making the left turn",
+      "source": "NRS 484B.253",
+      "output_key": "reciprocal_yield_observation",
+      "method": "measure_reciprocal_yield",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "intersection_geometry.json",
+        "interaction_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "interaction_history.jsonl"
+    ],
+    "error_contains": "Missing required source: interaction_history.jsonl"
+  }
+}

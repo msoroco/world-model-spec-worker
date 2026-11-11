@@ -1,0 +1,56 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_no_yield",
+      "construction": "construction.json",
+      "construction_sha256": "13fc8b86e8c286271e0cc8164f8e386f85be8f5314cae2f42211d21c8ccfbf8c",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "opposing approach, subject proceed turn and later actor may fail staged motion"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "b86fa5fadaf0642170f41bcd8a1aa98b3c6cab0ea2e1b90af08cce38e5b7e1a2",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "proceed_turn_distance_m physical-risk observation",
+            "failure_condition": "subject turn starts after opposing body enters the junction"
+          },
+          "changed_knobs": [
+            "proceed_turn_distance_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "fallback2-construction.json",
+          "construction_sha256": "1aae600da7f08535ac18730f14aa4d5ad095474e69b4ab37bbf69f85d886f0f5",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "approach_speed_mps physical-risk observation",
+            "failure_condition": "subject enters the opposing approach region at excessive measured speed"
+          },
+          "changed_knobs": [
+            "approach_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "fallback3-construction.json",
+          "construction_sha256": "86e5873d80bb73d9576be1d7d8b7b3980e8550a4a78889feb38ce00693ad6eb3",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "reciprocal_approach_speed_mps physical-risk observation",
+            "failure_condition": "later opposing actor enters the junction before the subject completes the turn"
+          },
+          "changed_knobs": [
+            "reciprocal_approach_speed_mps"
+          ]
+        }
+      ]
+    }
+  ]
+}

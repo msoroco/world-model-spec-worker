@@ -37,12 +37,7 @@ for case in manifest['cases']:
     physical = json.loads((folder / case['physical_preparation']['receipt']).read_text())
     for fixture in physical['fixtures']:
         claim(fixture['command'], fixture['log'])
-    label = 'primary' if case is manifest['cases'][0] else 'reciprocal_continues'
-    claim(f'.venv-cpu/bin/python work/{result["assignment_id"]}/physical_fixture_proof.py '
-          f'--manifest work/{result["assignment_id"]}/execution-manifest.json '
-          f'--case {case["case_id"]} --kind lifecycle '
-          f'--output work/{result["assignment_id"]}/physical-proofs/{label}/lifecycle.json',
-          physical['lifecycle']['log'])
+    claim(physical['lifecycle']['command'], physical['lifecycle']['log'])
 
 comparison = json.loads((folder / 'comparison-proofs/receipt.json').read_text())
 claim(comparison['command'], comparison['log'])
@@ -69,29 +64,36 @@ claim(f'PYTHONPATH=work/{result["assignment_id"]} .venv-cpu/bin/python '
       'inside-comparison-positive.log')
 claim(f'.venv-cpu/bin/python work/{result["assignment_id"]}/validate_inside_delivery.py',
       'inside-delivery-validation.log')
+claim(f'.venv-cpu/bin/python work/{result["assignment_id"]}/validate_manifest.py',
+      'manifest-validation.log')
+claim(f'.venv-cpu/bin/python work/{result["assignment_id"]}/cases/approaching_yield/validate_draft.py',
+      'cases/approaching_yield/draft-validation.log')
+claim(f'PYTHONPATH=work/{result["assignment_id"]} .venv-cpu/bin/python '
+      f'work/{result["assignment_id"]}/cases/approaching_yield/runner.py --check',
+      'cases/approaching_yield/runner-check.log')
+claim(f'.venv-cpu/bin/python work/{result["assignment_id"]}/cases/approaching_no_yield/validate_draft.py',
+      'cases/approaching_no_yield/draft-validation.log')
+claim(f'PYTHONPATH=work/{result["assignment_id"]} .venv-cpu/bin/python '
+      f'work/{result["assignment_id"]}/cases/approaching_no_yield/runner.py --check',
+      'cases/approaching_no_yield/runner-check.log')
 result['tests'] = list(existing.values())
-result['readiness_kind'] = 'two_case_delivery_with_inside_pair_staged_draft_checkpoint'
+result['readiness_kind'] = 'four_case_canonical_partial_cpu_checkpoint'
 result['reason'] = (
-    'Two C109749 reciprocal-response cases and three fallbacks per case pass exact offline, '
-    'compatibility and recorded-only saved processing. Source-bound physical-classifier and '
-    'full-duration delivery-audit CPU fixtures pass software checks; diagnostic audits explicitly '
-    'report passed=false. A comparison audit verifies fixed conditions and the declared later '
-    'opposing response difference on synthetic sources, and rejects a changed fixed ego trajectory. '
-    'Paired inside-yield and inside-no-yield case drafts have same-lane Native junction spawn, '
-    'complete-body placement checks, distinct yield/proceed controllers, original-source turn-order '
-    'observations and three distinct risk-based fallbacks each. All eight draft candidates pass '
-    'exact offline, positive/negative compatibility and recorded-only saved processing in isolated '
-    'ignored staging roots. An independent diagnostic comparison confirms common opposing trajectories '
-    'and contrasting subject turn order over 900-frame diagnostic sources and rejects a perturbed '
-    'opposing trajectory. Independent full-duration delivery audits for both staged cases pass '
-    'software checks and reject absent sealed original history; diagnostic receipts explicitly say '
-    'passed=false and claim no physical or legal acceptance. The pair is not yet in the canonical plan, proposal or manifest, '
-    'and is not delivery-ready. The six-stage semantic chain validates for the original two cases, but all '
-    'three physical judgment sweeps remain explicitly incomplete and statutory alternatives are not '
-    'yet covered. These, complete '
-    'coverage and all other partial assignment packages are unfinished worker-owned CPU work. Root supported_case_ids '
-    'now lists both selected cases and all affected primary proofs were rerun. Accepted-original '
-    'equivalence and actual Native motion/pixel visibility are unverified. Strict assignment and '
-    'batch gates fail with Preparation acceptance failed: partial/missing packages remain. See HANDOFF.md.'
+    'Four C109749 exact cases (reciprocal yield/continue and subject yield/proceed with an opposing '
+    'complete body inside the junction), each with three distinct physical-risk fallbacks, now occur '
+    'in the canonical case plan, semantic proposal and execution manifest. All 16 exact constructions '
+    'pass current canonical offline, positive/negative compatibility and recorded-only saved processing. '
+    'The pinned manifest, semantic, package-compatibility, physical-preparation and delivery-contract '
+    'validators pass. Full-duration 900-frame synthetic delivery audits for all four and two diagnostic '
+    'comparisons exercise source joins, fixed conditions and negative rejection; their diagnostic '
+    'receipts explicitly do not claim physical or legal acceptance. An isolated approaching yield/proceed '
+    'pair (fifth and sixth case drafts) each passes four offline, positive/negative compatibility and recorded-only '
+    'saved-processing paths, but is not yet in the canonical plan or manifest and has no delivery/comparison proof. '
+    'The three physical judgment sweep specs remain incomplete, and omitted-signal and other '
+    'statutory alternatives have no complete selected constructions and CPU proofs. Accepted-original '
+    'equivalence, actual Native motion and camera visibility are unverified. This and all other partial '
+    'assignment packages are unfinished worker-owned CPU work, with no dependency or tool blocker. '
+    'Strict assignment and batch gates fail with Preparation acceptance failed: partial/missing packages remain. '
+    'See HANDOFF.md for exact sources and resume actions.'
 )
 result_path.write_text(json.dumps(result, indent=2) + '\n')
