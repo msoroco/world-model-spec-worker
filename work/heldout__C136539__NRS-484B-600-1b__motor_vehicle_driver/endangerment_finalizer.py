@@ -8,6 +8,11 @@ from pathlib import Path
 from endangerment_measurement import measure
 
 
+def measure_exposure(source_path):
+    """Named saved measurement entrypoint for the selected requirement."""
+    return measure(source_path)
+
+
 def _read_source(root, name):
     path = Path(root) / name
     if not path.is_file() or not path.read_bytes():
@@ -41,10 +46,10 @@ def analyze(attempt):
                 motion.get('time_s') != frame.get('time_s') or
                 exposure.get('time_s') != frame.get('time_s')):
             raise ValueError('Original exposure source/frame-map join failed')
-    observed = measure(source_path)
+    observed = measure_exposure(source_path)
     return {'format': 'worker-analysis-report', 'case_id': case,
             'measurements': {'person_or_property_exposure': {
-                'method': 'measure', 'value': observed,
+                'method': 'measure_exposure', 'value': observed,
                 'sources': {'video_frames.jsonl': frame_sha, 'trace.jsonl': trace_sha,
                             'exposed_actor_footprints.jsonl': source_sha}}},
             'limitations': ['Radial closing time is an engineering proxy; no legal endangerment threshold or physical visibility is established.'],

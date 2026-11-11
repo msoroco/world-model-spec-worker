@@ -1,0 +1,81 @@
+{
+  "template_id": "NRS-484B-250-3@motor_vehicle_driver",
+  "law_id": "NRS-484B-250-3",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "When two vehicles enter an intersection at approximately the same time, one vehicle traveling on a highway which ends at the intersection and the other vehicle traveling on a through highway, the driver of the vehicle on the highway which ends at the intersection shall yield the right-of-way to the other vehicle. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+  "structure": {
+    "law_id": "NRS-484B-250-3",
+    "activation": {
+      "condition": "Two vehicles enter an intersection approximately together, one on an ending highway and one on a through highway.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "Driver on the highway that ends at the intersection yields right-of-way to the through-highway vehicle.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices",
+        "condition": "Governing official device, subject to subsection 4."
+      },
+      {
+        "source_clause": "or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn",
+        "condition": "Opposite-direction approach with intended or realized left turn."
+      }
+    ],
+    "timing": {
+      "description": "Intersection approach and entry by both vehicles.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "approximately the same time",
+        "note": "Compare original intersection entry frames without assigning a numeric legal cutoff."
+      },
+      {
+        "phrase": "highway which ends at the intersection",
+        "note": "Retain connected Native lane successor identity; legal highway status remains unresolved."
+      },
+      {
+        "phrase": "yield the right-of-way",
+        "note": "Retain original body occupancy and entry order without a legal finding."
+      },
+      {
+        "phrase": "official traffic-control devices",
+        "note": "Retain governing Native device identity and phase; official status remains unresolved."
+      },
+      {
+        "phrase": "approaching each other from opposite directions",
+        "note": "Retain original connected route headings and actor headings for the separately bound left-turn cell."
+      },
+      {
+        "phrase": "intending to or is making a left turn",
+        "note": "Retain selected Native left branch and original heading/trajectory for the separately bound left-turn cell."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "entry_delta_s",
+      "kind": "subject_behavior",
+      "range_or_domain": "original first body-overlap frame difference in seconds; no legal cutoff"
+    },
+    {
+      "name": "ending_through_topology",
+      "kind": "world_setup",
+      "range_or_domain": "retained connected Native road/lane successors"
+    },
+    {
+      "name": "intersection_occupancy",
+      "kind": "subject_behavior",
+      "range_or_domain": "original body polygon conflict overlap by frame"
+    },
+    {
+      "name": "official_device_state",
+      "kind": "world_setup",
+      "range_or_domain": "governing device identity and original 20 Hz state"
+    }
+  ]
+}

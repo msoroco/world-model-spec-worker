@@ -20,8 +20,10 @@ class ProbeConfigTests(unittest.TestCase):
             check_config(dict(config, law_id='wrong'))
         with self.assertRaisesRegex(ValueError, 'Unknown'):
             check_config(dict(config, selected_case_id='wrong'))
-        with self.assertRaisesRegex(ValueError, 'eastward'):
+        with self.assertRaisesRegex(ValueError, 'matched travel direction'):
             check_config(dict(config, travel_direction='west'))
+        check_config(dict(config, selected_case_id=config['selected_case_id'].replace('east', 'west'),
+                          travel_direction='west'))
 
 
 if __name__ == '__main__':

@@ -29,6 +29,10 @@ class EndingRoadFinalizerTests(unittest.TestCase):
                         'o1':{'highway_id':'junction','junction_id':'42','successors':['o2']},
                         'o2':{'highway_id':'road3','junction_id':None,'successors':[]}}}
         (root/'intersection_topology.json').write_text(json.dumps(topology))
+        (root/'control_inventory.json').write_text(json.dumps({
+            'format':'worker-ending-road-original-control-inventory',
+            'junction_id':'42','ending_landmarks':[],
+            'through_landmarks':[],'junction_lights':[]}))
         mapping, trace, participants = [], [], []
         for i in range(4):
             frame, time_s = 100+i, i*.05

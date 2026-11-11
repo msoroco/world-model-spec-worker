@@ -1,0 +1,343 @@
+{
+  "status": "draft",
+  "adapter": "traffic-spec-source-capabilities",
+  "frames": 9,
+  "inputs": {
+    "capture_evidence": {
+      "path": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c125714-diagnostic-20261111b/capture/evidence.jsonl",
+      "sha256": "246cbf089aed8f2f1198ca9d9f1f95cd1ac34c036221a646cb41efc7eb98069b"
+    },
+    "frame_index": {
+      "path": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c125714-diagnostic-20261111b/capture/native/frames.jsonl",
+      "sha256": "b8cc751bfcf218f0ff5b56a944f25ccab5393ceef5f4507ea50d2b5d7cd6fc30"
+    },
+    "original_telemetry": {
+      "path": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c125714-diagnostic-20261111b/trace.jsonl",
+      "sha256": "88e441eaa50ff37c131e31631bb7f1a18e9e65e49624a2f1b8e8afde530fca48"
+    },
+    "map": {
+      "path": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c125714-diagnostic-20261111b/road.xodr",
+      "sha256": "22ec54092229a0631aaeeeca5ab949178134ba5d3078906a4b290ec62d952f7b"
+    },
+    "recorder_info": {
+      "path": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c125714-diagnostic-20261111b/capture/recorder_info.txt",
+      "sha256": "32c438d3f7318270477a5d46dfd082406316608639cf438f1063bc4a6a74e27d"
+    },
+    "capture_manifest": {
+      "path": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c125714-diagnostic-20261111b/capture/manifest.json",
+      "sha256": "e200d822977bf904e27f253899d0fb91f3fe6c0f42e0da566946456e46706e91"
+    },
+    "native_map_facts": {
+      "path": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c125714-diagnostic-20261111b/capture/native_map_facts.json",
+      "sha256": "a1a3c57b78d06ae1124def127c34e5c8fa9d161756acaf1463fca014314c05ae"
+    }
+  },
+  "static_inventory_receipt": null,
+  "full_core": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime/library/TrafficSpec/Core",
+  "subject_blueprint": "vehicle.tesla.model3",
+  "native_junction_mapping": [],
+  "authored_speed_control_portions": [],
+  "scenario_geometry_projection": null,
+  "native_road_profile_projection": null,
+  "native_painted_objects": [],
+  "native_centre_lines": [
+    {
+      "road_id": 1,
+      "section_id": 0,
+      "method": "Native opposing driving-lane divider; directed increasing source s; <=2m sampling",
+      "centre_road_marks": [
+        {
+          "sOffset": "0",
+          "type": "broken",
+          "weight": "standard",
+          "color": "yellow",
+          "width": ".12",
+          "laneChange": "both"
+        }
+      ],
+      "scope": "Geometric divider; paint visibility and legal interpretation are not inferred",
+      "region_id": 16
+    },
+    {
+      "road_id": 1,
+      "section_id": 1,
+      "method": "Native opposing driving-lane divider; directed increasing source s; <=2m sampling",
+      "centre_road_marks": [
+        {
+          "sOffset": "0",
+          "type": "broken",
+          "weight": "standard",
+          "color": "yellow",
+          "width": ".12",
+          "laneChange": "both"
+        }
+      ],
+      "scope": "Geometric divider; paint visibility and legal interpretation are not inferred",
+      "region_id": 17
+    },
+    {
+      "road_id": 1,
+      "section_id": 2,
+      "method": "Native opposing driving-lane divider; directed increasing source s; <=2m sampling",
+      "centre_road_marks": [
+        {
+          "sOffset": "0",
+          "type": "broken",
+          "weight": "standard",
+          "color": "yellow",
+          "width": ".12",
+          "laneChange": "both"
+        }
+      ],
+      "scope": "Geometric divider; paint visibility and legal interpretation are not inferred",
+      "region_id": 18
+    }
+  ],
+  "adapter_sources": {
+    "adapter.py": "74b53624275f36a238d7bf549f7b77c18b752cefab769e192cd57cde6b09b449",
+    "geometry.py": "26ae33e2fb7549ecf1a0accc552b561747c99d813347a73b20ced08ff9f5ce74",
+    "visibility.py": "d0d47ba10d5946566bdf33ce6c54dbada318a8fe1aae5023ccbc04a0a63d2f2b",
+    "control_portions.py": "fbbf752e455205be2f81afd57074d9bc1b357d505160a229bbbb55c8ac244f4f",
+    "scenario_geometry.py": "67a14ca58b0374280b3e1e3f07288928ae51bdea898a420d561300f2a252aab5",
+    "inventory_observations.py": "7ec670cb1a6cd58e9cf6fbfb001060f522e70e60b439918e356a0dbbd644437e",
+    "entrance_associations.py": "860ae1a19d32586bbb9391ca501b54d2d5a6c1475a83fca6100aed090f1c26c4"
+  },
+  "methods": {
+    "position": "body centre from recorded bounding-box vertices; CARLA y reflected",
+    "speed": "original live telemetry; mph multiplied by 0.44704",
+    "participant_motion": "original live graph actor.get_velocity only",
+    "yaw_rate": "unwrapped reflected heading; central/one-sided finite difference; degrees/s; subject-only estimate",
+    "path_length": "trapezoidal integration of original speed; gaps leave unknown",
+    "occupancy": "recorded convex body footprint intersects 2 m sampled OpenDRIVE lane/roadway polygons",
+    "sight_distance": "subject-relative minimum sampled clear-side bound over inventoried incoming lanes; declared virtual eye height to nine actual body samples; censored bounds and rays retained",
+    "weather": "darkness: sun altitude < 0; precipitation/wetness: parameter > 0; classifications are estimates",
+    "lane_direction": "Native constant heading, or local sampled chord estimates on law-required curved lane partitions"
+  },
+  "limitations": [
+    "Sight distance is a time-varying simulation proxy with declared eye-height/body samples and sampling uncertainty; it is not an exact physical cutoff, driver recognizability or st.sight_along_way. rel.visible requires separate original subject-to-user body rays.",
+    "Observed native light states include off; missing lamps are never inferred from controller signals.",
+    "Normalized steering control is not wheel angle; commanded gear is not observed gear.",
+    "Omitted device.governs is unknown; an observed empty list governs nothing.",
+    "Curved lane direction is a local sampled chord estimate; lanes outside the requested direction scope retain unknown direction.",
+    "Recorder-only traffic props establish existence/position but not a boundary; incomplete geometry leaves occupancy unknown because Core has no per-region observation mask.",
+    "Only captured/map-supported entities are emitted. Complete source-bound static inventories or original same-frame inventories establish absence. Without either, a native empty list alone does not exclude additional rendered or unmarked regions.",
+    "OpenDRIVE line/arc geometry only; unsupported geometry fails conversion.",
+    "Compatible native road segments share roadway regions. Variable surveyed grades remain source samples, not overlapping roadway patches."
+  ],
+  "structures_without_observed_boundary": [],
+  "occupancy_complete": true,
+  "raw_attribute_keys": [
+    "angle",
+    "carla_acc_x",
+    "carla_acc_y",
+    "carla_acc_z",
+    "carla_affected_by_traffic_light",
+    "carla_ang_vel_x",
+    "carla_ang_vel_y",
+    "carla_ang_vel_z",
+    "carla_brake",
+    "carla_gear",
+    "carla_hand_brake",
+    "carla_manual_gear_shift",
+    "carla_reverse",
+    "carla_speed",
+    "carla_steer",
+    "carla_throttle",
+    "carla_vel_x",
+    "carla_vel_y",
+    "carla_vel_z",
+    "curve",
+    "ego_control_carla_brake",
+    "ego_control_carla_gear",
+    "ego_control_carla_hand_brake",
+    "ego_control_carla_manual_gear_shift",
+    "ego_control_carla_reverse",
+    "ego_control_carla_steer",
+    "ego_control_carla_throttle",
+    "entity_id",
+    "forward",
+    "is_junction",
+    "left_lane_marking_color",
+    "left_lane_marking_lane_change",
+    "left_lane_marking_type",
+    "left_lane_marking_width",
+    "light_Brake",
+    "light_Fog",
+    "light_HighBeam",
+    "light_Interior",
+    "light_LeftBlinker",
+    "light_LowBeam",
+    "light_Position",
+    "light_Reverse",
+    "light_RightBlinker",
+    "light_Special1",
+    "light_Special2",
+    "original_observation",
+    "parent_segment",
+    "right",
+    "right_lane_marking_color",
+    "right_lane_marking_lane_change",
+    "right_lane_marking_type",
+    "right_lane_marking_width",
+    "sem_class",
+    "special_class",
+    "threedbbox",
+    "up",
+    "vehicle_light_state",
+    "vertex",
+    "waypoint",
+    "waypoint_junction_id",
+    "waypoint_lane_id",
+    "waypoint_road_id",
+    "waypoint_s",
+    "waypoint_section_id"
+  ],
+  "supplementary_evidence": "supplementary_evidence.jsonl",
+  "production_contract": 2,
+  "visibility_frames_with_scalar": 0,
+  "visibility_frames_without_scalar": 9,
+  "visibility_missing_reasons": {
+    "any-body horizons not captured": 9
+  },
+  "decoder_validation": {
+    "passed": true,
+    "exit_code": 0,
+    "executable": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+    "output": "decoded_frames=9; decoded_intents=0; manifest_complete=false; full_core=true; intentions_only=false",
+    "scope": "full Core decoding and entity references; no law evaluation"
+  },
+  "capability_absence_reasons": {
+    "ru.moped": "no validated source-wide acquisition path",
+    "ru.transit_bus": "no validated source-wide acquisition path",
+    "ru.school_bus": "no validated source-wide acquisition path",
+    "ru.taxicab": "no validated source-wide acquisition path",
+    "ru.tour_bus_or_limousine": "no validated source-wide acquisition path",
+    "ru.commercial_motor_vehicle": "no validated source-wide acquisition path",
+    "ru.trailer_or_combination": "no validated source-wide acquisition path",
+    "ru.electric_bicycle": "no validated source-wide acquisition path",
+    "ru.electric_scooter": "no validated source-wide acquisition path",
+    "ru.pedestrian_with_white_cane_or_guide_animal": "no validated source-wide acquisition path",
+    "ru.emergency_vehicle": "no validated source-wide acquisition path",
+    "ru.fire_apparatus": "no validated source-wide acquisition path",
+    "ru.official_vehicle": "no validated source-wide acquisition path",
+    "ru.rail_vehicle": "no validated source-wide acquisition path",
+    "ru.occupant_count": "no validated source-wide acquisition path",
+    "ru.rider_posture": "no validated source-wide acquisition path",
+    "kin.engine_running": "no validated source-wide acquisition path",
+    "kin.gear": "no validated source-wide acquisition path",
+    "st.travel_region": "derived by Core from concrete kinds; not independently acquired",
+    "st.road_edge": "no validated source-wide acquisition path",
+    "st.driveway_or_alley_entrance": "no validated source-wide acquisition path",
+    "st.alley": "no validated source-wide acquisition path",
+    "st.sight_along_way": "no validated source-wide acquisition path",
+    "st.railway_crossing": "no validated source-wide acquisition path",
+    "st.controlled_access": "no validated source-wide acquisition path",
+    "st.elevated_structure": "no validated source-wide acquisition path",
+    "st.reserved_lane": "no validated source-wide acquisition path",
+    "st.centre_turn_lane": "no validated source-wide acquisition path",
+    "st.turn_lane": "no validated source-wide acquisition path",
+    "st.parking_space": "no validated source-wide acquisition path",
+    "st.curb_zone": "no validated source-wide acquisition path",
+    "st.transit_stop": "no validated source-wide acquisition path",
+    "st.safety_zone": "no validated source-wide acquisition path",
+    "st.pedestrian_grade_separation": "no validated source-wide acquisition path",
+    "st.fire_hydrant": "no validated source-wide acquisition path",
+    "st.fire_station_entrance": "no validated source-wide acquisition path",
+    "st.roundabout": "no validated source-wide acquisition path",
+    "dev.pedestrian_signal": "no validated source-wide acquisition path",
+    "dev.speed_limit_beacon": "no validated source-wide acquisition path",
+    "dev.crossing_warning_signal": "no validated source-wide acquisition path",
+    "dev.zone_sign": "no validated source-wide acquisition path",
+    "dev.railway_signal_or_gate": "no validated source-wide acquisition path",
+    "dev.temporary_traffic_control": "no validated source-wide acquisition path",
+    "dev.human_direction": "no validated source-wide acquisition path",
+    "dev.school_bus_signal": "no validated source-wide acquisition path",
+    "sig.compression_brake": "no validated source-wide acquisition path",
+    "sig.warning_lamp": "no validated source-wide acquisition path",
+    "sig.siren": "no validated source-wide acquisition path",
+    "sig.horn": "no validated source-wide acquisition path",
+    "sig.door_open": "no validated source-wide acquisition path",
+    "env.civil_time": "no validated source-wide acquisition path"
+  },
+  "atom_coverage": {
+    "passed": true,
+    "atoms": {
+      "kin.speed": {
+        "passed": true,
+        "capability": "exact",
+        "reason": null
+      },
+      "kin.velocity": {
+        "passed": true,
+        "capability": "exact",
+        "reason": null
+      },
+      "ru.subject": {
+        "passed": true,
+        "capability": "exact",
+        "reason": null
+      }
+    },
+    "missing": []
+  },
+  "required_measurements_complete": true,
+  "inventory_observations": {
+    "st.crosswalk": [
+      {
+        "status": "unknown",
+        "frame": 38033,
+        "reason": "No original complete renderer and region inventory receipt; native-map emptiness is insufficient"
+      },
+      {
+        "status": "unknown",
+        "frame": 38034,
+        "reason": "No original complete renderer and region inventory receipt; native-map emptiness is insufficient"
+      },
+      {
+        "status": "unknown",
+        "frame": 38035,
+        "reason": "No original complete renderer and region inventory receipt; native-map emptiness is insufficient"
+      },
+      {
+        "status": "unknown",
+        "frame": 38036,
+        "reason": "No original complete renderer and region inventory receipt; native-map emptiness is insufficient"
+      },
+      {
+        "status": "unknown",
+        "frame": 38037,
+        "reason": "No original complete renderer and region inventory receipt; native-map emptiness is insufficient"
+      },
+      {
+        "status": "unknown",
+        "frame": 38038,
+        "reason": "No original complete renderer and region inventory receipt; native-map emptiness is insufficient"
+      },
+      {
+        "status": "unknown",
+        "frame": 38039,
+        "reason": "No original complete renderer and region inventory receipt; native-map emptiness is insufficient"
+      },
+      {
+        "status": "unknown",
+        "frame": 38040,
+        "reason": "No original complete renderer and region inventory receipt; native-map emptiness is insufficient"
+      },
+      {
+        "status": "unknown",
+        "frame": 38041,
+        "reason": "No original complete renderer and region inventory receipt; native-map emptiness is insufficient"
+      }
+    ]
+  },
+  "inventory_observation_receipt": {
+    "path": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c125714-diagnostic-converted-20261111b/inventory_observations.json",
+    "sha256": "6bace5bd3fa17bab3958d0f833a71f490af143a753a10c4d34dfde87da77f717"
+  },
+  "required_observations": [
+    "kin.speed",
+    "kin.velocity",
+    "ru.subject"
+  ],
+  "roadway_check_trace_sha256": "e42245ca91b31e920b8d8381503e8c94108a508472285beaf710d13b51ed02c2"
+}

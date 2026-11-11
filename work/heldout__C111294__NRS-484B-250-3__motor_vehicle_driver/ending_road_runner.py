@@ -6,7 +6,7 @@ from math import atan2, hypot, isfinite
 from pathlib import Path
 
 from ending_road_camera import CAMERAS, EndingRoadCameraCapture, LosslessSourceSink
-from ending_road_control_inventory import ungoverned_route_pair
+from ending_road_control_inventory import ungoverned_route_pair, original_ungoverned_inventory
 from ending_road_route import select_t_routes
 from ending_road_source_capture import EndingRoadSourceRecorder, topology_from_native, _body
 
@@ -98,7 +98,7 @@ def run(config, output, host='127.0.0.1', port=2000):
     output.mkdir(parents=True, exist_ok=True)
     if any((output / name).exists() for name in
            ('intersection_topology.json', 'intersection_participants.jsonl',
-            'trace.jsonl', 'video_frames.jsonl')):
+            'trace.jsonl', 'video_frames.jsonl', 'control_inventory.json')):
         raise FileExistsError('Retain prior original ending-road acquisition')
     config_path = output / 'config.json'
     if config_path.exists():
@@ -123,6 +123,11 @@ def run(config, output, host='127.0.0.1', port=2000):
         subject_path = extend_exit(routes['subject'])
         other_path = extend_exit(routes['other'])
         routes['subject'], routes['other'] = subject_path, other_path
+        inventory = original_ungoverned_inventory(
+            {'path': subject_path, 'junction_id': routes['junction_id']},
+            {'path': other_path, 'junction_id': routes['junction_id']}, lights)
+        (output / 'control_inventory.json').write_text(
+            json.dumps(inventory, indent=2, allow_nan=False) + '\n')
         blueprint = world.get_blueprint_library().find('vehicle.tesla.model3')
         subject = world.try_spawn_actor(blueprint, subject_path[0].transform)
         if subject is None:

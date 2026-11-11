@@ -8,23 +8,44 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "bbb26a2a69c268d8a6c8ab5f97c4ec03f455b7aab72bba536966b76b8aeb7a8b",
+      "sha256": "d973b8513df3cb8b9fb8704977959f0efca13d3e2ef1dd64c3ddfe37e930e73f",
       "passed": 20
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/construction-probe-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_east --output .runtime-work/c125714-construction-probe-20261111m --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/construction-probe-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_east --output .runtime-work/c125714-construction-probe-20261111o --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
       "exit_code": 0,
       "log": "probe-offline.log",
-      "sha256": "bc71d82ce415ba3bfbf270adf9fecfe8ff564b20eb4ba668d919e83116417712"
+      "sha256": "7feabaf5d96c022506590fd4154be3e4d7ca9b5f8e727f7be80dd1ba280db31c"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "preflight.log",
       "sha256": "f724756096ac38765b21dd9f41ca6c8fc5b3158cb10ee148012f2bc566cf8e14"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_east --output .runtime-work/c125714-compatibility-probe-20261111e --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "probe-compatibility.log",
+      "sha256": "2ad46fba4e9c3bd0e3ca91cb98dd978453c5b0a7ebf80c6a1c187ef01b6d94cc"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_east --attempt .runtime-work/c125714-saved-attempt-20261111b --output .runtime-work/c125714-saved-output-20261111b --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "probe-saved-processing.log",
+      "sha256": "a4b1074bb8469b26217446fc41948dee1823076b08ca51fc957f45af884fff34"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/construction-probe-west-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_west --output .runtime-work/c125714-construction-probe-west-20261111a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "probe-west-offline.log",
+      "sha256": "d94f03d96287211b496bae613e760049c0e439a8c3108e37c0df13fb66d23d32"
     }
   ],
-  "remaining_gpu_checks": [],
-  "reason": "Partial: corrected CARLA lane orientation and added independent east/west original-source comparison audit; 20 CPU tests, exact baseline offline probe and preflight pass. Eight exact statutory deliveries, six other comparison audits, fallbacks, semantic proposals, full compatibility, saved-processing and delivery audits remain CPU work.",
+  "remaining_gpu_checks": [
+    "Actual CARLA route and body motion in the selected median-opening cell",
+    "Original camera pixels, complete participant visibility, and physical case completion"
+  ],
+  "reason": "Partial: eastbound probe passes exact offline, diagnostic compatibility and synthetic process-saved; westbound baseline probe now passes exact offline with direction-bound config. Both remain construction probes, not delivery runners. West compatibility, six other exact cases, fallbacks, semantic proposals and independent delivery/comparison audits remain CPU work.",
   "readiness_kind": "delivery_prepared"
 }

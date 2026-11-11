@@ -59,6 +59,16 @@ class ExposureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Degenerate'):
             self.measure([sample(0, 3), wrong])
 
+    def test_nonfinite_original_rejected(self):
+        wrong = sample(1, 3)
+        wrong['ego_velocity_xy_mps'] = [float('nan'), 0]
+        with self.assertRaisesRegex(ValueError, 'Nonfinite original'):
+            self.measure([sample(0, 3), wrong])
+        wrong = sample(1, 3)
+        wrong['time_s'] = float('inf')
+        with self.assertRaisesRegex(ValueError, 'frame/time identity'):
+            self.measure([sample(0, 3), wrong])
+
 
 if __name__ == '__main__':
     unittest.main()

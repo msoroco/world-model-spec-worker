@@ -35,6 +35,13 @@ def analyze(attempt):
     trace_path, trace_sha = _source(root, 'trace.jsonl')
     participant_path, participant_sha = _source(root, 'intersection_participants.jsonl')
     topology_path, topology_sha = _source(root, 'intersection_topology.json')
+    inventory_path, inventory_sha = _source(root, 'control_inventory.json')
+    inventory = json.loads(inventory_path.read_text())
+    topology = json.loads(topology_path.read_text())
+    if (inventory.get('format') != 'worker-ending-road-original-control-inventory' or
+            str(inventory.get('junction_id')) != str(topology.get('junction_id')) or
+            any(inventory.get(key) for key in ('ending_landmarks', 'through_landmarks', 'junction_lights'))):
+        raise ValueError('Original ordinary-route control inventory differs or has governing control')
     mapping, trace, participants = (_rows(path) for path in
                                     (map_path, trace_path, participant_path))
     if not mapping or len(mapping) != len(trace) or len(mapping) != len(participants):
@@ -52,7 +59,8 @@ def analyze(attempt):
                 'value': observed,
                 'sources': {'intersection_topology.json': topology_sha,
                             'intersection_participants.jsonl': participant_sha,
-                            'video_frames.jsonl': map_sha, 'trace.jsonl': trace_sha}}},
+                            'video_frames.jsonl': map_sha, 'trace.jsonl': trace_sha,
+                            'control_inventory.json': inventory_sha}}},
             'limitations': ['OpenDRIVE road continuity is operational topology, not a legal highway classification; approximately same time and yielding remain legal judgments.'],
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 
@@ -97,7 +105,10 @@ def build_result(attempt, report):
                  'sha256': sha256(channel.read_bytes()).hexdigest()},
                 {'name': 'lanes', 'unit': 'structured topology',
                  'reference': 'intersection_topology.json',
-                 'sha256': sha256((root / 'intersection_topology.json').read_bytes()).hexdigest()}],
+                 'sha256': sha256((root / 'intersection_topology.json').read_bytes()).hexdigest()},
+                {'name': 'control_inventory', 'unit': 'structured Native control inventory',
+                 'reference': 'control_inventory.json',
+                 'sha256': sha256((root / 'control_inventory.json').read_bytes()).hexdigest()}],
             'realized_observables': {'entry_delta_s': {'unit': 's',
                 'method': 'first original body overlap against conflict polygon',
                 'time_window': 'full original trace', 'statistic': 'first',

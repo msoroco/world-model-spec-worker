@@ -5,7 +5,7 @@ Closing time and gap are engineering observations, never an endangerment cutoff.
 
 from hashlib import sha256
 import json
-from math import hypot
+from math import hypot, isfinite
 from pathlib import Path
 
 from shapely.geometry import Polygon
@@ -14,7 +14,10 @@ from shapely.geometry import Polygon
 def _xy(value, label):
     if not isinstance(value, list) or len(value) != 2:
         raise ValueError('Missing original ' + label)
-    return float(value[0]), float(value[1])
+    pair = float(value[0]), float(value[1])
+    if not all(isfinite(part) for part in pair):
+        raise ValueError('Nonfinite original ' + label)
+    return pair
 
 
 def _polygon(value, label):
@@ -49,7 +52,8 @@ def measure(path):
         if row.get('exposed_kind') not in ('pedestrian', 'cyclist', 'motor_vehicle', 'property'):
             raise ValueError('Exposed participant/property kind missing')
         frame, time_s = row.get('frame'), row.get('time_s')
-        if type(frame) is not int or type(time_s) not in (int, float):
+        if (type(frame) is not int or type(time_s) not in (int, float)
+                or not isfinite(time_s)):
             raise ValueError('Original frame/time identity missing')
         if previous and (frame != previous[0] + 1 or abs(time_s - previous[1] - .05) > 1e-4):
             raise ValueError('Original exposure frames are not joined at 20 Hz')

@@ -25,6 +25,11 @@ def _rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def measure_right_half(path):
+    """Derive the case measurement from retained original directed footprints."""
+    return measure(path)
+
+
 def analyze(attempt):
     root = Path(attempt)
     config_path, _ = _source(root, 'config.json')
@@ -46,10 +51,10 @@ def analyze(attempt):
                 motion.get('time_s') != time_s or roadway.get('frame') != frame or
                 roadway.get('time_s') != time_s):
             raise ValueError('Original right-half source/frame-map join failed')
-    measured = measure(original_path)
+    measured = measure_right_half(original_path)
     return {'format': 'worker-analysis-report', 'case_id': case_id,
             'measurements': {'right_half_occupancy': {
-                'method': 'measure', 'value': measured,
+                'method': 'measure_right_half', 'value': measured,
                 'sources': {'video_frames.jsonl': map_sha, 'trace.jsonl': trace_sha,
                             'directed_roadway_footprints.jsonl': original_sha}}},
             'limitations': ['Mapped adjacent-lane boundary and diagnostic CPU sources do not establish median-opening geometry, legal width, exception or physical visibility.'],

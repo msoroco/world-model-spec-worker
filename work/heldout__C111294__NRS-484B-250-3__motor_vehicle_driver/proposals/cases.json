@@ -4,14 +4,26 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields",
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__baseline",
       "target_law_id": "NRS-484B-250-3",
-      "target_type": "boundary_probe",
-      "rationale": "ending approach gives way to through approach at closely spaced authored approach times; legal approximately-same-time and highway identity judgments unresolved",
+      "target_type": "baseline",
+      "rationale": "Shared authored ending/through intersection context only; no planned recording or legal result.",
       "variable_assignments": {
         "entry_delta_s": {
           "kind": "subject_behavior",
           "value": null
+        },
+        "ending_through_topology": {
+          "kind": "world_setup",
+          "value": "connected ending and through Native route plan"
+        },
+        "intersection_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_device_state": {
+          "kind": "world_setup",
+          "value": "no governing Native control inventory"
         }
       },
       "unresolved_judgment_calls": [
@@ -41,6 +53,70 @@
         "limitations": [
           "No legal approximately-same-time or yield judgment follows from a CPU fixture."
         ]
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields",
+      "target_law_id": "NRS-484B-250-3",
+      "target_type": "boundary_probe",
+      "rationale": "ending approach gives way to through approach at closely spaced authored approach times; legal approximately-same-time and highway identity judgments unresolved",
+      "variable_assignments": {
+        "entry_delta_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ending_through_topology": {
+          "kind": "world_setup",
+          "value": "connected ending and through Native route plan"
+        },
+        "intersection_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_device_state": {
+          "kind": "world_setup",
+          "value": "no governing Native control inventory"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately the same time",
+        "highway which ends at the intersection",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "approaching each other from opposite directions",
+        "intending to or is making a left turn"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "intersection_occupancy",
+            "unit": "bool",
+            "sampling_rate_hz": 20,
+            "method": "original Native body polygons against retained conflict polygon for both participants",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native bounding-box precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "lanes",
+            "method": "Native OpenDRIVE road/lane and successor readback",
+            "unit": "structured topology"
+          }
+        ],
+        "limitations": [
+          "No legal approximately-same-time or yield judgment follows from a CPU fixture."
+        ]
+      },
+      "paired_probe_id": "ending_through_yield_order",
+      "deliberate_differences": [
+        "entry_delta_s"
+      ],
+      "probe": {
+        "primary_variable": "entry_delta_s",
+        "comparison_or_standard": "original-source controlled comparison without a legal cutoff",
+        "target_value_or_branch": "same_arrival_ending_yields"
       }
     },
     {
@@ -52,12 +128,27 @@
         "entry_delta_s": {
           "kind": "subject_behavior",
           "value": null
+        },
+        "ending_through_topology": {
+          "kind": "world_setup",
+          "value": "connected ending and through Native route plan"
+        },
+        "intersection_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_device_state": {
+          "kind": "world_setup",
+          "value": "no governing Native control inventory"
         }
       },
       "unresolved_judgment_calls": [
         "approximately the same time",
-        "highway identity",
-        "yield right of way"
+        "highway which ends at the intersection",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "approaching each other from opposite directions",
+        "intending to or is making a left turn"
       ],
       "recording_description": {
         "channels": [
@@ -81,6 +172,15 @@
         "limitations": [
           "No legal approximately-same-time or yield judgment follows from a CPU fixture."
         ]
+      },
+      "paired_probe_id": "ending_through_yield_order",
+      "deliberate_differences": [
+        "entry_delta_s"
+      ],
+      "probe": {
+        "primary_variable": "entry_delta_s",
+        "comparison_or_standard": "original-source controlled comparison without a legal cutoff",
+        "target_value_or_branch": "same_arrival_ending_enters_first"
       }
     },
     {
@@ -92,12 +192,27 @@
         "entry_delta_s": {
           "kind": "subject_behavior",
           "value": null
+        },
+        "ending_through_topology": {
+          "kind": "world_setup",
+          "value": "connected ending and through Native route plan"
+        },
+        "intersection_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_device_state": {
+          "kind": "world_setup",
+          "value": "no governing Native control inventory"
         }
       },
       "unresolved_judgment_calls": [
         "approximately the same time",
-        "highway identity",
-        "yield right of way"
+        "highway which ends at the intersection",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "approaching each other from opposite directions",
+        "intending to or is making a left turn"
       ],
       "recording_description": {
         "channels": [
@@ -121,6 +236,15 @@
         "limitations": [
           "No legal approximately-same-time or yield judgment follows from a CPU fixture."
         ]
+      },
+      "paired_probe_id": "arrival_timing_applicability",
+      "deliberate_differences": [
+        "entry_delta_s"
+      ],
+      "probe": {
+        "primary_variable": "entry_delta_s",
+        "comparison_or_standard": "original-source controlled comparison without a legal cutoff",
+        "target_value_or_branch": "separated_arrival"
       }
     },
     {
@@ -132,12 +256,27 @@
         "entry_delta_s": {
           "kind": "subject_behavior",
           "value": null
+        },
+        "ending_through_topology": {
+          "kind": "world_setup",
+          "value": "connected ending and through Native route plan"
+        },
+        "intersection_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_device_state": {
+          "kind": "world_setup",
+          "value": "governing Native device"
         }
       },
       "unresolved_judgment_calls": [
         "approximately the same time",
-        "highway identity",
-        "yield right of way"
+        "highway which ends at the intersection",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "approaching each other from opposite directions",
+        "intending to or is making a left turn"
       ],
       "recording_description": {
         "channels": [
@@ -175,47 +314,54 @@
         "limitations": [
           "No legal approximately-same-time or yield judgment follows from a CPU fixture."
         ]
-      }
-    },
-    {
-      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn",
-      "target_law_id": "NRS-484B-250-3",
-      "target_type": "boundary_probe",
-      "rationale": "opposite-direction left-turn alternative in a compatible connected intersection; legal approximately-same-time and highway identity judgments unresolved",
-      "variable_assignments": {
-        "entry_delta_s": {
-          "kind": "subject_behavior",
-          "value": null
-        }
       },
-      "unresolved_judgment_calls": [
-        "approximately the same time",
-        "highway identity",
-        "yield right of way"
+      "paired_probe_id": "official_control_exception",
+      "deliberate_differences": [
+        "official_device_state"
       ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "intersection_occupancy",
-            "unit": "bool",
-            "sampling_rate_hz": 20,
-            "method": "original Native body polygons against retained conflict polygon for both participants",
-            "time_window": "full 8 s trace",
-            "reference_frame": "world ground plane",
-            "uncertainty": "20 Hz sampling and Native bounding-box precision"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "lanes",
-            "method": "Native OpenDRIVE road/lane and successor readback",
-            "unit": "structured topology"
-          }
-        ],
-        "limitations": [
-          "No legal approximately-same-time or yield judgment follows from a CPU fixture."
-        ]
+      "probe": {
+        "primary_variable": "official_device_state",
+        "comparison_or_standard": "original-source controlled comparison without a legal cutoff",
+        "target_value_or_branch": "official_device_control"
       }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "ending_road_qualitative_judgments",
+      "target_law_id": "NRS-484B-250-3",
+      "judgment_refs": [
+        {
+          "phrase": "approximately the same time",
+          "note": "Compare original intersection entry frames without assigning a numeric legal cutoff."
+        },
+        {
+          "phrase": "highway which ends at the intersection",
+          "note": "Retain connected Native lane successor identity; legal highway status remains unresolved."
+        },
+        {
+          "phrase": "yield the right-of-way",
+          "note": "Retain original body occupancy and entry order without a legal finding."
+        },
+        {
+          "phrase": "official traffic-control devices",
+          "note": "Retain governing Native device identity and phase; official status remains unresolved."
+        },
+        {
+          "phrase": "approaching each other from opposite directions",
+          "note": "Retain original connected route headings and actor headings for the separately bound left-turn cell."
+        },
+        {
+          "phrase": "intending to or is making a left turn",
+          "note": "Retain selected Native left branch and original heading/trajectory for the separately bound left-turn cell."
+        }
+      ],
+      "rationale": "Qualitative timing, highway classification, control and opposite-left exceptions require source-backed comparisons without numeric legal thresholds.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "C293604 opposite-left binding and exact original-source package not yet allocated",
+        "Official-control and opposite-left physical variations cannot be represented by one shared numeric sweep axis without changing statutory conditions; retain separate controlled comparisons and source-specific contracts."
+      ]
     }
   ]
 }

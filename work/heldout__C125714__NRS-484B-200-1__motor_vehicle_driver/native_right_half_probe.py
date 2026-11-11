@@ -13,19 +13,21 @@ from roadway_source_capture import RoadwaySourceRecorder
 from right_half_camera import CAMERAS, LosslessSourceSink, RightHalfCameraCapture
 
 
-CASE_SUFFIX = '__baseline_right_east'
+CASE_PREFIX = 'heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_'
 
 
 def check_config(config):
-    if not config.get('selected_case_id', '').endswith(CASE_SUFFIX):
+    case_id = config.get('selected_case_id', '')
+    if case_id not in (CASE_PREFIX + 'east', CASE_PREFIX + 'west'):
         raise ValueError('Unknown right-half baseline probe case')
     if (config.get('law_id'), config.get('cell_id'), config.get('actor')) != (
             'NRS-484B-200-1', 'C125714', 'motor_vehicle_driver'):
         raise ValueError('Right-half probe identity differs')
     if config.get('rate_hz') != 20 or config.get('frames', 0) < 80:
         raise ValueError('Right-half probe requires at least 80 frames at 20 Hz')
-    if config.get('travel_direction') != 'east':
-        raise ValueError('Exact baseline east case requires eastward travel')
+    direction = case_id.removeprefix(CASE_PREFIX)
+    if config.get('travel_direction') != direction:
+        raise ValueError('Exact baseline case requires matched travel direction')
     if config.get('construction_probe_only') is not True:
         raise ValueError('Probe may not masquerade as delivery')
 

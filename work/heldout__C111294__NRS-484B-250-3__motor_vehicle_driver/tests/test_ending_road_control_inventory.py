@@ -4,7 +4,7 @@ from pathlib import Path
 from types import SimpleNamespace as NS
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from ending_road_control_inventory import approach_landmarks, ungoverned_route_pair
+from ending_road_control_inventory import approach_landmarks, ungoverned_route_pair, original_ungoverned_inventory
 
 
 class Waypoint:
@@ -52,3 +52,15 @@ class InventoryTests(unittest.TestCase):
         ending['path'][0].signs = [NS(id='', type='206')]
         with self.assertRaisesRegex(ValueError, 'lacks OpenDRIVE'):
             ungoverned_route_pair(ending, through, [])
+
+    def test_original_inventory_records_both_approaches_and_rejects_control(self):
+        ending, through = self.routes()
+        source = original_ungoverned_inventory(ending, through, [])
+        self.assertEqual(source['format'], 'worker-ending-road-original-control-inventory')
+        self.assertEqual(source['ending_approach_road_id'], 1)
+        self.assertEqual(source['through_approach_road_id'], 3)
+        self.assertEqual(source['ending_landmarks'], [])
+        self.assertEqual(source['through_landmarks'], [])
+        through['path'][0].signs = [NS(id='yield-1', type='205')]
+        with self.assertRaisesRegex(ValueError, 'potential governing control'):
+            original_ungoverned_inventory(ending, through, [])
