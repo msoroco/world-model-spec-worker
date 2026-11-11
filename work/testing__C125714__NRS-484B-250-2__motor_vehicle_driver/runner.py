@@ -108,6 +108,8 @@ def _spawn_ego(world, blueprint, pose):
 
 
 def capture(args, config):
+    if config["site"].get("diagnostic_site_only") is True:
+        raise ValueError("Synthetic diagnostic site cannot be used for Native capture")
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap, seal_capture
@@ -138,7 +140,8 @@ def capture(args, config):
                                  plan["approaches"][role]["lane_id"]) for role in ("ego", "other")}
                 if not native_lanes <= entrance_lanes:
                     raise ValueError("Native participant entrance absent from reviewed device inventory")
-                geometry = road_geometry({"device_inventory_source": site["device_review_source"]}, plan)
+                geometry = road_geometry({"device_inventory_source": site["device_review_source"],
+                                          "device_review": reviewed["device_review"]}, plan)
                 (output / "road_geometry.json").write_text(json.dumps(geometry, indent=2) + "\n")
                 camera_poses = {name: _transform(carla, pose) for name, pose in site["cameras"].items()}
                 with source_cameras(world, ego, camera_poses) as sensors:

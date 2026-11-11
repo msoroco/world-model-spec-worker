@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 PACKAGE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACKAGE))
-from runner import CASE, validate_config, _sensor_frame
+from runner import CASE, validate_config, _sensor_frame, capture
 from camera_setup import SIZES
 from queue import Queue
 
@@ -41,6 +41,12 @@ class RunnerTests(unittest.TestCase):
     def test_cpu_config_requires_hashed_site_review(self):
         with self.assertRaisesRegex(ValueError, "Hashed site review packet"):
             validate_config(config())
+
+    def test_synthetic_site_cannot_start_native_capture(self):
+        value = config()
+        value["site"]["diagnostic_site_only"] = True
+        with self.assertRaisesRegex(ValueError, "Synthetic diagnostic site"):
+            capture(object(), value)
 
     def test_routes_and_camera_plan_reach_review_gate(self):
         with patch("runner.verify_site_packet", return_value={}) as reviewed:

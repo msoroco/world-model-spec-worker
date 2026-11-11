@@ -58,6 +58,9 @@ def road_geometry(site, plan):
     """Bind reviewed site claims to the checked Native approach geometry."""
     if site.get("device_inventory_source") in (None, ""):
         raise ValueError("Reviewed device inventory source required")
+    review = site.get("device_review")
+    if not isinstance(review, dict) or review.get("official_device_controls_crossing") is not False:
+        raise ValueError("Reviewed uncontrolled crossing device result required")
     approaches = plan["approaches"]
     return {
         "intersection_id": plan["native_junction_id"],
@@ -66,6 +69,8 @@ def road_geometry(site, plan):
         "ego_highway_id": plan["ego_highway_id"],
         "other_highway_id": plan["other_highway_id"],
         "device_inventory_source": site["device_inventory_source"],
+        "official_device_controls_crossing": False,
+        "device_review": review,
         "approach_geometry_source": plan["approach_geometry_source"],
         "ego_approach_origin_xy_m": approaches["ego"]["start_xy_m"],
         "other_approach_origin_xy_m": approaches["other"]["start_xy_m"],

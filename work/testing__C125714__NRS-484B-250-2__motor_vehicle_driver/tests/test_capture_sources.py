@@ -39,7 +39,8 @@ class CaptureTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as dirname:
             root = Path(dirname)
             (root / "road_geometry.json").write_text(json.dumps(road_geometry(
-                {"device_inventory_source": "synthetic test inventory"}, plan)))
+                {"device_inventory_source": "synthetic test inventory",
+                 "device_review": {"official_device_controls_crossing": False}}, plan)))
             with FrameMap(root / "video_frames.jsonl") as frames, (root / "crossing_history.jsonl").open("x") as history:
                 for i, (ex, oy) in enumerate(((-8,-8),(-4,-8),(-4,-4))):
                     snap = NS(frame=10+i, timestamp=NS(elapsed_seconds=.5+i*.05))
@@ -55,6 +56,10 @@ class CaptureTests(unittest.TestCase):
     def test_requires_reviewed_device_source(self):
         with self.assertRaisesRegex(ValueError, "device inventory"):
             road_geometry({}, {"approaches": {}})
+        with self.assertRaisesRegex(ValueError, "uncontrolled crossing"):
+            road_geometry({"device_inventory_source": "test",
+                           "device_review": {"official_device_controls_crossing": True}},
+                          {"approaches": {}})
 
     def test_four_cameras_created_and_cleaned(self):
         calls = []

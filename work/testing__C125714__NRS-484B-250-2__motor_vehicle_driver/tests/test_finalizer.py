@@ -33,6 +33,9 @@ class FinalizerTests(unittest.TestCase):
             root = Path(dirname)
             write_sources(root)
             import json
+            geometry = json.loads((root / "road_geometry.json").read_text())
+            geometry["device_review"] = {"official_device_controls_crossing": False}
+            (root / "road_geometry.json").write_text(json.dumps(geometry))
             (root / "config.json").write_text(json.dumps({
                 "selected_case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__synthetic_test",
                 "law_id": "NRS-484B-250-2", "cell_id": "C125714",
@@ -42,6 +45,11 @@ class FinalizerTests(unittest.TestCase):
             (root / "trace.jsonl").write_text("".join(json.dumps({
                 "frame": 10+i, "time_s": .5+i*.05, "position_m": [i,0,0]})+"\n"
                 for i in range(3)))
+            (root / "controller_history.jsonl").write_text("".join(json.dumps({
+                "frame": 10+i, "time_s": .5+i*.05,
+                "other_inside_before_tick": False,
+                "other_entered_once": False,
+                "ego_control": {"hold": True}})+"\n" for i in range(3)))
             (root / "capture").mkdir()
             (root / "capture/evidence.jsonl").write_text("{}\n")
             for name in ("overview", "approach", "reference_corner", "driver_reference"):
@@ -52,6 +60,8 @@ class FinalizerTests(unittest.TestCase):
             self.assertFalse(result["physical_acceptance_claimed"])
             self.assertIn("unresolved", payload["right_of_way_judgment"])
             self.assertTrue((root / "channels/entry_context.json").is_file())
+            self.assertTrue((root / "channels/yield_control.json").is_file())
+            self.assertIn("yield_control_attempt", json.loads((root / "analysis.json").read_text())["measurements"])
 
 
 if __name__ == "__main__":

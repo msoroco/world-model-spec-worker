@@ -124,6 +124,8 @@ def build():
                            "construction": "construction.json",
                            "construction_sha256": sha(construction),
                            "measurement_procedure": {"entrypoint": "finalizer.py"},
+                           "measurement_contract": "measurement-contract.json",
+                           "fixture_recipe": "work/" + PACKAGE.name + "/diagnostic-recipe.json",
                            "candidate_risk": {"status": "physical",
                                               "reason": "Native approach timing or camera coverage may fail"},
                            "candidates": []}]}
