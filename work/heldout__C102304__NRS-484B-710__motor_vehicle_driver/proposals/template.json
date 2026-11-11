@@ -21,7 +21,13 @@
           "unit": "ft"
         },
         {
-          "variable": "fire_stopped_distance_ft",
+          "variable": "fire_drive_to_distance_ft",
+          "operator": "<=",
+          "value": 500,
+          "unit": "ft"
+        },
+        {
+          "variable": "fire_park_distance_ft",
           "operator": "<=",
           "value": 500,
           "unit": "ft"
@@ -49,11 +55,6 @@
       "range_or_domain": "measured nonnegative ground-footprint separation in ft"
     },
     {
-      "name": "fire_stopped_distance_ft",
-      "kind": "subject_behavior",
-      "range_or_domain": "measured nonnegative world-centre separation in ft"
-    },
-    {
       "name": "apparatus_alarm_response",
       "kind": "world_setup",
       "range_or_domain": "sourced boolean premise"
@@ -72,6 +73,31 @@
       "name": "subject_official_business",
       "kind": "world_setup",
       "range_or_domain": "sourced boolean premise"
+    },
+    {
+      "name": "fire_drive_to_distance_ft",
+      "kind": "subject_behavior",
+      "range_or_domain": "branch-specific measured distance"
+    },
+    {
+      "name": "fire_park_distance_ft",
+      "kind": "subject_behavior",
+      "range_or_domain": "branch-specific measured distance"
+    },
+    {
+      "name": "fire_branch",
+      "kind": "world_setup",
+      "range_or_domain": "declared branch"
+    },
+    {
+      "name": "target_distance_ft",
+      "kind": "controller",
+      "range_or_domain": "nonnegative target ft"
+    },
+    {
+      "name": "target_centre_ft",
+      "kind": "controller",
+      "range_or_domain": "nonnegative target ft"
     }
   ],
   "boundary_note": "The stopped-branch phrase \"within 500 feet\" is represented with an inclusive equality probe for planning; exact legal meaning and physical equality require later review. No fixture establishes a legal interpretation."

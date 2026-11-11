@@ -56,7 +56,7 @@
           "trigger": {
             "source": "retained original participant_footprints.jsonl and participant_state.jsonl",
             "metric": "active-frame full-footprint gap oscillation around the commanded 500 ft target",
-            "failure_condition": "Primary control produces sustained oscillation outside a predeclared \u00b12 ft engineering attainment band; this band is not a legal threshold."
+            "failure_condition": "Primary control produces sustained oscillation outside a predeclared ±2 ft engineering attainment band; this band is not a legal threshold."
           },
           "changed_knobs": [
             "following controller gap/speed gains: 0.18/0.30 to 0.12/0.22"
@@ -130,8 +130,38 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_500ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": "cat $OUTPUT/v0001/feedback.json",
         "test_log": "cpu-tests.log",
-        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_log_sha256": "6a611a72ba0ed526fa40b18c7242b466f92ac462220fc15c782344ff4d9c8c5e",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_500ft",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_500ft",
+        "test_exit_code": 0,
+        "test_log": "acceptance/traveling_follow_500ft-positive.log",
+        "test_log_sha256": "1f67f2d5e848cf35726de5b991f346ae34c26f43e9b4106d12da948515cba4b2",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_500ft --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "stale",
+        "negative_log": "acceptance/traveling_follow_500ft-negative.log",
+        "negative_log_sha256": "3440b77baccfdab08fbea76cc9dc3a267d45877ac57d1ed3d9372ea26db50062",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "73d7e6c99497f68fba267052c7df49c130b2b2da4a9ed4d8255ea5d7fd455684",
+        "fixture_only": true
+      },
+      "physical_preparation": {
+        "receipt": "physical/traveling_follow_500ft-proof.json",
+        "sha256": "7bb0b95016d2f931c74b0cf0980b8bea18714aac84d9c7f834d0815df22b24df"
       }
     },
     {
@@ -194,7 +224,7 @@
           "trigger": {
             "source": "retained original participant_footprints.jsonl and participant_state.jsonl",
             "metric": "active-frame full-footprint gap oscillation around the commanded 500 ft target",
-            "failure_condition": "Primary control produces sustained oscillation outside a predeclared \u00b12 ft engineering attainment band; this band is not a legal threshold."
+            "failure_condition": "Primary control produces sustained oscillation outside a predeclared ±2 ft engineering attainment band; this band is not a legal threshold."
           },
           "changed_knobs": [
             "following controller gap/speed gains: 0.18/0.30 to 0.12/0.22"
@@ -252,7 +282,7 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_499ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": "cat $OUTPUT/v0001/feedback.json",
         "test_log": "cpu-tests.log",
-        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_log_sha256": "6a611a72ba0ed526fa40b18c7242b466f92ac462220fc15c782344ff4d9c8c5e",
         "test_exit_code": 0
       },
       "compatibility": {
@@ -263,6 +293,36 @@
       },
       "negative": {
         "log": "cases/traveling_follow_499ft/negative-primary.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_499ft",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_499ft",
+        "test_exit_code": 0,
+        "test_log": "acceptance/traveling_follow_499ft-positive.log",
+        "test_log_sha256": "e2e4034cb1385ae941125280c16fc25f997c067ee2f336e8b9aa8ba45302b0e0",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_499ft --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "stale",
+        "negative_log": "acceptance/traveling_follow_499ft-negative.log",
+        "negative_log_sha256": "3440b77baccfdab08fbea76cc9dc3a267d45877ac57d1ed3d9372ea26db50062",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "73d7e6c99497f68fba267052c7df49c130b2b2da4a9ed4d8255ea5d7fd455684",
+        "fixture_only": true
+      },
+      "physical_preparation": {
+        "receipt": "physical/traveling_follow_499ft-proof.json",
+        "sha256": "389012ddd5104a2560fb3e7a2195e7e227f945aaf68968472e1ae0d93a49c43a"
       }
     },
     {
@@ -325,7 +385,7 @@
           "trigger": {
             "source": "retained original participant_footprints.jsonl and participant_state.jsonl",
             "metric": "active-frame full-footprint gap oscillation around the commanded 500 ft target",
-            "failure_condition": "Primary control produces sustained oscillation outside a predeclared \u00b12 ft engineering attainment band; this band is not a legal threshold."
+            "failure_condition": "Primary control produces sustained oscillation outside a predeclared ±2 ft engineering attainment band; this band is not a legal threshold."
           },
           "changed_knobs": [
             "following controller gap/speed gains: 0.18/0.30 to 0.12/0.22"
@@ -383,7 +443,7 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_501ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": "cat $OUTPUT/v0001/feedback.json",
         "test_log": "cpu-tests.log",
-        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_log_sha256": "6a611a72ba0ed526fa40b18c7242b466f92ac462220fc15c782344ff4d9c8c5e",
         "test_exit_code": 0
       },
       "compatibility": {
@@ -394,6 +454,36 @@
       },
       "negative": {
         "log": "cases/traveling_follow_501ft/negative-primary.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_501ft",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_501ft",
+        "test_exit_code": 0,
+        "test_log": "acceptance/traveling_follow_501ft-positive.log",
+        "test_log_sha256": "94ac9a00f5632c27f96b2373a779e0423b8be49282b08b4a2ca37a332e8904a7",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_501ft --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "stale",
+        "negative_log": "acceptance/traveling_follow_501ft-negative.log",
+        "negative_log_sha256": "3440b77baccfdab08fbea76cc9dc3a267d45877ac57d1ed3d9372ea26db50062",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "73d7e6c99497f68fba267052c7df49c130b2b2da4a9ed4d8255ea5d7fd455684",
+        "fixture_only": true
+      },
+      "physical_preparation": {
+        "receipt": "physical/traveling_follow_501ft-proof.json",
+        "sha256": "3af80431a51f40fc6a5b6f905659c81a8f73cf1c4070b5beefebcf44f4b26d42"
       }
     },
     {
@@ -523,8 +613,38 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_450ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": "cat $OUTPUT/v0001/feedback.json",
         "test_log": "cpu-tests.log",
-        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_log_sha256": "6a611a72ba0ed526fa40b18c7242b466f92ac462220fc15c782344ff4d9c8c5e",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_450ft",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_450ft",
+        "test_exit_code": 0,
+        "test_log": "acceptance/stopped_drive_to_450ft-positive.log",
+        "test_log_sha256": "07762cbac8f2943209076a60f847f98d6d3d2b608896772472a375ace062f073",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_450ft --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "stale",
+        "negative_log": "acceptance/stopped_drive_to_450ft-negative.log",
+        "negative_log_sha256": "3440b77baccfdab08fbea76cc9dc3a267d45877ac57d1ed3d9372ea26db50062",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "73d7e6c99497f68fba267052c7df49c130b2b2da4a9ed4d8255ea5d7fd455684",
+        "fixture_only": true
+      },
+      "physical_preparation": {
+        "receipt": "physical/stopped_drive_to_450ft-proof.json",
+        "sha256": "0544b1e827577c0c71d4f8f08014a27c34d4a091aeeb93fc6db2078ab4f2c0ae"
       }
     },
     {
@@ -654,8 +774,38 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_500ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": "cat $OUTPUT/v0001/feedback.json",
         "test_log": "cpu-tests.log",
-        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_log_sha256": "6a611a72ba0ed526fa40b18c7242b466f92ac462220fc15c782344ff4d9c8c5e",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_500ft",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_500ft",
+        "test_exit_code": 0,
+        "test_log": "acceptance/stopped_drive_to_500ft-positive.log",
+        "test_log_sha256": "0665a3b887891078fc22f9a0a49e91cedd6db4ce6f078d224a9b459466b96f15",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_500ft --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "stale",
+        "negative_log": "acceptance/stopped_drive_to_500ft-negative.log",
+        "negative_log_sha256": "3440b77baccfdab08fbea76cc9dc3a267d45877ac57d1ed3d9372ea26db50062",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "73d7e6c99497f68fba267052c7df49c130b2b2da4a9ed4d8255ea5d7fd455684",
+        "fixture_only": true
+      },
+      "physical_preparation": {
+        "receipt": "physical/stopped_drive_to_500ft-proof.json",
+        "sha256": "231e67b46bc85807426350c074e59b1a27e9da37e9fcf562d0c5e8ac47d4ce93"
       }
     },
     {
@@ -785,8 +935,38 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_550ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": "cat $OUTPUT/v0001/feedback.json",
         "test_log": "cpu-tests.log",
-        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_log_sha256": "6a611a72ba0ed526fa40b18c7242b466f92ac462220fc15c782344ff4d9c8c5e",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_550ft",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_550ft",
+        "test_exit_code": 0,
+        "test_log": "acceptance/stopped_drive_to_550ft-positive.log",
+        "test_log_sha256": "ab2e90a6d8761e07c38cf0ff6e3f4bfb3cbcf1d405649698e20f0dfd8b4c1ae1",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_550ft --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "stale",
+        "negative_log": "acceptance/stopped_drive_to_550ft-negative.log",
+        "negative_log_sha256": "3440b77baccfdab08fbea76cc9dc3a267d45877ac57d1ed3d9372ea26db50062",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "73d7e6c99497f68fba267052c7df49c130b2b2da4a9ed4d8255ea5d7fd455684",
+        "fixture_only": true
+      },
+      "physical_preparation": {
+        "receipt": "physical/stopped_drive_to_550ft-proof.json",
+        "sha256": "984564f041eeb9b8ee66acc55eb3d5c8b3d0a6bc19b89cdef0a1db63e032b067"
       }
     },
     {
@@ -916,8 +1096,38 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_450ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": "cat $OUTPUT/v0001/feedback.json",
         "test_log": "cpu-tests.log",
-        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_log_sha256": "6a611a72ba0ed526fa40b18c7242b466f92ac462220fc15c782344ff4d9c8c5e",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_450ft",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_450ft",
+        "test_exit_code": 0,
+        "test_log": "acceptance/stopped_park_450ft-positive.log",
+        "test_log_sha256": "7e9e0d4285b4d7473f793764c7bc063458469ea442c0321873557dba36367995",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_450ft --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "stale",
+        "negative_log": "acceptance/stopped_park_450ft-negative.log",
+        "negative_log_sha256": "3440b77baccfdab08fbea76cc9dc3a267d45877ac57d1ed3d9372ea26db50062",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "73d7e6c99497f68fba267052c7df49c130b2b2da4a9ed4d8255ea5d7fd455684",
+        "fixture_only": true
+      },
+      "physical_preparation": {
+        "receipt": "physical/stopped_park_450ft-proof.json",
+        "sha256": "6af1fd96237aa2274c852dc897f8eeb2c77b9cb8c4897d8f9670e15e89b231f8"
       }
     },
     {
@@ -1047,8 +1257,38 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": "cat $OUTPUT/v0001/feedback.json",
         "test_log": "cpu-tests.log",
-        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_log_sha256": "6a611a72ba0ed526fa40b18c7242b466f92ac462220fc15c782344ff4d9c8c5e",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft",
+        "test_exit_code": 0,
+        "test_log": "acceptance/stopped_park_500ft-positive.log",
+        "test_log_sha256": "f1c8a90222af86ea708350998ddfb86ba449cbe8e7327c1bd3bbdf5524b06950",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "stale",
+        "negative_log": "acceptance/stopped_park_500ft-negative.log",
+        "negative_log_sha256": "3440b77baccfdab08fbea76cc9dc3a267d45877ac57d1ed3d9372ea26db50062",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "73d7e6c99497f68fba267052c7df49c130b2b2da4a9ed4d8255ea5d7fd455684",
+        "fixture_only": true
+      },
+      "physical_preparation": {
+        "receipt": "physical/stopped_park_500ft-proof.json",
+        "sha256": "e168384b46351dc3fefb8d4792ea9e75ca57c347c7331342a755248ce13865e3"
       }
     },
     {
@@ -1178,8 +1418,38 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_550ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": "cat $OUTPUT/v0001/feedback.json",
         "test_log": "cpu-tests.log",
-        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_log_sha256": "6a611a72ba0ed526fa40b18c7242b466f92ac462220fc15c782344ff4d9c8c5e",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_550ft",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_550ft",
+        "test_exit_code": 0,
+        "test_log": "acceptance/stopped_park_550ft-positive.log",
+        "test_log_sha256": "3ad4aad13cf0a292e5acb730fa6f205f921d9a531fb191a175b24d751e683af3",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_550ft --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "stale",
+        "negative_log": "acceptance/stopped_park_550ft-negative.log",
+        "negative_log_sha256": "3440b77baccfdab08fbea76cc9dc3a267d45877ac57d1ed3d9372ea26db50062",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "73d7e6c99497f68fba267052c7df49c130b2b2da4a9ed4d8255ea5d7fd455684",
+        "fixture_only": true
+      },
+      "physical_preparation": {
+        "receipt": "physical/stopped_park_550ft-proof.json",
+        "sha256": "6a4ff7e9b733c4714e2916f12aaffdf0b0ba6cd2b98f38e344b3171e37ffd335"
       }
     },
     {
@@ -1242,7 +1512,7 @@
           "trigger": {
             "source": "retained original participant_footprints.jsonl and participant_state.jsonl",
             "metric": "active-frame full-footprint gap oscillation around the commanded 500 ft target",
-            "failure_condition": "Primary control produces sustained oscillation outside a predeclared \u00b12 ft engineering attainment band; this band is not a legal threshold."
+            "failure_condition": "Primary control produces sustained oscillation outside a predeclared ±2 ft engineering attainment band; this band is not a legal threshold."
           },
           "changed_knobs": [
             "following controller gap/speed gains: 0.18/0.30 to 0.12/0.22"
@@ -1309,8 +1579,38 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__authorized_emergency_at500 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": "cat $OUTPUT/v0001/feedback.json",
         "test_log": "cpu-tests.log",
-        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_log_sha256": "6a611a72ba0ed526fa40b18c7242b466f92ac462220fc15c782344ff4d9c8c5e",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__authorized_emergency_at500",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__authorized_emergency_at500",
+        "test_exit_code": 0,
+        "test_log": "acceptance/authorized_emergency_at500-positive.log",
+        "test_log_sha256": "768887e4908b65597ad8d94d52fd7e177671fc7b701fc244287453c1a582e46f",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/acceptance_fixture.py --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__authorized_emergency_at500 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "stale",
+        "negative_log": "acceptance/authorized_emergency_at500-negative.log",
+        "negative_log_sha256": "3440b77baccfdab08fbea76cc9dc3a267d45877ac57d1ed3d9372ea26db50062",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "73d7e6c99497f68fba267052c7df49c130b2b2da4a9ed4d8255ea5d7fd455684",
+        "fixture_only": true
+      },
+      "physical_preparation": {
+        "receipt": "physical/authorized_emergency_at500-proof.json",
+        "sha256": "fa0d07d8430e09ac768fa525085fd264f265591e728bdc81e19472d0f810590c"
       }
     }
   ]

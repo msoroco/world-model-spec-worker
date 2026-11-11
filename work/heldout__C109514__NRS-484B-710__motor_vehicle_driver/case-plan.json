@@ -3,7 +3,24 @@
   "law_id": "NRS-484B-710",
   "cell_id": "C109514",
   "actor": "motor_vehicle_driver",
-  "cases": [],
+  "cases": [
+    {
+      "case_id": "heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_500ft",
+      "target_law_id": "NRS-484B-710",
+      "branch": "traveling_follow",
+      "target_distance_ft": 500,
+      "construction_status": "route_selector_cpu_tested_only",
+      "physical_risk": {
+        "risk": "The selected Native spawn may not have a unique straight through-intersection route long enough to place the apparatus beyond the junction at the intended separation.",
+        "trigger_source": "Native waypoint continuation and junction identity from intersection_route.py",
+        "trigger_metric": "connected sampled route length, branch turn angles and junction position relative to actor spawn points",
+        "failure_condition": "No unique connected through path with the junction between subject and apparatus and at least 500 ft approximate centre separation."
+      },
+      "construction_sources": [
+        "intersection_route.py"
+      ]
+    }
+  ],
   "comparisons": [],
   "sources": [
     {
@@ -93,10 +110,46 @@
       "status": "planned_unimplemented"
     }
   ],
-  "observations": [],
+  "observations": [
+    {
+      "name": "fire_gap_ft",
+      "mandatory": true,
+      "source": "retained original full-body footprint and participant-state streams",
+      "measurement": "nearest full-body ground-footprint gap during measured following frames"
+    }
+  ],
   "existing_evidence": [],
   "runtime_uncertainties": [
     "Pinned CPU preflight now passes. Exact construction and saved-processing proofs have not yet been run for this partial assignment.",
     "Actual CARLA motion, participant visibility, and physical capture remain unverified."
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "traveling fire apparatus following at the 500 ft boundary",
+      "source": "inputs/heldout__C109514__NRS-484B-710__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_500ft"
+      ],
+      "evidence_or_gap": "No accepted recording; route selector is CPU tested, exact runner/finalizer and proof pending."
+    },
+    {
+      "requirement": "drive to apparatus stopped in answer to a fire alarm",
+      "source": "inputs/heldout__C109514__NRS-484B-710__motor_vehicle_driver/assignment.json",
+      "status": "alternative_pending",
+      "evidence_or_gap": "No accepted recording; separate construction and below/at/above comparison pending."
+    },
+    {
+      "requirement": "park within the boundary of stopped fire apparatus",
+      "source": "inputs/heldout__C109514__NRS-484B-710__motor_vehicle_driver/assignment.json",
+      "status": "alternative_pending",
+      "evidence_or_gap": "No accepted recording; separate construction and below/at/above comparison pending."
+    },
+    {
+      "requirement": "authorized emergency vehicle on official business exception",
+      "source": "inputs/heldout__C109514__NRS-484B-710__motor_vehicle_driver/assignment.json",
+      "status": "exception_pending",
+      "evidence_or_gap": "No accepted recording; separately sourced authorization and official-business premise with paired comparison pending."
+    }
   ]
 }
