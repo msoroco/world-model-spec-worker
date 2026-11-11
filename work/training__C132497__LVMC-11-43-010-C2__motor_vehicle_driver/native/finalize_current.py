@@ -97,6 +97,10 @@ def finalize(attempt, output):
               'case_id': cfg['case_id'], 'candidate_id': cfg['candidate_id'],
               'measurements': measurements, 'source_kind': source_kind,
               'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
+    path_length = [0.0]
+    for previous, current in zip(observed, observed[1:]):
+        a,b = previous['ego']['center_native_xyz_m'], current['ego']['center_native_xyz_m']
+        path_length.append(path_length[-1] + math.dist(a[:2], b[:2]))
     channel_dir = attempt/'channels'
     channel_dir.mkdir()
     evidence = []
@@ -104,12 +108,15 @@ def finalize(attempt, output):
         name = channel['name']
         path = channel_dir/(name+'.jsonl')
         with path.open('x') as stream:
-            for row in observed:
+            for i,row in enumerate(observed):
                 ego = row['ego']
                 value = {'ego_pose': {'center_xyz_m': ego['center_native_xyz_m'],
                                       'heading_deg': ego['yaw_deg'],
                                       'body_xyz_m': ego['body_native_xyz_m']},
                          'ego_speed': ego['speed_mps'],
+                         'ego_lane_id': row['observed_lane_id'],
+                         'ego_road_id': row['observed_road_id'],
+                         'path_length_m': path_length[i],
                          'right_lane_exit': bool(row['observed_road_id'] == 21 and
                                                  row['observed_lane_id'] == -2)}[name]
                 stream.write(json.dumps({'time_s': row['time_s'], 'value': value},
@@ -146,6 +153,10 @@ def finalize(attempt, output):
                   for row in observed), 'unit': 'frames',
                   'method': 'source-bound saved actor road/lane join',
                   'time_window': '12 s diagnostic window', 'statistic': 'circulation right-lane frames',
+                  'reference': 'native-raw-actors.jsonl'},
+                  'path_length_m': {'value': path_length[-1], 'unit': 'm',
+                  'method': 'retained consecutive actor center distances',
+                  'time_window': '12 s diagnostic window', 'statistic': 'cumulative path length',
                   'reference': 'native-raw-actors.jsonl'}},
               'provenance_kind': 'synthetic_local_diagnostic' if source_kind == 'synthetic_native_sample'
                                  else 'original_native_unreviewed', 'accepted': False}

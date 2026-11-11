@@ -153,7 +153,8 @@ def build():
                  'reference_frame':'authored OpenDRIVE coordinates',
                  'uncertainty':'50 ms frame bracket; physical lane/exit unverified'}
                 for name,unit in (('ego_pose','structured'),('ego_speed','m/s'),
-                                  ('right_lane_exit','bool'))]
+                                  ('ego_lane_id','index'),('ego_road_id','index'),
+                                  ('path_length_m','m'),('right_lane_exit','bool'))]
     recording = {'channels':channels,'context_inputs':[
         {'name':'authored_road','unit':'structured','method':'source-hashed OpenDRIVE'},
         {'name':'predeclared_intention','unit':'structured',

@@ -46,7 +46,8 @@ def audit(matrix):
         manifest = ROOT/item['manifest']
         require(sha(manifest)==item['manifest_sha256']==row['manifest_sha256'],
                 'Current manifest changed')
-        selected = json.loads(manifest.read_text())['cases'][0]
+        selected = next(entry for entry in json.loads(manifest.read_text())['cases']
+                        if entry['case_id']==item['case_id'])
         selected = ({'construction':selected['construction'],
                      'construction_sha256':selected['construction_sha256']}
                     if candidate=='primary' else next(x for x in selected['candidates']

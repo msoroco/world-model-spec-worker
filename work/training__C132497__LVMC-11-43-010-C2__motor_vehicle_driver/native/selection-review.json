@@ -1,0 +1,48 @@
+{
+  "format": "c132497-conditional-delivery-source-review-v1",
+  "assignment_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver",
+  "decision": "select_two_conditional_capture_attempts_for_cpu_preparation",
+  "legal_verdict": null,
+  "original_native_observed": false,
+  "sources": [
+    {
+      "path": "inputs/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json",
+      "sha256": "50d03baa533950fa75b7dc6d6876258a273920bb12ea5ed23fe1018414916923"
+    },
+    {
+      "path": "inputs/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/witnesses.json",
+      "sha256": "5b4a419e0627f438a2ff20c7f6ed011d7fc2f378bee822dc0d6f0486d95d4472"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
+    }
+  ],
+  "source_review": {
+    "target_clause": "LVMC 11.43.010(C)(2) addresses an operator who intends a right exit from a roundabout and requires use of the right lane to turn right.",
+    "adjacent_direction_clause": "LVMC 11.43.010(A) requires counterclockwise travel; the authored request follows that direction.",
+    "comparison": "Use the same authored road, actor, weather, timing and same-candidate controller/camera profile; vary the circulating lane requested for the intended right exit.",
+    "interpretation_limits": "The frozen witness is conditional. Do not infer intention from exit alone, assume a center lane is circulating right lane, impose a numeric right-turn threshold, or treat continuous lane holding as an independent statutory cutoff."
+  },
+  "existing_evidence": {
+    "accepted_recording_ids": [],
+    "membership_rows": 0,
+    "reuse_selected": false
+  },
+  "selected_case_ids": [
+    "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__reference",
+    "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__contrast"
+  ],
+  "comparison_ids": [
+    "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__comparison_main"
+  ],
+  "selection_scope": "conditional CPU capture preparation only; no original Native movement, source-reviewed governed lane, pixels, legal verdict or acceptance",
+  "required_local_evidence": [
+    "operator, vehicle and jurisdiction qualification",
+    "Native map readback of closed counterclockwise two-lane roundabout, lane adjacency and right-exit connectivity",
+    "independent pre-motion controller intention and any later intention changes",
+    "original 240-frame actor lane/road/heading/footprint and four-camera source join",
+    "human source-hashed lane and right-turn pixel review",
+    "independent original reference/contrast comparison and statutory applicability review"
+  ]
+}

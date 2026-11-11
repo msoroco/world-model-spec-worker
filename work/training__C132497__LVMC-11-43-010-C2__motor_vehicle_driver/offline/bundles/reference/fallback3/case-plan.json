@@ -3,7 +3,7 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C132497",
   "law_id": "LVMC-11-43-010-C2",
-  "selected_branch": null,
+  "selected_branch": "intended right exit in a two-lane counterclockwise roundabout; conditional original evidence required",
   "scope_branches": [
     "Intended right-turn exit."
   ],
@@ -45,7 +45,7 @@
     {
       "case_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__reference",
       "target_law_id": "LVMC-11-43-010-C2",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_for_delivery_preparation_conditional",
       "target_type": "attempt",
       "comparison_variable": "right_turn_lane_used",
       "comparison_unit": "bool",
@@ -57,12 +57,22 @@
         "text-0",
         "text-1",
         "text-2"
+      ],
+      "native_request_status": "selected_cpu_preparation_original_unverified",
+      "native_candidates": [
+        "primary",
+        "fallback1",
+        "fallback2",
+        "fallback3"
+      ],
+      "gap_ids": [
+        "original_right_exit_and_governed_lane"
       ]
     },
     {
       "case_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__contrast",
       "target_law_id": "LVMC-11-43-010-C2",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_for_delivery_preparation_conditional",
       "target_type": "attempt",
       "comparison_variable": "right_turn_lane_used",
       "comparison_unit": "bool",
@@ -74,6 +84,16 @@
         "text-0",
         "text-1",
         "text-2"
+      ],
+      "native_request_status": "selected_cpu_preparation_original_unverified",
+      "native_candidates": [
+        "primary",
+        "fallback1",
+        "fallback2",
+        "fallback3"
+      ],
+      "gap_ids": [
+        "original_right_exit_and_governed_lane"
       ]
     }
   ],
@@ -96,7 +116,7 @@
         "other controller settings",
         "camera and capture profile"
       ],
-      "status": "planned_unverified"
+      "status": "selected_for_cpu_preparation_original_unverified"
     }
   ],
   "observations": [
@@ -121,72 +141,75 @@
   ],
   "source_observation_mapping": {
     "st.roundabout": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Authored context plus retained 240-frame Native actor/road/lane/pose sources; original validity and governed-use review remain required",
       "channels": [
-        "right_turn_lane_used"
+        "ego_road_id"
       ],
       "source_refs": [
         "inputs/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.lane": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Authored context plus retained 240-frame Native actor/road/lane/pose sources; original validity and governed-use review remain required",
       "channels": [
-        "right_turn_lane_used"
+        "ego_lane_id",
+        "ego_pose"
       ],
       "source_refs": [
         "inputs/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.lane_adjacency": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Authored context plus retained 240-frame Native actor/road/lane/pose sources; original validity and governed-use review remain required",
       "channels": [
-        "right_turn_lane_used"
+        "ego_lane_id"
       ],
       "source_refs": [
         "inputs/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Authored context plus retained 240-frame Native actor/road/lane/pose sources; original validity and governed-use review remain required",
       "channels": [
-        "right_turn_lane_used"
+        "ego_lane_id",
+        "ego_pose"
       ],
       "source_refs": [
         "inputs/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.turning": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Authored context plus retained 240-frame Native actor/road/lane/pose sources; original validity and governed-use review remain required",
       "channels": [
-        "right_turn_lane_used"
+        "ego_pose",
+        "ego_road_id"
       ],
       "source_refs": [
         "inputs/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.heading": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Authored context plus retained 240-frame Native actor/road/lane/pose sources; original validity and governed-use review remain required",
       "channels": [
-        "right_turn_lane_used"
+        "ego_pose"
       ],
       "source_refs": [
         "inputs/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.lane_change": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Authored context plus retained 240-frame Native actor/road/lane/pose sources; original validity and governed-use review remain required",
       "channels": [
-        "right_turn_lane_used"
+        "ego_lane_id"
       ],
       "source_refs": [
         "inputs/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.path_length": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Authored context plus retained 240-frame Native actor/road/lane/pose sources; original validity and governed-use review remain required",
       "channels": [
-        "right_turn_lane_used"
+        "path_length_m"
       ],
       "source_refs": [
         "inputs/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json"
@@ -211,17 +234,34 @@
     {
       "set_id": "full-train",
       "membership_rows": 0,
-      "status": "unreviewed_membership_only",
+      "status": "reviewed_no_accepted_membership",
       "reuse_receipt": null
     }
   ],
   "runtime_uncertainties": [
-    "Eight unselected source-bound CARLA request bundles now use an authored counterclockwise two-lane loop, curved south entry and first east right-exit connector, consistent in direction with frozen LVMC 11.43.010(A). Rebound copied CPU positives/negatives and pinned offline checks pass; Native physical connectivity, governed lane allocation, current compatibility and process-saved receipts remain unverified.",
-    "Synthetic saved and comparison audits exist. Canonical semantic stages and independent selected delivery/comparison acceptance audits are incomplete.",
-    "Historical membership is context only; no source-hashed accepted equivalence receipt was verified.",
-    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified."
+    "Eight selected-for-CPU-preparation source-bound request bundles author a counterclockwise two-lane loop, curved south entry and first east right-exit connector; Native physical connectivity and governed lane allocation remain unverified.",
+    "Current pinned offline, positive/negative compatibility and actual synthetic saved processing pass for eight candidates. Original acceptance, semantic stages, selected delivery/comparison audits and exact queue remain unfinished.",
+    "No accepted full-train recording or source-hashed equivalence receipt exists.",
+    "CARLA execution, original camera framing, operator/jurisdiction context and legal judgment remain unverified."
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "selection_review": {
+    "path": "native/selection-review.json",
+    "sha256": "90bd76ddbb5943af8b2227c977d6bd2b8e8dbf7a061109bb4e3f47d6ac76a6f3"
+  },
+  "evidence_review": {
+    "reviewer": "portable_worker_source_review",
+    "method": "Read frozen assignment and accepted conditional witness; verify full-train membership inventory is empty; select new conditional capture attempts without original-evidence equivalence claims.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "original_right_exit_and_governed_lane",
+        "requirement": "intended right exit, complete roundabout, governed right-lane use and original movement",
+        "source": "inputs/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/witnesses.json",
+        "why_existing_insufficient": "No accepted full-train recording is listed; authored source and synthetic diagnostics do not establish original physical evidence."
+      }
+    ]
+  }
 }

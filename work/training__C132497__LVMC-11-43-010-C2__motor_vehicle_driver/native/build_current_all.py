@@ -1,4 +1,5 @@
 """Package both C132497 cases and all four current-runtime candidates."""
+import copy
 import json
 from pathlib import Path
 
@@ -18,13 +19,15 @@ def package(case, candidate, recording):
     cfg.update({'selected_case_id':case_id,'duration_s':12,'required_atoms':[],
                 'source_packets':[], 'cameras':['overview','approach',
                 'reference_corner','driver_reference'], 'case':{'case_id':case_id},
-                'physical_success_claimed':False})
+                'physical_success_claimed':False,
+                'status':'selected_cpu_preparation_original_unverified'})
     next(item for item in files if item['path']=='config.json')['content'] = json.dumps(cfg,indent=2)+'\n'
     road = next(item['content'] for item in files if item['path']=='right-exit-road.xodr')
     files.extend([{'path':'road.xodr','content':road},
                   {'path':'finalize_current.py',
                    'content':(ROOT/'native/finalize_current.py').read_text()}])
     construction['recording_description'] = recording
+    construction['status'] = 'selected_cpu_preparation_original_unverified'
     construction['static_checks'] = ['240-frame source-bound request identity',
                                       'retained actor/trace/video frame join']
     construction['termination_rules'] = ['retain original acquisition',
@@ -45,7 +48,8 @@ def main():
                  'reference_frame':'authored OpenDRIVE coordinates',
                  'uncertainty':'50 ms frame bracket; physical lane/exit unverified'}
                 for name,unit in (('ego_pose','structured'),('ego_speed','m/s'),
-                                  ('right_lane_exit','bool'))]
+                                  ('ego_lane_id','index'),('ego_road_id','index'),
+                                  ('path_length_m','m'),('right_lane_exit','bool'))]
     recording = {'channels':channels,'context_inputs':[
         {'name':'authored_road','unit':'structured','method':'source-hashed OpenDRIVE'},
         {'name':'predeclared_intention','unit':'structured',
@@ -53,6 +57,8 @@ def main():
         'limitations':['Native lane allocation, actual right exit, pixels and legal status unverified']}
     proposals = []
     results = []
+    primary_entries = {}
+    recipes = {}
     for case in CASES:
         case_id = ROOT.name+'__'+case
         names = ('roundabout_context','declared_right_exit','right_lane_exit')
@@ -75,9 +81,12 @@ def main():
         base.write(contract_path,contract)
         packages = {candidate: package(case,candidate,recording) for candidate in CANDIDATES}
         proposals.append({'case_id':case_id,'target_law_id':'LVMC-11-43-010-C2',
-                          'target_type':'attempt','recording_description':recording})
+                          'target_type':'attempt','recording_description':recording,
+                          'rationale':'Conditional original capture to compare intended right exit from right versus other circulating lane',
+                          'variable_assignments':{'right_turn_lane_used':case=='reference'},
+                          'unresolved_judgment_calls':['Native governed right lane and actual right exit require source review']})
         for selected in CANDIDATES:
-            entry = {'case_id':case_id,'kind':'draft_not_selected',
+            entry = {'case_id':case_id,'kind':'delivery',
                      'construction':packages['primary'][0].relative_to(ROOT).as_posix(),
                      'construction_sha256':base.sha(packages['primary'][0]),
                      'measurement_contract':contract_path.relative_to(ROOT).as_posix(),
@@ -95,8 +104,11 @@ def main():
                     'construction':packages[fallback][0].relative_to(ROOT).as_posix(),
                     'construction_sha256':base.sha(packages[fallback][0]),
                     'trigger':item['trigger'],'changed_knobs':item['changed_knobs']})
+            recipes[case,selected] = entry['fixture_recipe']
+            if selected == 'primary':
+                primary_entries[case] = copy.deepcopy(entry)
             manifest = {'format':'worker-unselected-current-runtime-candidate-v1',
-                        'assignment_id':ROOT.name,'status':'draft_not_selected',
+                        'assignment_id':ROOT.name,'status':'selected_cpu_preparation_original_unverified',
                         'runtime_manifest_sha256':batch['runtime']['source_manifest_sha256'],
                         'source_branch':'roundabout_right_exit','cases':[entry],
                         'original_native_observed':False,'delivery_ready':False}
@@ -107,10 +119,27 @@ def main():
                             'manifest_sha256':base.sha(path),
                             'construction_sha256':base.sha(packages[selected][0]),
                             'diagnostic_sha256':base.sha(packages[selected][2])})
+    for row in results:
+        case = row['case_id'].rsplit('__',1)[-1]
+        candidate = row['candidate_id']
+        entries = [copy.deepcopy(primary_entries[name]) for name in CASES]
+        if candidate != 'primary':
+            next(entry for entry in entries if entry['case_id']==row['case_id'])['fixture_recipe'] = recipes[case,candidate]
+        manifest = {'format':'worker-selected-current-runtime-candidate-v1',
+                    'assignment_id':ROOT.name,
+                    'status':'selected_cpu_preparation_original_unverified',
+                    'runtime_manifest_sha256':batch['runtime']['source_manifest_sha256'],
+                    'source_branch':'roundabout_right_exit','cases':entries,
+                    'original_native_observed':False,'delivery_ready':False}
+        path = ROOT/('execution-manifest.json' if candidate=='primary' else
+                     f'execution-manifest-{case}-{candidate}.json')
+        base.write(path,manifest)
+        row['manifest'] = path.relative_to(ROOT).as_posix()
+        row['manifest_sha256'] = base.sha(path)
     base.write(ROOT/'proposals/cases.json',{'cell_id':'C132497','actor':'motor_vehicle_driver',
-               'status':'unselected_cpu_draft','cases':proposals})
+               'status':'draft','sweep_specs':[],'cases':proposals})
     base.write(ROOT/'update015-current-candidate-index.json',
-               {'format':'c132497-current-unselected-candidate-index-v1',
+               {'format':'c132497-current-selected-candidate-index-v1',
                 'results':results,'physical_acceptance_claimed':False})
     return {'candidates':len(results),
             'index_sha256':base.sha(ROOT/'update015-current-candidate-index.json')}
