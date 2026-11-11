@@ -1,0 +1,86 @@
+{
+  "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "approaching_actors": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original both approach actors"
+        },
+        "sight_distance": {
+          "entrypoint": "finalizer.py",
+          "evidence": "channels/sight_distance.jsonl",
+          "method": "pinned ray summary"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "capture/evidence.jsonl",
+          "method": "PipelineCapture original ray packet"
+        },
+        "u_turn_motion": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Native occlusion and approach motion need measured confirmation",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "turn_target_speed_mps"
+          ],
+          "construction": "construction-at-fallback1.json",
+          "construction_sha256": "4a551cbb5d45d090dab8e7c8e7d169626e8f431007efb48fd10e37083a4a6dfb",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "exit distance remains above 2 m after heading reversal and braking",
+            "metric": "measured turn overshoots exit before stable stop",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "turn_lookahead_m"
+          ],
+          "construction": "construction-at-fallback2.json",
+          "construction_sha256": "f361af967feb4e2272988b0e163868f1bf2de105fd3a512a4590c4bd97df2c13",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "recorded heading change remains below 150 engineering degrees",
+            "metric": "body cuts the planned return corner and fails heading reversal",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "approach_target_speed_mps"
+          ],
+          "construction": "construction-at-fallback3.json",
+          "construction_sha256": "d1cfbe2fc899a80ceb1eef9797f73b1110a11507a99befe8e5c3a89b547885d1",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "either approach vehicle has no sustained approach trajectory",
+            "metric": "incoming actor has insufficient measured travel within 55 seconds",
+            "source": "motion_history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__at_500ft",
+      "construction": "construction-at.json",
+      "construction_sha256": "ab514df72dd1af48b9d037d7895f8087837e35c7808d8d2c424900e1551c9fb4",
+      "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-recipe-at.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "status": "diagnostic_incomplete"
+}
