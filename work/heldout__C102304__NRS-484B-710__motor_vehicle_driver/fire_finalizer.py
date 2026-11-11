@@ -93,15 +93,22 @@ def measure_exception_context(context):
             "subject_official_business": context["subject_official_business"]}
 
 
-def analyze(attempt):
+def analyze(attempt, *, write_channel=True):
     root = Path(attempt)
-    config_path, config_hash = required_source(root, "config.json")
+    config_path, _ = required_source(root, "config.json")
     context_path, context_hash = required_source(root, "fire_context.json")
     config, context = json.loads(config_path.read_text()), json.loads(context_path.read_text())
     if config.get("law_id") != "NRS-484B-710" or not config.get("selected_case_id"):
         raise ValueError("Wrong fire-law case identity")
     measured, sources = measure_fire_branch(root, config, context)
-    sources["config.json"] = config_hash
+    # This converter-facing stream is rebuilt from retained original geometry
+    # after capture. It is never accepted as an independently acquired source.
+    channel = root / "fire_gap_ft.jsonl"
+    if write_channel:
+        channel.write_text("".join(json.dumps({"time_s": row["time_s"],
+                                                "value": row["nearest_footprint_gap_ft"],
+                                                "frame": row["frame"]}) + "\n"
+                                   for row in measured["observations"]))
     sources["fire_context.json"] = context_hash
     return {"format": "worker-analysis-report", "case_id": config["selected_case_id"],
             "measurements": {
@@ -147,12 +154,15 @@ def build_result(attempt, report):
                              "reference_corner.mkv", "driver_reference.mkv"],
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": description,
-        "recording_evidence": [{"name": name, "unit": "original source file",
-                                "reference": name, "sha256": checksum}
-                               for name, checksum in report["measurements"]
-                               ["fire_boundary_observation"]["sources"].items()],
-        "realized_observables": {"active_fire_branch": observed["branch"],
-                                 "minimum_boundary_distance_ft": observed["min_boundary_distance_ft"]},
+        "recording_evidence": [{"name": "fire_gap_ft", "unit": "ft",
+                                "reference": "fire_gap_ft.jsonl",
+                                "sha256": sha256((root / "fire_gap_ft.jsonl").read_bytes()).hexdigest()}],
+        "realized_observables": {"fire_gap_ft": {
+            "unit": "ft", "method": "ground-footprint nearest separation from retained Native corners",
+            "time_window": "all original frames", "statistic": "min",
+            "reference": "fire_gap_ft.jsonl", "value": observed["min_gap_ft"],
+            "sample_window_s": [observed["observations"][0]["time_s"],
+                                observed["observations"][-1]["time_s"]]}},
         "physical_acceptance_claimed": False,
         "legal_acceptance_claimed": False,
     }
@@ -168,7 +178,7 @@ def main():
     if output.exists():
         raise ValueError("Retain prior analysis report; choose fresh output")
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
-    from scenario_pipeline.worker_exchange.native_output import write_result
+    from worker_exchange.native_output import write_result
     write_result(args.attempt, build_result(args.attempt, report))
 
 

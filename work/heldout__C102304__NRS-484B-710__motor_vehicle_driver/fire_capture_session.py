@@ -24,7 +24,7 @@ FireSourceRecorder = _load_local("fire_source_capture").FireSourceRecorder
 
 class FireCaptureSession:
     def __init__(self, output, pipeline_capture, ego, apparatus, context):
-        from scenario_pipeline.worker_exchange.native_output import FrameMap
+        from worker_exchange.native_output import FrameMap
 
         output = Path(output)
         if not isinstance(context, dict) or not context.get("alarm_response_source"):

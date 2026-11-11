@@ -14,7 +14,7 @@ from pathlib import Path
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 REQUIRED = ("video_frames.jsonl", "trace.jsonl", "participant_footprints.jsonl",
-            "participant_state.jsonl", "fire_context.json", "config.json")
+            "participant_state.jsonl", "fire_context.json")
 
 
 def _hash(path):
@@ -36,7 +36,7 @@ def _finalizer():
 def audit_attempt(attempt, report, *, decoder=None, receipt_dir=None):
     root = Path(attempt)
     report = json.loads(Path(report).read_text()) if not isinstance(report, dict) else report
-    for name in REQUIRED:
+    for name in (*REQUIRED, "config.json"):
         if not (root / name).is_file():
             raise ValueError("Missing audited original source: " + name)
     source_hashes = report["measurements"]["fire_boundary_observation"]["sources"]
@@ -44,7 +44,7 @@ def audit_attempt(attempt, report, *, decoder=None, receipt_dir=None):
         raise ValueError("Analysis source inventory is incomplete or unexpected")
     if any(_hash(root / name) != expected for name, expected in source_hashes.items()):
         raise ValueError("Analysis source hash differs from retained acquisition")
-    independent = _finalizer().analyze(root)
+    independent = _finalizer().analyze(root, write_channel=False)
     if independent["case_id"] != report["case_id"]:
         raise ValueError("Analysis case identity differs")
     if independent["measurements"] != report["measurements"]:
@@ -58,7 +58,7 @@ def audit_attempt(attempt, report, *, decoder=None, receipt_dir=None):
                 or mapping["time_s"] != row["time_s"]):
             raise ValueError("Original source frame identity differs")
     if decoder is None:
-        from scenario_pipeline.worker_exchange.media import audit as decoder
+        from worker_exchange.media import audit as decoder
     if receipt_dir is not None:
         Path(receipt_dir).mkdir(parents=True, exist_ok=False)
     receipts = {}

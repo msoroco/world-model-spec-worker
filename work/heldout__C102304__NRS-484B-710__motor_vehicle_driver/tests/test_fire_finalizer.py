@@ -60,7 +60,7 @@ class FireFinalizerTests(unittest.TestCase):
         self.assertEqual(boundary["value"]["at_500_frames"], [20, 21])
         self.assertEqual(boundary["value"]["active_frame_count"], 2)
         self.assertEqual(set(boundary["sources"]), {
-            "config.json", "trace.jsonl", "video_frames.jsonl",
+            "trace.jsonl", "video_frames.jsonl",
             "participant_footprints.jsonl", "participant_state.jsonl",
             "fire_context.json"})
         self.assertFalse(report["physical_acceptance_claimed"])
@@ -96,13 +96,17 @@ class FireFinalizerTests(unittest.TestCase):
         self.assertFalse(result["maneuver_completed"])
         self.assertEqual(len(result["video_references"]), 4)
         self.assertEqual(result["target_checks"][0]["measured"],
-                         result["realized_observables"]["minimum_boundary_distance_ft"])
+                         result["realized_observables"]["fire_gap_ft"]["value"])
+        stream = [json.loads(line) for line in
+                  (self.root / "fire_gap_ft.jsonl").read_text().splitlines()]
+        self.assertEqual(len(stream), 2)
+        self.assertTrue(all(row["value"] is not None for row in stream))
 
     def test_cli_positive_and_missing_source_negative(self):
         self.config["case"] = {"recording_description": {"channels": []}}
         (self.root / "config.json").write_text(json.dumps(self.config))
         runtime = Path(__file__).resolve().parents[3] / "runtime"
-        environment = dict(os.environ, PYTHONPATH=str(runtime))
+        environment = dict(os.environ, PYTHONPATH=str(runtime / "scenario_pipeline") + os.pathsep + str(runtime))
         command = [sys.executable, str(source), "--attempt", str(self.root),
                    "--output", str(self.root / "analysis-report.json")]
         positive = subprocess.run(command, text=True, capture_output=True, env=environment)

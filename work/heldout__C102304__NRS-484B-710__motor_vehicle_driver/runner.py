@@ -88,7 +88,7 @@ def _device_readbacks(apparatus, carla):
 def run(output, host, port):
     import carla  # Native-only dependency.
     from pipeline_capture import PipelineCapture
-    from scenario_pipeline.worker_exchange.native_output import seal_capture
+    from worker_exchange.native_output import seal_capture
 
     output = Path(output)
     config = json.loads((output / "config.json").read_text())

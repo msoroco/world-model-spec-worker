@@ -10,6 +10,7 @@ from types import SimpleNamespace
 folder = Path(__file__).resolve().parents[1]
 runtime = folder.parents[1] / "runtime"
 sys.path.insert(0, str(runtime))
+sys.path.insert(0, str(runtime / "scenario_pipeline"))
 
 
 def load(name):
