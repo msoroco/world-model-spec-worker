@@ -62,6 +62,8 @@ def analyze(root:Path)->dict:
             if i==0 and inside:raise ValueError("Missing pre-entry history")
             if inside and first[role] is None:first[role]={"frame":fid,"time_s":time}
             sample[role+"_inside"]=inside
+        if row.get("ego_vertices_m") != row["ego"]["body_vertices_xy_m"]:
+            raise ValueError("Pinned physical ego body differs from measured original body")
         samples.append(sample)
     if not all(first.values()):raise ValueError("Both original body entries required")
     other_before=first["other"]["time_s"]<first["ego"]["time_s"]

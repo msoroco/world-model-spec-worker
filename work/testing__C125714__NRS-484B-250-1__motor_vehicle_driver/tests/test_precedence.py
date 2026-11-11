@@ -1,11 +1,12 @@
-import importlib.util,json,sys,tempfile,unittest
+import hashlib,importlib.util,io,json,subprocess,sys,tempfile,unittest
 from pathlib import Path
 from types import SimpleNamespace as NS
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT.parents[1]/'runtime/scenario_pipeline'))
 def load(name):
     spec=importlib.util.spec_from_file_location(name,ROOT/(name+'.py'));mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod);return mod
-measure=load('crossing_precedence');native=load('native_crossing');comparison=load('comparison_audit');geometry=load('median_geometry')
+measure=load('crossing_precedence');native=load('native_crossing');comparison=load('comparison_audit');geometry=load('median_geometry');capture=load('capture_sources');finalizer=load('finalizer');runner=load('runner');cameras=load('camera_setup');encoder=load('camera_encoder')
 def body(x,y):return [[x-1,y-1],[x+1,y-1],[x+1,y+1],[x-1,y+1]]
 class Tests(unittest.TestCase):
     def fixture(self,root,other_first=True):
@@ -14,7 +15,7 @@ class Tests(unittest.TestCase):
         spots= [((-4,5), (14,5)), ((-4,5),(5,5)),((5,5),(5,5))] if other_first else [((-4,5),(14,5)),((5,5),(14,5)),((5,5),(5,5))]
         rows=[]
         for i,(ego,other) in enumerate(spots):
-            rows.append({'frame':100+i,'time_s':i*.05,'ego':{'intersection_id':5,'road_id':11,'body_vertices_xy_m':body(*ego)},'other':{'intersection_id':5,'road_id':22,'body_vertices_xy_m':body(*other)}})
+            rows.append({'frame':100+i,'time_s':i*.05,'ego_vertices_m':body(*ego),'ego':{'intersection_id':5,'road_id':11,'body_vertices_xy_m':body(*ego)},'other':{'intersection_id':5,'road_id':22,'body_vertices_xy_m':body(*other)}})
         frames=[{'video_frame':i,'carla_frame':r['frame'],'time_s':r['time_s']} for i,r in enumerate(rows)]
         (root/'crossing_history.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows));(root/'video_frames.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in frames))
     def test_precedence_and_negative_order(self):
@@ -29,6 +30,12 @@ class Tests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'Official-device'):measure.analyze(root)
             self.fixture(root);frames=[json.loads(x) for x in (root/'video_frames.jsonl').read_text().splitlines()];frames[1]['carla_frame']=999;(root/'video_frames.jsonl').write_text(''.join(json.dumps(x)+'\n' for x in frames))
             with self.assertRaisesRegex(ValueError,'frame join'):measure.analyze(root)
+            self.fixture(root)
+            rows=[json.loads(x) for x in (root/'crossing_history.jsonl').read_text().splitlines()]
+            rows[1]['ego_vertices_m']=body(50,50)
+            (root/'crossing_history.jsonl').write_text(''.join(json.dumps(x)+'\n' for x in rows))
+            with self.assertRaisesRegex(ValueError,'Pinned physical ego body differs'):
+                measure.analyze(root)
     def test_native_device_and_spawn_cleanup(self):
         actors=[]
         world=NS(get_actors=lambda:NS(filter=lambda q:actors),try_spawn_actor=lambda bp,tr:NS(destroy=lambda:actors.append('destroyed')))
@@ -105,4 +112,146 @@ class Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'Official device governs'):
             with native.construct_crossing_candidate(*construction_args):pass
         self.assertEqual([event[0] for event in events],['spawn','destroy'])
+    def test_native_original_body_capture_and_frame_join(self):
+        def actor(actor_id,x,y):
+            location=NS(x=x,y=y)
+            corners=[NS(x=a,y=b) for a,b in body(x,y)]
+            return NS(id=actor_id,get_location=lambda:location,
+                      get_transform=lambda:NS(location=location),
+                      get_velocity=lambda:NS(x=1.0,y=0.0,z=0.0),
+                      bounding_box=NS(get_world_vertices=lambda transform:corners))
+        plan={'candidate_same_native_junction':True,'native_junction_id':5,
+              'approaches':{'ego':{'road_id':11},'other':{'road_id':22}}}
+        world_map=NS(get_waypoint=lambda location,project_to_road=False:
+                     NS(road_id=11 if location.y==5 else 22,lane_id=-1,is_junction=False))
+        frame_map=NS(append=lambda frame,time:{'video_frame':7,'carla_frame':frame,'time_s':time})
+        snapshot=NS(frame=107,timestamp=NS(elapsed_seconds=5.35))
+        stream=io.StringIO()
+        recorded=capture.record_crossing_sample(frame_map,stream,snapshot,world_map,
+                                                actor(1,-4,5),actor(2,5,-4),plan)
+        row=json.loads(stream.getvalue())
+        self.assertEqual(recorded['video_frame'],7)
+        self.assertEqual(row['ego']['actor_id'],1)
+        self.assertEqual(row['other']['road_id'],22)
+        self.assertEqual(row['ego']['body_vertices_xy_m'],body(-4,5))
+        self.assertEqual(row['ego_vertices_m'],row['ego']['body_vertices_xy_m'])
+        self.assertEqual(row['time_s'],5.35)
+        stream=io.StringIO()
+        with self.assertRaisesRegex(ValueError,'Distinct Native participants'):
+            capture.record_crossing_sample(frame_map,stream,snapshot,world_map,
+                                           actor(1,-4,5),actor(1,5,-4),plan)
+        self.assertEqual(stream.getvalue(),'')
+    def test_saved_finalizer_rebuilds_channels_from_originals(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root,True)
+            config={'selected_case_id':'testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_precedence',
+                    'law_id':'NRS-484B-250-1','cell_id':'C125714',
+                    'expected_other_enters_before_ego':True,
+                    'recording_description':{'channels':[]},
+                    'physical_completion':{'context_sources':['junction_context.json'],
+                                           'body_key':'ego_vertices_m'}}
+            (root/'config.json').write_text(json.dumps(config))
+            (root/'trace.jsonl').write_text(''.join(json.dumps({'frame':100+i,'time_s':i*.05})+'\n' for i in range(3)))
+            (root/'capture').mkdir();(root/'capture/evidence.jsonl').write_text('{}\n')
+            for name in finalizer.CAMERAS:(root/name).write_bytes(b'diagnostic placeholder')
+            output=root/'analysis.json'
+            analysis=finalizer.finalize(root,output)
+            result=json.loads((root/'result.json').read_text())
+            self.assertTrue(analysis['measurements']['other_enters_before_ego'])
+            self.assertTrue(result['measured_values']['other_body_inside_at_ego_entry'])
+            self.assertFalse(result['physical_acceptance_claimed'])
+            self.assertEqual(len((root/'channels/ego_inside.jsonl').read_text().splitlines()),3)
+            with self.assertRaisesRegex(ValueError,'Retain previous finalization'):
+                finalizer.finalize(root,root/'again.json')
+    def test_runner_config_and_four_camera_actor_ownership(self):
+        pose=[0.0,0.0,2.0,0.0]
+        config={'selected_case_id':runner.CASE,'law_id':'NRS-484B-250-1','cell_id':'C125714',
+                'rate_hz':20,'duration_s':55,'expected_other_enters_before_ego':True,
+                'required_atoms':[],'recording_description':{'channels':[]},
+                'physical_completion':{'context_sources':['junction_context.json'],'body_key':'ego_vertices_m'},
+                'ego_release_frame':150,'other_release_frame':50,
+                'ego_target_speed_mps':4.0,'other_target_speed_mps':4.0,
+                'site':{'native_map_name':'TownX','crossing_id':5,
+                        'ego_highway_id':1,'other_highway_id':2,
+                        'polygon_source':'polygon.txt','entrance_source':'entrances.txt',
+                        'median_spacing_source':'median.txt','device_review_source':'devices.txt',
+                        'statutory_crossing_review_source':'statutory.txt',
+                        'same_statutory_crossing_reviewed':True,
+                        'crossing_polygon_xy_m':[[0,0],[10,0],[10,10],[0,10]],
+                        'ego_approach':pose,'ego_entry':pose,'other_approach':pose,'other_entry':pose,
+                        'cameras':{name:[0,0,5,0,-20,0] for name in runner.CAMERAS}}}
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);documents={}
+            for key in ('polygon_source','entrance_source','median_spacing_source',
+                        'device_review_source','statutory_crossing_review_source'):
+                name=config['site'][key];content='synthetic '+key+'\n'
+                (root/name).write_text(content)
+                documents[key]={'path':name,'sha256':hashlib.sha256(content.encode()).hexdigest()}
+            packet={'format':'worker-median-site-review','review_status':'reviewed_candidate',
+                    'site':config['site'],'source_documents':documents}
+            packet_path=root/'site-review.json';packet_path.write_text(json.dumps(packet))
+            config['site_review']={'path':packet_path.name,'sha256':hashlib.sha256(packet_path.read_bytes()).hexdigest()}
+            self.assertIs(runner.validate_config(config,root),config)
+            source=root/'config.json';source.write_text(json.dumps(config))
+            check=subprocess.run([sys.executable,str(ROOT/'runner.py'),'--config',str(source),'--check'],
+                                 check=True,capture_output=True,text=True)
+            checked=json.loads(check.stdout)
+            self.assertEqual(checked['planned_frames'],1100)
+            self.assertFalse(checked['carla_started'])
+            (root/'polygon.txt').write_text('changed source\n')
+            with self.assertRaisesRegex(ValueError,'Site source missing or changed: polygon_source'):
+                runner.validate_config(config,root)
+            (root/'polygon.txt').write_text('synthetic polygon_source\n')
+            changed=json.loads(json.dumps(config))
+            changed['site']['other_highway_id']=99
+            with self.assertRaisesRegex(ValueError,'Site config differs'):
+                runner.validate_config(changed,root)
+            packet_path.write_text('{}\n')
+            with self.assertRaisesRegex(ValueError,'packet missing or changed'):
+                runner.validate_config(config,root)
+        bad=json.loads(json.dumps(config));bad['site']['cameras'].pop('driver_reference')
+        with self.assertRaisesRegex(ValueError,'four named camera'):
+            runner.validate_config(bad)
+        events=[]
+        blueprint=NS(set_attribute=lambda key,value:events.append(('attribute',key,value)))
+        def spawn(bp,transform,**kwargs):
+            events.append(('spawn',transform,kwargs))
+            return NS(stop=lambda:events.append(('stop',)),destroy=lambda:events.append(('destroy',)))
+        world=NS(get_blueprint_library=lambda:NS(find=lambda name:blueprint),spawn_actor=spawn)
+        transforms={name:object() for name in runner.CAMERAS}
+        with cameras.source_cameras(world,'ego',transforms) as sensors:
+            self.assertEqual(set(sensors),set(runner.CAMERAS))
+        spawns=[e for e in events if e[0]=='spawn']
+        self.assertEqual(len(spawns),4)
+        self.assertEqual(spawns[-1][2],{'attach_to':'ego'})
+        self.assertEqual(sum(e[0]=='stop' for e in events),4)
+        self.assertEqual(sum(e[0]=='destroy' for e in events),4)
+        applied=[]
+        vehicle=NS(get_velocity=lambda:NS(x=0.0,y=0.0,z=0.0),
+                   apply_control=lambda value:applied.append(value))
+        carla=NS(VehicleControl=lambda:NS(throttle=0.0,brake=0.0))
+        runner._drive(carla,vehicle,4.0,True)
+        runner._drive(carla,vehicle,4.0,False)
+        self.assertEqual(applied[0].brake,1.0)
+        self.assertEqual(applied[0].throttle,0.0)
+        self.assertGreater(applied[1].throttle,0.0)
+        queue=__import__('queue').Queue()
+        queue.put(NS(frame=100));queue.put(NS(frame=101))
+        self.assertEqual(runner._sensor_frame(queue,101).frame,101)
+        queue.put(NS(frame=103))
+        with self.assertRaisesRegex(ValueError,'skipped'):
+            runner._sensor_frame(queue,102)
+    def test_lossless_source_encoder_two_frame_decode(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output=Path(tmp)/'source.mkv'
+            frame=bytes([0,0,255,255])*16*16
+            with encoder.FFV1Writer(output,16,16) as writer:
+                writer.write(frame);writer.write(frame)
+            self.assertEqual(writer.exit_code,0)
+            probe=subprocess.run(['ffprobe','-v','error','-count_frames',
+                                  '-show_entries','stream=nb_read_frames,codec_name',
+                                  '-of','json',str(output)],check=True,capture_output=True,text=True)
+            streams=json.loads(probe.stdout)['streams']
+            self.assertEqual(streams[0]['codec_name'],'ffv1')
+            self.assertEqual(int(streams[0]['nb_read_frames']),2)
 if __name__=='__main__':unittest.main()

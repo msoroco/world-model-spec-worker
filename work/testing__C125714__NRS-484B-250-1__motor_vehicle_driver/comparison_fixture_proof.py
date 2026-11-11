@@ -35,6 +35,7 @@ def make_source(path, other_entry):
         for i in range(FRAMES):
             frame, time = 1000 + i, i / 20
             row = {"frame": frame, "time_s": time,
+                   "ego_vertices_m": body(5 if i >= 360 else -4, 5),
                    "ego": {"intersection_id": 5, "road_id": 11,
                            "body_vertices_xy_m": body(5 if i >= 360 else -4, 5)},
                    "other": {"intersection_id": 5, "road_id": 22,
