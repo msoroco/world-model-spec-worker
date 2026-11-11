@@ -15,4 +15,4 @@ The exact law concerns a turn to proceed in the opposite direction on a curve or
 
 ## Environment limit
 
-`.venv-cpu/bin/python runtime.py preflight` currently exits 1 at missing `numpy`. The pinned pip install failed because the package index could not be reached. `ffmpeg`, `ffprobe` and `lake` are absent from PATH. A working package index or local wheel mirror and those tools are required for exact runtime proofs; rerun the pinned install and preflight when available. This does not excuse the unfinished CPU construction and audit work. Physical realization remains unverified.
+`.venv-cpu/bin/python runtime.py preflight` now passes with the pinned CPU requirements and tools. The prior dependency failure is resolved. Construction and proof work remains CPU work. Physical realization remains unverified.

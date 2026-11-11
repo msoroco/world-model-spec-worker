@@ -17,7 +17,6 @@ The exact law requires the driver to avoid following another vehicle more closel
 
 - `python3.11 -m unittest discover -s tests` passed all six repository baseline tests.
 - `python3.11 -m unittest discover -s work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/tests -v` passed; see `cpu-tests.log` and the hash in `result.json`.
-- `.venv-cpu/bin/python runtime.py preflight` exited 1: `ValueError: Missing CPU dependency numpy`; see `preflight.log`.
-- `.venv-cpu/bin/python -m pip install --retries 1 --timeout 3 -r runtime/requirements-cpu.txt` exited 1 with DNS failure and could not resolve `numpy==1.26.4`; see `pip-install.log`. `ffmpeg`, `ffprobe` and `lake` were also absent from PATH. A package index or local wheel mirror and these exact tools are external prerequisites for the runtime proofs. Resume with the pinned install and preflight once they are available.
+- `.venv-cpu/bin/python runtime.py preflight` now passes with the pinned CPU requirements, ffmpeg, ffprobe and lake. The earlier `preflight.log` and `pip-install.log` are historical failed attempts; their dependency diagnosis is resolved.
 
 This is a partial checkpoint. Missing implementation is unfinished CPU work, not a GPU blocker. Physical realization and any legal judgment remain unverified.
