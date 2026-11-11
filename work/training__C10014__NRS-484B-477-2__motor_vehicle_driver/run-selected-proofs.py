@@ -46,7 +46,7 @@ def main():
             offline_command = run([str(PYTHON), str(ROOT/'runtime.py'),
                 'offline', '--manifest', str(MANIFEST), '--case', entry['case_id'],
                 '--candidate', candidate, '--output', str(offline),
-                '--python', str(PYTHON)], proof/'offline-command.log')
+                '--python', str(PYTHON)], proof/'command.log')
             shutil.copyfile(offline/'offline.log', proof/'offline.log')
             common = ['--manifest', str(MANIFEST), '--case', entry['case_id'],
                       '--library', str(ROOT/'runtime/pipeline/library'),
