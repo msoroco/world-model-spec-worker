@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 from right_half_route import control_step
+from left_excursion_target import pinned_subject_waypoint
 from median_opening_route import _inside, _validate_reference, select_median_opening_route
 from roadway_source_capture import RoadwaySourceRecorder
 from right_half_camera import CAMERAS, LosslessSourceSink, RightHalfCameraCapture
@@ -95,7 +96,8 @@ def run(config, output, host, port):
                 raise ValueError('Native right-half snapshot/frame mismatch')
             if start is None:
                 start = snapshot.timestamp.elapsed_seconds
-            waypoint = world.get_map().get_waypoint(ego.get_location())
+            waypoint = pinned_subject_waypoint(world.get_map(), ego.get_location(),
+                                               route[0])
             trace = pipeline.capture(frame, snapshot.timestamp.elapsed_seconds - start)
             if trace.get('frame') != frame or trace.get('time_s') != snapshot.timestamp.elapsed_seconds - start:
                 raise ValueError('Native right-half trace/frame mismatch')

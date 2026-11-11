@@ -7,11 +7,12 @@ from pathlib import Path
 
 from u_turn_camera_capture import CAMERAS, LaneCameraCapture, LosslessSourceSink
 from u_turn_construction import (control_step, participant_placement,
-                                 select_u_turn_scene, u_turn_targets)
+                                 select_u_turn_scene, u_turn_targets,
+                                 select_no_u_turn_device)
 from u_turn_originals import UTurnSourceRecorder
 
 
-SUFFIXES = ('safety_clear', 'safety_conflict')
+SUFFIXES = ('safety_clear', 'safety_conflict', 'prohibition_403_2')
 PREFIX = 'heldout__C230627__NRS-484B-403-1__motor_vehicle_driver__'
 
 
@@ -45,6 +46,14 @@ def check_config(config):
         raise ValueError('Clear comparison participant placement differs')
     if case_id.endswith('__safety_conflict') and engineering.get('oncoming_distance_m') != 12:
         raise ValueError('Conflict comparison participant placement differs')
+    if case_id.endswith('__prohibition_403_2') and engineering.get('oncoming_distance_m', 24) != 24:
+        raise ValueError('Device comparison participant placement differs')
+    if engineering.get('waypoint_spacing_m', 2.) not in (2., 1.):
+        raise ValueError('Unsupported U-turn waypoint sampling')
+    if engineering.get('arc_extension_m', 6.) not in (6., 4.):
+        raise ValueError('Unsupported U-turn arc extension')
+    if engineering.get('following_distance_m', 18.) not in (18., 24.):
+        raise ValueError('Unsupported U-turn following spawn')
     return case_id
 
 
@@ -85,6 +94,9 @@ def run(output_dir, host, port):
         scene = select_u_turn_scene(world.get_map(),
                                     waypoint_spacing_m=engineering.get('waypoint_spacing_m', 2.),
                                     candidate_index=engineering.get('route_candidate_index', 0))
+        device = (select_no_u_turn_device(world.get_map(), scene)
+                  if config['selected_case_id'].endswith('__prohibition_403_2')
+                  else None)
         route = u_turn_targets(scene, arc_extension_m=engineering.get('arc_extension_m', 6.))
         placement = participant_placement(
             scene, oncoming_distance_m=engineering.get('oncoming_distance_m', 24.),
@@ -105,7 +117,8 @@ def run(output_dir, host, port):
         cameras = LaneCameraCapture(world, carla, ego, sinks)
         pipeline = PipelineCapture(client, ego, output, config['selected_case_id'],
                                    required_observations=config.get('required_atoms', []))
-        recorder = UTurnSourceRecorder(output, ego, participants, scene)
+        recorder = UTurnSourceRecorder(output, ego, participants, scene,
+                                       device=device)
         frame_map = FrameMap(output/'video_frames.jsonl')
         target_index = 1
         start_time = None

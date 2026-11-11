@@ -47,9 +47,8 @@ def main():
                 'feedback_command': 'cat "$PROCESSING_OUTPUT/feedback.json"',
                 'test_log': str(saved_log.relative_to(ROOT)),
                 'test_log_sha256': digest(saved_log), 'test_exit_code': 0},
-            'physical_preparation': {'receipt': 'physical-preparation-proofs.json',
-                                     'sha256': digest(ROOT / 'physical-preparation-proofs.json'),
-                                     'case_id': case_id},
+            'physical_preparation': {'receipt': by_physical[case_id]['receipt'],
+                                     'sha256': by_physical[case_id]['sha256']},
             'delivery_acceptance': {
                 'case_id': case_id, 'sets': ['held-out'],
                 'checks': ['native_source', 'all_participants', 'time_join',

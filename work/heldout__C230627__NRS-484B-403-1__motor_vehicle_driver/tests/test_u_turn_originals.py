@@ -87,6 +87,42 @@ class OriginalTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Missing required source: trace.jsonl'):
                 analyze(root)
 
+    def test_mapped_device_source_retained_without_official_claim(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            ego, oncoming, following = Actor(1, 0, 0), Actor(2, 20, 3.5), Actor(3, -15, 0)
+            device = {'landmark_id': 'sign-1', 'road_id': 7,
+                      'distance_to_approach_m': 12,
+                      'source_fields': {'name': 'NO_U_TURN',
+                                        'type': 'regulatory', 'value': ''}}
+            recorder = UTurnSourceRecorder(root, ego,
+                                           {'oncoming': oncoming, 'following': following},
+                                           {'road_id': 7, 'approach_lane_id': -1,
+                                            'opposite_lane_id': 1}, device=device)
+            for index, yaw in enumerate((0, 10, 90, 179)):
+                ego.yaw = yaw
+                recorder.append(100+index, index*.05)
+            recorder.close()
+            (root/'config.json').write_text(json.dumps({
+                'selected_case_id': 'heldout__C230627__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_2',
+                'law_id': 'NRS-484B-403-1', 'cell_id': 'C230627',
+                'actor': 'motor_vehicle_driver'}))
+            (root/'video_frames.jsonl').write_text(''.join(json.dumps({
+                'video_frame': i, 'carla_frame': 100+i, 'time_s': i*.05})+'\n'
+                for i in range(4)))
+            (root/'trace.jsonl').write_text(''.join(json.dumps({
+                'frame': 100+i, 'time_s': i*.05})+'\n' for i in range(4)))
+            report = analyze(root)
+            observed = report['measurements']['mapped_no_u_turn_device']['value']
+            self.assertEqual(observed['landmark_id'], 'sign-1')
+            self.assertIsNone(observed['official_device_status'])
+            (root/'u_turn_observation.jsonl').unlink()
+            source = json.loads((root/'u_turn_device.json').read_text())
+            source['mapped_no_u_turn_device']['official_device_status'] = True
+            (root/'u_turn_device.json').write_text(json.dumps(source))
+            with self.assertRaisesRegex(ValueError, 'cannot claim official'):
+                analyze(root)
+
 
 if __name__ == '__main__':
     unittest.main()

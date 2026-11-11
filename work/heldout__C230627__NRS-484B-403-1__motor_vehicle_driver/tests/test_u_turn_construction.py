@@ -6,7 +6,8 @@ from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from u_turn_construction import (participant_placement, select_u_turn_scene,
-                                 u_turn_targets, control_step)
+                                 u_turn_targets, control_step,
+                                 select_no_u_turn_device)
 from runner import CAMERAS, PREFIX, check_config
 
 
@@ -29,12 +30,16 @@ class Waypoint:
 
 
 class Map:
-    def __init__(self, starts):
+    def __init__(self, starts, landmarks=()):
         self.starts = starts
+        self.landmarks = landmarks
 
     def generate_waypoints(self, spacing):
         assert spacing == 2.0
         return self.starts
+
+    def get_all_landmarks(self):
+        return self.landmarks
 
 
 class ConstructionTests(unittest.TestCase):
@@ -98,6 +103,30 @@ class ConstructionTests(unittest.TestCase):
                               'recording_description': {'channels': []}},
                         engineering={'oncoming_distance_m': 12})
         self.assertEqual(check_config(conflict), PREFIX+'safety_conflict')
+        for candidate in ({'waypoint_spacing_m': 1},
+                          {'arc_extension_m': 4},
+                          {'following_distance_m': 24}):
+            self.assertEqual(check_config(dict(base, engineering={
+                'oncoming_distance_m': 24, **candidate})), PREFIX+'safety_clear')
+
+    def test_mapped_no_u_turn_device_source_and_negative_controls(self):
+        scene_map = self.scene()
+        scene = select_u_turn_scene(scene_map)
+        device = SimpleNamespace(id='sign-1', road_id=7, name='NO_U_TURN',
+                                 type='regulatory', value='',
+                                 transform=SimpleNamespace(
+                                     location=SimpleNamespace(x=12, y=2)))
+        scene_map.landmarks = [device]
+        found = select_no_u_turn_device(scene_map, scene)
+        self.assertEqual(found['landmark_id'], 'sign-1')
+        self.assertIsNone(found['official_device_status'])
+        self.assertIsNone(found['pixel_visibility_status'])
+        scene_map.landmarks = [SimpleNamespace(**{**vars(device), 'road_id': 8})]
+        with self.assertRaisesRegex(ValueError, 'No source-mapped'):
+            select_no_u_turn_device(scene_map, scene)
+        scene_map.landmarks = [SimpleNamespace(**{**vars(device), 'name': 'speed_limit'})]
+        with self.assertRaisesRegex(ValueError, 'No source-mapped'):
+            select_no_u_turn_device(scene_map, scene)
 
 
 if __name__ == '__main__':

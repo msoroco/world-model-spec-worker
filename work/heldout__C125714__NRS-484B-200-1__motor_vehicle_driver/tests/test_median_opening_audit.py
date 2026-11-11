@@ -20,6 +20,7 @@ class MedianOpeningAuditTests(unittest.TestCase):
                    'opening_reference_sha256': hashlib.sha256(json.dumps(
                        ref, sort_keys=True).encode()).hexdigest(),
                    'frames': [10, 11, 12], 'observed_opening_frames': [10, 11],
+                   'opening_sample_indices': [2, 3],
                    'physical_median_verified': False, 'delivery_ready': False}
         rows = [{'frame': frame, 'subject_road_id': ref['road_id'],
                  'subject_lane_id': ref['lane_id'],
@@ -45,6 +46,11 @@ class MedianOpeningAuditTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'unsupported readiness'):
                 audit(temp)
             receipt['delivery_ready'] = False
+            receipt['opening_sample_indices'] = [2, 4]
+            (Path(temp) / 'construction-probe.json').write_text(json.dumps(receipt))
+            with self.assertRaisesRegex(ValueError, 'route samples'):
+                audit(temp)
+            receipt['opening_sample_indices'] = [2, 3]
             (Path(temp) / 'construction-probe.json').write_text(json.dumps(receipt))
             rows[1]['roadway_center_point_xy'] = [30, 0]
             (Path(temp) / 'directed_roadway_footprints.jsonl').write_text(

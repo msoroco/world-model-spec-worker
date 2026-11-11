@@ -30,12 +30,6 @@
       "sha256": "53566eb5924169733bd3f56e7645bfc3163830d3a514b2d3d3071defdb89bf88"
     },
     {
-      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/physical_probe.py",
-      "exit_code": 0,
-      "log": "physical-preparation-proofs.log",
-      "sha256": "9e257734d2ac0d608496b0ad038e1c97f282b21516fd3a9f4796bcbaf0b1c4be"
-    },
-    {
       "command": ".venv-cpu/bin/python work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/build_delivery_audit_proofs.py",
       "exit_code": 0,
       "log": "delivery-audit-proofs.log",
@@ -48,15 +42,33 @@
       "sha256": "931a3f6dd619c38780da9b597c56f41cde242e9184b8ef77fb42e9be8da01243"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/execution-manifest.json --case heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__person_3mps --output .runtime-work/c10364-person_3mps-execution-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/build_gate_physical_proofs.py",
       "exit_code": 0,
-      "log": "execution-offline-first.log",
-      "sha256": "f023747153c4bb35cd593c251b8311d9b031d66ccad3b35df1309ce28ce04a67"
+      "log": "physical-preparation-proofs.log",
+      "sha256": "bf307b498fe467a390a0de9c731558e1ca0a1c6601677e2217c44396711878ba"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/validate_execution.py",
+      "exit_code": 0,
+      "log": "execution-validation.log",
+      "sha256": "19148b9df9d8c7f22fc66a748fd903b5b59aa3291ed02b9d25b29d3959022433"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/reprove_execution_manifest.py",
+      "exit_code": 0,
+      "log": "execution-reproof.log",
+      "sha256": "e90d12402c2a884c58977fbe6a76930c134fe57fc10fe72f7d10e3d3fc4e4cd3"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/reprove_execution_saved.py",
+      "exit_code": 0,
+      "log": "execution-saved-proofs.log",
+      "sha256": "eb6f6915d2efd8fd72181b46fcb121c73080ceeb1fbef0b23ca530c5a4dad437"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and duration remain unverified after CPU preparation."
   ],
-  "reason": "Partial: nine exact primary and 27 fallback constructions pass pinned offline/positive-negative compatibility, nine primaries pass synthetic saved processing, and finite source-hashed placement audit passes. Independent diagnostic delivery audits pass positive/tampered-source negative for nine; all four saved-source comparisons execute and preserve unrealized speed/interest outcomes. Nine exact synthetic physical completion, incomplete, missing-evidence and closure protocols pass. Execution manifest is authored and first case passes exact offline, but the selected Native alley polygon is still only synthetic and the execution manifest lacks full exact case reproof and source-bound acceptance. No physical or legal acceptance is claimed.",
+  "reason": "Partial: all nine exact primary and 27 fallback constructions pass pinned offline/positive-negative compatibility under the current execution manifest; nine primaries pass exact synthetic saved processing with original bytes preserved. Per-case physical complete/incomplete/missing-evidence and lifecycle receipts, independent diagnostic delivery positive/tampered-source negatives, four saved-source comparisons, and pinned execution/delivery acceptance bindings pass. The supplied input has no original Native alley map/polygon coordinates; current selected polygon/media are marked synthetic. Native source-bound pixel/decode acceptance and canonical local execution remain unproven. No physical or legal result is claimed. Scoped strict fails at partial/missing package acceptance.",
   "readiness_kind": "delivery_prepared"
 }

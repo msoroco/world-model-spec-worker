@@ -27,6 +27,11 @@ def audit(attempt):
             receipt.get('road_id') != reference['road_id'] or
             receipt.get('lane_id') != reference['lane_id']):
         raise ValueError('Opening receipt map/road/lane differs from source')
+    route_samples = receipt.get('opening_sample_indices')
+    if (not isinstance(route_samples, list) or len(route_samples) < 2 or
+            any(not isinstance(i, int) or i < 0 for i in route_samples) or
+            any(b != a + 1 for a, b in zip(route_samples, route_samples[1:]))):
+        raise ValueError('Opening route samples are not consecutive')
     rows = [json.loads(line) for line in (
         attempt / 'directed_roadway_footprints.jsonl').read_text().splitlines()
             if line.strip()]

@@ -70,6 +70,46 @@ def select_u_turn_scene(carla_map, *, waypoint_spacing_m=2.0,
             'lane_center_separation_m': separation}
 
 
+def select_no_u_turn_device(carla_map, scene, *, max_distance_m=30.0):
+    """Require an actual mapped traffic landmark describing a U-turn ban.
+
+    A mapped landmark is source geometry, not itself proof that the device is
+    legally official, visible in pixels, or governing this exact lane.
+    """
+    if not isfinite(max_distance_m) or max_distance_m <= 0:
+        raise ValueError('Invalid mapped device distance')
+    origin = _xy(scene['approach'])
+    matches = []
+    for landmark in carla_map.get_all_landmarks():
+        if getattr(landmark, 'road_id', None) is None or int(landmark.road_id) != scene['road_id']:
+            continue
+        fields = [str(getattr(landmark, key, '')) for key in ('name', 'type', 'value')]
+        label = ' '.join(fields).lower().replace('-', ' ').replace('_', ' ')
+        if not any(marker in label for marker in
+                   ('no u turn', 'u turn prohibited', 'u turn forbidden')):
+            continue
+        transform = getattr(landmark, 'transform', None)
+        if transform is None:
+            continue
+        x, y = float(transform.location.x), float(transform.location.y)
+        if not all(isfinite(v) for v in (x, y)):
+            continue
+        distance = hypot(x-origin[0], y-origin[1])
+        if distance <= max_distance_m:
+            matches.append((distance, str(landmark.id), landmark, fields))
+    if not matches:
+        raise ValueError('No source-mapped no-U-turn device near selected lane')
+    matches.sort(key=lambda item: (item[0], item[1]))
+    distance, _, landmark, fields = matches[0]
+    return {'landmark': landmark, 'landmark_id': str(landmark.id),
+            'road_id': int(landmark.road_id),
+            'distance_to_approach_m': distance,
+            'source_fields': dict(zip(('name', 'type', 'value'), fields)),
+            'official_device_status': None,
+            'governing_lane_status': None,
+            'pixel_visibility_status': None}
+
+
 def u_turn_targets(scene, *, arc_extension_m=6.0, samples=24):
     """Request a forward-entry, reverse-heading cubic arc between lane centers."""
     if (not isfinite(arc_extension_m) or arc_extension_m <= 0 or

@@ -33,13 +33,13 @@ for candidate in entry['candidates']:
     name = candidate['id']
     base = [PY, 'runtime.py', 'offline', '--manifest', str(MANIFEST.relative_to(REPO)),
             '--case', CASE, '--candidate', name]
-    output = f'.runtime-work/c111603-clearance-narrow-{name}-offline-b'
+    output = f'.runtime-work/c111603-clearance-narrow-{name}-offline-c'
     command = base + ['--output', output, '--python', PY]
     log = ROOT / f'{PREFIX}-{name}-offline.log'
     run(command, log)
     candidate['offline'] = {'command': ' '.join(command), 'exit_code': 0, 'log': log.name,
                             'log_sha256': sha(log), 'construction_sha256': candidate['construction_sha256']}
-    output = f'.runtime-work/c111603-clearance-narrow-{name}-compat-b'
+    output = f'.runtime-work/c111603-clearance-narrow-{name}-compat-c'
     command = [PY, 'runtime.py', 'compatibility', '--manifest', str(MANIFEST.relative_to(REPO)),
                '--case', CASE, '--candidate', name, '--output', output,
                '--library', 'runtime/library',
@@ -57,7 +57,7 @@ for candidate in entry['candidates']:
     print(name, 'offline and compatibility passed', flush=True)
 
 # A fresh source-complete attempt is materialized independently from compatibility.
-attempt = REPO / '.runtime-work/c111603-clearance-narrow-saved-attempt-a'
+attempt = REPO / '.runtime-work/c111603-clearance-narrow-saved-attempt-b'
 materialize(MANIFEST, CASE, attempt)
 with tempfile.TemporaryDirectory(prefix='c111603-clearance-narrow-source-', dir=REPO / '.runtime-work') as temporary:
     source = Path(temporary) / 'fixture'
@@ -72,12 +72,12 @@ with tempfile.TemporaryDirectory(prefix='c111603-clearance-narrow-source-', dir=
             shutil.copy2(path, destination)
 command = [PY, 'runtime.py', 'process-saved', '--manifest', str(MANIFEST.relative_to(REPO)),
            '--case', CASE, '--attempt', str(attempt.relative_to(REPO)),
-           '--output', '.runtime-work/c111603-clearance-narrow-saved-a',
+           '--output', '.runtime-work/c111603-clearance-narrow-saved-b',
            '--library', 'runtime/library',
            '--validator', '.runtime-work/fire-decoder/.lake/build/bin/adapterCheck']
 log = ROOT / f'{PREFIX}-saved.log'
 run(command, log)
-version = REPO / '.runtime-work/c111603-clearance-narrow-saved-a/v0001'
+version = REPO / '.runtime-work/c111603-clearance-narrow-saved-b/v0001'
 receipt = ROOT / f'{PREFIX}-saved-receipt.json'
 shutil.copy2(version / 'processing.json', receipt)
 saved = json.loads(receipt.read_text())

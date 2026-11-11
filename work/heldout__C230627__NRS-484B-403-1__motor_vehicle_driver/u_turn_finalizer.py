@@ -3,6 +3,7 @@
 import argparse
 from hashlib import sha256
 import json
+from math import isfinite
 from pathlib import Path
 
 from u_turn_measurement import measure
@@ -21,6 +22,28 @@ def _rows(path):
 
 def measure_original_u_turn(motion_path, context_path):
     return measure(motion_path, context_path)
+
+
+def measure_mapped_device(device_path, context_path):
+    source = json.loads(Path(device_path).read_text())
+    context = json.loads(Path(context_path).read_text())
+    value = source.get('mapped_no_u_turn_device')
+    if (not isinstance(value, dict) or not value.get('landmark_id') or
+            value.get('road_id') != context.get('approach_road_id') or
+            not isinstance(value.get('source_fields'), dict)):
+        raise ValueError('Mapped no-U-turn landmark source differs')
+    distance = value.get('distance_to_approach_m')
+    if type(distance) not in (int, float) or not isfinite(distance) or distance > 30 or distance < 0:
+        raise ValueError('Mapped no-U-turn landmark distance invalid')
+    if any(value.get(key) is not None for key in
+           ('official_device_status', 'governing_lane_status',
+            'pixel_visibility_status')):
+        raise ValueError('Unreviewed mapped landmark cannot claim official or visible status')
+    label = ' '.join(str(x) for x in value['source_fields'].values()).lower().replace('_', ' ').replace('-', ' ')
+    if not any(marker in label for marker in
+               ('no u turn', 'u turn prohibited', 'u turn forbidden')):
+        raise ValueError('Mapped source does not describe no-U-turn device')
+    return value
 
 
 def analyze(attempt, *, write_channels=True):
@@ -52,6 +75,16 @@ def analyze(attempt, *, write_channels=True):
     value = measure_original_u_turn(paths['u_turn_motion.jsonl'][0],
                                     paths['u_turn_context.json'][0])
     source_hashes = {name: item[1] for name, item in paths.items()}
+    measurements = {'u_turn_observation': {
+        'method': 'measure_original_u_turn', 'value': value,
+        'sources': source_hashes}}
+    if case_id.endswith('__prohibition_403_2'):
+        device_path, device_hash = _required(root, 'u_turn_device.json')
+        measurements['mapped_no_u_turn_device'] = {
+            'method': 'measure_mapped_device',
+            'value': measure_mapped_device(device_path, paths['u_turn_context.json'][0]),
+            'sources': {'u_turn_device.json': device_hash,
+                        'u_turn_context.json': paths['u_turn_context.json'][1]}}
     if write_channels:
         channel = root / 'u_turn_observation.jsonl'
         if channel.exists():
@@ -62,9 +95,7 @@ def analyze(attempt, *, write_channels=True):
                       'surface_gaps_m': observation['surface_gaps_m']}},
             allow_nan=False) + '\n' for observation in value['observations']))
     return {'format': 'worker-analysis-report', 'case_id': case_id,
-            'measurements': {'u_turn_observation': {
-                'method': 'measure_original_u_turn', 'value': value,
-                'sources': source_hashes}},
+            'measurements': measurements,
             'limitations': ['Source-shaped CPU media does not establish physical U-turn completion, sight lines, cited prohibition applicability or legal safety.'],
             'physical_acceptance_claimed': False,
             'legal_acceptance_claimed': False}
@@ -81,8 +112,14 @@ def build_result(attempt, report):
                 {'name': 'participant_roles', 'unit': 'structured context',
                  'reference': 'u_turn_context.json',
                  'sha256': _required(root, 'u_turn_context.json')[1]}]
+    if report['case_id'].endswith('__prohibition_403_2'):
+        evidence.append({'name': 'mapped_no_u_turn_device',
+                         'unit': 'structured context',
+                         'reference': 'u_turn_device.json',
+                         'sha256': _required(root, 'u_turn_device.json')[1]})
     return {'case_id': report['case_id'],
-            'measured_values': {'u_turn_observation': value},
+            'measured_values': {key: item['value'] for key, item in
+                                report['measurements'].items()},
             'target_checks': [{'target': 'whole U-turn and surrounding-user safety',
                                'requested': 'retained original motion and context',
                                'measured': value['net_heading_change_deg'],

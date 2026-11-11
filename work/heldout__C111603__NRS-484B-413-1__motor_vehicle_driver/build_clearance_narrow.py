@@ -118,7 +118,7 @@ proposals = json.loads(proposals_path.read_text())
 if not any(item['case_id'] == CASE for item in proposals['cases']):
     proposals['cases'].append({'case_id': CASE, 'target_law_id': 'NRS-484B-413-1',
         'target_type': 'boundary_probe',
-        'rationale': 'Affected vehicle placement is narrowned while signal, ego route and other original context remain fixed; physical and reasonable-safety judgment remain open.',
+        'rationale': 'Affected vehicle placement is narrowed while signal, ego route and other original context remain fixed; physical and reasonable-safety judgment remain open.',
         'variable_assignments': {
             'affected_vehicle_exit_offset_m': {'kind': 'world_setup', 'value': [0, -1]},
             'turn_indicator_state': {'kind': 'controller', 'value': 'left'},
@@ -134,6 +134,6 @@ else:
 plan_path = ROOT / 'case-plan.json'
 plan = json.loads(plan_path.read_text())
 plan['requirement_dispositions'][4]['status'] = 'selected_required'
-plan['requirement_dispositions'][4]['evidence_or_gap'] = 'Narrower-clearance exact Native construction selected; narrower pair and physical source review remain pending.'
+plan['requirement_dispositions'][4]['evidence_or_gap'] = 'Wider and narrower exact Native constructions selected; physical source review remains pending.'
 save(plan_path, plan)
 print('Exact narrower-clearance primary, three fallbacks and source-complete diagnostic authored')

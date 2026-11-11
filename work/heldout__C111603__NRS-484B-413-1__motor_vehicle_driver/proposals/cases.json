@@ -133,7 +133,7 @@
         "affected_vehicle_exit_offset_m": {
           "kind": "world_setup",
           "value": [
-            -1,
+            0,
             -1
           ]
         },
@@ -161,6 +161,44 @@
             "time_window": "all 8 s original frames",
             "reference_frame": "Native world and ego vehicle",
             "uncertainty": "sampled 20 Hz state; lamp pixels and legal appropriateness require later review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_no_horn_audio",
+      "target_law_id": "NRS-484B-413-1",
+      "target_type": "boundary_probe",
+      "rationale": "Potentially affected pedestrian with separately captured listener PCM and no horn actuation; audibility and physical effect remain unresolved.",
+      "variable_assignments": {
+        "horn_actuation": {
+          "kind": "controller",
+          "value": "none"
+        },
+        "pedestrian_may_be_affected": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "vehicle_may_be_affected": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and independently captured listener PCM",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "microphone alignment and physical horn absence require original-source review; legal audibility stays unresolved"
           }
         ],
         "context_inputs": [],

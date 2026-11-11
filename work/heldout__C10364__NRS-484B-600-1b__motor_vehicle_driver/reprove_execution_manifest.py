@@ -35,7 +35,7 @@ def main():
         candidate_proofs = []
         for candidate_id, candidate in candidates:
             tag = suffix + '-' + candidate_id
-            out_offline = REPO / '.runtime-work' / f'c10364-{tag}-execution-offline-proof'
+            out_offline = REPO / '.runtime-work' / f'c10364-{tag}-execution-offline-proof-v2'
             off_log = ROOT / 'cases' / f'execution-offline-{tag}.log'
             args = [sys.executable, str(REPO / 'runtime.py'), 'offline',
                     '--manifest', str(MANIFEST), '--case', case['case_id'],
@@ -43,7 +43,7 @@ def main():
             if candidate_id != 'primary':
                 args.extend(['--candidate', candidate_id])
             run(args, off_log)
-            out_compat = REPO / '.runtime-work' / f'c10364-{tag}-execution-compat-proof'
+            out_compat = REPO / '.runtime-work' / f'c10364-{tag}-execution-compat-proof-v2'
             compat_log = ROOT / 'cases' / f'execution-compat-{tag}.log'
             args = [sys.executable, str(REPO / 'runtime.py'), 'compatibility',
                     '--manifest', str(MANIFEST), '--case', case['case_id'],

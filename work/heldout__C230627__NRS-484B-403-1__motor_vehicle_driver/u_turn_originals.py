@@ -21,7 +21,7 @@ def _body(actor):
 
 
 class UTurnSourceRecorder:
-    def __init__(self, directory, ego, participants, scene):
+    def __init__(self, directory, ego, participants, scene, *, device=None):
         self.root = Path(directory)
         self.ego = ego
         self.participants = dict(participants)
@@ -49,6 +49,18 @@ class UTurnSourceRecorder:
         if path.exists():
             raise ValueError("Retain prior original U-turn context")
         path.write_text(json.dumps(context, indent=2, allow_nan=False) + '\n')
+        if device is not None:
+            observation = {
+                'mapped_no_u_turn_device': {
+                    'landmark_id': device['landmark_id'],
+                    'road_id': device['road_id'],
+                    'distance_to_approach_m': device['distance_to_approach_m'],
+                    'source_fields': device['source_fields'],
+                    'official_device_status': None,
+                    'governing_lane_status': None,
+                    'pixel_visibility_status': None}}
+            (self.root/'u_turn_device.json').write_text(
+                json.dumps(observation, indent=2, allow_nan=False)+'\n')
         self.stream = (self.root / 'u_turn_motion.jsonl').open('x', encoding='utf-8')
         self.previous = None
 

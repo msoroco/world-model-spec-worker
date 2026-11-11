@@ -61,3 +61,24 @@ Exact offline materialization passes 12 tests (`safety-clear-primary-offline-tes
 Next: exact `__safety_conflict` bundle and three risk-triggered fallbacks for both safety cases; construct original map/device/district/divider/school-zone/sight-distance sources for the five cited-prohibition cases; complete their exact proofs and independent audits; canonical semantic stages; scoped strict. Do not infer a safe-turn threshold from 24 m versus 12 m engineering spawn requests.
 
 Current scoped `worker_check --complete` passes (`worker-check.log`, SHA256 `a47f3208435860d3dbff3f50753632fc50f9082c4f3ed7bfb66d9a9314730df7`). Scoped `--complete --require-delivery-ready` fails at readiness acceptance while status is partial (`strict-gate.log`, SHA256 `89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`). This is a first-case checkpoint, not assignment readiness.
+
+## Subsequent safety-pair expansion (proof rebind pending)
+
+`__safety_conflict` now has an exact inline construction, measurement contract, case proposal and diagnostic with the oncoming actor 8 m closer than `__safety_clear`, with fixed route/controller/cameras. `audit_safety_comparison.py` checks both constructions, all unchanged diagnostic sources and the sole original actor-position difference; two negative-control tests reject camera and following-speed drift. Fourteen package tests pass (`cpu-tests.log`, SHA256 `e1641566b2bb308066ca4d3d4a78bf75699ec229a8108b255aa446eb8ca5ce58`), and the independent audit command exits 0 (`safety-comparison-audit.log`, SHA256 `dbac6c5bfeff5ffdadd7cd6f89a3618ce2ceb153951c866709adeada163667ec`).
+
+Three distinct fallback constructions for each safety case are static-validated by the pinned candidate selector: finer waypoint sampling for route discovery, shorter arc extension for road envelope risk, and farther following spawn for actor overlap risk. They preserve the deliberate oncoming-distance comparison. Runner/test source changed and all eight inline constructions were rebound. The earlier `__safety_clear` exact receipts and saved proof refer to the previous construction; they are historical, and current manifest proof fields were removed pending rerun. No new fixture was launched during the lead's full-gate window.
+
+## 2026-11-11 exact two-case safety matrix rebound
+
+The first two safety cases now have eight current inline constructions (primary plus three physical-risk fallbacks per case), all eight exact offline proofs and all eight positive/deleted-`u_turn_motion.jsonl` negative compatibility receipts. Pinned `candidate_constructions.validate(required=True, candidate_count=4)` passes both cases; `package_compatibility.check_receipts` passes. Saved-only `process-saved` passes for both primaries with current manifest/construction hashes. The independent safety comparison audit passes and rejects camera/other-participant drift. Delivery source audit passes on both four-camera diagnostic streams and rejects a tampered original motion hash. All synthetic media remain software-only.
+
+| Case | Primary construction SHA256 | Primary compatibility receipt SHA256 | Saved proof SHA256 |
+|---|---|---|---|
+| `__safety_clear` | `080c65d74dca1a3715d03da7fce028d9f7a6257211b4c9b8c00f28a8e6c63cd2` | `ba04bb3027827e6731a774d2cec8274347003ea0d93b2bc3cea51c7b1ca7b0b1` | `467aa5d4e4809f1a565f47cec590796e9f3b82b8604f1bc9ccd7927dc15a81c9` |
+| `__safety_conflict` | `43120acb2f5a1059aac7b3671490dbe305ddc1b23886a5c2ecb1c69bfa02009d` | `e93036bd5fdb91b1a674d6fa46523014507158f24d609e58055d6fde278e749e` | `1478a4212c2bfdda9e5e9f3281f79bf7506ee4334ab6de149c5d01fbf8d89460` |
+
+Each fallback construction/trigger and exact proof is individually bound in `execution-manifest.json` (SHA256 `1397771c01844c27b1bee40d242aa63de5ae7ca6d4daff5ac952cad6adf3b9b6`). Main 14-test CPU suite SHA256 `0fcc7174efa7ac52ea6e6ba53ae59c1d3df20c5b64776f1017db14caf4e1a0b3`; comparison audit log SHA256 `dbac6c5bfeff5ffdadd7cd6f89a3618ce2ceb153951c866709adeada163667ec`. Independent delivery positive/negative logs are bound in each manifest case.
+
+Remaining CPU work: construct/map-source the five cited prohibition feature cases and controlled comparisons, prove each exact case and three distinct physical-risk fallbacks, complete seven canonical semantic stages and their independent audits, then rerun scoped strict. There is no legal safety cutoff inferred from the 24 m/12 m engineering spawn requests; no actual U-turn or pixel visibility is claimed.
+
+Scoped `.venv-cpu/bin/python worker_check.py --assignment heldout__C230627__NRS-484B-403-1__motor_vehicle_driver --complete` exits 0 (`worker-check.log`, SHA256 `a47f3208435860d3dbff3f50753632fc50f9082c4f3ed7bfb66d9a9314730df7`). Scoped strict with `--require-delivery-ready` exits 1 at preparation acceptance because the result remains truthful partial (`strict-gate.log`, SHA256 `89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`).
