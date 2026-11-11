@@ -1,7 +1,9 @@
 """Independent C101303 comparison audit of construction and retained sources.
 
-Diagnostic specifications exercise this code, but do not establish physical acceptance.
-On Native output pass each case's original vehicle_history.jsonl to audit_pair.
+Full-duration diagnostic specifications exercise this code, but do not establish
+physical acceptance. On Native output pass each case's original
+vehicle_history.jsonl to audit_pair. Separate captures may have different
+absolute Native frame and clock origins; relative sample time must align.
 """
 import argparse
 import hashlib
@@ -41,8 +43,15 @@ def _history(path):
     if not rows:
         raise ValueError('empty original vehicle_history.jsonl')
     frames = [r['frame'] for r in rows]
-    if len(frames) != len(set(frames)) or frames != sorted(frames):
+    if any(type(frame) is not int for frame in frames) or any(
+            current != previous + 1 for previous, current in zip(frames, frames[1:])):
         raise ValueError('unaligned or repeated source frames')
+    times = [r.get('time_s') for r in rows]
+    if any(type(value) not in (int, float) or not math.isfinite(value) for value in times):
+        raise ValueError('missing finite source time')
+    if any(not math.isclose(current - previous, 0.05, abs_tol=0.005)
+           for previous, current in zip(times, times[1:])):
+        raise ValueError('source cadence differs from 20 Hz capture')
     for row in rows:
         for actor in ('ego', 'lead'):
             vertices = row[actor]['body_vertices_xy_m']
@@ -101,8 +110,13 @@ def audit_pair(folder, comparison_id, left_source, right_source, candidate=None,
         if config['rate_hz'] != 20 or config['duration_s'] != 45 or len(config['cameras']) != 4:
             raise ValueError('comparison capture contract changed')
     left, right = _history(left_source), _history(right_source)
-    if [r['frame'] for r in left] != [r['frame'] for r in right]:
-        raise ValueError('comparison source time join differs')
+    expected = configs[0]['rate_hz'] * configs[0]['duration_s']
+    if len(left) != expected or len(right) != expected:
+        raise ValueError('comparison sources do not cover full planned duration')
+    left_zero, right_zero = left[0]['time_s'], right[0]['time_s']
+    if any(not math.isclose(a['time_s'] - left_zero, b['time_s'] - right_zero, abs_tol=0.005)
+           for a, b in zip(left, right)):
+        raise ValueError('comparison source relative time join differs')
     for a, b in zip(left, right):
         if a['road_id'] != b['road_id'] or a['ego']['actor_id'] != b['ego']['actor_id'] or a['lead']['actor_id'] != b['lead']['actor_id']:
             raise ValueError('comparison route or participant source differs')

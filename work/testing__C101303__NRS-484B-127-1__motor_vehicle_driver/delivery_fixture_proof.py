@@ -2,6 +2,7 @@
 import argparse
 import copy
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -93,18 +94,28 @@ def main():
     parser.add_argument('--negative-missing-source',action='store_true')
     parser.add_argument('--negative-review-identity',action='store_true')
     parser.add_argument('--negative-unsealed-source',action='store_true')
+    parser.add_argument('--negative-physical-status',action='store_true')
     parser.add_argument('--negative-source-root',type=Path)
     args=parser.parse_args()
     root=args.output_root.resolve()
     if args.negative_source_root:
-        if not args.negative_missing_source or args.negative_review_identity or args.negative_unsealed_source:
-            raise ValueError('Reused positive root supports only missing-source negative proof')
+        if sum((args.negative_missing_source,args.negative_review_identity,
+                args.negative_unsealed_source,args.negative_physical_status))!=1:
+            raise ValueError('Reused positive root requires one negative proof mode')
         source=args.negative_source_root.resolve()
         if root.exists() or not (source/'attempt/diagnostic-audit.json').is_file():
             raise ValueError('Fresh negative root and completed positive source required')
         attempt=root/'attempt';attempt.mkdir(parents=True)
-        for name in ('config.json','trace.jsonl','result.json','capture-seal.json','native-exit.json','owner-release.json'):
+        for name in ('config.json','result.json','capture-seal.json','native-exit.json','owner-release.json'):
             shutil.copyfile(source/'attempt'/name,attempt/name)
+        originals=('trace.jsonl','vehicle_history.jsonl','video_frames.jsonl','raw.mkv',
+                   *(name+'.mkv' for name in CAMERAS))
+        for name in originals:
+            if name=='vehicle_history.jsonl' and args.negative_missing_source:
+                continue
+            os.link(source/'attempt'/name,attempt/name)
+        (attempt/'converted').mkdir()
+        os.link(source/'attempt/converted/trace.json',attempt/'converted/trace.json')
         shutil.copyfile(source/'pixel-review.json',root/'pixel-review.json')
     else:
         attempt=build(args.case,root)
@@ -122,6 +133,10 @@ def main():
         write(attempt/'native-exit.json',{'event':'native_exit','capture_seal_sha256':sha(attempt/'capture-seal.json')})
         write(attempt/'owner-release.json',{'event':'owner_released','operator_attested':True,
               'native_exit_sha256':sha(attempt/'native-exit.json'),'diagnostic_fixture':True})
+    if args.negative_physical_status:
+        result=json.loads((attempt/'result.json').read_text())
+        result['physical_checks']['setup']['status']='unverified'
+        write(attempt/'result.json',result)
     result=audit_attempt(attempt,args.case,'diagnostic-job',1,'diagnostic-recording',
                          root/'pixel-review.json',attempt/'diagnostic-audit.json',
                          root/'source-decode.json',diagnostic_selftest=True)
