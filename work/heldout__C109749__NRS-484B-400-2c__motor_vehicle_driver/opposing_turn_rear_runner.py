@@ -73,6 +73,11 @@ def _turn_progress(actor, initial_heading):
     return math.degrees(math.atan2(cross, dot)) > 3
 
 
+def rear_controls(actors, paths, indices, tick, speed):
+    """Apply the selected rear-point release/speed request to both Native actors."""
+    return command_pair(actors, paths, indices, tick, start_delays=(2, 0),
+                        target_speeds=(speed * 0.85, speed))
+
 def run(output, host='127.0.0.1', port=2000):
     import carla
     from pipeline_capture import PipelineCapture
@@ -129,9 +134,8 @@ def run(output, host='127.0.0.1', port=2000):
         start_time = None
         routes = [pair['subject'], pair['opposing']]
         for tick in range(config['frames']):
-            indices, commands = command_pair(actors, [route['path'] for route in routes],
-                                              indices, tick, start_delays=(2, 0),
-                                              target_speeds=(speed * 0.85, speed))
+            indices, commands = rear_controls(actors, [route['path'] for route in routes],
+                                          indices, tick, speed)
             for actor, command in zip(actors, commands):
                 actor.apply_control(carla.VehicleControl(**command))
             frame = world.tick()

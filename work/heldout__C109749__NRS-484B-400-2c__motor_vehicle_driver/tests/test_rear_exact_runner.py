@@ -3,10 +3,44 @@ import unittest
 from pathlib import Path
 from types import SimpleNamespace as S
 
-from opposing_turn_rear_runner import check_config, device_inventory
+from opposing_turn_rear_runner import check_config, device_inventory, rear_controls
 
 
 class RearRunnerTests(unittest.TestCase):
+    def test_selected_release_policy_controls_both_approaches(self):
+        class Point:
+            def __init__(self, x, y):
+                self.x, self.y = x, y
+
+            def distance(self, other):
+                return ((self.x-other.x)**2 + (self.y-other.y)**2)**0.5
+
+        class Actor:
+            def __init__(self, x, yaw):
+                self.location, self.yaw = Point(x, 0), yaw
+
+            def get_location(self):
+                return self.location
+
+            def get_transform(self):
+                return S(location=self.location, rotation=S(yaw=self.yaw))
+
+            def get_velocity(self):
+                return S(x=0., y=0.)
+
+        def path(xs):
+            return [S(transform=S(location=Point(x, 0))) for x in xs]
+
+        actors = [Actor(-4, 0), Actor(4, 180)]
+        paths = [path((-4, -2, 0)), path((4, 2, 0))]
+        _, early = rear_controls(actors, paths, [0, 0], 0, 5.)
+        self.assertEqual(early[0], {'throttle': 0., 'brake': 1., 'steer': 0.})
+        self.assertGreater(early[1]['throttle'], 0.)
+        _, released = rear_controls(actors, paths, [0, 0], 2, 5.)
+        self.assertGreater(released[0]['throttle'], 0.)
+        self.assertGreater(released[1]['throttle'], 0.)
+        self.assertTrue(all(abs(row['steer']) <= .75 for row in released))
+
     def test_exact_rear_config_and_scope(self):
         local = Path(__file__).resolve().parents[1]
         source = local / 'config-rear_pass_no_device.json'
