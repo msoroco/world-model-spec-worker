@@ -11,6 +11,9 @@ auditor = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = auditor
 spec.loader.exec_module(auditor)
 finalizer = auditor._finalizer()
+physical_spec = importlib.util.spec_from_file_location("physical_outcome", folder / "physical_outcome.py")
+physical = importlib.util.module_from_spec(physical_spec)
+physical_spec.loader.exec_module(physical)
 
 
 class DeliveryAuditTests(unittest.TestCase):
@@ -75,6 +78,32 @@ class DeliveryAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "full decode frame count"):
             auditor.audit_attempt(self.root, self.report,
                                   decoder=lambda *_args, **_kwargs: {"frames": 1})
+
+    def test_physical_outcome_requires_bound_pixel_and_premise_review(self):
+        source = auditor.audit_attempt(self.root, self.report, decoder=self.decoder)
+        review = {"case_id": self.report["case_id"],
+                  "alarm_premise_source_reviewed": True,
+                  "cameras": {name: {"source_sha256": entry["source_sha256"],
+                                     "reviewed_frames": source["frame_count"],
+                                     "required_bodies_visible": True}
+                              for name, entry in source["camera_decodes"].items()}}
+        result = physical.check_physical_outcome(source, self.report, review,
+                                                target_ft=500)
+        self.assertAlmostEqual(result["measured_boundary_ft"], 500)
+        self.assertIsNone(result["legal_conclusion"])
+        review["cameras"]["approach"]["source_sha256"] = "stale"
+        with self.assertRaisesRegex(ValueError, "stale"):
+            physical.check_physical_outcome(source, self.report, review,
+                                           target_ft=500)
+        review["cameras"]["approach"]["source_sha256"] = source["camera_decodes"]["approach"]["source_sha256"]
+        review["cameras"]["overview"]["required_bodies_visible"] = False
+        with self.assertRaisesRegex(ValueError, "failed original-pixel"):
+            physical.check_physical_outcome(source, self.report, review,
+                                           target_ft=500)
+        review["cameras"]["overview"]["required_bodies_visible"] = True
+        with self.assertRaisesRegex(ValueError, "attainment band"):
+            physical.check_physical_outcome(source, self.report, review,
+                                           target_ft=450)
 
 
 if __name__ == "__main__":

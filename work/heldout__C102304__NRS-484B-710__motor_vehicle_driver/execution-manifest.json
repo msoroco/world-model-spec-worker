@@ -130,7 +130,7 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_500ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": "cat $OUTPUT/v0001/feedback.json",
         "test_log": "cpu-tests.log",
-        "test_log_sha256": "bd97404490a559ff1bfe475f2e23bbd332fb41dd44b2c194326f5f6e69edb68e",
+        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
         "test_exit_code": 0
       }
     },
@@ -252,7 +252,7 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_499ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": "cat $OUTPUT/v0001/feedback.json",
         "test_log": "cpu-tests.log",
-        "test_log_sha256": "bd97404490a559ff1bfe475f2e23bbd332fb41dd44b2c194326f5f6e69edb68e",
+        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
         "test_exit_code": 0
       },
       "compatibility": {
@@ -383,7 +383,7 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__traveling_follow_501ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": "cat $OUTPUT/v0001/feedback.json",
         "test_log": "cpu-tests.log",
-        "test_log_sha256": "bd97404490a559ff1bfe475f2e23bbd332fb41dd44b2c194326f5f6e69edb68e",
+        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
         "test_exit_code": 0
       },
       "compatibility": {
@@ -523,7 +523,793 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_450ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": "cat $OUTPUT/v0001/feedback.json",
         "test_log": "cpu-tests.log",
-        "test_log_sha256": "bd97404490a559ff1bfe475f2e23bbd332fb41dd44b2c194326f5f6e69edb68e",
+        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_500ft",
+      "kind": "delivery",
+      "construction": "cases/stopped_drive_to_500ft/construction.json",
+      "construction_sha256": "36e67221cc39a9945445f5f5e32ba19fe6cf0d87011f1951a92754d6a851710e",
+      "measurement_contract": "cases/stopped_drive_to_500ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "stopped_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/cases/stopped_drive_to_500ft/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "stopped_drive_to may not settle at the measured 500 ft center target"
+      },
+      "acquisition": {
+        "fire_centre_distance_ft": {
+          "entrypoint": "stopped_finalizer.py",
+          "method": "recompute original-frame centers from retained Native footprints",
+          "evidence": "FireCaptureSession writes original footprints/state and synchronized frame identities; stopped finalizer derives the centre stream."
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/stopped_drive_to_500ft/fallback1-construction.json",
+          "construction_sha256": "6bb10a88832d47cbc450137c010dc24abafc9d1e5c12e5408fc6291594fe1aef",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "count of crest routes supporting an initial approach beyond 500 ft",
+            "failure_condition": "Primary 5 m route sampling finds no continuous verified crest approach; use denser Native sampling."
+          },
+          "changed_knobs": [
+            "Native crest route sampling 5 m to 2.5 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_500ft --candidate fallback1 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_drive_to_500ft/fallback1-offline.log",
+            "log_sha256": "d3e0dd6cd1572f3bcf72d276dca7e0619a341e1ed646c83244c4fd2856f796a9",
+            "construction_sha256": "6bb10a88832d47cbc450137c010dc24abafc9d1e5c12e5408fc6291594fe1aef"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_drive_to_500ft/fallback1-compatibility.json",
+            "sha256": "ece703a7316ce88ee35a80a9021e81fb8feda25dde851d98be602c426a6caff3",
+            "log": "cases/stopped_drive_to_500ft/fallback1-compat.log",
+            "negative_log": "cases/stopped_drive_to_500ft/fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/stopped_drive_to_500ft/fallback2-construction.json",
+          "construction_sha256": "c8534e0bfea5b01567603772d5ec35eda84b197a65deedb58e06f61bdfaa3b10",
+          "trigger": {
+            "source": "original participant_footprints.jsonl and participant_state.jsonl",
+            "metric": "measured center-distance and active stopped_drive_to state",
+            "failure_condition": "Primary approach overshoots the 500 ft engineering target and leaves no stable active frames; no legal tolerance is inferred."
+          },
+          "changed_knobs": [
+            "stopped approach control gains 0.35/0.40 to 0.28/0.32"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_500ft --candidate fallback2 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_drive_to_500ft/fallback2-offline.log",
+            "log_sha256": "1d49fc455303c866a9a0b3d2c4199d36a478b62b51c0f0c4c10f253f45be431c",
+            "construction_sha256": "c8534e0bfea5b01567603772d5ec35eda84b197a65deedb58e06f61bdfaa3b10"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_drive_to_500ft/fallback2-compatibility.json",
+            "sha256": "f771a772f43cf157cc705388ac587b2f36b959e8b0d115fe6a219c47c2adee9f",
+            "log": "cases/stopped_drive_to_500ft/fallback2-compat.log",
+            "negative_log": "cases/stopped_drive_to_500ft/fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/stopped_drive_to_500ft/fallback3-construction.json",
+          "construction_sha256": "e319ddbca6d4bc5d61c12495bc7983bc05de0161cb038b9f5c44cd0f7dbd6c86",
+          "trigger": {
+            "source": "complete decoded approach and overview original RGB streams",
+            "metric": "stopped apparatus and ego body visibility over all original frames",
+            "failure_condition": "Primary approach view omits a required body in any original frame, confirmed by source-bound pixel review."
+          },
+          "changed_knobs": [
+            "approach camera mount 1.2 m forward/2.0 m high to 1.8 m forward/2.3 m high"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_500ft --candidate fallback3 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_drive_to_500ft/fallback3-offline.log",
+            "log_sha256": "692fe9ef9ca294337ba239006894449cd8a4f1f204e17b6f49734bc9672d6308",
+            "construction_sha256": "e319ddbca6d4bc5d61c12495bc7983bc05de0161cb038b9f5c44cd0f7dbd6c86"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_drive_to_500ft/fallback3-compatibility.json",
+            "sha256": "f9fc1355e2afd0b8f83aa848d75fb9e0b0792361cb90d175dd68a7b0ba15e86f",
+            "log": "cases/stopped_drive_to_500ft/fallback3-compat.log",
+            "negative_log": "cases/stopped_drive_to_500ft/fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_500ft --candidate primary --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/stopped_drive_to_500ft/primary-offline.log",
+        "log_sha256": "5359d11b7d1ec1c1cb767fe3cdb0bc298319cb630b9692e118b38527ca202728",
+        "construction_sha256": "36e67221cc39a9945445f5f5e32ba19fe6cf0d87011f1951a92754d6a851710e"
+      },
+      "compatibility": {
+        "receipt": "cases/stopped_drive_to_500ft/primary-compatibility.json",
+        "sha256": "322f2025551a21cb49efc9d036633767f41f8cc1171c4eb19562ef28713c97ce",
+        "log": "cases/stopped_drive_to_500ft/primary-compat.log",
+        "negative_log": "cases/stopped_drive_to_500ft/primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/stopped_drive_to_500ft/primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_500ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_550ft",
+      "kind": "delivery",
+      "construction": "cases/stopped_drive_to_550ft/construction.json",
+      "construction_sha256": "f3475bf9b535f51ef78fc75dd15f4da928cc2845833705704c284a6bae8b2055",
+      "measurement_contract": "cases/stopped_drive_to_550ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "stopped_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/cases/stopped_drive_to_550ft/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "stopped_drive_to may not settle at the measured 550 ft center target"
+      },
+      "acquisition": {
+        "fire_centre_distance_ft": {
+          "entrypoint": "stopped_finalizer.py",
+          "method": "recompute original-frame centers from retained Native footprints",
+          "evidence": "FireCaptureSession writes original footprints/state and synchronized frame identities; stopped finalizer derives the centre stream."
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/stopped_drive_to_550ft/fallback1-construction.json",
+          "construction_sha256": "e695d9f881c061c6fe0669a14b6e57fadd60ab278fa3b313d995ba57a7ff26ca",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "count of crest routes supporting an initial approach beyond 550 ft",
+            "failure_condition": "Primary 5 m route sampling finds no continuous verified crest approach; use denser Native sampling."
+          },
+          "changed_knobs": [
+            "Native crest route sampling 5 m to 2.5 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_550ft --candidate fallback1 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_drive_to_550ft/fallback1-offline.log",
+            "log_sha256": "3c0c5a4cd3c314c316590187a010e95bb853d824f497882b48bbd0015106d49d",
+            "construction_sha256": "e695d9f881c061c6fe0669a14b6e57fadd60ab278fa3b313d995ba57a7ff26ca"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_drive_to_550ft/fallback1-compatibility.json",
+            "sha256": "4cdee6baa771bfcbc04ca1b45255805d6673d276dddc155c1beb4338fe8a82a9",
+            "log": "cases/stopped_drive_to_550ft/fallback1-compat.log",
+            "negative_log": "cases/stopped_drive_to_550ft/fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/stopped_drive_to_550ft/fallback2-construction.json",
+          "construction_sha256": "3ebb307f49e5ce2e723766b6f1bc658005e43c236f9c445070a2ea03b20e7acd",
+          "trigger": {
+            "source": "original participant_footprints.jsonl and participant_state.jsonl",
+            "metric": "measured center-distance and active stopped_drive_to state",
+            "failure_condition": "Primary approach overshoots the 550 ft engineering target and leaves no stable active frames; no legal tolerance is inferred."
+          },
+          "changed_knobs": [
+            "stopped approach control gains 0.35/0.40 to 0.28/0.32"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_550ft --candidate fallback2 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_drive_to_550ft/fallback2-offline.log",
+            "log_sha256": "bec74f899a3119c5bf8e36365de9863709c38923b2bd8c482b8e0aab39ad04b5",
+            "construction_sha256": "3ebb307f49e5ce2e723766b6f1bc658005e43c236f9c445070a2ea03b20e7acd"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_drive_to_550ft/fallback2-compatibility.json",
+            "sha256": "c8be8cb68b30c81e1929085b57ea2f676a1e9acbd1eb3589f3db683c369e1af2",
+            "log": "cases/stopped_drive_to_550ft/fallback2-compat.log",
+            "negative_log": "cases/stopped_drive_to_550ft/fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/stopped_drive_to_550ft/fallback3-construction.json",
+          "construction_sha256": "57fe3739335ae93fb84268a3612497d20e287354a2ecf78a2916b7150eb25e7f",
+          "trigger": {
+            "source": "complete decoded approach and overview original RGB streams",
+            "metric": "stopped apparatus and ego body visibility over all original frames",
+            "failure_condition": "Primary approach view omits a required body in any original frame, confirmed by source-bound pixel review."
+          },
+          "changed_knobs": [
+            "approach camera mount 1.2 m forward/2.0 m high to 1.8 m forward/2.3 m high"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_550ft --candidate fallback3 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_drive_to_550ft/fallback3-offline.log",
+            "log_sha256": "13e6db499e39542b32fb2a8f4efa4c96f6e5eaa7663a9fb8176336f2f89db88a",
+            "construction_sha256": "57fe3739335ae93fb84268a3612497d20e287354a2ecf78a2916b7150eb25e7f"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_drive_to_550ft/fallback3-compatibility.json",
+            "sha256": "3e70ccc0c2ae96212962d7c913f03620094e0c092f57a00e5190e1618086f650",
+            "log": "cases/stopped_drive_to_550ft/fallback3-compat.log",
+            "negative_log": "cases/stopped_drive_to_550ft/fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_550ft --candidate primary --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/stopped_drive_to_550ft/primary-offline.log",
+        "log_sha256": "0ef0ed5fa1f11163f7293cddf29a9e78e98a159a3b356cb1fe14cc0e0df4140f",
+        "construction_sha256": "f3475bf9b535f51ef78fc75dd15f4da928cc2845833705704c284a6bae8b2055"
+      },
+      "compatibility": {
+        "receipt": "cases/stopped_drive_to_550ft/primary-compatibility.json",
+        "sha256": "15924bd5dc40e47be756568dd73ffedce92bac88baba8e08ec5175d8dd7a9be9",
+        "log": "cases/stopped_drive_to_550ft/primary-compat.log",
+        "negative_log": "cases/stopped_drive_to_550ft/primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/stopped_drive_to_550ft/primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_550ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_450ft",
+      "kind": "delivery",
+      "construction": "cases/stopped_park_450ft/construction.json",
+      "construction_sha256": "0cdab09b8b7a08e803e5c7ecfa22a9fe951444f9cda344d842a774ea93a5bb78",
+      "measurement_contract": "cases/stopped_park_450ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "stopped_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/cases/stopped_park_450ft/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "stopped_park may not settle at the measured 450 ft center target"
+      },
+      "acquisition": {
+        "fire_centre_distance_ft": {
+          "entrypoint": "stopped_finalizer.py",
+          "method": "recompute original-frame centers from retained Native footprints",
+          "evidence": "FireCaptureSession writes original footprints/state and synchronized frame identities; stopped finalizer derives the centre stream."
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/stopped_park_450ft/fallback1-construction.json",
+          "construction_sha256": "655177d9d427d649dcede7316c319c959e157acf434e27e0cf7c3f24bad2d97f",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "count of crest routes supporting an initial approach beyond 450 ft",
+            "failure_condition": "Primary 5 m route sampling finds no continuous verified crest approach; use denser Native sampling."
+          },
+          "changed_knobs": [
+            "Native crest route sampling 5 m to 2.5 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_450ft --candidate fallback1 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_park_450ft/fallback1-offline.log",
+            "log_sha256": "82405e74abc0ffe542c335c9e7328fa98d336bb854d1bea251cc7741eb3dec5e",
+            "construction_sha256": "655177d9d427d649dcede7316c319c959e157acf434e27e0cf7c3f24bad2d97f"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_park_450ft/fallback1-compatibility.json",
+            "sha256": "2580ec32de38de424c9c674d26afc334ca0db61d2e45f7dfb56948e8b37308b8",
+            "log": "cases/stopped_park_450ft/fallback1-compat.log",
+            "negative_log": "cases/stopped_park_450ft/fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/stopped_park_450ft/fallback2-construction.json",
+          "construction_sha256": "667b275612b431a78113d5b86835659062086a6925a2390ca376f53a2cba691d",
+          "trigger": {
+            "source": "original participant_footprints.jsonl and participant_state.jsonl",
+            "metric": "measured center-distance and active stopped_park state",
+            "failure_condition": "Primary approach overshoots the 450 ft engineering target and leaves no stable active frames; no legal tolerance is inferred."
+          },
+          "changed_knobs": [
+            "stopped approach control gains 0.35/0.40 to 0.28/0.32"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_450ft --candidate fallback2 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_park_450ft/fallback2-offline.log",
+            "log_sha256": "438a72a4219a08b89dce67c4dc4f09f42e96992eb03045b9e6218e607d87db0a",
+            "construction_sha256": "667b275612b431a78113d5b86835659062086a6925a2390ca376f53a2cba691d"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_park_450ft/fallback2-compatibility.json",
+            "sha256": "f3b296bd45c12039f662bb92772eb5bbda194abce7a9f1cc50840136034d3e58",
+            "log": "cases/stopped_park_450ft/fallback2-compat.log",
+            "negative_log": "cases/stopped_park_450ft/fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/stopped_park_450ft/fallback3-construction.json",
+          "construction_sha256": "9d87f21bc4ce02c1eef88d51688453764b910360864670e5d6b56b901775458b",
+          "trigger": {
+            "source": "complete decoded approach and overview original RGB streams",
+            "metric": "stopped apparatus and ego body visibility over all original frames",
+            "failure_condition": "Primary approach view omits a required body in any original frame, confirmed by source-bound pixel review."
+          },
+          "changed_knobs": [
+            "approach camera mount 1.2 m forward/2.0 m high to 1.8 m forward/2.3 m high"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_450ft --candidate fallback3 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_park_450ft/fallback3-offline.log",
+            "log_sha256": "5d6cc6d5fd9557761e8c0d98c4c5ba69542e823007e19b7445c181ce2a991319",
+            "construction_sha256": "9d87f21bc4ce02c1eef88d51688453764b910360864670e5d6b56b901775458b"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_park_450ft/fallback3-compatibility.json",
+            "sha256": "9fb350097044ce140223c9f6cb0c6d92434487377f882b7a15b1802d8ddfbc1b",
+            "log": "cases/stopped_park_450ft/fallback3-compat.log",
+            "negative_log": "cases/stopped_park_450ft/fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_450ft --candidate primary --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/stopped_park_450ft/primary-offline.log",
+        "log_sha256": "41eaaf5045e9058c0ded22e81de6c474ebbeef25cecea4c29433551ec5e324a4",
+        "construction_sha256": "0cdab09b8b7a08e803e5c7ecfa22a9fe951444f9cda344d842a774ea93a5bb78"
+      },
+      "compatibility": {
+        "receipt": "cases/stopped_park_450ft/primary-compatibility.json",
+        "sha256": "4855bfb06f7292d3ac789c301de978484df3537e48bc0a90ae09d908ddbc2a95",
+        "log": "cases/stopped_park_450ft/primary-compat.log",
+        "negative_log": "cases/stopped_park_450ft/primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/stopped_park_450ft/primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_450ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft",
+      "kind": "delivery",
+      "construction": "cases/stopped_park_500ft/construction.json",
+      "construction_sha256": "15edb1b0cf46dc4f21446b999f706422a22aaa3cd9d1eebf18887ea5e86f0c96",
+      "measurement_contract": "cases/stopped_park_500ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "stopped_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/cases/stopped_park_500ft/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "stopped_park may not settle at the measured 500 ft center target"
+      },
+      "acquisition": {
+        "fire_centre_distance_ft": {
+          "entrypoint": "stopped_finalizer.py",
+          "method": "recompute original-frame centers from retained Native footprints",
+          "evidence": "FireCaptureSession writes original footprints/state and synchronized frame identities; stopped finalizer derives the centre stream."
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/stopped_park_500ft/fallback1-construction.json",
+          "construction_sha256": "8d40151f516bdc7a9f2829b2e884edbd226f326ab34eb9bd387ac83b6c93d026",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "count of crest routes supporting an initial approach beyond 500 ft",
+            "failure_condition": "Primary 5 m route sampling finds no continuous verified crest approach; use denser Native sampling."
+          },
+          "changed_knobs": [
+            "Native crest route sampling 5 m to 2.5 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft --candidate fallback1 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_park_500ft/fallback1-offline.log",
+            "log_sha256": "111c7662856abc7d50a3824e459bed24e09187792d9a6ffa6bb8770794a5b0fc",
+            "construction_sha256": "8d40151f516bdc7a9f2829b2e884edbd226f326ab34eb9bd387ac83b6c93d026"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_park_500ft/fallback1-compatibility.json",
+            "sha256": "32fa4580154cbf246e9a13d1daf34df8ad8f2772c1d1a72eb5e87ee96b2e8b36",
+            "log": "cases/stopped_park_500ft/fallback1-compat.log",
+            "negative_log": "cases/stopped_park_500ft/fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/stopped_park_500ft/fallback2-construction.json",
+          "construction_sha256": "944882e9256985332a013dd7b2364c53cd02acee1b626063e34301ccaf5a1e3f",
+          "trigger": {
+            "source": "original participant_footprints.jsonl and participant_state.jsonl",
+            "metric": "measured center-distance and active stopped_park state",
+            "failure_condition": "Primary approach overshoots the 500 ft engineering target and leaves no stable active frames; no legal tolerance is inferred."
+          },
+          "changed_knobs": [
+            "stopped approach control gains 0.35/0.40 to 0.28/0.32"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft --candidate fallback2 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_park_500ft/fallback2-offline.log",
+            "log_sha256": "acf61500568f723ab5cbcdd562d279bb4bd919125f0ee66258a376c1b1c4a774",
+            "construction_sha256": "944882e9256985332a013dd7b2364c53cd02acee1b626063e34301ccaf5a1e3f"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_park_500ft/fallback2-compatibility.json",
+            "sha256": "e67e51f5fd1ef852a7ca5d3f1d277cce072e8c29b44506fc73fe30bc8e1e729e",
+            "log": "cases/stopped_park_500ft/fallback2-compat.log",
+            "negative_log": "cases/stopped_park_500ft/fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/stopped_park_500ft/fallback3-construction.json",
+          "construction_sha256": "6ccb6b79776b52ea966f60c0fb0f89fc0fbe8f3703bc47f33dc808467521c55e",
+          "trigger": {
+            "source": "complete decoded approach and overview original RGB streams",
+            "metric": "stopped apparatus and ego body visibility over all original frames",
+            "failure_condition": "Primary approach view omits a required body in any original frame, confirmed by source-bound pixel review."
+          },
+          "changed_knobs": [
+            "approach camera mount 1.2 m forward/2.0 m high to 1.8 m forward/2.3 m high"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft --candidate fallback3 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_park_500ft/fallback3-offline.log",
+            "log_sha256": "aa6fb630f7ea8ae53e5f444188ea4798bb4eb14630bd74d6054e70f327f5be54",
+            "construction_sha256": "6ccb6b79776b52ea966f60c0fb0f89fc0fbe8f3703bc47f33dc808467521c55e"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_park_500ft/fallback3-compatibility.json",
+            "sha256": "dd4987ba8053091adeee926d0d72ec99ae4808f84a8b93401b997b2d008ee051",
+            "log": "cases/stopped_park_500ft/fallback3-compat.log",
+            "negative_log": "cases/stopped_park_500ft/fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft --candidate primary --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/stopped_park_500ft/primary-offline.log",
+        "log_sha256": "1ff997fe87e59b2ee557ff3e0e03d7c2b4563e59ba16f8e87f2c257cd0f8619a",
+        "construction_sha256": "15edb1b0cf46dc4f21446b999f706422a22aaa3cd9d1eebf18887ea5e86f0c96"
+      },
+      "compatibility": {
+        "receipt": "cases/stopped_park_500ft/primary-compatibility.json",
+        "sha256": "74b8c321892e8a68ca8932d4deebe0fc7f2fcd11f6cbadca488554344f75d0d9",
+        "log": "cases/stopped_park_500ft/primary-compat.log",
+        "negative_log": "cases/stopped_park_500ft/primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/stopped_park_500ft/primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_550ft",
+      "kind": "delivery",
+      "construction": "cases/stopped_park_550ft/construction.json",
+      "construction_sha256": "d5d96874e46ec2a8660c4479237bc3d3007dac38900f233efe7765780479d531",
+      "measurement_contract": "cases/stopped_park_550ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "stopped_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/cases/stopped_park_550ft/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "stopped_park may not settle at the measured 550 ft center target"
+      },
+      "acquisition": {
+        "fire_centre_distance_ft": {
+          "entrypoint": "stopped_finalizer.py",
+          "method": "recompute original-frame centers from retained Native footprints",
+          "evidence": "FireCaptureSession writes original footprints/state and synchronized frame identities; stopped finalizer derives the centre stream."
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/stopped_park_550ft/fallback1-construction.json",
+          "construction_sha256": "bec47f976dd3d6a8340fb5e4d91c60dc3d990916869e5f17a00494586abe7d56",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "count of crest routes supporting an initial approach beyond 550 ft",
+            "failure_condition": "Primary 5 m route sampling finds no continuous verified crest approach; use denser Native sampling."
+          },
+          "changed_knobs": [
+            "Native crest route sampling 5 m to 2.5 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_550ft --candidate fallback1 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_park_550ft/fallback1-offline.log",
+            "log_sha256": "dd86a88f332d5faf025328b2afd6793c1bae38ca39a5112228b385c2b93fca5b",
+            "construction_sha256": "bec47f976dd3d6a8340fb5e4d91c60dc3d990916869e5f17a00494586abe7d56"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_park_550ft/fallback1-compatibility.json",
+            "sha256": "f42993f9309f175c1ba3f5c73dfffc2d3825e816e8482cda9c12e6b980ad2983",
+            "log": "cases/stopped_park_550ft/fallback1-compat.log",
+            "negative_log": "cases/stopped_park_550ft/fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/stopped_park_550ft/fallback2-construction.json",
+          "construction_sha256": "43bc38a5467194cc37189c43820b26d4ed774b6d9a58b0b653ce5be3c8895683",
+          "trigger": {
+            "source": "original participant_footprints.jsonl and participant_state.jsonl",
+            "metric": "measured center-distance and active stopped_park state",
+            "failure_condition": "Primary approach overshoots the 550 ft engineering target and leaves no stable active frames; no legal tolerance is inferred."
+          },
+          "changed_knobs": [
+            "stopped approach control gains 0.35/0.40 to 0.28/0.32"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_550ft --candidate fallback2 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_park_550ft/fallback2-offline.log",
+            "log_sha256": "db47509c13438ed1773d8600041677794bb10490da9c8e37592a60895781c518",
+            "construction_sha256": "43bc38a5467194cc37189c43820b26d4ed774b6d9a58b0b653ce5be3c8895683"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_park_550ft/fallback2-compatibility.json",
+            "sha256": "a6faab8246463c27716b159d1907c7d253eebf931e95a4cede221a9c9bcd146a",
+            "log": "cases/stopped_park_550ft/fallback2-compat.log",
+            "negative_log": "cases/stopped_park_550ft/fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/stopped_park_550ft/fallback3-construction.json",
+          "construction_sha256": "7f13c9e5276e10b69ac36e0e774456adaa5633a88936971d0a60dff9c2639174",
+          "trigger": {
+            "source": "complete decoded approach and overview original RGB streams",
+            "metric": "stopped apparatus and ego body visibility over all original frames",
+            "failure_condition": "Primary approach view omits a required body in any original frame, confirmed by source-bound pixel review."
+          },
+          "changed_knobs": [
+            "approach camera mount 1.2 m forward/2.0 m high to 1.8 m forward/2.3 m high"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_550ft --candidate fallback3 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/stopped_park_550ft/fallback3-offline.log",
+            "log_sha256": "655da95c5d21696eaea203b779668f48396b304c34010ae07a3672243bc0ddb6",
+            "construction_sha256": "7f13c9e5276e10b69ac36e0e774456adaa5633a88936971d0a60dff9c2639174"
+          },
+          "compatibility": {
+            "receipt": "cases/stopped_park_550ft/fallback3-compatibility.json",
+            "sha256": "8a959ba063003d1b79056bc8c7653e08629201147c447c973dedd03720808525",
+            "log": "cases/stopped_park_550ft/fallback3-compat.log",
+            "negative_log": "cases/stopped_park_550ft/fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_550ft --candidate primary --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/stopped_park_550ft/primary-offline.log",
+        "log_sha256": "1636933f781c795b0eadcf650d7fadb165b96448baaca9667213ad1782d8c7cc",
+        "construction_sha256": "d5d96874e46ec2a8660c4479237bc3d3007dac38900f233efe7765780479d531"
+      },
+      "compatibility": {
+        "receipt": "cases/stopped_park_550ft/primary-compatibility.json",
+        "sha256": "6b53b964be25a724520813c557846f9ededce832b4337edbde78a6a39e112b5c",
+        "log": "cases/stopped_park_550ft/primary-compat.log",
+        "negative_log": "cases/stopped_park_550ft/primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/stopped_park_550ft/primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_550ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C102304__NRS-484B-710__motor_vehicle_driver__authorized_emergency_at500",
+      "kind": "delivery",
+      "construction": "cases/authorized_emergency_at500/construction.json",
+      "construction_sha256": "16ffb8d359b73426b61521dc5c9651bf9d2970b4cb20bee5784bd5594f4b4318",
+      "measurement_contract": "cases/authorized_emergency_at500/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "fire_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/cases/authorized_emergency_at500/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Emergency subject body geometry and official-business premise may fail the matched-distance comparison"
+      },
+      "acquisition": {
+        "fire_gap_ft": {
+          "entrypoint": "fire_finalizer.py",
+          "method": "recompute each frame from retained original participant footprints",
+          "evidence": "FireCaptureSession writes original footprints/state and synchronized Native frame identities; the finalizer derives the stream after capture."
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/authorized_emergency_at500/fallback1-construction.json",
+          "construction_sha256": "8bb90b110ad491620877f8a3bf7138cc945783190aacf7dde7ad015994014ab0",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "count of connected hill-crest spawn routes meeting the original 500 ft construction",
+            "failure_condition": "Primary 5 m sampling finds no verified crest route; use denser sampling to resolve available geometry."
+          },
+          "changed_knobs": [
+            "native route waypoint sampling step: 5 m to 2.5 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__authorized_emergency_at500 --candidate fallback1 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/authorized_emergency_at500/fallback1-offline.log",
+            "log_sha256": "80471fe49a6e9a7767ede2864e9c6df88edde4750ebaaee7db41f5b6a507178a",
+            "construction_sha256": "8bb90b110ad491620877f8a3bf7138cc945783190aacf7dde7ad015994014ab0"
+          },
+          "compatibility": {
+            "receipt": "cases/authorized_emergency_at500/fallback1-compatibility.json",
+            "sha256": "742eef847b850804e387bcaa29963da36619093a0d3ba6a585ad875a5ac6ca9c",
+            "log": "cases/authorized_emergency_at500/fallback1-compat.log",
+            "negative_log": "cases/authorized_emergency_at500/fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/authorized_emergency_at500/fallback2-construction.json",
+          "construction_sha256": "0e7dd57e0ac3a31b559717d8fb8913233bd5f8d635c68e87d8059d109038633b",
+          "trigger": {
+            "source": "retained original participant_footprints.jsonl and participant_state.jsonl",
+            "metric": "active-frame full-footprint gap oscillation around the commanded 500 ft target",
+            "failure_condition": "Primary control produces sustained oscillation outside a predeclared \u00b12 ft engineering attainment band; this band is not a legal threshold."
+          },
+          "changed_knobs": [
+            "following controller gap/speed gains: 0.18/0.30 to 0.12/0.22"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__authorized_emergency_at500 --candidate fallback2 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/authorized_emergency_at500/fallback2-offline.log",
+            "log_sha256": "b8811f8c05a68c695375b713c064d5457c3d9907135c60fe019aa302dcdc9889",
+            "construction_sha256": "0e7dd57e0ac3a31b559717d8fb8913233bd5f8d635c68e87d8059d109038633b"
+          },
+          "compatibility": {
+            "receipt": "cases/authorized_emergency_at500/fallback2-compatibility.json",
+            "sha256": "707953bbcc51e025e0fd84991245ce4795862adb950b2910f611a7a8e97a5a3c",
+            "log": "cases/authorized_emergency_at500/fallback2-compat.log",
+            "negative_log": "cases/authorized_emergency_at500/fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/authorized_emergency_at500/fallback3-construction.json",
+          "construction_sha256": "ff42c63a5fd96454481d923a49749f740d6d6f9d5b1f76a387562d4101ee5346",
+          "trigger": {
+            "source": "complete decoded approach and overview original RGB streams",
+            "metric": "required participant body visibility over all original frames",
+            "failure_condition": "Primary approach view omits a required participant body in any original frame, confirmed by source-bound pixel review."
+          },
+          "changed_knobs": [
+            "approach camera relative mount: 1.2 m forward/2.0 m high to 1.8 m forward/2.3 m high"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__authorized_emergency_at500 --candidate fallback3 --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/authorized_emergency_at500/fallback3-offline.log",
+            "log_sha256": "d978ac7f6a717003c441aed115ec582fdd074d7e06ec5172ca3d897b1b189375",
+            "construction_sha256": "ff42c63a5fd96454481d923a49749f740d6d6f9d5b1f76a387562d4101ee5346"
+          },
+          "compatibility": {
+            "receipt": "cases/authorized_emergency_at500/fallback3-compatibility.json",
+            "sha256": "9eebc30be5fee41d5f583c42d268e452c2e9f80182dc302636f75b53b9a20a30",
+            "log": "cases/authorized_emergency_at500/fallback3-compat.log",
+            "negative_log": "cases/authorized_emergency_at500/fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__authorized_emergency_at500 --candidate primary --output .runtime-work/FRESH --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/authorized_emergency_at500/primary-offline.log",
+        "log_sha256": "ef1b372d6e67fa55d0c826b9ede297e755002b3c97694845c8f17de03c52abb1",
+        "construction_sha256": "16ffb8d359b73426b61521dc5c9651bf9d2970b4cb20bee5784bd5594f4b4318"
+      },
+      "compatibility": {
+        "receipt": "cases/authorized_emergency_at500/primary-compatibility.json",
+        "sha256": "538be3234d660294d19f74d09663cfdcfbf86e299fab3a8cb37ca2c3a11069b2",
+        "log": "cases/authorized_emergency_at500/primary-compat.log",
+        "negative_log": "cases/authorized_emergency_at500/primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/authorized_emergency_at500/primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C102304__NRS-484B-710__motor_vehicle_driver__authorized_emergency_at500 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "ca0df269080ad4a7473655f8db3a351205a1d74a094654dbe8a9a81813c6f4cd",
         "test_exit_code": 0
       }
     }

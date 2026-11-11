@@ -19,6 +19,36 @@ from worker_exchange.saved_processing import copy_sources, run as process_saved
 
 
 class SavedProcessingTests(unittest.TestCase):
+    def test_authorized_emergency_context_survives_saved_processing(self):
+        work = ROOT / ".runtime-work"
+        work.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="fire-exception-saved-", dir=work) as temp:
+            base = Path(temp)
+            case = FOLDER.name + "__authorized_emergency_at500"
+            fixture = base / "fixture"
+            recipe = FOLDER / "cases/authorized_emergency_at500/diagnostic-recipe.json"
+            make_fixture(ROOT, recipe, fixture)
+            decoder = ROOT / ".runtime-work/fire-decoder/.lake/build/bin/adapterCheck"
+            for candidate in ("primary", "fallback1", "fallback2", "fallback3"):
+                with self.subTest(candidate=candidate):
+                    attempt = base / (candidate + "-attempt")
+                    output = base / (candidate + "-processed")
+                    make_attempt(FOLDER / "execution-manifest.json", case, attempt,
+                                 candidate=candidate)
+                    copy_sources(fixture, attempt)
+                    self.assertFalse((attempt / "fire_gap_ft.jsonl").exists())
+                    receipt = process_saved(FOLDER / "execution-manifest.json", case,
+                                            attempt, output, ROOT / "runtime/library", decoder)
+                    self.assertTrue(receipt["passed"])
+                    self.assertTrue(receipt["originals_preserved"])
+                    self.assertTrue(receipt["final_video_checks"]["passed"])
+                    self.assertFalse((attempt / "fire_gap_ft.jsonl").exists())
+                    result = json.loads((Path(receipt["analysis_directory"]) / "result.json").read_text())
+                    context = result["measured_values"]["fire_boundary_observation"]["exception_context"]
+                    self.assertTrue(context["authorized_emergency"])
+                    self.assertTrue(context["official_business"])
+                    self.assertFalse(result["physical_acceptance_claimed"])
+
     def test_raw_fire_sources_survive_complete_saved_processing(self):
         work = ROOT / ".runtime-work"
         work.mkdir(exist_ok=True)

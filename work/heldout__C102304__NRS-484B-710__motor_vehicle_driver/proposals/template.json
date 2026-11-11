@@ -1,0 +1,78 @@
+{
+  "template_id": "NRS-484B-710@motor_vehicle_driver",
+  "law_id": "NRS-484B-710",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "The driver of any motor vehicle other than an authorized emergency vehicle on official business shall not follow any fire apparatus traveling in response to a fire alarm closer than 500 feet or driving to or park such vehicle within 500 feet of fire apparatus which stopped in answer to a fire alarm.",
+  "structure": {
+    "law_id": "NRS-484B-710",
+    "activation": {
+      "condition": "For a motor vehicle driver, either a fire apparatus is traveling in response to a fire alarm or it has stopped in answer to a fire alarm. Alarm purpose is a separately sourced scene premise.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Do not follow the traveling apparatus closer than 500 feet; do not drive to or park the vehicle within 500 feet of the stopped apparatus. Retain branch-specific distance definitions and original-frame measurements.",
+      "numeric_conditions": [
+        {
+          "variable": "fire_following_gap_ft",
+          "operator": "<",
+          "value": 500,
+          "unit": "ft"
+        },
+        {
+          "variable": "fire_stopped_distance_ft",
+          "operator": "<=",
+          "value": 500,
+          "unit": "ft"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "trigger": "The subject is an authorized emergency vehicle on official business.",
+        "effect": "The stated prohibition does not govern that subject while the exception holds.",
+        "replacement_obligation": "none stated in this section",
+        "source_clause": "other than an authorized emergency vehicle on official business"
+      }
+    ],
+    "timing": {
+      "description": "Observe the traveling-follow interval or the drive-to/park interval while the apparatus has the stated alarm-response status.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "fire_following_gap_ft",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured nonnegative ground-footprint separation in ft"
+    },
+    {
+      "name": "fire_stopped_distance_ft",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured nonnegative world-centre separation in ft"
+    },
+    {
+      "name": "apparatus_alarm_response",
+      "kind": "world_setup",
+      "range_or_domain": "sourced boolean premise"
+    },
+    {
+      "name": "apparatus_stopped_in_answer",
+      "kind": "world_setup",
+      "range_or_domain": "sourced boolean premise"
+    },
+    {
+      "name": "subject_authorized_emergency",
+      "kind": "world_setup",
+      "range_or_domain": "sourced boolean premise"
+    },
+    {
+      "name": "subject_official_business",
+      "kind": "world_setup",
+      "range_or_domain": "sourced boolean premise"
+    }
+  ],
+  "boundary_note": "The stopped-branch phrase \"within 500 feet\" is represented with an inclusive equality probe for planning; exact legal meaning and physical equality require later review. No fixture establishes a legal interpretation."
+}

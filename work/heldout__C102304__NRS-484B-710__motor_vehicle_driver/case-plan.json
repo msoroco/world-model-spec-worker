@@ -93,7 +93,7 @@
       "gap_ids": [
         "stopped-drive-to"
       ],
-      "construction_status": "stopped_runner_component_tested_exact_bundle_pending",
+      "construction_status": "exact_bundle_software_proved",
       "physical_risk": {
         "risk": "Controller may not hold the commanded gap through the full recorded interval; map grade and vehicle response can shift actual full-body spacing.",
         "trigger_source": "retained original participant_footprints.jsonl and participant_state.jsonl",
@@ -116,7 +116,7 @@
       "gap_ids": [
         "stopped-drive-to"
       ],
-      "construction_status": "stopped_runner_component_tested_exact_bundle_pending",
+      "construction_status": "exact_bundle_software_proved",
       "physical_risk": {
         "risk": "Controller may not hold the commanded gap through the full recorded interval; map grade and vehicle response can shift actual full-body spacing.",
         "trigger_source": "retained original participant_footprints.jsonl and participant_state.jsonl",
@@ -139,7 +139,7 @@
       "gap_ids": [
         "stopped-park"
       ],
-      "construction_status": "stopped_runner_component_tested_exact_bundle_pending",
+      "construction_status": "exact_bundle_software_proved",
       "physical_risk": {
         "risk": "Controller may not hold the commanded gap through the full recorded interval; map grade and vehicle response can shift actual full-body spacing.",
         "trigger_source": "retained original participant_footprints.jsonl and participant_state.jsonl",
@@ -162,7 +162,7 @@
       "gap_ids": [
         "stopped-park"
       ],
-      "construction_status": "stopped_runner_component_tested_exact_bundle_pending",
+      "construction_status": "exact_bundle_software_proved",
       "physical_risk": {
         "risk": "Controller may not hold the commanded gap through the full recorded interval; map grade and vehicle response can shift actual full-body spacing.",
         "trigger_source": "retained original participant_footprints.jsonl and participant_state.jsonl",
@@ -185,7 +185,7 @@
       "gap_ids": [
         "stopped-park"
       ],
-      "construction_status": "stopped_runner_component_tested_exact_bundle_pending",
+      "construction_status": "exact_bundle_software_proved",
       "physical_risk": {
         "risk": "Controller may not hold the commanded gap through the full recorded interval; map grade and vehicle response can shift actual full-body spacing.",
         "trigger_source": "retained original participant_footprints.jsonl and participant_state.jsonl",
@@ -208,7 +208,7 @@
       "gap_ids": [
         "exception"
       ],
-      "construction_status": "planned_unimplemented",
+      "construction_status": "exact_bundle_software_proved",
       "physical_risk": {
         "risk": "Emergency subject blueprint and official-business premise may not match the ordinary-subject comparison geometry or visible device state.",
         "trigger_source": "retained participant geometry/state and fire_context.json",
@@ -463,9 +463,142 @@
       "source": "NRS 484B.710 full text in inputs/heldout__C102304__NRS-484B-710__motor_vehicle_driver/assignment.json",
       "status": "selected_required",
       "case_ids": [
-        "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_450ft"
+        "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_450ft",
+        "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_500ft",
+        "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_550ft"
       ],
       "evidence_or_gap": "Accepted traveling-follow originals do not establish stationary apparatus or measured drive-to closing."
+    },
+    {
+      "requirement": "parking within the 500 ft boundary of fire apparatus stopped in answer to an alarm",
+      "source": "NRS 484B.710 full text in inputs/heldout__C102304__NRS-484B-710__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_450ft",
+        "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft",
+        "heldout__C102304__NRS-484B-710__motor_vehicle_driver__stopped_park_550ft"
+      ],
+      "evidence_or_gap": "Accepted traveling-follow originals do not establish parked subject or stationary apparatus."
+    },
+    {
+      "requirement": "authorized emergency vehicle on official business exception to the following-distance restriction",
+      "source": "NRS 484B.710 full text in inputs/heldout__C102304__NRS-484B-710__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C102304__NRS-484B-710__motor_vehicle_driver__authorized_emergency_at500"
+      ],
+      "evidence_or_gap": "Accepted ordinary-subject summaries do not establish authorization or official business."
     }
-  ]
+  ],
+  "source_observation_mapping": {
+    "ru.fire_apparatus": {
+      "evidence": "Original participant footprint IDs and Native firetruck blueprint binding identify the apparatus; RGB source review must confirm rendered body.",
+      "channels": [],
+      "source_refs": [
+        "runner.py",
+        "participant_footprints.jsonl",
+        "overview.mkv",
+        "approach.mkv"
+      ]
+    },
+    "sig.warning_lamp": {
+      "evidence": "Original per-frame Native light-state readback is retained; it cannot alone prove alarm response.",
+      "channels": [],
+      "source_refs": [
+        "participant_state.jsonl",
+        "fire_context.json"
+      ]
+    },
+    "sig.siren": {
+      "evidence": "Original per-frame siren readback is retained when Native exposes it; null means unknown, not silent.",
+      "channels": [],
+      "source_refs": [
+        "participant_state.jsonl"
+      ]
+    },
+    "drv.following": {
+      "evidence": "Original per-frame following and movement state is joined to footprint geometry for the traveling branch.",
+      "channels": [],
+      "source_refs": [
+        "participant_state.jsonl",
+        "participant_footprints.jsonl"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Derived nearest full-footprint separation in feet is recomputed from retained original body corners after capture.",
+      "channels": [
+        "fire_gap_ft"
+      ],
+      "source_refs": [
+        "participant_footprints.jsonl",
+        "fire_gap_ft.jsonl"
+      ]
+    },
+    "rel.centre_distance": {
+      "evidence": "Derived vehicle-center distance in feet is recomputed from retained original footprint centers after capture for stopped cases.",
+      "channels": [],
+      "source_refs": [
+        "participant_footprints.jsonl",
+        "fire_centre_distance_ft.jsonl"
+      ]
+    },
+    "drv.standing_or_parked": {
+      "evidence": "Original per-frame parked and moving state distinguishes parking from drive-to; controller request alone is insufficient.",
+      "channels": [],
+      "source_refs": [
+        "participant_state.jsonl"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Original per-frame apparatus motion readback establishes stationary state; separate authored dispatch premise states answer to alarm.",
+      "channels": [],
+      "source_refs": [
+        "participant_state.jsonl",
+        "fire_context.json"
+      ]
+    },
+    "ru.emergency_vehicle": {
+      "evidence": "Native emergency-vehicle blueprint binding plus explicit separately sourced authorization and official-business premises establish the exception scenario assumptions for later review.",
+      "channels": [],
+      "source_refs": [
+        "runner.py",
+        "fire_context.json",
+        "participant_state.jsonl"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego and apparatus complete bodies, crest route and stopping position",
+        "interval": "entire 8 s original-frame interval"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach, apparatus and changing separation",
+        "interval": "entire 8 s original-frame interval"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "apparatus body corners and surrounding roadway geometry",
+        "interval": "entire 8 s original-frame interval"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego travel direction, apparatus and response devices when visible",
+        "interval": "entire 8 s original-frame interval"
+      }
+    ],
+    "source_review": "Each named original stream must fully decode, join the frame map, and be independently reviewed for required bodies and devices. Mounts are provisional until original-pixel review."
+  },
+  "physical_outcome_audit": {
+    "script": "physical_outcome.py",
+    "sha256": "3c29338b8661e820e469ea04150994dfadd2d735ae842af6fe426c96c32098ae",
+    "required_review": "After actual capture, bind each original camera SHA and full frame count to a source-pixel review of required bodies; review alarm dispatch and any emergency authorization/official-business premise separately. Recompute original active frames and boundary distance. The 2 ft band is an engineering attainment screen, not a legal cutoff.",
+    "cpu_fixture_limit": "Synthetic positive/negative tests exercise rejection logic only; no actual pixel visibility or physical outcome is established."
+  }
 }
