@@ -91,6 +91,34 @@ class CategoricalHighwayPointsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'boolean'):
             select_point(world, subject_continues=1)
 
+    def test_continuing_point_selects_its_continuing_exit_not_turn_branch(self):
+        world, _, through = native_map(subject_continues=False)
+        start = Point(-8, 4, 1, 0, 7)
+        junction = Point(0, 4, 1, 0, 8, True)
+        turn_exit = Point(0, 10, 0, 1, 9)
+        straight_exit = Point(8, 4, 1, 0, 7)
+        start.successors = [junction]
+        junction.successors = [turn_exit, straight_exit]
+        starts = {id(path.transform.location): path for path in (start, through[0])}
+        world.get_spawn_points = lambda: [NS(location=path.transform.location)
+                                          for path in (start, through[0])]
+        world.get_waypoint = lambda location: starts[id(location)]
+        point = select_point(world, subject_continues=True)
+        self.assertIs(point['subject'][-1], straight_exit)
+
+        # The controlled pair must make the same choice even if the turning
+        # branch is enumerated first by the Native waypoint API.
+        ending = [Point(-8, 0, 1, 0, 1), Point(0, 0, 1, 0, 5, True),
+                  Point(6, 0, 1, 0, 3)]
+        for first, second in zip(ending, ending[1:]):
+            first.successors = [second]
+        starts[id(ending[0].transform.location)] = ending[0]
+        world.get_spawn_points = lambda: [NS(location=path.transform.location)
+                                          for path in (ending[0], start, through[0])]
+        pair = select_controlled_pair(world)
+        self.assertIs(pair['continuing'][-1], straight_exit)
+        self.assertIs(pair['other'][0], through[0])
+
 
 if __name__ == '__main__':
     unittest.main()

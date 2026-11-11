@@ -26,6 +26,10 @@ def select_point(world_map, *, subject_continues, max_spawns=300):
         source_continues = (subject['junction_id'], subject['road_id']) in continuous
         if source_continues != subject_continues:
             continue
+        # A continuing *approach* can also have a turning exit. The selected
+        # comparison route must itself carry the same road beyond the junction.
+        if subject_continues and not subject['selected_exit_continues']:
+            continue
         for other in routes:
             if (other['junction_id'], other['road_id']) not in continuous or (
                     subject['junction_id'] != other['junction_id'] or
@@ -72,7 +76,8 @@ def select_controlled_pair(world_map, *, max_spawns=300, route_accept=None):
                     ending['road_id'] == other['road_id']):
                 continue
             for continuing in routes:
-                if ((continuing['junction_id'], continuing['road_id']) not in continuous or
+                if (not continuing['continues'] or
+                        (continuing['junction_id'], continuing['road_id']) not in continuous or
                         continuing['junction_id'] != other['junction_id'] or
                         continuing['road_id'] in (other['road_id'], ending['road_id'])):
                     continue
@@ -86,6 +91,11 @@ def select_controlled_pair(world_map, *, max_spawns=300, route_accept=None):
                     'ending': ending['path'], 'continuing': continuing['path'],
                     'other': other['path'], 'junction_id': other['junction_id'],
                     'map_name': world_map.name,
+                    'witness_paths': [route['path'] for route in routes
+                                      if route['junction_id'] == other['junction_id'] and
+                                      route['road_id'] in (ending['road_id'],
+                                                           continuing['road_id'],
+                                                           other['road_id'])],
                     'selection_basis': 'connected Native successors with one fixed through route',
                     'legal_highway_status_claimed': False,
                 }
