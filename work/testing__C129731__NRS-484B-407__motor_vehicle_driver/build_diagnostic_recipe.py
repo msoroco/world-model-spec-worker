@@ -5,6 +5,7 @@ No physical visibility or legal outcome is inferred from this fixture.
 """
 import hashlib
 import json
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -26,12 +27,15 @@ def body(x, y):
     return [[x+dx, y+dy, z] for dx in (-1, 1) for dy in (-.8, .8) for z in (0, 1.5)]
 
 
-def visibility():
+def visibility(x, y):
     return {"visibility_criterion": "any_of_nine_body_samples",
             "distance_convention": "incoming driving-lane waypoint arc length to actor projected station",
             "eye_height_m": 1.4, "scan_step_m": 10., "horizon_tolerance_m": .25,
             "probe_distance_m": 152.4,
-            "ego_body_samples_m": [[float(i), 0., 1.] for i in range(9)],
+            "ego_body_samples_m": [[x+dx,y+dy,1.] for dx,dy in
+                                   ((0,0),(-1,-.8),(-1,.8),(1,-.8),(1,.8),
+                                    (-1,0),(1,0),(0,-.8),(0,.8))],
+            "ego_projection":{"road_id":10,"section_id":0,"lane_id":-1},
             "required_lane_ids": [-1, 1],
             "approaches": [
                 {"lane_id": -1, "any_sample_clear_at_probe": False,
@@ -48,7 +52,7 @@ def build():
     for i in range(1100):
         frame, time = i+1000, i/20
         fraction = min(1., i/400)
-        x, y, yaw = -10+10*fraction, 5*max(0., (i-100)/300), 180*fraction
+        x, y, yaw = -10+10*fraction, 2*min(1., max(0., (i-100)/300)), 180*fraction
         vertices = body(x, y)
         ego = {"location_xyz_m": [x,y,0], "yaw_deg": yaw,
                "velocity_xyz_mps": [0 if i>=400 else .5,0,0], "road_lane": [10,-1]}
@@ -62,6 +66,7 @@ def build():
                        "ego":ego,"approaches":approaches})
         turns.append({"frame":frame,"time_s":time,"body_vertices_m":vertices,"heading_deg":yaw})
         traces.append({"frame":frame,"time_s":time,"position_m":[x,y,0],
+                       "position":{"x":x,"y":y,"z":0},
                        "heading_deg":yaw,"speed_mps":ego["velocity_xyz_mps"][0],
                        "speed_mph":ego["velocity_xyz_mps"][0]/.44704,
                        "velocity_mps":ego["velocity_xyz_mps"],
@@ -71,17 +76,18 @@ def build():
                        "position_m":[x,y,0],"heading_deg":yaw,
                        "velocity_mps":ego["velocity_xyz_mps"],
                        "speed_mps":ego["velocity_xyz_mps"][0],
+                       "accel_longitudinal_mps2":0,
                        "body_vertices_m":vertices}
         original = {"frame":frame,"time_s":time,"participants":[participant],
-                    "rgb_sensors":[],"world_settings":{"no_rendering_mode":False},
-                    "devices":[],"relations":[],"participant_inventory":"diagnostic actor sample",
-                    "map_context":{"declared_public_way_road_ids":[10],"core_assumptions":[]}}
+                    "map_context":{"declared_public_way_road_ids":[10]}}
         evidence.append({"original_frame":frame,"replay_frame":frame,"actor_id":101,
                          "recording_time_s":time,"replay_simulation_time_s":time,
                          "ego":{"position_m":[x,y,0],"heading_deg":yaw,
-                                "speed_mps":ego["velocity_xyz_mps"][0],"body_vertices_m":vertices},
-                         "world":{"road_projection":{"road_id":10,"section_id":0,"lane_id":-1,"s_m":x}},
-                         "original_observations":original,"visibility":visibility()})
+                                "speed_mps":ego["velocity_xyz_mps"][0],
+                                "speed_provenance":"synthetic_native_sample",
+                                "body_vertices_m":vertices},
+                         "world":{},
+                         "original_observations":original,"visibility":visibility(x,y)})
         base, abstract = (f"graphs/{kind}/{frame:08d}.pkl" for kind in ("base","abstract"))
         frames.append({"frame":frame,"simulation_time":time,"base":base,"abstract":abstract,
                        "nodes":0,"edges":0,"extraction_seconds":0,"capture_seconds":0})
@@ -90,6 +96,15 @@ def build():
                            "attributes":{"frame":frame,"simulation_time_s":time,
                                          "units":{"position":"m"},**attrs},
                            "nodes":[],"edges":[]})
+    road = ET.fromstring(json.loads((ROOT/"runtime/fixtures/example.json").read_text())["files"]["road.xodr"])
+    for source_road in road.findall("road"):
+        source_road.set("id", "10")
+        for geometry in source_road.findall("./planView/geometry"):
+            geometry.set("x", "-200")
+        for lane_group in source_road.findall("./lanes/laneSection/*"):
+            for lane in list(lane_group.findall("lane")):
+                if lane.get("id") not in ("-1","0","1"):
+                    lane_group.remove(lane)
     sources = {"motion_history.jsonl":lines(motion),"turn_history.jsonl":lines(turns),
                "video_frames.jsonl":lines(maps),"trace.jsonl":lines(traces),
                "capture/evidence.jsonl":lines(evidence),
@@ -98,8 +113,8 @@ def build():
                                                 "turn_site_xyz_m":SITE["turn_site_xyz_m"],
                                                 "incoming_lanes":SITE["incoming_lanes"],
                                                 "visibility_proxy_only":True}),
-               "capture/recorder_info.txt":"synthetic diagnostic only\n",
-               "road.xodr":"<OpenDRIVE><header revMajor=\"1\" revMinor=\"4\" name=\"diagnostic\" version=\"1\" date=\"\" north=\"0\" south=\"0\" east=\"0\" west=\"0\"/></OpenDRIVE>\n"}
+               "capture/recorder_info.txt":"Create 101: vehicle.tesla.model3 (0) at (0, 0, 0)\nsynthetic diagnostic only\n",
+               "road.xodr":ET.tostring(road, encoding="unicode")}
     sources["capture/manifest.json"] = json.dumps({"status":"draft","acquisition":"synthetic_diagnostic",
         "case_id":CASE,"map":"Carla/Maps/OpenDriveMap","frames":1100,
         "required_observations":["st.sight_distance"],"extraction_confirmed":True,

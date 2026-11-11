@@ -37,8 +37,14 @@ class SavedSourceTests(unittest.TestCase):
             root = Path(temp)
             for name in ("config.json", "diagnostic-site.json"):
                 shutil.copyfile(PACKAGE/name, root/name)
-            mapping, motion, trace, evidence = [], [], [], []
+            mapping, motion, trace, evidence, turns = [], [], [], [], []
             source_sha = json.loads((root/"config.json").read_text())["site_source"]["sha256"]
+            site = json.loads((root/"diagnostic-site.json").read_text())
+            (root/"curve_context.json").write_text(json.dumps({
+                "site_source_sha256": source_sha, "feature": site["feature"],
+                "turn_site_xyz_m": site["turn_site_xyz_m"],
+                "incoming_lanes": site["incoming_lanes"],
+                "visibility_proxy_only": True}))
             for i in range(1100):
                 frame, time = i+1000, i/20
                 mapping.append({"video_frame": i, "native_frame": frame, "time_s": time})
@@ -55,10 +61,15 @@ class SavedSourceTests(unittest.TestCase):
                 trace.append({"frame": frame, "time_s": time})
                 evidence.append({"original_frame": frame, "recording_time_s": time,
                                  "visibility": visibility()})
+                turns.append({"frame": frame, "time_s": time,
+                              "body_vertices_m": [[x, y, z] for x in (-1, 1)
+                                                  for y in (-.8, .8) for z in (0, 1.5)],
+                              "heading_deg": 0})
             write_rows(root/"video_frames.jsonl", mapping)
             write_rows(root/"motion_history.jsonl", motion)
             write_rows(root/"trace.jsonl", trace)
             write_rows(root/"capture/evidence.jsonl", evidence)
+            write_rows(root/"turn_history.jsonl", turns)
             report = analyze_sources(root)
             self.assertEqual(report["turn_frame_sight"]["pinned_proxy_m"], 150.)
             self.assertEqual(report["turn_frame"], 1000)

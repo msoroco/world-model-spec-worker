@@ -1,0 +1,40 @@
+{
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "Missing required source: turn_history.jsonl",
+    "remove": [
+      "turn_history.jsonl"
+    ]
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "capture/evidence.jsonl",
+        "motion_history.jsonl",
+        "video_frames.jsonl"
+      ],
+      "kind": "measured",
+      "method": "measure_visibility",
+      "output_key": "visibility_at_turn",
+      "requirement": "At the U-turn site, retain both original incoming approach rays and their brackets against 500 feet (152.4 m), without a driver-eye or legal-visibility inference",
+      "source": "NRS 484B.407; inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "turn_history.jsonl",
+        "curve_context.json",
+        "motion_history.jsonl",
+        "video_frames.jsonl"
+      ],
+      "kind": "measured",
+      "method": "measure_turn",
+      "output_key": "turn_and_site",
+      "requirement": "Retain original vehicle body and heading reversal at a sourced curve, together with the maneuver site and both approach lanes",
+      "source": "NRS 484B.407; inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+      "value_type": "object"
+    }
+  ]
+}

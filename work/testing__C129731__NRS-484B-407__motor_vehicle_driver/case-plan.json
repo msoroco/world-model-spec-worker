@@ -1,115 +1,282 @@
 {
-  "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C129731",
-  "law_id": "NRS-484B-407",
-  "selected_branch": "Mountain-road curve with documented visibility circumstances.",
+  "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "startup through full 55-second observation",
+        "subject": "complete U-turn body, curve/crest and both approaching vehicles",
+        "view": "overview"
+      },
+      {
+        "interval": "startup through turn completion and clearance",
+        "subject": "approach_a lane, terrain occluder and turning vehicle body",
+        "view": "approach"
+      },
+      {
+        "interval": "startup through turn completion and clearance",
+        "subject": "approach_b lane, crest/curve geometry and turning vehicle body",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "startup through turn completion and clearance",
+        "subject": "ego-relative turn, road geometry and approaches",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 55,
+    "limitations": [
+      "Current camera poses are synthetic diagnostic; actual Native pixels and framing remain unverified."
+    ],
+    "profile": "overview1080-capability"
+  },
   "cases": [
     {
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft",
-      "target_law_id": "NRS-484B-407",
+      "description": "Planned U-turn at curve with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet.",
+      "feature": "curve",
       "gap_ids": [
         "new-sightline-evidence"
       ],
-      "feature": "curve",
       "probe": "short_of_500ft",
-      "description": "Planned U-turn at curve with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet."
+      "target_law_id": "NRS-484B-407"
     },
     {
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__at_500ft",
-      "target_law_id": "NRS-484B-407",
+      "description": "Planned U-turn at curve with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet.",
+      "feature": "curve",
       "gap_ids": [
         "new-sightline-evidence"
       ],
-      "feature": "curve",
       "probe": "at_500ft",
-      "description": "Planned U-turn at curve with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet."
+      "target_law_id": "NRS-484B-407"
     },
     {
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__beyond_500ft",
-      "target_law_id": "NRS-484B-407",
+      "description": "Planned U-turn at curve with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet.",
+      "feature": "curve",
       "gap_ids": [
         "new-sightline-evidence"
       ],
-      "feature": "curve",
       "probe": "beyond_500ft",
-      "description": "Planned U-turn at curve with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet."
+      "target_law_id": "NRS-484B-407"
     },
     {
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft",
-      "target_law_id": "NRS-484B-407",
+      "description": "Planned U-turn at crest with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet.",
+      "feature": "crest",
       "gap_ids": [
         "new-sightline-evidence"
       ],
-      "feature": "crest",
       "probe": "short_of_500ft",
-      "description": "Planned U-turn at crest with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet."
+      "target_law_id": "NRS-484B-407"
     },
     {
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__at_500ft",
-      "target_law_id": "NRS-484B-407",
+      "description": "Planned U-turn at crest with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet.",
+      "feature": "crest",
       "gap_ids": [
         "new-sightline-evidence"
       ],
-      "feature": "crest",
       "probe": "at_500ft",
-      "description": "Planned U-turn at crest with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet."
+      "target_law_id": "NRS-484B-407"
     },
     {
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft",
-      "target_law_id": "NRS-484B-407",
+      "description": "Planned U-turn at crest with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet.",
+      "feature": "crest",
       "gap_ids": [
         "new-sightline-evidence"
       ],
-      "feature": "crest",
       "probe": "beyond_500ft",
-      "description": "Planned U-turn at crest with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet."
+      "target_law_id": "NRS-484B-407"
     }
   ],
+  "cell_id": "C129731",
   "comparisons": [
     {
-      "comparison_id": "curve_visibility_boundary",
       "case_ids": [
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__at_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__beyond_500ft"
       ],
+      "comparison_id": "curve_visibility_boundary",
+      "deliberate_differences": [
+        "engineered occlusion bracket around 500 feet on one inventoried approach, with the other approach held clear"
+      ],
       "fixed_conditions": [
         "same mountain-road map segment and U-turn site",
         "same actor and U-turn controller",
         "same road surface, weather, traffic and device context",
         "same four camera streams, 20 Hz and duration",
         "both approach directions inventoried"
-      ],
-      "deliberate_differences": [
-        "engineered occlusion bracket around 500 feet on one inventoried approach, with the other approach held clear"
       ]
     },
     {
-      "comparison_id": "crest_visibility_boundary",
       "case_ids": [
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__at_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft"
       ],
+      "comparison_id": "crest_visibility_boundary",
+      "deliberate_differences": [
+        "engineered occlusion bracket around 500 feet on one inventoried approach, with the other approach held clear"
+      ],
       "fixed_conditions": [
         "same mountain-road map segment and U-turn site",
         "same actor and U-turn controller",
         "same road surface, weather, traffic and device context",
         "same four camera streams, 20 Hz and duration",
         "both approach directions inventoried"
-      ],
-      "deliberate_differences": [
-        "engineered occlusion bracket around 500 feet on one inventoried approach, with the other approach held clear"
       ]
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "new-sightline-evidence",
+        "requirement": "Source-bound two-direction 500-foot visibility, curve/crest geometry and actual U-turn motion at each probe",
+        "source": "NRS 484B.407",
+        "why_existing_insufficient": "The frozen evidence inventory has zero recordings."
+      }
+    ],
+    "method": "Read exact law and witness; confirmed evidence.json has no recordings. No source-backed reuse available.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "law_id": "NRS-484B-407",
   "observations": [
     "500 feet is 152.4 meters; preserve below, at and above probes without assigning a legal verdict",
     "record U-turn position and completed heading reversal",
     "record curve or approach/near-crest location",
     "inventory both approach directions and retain ray source/brackets, including any censored extent",
     "record approaching vehicle trajectories and camera visibility"
+  ],
+  "planning_status": "First curve short-of-500ft synthetic diagnostic construction and source-bound saved analyzer pass CPU offline/unit checks; no exact delivery or physical case is ready. Other five cases and full branch package remain unconstructed.",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft"
+      ],
+      "evidence_or_gap": "Original capture/evidence.jsonl visibility, motion_history.jsonl and video_frames.jsonl; actual driver sight remains unverified.",
+      "requirement": "At the U-turn site, retain both original incoming approach rays and their brackets against 500 feet (152.4 m), without a driver-eye or legal-visibility inference",
+      "source": "NRS 484B.407; inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft"
+      ],
+      "evidence_or_gap": "Original turn_history.jsonl, curve_context.json and motion/frame join; physical location and motion await Native capture.",
+      "requirement": "Retain original vehicle body and heading reversal at a sourced curve, together with the maneuver site and both approach lanes",
+      "source": "NRS 484B.407; inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "No accepted recording is supplied for this assignment. All six planned cases remain unconstructed and physically unverified.",
+    "The pinned sight-distance proxy uses virtual observers 1.4 m above lane waypoints and ego center/corners; it does not establish an actual driver-eye view."
+  ],
+  "selected_branch": "Mountain-road curve with documented visibility circumstances.",
+  "source_observation_mapping": [
+    {
+      "measurement": "recorded trajectory and heading reversal",
+      "planned_source": "Native ego poses and route intent",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ],
+      "status": "planned_unverified",
+      "term": "drv.u_turn"
+    },
+    {
+      "measurement": "map lane geometry and local curvature",
+      "planned_source": "Native map waypoints",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ],
+      "status": "planned_unverified",
+      "term": "st.curvature"
+    },
+    {
+      "measurement": "elevation and grade profile",
+      "planned_source": "Native map waypoints and surface measurements",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ],
+      "status": "planned_unverified",
+      "term": "st.grade"
+    },
+    {
+      "measurement": "two-direction virtual-observer sight-line brackets",
+      "planned_source": "retained PipelineCapture rays and ego body samples",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ],
+      "status": "planned_unverified",
+      "term": "st.sight_distance"
+    },
+    {
+      "measurement": "approach-a vehicle trajectory",
+      "planned_source": "Native participant poses",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ],
+      "status": "planned_unverified",
+      "term": "rel.oncoming"
+    },
+    {
+      "measurement": "approach-b vehicle trajectory",
+      "planned_source": "Native participant poses",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ],
+      "status": "planned_unverified",
+      "term": "drv.approaching"
+    },
+    {
+      "measurement": "U-turn site and trajectory positions",
+      "planned_source": "Native ego poses",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ],
+      "status": "planned_unverified",
+      "term": "kin.position"
+    },
+    {
+      "measurement": "crest station relative to maneuver site",
+      "planned_source": "Native map waypoints and surface measurements",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ],
+      "status": "planned_unverified",
+      "term": "st.crest"
+    }
   ],
   "sources": [
     {
@@ -124,152 +291,5 @@
       "path": "inputs/coverage/branch-sources.json",
       "sha256": "ee949b41e86803b5e2bc727748d80aac24d8ed79a7b12662bc5ce62eea1daf80"
     }
-  ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "No accepted recording is supplied for this assignment. All six planned cases remain unconstructed and physically unverified.",
-    "The pinned sight-distance proxy uses virtual observers 1.4 m above lane waypoints and ego center/corners; it does not establish an actual driver-eye view."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Read exact law and witness; confirmed evidence.json has no recordings. No source-backed reuse available.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "new-sightline-evidence",
-        "requirement": "Source-bound two-direction 500-foot visibility, curve/crest geometry and actual U-turn motion at each probe",
-        "source": "NRS 484B.407",
-        "why_existing_insufficient": "The frozen evidence inventory has zero recordings."
-      }
-    ]
-  },
-  "source_observation_mapping": [
-    {
-      "term": "drv.u_turn",
-      "measurement": "recorded trajectory and heading reversal",
-      "planned_source": "Native ego poses and route intent",
-      "status": "planned_unverified",
-      "source_refs": [
-        {
-          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
-          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
-        }
-      ]
-    },
-    {
-      "term": "st.curvature",
-      "measurement": "map lane geometry and local curvature",
-      "planned_source": "Native map waypoints",
-      "status": "planned_unverified",
-      "source_refs": [
-        {
-          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
-          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
-        }
-      ]
-    },
-    {
-      "term": "st.grade",
-      "measurement": "elevation and grade profile",
-      "planned_source": "Native map waypoints and surface measurements",
-      "status": "planned_unverified",
-      "source_refs": [
-        {
-          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
-          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
-        }
-      ]
-    },
-    {
-      "term": "st.sight_distance",
-      "measurement": "two-direction virtual-observer sight-line brackets",
-      "planned_source": "retained PipelineCapture rays and ego body samples",
-      "status": "planned_unverified",
-      "source_refs": [
-        {
-          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
-          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
-        }
-      ]
-    },
-    {
-      "term": "rel.oncoming",
-      "measurement": "approach-a vehicle trajectory",
-      "planned_source": "Native participant poses",
-      "status": "planned_unverified",
-      "source_refs": [
-        {
-          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
-          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
-        }
-      ]
-    },
-    {
-      "term": "drv.approaching",
-      "measurement": "approach-b vehicle trajectory",
-      "planned_source": "Native participant poses",
-      "status": "planned_unverified",
-      "source_refs": [
-        {
-          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
-          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
-        }
-      ]
-    },
-    {
-      "term": "kin.position",
-      "measurement": "U-turn site and trajectory positions",
-      "planned_source": "Native ego poses",
-      "status": "planned_unverified",
-      "source_refs": [
-        {
-          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
-          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
-        }
-      ]
-    },
-    {
-      "term": "st.crest",
-      "measurement": "crest station relative to maneuver site",
-      "planned_source": "Native map waypoints and surface measurements",
-      "status": "planned_unverified",
-      "source_refs": [
-        {
-          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
-          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
-        }
-      ]
-    }
-  ],
-  "planning_status": "First curve short-of-500ft synthetic diagnostic construction and source-bound saved analyzer pass CPU offline/unit checks; no exact delivery or physical case is ready. Other five cases and full branch package remain unconstructed.",
-  "camera_plan": {
-    "profile": "overview1080-capability",
-    "duration_s": 55,
-    "composition": "synchronized_four_view_primary",
-    "coverage": [
-      {
-        "view": "overview",
-        "subject": "complete U-turn body, curve/crest and both approaching vehicles",
-        "interval": "startup through full 55-second observation"
-      },
-      {
-        "view": "approach",
-        "subject": "approach_a lane, terrain occluder and turning vehicle body",
-        "interval": "startup through turn completion and clearance"
-      },
-      {
-        "view": "reference_corner",
-        "subject": "approach_b lane, crest/curve geometry and turning vehicle body",
-        "interval": "startup through turn completion and clearance"
-      },
-      {
-        "view": "driver_reference",
-        "subject": "ego-relative turn, road geometry and approaches",
-        "interval": "startup through turn completion and clearance"
-      }
-    ],
-    "limitations": [
-      "Current camera poses are synthetic diagnostic; actual Native pixels and framing remain unverified."
-    ]
-  }
+  ]
 }
