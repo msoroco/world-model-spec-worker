@@ -51,7 +51,8 @@ def build():
             config.update(case_id=draft['case_id'],case_suffix=suffix,
                           candidate_id=candidate,selected_case_id=draft['case_id'],
                           supported_case_ids=[draft['case_id']],
-                          case={'case_id':draft['case_id']})
+                          case={'case_id':draft['case_id'],
+                                'recording_description':template['recording_description']})
             config['cameras']=[{'name':c['name'],'width':c['width'],'height':c['height'],
                                 'pose_strategy':'candidate-specific declared Native mount; see cameras.py',
                                 'fov_deg':'90/105 according to measured framing fallback'}
