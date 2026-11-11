@@ -1,0 +1,80 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_hand_signal",
+      "kind": "delivery",
+      "construction": "hand-signal-construction.json",
+      "construction_sha256": "d400ab5badade55f9245fd3836f25f7df59df386a71e1cefaaa8c9f6ff48bfd1",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "hand-signal-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/hand-signal-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Attached Native walker arm pose and hand pixels may not yield an observable road signal"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original 20 Hz Native turn, off indicator, affected vehicle and hand-bone source",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        },
+        "hand_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native attached avatar left-arm bone world readback",
+          "evidence": "hand_signal_original.jsonl, ego_turn_motion.jsonl and four videos"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "hand-signal-fallback1-construction.json",
+          "construction_sha256": "d9377f5db9bacf7d0c65f4e2fdf2592c5e9f8efebcd904712c1bcca2c4d235a7",
+          "trigger": {
+            "source": "Native connected left-turn route inventory",
+            "metric": "eligible connected left-turn routes",
+            "failure_condition": "Primary route selection cannot spawn a complete turn"
+          },
+          "changed_knobs": [
+            "route spacing 2 m to 1.5 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "hand-signal-fallback2-construction.json",
+          "construction_sha256": "c6a078541a82e75c07c5d8d2cb9de297a765db0d5c6e9121d018e7f890108600",
+          "trigger": {
+            "source": "Original avatar actor and left-arm bone readback",
+            "metric": "attached avatar pose continuity",
+            "failure_condition": "Primary avatar overlaps ego or arm readback is occluded"
+          },
+          "changed_knobs": [
+            "avatar mount y -0.7 m to -0.8 m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "hand-signal-fallback3-construction.json",
+          "construction_sha256": "fd7a9eca7d5b396e69711d486deba958b61ce07d985a6d1638f9417a7017f758",
+          "trigger": {
+            "source": "Original driver-reference RGB stream",
+            "metric": "hand visible pixels",
+            "failure_condition": "Primary driver-reference camera crops the arm"
+          },
+          "changed_knobs": [
+            "driver camera mount x 0.6 m to 0.4 m"
+          ]
+        }
+      ]
+    }
+  ]
+}

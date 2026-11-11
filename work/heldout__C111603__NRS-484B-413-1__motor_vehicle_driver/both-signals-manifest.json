@@ -1,0 +1,179 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals",
+      "kind": "delivery",
+      "construction": "both-signals-construction.json",
+      "construction_sha256": "14f68bbdf4c1fcebf671f3cfb01492fdee2b2ef4010ff41069a0f9f636b83370",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "both-signals-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pedestrian and vehicle effects, relay sound, listener timing and indicator visibility need physical source review"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native turn and both affected participants joined to indicator readback, relay ACK and independent listener PCM",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and independently captured listener PCM",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "microphone alignment, physical relay sound and legal audibility require original-source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "both-signals-fallback1-construction.json",
+          "construction_sha256": "f8a9b7cd0f5082f7ccf33bbd4d1803c276ebf6e7f0e2aed0d6485c64e18fe1ff",
+          "trigger": {
+            "source": "Native pedestrian and connected-route inventory",
+            "metric": "pedestrian distance to sampled route",
+            "failure_condition": "Primary placement does not make pedestrian potentially affected"
+          },
+          "changed_knobs": [
+            "pedestrian route-side offset 6/2 to 5/1.5 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals --candidate fallback1 --output .runtime-work/c111603-both-signals-fallback1-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "both-signals-fallback1-offline.log",
+            "log_sha256": "72ca7978434c1ba7acd2bb4bc2422497ea9936cf592de6f3a0652e55fd246fbe",
+            "construction_sha256": "f8a9b7cd0f5082f7ccf33bbd4d1803c276ebf6e7f0e2aed0d6485c64e18fe1ff"
+          },
+          "compatibility": {
+            "receipt": "both-signals-fallback1-receipt.json",
+            "sha256": "fa6528d3cbef1b97977e7e15df8b2d19b8f92e52594492251d3c4aa8be8a2087",
+            "log": "both-signals-fallback1-analysis.log",
+            "negative_log": "both-signals-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "both-signals-fallback2-construction.json",
+          "construction_sha256": "dcb0b7b323f4e4a62c9abd217bbdf047a78a21a5a50a39ddf18ff708c75d1d2e",
+          "trigger": {
+            "source": "Original listener microphone PCM",
+            "metric": "20 Hz audio packet continuity",
+            "failure_condition": "Primary ALSA device loses or misaligns a listener packet"
+          },
+          "changed_knobs": [
+            "listener PCM rate 16000 to 32000 Hz"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals --candidate fallback2 --output .runtime-work/c111603-both-signals-fallback2-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "both-signals-fallback2-offline.log",
+            "log_sha256": "8320a0b85e42fe070ff864a19729f183e5487fe4d39c003c7049badf722b50a8",
+            "construction_sha256": "dcb0b7b323f4e4a62c9abd217bbdf047a78a21a5a50a39ddf18ff708c75d1d2e"
+          },
+          "compatibility": {
+            "receipt": "both-signals-fallback2-receipt.json",
+            "sha256": "97c8ccd2c96dad2e3f9cd07ed47e3ddd452425c13bfd39f7af148e31c0206cdd",
+            "log": "both-signals-fallback2-analysis.log",
+            "negative_log": "both-signals-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "both-signals-fallback3-construction.json",
+          "construction_sha256": "1501e23bfbfdd5aefebe913d1c863d7f64ece3b04145751b7e26b15be773b49a",
+          "trigger": {
+            "source": "Original overview RGB decode",
+            "metric": "pedestrian visible pixel count",
+            "failure_condition": "Primary overview crops the potentially affected pedestrian"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals --candidate fallback3 --output .runtime-work/c111603-both-signals-fallback3-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "both-signals-fallback3-offline.log",
+            "log_sha256": "fd1a48d2854f174068f6b71229f0fe7b8c7e7216084c44035bfd1cd200e4e449",
+            "construction_sha256": "1501e23bfbfdd5aefebe913d1c863d7f64ece3b04145751b7e26b15be773b49a"
+          },
+          "compatibility": {
+            "receipt": "both-signals-fallback3-receipt.json",
+            "sha256": "e6da42d0ed3003019e19d4c34cdbaf0a052958852c122b063fd2483507a227aa",
+            "log": "both-signals-fallback3-analysis.log",
+            "negative_log": "both-signals-fallback3-negative.log"
+          }
+        }
+      ],
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals --attempt .runtime-work/c111603-both-signals-saved-attempt-a --output .runtime-work/c111603-both-signals-saved-a --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "both-signals-saved.log",
+        "log_sha256": "2c6ea8584c95da6993c18f68f0cf626179d629caa0116bc8048a160eb41be843",
+        "receipt": "both-signals-saved-receipt.json",
+        "receipt_sha256": "2c6ea8584c95da6993c18f68f0cf626179d629caa0116bc8048a160eb41be843"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals --output .runtime-work/c111603-both-signals-primary-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "both-signals-offline.log",
+        "log_sha256": "78174461f1c399f16c82f88fc65a1b32ae5ed207055c9d293522beb37d42239e",
+        "construction_sha256": "14f68bbdf4c1fcebf671f3cfb01492fdee2b2ef4010ff41069a0f9f636b83370"
+      },
+      "compatibility": {
+        "receipt": "both-signals-compatibility-receipt.json",
+        "sha256": "32c4da3d9265681e8d95189de3568a414713a929593c12d1ea04360a2aefbfac",
+        "log": "both-signals-analysis.log"
+      },
+      "negative": {
+        "log": "both-signals-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "both_signals_audit.py",
+        "script_sha256": "5008e5b1fba27ae1ea11fa022fd16610a532bf15042a0959ed9d480fd406c370",
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both_signals_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals --attempt .runtime-work/c111603-both-signals-primary-compat-a --no-horn .runtime-work/c111603-both-indicator-only-primary-compat-a --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-audit.json",
+        "test_exit_code": 0,
+        "test_log": "both-signals-audit.log",
+        "test_log_sha256": "32883d50eecf8f8533a0c6efade21214ba20ca597aa8094fec5dbbdf36e0f23b",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both_signals_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals --attempt .runtime-work/c111603-both-signals-primary-compat-a --no-horn .runtime-work/c111603-both-indicator-only-primary-compat-a --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-audit.json --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original horn actuation source",
+        "negative_log": "both-signals-stale-audit.log",
+        "negative_log_sha256": "7fac1616e0270eee5f1b81e8b1d10906f2c458f970c68a587031a04856dff8e3"
+      }
+    }
+  ]
+}

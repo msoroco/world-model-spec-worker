@@ -206,6 +206,180 @@
           "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
         ]
       }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_audio",
+      "target_law_id": "NRS-484B-413-1",
+      "target_type": "boundary_probe",
+      "rationale": "Potentially affected pedestrian with relay-requested horn and separately captured listener PCM; audible sound and physical effect remain unresolved.",
+      "variable_assignments": {
+        "horn_actuation": {
+          "kind": "controller",
+          "value": "relay_request"
+        },
+        "pedestrian_may_be_affected": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "vehicle_may_be_affected": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and independently captured listener PCM",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "microphone alignment, physical relay sound and legal audibility require original-source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals",
+      "target_law_id": "NRS-484B-413-1",
+      "target_type": "boundary_probe",
+      "rationale": "Potentially affected pedestrian and vehicle with indicator and relay-requested horn; both physical signal effects remain unresolved.",
+      "variable_assignments": {
+        "horn_actuation": {
+          "kind": "controller",
+          "value": "relay_request"
+        },
+        "pedestrian_may_be_affected": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "vehicle_may_be_affected": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "turn_indicator_state": {
+          "kind": "controller",
+          "value": "left"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and independently captured listener PCM",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "microphone alignment, physical relay sound and legal audibility require original-source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_indicator_only",
+      "target_law_id": "NRS-484B-413-1",
+      "target_type": "boundary_probe",
+      "rationale": "Potentially affected pedestrian and vehicle with left indicator but no horn actuation; physical signal effects remain unresolved.",
+      "variable_assignments": {
+        "horn_actuation": {
+          "kind": "controller",
+          "value": "none"
+        },
+        "pedestrian_may_be_affected": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "vehicle_may_be_affected": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "turn_indicator_state": {
+          "kind": "controller",
+          "value": "left"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and independently captured listener PCM",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "microphone alignment and physical horn absence require original-source review; legal audibility stays unresolved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_hand_signal",
+      "target_law_id": "NRS-484B-413-1",
+      "target_type": "boundary_probe",
+      "rationale": "Affected vehicle left turn with original attached driver-avatar left-arm bone readback and no Native indicator; physical and legal recognizability remain open.",
+      "variable_assignments": {
+        "turn_indicator_state": {
+          "kind": "controller",
+          "value": "off"
+        },
+        "hand_signal_pose": {
+          "kind": "controller",
+          "value": "left_arm_out"
+        },
+        "vehicle_may_be_affected": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "pedestrian_may_be_affected": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and listener audio status",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "sampled 20 Hz state; lamp pixels and legal appropriateness require later review"
+          },
+          {
+            "name": "hand_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native attached driver-avatar left-arm bone world readback",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world",
+            "uncertainty": "bone readback does not establish visible pixels or legal signal appropriateness"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness.",
+          "Attached avatar pose, hand pixels and signal recognizability require physical review."
+        ]
+      }
     }
   ],
   "sweep_specs": []

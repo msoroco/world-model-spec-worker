@@ -13,13 +13,17 @@ from right_half_finalizer import build_result as build_right_half_result
 CASE_ID = 'heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__right_half_closed'
 
 
+def closure_construction(attempt):
+    return audit_closure(attempt)
+
+
 def analyze(attempt):
     report = analyze_right_half(attempt)
     if report['case_id'] != CASE_ID:
         raise ValueError('Wrong exact closure finalizer case')
-    closure = audit_closure(attempt)
+    closure = closure_construction(attempt)
     report['measurements']['closure_construction'] = {
-        'method': 'original cone actor/roadway frame join',
+        'method': 'closure_construction',
         'value': {'cone_count': len(closure['cone_actor_ids']),
                   'authority_verified': False,
                   'frames': closure['frames']},

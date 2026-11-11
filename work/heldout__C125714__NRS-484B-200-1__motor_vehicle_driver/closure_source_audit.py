@@ -7,6 +7,8 @@ from pathlib import Path
 
 
 def _rows(path):
+    if not path.is_file() or not path.read_bytes():
+        raise ValueError('Missing required source: ' + path.name)
     rows = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
     if not rows:
         raise ValueError('Closure original source is empty')

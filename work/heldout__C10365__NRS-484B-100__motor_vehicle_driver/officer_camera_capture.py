@@ -30,8 +30,16 @@ class CameraPlan:
     fov: int
 
 
-def plans():
-    return [CameraPlan(name, *spec) for name, spec in CAMERAS.items()]
+def plans(overview_height_delta_m=0.0):
+    if not 0.0<=overview_height_delta_m<=2.0:
+        raise ValueError('Unsupported overview mount change')
+    result=[]
+    for name,spec in CAMERAS.items():
+        location,rotation,size,fov=spec
+        if name=='overview':
+            location=(location[0],location[1],location[2]+overview_height_delta_m)
+        result.append(CameraPlan(name,location,rotation,size,fov))
+    return result
 
 
 class FFmpegSourceSink:
@@ -69,7 +77,7 @@ class FFmpegSourceSink:
 
 
 class OfficerCameraCapture:
-    def __init__(self, world, carla_module, subject, sinks):
+    def __init__(self, world, carla_module, subject, sinks, overview_height_delta_m=0.0):
         if set(sinks) != set(CAMERAS):
             raise ValueError("Exactly four named source-camera sinks are required")
         self.sensors = {}
@@ -80,7 +88,7 @@ class OfficerCameraCapture:
         self.closed = False
         library = world.get_blueprint_library()
         try:
-            for plan in plans():
+            for plan in plans(overview_height_delta_m):
                 bp = library.find("sensor.camera.rgb")
                 for key, value in (("image_size_x", plan.size[0]),
                                    ("image_size_y", plan.size[1]),

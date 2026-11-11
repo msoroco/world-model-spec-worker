@@ -1,0 +1,35 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_audio",
+  "requirements": [
+    {
+      "disposition_index": 1,
+      "requirement": "Pedestrian possibly affected: clearly audible pre-turn horn from original listener audio",
+      "source": "inputs/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/assignment.json",
+      "output_key": "turn_signal_observation",
+      "method": "measure_turn_indicator",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "ego_turn_motion.jsonl",
+        "ego_signal_audio.jsonl",
+        "affected_participants.json",
+        "participant_bodies.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv",
+        "listener_audio_original.jsonl",
+        "horn_actuation.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "horn_actuation.jsonl"
+    ],
+    "error_contains": "Missing required source: horn_actuation.jsonl"
+  }
+}

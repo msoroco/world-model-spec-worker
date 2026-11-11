@@ -5,13 +5,6 @@
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-tests.log",
-      "sha256": "61c802dfe46d17a32b3f2d66bf33455a66ada0aaa307bff7d85746cd784121ab",
-      "passed": 20
-    },
-    {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/construction-probe-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_east --output .runtime-work/c125714-construction-probe-20261111o --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
       "exit_code": 0,
       "log": "probe-offline.log",
@@ -120,16 +113,52 @@
       "sha256": "53a55483d27e46addd8492bfba1f11254b376f03e0865cbb5439b946ae3113c0"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/construction-probe-closure-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__right_half_closed --output .runtime-work/c125714-closure-probe-offline-20261111a --python $PWD/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/tests",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "7c40a0bd98d494f32f2d9482a8c08be820ff5e66c2306fff4bf5b9a6d0228867"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/construction-probe-closure-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__right_half_closed --output .runtime-work/c125714-closure-probe-offline-20261111c --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
       "log": "probe-closure-offline.log",
-      "sha256": "f86bfda1e8d3837f4281162f35c359b4aa5bfef88615d6f192be463c92bf083f"
+      "sha256": "2fbe3132ef5609c8518d148dbc852d550d1eddac2cced0aac2066e68220a86db"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-closure-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__right_half_closed --output .runtime-work/c125714-closure-compat-20261111f --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "probe-closure-compatibility.log",
+      "sha256": "d8c86a11927b8274b2060f40815dea2be8f3f81c185b46fbb306a044b377b3bc"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-closure-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__right_half_closed --attempt .runtime-work/c125714-closure-saved-attempt-20261111a --output .runtime-work/c125714-closure-saved-output-20261111a --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "probe-closure-saved.log",
+      "sha256": "7dc93759bbe0d45a5ce5bb57a34e00831fd2dd72252675ace96cc07462c55466"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/closure_source_audit.py --attempt .runtime-work/c125714-closure-saved-attempt-20261111a --output work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-closure-saved-source-receipt.json",
+      "exit_code": 0,
+      "log": "probe-closure-saved-source-receipt.json",
+      "sha256": "d72b3f41ff3ab7606e1b1e3b938f12e93fcfc72c9ba361e1c7e07920a61c39a9"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline:work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver .venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c125714-closure-saved-attempt-20261111a --analysis .runtime-work/c125714-closure-saved-output-20261111a/v0001/analysis/analysis-report.json --output work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-closure-saved-delivery-receipt.json",
+      "exit_code": 0,
+      "log": "probe-closure-saved-delivery-receipt.json",
+      "sha256": "3c62b1a7128a1abad3da2ff527af1e3f54c4848aa38ea26837c610c1a671edd7"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/closure_comparison_audit.py --baseline-attempt .runtime-work/c125714-saved-attempt-20261111b --closure-attempt .runtime-work/c125714-closure-saved-attempt-20261111a --output work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-closure-comparison-receipt.json",
+      "exit_code": 0,
+      "log": "probe-closure-comparison-receipt.json",
+      "sha256": "2f37ec1e1b56c3a7bccc6b5aab196dcf4787760b32d81555548e71d674ef0534"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA route and body motion in the selected median-opening cell",
     "Original camera pixels, complete participant visibility, and physical case completion"
   ],
-  "reason": "Partial: east/west and unexcepted-left probes pass exact offline, positive/missing-original diagnostic compatibility, synthetic process-saved and independent four-camera source audits. East/west and baseline/left source comparisons pass on CPU fixtures. Left Native acquisition now pins the original selected travel lane at the actor longitudinal position, avoiding opposing-lane reclassification after a crossing. These probes do not establish actual crossing or median-opening geometry. Five exception cases, delivery runners, fallbacks and full semantic proposals remain CPU work. Median-opening route selection now requires an authored map/road/lane/polygon reference and checks multiple original mapped centerline samples in both directions; no cell-specific physical opening source is asserted yet. A CARLA-lazy median-opening map preflight now binds a future authored reference to exact case/direction and emits a route/source-hash receipt, but no selected-map source or Native run is claimed. A separate CARLA-lazy Native median-opening baseline probe now calls the selected-map opening route validator before spawning and retains four-camera and source acquisition; it has only CPU config/geometry tests and no selected-map execution. Exact median-opening construction-only offline validation passes with a visibly synthetic CPU map reference; no selected-map, compatibility or saved claim follows. Median-opening Native construction now requires two consecutive observed source-bound opening frames; an independent CPU audit rejects changed frame/source/reference/readiness evidence. Median baseline Native source acquisition now pins the selected road/lane at actor longitudinal position before recording opening samples, avoiding nearest-lane switches. Right-half-closed case has a CARLA-lazy cone placement/detour/original-source construction and exact offline proof, but no saved closure finalization, authorized-control source or legal exception claim. A separate independent original-source closure audit now checks three stable cone identities, right-half span, 20 Hz frame joins and unsupported authority claims; saved finalizer integration remains undone.",
+  "reason": "Partial: baseline east/west and unexcepted-left diagnostics remain CPU-proven as previously recorded. Right-half-closed now has a 48-test suite, exact offline, positive/missing-original compatibility, synthetic process-saved and independent closure/roadway/video source audits plus a baseline/closure original-source comparison. The three-cone scene and selected median-opening reference are synthetic CPU constructions; no selected-map Native scene, public authority for closure, physical or legal exception acceptance is established. Four other exception cases, fallbacks and semantic stages remain incomplete.",
   "readiness_kind": "delivery_prepared"
 }

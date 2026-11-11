@@ -13,10 +13,14 @@ def source(root,name):
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def rows(path):return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
+def measure_officer(context,direction,motion,command):
+    """Named exact-contract source measurement without a legal verdict."""
+    return measure(context,direction,motion,expected_actor='motor_vehicle_driver',expected_command=command)
+
 def analyze(root):
     root=Path(root);cfg=json.loads(source(root,'config.json').read_text());command,_=check_config(cfg)
     context=source(root,'officer_context.json');direction=source(root,'officer_direction.json');motion=source(root,'subject_motion.json')
-    observed=measure(context,direction,motion,expected_actor='motor_vehicle_driver',expected_command=command)
+    observed=measure_officer(context,direction,motion,command)
     mapping=rows(source(root,'video_frames.jsonl'));trace=rows(source(root,'trace.jsonl'))
     history=rows(source(root,'subject_motion_history.jsonl'))
     if len(mapping)<3 or len(mapping)!=len(trace) or len(trace)!=len(history):
@@ -39,11 +43,23 @@ def analyze(root):
         (root/(name+'.jsonl')).write_text(''.join(json.dumps({'frame':f,'time_s':t,'value':v})+'\n' for f,t,v in data))
     sources={name:sha(source(root,name)) for name in ('officer_context.json','officer_direction.json','subject_motion.json','subject_motion_history.jsonl','video_frames.jsonl','trace.jsonl')}
     return {'format':'worker-analysis-report','case_id':cfg['selected_case_id'],
-            'measurements':{'officer_response':{'method':'measure','value':observed,'sources':sources}},
+            'measurements':{'officer_response':{'method':'measure_officer','value':observed,'sources':sources}},
             'legal_acceptance_claimed':False,'physical_acceptance_claimed':False}
 
 def result(root,report):
     root=Path(root);cfg=json.loads((root/'config.json').read_text());observed=report['measurements']['officer_response']['value']
+    contexts=[]
+    for name,reference in (('officer_context','officer_context.json'),
+                           ('officer_direction_context','officer_direction.json'),
+                           ('subject_motion_context','subject_motion.json'),
+                           ('subject_motion_history','subject_motion_history.jsonl')):
+        original=root/reference
+        value=rows(original) if original.suffix=='.jsonl' else json.loads(original.read_text())
+        derived=root/(name+'-recorded.json')
+        if derived.exists():raise ValueError('Retain prior derived officer context')
+        derived.write_text(json.dumps({name:value})+'\n')
+        contexts.append({'name':name,'unit':'structured record',
+                         'reference':derived.name,'sha256':sha(derived)})
     return {'case_id':report['case_id'],'measured_values':{'officer_response':observed},
             'target_checks':[{'target':'timed officer indication and observable response','requested':cfg['case']['intended_observed_response'],
                               'measured':observed['observed_response'],'method':'source-bound indication and post-indication original motion',
@@ -54,8 +70,10 @@ def result(root,report):
             'physical_failure_flags':{'gesture_visibility_unverified':True,'officer_authority_unverified':True},
             'trace_reference':'trace.jsonl','video_references':['overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv'],
             'video_frame_map_reference':'video_frames.jsonl','recording_description':cfg['case']['recording_description'],
-            'recording_evidence':[{'name':name,'unit':unit,'reference':name+'.jsonl','sha256':sha(root/(name+'.jsonl'))}
-                                  for name,unit in (('subject_speed_mps','m/s'),('officer_direction','boolean'))],
+            'recording_evidence':[
+                *[{'name':name,'unit':unit,'reference':name+'.jsonl','sha256':sha(root/(name+'.jsonl'))}
+                  for name,unit in (('subject_speed_mps','m/s'),('officer_direction','boolean'))],
+                *contexts],
             'realized_observables':{'subject_speed_mps':{'unit':'m/s','method':'original subject velocity sampled after indication',
                                   'time_window':'post-indication original frames','statistic':'min',
                                   'reference':'subject_speed_mps.jsonl','value':observed['min_post_speed_mps'],

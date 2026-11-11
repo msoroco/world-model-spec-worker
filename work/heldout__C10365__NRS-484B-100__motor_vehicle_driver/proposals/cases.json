@@ -1,0 +1,420 @@
+{
+  "status": "draft",
+  "cell_id": "C10365",
+  "actor": "motor_vehicle_driver",
+  "sweep_specs": [
+    {
+      "sweep_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__officer_response_latency_sweep",
+      "target_law_id": "NRS-484B-100",
+      "judgment_refs": [
+        {
+          "phrase": "willfully to fail or refuse to comply with any lawful order or direction",
+          "note": "Original officer indication and subsequent subject motion are measurable; officer duty, order lawfulness and willfulness require independent source and legal review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "A finite original-motion response-latency sampling is needed without assigning willfulness or lawful-order labels.",
+      "missing_inputs": [
+        "Exact source-backed latency setpoints and generated Native constructions remain worker-owned CPU work."
+      ]
+    }
+  ],
+  "sweeps_expanded": false,
+  "cases": [
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared alley officer and subject setup; no baseline legal result.",
+      "variable_assignments": {
+        "officer_command": {
+          "kind": "world_setup",
+          "value": "stop"
+        },
+        "intended_observed_response": {
+          "kind": "controller",
+          "value": "responds"
+        },
+        "direction_frame": {
+          "kind": "world_setup",
+          "value": 40
+        }
+      },
+      "unresolved_judgment_calls": [
+        "willfully to fail or refuse to comply with any lawful order or direction"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_speed_mps",
+            "unit": "m/s",
+            "method": "original subject velocity sampled at each joined Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz sampled velocity"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "boolean",
+            "method": "walker arm-pose activation joined to original four-view frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "officer actor and addressed subject",
+            "uncertainty": "physical gesture visibility and meaning require original-pixel review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "original officer role, identity, duty and lawfulness source references"
+          },
+          {
+            "name": "officer_direction_context",
+            "unit": "structured record",
+            "method": "original addressed subject and timed pose indication"
+          },
+          {
+            "name": "subject_motion_context",
+            "unit": "structured record",
+            "method": "original subject motion batch"
+          },
+          {
+            "name": "subject_motion_history",
+            "unit": "structured record",
+            "method": "original 20 Hz subject motion rows"
+          }
+        ],
+        "limitations": [
+          "Officer authority, lawful duty and willfulness require independent source/legal review."
+        ]
+      },
+      "paired_probe_id": "stop_response",
+      "deliberate_differences": [
+        "intended_observed_response"
+      ],
+      "probe": {
+        "primary_variable": "intended_observed_response",
+        "comparison_or_standard": "post-indication original motion contrast",
+        "target_value_or_branch": "responds"
+      }
+    },
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_responds",
+      "target_law_id": "NRS-484B-100",
+      "target_type": "boundary_probe",
+      "rationale": "Observe a timed stop indication followed by responds; no legal or willfulness inference.",
+      "variable_assignments": {
+        "officer_command": {
+          "kind": "world_setup",
+          "value": "stop"
+        },
+        "intended_observed_response": {
+          "kind": "controller",
+          "value": "responds"
+        },
+        "direction_frame": {
+          "kind": "world_setup",
+          "value": 40
+        }
+      },
+      "unresolved_judgment_calls": [
+        "willfully to fail or refuse to comply with any lawful order or direction"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_speed_mps",
+            "unit": "m/s",
+            "method": "original subject velocity sampled at each joined Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz sampled velocity"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "boolean",
+            "method": "walker arm-pose activation joined to original four-view frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "officer actor and addressed subject",
+            "uncertainty": "physical gesture visibility and meaning require original-pixel review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "original officer role, identity, duty and lawfulness source references"
+          },
+          {
+            "name": "officer_direction_context",
+            "unit": "structured record",
+            "method": "original addressed subject and timed pose indication"
+          },
+          {
+            "name": "subject_motion_context",
+            "unit": "structured record",
+            "method": "original subject motion batch"
+          },
+          {
+            "name": "subject_motion_history",
+            "unit": "structured record",
+            "method": "original 20 Hz subject motion rows"
+          }
+        ],
+        "limitations": [
+          "Officer authority, lawful duty and willfulness require independent source/legal review."
+        ]
+      },
+      "paired_probe_id": "stop_response",
+      "deliberate_differences": [
+        "intended_observed_response"
+      ],
+      "probe": {
+        "primary_variable": "intended_observed_response",
+        "comparison_or_standard": "post-indication original motion contrast",
+        "target_value_or_branch": "responds"
+      }
+    },
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_does_not_respond",
+      "target_law_id": "NRS-484B-100",
+      "target_type": "boundary_probe",
+      "rationale": "Observe a timed stop indication followed by does_not_respond; no legal or willfulness inference.",
+      "variable_assignments": {
+        "officer_command": {
+          "kind": "world_setup",
+          "value": "stop"
+        },
+        "intended_observed_response": {
+          "kind": "controller",
+          "value": "does_not_respond"
+        },
+        "direction_frame": {
+          "kind": "world_setup",
+          "value": 40
+        }
+      },
+      "unresolved_judgment_calls": [
+        "willfully to fail or refuse to comply with any lawful order or direction"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_speed_mps",
+            "unit": "m/s",
+            "method": "original subject velocity sampled at each joined Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz sampled velocity"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "boolean",
+            "method": "walker arm-pose activation joined to original four-view frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "officer actor and addressed subject",
+            "uncertainty": "physical gesture visibility and meaning require original-pixel review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "original officer role, identity, duty and lawfulness source references"
+          },
+          {
+            "name": "officer_direction_context",
+            "unit": "structured record",
+            "method": "original addressed subject and timed pose indication"
+          },
+          {
+            "name": "subject_motion_context",
+            "unit": "structured record",
+            "method": "original subject motion batch"
+          },
+          {
+            "name": "subject_motion_history",
+            "unit": "structured record",
+            "method": "original 20 Hz subject motion rows"
+          }
+        ],
+        "limitations": [
+          "Officer authority, lawful duty and willfulness require independent source/legal review."
+        ]
+      },
+      "paired_probe_id": "stop_response",
+      "deliberate_differences": [
+        "intended_observed_response"
+      ],
+      "probe": {
+        "primary_variable": "intended_observed_response",
+        "comparison_or_standard": "post-indication original motion contrast",
+        "target_value_or_branch": "does_not_respond"
+      }
+    },
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_responds",
+      "target_law_id": "NRS-484B-100",
+      "target_type": "boundary_probe",
+      "rationale": "Observe a timed proceed indication followed by responds; no legal or willfulness inference.",
+      "variable_assignments": {
+        "officer_command": {
+          "kind": "world_setup",
+          "value": "proceed"
+        },
+        "intended_observed_response": {
+          "kind": "controller",
+          "value": "responds"
+        },
+        "direction_frame": {
+          "kind": "world_setup",
+          "value": 40
+        }
+      },
+      "unresolved_judgment_calls": [
+        "willfully to fail or refuse to comply with any lawful order or direction"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_speed_mps",
+            "unit": "m/s",
+            "method": "original subject velocity sampled at each joined Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz sampled velocity"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "boolean",
+            "method": "walker arm-pose activation joined to original four-view frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "officer actor and addressed subject",
+            "uncertainty": "physical gesture visibility and meaning require original-pixel review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "original officer role, identity, duty and lawfulness source references"
+          },
+          {
+            "name": "officer_direction_context",
+            "unit": "structured record",
+            "method": "original addressed subject and timed pose indication"
+          },
+          {
+            "name": "subject_motion_context",
+            "unit": "structured record",
+            "method": "original subject motion batch"
+          },
+          {
+            "name": "subject_motion_history",
+            "unit": "structured record",
+            "method": "original 20 Hz subject motion rows"
+          }
+        ],
+        "limitations": [
+          "Officer authority, lawful duty and willfulness require independent source/legal review."
+        ]
+      },
+      "paired_probe_id": "proceed_response",
+      "deliberate_differences": [
+        "intended_observed_response"
+      ],
+      "probe": {
+        "primary_variable": "intended_observed_response",
+        "comparison_or_standard": "post-indication original motion contrast",
+        "target_value_or_branch": "responds"
+      }
+    },
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_does_not_respond",
+      "target_law_id": "NRS-484B-100",
+      "target_type": "boundary_probe",
+      "rationale": "Observe a timed proceed indication followed by does_not_respond; no legal or willfulness inference.",
+      "variable_assignments": {
+        "officer_command": {
+          "kind": "world_setup",
+          "value": "proceed"
+        },
+        "intended_observed_response": {
+          "kind": "controller",
+          "value": "does_not_respond"
+        },
+        "direction_frame": {
+          "kind": "world_setup",
+          "value": 40
+        }
+      },
+      "unresolved_judgment_calls": [
+        "willfully to fail or refuse to comply with any lawful order or direction"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_speed_mps",
+            "unit": "m/s",
+            "method": "original subject velocity sampled at each joined Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz sampled velocity"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "boolean",
+            "method": "walker arm-pose activation joined to original four-view frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "officer actor and addressed subject",
+            "uncertainty": "physical gesture visibility and meaning require original-pixel review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "original officer role, identity, duty and lawfulness source references"
+          },
+          {
+            "name": "officer_direction_context",
+            "unit": "structured record",
+            "method": "original addressed subject and timed pose indication"
+          },
+          {
+            "name": "subject_motion_context",
+            "unit": "structured record",
+            "method": "original subject motion batch"
+          },
+          {
+            "name": "subject_motion_history",
+            "unit": "structured record",
+            "method": "original 20 Hz subject motion rows"
+          }
+        ],
+        "limitations": [
+          "Officer authority, lawful duty and willfulness require independent source/legal review."
+        ]
+      },
+      "paired_probe_id": "proceed_response",
+      "deliberate_differences": [
+        "intended_observed_response"
+      ],
+      "probe": {
+        "primary_variable": "intended_observed_response",
+        "comparison_or_standard": "post-indication original motion contrast",
+        "target_value_or_branch": "does_not_respond"
+      }
+    }
+  ]
+}

@@ -1,0 +1,279 @@
+{
+  "format": "worker-compatibility-manifest",
+  "assignment_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_responds",
+      "construction": "cases/construction-stop_responds.json",
+      "construction_sha256": "7d036b91a6d3a0d2adac76b7f28c0f1d05d2dd32df5983ca2d0f218e2090c9bf",
+      "kind": "delivery",
+      "measurement_contract": "cases/measurement-contract-stop_responds.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/diagnostic-recipe-stop_responds.json",
+      "acquisition": {
+        "subject_speed_mps": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "post-indication original subject velocity sampled at each joined frame",
+          "evidence": "subject_motion_history.jsonl and original frame map"
+        },
+        "officer_direction": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "timed officer pose event joined to original subject motion",
+          "evidence": "officer_direction.json, officer_context.json and video_frames.jsonl"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native alley connectivity, actual officer gesture visibility and original overview coverage may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-stop_responds-fallback1.json",
+          "construction_sha256": "82ae6628b278b4e17bf0696984934aeccf7857ca3849c1d13429c4f9f4f3d4e2",
+          "changed_knobs": [
+            "Use a 12 m connected alley segment"
+          ],
+          "trigger": {
+            "source": "road.xodr and original trace.jsonl",
+            "metric": "connected nonjunction alley segment length and subject route",
+            "failure_condition": "The selected 18 m segment cannot be connected inside the Native alley"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-stop_responds-fallback2.json",
+          "construction_sha256": "f90acdf23f32c0bf30847066df951f15a602fd432deb4c60c0a29115406ee13c",
+          "changed_knobs": [
+            "Raise the original officer arm pose by 20 degrees"
+          ],
+          "trigger": {
+            "source": "officer_direction.json and all four original camera streams",
+            "metric": "officer arm visibility and command distinction in actual pixels",
+            "failure_condition": "The primary arm pose is obscured or indistinct at the captured frame"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-stop_responds-fallback3.json",
+          "construction_sha256": "0e6e43381739e6ebbfc039691cc1b46d259ceee507f4aa1d7d85079b449378c5",
+          "changed_knobs": [
+            "Raise the overview camera mount by 2 m"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "officer and subject visibility in original overview frames",
+            "failure_condition": "The officer or subject is occluded or outside the original overview field"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_does_not_respond",
+      "construction": "cases/construction-stop_does_not_respond.json",
+      "construction_sha256": "feb0c5dc06a74828b7b7ad966db2dc3eb8a764efc185eb21d4b67d1f7b98bdd1",
+      "kind": "delivery",
+      "measurement_contract": "cases/measurement-contract-stop_does_not_respond.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/diagnostic-recipe-stop_does_not_respond.json",
+      "acquisition": {
+        "subject_speed_mps": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "post-indication original subject velocity sampled at each joined frame",
+          "evidence": "subject_motion_history.jsonl and original frame map"
+        },
+        "officer_direction": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "timed officer pose event joined to original subject motion",
+          "evidence": "officer_direction.json, officer_context.json and video_frames.jsonl"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native alley connectivity, actual officer gesture visibility and original overview coverage may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-stop_does_not_respond-fallback1.json",
+          "construction_sha256": "9073962bd99791e24a27c1ca8afcf3c7d675a1655afba23a84524c7db944393c",
+          "changed_knobs": [
+            "Use a 12 m connected alley segment"
+          ],
+          "trigger": {
+            "source": "road.xodr and original trace.jsonl",
+            "metric": "connected nonjunction alley segment length and subject route",
+            "failure_condition": "The selected 18 m segment cannot be connected inside the Native alley"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-stop_does_not_respond-fallback2.json",
+          "construction_sha256": "4d954b685d4507210d04fde21cd8755c651c3d5a6647456bd2f7122c97b6f8e9",
+          "changed_knobs": [
+            "Raise the original officer arm pose by 20 degrees"
+          ],
+          "trigger": {
+            "source": "officer_direction.json and all four original camera streams",
+            "metric": "officer arm visibility and command distinction in actual pixels",
+            "failure_condition": "The primary arm pose is obscured or indistinct at the captured frame"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-stop_does_not_respond-fallback3.json",
+          "construction_sha256": "c5fc1e632f0799392d749705219ffbe4386d113d95d4a663177cf8d987269c22",
+          "changed_knobs": [
+            "Raise the overview camera mount by 2 m"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "officer and subject visibility in original overview frames",
+            "failure_condition": "The officer or subject is occluded or outside the original overview field"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_responds",
+      "construction": "cases/construction-proceed_responds.json",
+      "construction_sha256": "a23d1c9780745fbeaf93de957b9b927a928ae7d3f62d961f070070760f455566",
+      "kind": "delivery",
+      "measurement_contract": "cases/measurement-contract-proceed_responds.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/diagnostic-recipe-proceed_responds.json",
+      "acquisition": {
+        "subject_speed_mps": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "post-indication original subject velocity sampled at each joined frame",
+          "evidence": "subject_motion_history.jsonl and original frame map"
+        },
+        "officer_direction": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "timed officer pose event joined to original subject motion",
+          "evidence": "officer_direction.json, officer_context.json and video_frames.jsonl"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native alley connectivity, actual officer gesture visibility and original overview coverage may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-proceed_responds-fallback1.json",
+          "construction_sha256": "7bda8a4c2932fce9d1df69d09fc56b68e69009040ea6513dc9ed4cf166e96d06",
+          "changed_knobs": [
+            "Use a 12 m connected alley segment"
+          ],
+          "trigger": {
+            "source": "road.xodr and original trace.jsonl",
+            "metric": "connected nonjunction alley segment length and subject route",
+            "failure_condition": "The selected 18 m segment cannot be connected inside the Native alley"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-proceed_responds-fallback2.json",
+          "construction_sha256": "328c8d9430b1d261a762625531d01a9ff5497bf4a94f76c8e4be1e19233ec469",
+          "changed_knobs": [
+            "Raise the original officer arm pose by 20 degrees"
+          ],
+          "trigger": {
+            "source": "officer_direction.json and all four original camera streams",
+            "metric": "officer arm visibility and command distinction in actual pixels",
+            "failure_condition": "The primary arm pose is obscured or indistinct at the captured frame"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-proceed_responds-fallback3.json",
+          "construction_sha256": "23142b1b6bc13072ca5871a11b38a83c7825a0938137d1de9ce0dcc76bdc4ce1",
+          "changed_knobs": [
+            "Raise the overview camera mount by 2 m"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "officer and subject visibility in original overview frames",
+            "failure_condition": "The officer or subject is occluded or outside the original overview field"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_does_not_respond",
+      "construction": "cases/construction-proceed_does_not_respond.json",
+      "construction_sha256": "ba5d27b9fabd818da33c28be882c1147ed51789045c0820baf62115907902f8a",
+      "kind": "delivery",
+      "measurement_contract": "cases/measurement-contract-proceed_does_not_respond.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/diagnostic-recipe-proceed_does_not_respond.json",
+      "acquisition": {
+        "subject_speed_mps": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "post-indication original subject velocity sampled at each joined frame",
+          "evidence": "subject_motion_history.jsonl and original frame map"
+        },
+        "officer_direction": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "timed officer pose event joined to original subject motion",
+          "evidence": "officer_direction.json, officer_context.json and video_frames.jsonl"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native alley connectivity, actual officer gesture visibility and original overview coverage may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-proceed_does_not_respond-fallback1.json",
+          "construction_sha256": "99380ec1e30b0d95f42c44551ddf3634e475de3ac57bcb40efe74ad172e88a66",
+          "changed_knobs": [
+            "Use a 12 m connected alley segment"
+          ],
+          "trigger": {
+            "source": "road.xodr and original trace.jsonl",
+            "metric": "connected nonjunction alley segment length and subject route",
+            "failure_condition": "The selected 18 m segment cannot be connected inside the Native alley"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-proceed_does_not_respond-fallback2.json",
+          "construction_sha256": "bfc45a525a91083aa3ffb48a16686c77cd26d1ce7592f8ba80d8bb18cd13192a",
+          "changed_knobs": [
+            "Raise the original officer arm pose by 20 degrees"
+          ],
+          "trigger": {
+            "source": "officer_direction.json and all four original camera streams",
+            "metric": "officer arm visibility and command distinction in actual pixels",
+            "failure_condition": "The primary arm pose is obscured or indistinct at the captured frame"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-proceed_does_not_respond-fallback3.json",
+          "construction_sha256": "75ec4a4ec005ad18fe45f940f11280ee5241627bc56b558f19ee3a6dfa9d4903",
+          "changed_knobs": [
+            "Raise the overview camera mount by 2 m"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "officer and subject visibility in original overview frames",
+            "failure_condition": "The officer or subject is occluded or outside the original overview field"
+          }
+        }
+      ]
+    }
+  ]
+}

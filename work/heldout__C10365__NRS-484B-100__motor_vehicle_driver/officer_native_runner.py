@@ -26,6 +26,12 @@ def check_config(config):
         raise ValueError('Four-view 20 Hz capture contract missing')
     if config.get('direction_frame')!=40:
         raise ValueError('Timed indication frame changed')
+    if not 10.0<=float(config.get('route_distance_m',18.0))<=18.0:
+        raise ValueError('Unsupported connected alley route length')
+    if not 0.0<=float(config.get('pose_pitch_delta_deg',0.0))<=20.0:
+        raise ValueError('Unsupported officer pose change')
+    if not 0.0<=float(config.get('overview_height_delta_m',0.0))<=2.0:
+        raise ValueError('Unsupported overview mount change')
     return CASES[suffix]
 
 def choose_alley_route(world_map,*,distance_m=18.0):
@@ -56,10 +62,10 @@ def _arm_bone(bones):
         if len(matches)==1:return matches[0]
     raise ValueError('Native officer walker has no identifiable right upper-arm bone: '+str(names))
 
-def pose_direction(carla,officer,command):
+def pose_direction(carla,officer,command,pitch_delta_deg=0.0):
     """Use CARLA's walker bone pose API to create a distinct visible arm cue."""
     bones=officer.get_bones();arm=_arm_bone(bones)
-    angle=95.0 if command=='stop' else 35.0
+    angle=(95.0 if command=='stop' else 35.0)+pitch_delta_deg
     transform=carla.Transform(carla.Location(),carla.Rotation(pitch=angle))
     officer.set_bones(carla.WalkerBoneControlIn([(arm,transform)]))
     officer.blend_pose(1.0)
@@ -81,19 +87,21 @@ def run(output,host,port):
     frames=[];failed=False;restored=False
     try:
         settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=.05;world.apply_settings(settings)
-        lane,front,sidewalk=choose_alley_route(world.get_map())
+        lane,front,sidewalk=choose_alley_route(world.get_map(),distance_m=float(config.get('route_distance_m',18.0)))
         library=world.get_blueprint_library();ego=_spawn(world,library.find('vehicle.tesla.model3'),lane.transform);actors.append(ego)
         walker_blueprints=library.filter('walker.pedestrian.*')
         if not walker_blueprints:raise ValueError('Native officer walker blueprint unavailable')
         officer=_spawn(world,walker_blueprints[0],sidewalk.transform);actors.append(officer)
         officer.apply_control(carla.WalkerControl(speed=0.0))
         for name in CAMERAS:sinks[name]=FFmpegSourceSink(output,name)
-        camera=OfficerCameraCapture(world,carla,ego,sinks)
+        camera=OfficerCameraCapture(world,carla,ego,sinks,
+            overview_height_delta_m=float(config.get('overview_height_delta_m',0.0)))
         pipeline=PipelineCapture(client,ego,output,config['selected_case_id'],required_observations=config.get('required_atoms',[]))
         mapping=FrameMap(output/'video_frames.jsonl')
         pose=None;motion=[];direction=None;start=None
         for index in range(config['frames']):
-            if index==config['direction_frame']:pose=pose_direction(carla,officer,command)
+            if index==config['direction_frame']:
+                pose=pose_direction(carla,officer,command,float(config.get('pose_pitch_delta_deg',0.0)))
             control=command_for(command,responds,index,config['direction_frame'])
             ego.apply_control(carla.VehicleControl(throttle=control['throttle'],brake=control['brake'],steer=0.0))
             frame=world.tick();snapshot=world.get_snapshot()
