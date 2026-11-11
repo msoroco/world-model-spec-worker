@@ -86,18 +86,34 @@ claim(f'.venv-cpu/bin/python work/{result["assignment_id"]}/approaching_comparis
 claim(f'.venv-cpu/bin/python -m unittest discover '
       f'-s work/{result["assignment_id"]}/tests -p test_approaching_comparison.py -v',
       'approaching-comparison-negative.log')
+claim(f'.venv-cpu/bin/python work/{result["assignment_id"]}/cases/signal_omitted/validate_draft.py',
+      'cases/signal_omitted/draft-validation.log')
+claim(f'PYTHONPATH=work/{result["assignment_id"]} .venv-cpu/bin/python '
+      f'work/{result["assignment_id"]}/cases/signal_omitted/runner.py --check',
+      'cases/signal_omitted/runner-check.log')
+claim(f'.venv-cpu/bin/python work/{result["assignment_id"]}/validate_signal_delivery.py',
+      'signal-delivery-validation.log')
+claim(f'.venv-cpu/bin/python work/{result["assignment_id"]}/signal_comparison_audit.py '
+      '--signalled .runtime-work/c109749-inside-yield-delivery-v2/attempt '
+      '--omitted .runtime-work/c109749-signal-omitted-delivery-v1/attempt '
+      f'--output work/{result["assignment_id"]}/signal-comparison-receipt.json',
+      'signal-comparison-positive.log')
+claim(f'.venv-cpu/bin/python -m unittest discover '
+      f'-s work/{result["assignment_id"]}/tests -p test_signal_comparison.py -v',
+      'signal-comparison-negative.log')
 result['tests'] = list(existing.values())
-result['readiness_kind'] = 'six_case_canonical_partial_cpu_checkpoint'
+result['readiness_kind'] = 'seven_case_canonical_partial_cpu_checkpoint'
 result['reason'] = (
-    'Six C109749 exact cases (reciprocal yield/continue and subject yield/proceed with an opposing '
-    'complete body inside or approaching outside the junction), each with three distinct physical-risk '
-    'fallbacks, now occur in the canonical case plan, semantic proposal and execution manifest. All 24 exact constructions '
+    'Seven C109749 exact cases (reciprocal yield/continue, subject yield/proceed with an opposing '
+    'complete body inside or approaching outside the junction, and an omitted-signal contrast), '
+    'each with three distinct physical-risk fallbacks, occur in the canonical case plan, semantic proposal '
+    'and execution manifest. All 28 exact constructions '
     'pass current canonical offline, positive/negative compatibility and recorded-only saved processing. '
     'The pinned manifest, semantic, package-compatibility, physical-preparation and delivery-contract '
-    'validators pass. Full-duration 900-frame synthetic delivery audits for all six and three diagnostic '
+    'validators pass. Full-duration 900-frame synthetic delivery audits for all seven and four diagnostic '
     'comparisons exercise source joins, fixed conditions and negative rejection; their diagnostic '
     'receipts explicitly do not claim physical or legal acceptance. '
-    'The three physical judgment sweep specs remain incomplete, and omitted-signal and other '
+    'The three physical judgment sweep specs remain incomplete, and reciprocal-no-yield and other '
     'statutory alternatives have no complete selected constructions and CPU proofs. Accepted-original '
     'equivalence, actual Native motion and camera visibility are unverified. This and all other partial '
     'assignment packages are unfinished worker-owned CPU work, with no dependency or tool blocker. '

@@ -68,6 +68,12 @@
           "value": true,
           "unit": "boolean",
           "note": "authored subject wait policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
         }
       },
       "recording_description": {
@@ -224,6 +230,12 @@
           "value": true,
           "unit": "boolean",
           "note": "authored subject wait policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
         }
       },
       "paired_probe_id": "c109749-controlled-reciprocal",
@@ -393,6 +405,12 @@
           "value": true,
           "unit": "boolean",
           "note": "authored subject wait policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
         }
       },
       "paired_probe_id": "c109749-controlled-reciprocal",
@@ -562,6 +580,12 @@
           "value": true,
           "unit": "boolean",
           "note": "authored movement policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
         }
       },
       "paired_probe_id": "c109749-controlled-inside-subject-response",
@@ -731,6 +755,12 @@
           "value": false,
           "unit": "boolean",
           "note": "authored movement policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
         }
       },
       "paired_probe_id": "c109749-controlled-inside-subject-response",
@@ -900,6 +930,12 @@
           "value": true,
           "unit": "boolean",
           "note": "authored movement policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
         }
       },
       "paired_probe_id": "c109749-controlled-approaching-subject-response",
@@ -1069,6 +1105,12 @@
           "value": false,
           "unit": "boolean",
           "note": "authored movement policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
         }
       },
       "paired_probe_id": "c109749-controlled-approaching-subject-response",
@@ -1079,6 +1121,181 @@
         "primary_variable": "subject_yield_policy",
         "comparison_or_standard": "opposing complete body approaches outside junction; legal judgment unresolved",
         "target_value_or_branch": "Initial opposing complete body approaches outside the sourced junction; subject begins the left turn before opposing entry."
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original ego Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "oncoming_speed",
+            "unit": "m/s",
+            "method": "original initial opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_speed",
+            "unit": "m/s",
+            "method": "original later opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego transform yaw",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_left_indicator",
+            "unit": "boolean",
+            "method": "original Native ego light-state readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_in_intersection",
+            "unit": "boolean",
+            "method": "original ego body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "initial_oncoming_in_intersection",
+            "unit": "boolean",
+            "method": "original initial opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_in_intersection",
+            "unit": "boolean",
+            "method": "original later opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "original Native junction bounding box and selected waypoint chain"
+          }
+        ],
+        "limitations": [
+          "Immediate hazard and right-of-way remain legal judgments.",
+          "Junction bounding-box geometry and actual visibility need original-source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "when and as required",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_omitted",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Opposing body begins inside; subject yields and turns with omitted left indicator. Legal signal sufficiency remains unresolved.",
+      "variable_assignments": {
+        "controller_release_ttc_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "engineering release tuning, not an immediate-hazard definition"
+        },
+        "approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "reciprocal_approach_speed_mps": {
+          "kind": "controller",
+          "value": 2.5,
+          "unit": "m/s"
+        },
+        "initial_opposing_in_intersection": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "ego_turn_onset": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "reciprocal_stop_outside": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s",
+          "note": "engineering target, separate from observed ego_speed"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_waypoint_chain",
+          "unit": "authored path",
+          "note": "Native path must be confirmed from original geometry"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "later_opposing_braking_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "exact runner policy; later opposing actor brake after subject turn onset"
+        },
+        "subject_yield_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored movement policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
+        }
+      },
+      "paired_probe_id": "c109749-controlled-signal-after-yield",
+      "deliberate_differences": [
+        "left_signal_enabled"
+      ],
+      "probe": {
+        "primary_variable": "left_signal_enabled",
+        "comparison_or_standard": "same yield and turn with left indicator readback changed",
+        "target_value_or_branch": "omitted left signal"
       },
       "recording_description": {
         "channels": [
