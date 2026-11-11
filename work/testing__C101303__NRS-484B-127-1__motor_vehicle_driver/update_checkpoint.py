@@ -34,6 +34,12 @@ claim('.venv-cpu/bin/python work/'+folder.name+'/full_duration_comparison_proof.
       'full-duration-comparison.log')
 claim('.venv-cpu/bin/python work/'+folder.name+'/full_duration_fallback_comparison_proof.py',
       'full-duration-fallback-comparison.log')
+claim('.venv-cpu/bin/python work/'+folder.name+'/fallback_candidate_sources.py',
+      'fallback-source-projection.log')
+claim('.venv-cpu/bin/python work/'+folder.name+'/fallback_candidate_negative_proof.py',
+      'fallback-candidate-negative.log')
+claim('.venv-cpu/bin/python work/'+folder.name+'/record_fallback_candidate_comparison.py',
+      'fallback-candidate-record.log')
 claim('.venv-cpu/bin/python work/'+folder.name+'/sweep_controller_envelope.py '
       '--config work/'+folder.name+'/config.json --output work/'+folder.name+
       '/sweep-controller-envelope.json', 'sweep-envelope.log')
@@ -48,7 +54,9 @@ result['reason']=(
     'composed-video and Core-join software paths, with eight missing-sealed-history '
     'negative proofs plus base actor-identity, unsealed-source and unverified-physical-status rejection. Seven '
     'primary comparisons pass against the 900-frame diagnostic sources, and 21 '
-    'fallback construction comparisons pass with those primary synthetic histories; '
+    'fallback comparisons pass with candidate-bound 900-frame synthetic projections; '
+    'a changed candidate source is rejected. These projections bind construction knobs '
+    'and do not establish realized fallback motion. '
     'an altered fixed surface, skipped frame, relative-time drift and unrelated initial '
     'lead velocity are rejected. The faster-ego diagnostic source was corrected so '
     'its lead initial velocity matches the base; its four exact compatibility and '
@@ -57,8 +65,8 @@ result['reason']=(
     'The three-point 7.0/8.5/10.0 m controller probe verifies command response only; '
     'a 42-state CPU envelope finds 19 states with distinct commands and exposes '
     'saturation at larger spacing. '
-    'The complete physically feasible judgment sweep, fallback-specific source and '
-    'actual Native-source comparisons, independent final review and '
+    'The complete physically feasible judgment sweep, actual fallback and '
+    'other Native-source comparisons, independent final review and '
     'shared branch/delivery queue/integration remain worker-owned CPU work. Actual '
     'Native motion, source pixels and legal judgment remain unverified. See HANDOFF.md.'
 )
