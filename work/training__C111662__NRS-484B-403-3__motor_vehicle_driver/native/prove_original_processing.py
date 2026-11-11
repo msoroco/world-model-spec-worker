@@ -114,7 +114,7 @@ def prove(bundle):
         assert result["frames_joined"] == 800
         assert result["original_native_observed"] is False
         assert result["delivery_ready"] is False
-        assert result["crossing_in_authored_intersection_zone"] == (bundle.parent.name == "contrast")
+        assert result["crossing_in_authored_intersection_zone"] == result["case_id"].endswith("__contrast")
         negatives = []
         def rejected(name, change, *, refresh=False):
             before = {path: path.read_bytes() for path in directory.iterdir() if path.is_file()}

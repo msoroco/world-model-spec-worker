@@ -9,7 +9,7 @@ import math
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
-from build import CASE, HERE, POLICIES, RATE, SOURCE, SOURCE_SHA, pose, put, sha
+from build import CASE, HERE, PLAN, POLICIES, RATE, SOURCE, SOURCE_SHA, pose, put, sha
 
 FRAMES = 800
 CENTERS = {"divided_reference": -45.0, "divided_opening": 0.0}
@@ -121,6 +121,19 @@ def check(bundle):
         raise ValueError("Unknown divided branch candidate")
     source = json.loads(SOURCE.read_text())
     speed, camera, dwell = POLICIES[candidate]
+    status = cfg.get("status")
+    if status == "selected_delivery_request_original_unverified":
+        plan = json.loads(PLAN.read_text())
+        matches = [item for item in plan["cases"] if item["case_id"] == cfg["case_id"]]
+        if len(matches) != 1 or matches[0].get("planning_status") != "selected_for_delivery_preparation_conditional":
+            raise ValueError("Selected divided case status differs from current plan")
+    elif status == "unselected_native_request":
+        plan = json.loads(PLAN.read_text())
+        matches = [item for item in plan["cases"] if item["case_id"] == cfg["case_id"]]
+        if len(matches) != 1 or matches[0].get("planning_status") == "selected_for_delivery_preparation_conditional":
+            raise ValueError("Unselected divided candidate conflicts with current plan")
+    else:
+        raise ValueError("Unknown divided candidate selection status")
     if ((bundle / "assignment-source.json").read_bytes() != SOURCE.read_bytes() or
             sha(SOURCE) != SOURCE_SHA or cfg["assignment_id"] != CASE.name or
             cfg["assignment_sha256"] != SOURCE_SHA or
@@ -129,7 +142,6 @@ def check(bundle):
             cfg["requested_approach_speed_mps"] != speed or
             cfg["camera_policy"] != camera or cfg["pre_turn_dwell_s"] != dwell or
             cfg["frames"] != FRAMES or cfg["rate_hz"] != RATE or
-            cfg["status"] != "unselected_native_request" or
             cfg["original_native_observed"] is not False or cfg["legal_verdict"] is not None):
         raise ValueError("Source-bound divided branch config changed")
     path = bundle / "divided-highway.xodr"

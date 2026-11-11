@@ -44,13 +44,26 @@ def check(bundle):
             (bundle/'case-plan.json').read_bytes()!=PLAN.read_bytes() or sha(SOURCE)!=SOURCE_SHA:
         raise ValueError("Copied frozen source or plan changed")
     source=json.loads(SOURCE.read_text());speed,camera,dwell=POLICIES[candidate]
+    status=cfg.get('status')
+    if status == 'selected_delivery_request_original_unverified':
+        plan=json.loads(PLAN.read_text())
+        matches=[item for item in plan['cases'] if item['case_id']==cfg['case_id']]
+        if len(matches)!=1 or matches[0].get('planning_status')!='selected_for_delivery_preparation_conditional':
+            raise ValueError('Selected case status differs from current plan')
+    elif status == 'unselected_native_request':
+        plan=json.loads(PLAN.read_text())
+        matches=[item for item in plan['cases'] if item['case_id']==cfg['case_id']]
+        if len(matches)!=1 or matches[0].get('planning_status')=='selected_for_delivery_preparation_conditional':
+            raise ValueError('Unselected candidate conflicts with current plan')
+    else:
+        raise ValueError('Unknown candidate selection status')
     if (cfg['assignment_id']!=CASE.name or cfg['assignment_sha256']!=SOURCE_SHA or
             cfg['case_plan_sha256']!=sha(PLAN) or cfg['source_text']!=source['law_record']['text'] or
             cfg['requested_turn_center_x_m']!=CASES[suffix] or
             cfg['requested_approach_speed_mps']!=speed or cfg['camera_policy']!=camera or
             cfg['pre_turn_dwell_s']!=dwell or cfg['rate_hz']!=20 or cfg['frames']!=FRAMES or
             cfg['ego_blueprint']!='vehicle.tesla.model3' or
-            cfg['status']!='unselected_native_request' or cfg['original_native_observed'] is not False or
+            cfg['original_native_observed'] is not False or
             cfg['legal_verdict'] is not None):
         raise ValueError("Source-bound candidate config changed")
     path=bundle/'district-crossroads.xodr'
