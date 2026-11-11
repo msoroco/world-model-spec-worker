@@ -81,6 +81,22 @@ class SignalTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             control.find_governing_signal(World([Light(1, 11, -1), Light(2, 11, -1)]), 11, -1)
 
+    def test_two_approach_signals_set_and_restored_together(self):
+        ego, other = Light(8, 11, -1), Light(9, 22, -1)
+        world = World([ego, other])
+        class States:
+            Red, Green, Off = "Red", "Green", "Off"
+        with control.SignalPairControl(world, ego, other, States, "Green", "Red"):
+            self.assertEqual((ego.get_state(), other.get_state()), ("Green", "Red"))
+            self.assertEqual(world.ticks, 1)
+        self.assertEqual((ego.get_state(), other.get_state()), ("Red", "Red"))
+        self.assertEqual(world.ticks, 2)
+        with control.SignalPairControl(world, ego, other, States, "Off", "Off"):
+            self.assertEqual((ego.get_state(), other.get_state()), ("Off", "Off"))
+        self.assertEqual((ego.get_state(), other.get_state()), ("Red", "Red"))
+        with self.assertRaisesRegex(ValueError, "distinct"):
+            control.SignalPairControl(world, ego, ego, States, "Off", "Off")
+
     def fixture(self, root):
         context = {"intersection_id": 25, "native_signal_id": 8,
                    "native_map_id": "TownX", "governed_road_id": 11,
@@ -129,6 +145,30 @@ class SignalTests(unittest.TestCase):
             (root / "head_visibility_review.json").write_text(json.dumps(review))
             with self.assertRaisesRegex(ValueError, "uncovered"):
                 measure.analyze(root, entry)
+
+    def test_distinct_other_light_and_its_review_are_required(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            entry = self.fixture(root)
+            context = json.loads((root / "signal_context.json").read_text())
+            context["other_native_signal_id"] = context["native_signal_id"]
+            (root / "signal_context.json").write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, "Distinct governing signals"):
+                measure.analyze(root, entry)
+            self.fixture(root)
+            (root / "other_head_visibility_review.json").unlink()
+            with self.assertRaisesRegex(ValueError, "other_head_visibility_review"):
+                measure.analyze(root, entry)
+
+    def test_other_entry_uses_other_native_state(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            entry = self.fixture(root)
+            report = measure.analyze(root, entry)
+            self.assertEqual(report["at_body_entry"]["other"]["native_signal_id"], 9)
+            self.assertEqual(report["at_body_entry"]["other"]["native_state"], "Green")
+            self.assertNotEqual(report["at_body_entry"]["other"]["native_state"],
+                                report["at_body_entry"]["ego"]["native_state"])
 
 
 if __name__ == "__main__":

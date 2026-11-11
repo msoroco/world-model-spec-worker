@@ -14,8 +14,11 @@ class StopMeasurementsTests(unittest.TestCase):
             root = Path(directory)
             (root / "stop_context.json").write_text(json.dumps({
                 "intersection_id": 7,
-                "selected_reference": {"kind": "marked_stop_line", "segment_xy_m": [[-5,-2],[-5,2]]},
-                "geometry_source": "synthetic surveyed line", "reference_review_source": "synthetic diagnostic"}))
+                "selected_references": {
+                    "ego": {"kind": "marked_stop_line", "segment_xy_m": [[-5,-2],[-5,2]],
+                            "geometry_source": "synthetic ego line", "reference_review_source": "synthetic diagnostic"},
+                    "other": {"kind": "marked_stop_line", "segment_xy_m": [[-2,-5],[2,-5]],
+                              "geometry_source": "synthetic other line", "reference_review_source": "synthetic diagnostic"}}}))
             history = []
             mapping = []
             for i in range(4):
@@ -38,6 +41,7 @@ class StopMeasurementsTests(unittest.TestCase):
             report = analyze(root, entries)
             self.assertEqual(report["first_recorded_zero_speed_before_entry"]["ego"]["frame"], 2)
             self.assertEqual(report["first_recorded_zero_speed_before_entry"]["ego"]["front_distance_to_reference_m"], 0)
+            self.assertEqual(report["first_recorded_zero_speed_before_entry"]["other"]["front_distance_to_reference_m"], 0)
             self.assertTrue(report["other_body_inside_at_ego_entry"])
             self.assertEqual(report["statutory_stop_judgment"], "unresolved")
             mapping[2]["time_s"] += .01

@@ -38,16 +38,19 @@ def analyze(root: Path, entries: dict) -> dict:
     context = json.loads((root / "stop_context.json").read_text())
     if context.get("intersection_id") != entries.get("intersection_id"):
         raise ValueError("Stop and entry intersection identities differ")
-    reference = context.get("selected_reference")
-    if not isinstance(reference, dict) or reference.get("kind") not in (
-            "marked_stop_line", "near_side_crosswalk", "nearest_view_point"):
-        raise ValueError("Source-selected stop reference required")
-    if not context.get("geometry_source") or not context.get("reference_review_source"):
-        raise ValueError("Stop reference lacks geometry/review provenance")
-    segment = reference.get("segment_xy_m")
-    if not isinstance(segment, list) or len(segment) != 2:
-        raise ValueError("Stop reference segment required")
-    _distance(_point(segment[0], "stop reference endpoint"), segment)
+    references = context.get("selected_references")
+    if not isinstance(references, dict) or set(references) != {"ego", "other"}:
+        raise ValueError("Source-selected stop reference required for each approach")
+    for party, reference in references.items():
+        if not isinstance(reference, dict) or reference.get("kind") not in (
+                "marked_stop_line", "near_side_crosswalk", "nearest_view_point"):
+            raise ValueError("Source-selected stop reference required: " + party)
+        if not reference.get("geometry_source") or not reference.get("reference_review_source"):
+            raise ValueError("Stop reference lacks geometry/review provenance: " + party)
+        segment = reference.get("segment_xy_m")
+        if not isinstance(segment, list) or len(segment) != 2:
+            raise ValueError("Stop reference segment required: " + party)
+        _distance(_point(segment[0], "stop reference endpoint"), segment)
     history = [json.loads(s) for s in (root / "stop_history.jsonl").read_text().splitlines() if s.strip()]
     mapping = [json.loads(s) for s in (root / "video_frames.jsonl").read_text().splitlines() if s.strip()]
     if len(history) < 2 or len(history) != len(mapping):
@@ -81,21 +84,25 @@ def analyze(root: Path, entries: dict) -> dict:
                 raise ValueError("Missing original body occupancy")
             if frame < entry[party]["frame"] and speed == 0 and first_zero[party] is None:
                 first_zero[party] = {"frame": frame, "time_s": time_s,
-                                     "front_distance_to_reference_m": _distance(state["front_xy_m"], segment)}
+                                     "front_distance_to_reference_m": _distance(
+                                         state["front_xy_m"], references[party]["segment_xy_m"])}
             if frame == entry[party]["frame"]:
                 if time_s != entry[party]["time_s"]:
                     raise ValueError(party + " stop/entry timestamp mismatch")
                 entry_seen[party] = True
         if frame == entry["ego"]["frame"]:
             ego_at_entry = {"frame": frame, "time_s": time_s,
-                            "front_distance_to_reference_m": _distance(row["ego"]["front_xy_m"], segment)}
+                            "front_distance_to_reference_m": _distance(
+                                row["ego"]["front_xy_m"], references["ego"]["segment_xy_m"])}
             other_inside_at_ego_entry = row["other"]["body_inside_crossing"]
     if ego_at_entry is None or not all(entry_seen.values()):
         raise ValueError("Measured body entry absent from original stop history")
     return {"format": "worker-original-stop-order-measurements", "sources": hashes,
             "intersection_id": context["intersection_id"],
-            "selected_reference": {"kind": reference["kind"], "geometry_source": context["geometry_source"],
-                                   "reference_review_source": context["reference_review_source"]},
+            "selected_references": {party: {"kind": ref["kind"],
+                "geometry_source": ref["geometry_source"],
+                "reference_review_source": ref["reference_review_source"]}
+                for party, ref in references.items()},
             "first_recorded_zero_speed_before_entry": first_zero,
             "ego_at_entry": ego_at_entry,
             "other_first_body_entry_before_ego": entry["other"]["frame"] < entry["ego"]["frame"],

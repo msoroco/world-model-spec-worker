@@ -92,19 +92,23 @@ def source_contexts(site, plan, light, other_light):
     approaches = plan.get("approaches", {})
     if set(approaches) != {"ego", "other"}:
         raise ValueError("Two checked Native approach plans required")
-    for key in ("device_inventory_source", "approach_geometry_source",
-                "stop_reference_geometry_source", "stop_reference_review_source"):
+    for key in ("device_inventory_source", "approach_geometry_source"):
         if not site.get(key):
             raise ValueError("Missing sourced site context: " + key)
-    reference = site.get("selected_stop_reference")
-    if not isinstance(reference, dict) or reference.get("kind") not in (
-            "marked_stop_line", "near_side_crosswalk", "nearest_view_point"):
-        raise ValueError("Selected source-reviewed stop reference required")
-    segment = reference.get("segment_xy_m")
-    if not isinstance(segment, list) or len(segment) != 2 or any(
-            not isinstance(p, list) or len(p) != 2 or any(type(v) not in (int, float) or not math.isfinite(v) for v in p)
-            for p in segment):
-        raise ValueError("Finite stop reference segment required")
+    references = site.get("selected_stop_references")
+    if not isinstance(references, dict) or set(references) != {"ego", "other"}:
+        raise ValueError("Selected source-reviewed stop references required")
+    for party, reference in references.items():
+        if not isinstance(reference, dict) or reference.get("kind") not in (
+                "marked_stop_line", "near_side_crosswalk", "nearest_view_point"):
+            raise ValueError("Selected source-reviewed stop reference required: " + party)
+        if not reference.get("geometry_source") or not reference.get("reference_review_source"):
+            raise ValueError("Stop reference provenance required: " + party)
+        segment = reference.get("segment_xy_m")
+        if not isinstance(segment, list) or len(segment) != 2 or any(
+                not isinstance(p, list) or len(p) != 2 or any(type(v) not in (int, float) or not math.isfinite(v) for v in p)
+                for p in segment):
+            raise ValueError("Finite stop reference segment required: " + party)
     native_map_name = site.get("native_map_name")
     if (not native_map_name or type(light.id) is not int or type(other_light.id) is not int
             or light.id == other_light.id):
@@ -129,8 +133,6 @@ def source_contexts(site, plan, light, other_light):
         "other_governed_road_id": approaches["other"]["road_id"],
         "other_governed_lane_id": approaches["other"]["lane_id"]}
     stop_context = {"intersection_id": plan["native_junction_id"],
-        "selected_reference": reference,
-        "geometry_source": site["stop_reference_geometry_source"],
-        "reference_review_source": site["stop_reference_review_source"]}
+        "selected_references": references}
     return {"road_geometry.json": road_geometry,
             "signal_context.json": signal_context, "stop_context.json": stop_context}

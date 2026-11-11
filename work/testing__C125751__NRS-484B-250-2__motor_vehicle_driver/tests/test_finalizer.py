@@ -71,8 +71,11 @@ class SavedFinalizerTests(unittest.TestCase):
             "other_native_signal_id":56,"other_governed_road_id":2,
             "other_governed_lane_id":-1}))
         (root/"stop_context.json").write_text(json.dumps({"intersection_id":7,
-            "selected_reference":{"kind":"marked_stop_line","segment_xy_m":[[-5,-2],[-5,2]]},
-            "geometry_source":"synthetic line","reference_review_source":"synthetic diagnostic"}))
+            "selected_references":{
+                "ego":{"kind":"marked_stop_line","segment_xy_m":[[-5,-2],[-5,2]],
+                       "geometry_source":"synthetic ego line","reference_review_source":"synthetic diagnostic"},
+                "other":{"kind":"marked_stop_line","segment_xy_m":[[-2,-5],[2,-5]],
+                         "geometry_source":"synthetic other line","reference_review_source":"synthetic diagnostic"}}}))
         (root/"capture").mkdir()
         (root/"capture/evidence.jsonl").write_text('{}\n')
         for name in ("overview", "approach", "reference_corner", "driver_reference"):

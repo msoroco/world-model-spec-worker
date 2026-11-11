@@ -40,10 +40,11 @@ def site():
     return {"native_map_name": "FixtureTown",
             "device_inventory_source": "test Native light inventory",
             "approach_geometry_source": "test Native waypoints",
-            "stop_reference_geometry_source": "test Native road marking",
-            "stop_reference_review_source": "test reviewed geometry",
-            "selected_stop_reference": {"kind": "marked_stop_line",
-                                        "segment_xy_m": [[-5,-2],[-5,2]]}}
+            "selected_stop_references": {
+                "ego": {"kind": "marked_stop_line", "segment_xy_m": [[-5,-2],[-5,2]],
+                        "geometry_source": "test Native ego marking", "reference_review_source": "test ego review"},
+                "other": {"kind": "marked_stop_line", "segment_xy_m": [[-2,-5],[2,-5]],
+                          "geometry_source": "test Native other marking", "reference_review_source": "test other review"}}}
 
 
 def world_map():
@@ -107,8 +108,8 @@ class CaptureSourceTests(unittest.TestCase):
 
     def test_context_requires_sourced_reference(self):
         bad = site()
-        del bad["stop_reference_review_source"]
-        with self.assertRaisesRegex(ValueError, "stop_reference_review_source"):
+        del bad["selected_stop_references"]["other"]["reference_review_source"]
+        with self.assertRaisesRegex(ValueError, "provenance required: other"):
             source_contexts(bad, plan(), NS(id=55), NS(id=56))
 
 

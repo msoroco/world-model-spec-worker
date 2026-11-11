@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE = Path(__file__).resolve().parent
-OUT = ROOT / ".runtime-work/c125751-two-case-saved-source-55s-v1"
+OUT = ROOT / ".runtime-work/c125751-two-signal-saved-source-55s-v3"
 sys.path.insert(0, str(PACKAGE / "tests"))
 sys.path.insert(0, str(PACKAGE))
 sys.path.insert(0, str(ROOT / "runtime/scenario_pipeline"))
@@ -48,6 +48,9 @@ def make_sources(attempt, case, state):
     config_path.write_text(json.dumps(config, indent=2) + "\n")
     crossing = rows(attempt / "crossing_history.jsonl")
     signal = rows(attempt / "signal_history.jsonl")
+    other_state = "Red" if state == "Green" else "Off"
+    for row in signal:
+        row["other_state"] = other_state
     stop = rows(attempt / "stop_history.jsonl")
     mapping = rows(attempt / "video_frames.jsonl")
     trace = rows(attempt / "trace.jsonl")
@@ -56,7 +59,8 @@ def make_sources(attempt, case, state):
         ex, oy = min(9, -4 + .12 * (i-3)), min(9, -3 + .12 * (i-3))
         crossing.append({"frame": frame, "time_s": t, "ego": body(ex, 0),
                          "other": body(0, oy), "ego_vertices_m": body(ex, 0)["body_vertices_xy_m"]})
-        signal.append({"frame": frame, "time_s": t, "native_signal_id": 55, "state": state})
+        signal.append({"frame": frame, "time_s": t, "native_signal_id": 55, "state": state,
+                       "other_native_signal_id": 56, "other_state": other_state})
         stop.append({"frame": frame, "time_s": t,
                      "ego": {"speed_mps": 0 if ex >= 9 else 2,
                              "front_xy_m": [ex+.3, 0], "body_inside_crossing": -5.3 <= ex <= 5.3},
@@ -91,10 +95,15 @@ def make_sources(attempt, case, state):
     review["source_video_sha256"] = sha(attempt / "approach.mkv")
     review["review_basis"] = "synthetic source binding only; black pixels do not establish a visible head"
     review_path.write_text(json.dumps(review, indent=2) + "\n")
+    other_review_path = attempt / "other_head_visibility_review.json"
+    other_review = json.loads(other_review_path.read_text())
+    other_review["source_video_sha256"] = sha(attempt / "reference_corner.mkv")
+    other_review["review_basis"] = review["review_basis"]
+    other_review_path.write_text(json.dumps(other_review, indent=2) + "\n")
     return sizes
 
 
-def negative_with_bad_review(attempt, negative):
+def negative_with_bad_review(attempt, negative, role):
     negative.mkdir()
     (negative / "capture").mkdir()
     for name in ("config.json", "road_geometry.json", "crossing_history.jsonl",
@@ -102,9 +111,12 @@ def negative_with_bad_review(attempt, negative):
                  "stop_history.jsonl", "video_frames.jsonl", "trace.jsonl", *CAMERAS):
         (negative / name).hardlink_to(attempt / name)
     (negative / "capture/evidence.jsonl").hardlink_to(attempt / "capture/evidence.jsonl")
-    review = json.loads((attempt / "head_visibility_review.json").read_text())
+    selected = "head_visibility_review.json" if role == "ego" else "other_head_visibility_review.json"
+    intact = "other_head_visibility_review.json" if role == "ego" else "head_visibility_review.json"
+    (negative / intact).hardlink_to(attempt / intact)
+    review = json.loads((attempt / selected).read_text())
     review["source_video_sha256"] = "0" * 64
-    (negative / "head_visibility_review.json").write_text(json.dumps(review) + "\n")
+    (negative / selected).write_text(json.dumps(review) + "\n")
     try:
         finalize(negative, negative / "analysis-report.json")
     except ValueError as error:
@@ -120,6 +132,7 @@ def main():
     receipts = []
     for case, state in CASES.items():
         label = "operative" if state == "Green" else "off"
+        other_state = "Red" if state == "Green" else "Off"
         attempt = OUT / label
         sizes = make_sources(attempt, case, state)
         check_four_view_sources({name.removesuffix(".mkv"): attempt / name for name in CAMERAS})
@@ -129,20 +142,24 @@ def main():
             receipt = audit(attempt / name, FRAMES, mapping_sha256=mapping_sha)
             assert receipt["dimensions"] == list(sizes[name.removesuffix(".mkv")])
             decodes[name] = {"frames": receipt["frames"], "source_sha256": receipt["video_sha256"]}
-        negative_with_bad_review(attempt, OUT / (label + "-stale-head-review"))
+        negative_with_bad_review(attempt, OUT / (label + "-stale-ego-head-review"), "ego")
+        negative_with_bad_review(attempt, OUT / (label + "-stale-other-head-review"), "other")
         measurements = finalize(attempt, attempt / "analysis-report.json")
         result = validate_result(json.loads((attempt / "result.json").read_text()))
         assert result["case_id"] == case
         assert result["target_checks"][0]["matched"] is True
         assert result["source_evidence_hashes"]["approach.mkv"] == decodes["approach.mkv"]["source_sha256"]
+        assert result["source_evidence_hashes"]["reference_corner.mkv"] == decodes["reference_corner.mkv"]["source_sha256"]
         assert measurements["signal_at_entry"]["value"]["at_body_entry"]["ego"]["native_state"] == state
+        assert measurements["signal_at_entry"]["value"]["at_body_entry"]["other"]["native_state"] == other_state
         assert measurements["stop_order"]["value"]["statutory_stop_judgment"] == "unresolved"
         for name in ("signal_state.jsonl", "stop_state.jsonl", "entry_context.json"):
             assert (attempt / "channels" / name).is_file()
         receipts.append({"case_id": case, "state_at_ego_entry": state,
+                         "state_at_other_entry": other_state,
                          "source_decodes": decodes, "frame_map_sha256": mapping_sha,
                          "measurement_names": sorted(measurements),
-                         "negative": "stale reviewed-camera source hash rejected before finalization"})
+                         "negative": "stale ego and other reviewed-camera source hashes rejected before finalization"})
     receipt = {"format": "worker-c125751-two-case-saved-source-proof",
                "cases": receipts, "frames_per_case": FRAMES, "rate_hz": 20,
                "synthetic_only": True, "physical_acceptance_claimed": False,
