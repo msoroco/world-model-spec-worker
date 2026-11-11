@@ -92,6 +92,8 @@ class EndingRoadSourceCaptureTests(unittest.TestCase):
                 self.assertEqual(selected['subject'], ending)
                 self.assertEqual(selected['other'], through)
                 self.assertFalse(selected['legal_highway_classification_claimed'])
+                with self.assertRaisesRegex(ValueError, 'No connected'):
+                    select_t_routes(world_map, route_accept=lambda ending, other: False)
                 through[0].transform.get_forward_vector = lambda: NS(x=0, y=direction)
                 with self.assertRaisesRegex(ValueError, 'No connected'):
                     select_t_routes(world_map)

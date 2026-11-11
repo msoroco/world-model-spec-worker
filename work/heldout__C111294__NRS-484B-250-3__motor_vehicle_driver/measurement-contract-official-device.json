@@ -1,0 +1,42 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Original connected ending/through approach topology, both vehicle entries and observed conflict occupancy",
+      "source": "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
+      "output_key": "intersection_observation",
+      "method": "measure_intersection",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "intersection_topology.json",
+        "intersection_participants.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Official traffic-control device exception and governing original state; subsection 4 applicability separately unresolved",
+      "source": "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
+      "output_key": "official_device_observation",
+      "method": "measure_official_device",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "official_device_context.json",
+        "official_device_states.jsonl",
+        "intersection_topology.json",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "official_device_context.json"
+    ],
+    "error_contains": "Missing required source: official_device_context.json"
+  }
+}

@@ -48,7 +48,7 @@ def _paths_from_spawn(start, *, max_approach=120, max_junction=35):
                 yield candidate
 
 
-def select_t_routes(world_map, *, max_spawns=300):
+def select_t_routes(world_map, *, max_spawns=300, route_accept=None):
     """Select one same-junction pair; reject ambiguous non-T lane continuity."""
     routes = []
     for transform in world_map.get_spawn_points()[:max_spawns]:
@@ -78,6 +78,8 @@ def select_t_routes(world_map, *, max_spawns=300):
             b = through['path'][0].transform.get_forward_vector()
             length = hypot(a.x, a.y) * hypot(b.x, b.y)
             if length < 1e-6 or abs((a.x*b.x + a.y*b.y)/length) > .65:
+                continue
+            if route_accept is not None and not route_accept(ending, through):
                 continue
             return {'subject': ending['path'], 'other': through['path'],
                     'junction_id': ending['junction_id'],
