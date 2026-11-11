@@ -6,6 +6,7 @@ from pathlib import Path
 
 from overtake_camera import CAMERAS, OvertakeCameraCapture, LosslessSourceSink
 from overtake_route import choose_target, select_overtake_route, steer_speed_control
+from overtake_variants import left_target_xy
 from overtake_source_capture import OvertakeSourceRecorder
 
 
@@ -26,15 +27,17 @@ def check_config(config):
         raise ValueError('Delivery config retains construction-probe marker')
 
 
-def _drive(actor, target, speed):
+def _drive(actor, target, speed, target_xy=None):
     transform = actor.get_transform()
     position = transform.location
     heading = transform.get_forward_vector()
     velocity = actor.get_velocity()
     destination = target.transform.location
+    if target_xy is None:
+        target_xy = [destination.x, destination.y]
     return steer_speed_control([position.x, position.y], [heading.x, heading.y],
                                [velocity.x, velocity.y],
-                               [destination.x, destination.y], target_speed_mps=speed)
+                               target_xy, target_speed_mps=speed)
 
 
 def _longitudinal(row):
@@ -104,13 +107,19 @@ def run(config, output, host, port):
         start = None
         passed_abreast = False
         ego_rear, other_front = -1e9, 1e9
+        last_row = None
         for index in range(config['frames']):
             position = ego.get_transform().location
             target = choose_target(route, [position.x, position.y],
                                    ego_rear, other_front,
                                    passed_abreast=passed_abreast,
                                    requested_return_clearance_m=3)
-            ego.apply_control(carla.VehicleControl(**_drive(ego, target['waypoint'], 8)))
+            target_xy = None
+            if target['phase'] == 'pass_left' and last_row is not None:
+                target_xy = left_target_xy(target['waypoint'], last_row,
+                                           config['target_left_gap_m'])
+            ego.apply_control(carla.VehicleControl(**_drive(
+                ego, target['waypoint'], 8, target_xy)))
             other.apply_control(carla.VehicleControl(**_drive(
                 other, route['right'][min(11 + index // 6, len(route['right']) - 1)], 4)))
             frame = world.tick()
@@ -125,6 +134,7 @@ def run(config, output, host, port):
             if trace.get('frame') != frame or trace.get('time_s') != time_s:
                 raise ValueError('Native overtake trace/frame mismatch')
             row = recorder.append(frame, time_s)
+            last_row = row
             ego_rear, other_front, abreast = _longitudinal(row)
             passed_abreast = passed_abreast or abreast
             frame_map.append(frame, time_s)
