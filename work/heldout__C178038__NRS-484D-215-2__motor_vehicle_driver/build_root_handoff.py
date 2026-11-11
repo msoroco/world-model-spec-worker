@@ -37,7 +37,7 @@ def build():
              'interval': 'entire four-second original-frame interval'},
             {'view': 'driver_reference', 'subject': 'subject-facing forward beam and lead silhouette',
              'interval': 'entire four-second original-frame interval'}]}
-    plan['review_status'] = ('Partial: all six cases and source comparisons have synthetic CPU proofs; '
+    plan['review_status'] = ('Partial: all nine cases and source comparisons have synthetic CPU proofs; '
                              'actual Native motion, pixels, civil time and roadway occupancy unreviewed.')
     for row in plan['branch_inventory']:
         row['status'] = 'source_bound_synthetic_software_proved_physical_unverified'

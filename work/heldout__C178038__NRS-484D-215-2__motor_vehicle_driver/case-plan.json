@@ -75,6 +75,42 @@
           "sha256": "2f105d16236025597cabc7739a57b53a7442fc2321118497538a014738ce3687"
         }
       ]
+    },
+    {
+      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0000",
+      "requirement": "NRS 484D.215(2) following within 300 ft during NRS 484D.100 lighting times on traveled highway or adjacent shoulder requires a permissible non-uppermost distribution",
+      "requested_engineering_setup": "Night traveled portion, 150 ft, non-uppermost low-beam readback; safe-distance judgment unresolved",
+      "status": "source_bound_synthetic_software_proved_physical_unverified",
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/assignment.json",
+          "sha256": "2f105d16236025597cabc7739a57b53a7442fc2321118497538a014738ce3687"
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0001",
+      "requirement": "NRS 484D.215(2) following within 300 ft during NRS 484D.100 lighting times on traveled highway or adjacent shoulder requires a permissible non-uppermost distribution",
+      "requested_engineering_setup": "Night traveled portion, 299 ft, non-uppermost low-beam readback; safe-distance judgment unresolved",
+      "status": "source_bound_synthetic_software_proved_physical_unverified",
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/assignment.json",
+          "sha256": "2f105d16236025597cabc7739a57b53a7442fc2321118497538a014738ce3687"
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0002",
+      "requirement": "NRS 484D.215(2) following within 300 ft during NRS 484D.100 lighting times on traveled highway or adjacent shoulder requires a permissible non-uppermost distribution",
+      "requested_engineering_setup": "Night traveled portion, 225 ft, non-uppermost low-beam readback; safe-distance judgment unresolved",
+      "status": "source_bound_synthetic_software_proved_physical_unverified",
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/assignment.json",
+          "sha256": "2f105d16236025597cabc7739a57b53a7442fc2321118497538a014738ce3687"
+        }
+      ]
     }
   ],
   "comparisons": [
@@ -157,6 +193,23 @@
           "sha256": "2f105d16236025597cabc7739a57b53a7442fc2321118497538a014738ce3687"
         }
       ]
+    },
+    {
+      "comparison_id": "illumination_gap_sweep",
+      "case_ids": [
+        "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0000",
+        "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0001",
+        "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0002"
+      ],
+      "fixed_conditions": "nighttime traveled roadway, same actors and non-uppermost low-beam readback",
+      "deliberate_differences": "frozen 150, 299 and 225 ft requested following setpoints; actual original-body gap measured separately",
+      "status": "source_bound_synthetic_software_proved_physical_unverified",
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/assignment.json",
+          "sha256": "2f105d16236025597cabc7739a57b53a7442fc2321118497538a014738ce3687"
+        }
+      ]
     }
   ],
   "sources": [
@@ -180,7 +233,7 @@
       "Original lamp readback, body separation, travel direction, lighting-time source, roadway/shoulder occupancy and safe-distance light visibility are unsupplied."
     ]
   },
-  "review_status": "Partial: all six cases and source comparisons have synthetic CPU proofs; actual Native motion, pixels, civil time and roadway occupancy unreviewed.",
+  "review_status": "Partial: all nine cases and source comparisons have synthetic CPU proofs; actual Native motion, pixels, civil time and roadway occupancy unreviewed.",
   "branch_inventory": [
     {
       "source": {
@@ -216,7 +269,12 @@
     }
   ],
   "observations": [
-    "headlamp_follow_measurement.py measures original 20 Hz actor footprint gap, same-direction lead-ahead geometry and uppermost lamp readback, with separately cited lighting-time premise; legal judgments null."
+    {
+      "name": "headlamp_gap_ft",
+      "unit": "ft",
+      "mandatory": true,
+      "method": "Original 20 Hz Native actor body polygons yield surface gap, following geometry and lead-ahead relationship; lamp and roadway/civil-time rows are separately retained; legal judgments remain unresolved."
+    }
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
@@ -329,7 +387,10 @@
         "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_300_upper",
         "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_301_upper",
         "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__day_299_upper",
-        "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__shoulder_299_upper"
+        "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__shoulder_299_upper",
+        "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0000",
+        "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0001",
+        "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0002"
       ],
       "evidence_or_gap": "No accepted original; body separation, beam bits, road context and civil-time premise require new source capture."
     }

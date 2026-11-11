@@ -1,0 +1,131 @@
+{
+  "assignment_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver",
+  "law_id": "LVMC-11-18-030-B",
+  "cell_id": "C5191",
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach",
+      "target_law_id": "LVMC-11-18-030-B",
+      "gap_ids": [
+        "lawful_turn_preparation"
+      ],
+      "description": "connected left turn while keeping full body within marked approach before junction",
+      "construction_status": "planned_cpu_construction_pending"
+    },
+    {
+      "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal",
+      "target_law_id": "LVMC-11-18-030-B",
+      "gap_ids": [
+        "lawful_turn_preparation"
+      ],
+      "description": "connected left turn with early approach boundary crossing and original indicator off readback",
+      "construction_status": "planned_cpu_construction_pending"
+    },
+    {
+      "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled",
+      "target_law_id": "LVMC-11-18-030-B",
+      "gap_ids": [
+        "lawful_turn_preparation"
+      ],
+      "description": "same connected left turn and early crossing with original left indicator readback",
+      "construction_status": "planned_cpu_construction_pending"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "left_turn_approach_containment",
+      "case_ids": [
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled"
+      ],
+      "fixed_conditions": [
+        "same marked approach and connected left exit, actor class, requested turn controller, original 20 Hz source and four-camera profile"
+      ],
+      "deliberate_differences": [
+        "requested approach path within marked lane versus early boundary crossing; realized footprint measured from original source"
+      ]
+    },
+    {
+      "comparison_id": "left_turn_signal_evidence",
+      "case_ids": [
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled"
+      ],
+      "fixed_conditions": [
+        "same marked approach, connected left exit, requested crossing path, actor class, 20 Hz duration and four-camera profile"
+      ],
+      "deliberate_differences": [
+        "left turn indicator commanded off versus on before boundary crossing; original Native light-state readback retained, lawful turn status not inferred"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/assignment.json",
+      "sha256": "92dfd9b7e7f6909014b19bef360d5d4de6fc48ebf7cff0941102b507f6e14f83"
+    },
+    {
+      "path": "inputs/coverage/candidate-cells.json",
+      "sha256": "d067de719af99bb6b0bf1c0cf513f64df3f63e5e8f340d8339650770b711798a"
+    },
+    {
+      "path": "work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/assignment.json",
+      "sha256": "de61e8db953a18b26d5da8a2235ad3c14175f60d72b5d9f5c8594bef5c2345cc"
+    }
+  ],
+  "evidence_review": {
+    "reviewer": "CPU source inventory",
+    "method": "Original C147331 evidence inventory has zero accepted recordings; C5191 has no accepted recording supplied. No source-backed reuse is claimed.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "lawful_turn_preparation",
+        "requirement": "Marked-lane boundary excursion preparatory to lawful left turn",
+        "source": "inputs/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted original turning capture or applicable lawful-turn facts are supplied."
+      }
+    ]
+  },
+  "requirement_dispositions": [
+    {
+      "requirement": "Marked traffic lane boundaries, full vehicle footprint and original crossing history",
+      "source": "inputs/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled"
+      ],
+      "evidence_or_gap": "No accepted original marked-lane turning capture supplied."
+    },
+    {
+      "requirement": "Preparatory to making a lawful turning movement exception",
+      "source": "inputs/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled"
+      ],
+      "evidence_or_gap": "Indicator and turn trajectory can be recorded; independent lawful-turn rules and physical realization remain unresolved."
+    }
+  ],
+  "source_observation_mapping": [],
+  "runtime_uncertainties": [
+    "CARLA map suitability, original signal readback, full-body marking coverage and lawful-turn rule composition remain unverified."
+  ],
+  "observations": [
+    {
+      "name": "marked_lane_turn_sources",
+      "mandatory": true,
+      "source": "original Native lane markings, vehicle corners, indicator state, approach and connected left-exit waypoint identity",
+      "measurement": "signed body-boundary clearance, heading change and source turn-preparation context",
+      "case_ids": [
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled"
+      ]
+    }
+  ],
+  "existing_evidence": []
+}

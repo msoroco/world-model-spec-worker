@@ -20,7 +20,7 @@
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native rider attachment or arm articulation may be invisible"
+        "reason": "Native turn route, rider alignment, or source camera visibility may fail while participant offset remains fixed"
       },
       "acquisition": {
         "rider_signal_event": {
@@ -28,7 +28,48 @@
           "method": "join retained source video review to Native motion and frame map",
           "evidence": "rider_signal_review.jsonl plus four RGB original streams and rider motion"
         }
-      }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/safety_wide/fallback1-construction.json",
+          "construction_sha256": "0f5fbfa128298c62d95e6e968f6ea1b07b4f62467b99be13379ed57ff9befc51",
+          "trigger": {
+            "source": "Native map waypoint topology and route-selector failure record",
+            "metric": "count of connected left-turn candidates at 2.5 m sampling",
+            "failure_condition": "No connected route survives primary waypoint sampling"
+          },
+          "changed_knobs": [
+            "route waypoint sampling step 2.5 m to 1.5 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/safety_wide/fallback2-construction.json",
+          "construction_sha256": "68d06f066e5e8a6a3f7e2e7d09cb085cea54b35b082c5847db93d4f8543c8c2a",
+          "trigger": {
+            "source": "original rider/seat pixels from four synchronized RGB streams",
+            "metric": "rider-to-bicycle seat alignment and body overlap across frames",
+            "failure_condition": "Attached rider is too low, overlaps the bicycle body, or hides the arm"
+          },
+          "changed_knobs": [
+            "attached walker relative height 0.65 m to 0.85 m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/safety_wide/fallback3-construction.json",
+          "construction_sha256": "6bb9c235fc2a411f8ce1791a955971a08c4ae4b1b42c6525a5e2987868e03049",
+          "trigger": {
+            "source": "original driver_reference and side RGB frame review",
+            "metric": "count of frames in which the rider and left arm can be resolved",
+            "failure_condition": "Primary camera height hides rider/arm visibility or prevents a defensible no-signal review"
+          },
+          "changed_knobs": [
+            "driver_reference camera relative height 1.8 m to 2.2 m"
+          ]
+        }
+      ]
     }
   ]
 }

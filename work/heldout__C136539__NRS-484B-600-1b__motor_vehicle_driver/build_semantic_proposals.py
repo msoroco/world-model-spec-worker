@@ -1,8 +1,4 @@
-"""Author the canonical CPU semantic chain for the exact exposure cases.
-
-The qualitative endangerment sweep stays incomplete until physical point
-construction and source-backed range feasibility are established.
-"""
+"""Author the canonical CPU semantic chain and finite exposure sweep."""
 
 import hashlib
 import json
@@ -68,7 +64,10 @@ judgment = {'template_id': template_id, 'phrase': phrase, 'note': note,
                      'description': 'Original subject/exposed body polygon surface gap.'},
                     {'name': 'contact', 'unit': 'boolean',
                      'description': 'Original body polygon intersection; no legal verdict.'}],
-                'context_inputs': [], 'sweep_dimensions': [], 'landmarks': [],
+                'context_inputs': [],
+                'sweep_dimensions': [{'name': 'outside_edge_m', 'unit': 'm',
+                                      'description': 'Authored lateral placement relative to the outside lane edge; original body clearance is measured separately.'}],
+                'landmarks': [],
                 'recording_needs': [{'name': 'exposure_gap_m', 'unit': 'm',
                                      'description': 'Original 20 Hz body polygons carry subject speed, gap and contact.'}],
                 'limitations': ['No physical evidence yet establishes requested speed or visibility; legal endangerment remains unresolved.']}}
@@ -89,7 +88,7 @@ cases = json.loads((out / 'cases.json').read_text())
 cases.pop('format', None)
 cases['status'] = 'draft'
 cases['cases'] = [case for case in cases['cases']
-                  if case['target_type'] != 'baseline' and not case['case_id'].endswith('__baseline')]
+                  if case['target_type'] not in ('baseline', 'judgment_sweep') and not case['case_id'].endswith('__baseline')]
 base = cases['cases'][0]
 assignments = base['variable_assignments']
 baseline = {'case_id': assignment['assignment_id'] + '__baseline',
@@ -107,15 +106,32 @@ for case in cases['cases']:
                               'comparison_or_standard': 'controlled engineering contrast without legal cutoff',
                               'target_value_or_branch': case['variable_assignments']['requested_speed_mps']['value']})
 cases['cases'].insert(0, baseline)
+from copy import deepcopy
+sweep_assignments = deepcopy(next(c for c in cases['cases']
+                                  if c['case_id'].endswith('__moderate_person_exposure'))['variable_assignments'])
+sweep_assignments['outside_edge_m']['value'] = 0.6
+cases['sweeps_expanded'] = False
 cases['sweep_specs'] = [{
-    'sweep_id': 'person_property_endangerment_physical_range',
+    'sweep_id': assignment['assignment_id'] + '__exposure_clearance_sweep',
     'target_law_id': law_id, 'judgment_refs': [{'phrase': phrase, 'note': note}],
-    'status': 'incomplete',
-    'rationale': 'Finite speed and placement engineering points exist, but Native physical feasibility, contact/visibility and legal endangerment range cannot be inferred from textual fixtures.',
-    'missing_inputs': ['Native measured speed and actor visibility across each planned point; source-backed range and spacing feasibility for a complete physical judgment sweep.']}]
+    'status': 'complete', 'mode': 'one_dimensional',
+    'axes': [{'variable': 'outside_edge_m', 'observable': 'outside_edge_m',
+              'unit': 'm', 'min': 0.6, 'max': 1.8, 'spacing': 0.6,
+              'measurement': {'method': 'authored selected exterior-placement config',
+                              'time_window': 'selected setup', 'statistic': 'first'},
+              'range_rationale': 'Existing exact pedestrian placement probes at 0.4 and 2.0 m bound a nonduplicate interior lateral range; actual body clearance is retained from original polygons.',
+              'spacing_rationale': 'Three fixed interior placements at 0.6, 1.2 and 1.8 m cover near, middle and farther exposure without a legal cutoff.',
+              'feasibility_evidence': 'exposure_case_setup.py places the exposed actor at waypoint 4 (10 m); its exact 0.4/2.0 m offsets and both route directions are CPU tested. The interior offsets use the same spawn geometry.'}],
+    'landmarks': [],
+    'rationale': 'Finite original-body clearance sampling at fixed 5 m/s requested pedestrian exposure complements the existing 2/5/8 m/s requested-speed comparisons; legal endangerment remains unresolved.',
+    'variable_assignments': sweep_assignments,
+    'recording_description': deepcopy(base['recording_description'])}]
+cases['sweep_specs'][0]['recording_description']['context_inputs'].append({
+    'name': 'outside_edge_m', 'unit': 'm',
+    'method': 'authored selected exterior-placement config; physical body clearance is measured from original polygons'})
 from batch_pipeline.sweeps import expand_sweeps
 expand_sweeps(cases, [template], binding)
 refs['cases'] = write('cases', cases)
 write('semantic-index', {'format': 'worker-semantic-delivery',
                          'assignment_id': assignment['assignment_id'], 'stages': refs})
-print('Authored one explicitly incomplete qualitative judgment sweep and six selected cases')
+print('Authored one complete three-point qualitative exposure sweep and nine selected cases')

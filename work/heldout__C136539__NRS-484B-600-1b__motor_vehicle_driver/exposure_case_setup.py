@@ -1,4 +1,4 @@
-"""Exact engineering settings for the six C136539 exposure comparisons.
+"""Exact engineering settings for C136539 exposure comparisons and sweep.
 
 These settings select physical scenes. They do not define legal endangerment.
 """
@@ -14,6 +14,9 @@ CASES = {
     'clearance_reference': (5.0, 'pedestrian', 2.0),
     'property_near': (5.0, 'property', 0.4),
     'property_far': (5.0, 'property', 2.0),
+    'exposure_clearance_sweep-0000': (5.0, 'pedestrian', 0.6),
+    'exposure_clearance_sweep-0001': (5.0, 'pedestrian', 1.8),
+    'exposure_clearance_sweep-0002': (5.0, 'pedestrian', 1.2),
 }
 EXPOSED_WAYPOINT_INDEX = 4
 

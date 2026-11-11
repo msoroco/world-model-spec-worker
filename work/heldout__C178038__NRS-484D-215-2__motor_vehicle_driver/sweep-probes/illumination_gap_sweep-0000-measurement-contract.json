@@ -1,0 +1,29 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0000",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "NRS 484D.215(2) following within 300 ft during NRS 484D.100 lighting times on traveled highway or adjacent shoulder requires a permissible non-uppermost distribution",
+      "source": "inputs/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/assignment.json",
+      "output_key": "headlamp_following_observation",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "following_footprints.jsonl",
+        "headlamp_readbacks.jsonl",
+        "lighting_context.json",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "roadway_environment.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "headlamp_readbacks.jsonl"
+    ],
+    "error_contains": "Missing required source: headlamp_readbacks.jsonl"
+  }
+}

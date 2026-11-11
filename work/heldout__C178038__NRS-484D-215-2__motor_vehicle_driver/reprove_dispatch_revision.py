@@ -41,7 +41,9 @@ def run_case(entry, candidate):
     process = subprocess.run([sys.executable, str(ROOT / 'runtime.py'), *offline_args],
                              cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                              text=True)
-    log = HERE / selected['offline']['log']
+    probe_dir = 'sweep-probes' if suffix.startswith('illumination_gap_sweep-') else (
+        'context-probes' if suffix.startswith(('day_', 'shoulder_')) else 'night-probes')
+    log = HERE / selected.get('offline', {}).get('log', f'{probe_dir}/{stem}-offline.log')
     log.write_text(process.stdout)
     if process.returncode:
         raise ValueError(f'{stem} offline failed: {process.stdout[-1200:]}')
@@ -55,18 +57,25 @@ def run_case(entry, candidate):
                              text=True)
     if process.returncode:
         raise ValueError(f'{stem} compatibility failed: {process.stdout[-1200:]}')
-    receipt = HERE / selected['compatibility']['receipt']
+    compatibility = selected.setdefault('compatibility', {
+        'receipt': f'{probe_dir}/{stem}-compatibility.json',
+        'log': f'{probe_dir}/{stem}-compat-analysis.log',
+        'negative_log': f'{probe_dir}/{stem}-compat-negative.log'})
+    receipt = HERE / compatibility['receipt']
     shutil.copy2(compat / 'compatibility.json', receipt)
-    shutil.copy2(compat / 'compatibility-analysis.log', HERE / selected['compatibility']['log'])
-    shutil.copy2(compat / 'negative-analysis.log', HERE / selected['compatibility']['negative_log'])
-    selected['compatibility']['sha256'] = digest(receipt)
+    shutil.copy2(compat / 'compatibility-analysis.log', HERE / compatibility['log'])
+    shutil.copy2(compat / 'negative-analysis.log', HERE / compatibility['negative_log'])
+    compatibility['sha256'] = digest(receipt)
     print(stem, 'offline and positive/negative compatibility passed', flush=True)
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--only-fallback12', action='store_true')
+parser.add_argument('--sweep-only', action='store_true')
 args = parser.parse_args()
 for entry in manifest['cases']:
+    if args.sweep_only and 'illumination_gap_sweep-' not in entry['case_id']:
+        continue
     candidates = ('fallback1', 'fallback2') if args.only_fallback12 else (
         'primary', 'fallback1', 'fallback2', 'fallback3')
     for candidate in candidates:
@@ -74,7 +83,8 @@ for entry in manifest['cases']:
     MANIFEST.write_text(json.dumps(manifest, indent=2) + '\n')
 
 # Keep the two case-family manifests current for saved and comparison proof scripts.
-for name in ('night-all-fallback-manifest.json', 'context-fallback-manifest.json'):
+for name in ('night-all-fallback-manifest.json', 'context-fallback-manifest.json',
+             'context-execution-manifest.json'):
     path = HERE / name
     family = json.loads(path.read_text())
     by_id = {item['case_id']: item for item in manifest['cases']}

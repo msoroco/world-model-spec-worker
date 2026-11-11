@@ -4,7 +4,7 @@
   "actor": "motor_vehicle_driver",
   "sweep_specs": [
     {
-      "sweep_id": "person_property_endangerment_physical_range",
+      "sweep_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep",
       "target_law_id": "NRS-484B-600-1b",
       "judgment_refs": [
         {
@@ -12,10 +12,71 @@
           "note": "Measure original subject speed, person/property body gap and contact; no numeric legal endangerment threshold is inferred."
         }
       ],
-      "status": "incomplete",
-      "rationale": "Finite speed and placement engineering points exist, but Native physical feasibility, contact/visibility and legal endangerment range cannot be inferred from textual fixtures.",
-      "missing_inputs": [
-        "Native measured speed and actor visibility across each planned point; source-backed range and spacing feasibility for a complete physical judgment sweep."
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "outside_edge_m",
+          "observable": "outside_edge_m",
+          "unit": "m",
+          "min": 0.6,
+          "max": 1.8,
+          "spacing": 0.6,
+          "measurement": {
+            "method": "authored selected exterior-placement config",
+            "time_window": "selected setup",
+            "statistic": "first"
+          },
+          "range_rationale": "Existing exact pedestrian placement probes at 0.4 and 2.0 m bound a nonduplicate interior lateral range; actual body clearance is retained from original polygons.",
+          "spacing_rationale": "Three fixed interior placements at 0.6, 1.2 and 1.8 m cover near, middle and farther exposure without a legal cutoff.",
+          "feasibility_evidence": "exposure_case_setup.py places the exposed actor at waypoint 4 (10 m); its exact 0.4/2.0 m offsets and both route directions are CPU tested. The interior offsets use the same spawn geometry."
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Finite original-body clearance sampling at fixed 5 m/s requested pedestrian exposure complements the existing 2/5/8 m/s requested-speed comparisons; legal endangerment remains unresolved.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "outside_edge_m": {
+          "kind": "world_setup",
+          "value": 0.6
+        },
+        "exposed_kind": {
+          "kind": "world_setup",
+          "value": "pedestrian"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "exposure_gap_m",
+            "unit": "m",
+            "method": "original Native subject/exposed body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "outside_edge_m",
+            "unit": "m",
+            "method": "authored selected exterior-placement config; physical body clearance is measured from original polygons"
+          }
+        ],
+        "limitations": [
+          "Engineering speed and lateral placement do not establish legal endangerment, physical visibility or completion."
+        ]
+      },
+      "spec_version": "23d19394f970d7c6ce9888f12f4b979513ce4816c2a9cbff5d1f94c69fca8e6f",
+      "planned_case_count": 3,
+      "selection_order": [
+        "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep-0000",
+        "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep-0001",
+        "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep-0002"
       ]
     }
   ],
@@ -353,6 +414,231 @@
         "comparison_or_standard": "controlled engineering contrast",
         "target_value_or_branch": 2.0
       }
+    },
+    {
+      "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep-0000",
+      "target_law_id": "NRS-484B-600-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "Finite original-body clearance sampling at fixed 5 m/s requested pedestrian exposure complements the existing 2/5/8 m/s requested-speed comparisons; legal endangerment remains unresolved.",
+      "paired_probe_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep",
+      "deliberate_differences": [
+        "outside_edge_m"
+      ],
+      "probe": {
+        "primary_variable": "outside_edge_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "outside_edge_m": 0.6
+        }
+      },
+      "sweep_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep",
+      "sweep_spec_version": "23d19394f970d7c6ce9888f12f4b979513ce4816c2a9cbff5d1f94c69fca8e6f",
+      "sweep_point": {
+        "outside_edge_m": 0.6
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "outside_edge_m": {
+          "kind": "world_setup",
+          "value": 0.6,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "exposed_kind": {
+          "kind": "world_setup",
+          "value": "pedestrian"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "exposure_gap_m",
+            "unit": "m",
+            "method": "original Native subject/exposed body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "outside_edge_m",
+            "unit": "m",
+            "method": "authored selected exterior-placement config; physical body clearance is measured from original polygons"
+          }
+        ],
+        "limitations": [
+          "Engineering speed and lateral placement do not establish legal endangerment, physical visibility or completion."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "outside_edge_m",
+          "unit": "m",
+          "measurement": {
+            "method": "authored selected exterior-placement config",
+            "time_window": "selected setup",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "Such a rate of speed as to endanger the life, limb or property of any person"
+      ]
+    },
+    {
+      "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep-0001",
+      "target_law_id": "NRS-484B-600-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "Finite original-body clearance sampling at fixed 5 m/s requested pedestrian exposure complements the existing 2/5/8 m/s requested-speed comparisons; legal endangerment remains unresolved.",
+      "paired_probe_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep",
+      "deliberate_differences": [
+        "outside_edge_m"
+      ],
+      "probe": {
+        "primary_variable": "outside_edge_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "outside_edge_m": 1.8
+        }
+      },
+      "sweep_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep",
+      "sweep_spec_version": "23d19394f970d7c6ce9888f12f4b979513ce4816c2a9cbff5d1f94c69fca8e6f",
+      "sweep_point": {
+        "outside_edge_m": 1.8
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "outside_edge_m": {
+          "kind": "world_setup",
+          "value": 1.8,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "exposed_kind": {
+          "kind": "world_setup",
+          "value": "pedestrian"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "exposure_gap_m",
+            "unit": "m",
+            "method": "original Native subject/exposed body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "outside_edge_m",
+            "unit": "m",
+            "method": "authored selected exterior-placement config; physical body clearance is measured from original polygons"
+          }
+        ],
+        "limitations": [
+          "Engineering speed and lateral placement do not establish legal endangerment, physical visibility or completion."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "outside_edge_m",
+          "unit": "m",
+          "measurement": {
+            "method": "authored selected exterior-placement config",
+            "time_window": "selected setup",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "Such a rate of speed as to endanger the life, limb or property of any person"
+      ]
+    },
+    {
+      "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep-0002",
+      "target_law_id": "NRS-484B-600-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "Finite original-body clearance sampling at fixed 5 m/s requested pedestrian exposure complements the existing 2/5/8 m/s requested-speed comparisons; legal endangerment remains unresolved.",
+      "paired_probe_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep",
+      "deliberate_differences": [
+        "outside_edge_m"
+      ],
+      "probe": {
+        "primary_variable": "outside_edge_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "outside_edge_m": 1.2
+        }
+      },
+      "sweep_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep",
+      "sweep_spec_version": "23d19394f970d7c6ce9888f12f4b979513ce4816c2a9cbff5d1f94c69fca8e6f",
+      "sweep_point": {
+        "outside_edge_m": 1.2
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "outside_edge_m": {
+          "kind": "world_setup",
+          "value": 1.2,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "exposed_kind": {
+          "kind": "world_setup",
+          "value": "pedestrian"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "exposure_gap_m",
+            "unit": "m",
+            "method": "original Native subject/exposed body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "outside_edge_m",
+            "unit": "m",
+            "method": "authored selected exterior-placement config; physical body clearance is measured from original polygons"
+          }
+        ],
+        "limitations": [
+          "Engineering speed and lateral placement do not establish legal endangerment, physical visibility or completion."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "outside_edge_m",
+          "unit": "m",
+          "measurement": {
+            "method": "authored selected exterior-placement config",
+            "time_window": "selected setup",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "Such a rate of speed as to endanger the life, limb or property of any person"
+      ]
     }
   ],
   "sweeps_expanded": true

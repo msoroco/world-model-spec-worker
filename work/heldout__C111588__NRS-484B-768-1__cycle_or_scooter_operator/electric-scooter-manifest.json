@@ -1,0 +1,118 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once",
+      "kind": "delivery",
+      "construction": "cases/electric_scooter_signal_once/construction.json",
+      "construction_sha256": "71c594ff523a219f41cc6a3cfcadcfe8e53a17736f253818cb954a8b73db4f41",
+      "measurement_contract": "cases/electric_scooter_signal_once/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "rider_signal_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/cases/electric_scooter_signal_once/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native electric device asset, rider form, arm visibility and motion remain unverified"
+      },
+      "acquisition": {
+        "rider_signal_event": {
+          "entrypoint": "rider_signal_finalizer.py",
+          "method": "join retained source video review to Native motion and frame map",
+          "evidence": "rider_signal_review.jsonl plus four RGB original streams and rider motion"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/electric_scooter_signal_once/fallback1-construction.json",
+          "construction_sha256": "01eab3affc2ab848a4f9626ee95307024ae8747bae7f9a0a6a81ecf81b1652a3",
+          "trigger": {
+            "source": "Native map waypoint topology and route-selector failure record",
+            "metric": "count of connected left-turn candidates at 2.5 m sampling",
+            "failure_condition": "No connected route survives primary waypoint sampling"
+          },
+          "changed_knobs": [
+            "route waypoint sampling step 2.5 m to 1.5 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-scooter-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --output .runtime-work/c111588-electric_scooter-fallback1-offline-final-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "cases/electric_scooter_signal_once/fallback1-tests.log",
+            "log_sha256": "d3fb2100d46352fb5dd408a7229d1ca9f0a7fadfc6a775561c831dbc697363de",
+            "construction_sha256": "01eab3affc2ab848a4f9626ee95307024ae8747bae7f9a0a6a81ecf81b1652a3"
+          },
+          "compatibility": {
+            "receipt": "cases/electric_scooter_signal_once/fallback1-receipt.json",
+            "sha256": "8b048280786b182a0e3b062413d61fe2a970d6f9f1986fc3ea6c187d87d2ed8d",
+            "log": "cases/electric_scooter_signal_once/fallback1-analysis.log",
+            "negative_log": "cases/electric_scooter_signal_once/fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/electric_scooter_signal_once/fallback2-construction.json",
+          "construction_sha256": "0bc7035661a93abb1993c70a1189a40939c4791b92a8846faa745acc5ca36b37",
+          "trigger": {
+            "source": "original rider/seat pixels from four synchronized RGB streams",
+            "metric": "rider-to-bicycle seat alignment and body overlap across frames",
+            "failure_condition": "Attached rider is too low, overlaps the bicycle body, or hides the arm"
+          },
+          "changed_knobs": [
+            "attached walker relative height 0.65 m to 0.85 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-scooter-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --output .runtime-work/c111588-electric_scooter-fallback2-offline-final-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
+            "exit_code": 0,
+            "log": "cases/electric_scooter_signal_once/fallback2-tests.log",
+            "log_sha256": "d3f1515132b7217c8a9bd4d4e0b1876341b274f08a5c46841e04af5efbb0956b",
+            "construction_sha256": "0bc7035661a93abb1993c70a1189a40939c4791b92a8846faa745acc5ca36b37"
+          },
+          "compatibility": {
+            "receipt": "cases/electric_scooter_signal_once/fallback2-receipt.json",
+            "sha256": "919c0558d7400b8cdfdc4c9eb79be51aec91f01b4adea2270874a8b6cb3bc4fc",
+            "log": "cases/electric_scooter_signal_once/fallback2-analysis.log",
+            "negative_log": "cases/electric_scooter_signal_once/fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/electric_scooter_signal_once/fallback3-construction.json",
+          "construction_sha256": "7aba98ad9b354fab0c8686e77f2cde1479c4ee4d60a34d27843ac92ad3273862",
+          "trigger": {
+            "source": "original driver_reference and side RGB frame review",
+            "metric": "count of frames in which the rider and left arm can be resolved",
+            "failure_condition": "Primary camera height hides rider/arm visibility or prevents a defensible no-signal review"
+          },
+          "changed_knobs": [
+            "driver_reference camera relative height 1.8 m to 2.2 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-scooter-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --output .runtime-work/c111588-electric_scooter-fallback3-offline-final-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
+            "exit_code": 0,
+            "log": "cases/electric_scooter_signal_once/fallback3-tests.log",
+            "log_sha256": "b02d1ad7a4af249abfeeb1ec7e1c410035a63dc3a52bea9e01515ada7bacb781",
+            "construction_sha256": "7aba98ad9b354fab0c8686e77f2cde1479c4ee4d60a34d27843ac92ad3273862"
+          },
+          "compatibility": {
+            "receipt": "cases/electric_scooter_signal_once/fallback3-receipt.json",
+            "sha256": "3492be3c0b21d8750bb4f98d828963dcdd6d7cbf003b13156661cd6b8d3e79aa",
+            "log": "cases/electric_scooter_signal_once/fallback3-analysis.log",
+            "negative_log": "cases/electric_scooter_signal_once/fallback3-negative.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "cases/electric_scooter_signal_once/physical/proof.json",
+        "sha256": "2f10fe1f9593f8866b7f9e41366edde3c22c6496cc1749540009d4906689ba82"
+      }
+    }
+  ]
+}

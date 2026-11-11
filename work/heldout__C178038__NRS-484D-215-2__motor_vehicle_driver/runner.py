@@ -25,22 +25,28 @@ CONTEXT_CASES = {
     CASE_PREFIX + 'day_299_upper': (299, True, False, 'driving'),
     CASE_PREFIX + 'shoulder_299_upper': (299, True, True, 'shoulder'),
 }
+SWEEP_CASES = {
+    CASE_PREFIX + 'illumination_gap_sweep-0000': (150, False),
+    CASE_PREFIX + 'illumination_gap_sweep-0001': (299, False),
+    CASE_PREFIX + 'illumination_gap_sweep-0002': (225, False),
+}
 
 
 def check_config(config):
     case_id = config.get('selected_case_id')
-    if case_id not in NIGHT_CASES and case_id not in CONTEXT_CASES:
+    if case_id not in NIGHT_CASES and case_id not in CONTEXT_CASES and case_id not in SWEEP_CASES:
         raise ValueError('Unknown exact following probe case')
     if (config.get('law_id'), config.get('cell_id'), config.get('actor')) != (
             'NRS-484D-215-2', 'C178038', 'motor_vehicle_driver'):
         raise ValueError('Following probe identity differs')
     gap_ft, uppermost = (NIGHT_CASES[case_id] if case_id in NIGHT_CASES
+                         else SWEEP_CASES[case_id] if case_id in SWEEP_CASES
                          else CONTEXT_CASES[case_id][:2])
     if (config.get('rate_hz'), config.get('frames'), config.get('requested_gap_ft')) != (20, 80, gap_ft):
         raise ValueError('Following probe rate, duration or gap differs')
     if config.get('requested_uppermost_distribution') is not uppermost:
         raise ValueError('Following probe beam setup differs')
-    expected_time, expected_surface = ((True, 'driving') if case_id in NIGHT_CASES
+    expected_time, expected_surface = ((True, 'driving') if case_id in NIGHT_CASES or case_id in SWEEP_CASES
                                        else CONTEXT_CASES[case_id][2:])
     if (config.get('requested_lighting_time_applies', True) is not expected_time or
             config.get('requested_roadway_position', 'driving') != expected_surface):

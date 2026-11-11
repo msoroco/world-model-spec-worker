@@ -1,27 +1,27 @@
 {
   "assignment_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver",
   "input_sha256": "2f105d16236025597cabc7739a57b53a7442fc2321118497538a014738ce3687",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "24dc90dfa05c7d77b34f7237a89e1053e682334f038dcf16724992fc115ba786",
+      "sha256": "d2c6329b86aa360e760800c14366b94afe4ebb8fe5c7cae7b19fd4966e9f6299",
       "passed": 22
     },
     {
       "command": ".venv-cpu/bin/python work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/validate_semantic_proposals.py",
       "exit_code": 0,
       "log": "semantic-check.log",
-      "sha256": "5632e80d38db3db10e33560d0c0f44d3f676c5eb9cad23c99a46354cd0906630"
+      "sha256": "5ea45b3016fb03ef5910e3eb5e7bd32c2dea34aa0c2a3063d331475d6d623606"
     },
     {
       "command": ".venv-cpu/bin/python work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/validate_delivery_package.py",
       "exit_code": 0,
       "log": "delivery-package-check.log",
-      "sha256": "85b35c2ae122efd0011649eccb10a93534a0b179c65b4d7a4f7a8c87851eb0ee"
+      "sha256": "de6509c2963eb5279ca473539f840502848db172b85f4fe06332a518431267df"
     },
     {
       "command": ".venv-cpu/bin/python work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/runner.py --check --config work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/config.json",
@@ -33,20 +33,27 @@
       "command": ".venv-cpu/bin/python work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night_comparison_audit.py",
       "exit_code": 0,
       "log": "night-probes/night-comparison-positive.log",
-      "sha256": "6aac6dfcfd55bbed04419432f7985fea49356ca54ae03e581429f9ccd62d3e14"
+      "sha256": "a00e9f9616f6fc76d54cfd058c943d31b790b313b32bae4d2dbb6699442a7e4f"
     },
     {
       "command": ".venv-cpu/bin/python work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/context_comparison_audit.py",
       "exit_code": 0,
       "log": "context-probes/context-comparison-positive.log",
       "sha256": "e07c3205bc5ee0bf8e1edc2478ef0a15de4474db448e32a46e2f4e93a48dd45e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/sweep_comparison_audit.py",
+      "exit_code": 0,
+      "log": "sweep-probes/sweep-comparison-positive.log",
+      "sha256": "cf221558efc18d103e4f56bdd2f43dc2b56b45d0fa5e008c89ec5cb34e3a1a64"
     }
   ],
   "remaining_gpu_checks": [
-    "Native motion and full-body/pixel coverage on each selected roadway surface",
-    "Civil-time applicability, roadway occupancy and beam permissibility from independent original sources"
+    "Native motion and full-body/pixel coverage on all nine selected cases",
+    "Original-pixel illumination review across the frozen 150/225/299 ft distance sweep",
+    "Independent civil-time, roadway occupancy and chapter beam-permissibility source review"
   ],
-  "reason": "Partial: all six selected cases and three distinct physical-risk fallbacks each pass fresh exact offline and positive/negative synthetic compatibility after correcting Native --output-dir dispatch and sealed capture closure. Six primary saved-processing paths and positive/negative comparison audits pass with current hashes. Pinned execution, semantic, acceptance, compatibility and synthetic physical-preparation validators pass. The law judgment sweep for safe illumination and chapter-permissible beam remains explicitly incomplete; actual Native motion, original pixels, civil time, roadway occupancy and beam permissibility are unverified. Strict scoped readiness has not passed.",
+  "reason": null,
   "readiness_kind": "delivery_prepared",
   "first_gpu_delivery_command": "python scenario_pipeline/pipeline.py execute-delivery --assignment heldout__C178038__NRS-484D-215-2__motor_vehicle_driver --case heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_upper --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\""
 }

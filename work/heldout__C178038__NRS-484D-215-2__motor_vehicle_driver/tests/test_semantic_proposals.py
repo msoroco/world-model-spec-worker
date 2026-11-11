@@ -16,7 +16,7 @@ class SemanticProposalTests(unittest.TestCase):
         assignment = json.loads((ROOT / 'inputs' / HERE.name / 'assignment.json').read_text())
         manifest = json.loads((HERE / 'execution-manifest.json').read_text())
         receipt = validate(HERE, assignment, manifest)
-        self.assertEqual((receipt['stage_count'], receipt['selected_cases']), (7, 6))
+        self.assertEqual((receipt['stage_count'], receipt['selected_cases']), (7, 9))
         with tempfile.TemporaryDirectory() as directory:
             folder = Path(directory)
             shutil.copytree(HERE / 'proposals', folder / 'proposals')

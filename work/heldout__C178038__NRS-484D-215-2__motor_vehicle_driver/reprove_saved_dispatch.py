@@ -40,7 +40,8 @@ for entry in manifest['cases']:
                '--manifest', str(MANIFEST), '--case', case,
                '--attempt', str(attempt), '--output', str(output),
                '--library', str(ROOT / 'runtime/library'), '--validator', str(VALIDATOR)]
-    directory = HERE / ('context-probes' if suffix.startswith(('day_', 'shoulder_')) else 'night-probes')
+    directory = HERE / ('sweep-probes' if suffix.startswith('illumination_gap_sweep-') else
+                        'context-probes' if suffix.startswith(('day_', 'shoulder_')) else 'night-probes')
     log = directory / f'{suffix}-saved-command.log'
     with log.open('w') as stream:
         subprocess.run(command, cwd=ROOT, check=True, stdout=stream, stderr=subprocess.STDOUT)
@@ -53,4 +54,12 @@ for entry in manifest['cases']:
         raise ValueError('Saved-only proof incomplete or stale: ' + suffix)
     retained = directory / f'{suffix}-saved-processing.json'
     shutil.copyfile(source, retained)
+    entry['post_capture'] = {
+        'recorded_only': True,
+        'command': f'.venv-cpu/bin/python runtime.py process-saved --manifest work/{HERE.name}/execution-manifest.json --case {case} --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR',
+        'feedback_command': 'cat $OUTPUT/v0001/feedback.json',
+        'test_log': str(log.relative_to(HERE)),
+        'test_log_sha256': sha256(log.read_bytes()).hexdigest(),
+        'test_exit_code': 0}
+    MANIFEST.write_text(json.dumps(manifest, indent=2) + '\n')
     print(suffix, sha256(retained.read_bytes()).hexdigest(), flush=True)

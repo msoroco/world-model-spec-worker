@@ -83,7 +83,7 @@ def assignments(case):
 
 
 selected = []
-for prior in (item for item in CASES['cases'] if item.get('target_type') != 'baseline'):
+for prior in (item for item in CASES['cases'] if item.get('target_type') not in ('baseline', 'judgment_sweep')):
     case = deepcopy(prior)
     suffix = case['case_id'].split('__')[-1]
     case['variable_assignments'] = assignments(case)
@@ -118,7 +118,7 @@ illumination_sweep = {
     'axes': [{'variable': 'requested_gap_ft', 'observable': 'headlamp_gap_ft',
               'unit': 'ft', 'min': 150, 'max': 299, 'spacing': 75,
               'measurement': {'method': 'original Native body polygon distance',
-                              'time_window': 'all original frames', 'statistic': 'mean'},
+                              'time_window': 'all original frames', 'statistic': 'min'},
               'range_rationale': 'NRS 484D.215(2) names following within 300 ft; 150 to 299 ft samples the applicable interval without defining a safe illumination cutoff.',
               'spacing_rationale': '75 ft covers a near, middle, and near-boundary presentation at fixed low-beam setup; the terminal interval is 74 ft.',
               'feasibility_evidence': 'headlamp_follow_route.select_follow_route already constructs a connected 299 ft following route; shorter positive setpoints use the same route selector and are checked on original body polygons.'}],
