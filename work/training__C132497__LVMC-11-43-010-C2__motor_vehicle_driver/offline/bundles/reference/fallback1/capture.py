@@ -10,6 +10,27 @@ import traceback
 
 import check as exact
 
+CAMERA_NAMES=('overview','approach','reference_corner','driver_reference')
+
+def camera_plan(policy):
+    height=42 if policy=='elevated_overview' else 35
+    return (('overview',1920,1080,85,(12,-17,height),(45,-65),False),
+            ('approach',1280,720,90,(0,-45,8),(90,-25),False),
+            ('reference_corner',1280,720,90,(26,-7,10),(135,-35),False),
+            ('driver_reference',1280,720,90,(1,0,1.5),(0,0),True))
+
+def check_capture(bundle):
+    checked=exact.check(bundle)
+    cfg=json.loads((Path(bundle)/'config.json').read_text())
+    plan=camera_plan(cfg['camera_policy'])
+    if (tuple(row[0] for row in plan)!=CAMERA_NAMES or
+            [list(row[1:3]) for row in plan]!=[[1920,1080],[1280,720],[1280,720],[1280,720]] or
+            checked['phases']!=['circulation','entry','exit']):
+        raise ValueError('Four-camera right-exit acquisition plan differs')
+    return {'case_id':checked['case_id'],'candidate_id':checked['candidate_id'],
+            'camera_names':list(CAMERA_NAMES),'camera_dimensions':[list(row[1:3]) for row in plan],
+            'requested_phases':checked['phases'],'original_native_observed':False}
+
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def repository():
     for parent in (Path(__file__).resolve().parent,*Path(__file__).resolve().parents):
@@ -34,12 +55,14 @@ def control(carla,ego,target,target_speed):
         target['ego_x_m']-transform.location.x)
     error=math.atan2(math.sin(angle-math.radians(transform.rotation.yaw)),
         math.cos(angle-math.radians(transform.rotation.yaw)))
+    if target_speed<=0:
+        return carla.VehicleControl(steer=0,throttle=0,brake=1)
     return carla.VehicleControl(steer=max(-.75,min(.75,1.6*error)),
         throttle=max(0,min(1,.22+.22*(target_speed-speed))),
         brake=max(0,min(1,.4*(speed-target_speed))))
 
 def execute(bundle,output,host,port):
-    checked=exact.check(bundle)
+    checked=check_capture(bundle)
     bundle=Path(bundle).resolve();output=Path(output).resolve()
     if output.exists():raise ValueError('Native output must be a fresh directory')
     output.mkdir(parents=True)
@@ -106,19 +129,18 @@ def execute(bundle,output,host,port):
             'ego_actor_id':ego.id,'physical_roundabout_verified':False,
             'lane_allocation_verified':False,'actual_right_exit_verified':False,
             'legal_verdict':None})
-        cameras=(('overview',1280,720,85,(12,-17,35)),
-                 ('forward',1280,720,90,(0,0,0)))
+        cameras=camera_plan(cfg['camera_policy'])
         library=world.get_blueprint_library()
-        for name,width,height,fov,location in cameras:
+        for name,width,height,fov,location,rotation,attached in cameras:
             camera_bp=library.find('sensor.camera.rgb')
             for key,value in (('image_size_x',width),('image_size_y',height),
                 ('fov',fov),('sensor_tick',0)):
                 camera_bp.set_attribute(key,str(value))
-            transform=(carla.Transform(carla.Location(x=location[0],
-                y=location[1],z=location[2]),carla.Rotation(pitch=-55))
-                if name=='overview' else carla.Transform(carla.Location(x=1,y=0,z=1.5)))
+            transform=carla.Transform(carla.Location(x=location[0],
+                y=location[1],z=location[2]),
+                carla.Rotation(yaw=rotation[0],pitch=rotation[1]))
             sensor=world.spawn_actor(camera_bp,transform,
-                attach_to=None if name=='overview' else ego)
+                attach_to=ego if attached else None)
             owned.append(sensor);camera_queues[name]=queue.Queue()
             logs[name]=(output/(name+'.encoder.log')).open('x')
             video[name]=subprocess.Popen(['ffmpeg','-nostdin','-hide_banner',
@@ -150,7 +172,7 @@ def execute(bundle,output,host,port):
                     'actual_right_exit_verified':False,'legal_verdict':None}
                 capture.capture(frame,time_s,extra={'c132497_right_exit':row})
                 observed.write(json.dumps(row,allow_nan=False)+'\n')
-                for name,width,height,_,_ in cameras:
+                for name,width,height,_,_,_,_ in cameras:
                     image=camera_queues[name].get(timeout=30)
                     while image.frame<frame:image=camera_queues[name].get(timeout=30)
                     if image.frame!=frame:raise RuntimeError('Camera/Native frame join differs')
@@ -185,6 +207,8 @@ def execute(bundle,output,host,port):
             'case_id':checked['case_id'],'candidate_id':checked['candidate_id'],
             'config_sha256':sha(bundle/'config.json'),
             'requested_frames':240,'observed_frames':frames,
+            'camera_names':list(CAMERA_NAMES),
+            'camera_dimensions':[list(row[1:3]) for row in cameras],
             'restoration':restored,'error':error,'accepted':False,
             'physical_roundabout_verified':False,'lane_allocation_verified':False,
             'actual_right_exit_verified':False,'legal_verdict':None,
@@ -195,8 +219,14 @@ if __name__=='__main__':
     import argparse
     parser=argparse.ArgumentParser()
     parser.add_argument('--bundle',type=Path,required=True)
-    parser.add_argument('--output-dir',type=Path,required=True)
-    parser.add_argument('--host',required=True)
-    parser.add_argument('--port',type=int,required=True)
+    parser.add_argument('--check',action='store_true')
+    parser.add_argument('--output-dir',type=Path)
+    parser.add_argument('--host')
+    parser.add_argument('--port',type=int)
     args=parser.parse_args()
-    execute(args.bundle,args.output_dir,args.host,args.port)
+    if args.check:
+        print(json.dumps(check_capture(args.bundle)))
+    else:
+        if args.output_dir is None or args.host is None or args.port is None:
+            parser.error('Original capture needs output-dir, host and port')
+        execute(args.bundle,args.output_dir,args.host,args.port)

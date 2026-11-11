@@ -16,11 +16,12 @@ def audit():
     if (proof['format']!='c132497-trigger-proof-v1' or
         len(camera)!=240 or len(observed)!=240 or
         proof['base']['first_40_visible_frames']!=sum(x['right_lane_visible'] for x in camera[:40]) or
+        proof['base']['first_40_stopped_frames']!=sum(x['ego_speed_mps']<=.1 for x in observed[:40]) or
         proof['base']['triggered']!={'fallback1':False,'fallback2':False,'fallback3':True} or
         proof['visibility_variant']['first_40_visible_frames']!=0 or
-        not proof['visibility_variant']['triggered']['fallback1'] or
+        not proof['visibility_variant']['triggered']['fallback2'] or
         proof['lane_deviation_variant']['maximum_lane_center_deviation_m']<=.2 or
-        not proof['lane_deviation_variant']['triggered']['fallback2'] or
+        not proof['lane_deviation_variant']['triggered']['fallback1'] or
         not proof['changed_camera_join_rejected'] or
         not proof['synthetic_only'] or proof['delivery_ready']):
         raise ValueError('C132497 trigger proof differs')

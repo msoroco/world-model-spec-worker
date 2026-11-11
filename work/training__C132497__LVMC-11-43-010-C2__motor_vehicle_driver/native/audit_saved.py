@@ -42,10 +42,11 @@ def audit():
                     for p in row['ego_body_xy_m']):
                     raise ValueError('C132497 saved body outside authored lane')
                 contained+=1
-        if c=='fallback3':
-            if set(phases)!={'entry'}:raise ValueError('C132497 stop variant differs')
-        elif set(phases)!={'entry','circulation','exit'}:
+        if set(phases)!={'entry','circulation','exit'}:
             raise ValueError('C132497 saved exit phases differ')
+        if c=='fallback3' and (any(row['ego_speed_mps']!=0 for row in observed[:40]) or
+            observed[40]['ego_speed_mps']<=0):
+            raise ValueError('C132497 saved dwell differs')
         exits+=phases.count('exit')
     result={'format':'c132497-independent-saved-audit-v1',
         'saved_manifest_sha256':sha(NATIVE/'saved-manifest.json'),

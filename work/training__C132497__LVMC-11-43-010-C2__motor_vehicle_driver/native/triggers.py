@@ -23,7 +23,7 @@ def route(bundle,saved=None):
         readback.get('physical_roundabout_verified') is not False or
         len(observed)!=len(camera)!=240):
         raise ValueError('C132497 trigger source differs')
-    visible=0;deviation=0
+    visible=0;deviation=0;stopped=0
     for i,(row,frame) in enumerate(zip(observed,camera)):
         if (row.get('frame')!=i or frame.get('frame')!=i or
             row.get('native_frame')!=frame.get('camera_frame') or
@@ -31,21 +31,24 @@ def route(bundle,saved=None):
             row.get('source_kind')!='synthetic_cpu' or
             frame.get('source_kind')!='synthetic_cpu' or
             row.get('lane_id')!=cfg['requested_lane_id'] or
-            type(frame.get('right_lane_visible')) is not bool):
+            type(frame.get('right_lane_visible')) is not bool or
+            type(row.get('ego_speed_mps')) not in (int,float) or
+            not math.isfinite(row['ego_speed_mps']) or row['ego_speed_mps']<0):
             raise ValueError('C132497 trigger frame join differs')
         if i<40 and frame['right_lane_visible']:visible+=1
+        if i<40 and row['ego_speed_mps']<=.1:
+            stopped+=1
         if row.get('phase')=='circulation':
             x,y=row['ego_x_m'],row['ego_y_m']
             if not all(type(v) in (int,float) and math.isfinite(v) for v in (x,y)):
                 raise ValueError('C132497 trigger pose differs')
             deviation=max(deviation,abs(math.hypot(x-22,y+22)-cfg['requested_arc_radius_m']))
-    triggered={'fallback1':visible<20,'fallback2':deviation>.2,
-        'fallback3':not (readback.get('physical_roundabout_verified') is True and
-            readback.get('lane_allocation_verified') is True and
-            readback.get('actual_right_exit_verified') is True)}
+    triggered={'fallback1':deviation>.2,'fallback2':visible<20,
+        'fallback3':stopped<20}
     return {'format':'c132497-measured-fallback-triggers-v1',
         'case_id':cfg['case_id'],'candidate_id':cfg['candidate_id'],
         'first_40_visible_frames':visible,
+        'first_40_stopped_frames':stopped,
         'maximum_lane_center_deviation_m':round(deviation,6),
         'triggered':triggered,
         'source_hashes':{name:sha(saved/name) for name in

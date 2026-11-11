@@ -86,11 +86,12 @@ def measure(bundle,saved):
         if frame['right_lane_visible']:visible+=1
     if receipt.get('observed_exit_road_frames')!=counts['exit']:
         raise ValueError('C132497 prepared exit count differs')
-    if cfg['candidate_id']=='fallback3':
-        if counts['circulation'] or counts['exit']:
-            raise ValueError('C132497 stop fallback passed entry')
-    elif not all(counts.values()):
+    if not all(counts.values()):
         raise ValueError('C132497 observed route lacks a phase')
+    if kind=='synthetic_cpu' and cfg['candidate_id']=='fallback3' and (
+        any(row['ego_speed_mps']!=0 for row in observed[:40]) or
+        observed[40]['ego_speed_mps']<=0):
+        raise ValueError('C132497 observed dwell differs')
     if body_frames!=counts['circulation']:
         raise ValueError('C132497 observed circulating body left lane')
     heading_change=None

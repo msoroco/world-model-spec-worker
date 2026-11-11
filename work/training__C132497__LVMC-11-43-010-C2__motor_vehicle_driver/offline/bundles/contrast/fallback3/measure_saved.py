@@ -62,11 +62,11 @@ def measure(bundle):
             lower,upper=((15,18.5) if row['lane_id']==-2 else (18.5,22))
             if all(lower<=math.hypot(p[0]-22,p[1]+22)<=upper for p in body):body_frames+=1
         if frame['right_lane_visible']:visible+=1
-    if cfg['candidate_id']=='fallback3':
-        if phase_counts['circulation'] or phase_counts['exit']:
-            raise ValueError('C132497 stop fallback entered arc')
-    elif not all(phase_counts.values()) or body_frames!=phase_counts['circulation']:
+    if not all(phase_counts.values()) or body_frames!=phase_counts['circulation']:
         raise ValueError('C132497 saved route or body coverage differs')
+    if cfg['candidate_id']=='fallback3' and (any(row['ego_speed_mps']!=0 for row in observed[:40]) or
+        observed[40]['ego_speed_mps']<=0):
+        raise ValueError('C132497 saved dwell differs')
     return {'format':'c132497-synthetic-saved-measurement-v1',
         'case_id':cfg['case_id'],'candidate_id':cfg['candidate_id'],
         'source_kind':'synthetic_cpu',

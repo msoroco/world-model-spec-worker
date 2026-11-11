@@ -8,10 +8,10 @@ HERE=Path(__file__).resolve().parent
 CASE=HERE.parent
 ROOT=CASE.parents[1]
 LANES={'reference':(-2,16.75),'contrast':(-1,20.25)}
-POLICIES={'primary':(8,'standard',None),
-          'fallback1':(6.5,'standard',None),
-          'fallback2':(8,'elevated_overview',None),
-          'fallback3':(3,'standard',12)}
+POLICIES={'primary':(8,'standard',0.0),
+          'fallback1':(6.5,'standard',0.0),
+          'fallback2':(8,'elevated_overview',0.0),
+          'fallback3':(8,'standard',2.0)}
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def road(ident,name,x,y,heading,length,geometry,previous,next_):
@@ -44,11 +44,11 @@ def build():
     assignment=ROOT/'inputs'/CASE.name/'assignment.json';plan=CASE/'case-plan.json'
     entries=[]
     for witness,(lane,radius) in LANES.items():
-        for candidate,(speed,camera,stop) in POLICIES.items():
+        for candidate,(speed,camera,dwell) in POLICIES.items():
             target=HERE/'drafts'/witness/candidate;target.mkdir(parents=True,exist_ok=True)
             rows=[]
             for i in range(240):
-                t=(i+1)/20;distance=speed*t if stop is None else min(stop,speed*t)
+                t=(i+1)/20;distance=speed*max(0,t-dwell)
                 if distance<30:
                     phase='entry';road_id=20;x=22-radius;y=-52+distance;heading=90
                 elif distance<30+radius*math.pi/2:
@@ -64,7 +64,7 @@ def build():
                     'road_id':road_id,'lane_id':lane,
                     'ego_x_m':round(x,6),'ego_y_m':round(y,6),
                     'ego_heading_deg':round(heading,6),
-                    'ego_speed_mps':0 if stop is not None and speed*t>stop else speed,
+                    'ego_speed_mps':0 if t<=dwell else speed,
                     'intended_exit_kind':'right_turn','actual_exit_observed':False,
                     'physical_roundabout_verified':False})
             track=target/'requested-tracks.jsonl'
@@ -77,7 +77,7 @@ def build():
                 'assignment_sha256':sha(assignment),'case_plan_sha256':sha(plan),
                 'requested_lane_id':lane,'requested_arc_radius_m':radius,
                 'camera_policy':camera,'requested_speed_mps':speed,
-                'stop_distance_m':stop,'connected_right_exit_authored':True,
+                'pre_entry_dwell_s':dwell,'connected_right_exit_authored':True,
                 'original_native_observed':False,'actual_exit_observed':False,
                 'physical_roundabout_verified':False,'status':'unselected_native_request'}
             (target/'config.json').write_text(json.dumps(config,indent=2)+'\n')

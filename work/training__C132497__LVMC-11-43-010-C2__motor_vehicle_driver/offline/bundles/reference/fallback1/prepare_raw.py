@@ -54,15 +54,22 @@ def prepare(bundle, raw, output, synthetic_cpu=False):
             'C132497 raw capture report differs')
     media = {}
     if not synthetic_cpu:
-        for name in ('forward.mkv','overview.mkv'):
+        dimensions={'overview.mkv':[1920,1080],
+                    'approach.mkv':[1280,720],
+                    'reference_corner.mkv':[1280,720],
+                    'driver_reference.mkv':[1280,720]}
+        for name,size in dimensions.items():
             path=raw/name; media[name]=sha(path)
             proc=subprocess.run(['ffprobe','-v','error','-count_frames',
-                '-select_streams','v:0','-show_entries','stream=codec_name,nb_read_frames',
+                '-select_streams','v:0','-show_entries',
+                'stream=codec_name,nb_read_frames,width,height,r_frame_rate',
                 '-of','json',str(path)],capture_output=True,text=True,check=True,timeout=120)
             streams=json.loads(proc.stdout).get('streams',[])
             require(len(streams)==1 and streams[0].get('codec_name')=='ffv1' and
-                    streams[0].get('nb_read_frames')=='240',
-                    'C132497 Native video codec or frame count differs')
+                    streams[0].get('nb_read_frames')=='240' and
+                    [streams[0].get('width'),streams[0].get('height')]==size and
+                    streams[0].get('r_frame_rate')=='20/1',
+                    'C132497 Native video codec, rate, size or frame count differs')
     first=actors[0].get('native_frame')
     require(type(first) is int,'C132497 native frame identity absent')
     observed=[]; camera=[]; previous_time=None; previous_phase=-1
@@ -90,7 +97,7 @@ def prepare(bundle, raw, output, synthetic_cpu=False):
                 review.get('source_kind')==kind and
                 review.get('review_provenance')==
                     ('synthetic_cpu' if synthetic_cpu else 'human_frame_review') and
-                review.get('video_sha256')==media.get('forward.mkv','synthetic_cpu') and
+                review.get('video_sha256')==media.get('approach.mkv','synthetic_cpu') and
                 type(review.get('right_lane_visible')) is bool,
                 f'C132497 raw video/review join differs at {i}')
         ego=row.get('ego',{});center=ego.get('center_native_xyz_m')

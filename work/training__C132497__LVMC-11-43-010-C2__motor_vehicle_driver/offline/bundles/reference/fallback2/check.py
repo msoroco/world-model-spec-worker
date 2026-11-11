@@ -40,15 +40,15 @@ def check(bundle):
         ('case_plan_sha256','case-plan.json')):
         if cfg.get(key)!=sha(bundle/name):raise ValueError('C132497 source hash differs')
     lane,radius=(-2,16.75) if witness=='reference' else (-1,20.25)
-    speed,camera,stop={'primary':(8,'standard',None),
-        'fallback1':(6.5,'standard',None),
-        'fallback2':(8,'elevated_overview',None),
-        'fallback3':(3,'standard',12)}[candidate]
+    speed,camera,dwell={'primary':(8,'standard',0.0),
+        'fallback1':(6.5,'standard',0.0),
+        'fallback2':(8,'elevated_overview',0.0),
+        'fallback3':(8,'standard',2.0)}[candidate]
     if (cfg.get('requested_lane_id')!=lane or
         cfg.get('requested_arc_radius_m')!=radius or
         cfg.get('requested_speed_mps')!=speed or
         cfg.get('camera_policy')!=camera or
-        cfg.get('stop_distance_m')!=stop):
+        cfg.get('pre_entry_dwell_s')!=dwell):
         raise ValueError('C132497 candidate policy differs')
     road={int(x.attrib['id']):x for x in ET.parse(bundle/'right-exit-road.xodr').getroot().findall('road')}
     if set(road)!={20,21,22}:raise ValueError('C132497 road IDs differ')
@@ -67,7 +67,7 @@ def check(bundle):
     if len(track)!=240:raise ValueError('C132497 track coverage differs')
     phases=set()
     for i,row in enumerate(track):
-        t=(i+1)/20;distance=speed*t if stop is None else min(stop,speed*t)
+        t=(i+1)/20;distance=speed*max(0,t-dwell)
         if distance<30:
             phase='entry';road_id=20;x=22-radius;y=-52+distance;heading=90
         elif distance<30+radius*math.pi/2:
@@ -86,13 +86,13 @@ def check(bundle):
             abs(row.get('ego_x_m',1e9)-x)>1e-5 or
             abs(row.get('ego_y_m',1e9)-y)>1e-5 or
             abs(row.get('ego_heading_deg',1e9)-heading)>1e-5 or
-            row.get('ego_speed_mps')!=(0 if stop is not None and speed*t>stop else speed) or
+            row.get('ego_speed_mps')!=(0 if t<=dwell else speed) or
             row.get('intended_exit_kind')!='right_turn' or
             row.get('actual_exit_observed') is not False or
             row.get('physical_roundabout_verified') is not False):
             raise ValueError(f'C132497 requested frame differs: {i}')
         phases.add(phase)
-    if phases!=({'entry'} if stop is not None else {'entry','circulation','exit'}):
+    if phases!={'entry','circulation','exit'}:
         raise ValueError('C132497 authored phases differ')
     return {'format':'c132497-exact-cpu-check-v1','case_id':cfg['case_id'],
         'candidate_id':candidate,'requested_frames':240,'phases':sorted(phases),

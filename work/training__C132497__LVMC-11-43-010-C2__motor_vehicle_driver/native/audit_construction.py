@@ -57,10 +57,11 @@ def audit():
         road_sequence=[x['road_id'] for x in track]
         if road_sequence!=sorted(road_sequence):
             raise ValueError('C132497 requested phase order reverses')
-        if candidate=='fallback3':
-            if set(road_sequence)!={20}:raise ValueError('C132497 stop request entered arc')
-        elif set(road_sequence)!={20,21,22}:
+        if set(road_sequence)!={20,21,22}:
             raise ValueError('C132497 authored exit request incomplete')
+        if candidate=='fallback3' and (any(track[i]['ego_speed_mps']!=0 for i in range(40)) or
+            track[40]['ego_speed_mps']<=0):
+            raise ValueError('C132497 dwell fallback timing differs')
         exit_requests+=22 in road_sequence;checked+=len(track)
     result={'format':'c132497-independent-construction-audit-v1',
         'road_sha256':sha(road_path),'request_rows_checked':checked,
