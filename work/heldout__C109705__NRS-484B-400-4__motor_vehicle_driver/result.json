@@ -1,8 +1,8 @@
 {
   "assignment_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver",
   "input_sha256": "db7fed08a21a268298983bc42dfbbeacb976fdbd63925f01edc862892a4cca89",
-  "status": "partial",
-  "readiness_kind": "incomplete",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -39,7 +39,7 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests-latest.log",
-      "sha256": "73f380786ec87f87a23d7b13e6a993b6e0e672e94ba719d9c8990af12e9dab37"
+      "sha256": "a389cdf6425b3035e9af1703d195f46f6b772ada641e112b15db1c2995d0c0c6"
     },
     {
       "command": ".venv-cpu/bin/python work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/prove_turn_delivery.py",
@@ -52,10 +52,29 @@
       "exit_code": 0,
       "log": "turn-physical-proofs.log",
       "sha256": "a643e7eee539ec82161f20fe5ca8f2a0baa9b93ea34d34888e67296f69d570f9"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/prove_delivery_compatibility.py",
+      "exit_code": 0,
+      "log": "delivery-compatibility-proofs.log",
+      "sha256": "5a26898b0d870c0db4fbade29bf7418c464958ff44ada987f7047f65ee67ef20"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/prove_contrasts_saved.py --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/execution-manifest.json --record-prefix delivery-saved",
+      "exit_code": 0,
+      "log": "delivery-saved-proofs.log",
+      "sha256": "6791dd59cd6e11af47751ff07a6fc58d11ff000d035819fb5b8834fbc710a288"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python pinned execution/semantic/compatibility/delivery validation",
+      "exit_code": 0,
+      "log": "delivery-validation.log",
+      "sha256": "7a645b3b6bd526de13ed857c2c03befc54cd43c3f182a241d159d29d63ec916e"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and capture quality after CPU preparation"
   ],
-  "reason": "Six exact primary cases and 18 fallbacks pass source-bound offline, positive/negative compatibility and saved-only synthetic processing. All six primary cases now also pass independent original geometry/frame/four-camera delivery audits with stale-source rejection, and pinned synthetic complete/incomplete/missing-evidence plus ordered lifecycle receipt checks. Canonical semantic stage chain, finalized execution manifest, batch queue and integration proof remain worker-owned CPU work; no actual Native motion, physical visibility or legal practicability is claimed."
+  "reason": null,
+  "first_gpu_delivery_command": "python scenario_pipeline/pipeline.py execute-delivery --assignment heldout__C109705__NRS-484B-400-4__motor_vehicle_driver --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\""
 }

@@ -3,9 +3,141 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C109749",
   "law_id": "NRS-484B-400-2c",
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__front_pass_no_device",
+      "target_law_id": "NRS-484B-400-2c",
+      "branch": "front_pass_no_device",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "planned_cpu_construction_pending",
+      "physical_risk": {
+        "risk": "Native simultaneous turn paths or four camera views may not preserve the intended crossing order",
+        "trigger_source": "original 20 Hz body, heading and four camera sources",
+        "trigger_metric": "joined turn frames, closest center and signed relative front/lateral projections",
+        "failure_condition": "missing simultaneous interval, unintended relative geometry or incomplete participant pixels"
+      }
+    },
+    {
+      "case_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_no_device",
+      "target_law_id": "NRS-484B-400-2c",
+      "branch": "rear_pass_no_device",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "planned_cpu_construction_pending",
+      "physical_risk": {
+        "risk": "Native simultaneous turn paths or four camera views may not preserve the intended crossing order",
+        "trigger_source": "original 20 Hz body, heading and four camera sources",
+        "trigger_metric": "joined turn frames, closest center and signed relative front/lateral projections",
+        "failure_condition": "missing simultaneous interval, unintended relative geometry or incomplete participant pixels"
+      }
+    },
+    {
+      "case_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__front_pass_device_alternate",
+      "target_law_id": "NRS-484B-400-2c",
+      "branch": "front_pass_device_alternate",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "planned_cpu_construction_pending",
+      "physical_risk": {
+        "risk": "Native simultaneous turn paths or four camera views may not preserve the intended crossing order",
+        "trigger_source": "original 20 Hz body, heading and four camera sources",
+        "trigger_metric": "joined turn frames, closest center and signed relative front/lateral projections",
+        "failure_condition": "missing simultaneous interval, unintended relative geometry or incomplete participant pixels"
+      }
+    },
+    {
+      "case_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_device_alternate",
+      "target_law_id": "NRS-484B-400-2c",
+      "branch": "rear_pass_device_alternate",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "planned_cpu_construction_pending",
+      "physical_risk": {
+        "risk": "Native simultaneous turn paths or four camera views may not preserve the intended crossing order",
+        "trigger_source": "original 20 Hz body, heading and four camera sources",
+        "trigger_metric": "joined turn frames, closest center and signed relative front/lateral projections",
+        "failure_condition": "missing simultaneous interval, unintended relative geometry or incomplete participant pixels"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "uncontrolled_front_vs_rear",
+      "case_ids": [
+        "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__front_pass_no_device",
+        "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_no_device"
+      ],
+      "fixed_conditions": [
+        "same two-directional intersection and opposing approach lanes",
+        "both actors turn left simultaneously",
+        "no governing device directing otherwise",
+        "same actors, 20 Hz duration and four cameras"
+      ],
+      "deliberate_differences": [
+        "measured original relative crossing order; no legal distance cutoff"
+      ]
+    },
+    {
+      "comparison_id": "device_direction_exception",
+      "case_ids": [
+        "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_no_device",
+        "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_device_alternate"
+      ],
+      "fixed_conditions": [
+        "same two-directional intersection and opposing approach lanes",
+        "both actors turn left simultaneously",
+        "same intended rearward crossing geometry, actors, 20 Hz duration and four cameras"
+      ],
+      "deliberate_differences": [
+        "original inventory of a governing official device directing otherwise"
+      ]
+    },
+    {
+      "comparison_id": "directed_front_vs_rear",
+      "case_ids": [
+        "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__front_pass_device_alternate",
+        "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_device_alternate"
+      ],
+      "fixed_conditions": [
+        "same two-directional intersection, turns and governing device direction",
+        "same actors, 20 Hz duration and four cameras"
+      ],
+      "deliberate_differences": [
+        "measured original relative crossing order under the device direction"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "simultaneous_original_left_turn_frames",
+      "unit": "frames",
+      "mandatory": true,
+      "source": "original Native body/heading and time packets for both vehicles"
+    },
+    {
+      "name": "closest_relative_turn_geometry",
+      "unit": "m",
+      "mandatory": true,
+      "source": "joined original Native body centers and headings"
+    },
+    {
+      "name": "two_directional_opposing_approaches",
+      "unit": "source-backed map fact",
+      "mandatory": true,
+      "source": "original Native road/lane successor inventory"
+    },
+    {
+      "name": "governing_device_direction",
+      "unit": "source-backed device fact",
+      "mandatory": true,
+      "source": "original Native device inventory; unresolved retained as unresolved"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver/assignment.json",
@@ -18,7 +150,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No executable construction, finalizer, capture plan or physical observation has yet been produced for this assignment."
+    "Native road and device inventory, exact actor motion and camera pixels have not been acquired. Planned cases require construction, source-bound finalization and CPU proof before readiness."
   ],
   "evidence_review": {
     "reviewer": "partition-04 CPU scope review",

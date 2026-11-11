@@ -145,32 +145,16 @@
   ],
   "observations": [
     {
-      "term": "drv.turning",
-      "note": "the left turn"
+      "name": "approach_left_curb_distance_m",
+      "unit": "m",
+      "mandatory": true,
+      "source": "original Native body corners and source left curb"
     },
     {
-      "term": "st.one_way_roadway",
-      "note": "the one-way highway approached on"
-    },
-    {
-      "term": "st.road_edge",
-      "note": "its left-hand curb"
-    },
-    {
-      "term": "rel.occupies",
-      "note": "the approach position near that curb"
-    },
-    {
-      "term": "st.centre_line",
-      "note": "the centreline of the two-directional highway entered"
-    },
-    {
-      "term": "kin.position",
-      "note": "the exit right of that centreline"
-    },
-    {
-      "term": "st.intersection",
-      "note": "the intersection"
+      "name": "departure_centerline_signed_m",
+      "unit": "m",
+      "mandatory": true,
+      "source": "original Native body corners and entered centerline"
     }
   ],
   "sources": [
@@ -189,7 +173,7 @@
   ],
   "evidence_review": {
     "reviewer": "worker-partition-03",
-    "method": "Read the exact frozen law and selected cell and branch. Inspect each supplied accepted metadata summary and compare stated conditions; preserve accepted recordings without replay. This checkpoint identifies uncovered branches without claiming a complete executable plan.",
+    "method": "Read the frozen exact law, selected C109705 cell and accepted-evidence inventory (empty). Six controlled exact cases and three source-measured approach positions now cover the selected approach and departure clauses; original Native and legal practicability remain unverified.",
     "facts": [],
     "gaps": [
       {
@@ -219,7 +203,7 @@
   ],
   "branch_analysis": {
     "source": "inputs/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/assignment.json",
-    "status": "planning_only",
+    "status": "cpu_constructed",
     "alternatives_and_boundaries": [
       "One-way approach highway to two-directional departure highway and left-turn intention are fixed activation facts.",
       "Compare measured approach full-body lateral position relative to the left-hand curb while keeping departure path fixed.",
@@ -242,5 +226,98 @@
       ],
       "evidence_or_gap": "Original Native map and body measurements planned; synthetic diagnostic does not establish physical completion or legal practicability."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "subject body, one-way source curb, intersection and two-directional entered centerline",
+        "interval": "full 8 s original-frame capture"
+      },
+      {
+        "view": "approach",
+        "subject": "subject four-corner body and source left curb during approach",
+        "interval": "full 8 s original-frame capture"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "left curb and entered centerline reference points with subject body corners",
+        "interval": "full 8 s original-frame capture"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject intended left-turn path and departure to the right of entered centerline",
+        "interval": "full 8 s original-frame capture"
+      }
+    ],
+    "source_review": "Fully decode all four original cameras and inspect curb, entered centerline, complete body, turn path and actual visibility after Native capture."
+  },
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "Original Native connected left-turn route, approach/departure phase and body path",
+      "channels": [
+        "departure_centerline_signed_m"
+      ],
+      "source_refs": [
+        "road_geometry.json",
+        "body_footprints.jsonl"
+      ]
+    },
+    "st.one_way_roadway": {
+      "evidence": "Original OpenDRIVE source lane directionality readback in selected road geometry",
+      "channels": [],
+      "source_refs": [
+        "road_geometry.json"
+      ]
+    },
+    "st.road_edge": {
+      "evidence": "Original source left curb line and full-body approach distance",
+      "channels": [
+        "approach_left_curb_distance_m"
+      ],
+      "source_refs": [
+        "road_geometry.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original subject ground corners relative to the source left curb during approach",
+      "channels": [
+        "approach_left_curb_distance_m"
+      ],
+      "source_refs": [
+        "body_footprints.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "Original directed centerline of the two-directional entered highway",
+      "channels": [
+        "departure_centerline_signed_m"
+      ],
+      "source_refs": [
+        "road_geometry.json"
+      ]
+    },
+    "kin.position": {
+      "evidence": "Original full-body signed departure position to the right/left of entered centerline",
+      "channels": [
+        "departure_centerline_signed_m"
+      ],
+      "source_refs": [
+        "body_footprints.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Original intersection identity and route phase crossing in retained road geometry/body frames",
+      "channels": [],
+      "source_refs": [
+        "road_geometry.json",
+        "body_footprints.jsonl"
+      ]
+    }
+  }
 }
