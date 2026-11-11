@@ -56,7 +56,7 @@ def main():
     description = recording()
     manifest = {"format":"worker-unselected-draft-construction-manifest-v1",
         "assignment_id":HERE.name,
-        "runtime_manifest_sha256":batch["runtime"]["source_manifest_sha256"],
+        "runtime_manifest_sha256":sha(ROOT/"runtime/pipeline/SOURCE-MANIFEST.json"),
         "status":"draft_not_selected","scope":"intersection traversal source alternative; no legal verdict",
         "cases":[]}
     proposals = []
@@ -71,7 +71,7 @@ def main():
         proposals.append({"case_id":case_id,"target_law_id":"NRS-484B-213-2b",
             "target_type":"attempt","recording_description":description})
         write(HERE / "draft-traversal-contracts" / suffix / "measurement-contract.json",
-            {"format":"worker-measurement-contract-v1","case_id":case_id,
+            {"format":"worker-measurement-contract","case_id":case_id,
              "requirements":[
                 {"disposition_index":0,"requirement":"text-0",
                  "source":"inputs/coverage/branch-sources.json",
@@ -99,7 +99,7 @@ def main():
                 "recording_description":description,
                 "cameras":[{"name":name,"width":width,"height":height} for name,width,height in
                     (("overview",1920,1080),("approach",1280,720),
-                     ("intersection",1280,720),("parking",1280,720))],
+                     ("reference_corner",1280,720),("driver_reference",1280,720))],
                 "engineering_knobs":knobs,"status":"unselected_native_runner_prototype"}
             files = shared + [{"path":"config.json","content":json.dumps(config,indent=2)+"\n"}]
             construction = {"case_id":case_id,"cell_id":"C110454",

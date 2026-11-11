@@ -9,8 +9,8 @@ def camera_plan(candidate="primary"):
          "attachment":"world", "xyz_m":[-12,-20,48], "pitch_deg":-60},
         {"name":"approach", "width":1280, "height":720, "fov_deg":90,
          "attachment":"world", "xyz_m":[-33,-14,18], "pitch_deg":-40},
-        {"name":"intersection", "width":1280, "height":720, "fov_deg":90,
+        {"name":"reference_corner", "width":1280, "height":720, "fov_deg":90,
          "attachment":"world", "xyz_m":[0,-12,15], "pitch_deg":-50},
-        {"name":"parking", "width":1280, "height":720, "fov_deg":90,
+        {"name":"driver_reference", "width":1280, "height":720, "fov_deg":90,
          "attachment":"world", "xyz_m":[20,-15,14], "pitch_deg":-55},
     ]

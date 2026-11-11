@@ -101,7 +101,7 @@ def finalize(attempt,output):
         raise ValueError("Recording duration/rate does not yield an integral frame count")
     original=verify_original_joins(attempt,count)
     measured=measure_approach(attempt)
-    videos=[f'{name}.mkv' for name in ('overview','approach','intersection','parking')]
+    videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     video_counts={name:video_frames(attempt/name) for name in videos}
     if any(frames!=count for frames in video_counts.values()):
         raise ValueError("Source camera frame count differs from delivered trace")

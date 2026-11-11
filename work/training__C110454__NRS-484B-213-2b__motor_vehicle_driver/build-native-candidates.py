@@ -44,7 +44,7 @@ def description():
 
 def main():
     batch = json.loads((REPO / 'batch.json').read_text())
-    runtime_manifest = batch['runtime']['source_manifest_sha256']
+    runtime_manifest = sha(REPO / 'runtime/pipeline/SOURCE-MANIFEST.json')
     shared = [{'path': p, 'content': (NATIVE / p).read_text()} for p in FILES]
     shared += [{'path': 'tests/' + p, 'content': (NATIVE / p).read_text()} for p in TESTS]
     recording = description()
@@ -64,11 +64,13 @@ def main():
                  'measurement_procedure':{'entrypoint':'finalize.py',
                                           'output_schema':'c110454-saved-analysis-v1'},
                  'candidates': []}
+        if (HERE/f'update015-{suffix}-recipe.json').is_file():
+            entry['fixture_recipe']=f'work/{ASSIGNMENT}/update015-{suffix}-recipe.json'
         proposal_cases.append({'case_id':case_id, 'target_law_id':'NRS-484B-213-2b',
                                'target_type':'attempt',
                                'recording_description':recording})
         write(HERE/'draft-candidates'/suffix/'measurement-contract.json',
-              {'format':'worker-measurement-contract-v1','case_id':case_id,
+              {'format':'worker-measurement-contract','case_id':case_id,
                'requirements':[
                  {'disposition_index':0,'requirement':'text-0',
                   'source':'inputs/coverage/branch-sources.json',
@@ -98,7 +100,7 @@ def main():
                       'cameras':[{'name':name,'width':width,'height':height}
                                  for name,width,height in
                                  [('overview',1920,1080),('approach',1280,720),
-                                  ('intersection',1280,720),('parking',1280,720)]],
+                                  ('reference_corner',1280,720),('driver_reference',1280,720)]],
                       'engineering_knobs':plan['knobs'],
                       'status':'unselected_native_runner_prototype'}
             files = shared + [{'path':'config.json',

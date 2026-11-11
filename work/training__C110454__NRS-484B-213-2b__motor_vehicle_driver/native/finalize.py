@@ -90,6 +90,46 @@ def measure_left_side(attempt):
             'method':'measure_left_side','sources':approach['sources']}
 
 
+def derive_channels(attempt,config,count):
+    """Rebuild observations from retained Native rows, not fixture channels."""
+    samples=rows(attempt/'native_samples.jsonl')
+    mapping=rows(attempt/'video_frames.jsonl')
+    survey=json.loads((attempt/'road_geometry.json').read_text())
+    if len(samples)!=count or len(mapping)!=count:
+        raise ValueError('Original channel source counts differ')
+    names={item['name'] for item in config['recording_description']['channels']}
+    output={name:[] for name in names}
+    for sample,frame in zip(samples,mapping):
+        if sample['native_frame']!=frame['native_frame'] or abs(sample['time_s']-frame['time_s'])>1e-4:
+            raise ValueError('Original channel frame/time join differs')
+        body=sample['native_body_xy_m']
+        values={
+            'drv.approaching':{'native_center_xy_m':sample['native_center_xy_m'],
+                               'native_forward_xy':sample['native_forward_xy']},
+            'drv.in_intersection':{'body_intersects_authored_entry':
+                                   max(point[0] for point in body)>=survey['intersection_entry_point_native_m'][0],
+                                   'physical_intersection_status_verified':False},
+            'st.intersection':survey,
+            'st.railway_crossing':{'observed_in_this_intersection_case':False},
+            'st.centre_line':survey['approach_centerline_point_native_m'],
+            'rel.occupies':body,
+            'kin.position':sample['native_center_xy_m'],
+            'rel.centre_distance':{'body_front_x_m':max(point[0] for point in body),
+                                   'intersection_entry_x_m':survey['intersection_entry_point_native_m'][0]},
+            'st.one_way_roadway':{'observed_in_this_two_way_case':False,
+                                  'road_directions_native':survey['road_directions_native']},
+            'native_body_pose_control':sample,
+            'camera_frame_join':frame}
+        if set(values)!=names:
+            raise ValueError('Declared channels differ from raw derivation')
+        for name,value in values.items():
+            output[name].append(json.dumps({'time_s':frame['time_s'],'value':value},
+                                          allow_nan=False)+'\n')
+    folder=attempt/'channels';folder.mkdir(exist_ok=True)
+    for name,values in output.items():
+        (folder/(name+'.jsonl')).write_text(''.join(values))
+
+
 def finalize(attempt,output):
     attempt=Path(attempt).resolve();output=Path(output).resolve()
     if output.exists() or (attempt/'result.json').exists():
@@ -100,8 +140,20 @@ def finalize(attempt,output):
     if abs(requested_count-count)>1e-6 or count<2:
         raise ValueError("Recording duration/rate does not yield an integral frame count")
     original=verify_original_joins(attempt,count)
+    capture=json.loads((attempt/'capture/manifest.json').read_text())
+    synthetic=capture.get('synthetic_diagnostic') is True or capture.get('synthetic_fixture') is True
+    if synthetic:
+        trace=rows(attempt/'trace.jsonl');evidence=rows(attempt/'capture/evidence.jsonl')
+        motion=rows(attempt/'native_samples.jsonl')
+        if not all(row.get('synthetic_diagnostic') is True and
+                   row.get('speed_provenance')=='synthetic_native_sample'
+                   for source in (trace,motion) for row in source) or not all(
+                       row.get('synthetic_diagnostic') is True and
+                       row.get('ego',{}).get('speed_provenance')=='synthetic_native_sample'
+                       for row in evidence):
+            raise ValueError('Synthetic speed must retain diagnostic provenance')
     measured=measure_approach(attempt)
-    videos=[f'{name}.mkv' for name in ('overview','approach','intersection','parking')]
+    videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     video_counts={name:video_frames(attempt/name) for name in videos}
     if any(frames!=count for frames in video_counts.values()):
         raise ValueError("Source camera frame count differs from delivered trace")
@@ -112,6 +164,7 @@ def finalize(attempt,output):
     endpoint=saved_motion[-1]['native_center_xy_m']
     parked=math.dist(endpoint,[20,-5.25])<=.8 and saved_motion[-1]['speed_m_s']<=.3
     description=config['recording_description']
+    derive_channels(attempt,config,count)
     recording_evidence=[]
     for channel in description['channels']:
         name=channel['name'];reference='channels/'+name+'.jsonl'
@@ -130,8 +183,8 @@ def finalize(attempt,output):
         'tolerance':'50 ms sample uncertainty','matched':matched,
         'physical_cause_confirmed':False,
         'cause_evidence':['road_geometry.json','native_samples.jsonl']}],
-      'setup_confirmed':True,
-      'behavior_attempted':True,'maneuver_completed':parked,
+      'setup_confirmed':not synthetic,
+      'behavior_attempted':not synthetic,'maneuver_completed':not synthetic and parked,
       'termination_reason':'full original duration retained',
       'physical_failure_flags':['camera_and_native_surface_review_pending'] +
           ([] if matched and parked else
@@ -145,7 +198,8 @@ def finalize(attempt,output):
            'method':'nearest observed full-body left-side sample front to surveyed entry boundary',
            'time_window':'original 24 s / 480 frame attempt',
            'statistic':'minimum sampled distance','reference':'native_samples.jsonl'}},
-      'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
+      'provenance_kind':'synthetic_local_diagnostic' if synthetic else 'native',
+      'accepted':False,'legal_verdict_claimed':False}
     from worker_exchange.native_output import validate_result
     validate_result(result)
     report={'format':'c110454-saved-analysis-v1','case_id':config['case_id'],

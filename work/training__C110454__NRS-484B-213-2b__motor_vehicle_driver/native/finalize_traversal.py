@@ -77,7 +77,7 @@ def finalize(attempt, output):
         raise ValueError("Traversal requires 480 original frames")
     original = verify_original_joins(attempt,480)
     measured = measure_traversal(attempt)
-    names = ("overview","approach","intersection","parking")
+    names = ("overview","approach","reference_corner","driver_reference")
     videos = [name + ".mkv" for name in names]
     video_counts = {name:video_frames(attempt / name) for name in videos}
     if any(count != 480 for count in video_counts.values()):
