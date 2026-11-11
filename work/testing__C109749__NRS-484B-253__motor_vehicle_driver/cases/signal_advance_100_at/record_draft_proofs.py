@@ -27,7 +27,7 @@ for label, item in [('primary', manifest),
     command = (f'.venv-cpu/bin/python runtime.py offline --manifest '
                f'work/{assignment.name}/cases/{folder.name}/draft-manifest.json '
                f'--case {case} --output '
-                   f'.runtime-work/c109749-signal-advance-100-at-{label}-offline-v2')
+                   f'.runtime-work/c109749-signal-advance-100-at-{label}-offline-v3')
     if label != 'primary':
         command += ' --candidate ' + label
     claims.append({'candidate_id': label, 'construction_sha256': sha(path),
@@ -65,6 +65,13 @@ receipt = {'format': 'worker-signal-advance-construction-draft',
                'sealed_source_threshold_checked': True,
                'exact_compatibility_passed': False,
                'saved_processing_passed': False},
+           'delivery_audit_draft': {
+               'auditor_sha256': sha(assignment / 'signal_advance_delivery_audit.py'),
+               'test_command': f'.venv-cpu/bin/python -m unittest discover -s work/{assignment.name}/tests -p test_signal_advance_delivery_audit.py -v',
+               'test_log': 'signal-advance-delivery-tests.log',
+               'test_log_sha256': sha(assignment / 'signal-advance-delivery-tests.log'),
+               'full_audit_passed': False,
+               'physical_acceptance_claimed': False},
            'remaining_cpu_work': [
                'build a complete case-specific Native-shaped diagnostic with all four cameras',
                'execute exact positive/negative compatibility and recorded-only saved processing for primary and fallbacks',

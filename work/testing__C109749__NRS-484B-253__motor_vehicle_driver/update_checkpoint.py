@@ -42,6 +42,8 @@ claim(signal_draft['signal_source_proof']['command'],
       'cases/signal_advance_100_at/' + signal_draft['signal_source_proof']['log'])
 claim(signal_draft['measurement_draft']['validation_command'],
       'cases/signal_advance_100_at/' + signal_draft['measurement_draft']['validation_log'])
+claim(signal_draft['delivery_audit_draft']['test_command'],
+      signal_draft['delivery_audit_draft']['test_log'])
 claim(f'PYTHONPATH=work/{result["assignment_id"]} .venv-cpu/bin/python '
       f'work/{result["assignment_id"]}/cases/signal_advance_100_at/runner.py --check',
       'cases/signal_advance_100_at/runner-check.log')
@@ -166,6 +168,8 @@ result['reason'] = (
     '900-frame source-only fixture proves below/at/above both signal distances plus interruption '
     'and stale-source rejection. Its case-specific finalizer and measurement contract now measure '
     '30.48 m from original positions and indicator readback; below/at/above validation passes. '
+    'An independent full-duration delivery auditor is implemented and six source-contrast '
+    'tests pass, but its four-camera complete-attempt proof is still pending. '
     'The draft has no exact compatibility, saved-processing, delivery '
     'or canonical integration proof yet. '
     'Two canonical reciprocal cases now contrast later-opposing stopped-outside motion with body entry '
