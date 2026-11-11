@@ -14,6 +14,12 @@ from pathlib import Path
 
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+VIEW_SUBJECTS = {
+    "overview": {"vehicle_body", "driveway_entrance"},
+    "approach": {"vehicle_body", "alley_approach"},
+    "reference_corner": {"vehicle_body", "driveway_entrance"},
+    "driver_reference": {"driveway_entrance", "driver_view"},
+}
 ORIGINALS = ("trace.jsonl", "capture/evidence.jsonl", "video_frames.jsonl",
              "native_samples.jsonl", "body_history.jsonl", "capture/manifest.json",
              "road_geometry.json")
@@ -72,6 +78,14 @@ def check_original_rows(attempt: Path, expected_frames: int) -> dict:
                 type(n.get("speed_mps")) in (int, float) and
                 math.isfinite(n["speed_mps"]) and n["speed_mps"] >= 0,
                 "Original Native body or velocity missing")
+        captured = e.get("ego", {}).get("body_vertices_m")
+        historical = b.get("body_vertices_m")
+        require(isinstance(captured, list) and isinstance(historical, list) and
+                len(captured) >= 4 and len(historical) >= 4 and
+                {(round(v[0], 5), round(v[1], 5)) for v in captured} ==
+                {(round(v[0], 5), round(v[1], 5)) for v in historical} ==
+                {(round(v[0], 5), round(v[1], 5)) for v in vertices},
+                "Original Native body/evidence footprint differs")
         previous_frame, previous_time = frame, time_s
     return {"frames": expected_frames, "first_frame": mapping[0]["native_frame"],
             "last_frame": mapping[-1]["native_frame"],
@@ -148,6 +162,124 @@ def check_native_boundary(attempt: Path, saved: Path, owner_receipt: Path,
             "physical_completion": "measured; legal blocking judgment remains separate"}
 
 
+def check_pixel_review(review_path: Path, case_id: str, attempt: Path,
+                       primary_video: Path, *, test_shape: bool = False) -> dict:
+    """Require independent, byte-bound review of visible body and entrance."""
+    review = read(review_path)
+    require(review.get("format") == "c10014-original-source-pixel-review" and
+            review.get("case_id") == case_id and review.get("frames") == 480 and
+            review.get("reviewer") and review.get("method") and
+            review.get("source_kind") == ("source_shaped_unit_test" if test_shape
+                                          else "original_native_camera_pixels") and
+            review.get("primary_sha256") == sha(primary_video),
+            "Actual pixel review missing or for another source")
+    views = review.get("views", {})
+    require(set(views) == set(CAMERAS), "Pixel review omits a source camera")
+    for name in CAMERAS:
+        item = views[name]
+        require(item.get("video_sha256") == sha(attempt / (name + ".mkv")) and
+                VIEW_SUBJECTS[name] <= set(item.get("subjects_visible", [])) and
+                type(item.get("reviewed_stationary_frames")) is int and
+                item["reviewed_stationary_frames"] >= 40 and
+                item.get("limitations") is not None,
+                "Actual source pixels or stationary interval unreviewed: " + name)
+    return review
+
+
+def check_access_review(review_path: Path, case_id: str, attempt: Path,
+                        *, test_shape: bool = False) -> dict:
+    """Bind an independent property-access designation to the Native map bytes."""
+    review = read(review_path)
+    geometry = read(attempt / "road_geometry.json")
+    require(review.get("format") == "c10014-original-access-review" and
+            review.get("case_id") == case_id and
+            review.get("source_kind") == ("source_shaped_unit_test" if test_shape
+                                          else "original_native_map_and_property_records") and
+            review.get("reviewer") and review.get("method") and
+            review.get("property_access_id") and
+            review.get("road_geometry_sha256") == sha(attempt / "road_geometry.json") and
+            review.get("native_map_sha256") == geometry.get("native_map_sha256") and
+            all(review.get(key) is True for key in
+                ("alley_design_confirmed", "abutting_property_access_confirmed",
+                 "entrance_boundary_confirmed")),
+            "Original alley/abutting-property access review absent or unbound")
+    source = review.get("property_source", {})
+    path = Path(source.get("path", ""))
+    require(path.is_file() and source.get("sha256") == sha(path),
+            "Independent property-access source missing or changed")
+    return review
+
+
+def audit_complete(attempt: Path, saved: Path, owner_receipt: Path,
+                   case_id: str, construction_sha256: str, pixel_review: Path,
+                   access_review: Path,
+                   primary_video: Path, core_trace: Path, decode_dir: Path,
+                   job_id: str, attempt_number: int, recording_id: str) -> dict:
+    """Produce a local acceptance candidate only after every independent check."""
+    attempt, primary_video, core_trace = (path.resolve() for path in
+                                          (attempt, primary_video, core_trace))
+    boundary = check_native_boundary(attempt, saved, owner_receipt,
+                                     case_id, construction_sha256)
+    require(primary_video.is_file() and core_trace.is_file() and
+            attempt in primary_video.parents and attempt in core_trace.parents,
+            "Primary video/Core trace must be promoted with the exact attempt")
+    result_path = attempt / "result.json"
+    require(result_path.is_file() and sha(result_path) == boundary["result_sha256"],
+            "Promoted Native result differs from saved processing")
+    scenes = read(core_trace).get("scenes", [])
+    mapping = rows(attempt / "video_frames.jsonl")
+    require(len(scenes) == len(mapping) == 480 and
+            all(scene.get("t") == round(frame["time_s"] * 1000)
+                for scene, frame in zip(scenes, mapping)),
+            "Core trace does not join original Native frame map")
+    review = check_pixel_review(pixel_review, case_id, attempt, primary_video)
+    access = check_access_review(access_review, case_id, attempt)
+    decode_dir.mkdir(parents=True, exist_ok=True)
+    from scenario_pipeline.worker_exchange.media import audit as decode
+    mapping_hash = sha(attempt / "video_frames.jsonl")
+    for name in CAMERAS:
+        decode(attempt / (name + ".mkv"), 480,
+               mapping_sha256=mapping_hash, receipt=decode_dir / (name + ".json"))
+    primary_receipt = decode_dir / "primary.json"
+    primary = decode(primary_video, 480, mapping_sha256=mapping_hash,
+                     receipt=primary_receipt)
+    return {
+        "format": "worker-delivery-audit", "passed": True,
+        "attempt_path": str(attempt), "saved_path": str(saved.resolve()),
+        "owner_receipt_path": str(owner_receipt.resolve()),
+        "owner_receipt_sha256": sha(owner_receipt),
+        "case_id": case_id, "job_id": job_id, "attempt": attempt_number,
+        "recording_id": recording_id, "frames": 480,
+        "source_result_sha256": sha(result_path),
+        "video": primary_video.relative_to(attempt).as_posix(),
+        "video_sha256": sha(primary_video),
+        "trace": core_trace.relative_to(attempt).as_posix(),
+        "trace_sha256": sha(core_trace),
+        "checks": {key: True for key in
+                   ("native_source", "all_participants", "time_join",
+                    "full_video_decode", "actual_pixels", "physical_completion")},
+        "auditor_path": str(Path(__file__).resolve()),
+        "auditor_sha256": sha(Path(__file__)),
+        "source_decode_receipt_path": str(primary_receipt.resolve()),
+        "source_decode_receipt_sha256": sha(primary_receipt),
+        "source_decode_auditor_sha256": primary["auditor_sha256"],
+        "source_camera_decode_receipts": {
+            name: {"path": str((decode_dir / (name + ".json")).resolve()),
+                   "sha256": sha(decode_dir / (name + ".json"))}
+            for name in CAMERAS},
+        "pixel_review_path": str(pixel_review.resolve()),
+        "pixel_review_sha256": sha(pixel_review),
+        "access_review_path": str(access_review.resolve()),
+        "access_review_sha256": sha(access_review),
+        "property_access_id": access["property_access_id"],
+        "source_camera_sha256": {name: sha(attempt / (name + ".mkv"))
+                                 for name in CAMERAS},
+        "native_boundary": boundary,
+        "reviewer": review["reviewer"],
+        "legal_blocking_verdict_claimed": False,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--attempt", type=Path, required=True)
@@ -155,9 +287,34 @@ def main() -> None:
     parser.add_argument("--owner-receipt", type=Path, required=True)
     parser.add_argument("--case", required=True)
     parser.add_argument("--construction-sha256", required=True)
+    parser.add_argument("--complete", action="store_true")
+    parser.add_argument("--pixel-review", type=Path)
+    parser.add_argument("--access-review", type=Path)
+    parser.add_argument("--primary-video", type=Path)
+    parser.add_argument("--core-trace", type=Path)
+    parser.add_argument("--decode-dir", type=Path)
+    parser.add_argument("--job-id")
+    parser.add_argument("--attempt-number", type=int)
+    parser.add_argument("--recording-id")
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    print(json.dumps(check_native_boundary(args.attempt, args.saved,
-          args.owner_receipt, args.case, args.construction_sha256), indent=2))
+    if args.complete:
+        require(all((args.pixel_review, args.access_review,
+                     args.primary_video, args.core_trace,
+                     args.decode_dir, args.job_id, args.attempt_number,
+                     args.recording_id, args.output)),
+                "Complete audit needs local original review, decode and exact job binding")
+        receipt = audit_complete(args.attempt, args.saved, args.owner_receipt,
+            args.case, args.construction_sha256, args.pixel_review,
+            args.access_review,
+            args.primary_video, args.core_trace, args.decode_dir, args.job_id,
+            args.attempt_number, args.recording_id)
+        require(not args.output.exists(), "Retain previous independent audit")
+        args.output.write_text(json.dumps(receipt, indent=2) + "\n")
+    else:
+        receipt = check_native_boundary(args.attempt, args.saved,
+            args.owner_receipt, args.case, args.construction_sha256)
+    print(json.dumps(receipt, indent=2))
 
 
 if __name__ == "__main__":

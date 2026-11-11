@@ -29,8 +29,8 @@ def rows(path):
 
 
 def paths(suffix, candidate):
-    compat = ROOT/'.runtime-work'/f'c10014-update017-{suffix}-{candidate}-compat'
-    saved = ROOT/'.runtime-work'/f'c10014-update017-{suffix}-{candidate}-saved'
+    compat = ROOT/'.runtime-work'/f'c10014-update019-{suffix}-{candidate}-compat'
+    saved = ROOT/'.runtime-work'/f'c10014-update019-{suffix}-{candidate}-saved'
     return compat, saved/'v0001'
 
 
@@ -218,12 +218,12 @@ def main():
                 negatives.append(name)
             else:
                 raise ValueError('Independent negative was accepted: '+name)
-    report = {'format': 'c10014-update017-independent-selected-cpu-audit',
+    report = {'format': 'c10014-update019-independent-selected-cpu-audit',
               'execution_manifest_sha256': sha(HERE/'execution-manifest.json'),
               'attempts': audited, 'controlled_pairs': len(CANDIDATES),
               'rejected_mutations': negatives,
               'scope': 'selected construction software proof; synthetic sources; no Native or legal acceptance'}
-    (HERE/'update017-selected-exact-audit.json').write_text(json.dumps(report, indent=2)+'\n')
+    (HERE/'update019-selected-exact-audit.json').write_text(json.dumps(report, indent=2)+'\n')
     print(json.dumps({'passed': True, 'attempts': len(audited),
                       'controlled_pairs': len(CANDIDATES),
                       'rejected_mutations': negatives}))
