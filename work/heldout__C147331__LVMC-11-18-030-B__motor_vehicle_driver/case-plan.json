@@ -11,7 +11,12 @@
         "marked-lane-footprint"
       ],
       "construction_state": "planned",
-      "purpose": "Vehicle footprint remains inside one continuously marked one-way traffic lane during straight travel; measures ordinary application without assigning a legal verdict."
+      "purpose": "Vehicle footprint remains inside one continuously marked one-way traffic lane during straight travel; measures ordinary application without assigning a legal verdict.",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Waypoint-centered route may put a vehicle corner across a narrow marked boundary or the local slice may clip a long body; inspect measured minimum clearance and source-camera marking visibility."
+      },
+      "candidate_constructions_status": "not_yet_implemented"
     },
     {
       "case_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__unexcused_boundary_crossing",
@@ -20,7 +25,12 @@
         "marked-lane-footprint"
       ],
       "construction_state": "planned",
-      "purpose": "Vehicle footprint crosses a recorded lane boundary during straight travel, with no passing participant or turn preparation; measure the raw spatial and time history, with no invented tolerance."
+      "purpose": "Vehicle footprint crosses a recorded lane boundary during straight travel, with no passing participant or turn preparation; measure the raw spatial and time history, with no invented tolerance.",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Lateral controller may not cross the marked boundary before capture ends, or the boundary may be absent or occluded in source cameras; inspect measured corner clearance history and decoded views."
+      },
+      "candidate_constructions_status": "not_yet_implemented"
     },
     {
       "case_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_boundary_crossing",
@@ -30,7 +40,12 @@
         "passing-exception"
       ],
       "construction_state": "planned",
-      "purpose": "An otherwise comparable boundary crossing occurs while overtaking a separately recorded vehicle; independent review must establish whether the passing is lawful under applicable rules."
+      "purpose": "An otherwise comparable boundary crossing occurs while overtaking a separately recorded vehicle; independent review must establish whether the passing is lawful under applicable rules.",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Overtaken vehicle may not remain on route or ego may fail to reverse measured longitudinal order while crossing; inspect original participant motion, order-reversal trace and decoded views."
+      },
+      "candidate_constructions_status": "not_yet_implemented"
     }
   ],
   "comparisons": [
@@ -240,7 +255,7 @@
       ]
     },
     "drv.overtaking": {
-      "evidence": "Optional overtaken participant identity, body corners and velocity are retained; lawful passing and longitudinal order still need finalizer work.",
+      "evidence": "Original overtaken participant identity, body corners and velocity are retained per tick. Saved measurement projects both body centers along the Native lane heading and reports observed order reversal. Lawful passing still needs external facts and review.",
       "channels": [],
       "source_refs": [
         "lane_sources.py",
@@ -255,7 +270,7 @@
       ]
     },
     "sig.turn_indicator": {
-      "evidence": "Native light-state readback has not yet been implemented; signaling alone cannot establish lawful-turn exception.",
+      "evidence": "Native ego light-state readback is retained when the actor API exposes it; null remains unknown. Signaling alone cannot establish a lawful turn.",
       "channels": [],
       "source_refs": [
         "lane_sources.py"

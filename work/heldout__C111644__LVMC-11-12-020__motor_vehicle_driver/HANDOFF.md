@@ -13,9 +13,9 @@ Cell C111644: intersection / turn / turn_path_marking; actor motor_vehicle_drive
 
 ## Current checkpoint
 
-No accepted recordings are supplied for this assignment. The exact text, selected branch, exceptions, timing and source observations still require a finite controlled case comparison and an executable delivery package.
+Six planned cases compare follow versus depart responses for authorized markers, buttons and other turn-course indications placed within the intersection. `turn_marking.py` requests physical indications through an adapter and measures original 20 Hz subject distance from the indicated course; its audit checks fixed intersection, subject, course and camera conditions. Tests exercise all three indication forms and reject missing authorization and motion sources; `cpu-tests.log` SHA256 is `1c444eea02d5df858919b3207b7145795959a2f7c9fa711ed3b7041a42178897`. Observed deviation does not decide legal obedience.
 
-The case plan reviews 0 accepted source summaries and records a source-bound gap. This assignment is partial. No physical, legal, Native or delivery readiness is claimed.
+Status remains partial. Concrete Native adapter, four-camera capture, exact runner/config/construction, three fallbacks per case, compatibility, saved processing, semantic proposals and delivery audit remain CPU work.
 
 ## Exact next CPU work
 
@@ -27,3 +27,7 @@ The case plan reviews 0 accepted source summaries and records a source-bound gap
 ## Dependencies and limits
 
 Use the pinned runtime. CARLA, SQLite and canonical source recordings are unavailable in this CPU repository; those do not block the listed CPU preparation. The accepted summaries are retained as historical source evidence.
+
+## Current CPU proof
+
+Run `.venv-cpu/bin/python -m unittest discover -s work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/tests -v` and `.venv-cpu/bin/python worker_check.py --assignment heldout__C111644__LVMC-11-12-020__motor_vehicle_driver --complete`. Strict readiness still fails while this package is partial.

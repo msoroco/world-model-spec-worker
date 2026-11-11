@@ -15,9 +15,9 @@ Cell C152972: one_way_to_one_way_intersection / left_turn / curb; actor motor_ve
 
 ## Current checkpoint
 
-No accepted recordings are supplied for this assignment. The exact text, selected branch, exceptions, timing and source observations still require a finite controlled case comparison and an executable delivery package.
+Three cases now compare approach body distance from the source left curb and turn departure body distance from the destination left curb separately, holding the other motion fixed. `oneway_turn_geometry.py` reads original map curb lines and four-corner subject footprints; `oneway_turn_comparison_audit.py` rejects changed fixed conditions. Tests pass and reject wrong directionalities and missing turn phases. `cpu-tests.log` SHA256 is `7c6964cb69b6f1074215a67076f408fa13e887ccb22eafefe759369e4fda9d24`. The distances are engineering measurements, with no invented legal practicability cutoff.
 
-The case plan reviews 0 accepted source summaries and records a source-bound gap. This assignment is partial. No physical, legal, Native or delivery readiness is claimed.
+Status remains partial. Exact Native construction, four-camera capture, finalizer integration, three fallbacks per case, compatibility, saved processing, semantic proposals and delivery audit remain CPU work.
 
 ## Exact next CPU work
 
@@ -29,3 +29,7 @@ The case plan reviews 0 accepted source summaries and records a source-bound gap
 ## Dependencies and limits
 
 Use the pinned runtime. CARLA, SQLite and canonical source recordings are unavailable in this CPU repository; those do not block the listed CPU preparation. The accepted summaries are retained as historical source evidence.
+
+## Current CPU proof
+
+Run `.venv-cpu/bin/python -m unittest discover -s work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/tests -v` and `.venv-cpu/bin/python worker_check.py --assignment heldout__C152972__NRS-484B-400-5__motor_vehicle_driver --complete`. Strict readiness still fails while this package is partial.

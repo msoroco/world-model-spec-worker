@@ -3,8 +3,83 @@
   "law_id": "NRS-484B-113-1",
   "cell_id": "C136014",
   "actor": "motor_vehicle_driver",
-  "cases": [],
-  "comparisons": [],
+  "cases": [
+    {
+      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady",
+      "target_law_id": "NRS-484B-113-1",
+      "branch": "reverse_clear_traffic_steady",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "abstract_adapter_construction_and_original_motion_cpu_tested_native_adapter_pending",
+      "physical_risk": {
+        "risk": "Native reverse vehicle and approaching traffic may not realize a connected narrow-road encounter",
+        "trigger_source": "original road and actor trajectories",
+        "trigger_metric": "reverse displacement, actor center separation and other-traffic speed change",
+        "failure_condition": "reverse motion absent, other traffic missing or encounter not sustained"
+      }
+    },
+    {
+      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady",
+      "target_law_id": "NRS-484B-113-1",
+      "branch": "reverse_close_traffic_steady",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "abstract_adapter_construction_and_original_motion_cpu_tested_native_adapter_pending",
+      "physical_risk": {
+        "risk": "Native reverse vehicle and approaching traffic may not realize a connected narrow-road encounter",
+        "trigger_source": "original road and actor trajectories",
+        "trigger_metric": "reverse displacement, actor center separation and other-traffic speed change",
+        "failure_condition": "reverse motion absent, other traffic missing or encounter not sustained"
+      }
+    },
+    {
+      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes",
+      "target_law_id": "NRS-484B-113-1",
+      "branch": "reverse_clear_traffic_brakes",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "abstract_adapter_construction_and_original_motion_cpu_tested_native_adapter_pending",
+      "physical_risk": {
+        "risk": "Native reverse vehicle and approaching traffic may not realize a connected narrow-road encounter",
+        "trigger_source": "original road and actor trajectories",
+        "trigger_metric": "reverse displacement, actor center separation and other-traffic speed change",
+        "failure_condition": "reverse motion absent, other traffic missing or encounter not sustained"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "traffic_clearance",
+      "case_ids": [
+        "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady",
+        "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady"
+      ],
+      "fixed_conditions": [
+        "same narrow road, reverse actor and route, other traffic actor and speed policy",
+        "same four-camera/duration plan"
+      ],
+      "deliberate_differences": [
+        "measured minimum actor center separation; reasonable safety remains unresolved"
+      ]
+    },
+    {
+      "comparison_id": "traffic_interference",
+      "case_ids": [
+        "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady",
+        "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes"
+      ],
+      "fixed_conditions": [
+        "same narrow road, reverse actor and route, other traffic actor and measured minimum clearance",
+        "same four-camera/duration plan"
+      ],
+      "deliberate_differences": [
+        "measured other traffic speed response; whether interference occurred remains unresolved"
+      ]
+    }
+  ],
   "observations": [
     {
       "term": "drv.backing",
@@ -47,7 +122,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No exact construction, finalizer, compatibility receipts, saved-only fixture proof, independent delivery/comparison audit, or fallback construction has been prepared. Actual CARLA realization is also unverified."
+    "Abstract narrow-road and reverse-vehicle construction calls plus original motion measurement are CPU-tested. Concrete Native adapter, source capture, exact compatibility and saved-processing proofs remain CPU work. Reasonable safety and interference require independent physical/legal review."
   ],
   "evidence_review": {
     "reviewer": "worker-partition-03",

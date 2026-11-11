@@ -16,9 +16,9 @@ Cell C230281: road / travel / school_bus; actor motor_vehicle_driver.
 
 ## Current checkpoint
 
-The six accepted summaries cover same/opposite approach, active/off red signal, pupil/non-pupil stop purpose and stop/pass. No supplied accepted summary establishes the divided-highway other-roadway exception, traffic-officer control exception, or a comparison of proceeding only after the red signal ceases.
+Seven planned cases cover meeting and overtaking approaches from either direction, stop versus pass during the flashing-red interval, the divided-highway other-roadway and traffic-officer exceptions, and motion after red cessation. `school_bus_response.py` measures original active frames, stop and pass motion while requiring sourced equipment, pupil-stop, front/rear signal, road and officer-control premises. `school_bus_comparison_audit.py` checks fixed conditions. The CPU tests cover both approach directions and rejection paths; `cpu-tests.log` SHA256 is `dc546e8c3d02300cbaf48c9afd9919a4b0f0fbaaed09fe1032fcdad2e01146ac`.
 
-The case plan reviews 6 accepted source summaries and records a source-bound gap. This assignment is partial. No physical, legal, Native or delivery readiness is claimed.
+Status remains partial. No legal or physical acceptance is inferred. Exact Native construction, four-camera capture, finalizer integration, three fallbacks per case, compatibility, saved processing, semantic proposals and delivery audit remain CPU work.
 
 ## Exact next CPU work
 
@@ -30,3 +30,7 @@ The case plan reviews 6 accepted source summaries and records a source-bound gap
 ## Dependencies and limits
 
 Use the pinned runtime. CARLA, SQLite and canonical source recordings are unavailable in this CPU repository; those do not block the listed CPU preparation. The accepted summaries are retained as historical source evidence.
+
+## Current CPU proof
+
+Run `.venv-cpu/bin/python -m unittest discover -s work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/tests -v` and `.venv-cpu/bin/python worker_check.py --assignment heldout__C230281__NRS-484B-353-1__motor_vehicle_driver --complete`. Strict readiness still fails while this package is partial.

@@ -18,7 +18,8 @@ def packet(suffix, inside, passing=None):
     return {"case_id": PREFIX + suffix, "source_sha256": "source",
             "measurement_sha256": "measurement", "fixed": fixed,
             "frames": [{"full_footprint_inside": inside}],
-            "passing_motion_source_sha256": "motion" if passing else None}
+            "passing_motion_source_sha256": "motion" if passing else None,
+            "measured_order_reversal": bool(passing)}
 
 
 class ComparisonAuditTests(unittest.TestCase):
@@ -47,6 +48,10 @@ class ComparisonAuditTests(unittest.TestCase):
         bad = copy.deepcopy(c)
         bad["passing_motion_source_sha256"] = None
         with self.assertRaisesRegex(ValueError, "Passing motion source hash missing"):
+            audit_comparison("passing_exception_context", b, bad)
+        bad = copy.deepcopy(c)
+        bad["measured_order_reversal"] = False
+        with self.assertRaisesRegex(ValueError, "order reversal missing"):
             audit_comparison("passing_exception_context", b, bad)
         bad = copy.deepcopy(c)
         bad["case_id"] = PREFIX + "wrong_case"

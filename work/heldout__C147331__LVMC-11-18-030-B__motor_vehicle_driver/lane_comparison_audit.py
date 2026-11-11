@@ -51,6 +51,8 @@ def audit_comparison(comparison_id, left, right):
             raise ValueError("Passing participant evidence missing")
         if not right.get("passing_motion_source_sha256"):
             raise ValueError("Passing motion source hash missing")
+        if not right.get("measured_order_reversal"):
+            raise ValueError("Measured overtaking order reversal missing")
     return {"comparison_id": comparison_id, "checked_cases": [left["case_id"], right["case_id"]],
             "fixed_fields": list(FIXED), "status": "software_evidence_complete",
             "legal_verdict": None}

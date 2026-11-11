@@ -18,9 +18,9 @@ Cell C111250: intersection / travel / centerline; actor motor_vehicle_driver.
 
 ## Current checkpoint
 
-The accepted right-half pair fixes sufficient-width highway context and excludes one-way designation and right-half closure. Full text separately permits overtaking/passing, right-half closure, three-lane operation, one-way posting and insufficient width; no supplied accepted case establishes those alternatives or their comparison isolation.
+Twelve planned cases cover right/left body position for the base rule and each of the five textual exceptions: same-direction overtaking, right-half closure, three lanes, posted one-way and insufficient width. `road_half.py` requests physical road variants, a closure, a one-way sign or a passing vehicle through an adapter; it measures original four-corner body position relative to the road centerline. Eleven controlled comparisons isolate side or exception premise. Tests exercise feature creation and source/fixed-condition rejection; `cpu-tests.log` SHA256 is `671fdcdc279307adebfdeadaae4812ab2a16f6bb5b78fc19a79b988c12f585c2`. None of these engineered positions decides legal exception applicability.
 
-The case plan reviews 2 accepted source summaries and records a source-bound gap. This assignment is partial. No physical, legal, Native or delivery readiness is claimed.
+Status remains partial. Concrete Native adapter, four-camera capture, exact runner/config/construction, three fallbacks per case, compatibility, saved processing, semantic proposals and delivery audit remain CPU work.
 
 ## Exact next CPU work
 
@@ -32,3 +32,7 @@ The case plan reviews 2 accepted source summaries and records a source-bound gap
 ## Dependencies and limits
 
 Use the pinned runtime. CARLA, SQLite and canonical source recordings are unavailable in this CPU repository; those do not block the listed CPU preparation. The accepted summaries are retained as historical source evidence.
+
+## Current CPU proof
+
+Run `.venv-cpu/bin/python -m unittest discover -s work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/tests -v` and `.venv-cpu/bin/python worker_check.py --assignment heldout__C111250__NRS-484B-200-1__motor_vehicle_driver --complete`. Strict readiness still fails while this package is partial.

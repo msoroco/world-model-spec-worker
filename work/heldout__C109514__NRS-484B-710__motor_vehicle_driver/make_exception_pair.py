@@ -43,6 +43,8 @@ def build_construction(suffix, authorized):
     files = {row["path"]: row for row in data["files"]}
     runner = files["runner.py"]["content"]
     runner = runner.replace("__traveling_follow_500ft", "__" + suffix)
+    runner = runner.replace("target_gap_ft=500", "target_gap_ft=499")
+    runner = runner.replace('target_distance_ft") != 500', 'target_distance_ft") != 499')
     runner = replace_one(runner, 'from follow_controller import control_step',
                          'from follow_controller import control_step\nfrom exception_capture import retain_exception_source')
     runner = replace_one(runner, '"vehicle.tesla.model3"', '"vehicle.dodge.charger_police"')
@@ -53,15 +55,23 @@ def build_construction(suffix, authorized):
                                       "content": (HERE / "exception_capture.py").read_text()}
     files["exception_source.py"]["content"] = (
         HERE / "exception_source_packet_bound.py").read_text()
+    files.pop("tests/test_fire_finalizer.py")
+    files["tests/test_exception_capture.py"] = {
+        "path": "tests/test_exception_capture.py",
+        "content": (HERE / "tests/test_exception_capture.py").read_text()}
     config = json.loads(files["config.json"]["content"])
     config["selected_case_id"] = case
     config["supported_case_ids"] = [case]
     config["case"]["case_id"] = case
+    config["target_distance_ft"] = 499
     config["fire_context"]["subject_authorized_emergency"] = authorized
     config["fire_context"]["subject_official_business"] = authorized
     files["config.json"]["content"] = json.dumps(config, indent=2) + "\n"
     test = files["tests/test_runner.py"]["content"]
     test = test.replace("__traveling_follow_500ft", "__" + suffix)
+    test = test.replace('"target_distance_ft": 500', '"target_distance_ft": 499')
+    test = test.replace('config["target_distance_ft"] = 499',
+                        'config["target_distance_ft"] = 500')
     files["tests/test_runner.py"]["content"] = test
     data["files"] = list(files.values())
     data["mechanisms"] = list(data["mechanisms"]) + [
@@ -72,6 +82,12 @@ def build_construction(suffix, authorized):
 def build_diagnostic(suffix, authorized, folder):
     case = BASE + "__" + suffix
     data = deepcopy(DIAGNOSTIC)
+    footprints = [json.loads(line) for line in data["files"]["participant_footprints.jsonl"].splitlines()]
+    for row in footprints:
+        for corner in row["apparatus_corners"]:
+            corner[0] -= 1 / 3.280839895013123
+    data["files"]["participant_footprints.jsonl"] = "".join(
+        json.dumps(row, separators=(",", ":")) + "\n" for row in footprints)
     context = json.loads(data["files"]["fire_context.json"])
     context["subject_authorized_emergency"] = authorized
     context["subject_official_business"] = authorized
@@ -104,8 +120,8 @@ def build_diagnostic(suffix, authorized, folder):
 def main():
     manifest = json.loads(MANIFEST.read_text())
     reference = manifest["cases"][0]
-    for suffix, authorized in (("ordinary_police_at500", False),
-                               ("authorized_police_at500", True)):
+    for suffix, authorized in (("ordinary_police_at499", False),
+                               ("authorized_police_at499", True)):
         case = BASE + "__" + suffix
         folder = HERE / "cases" / suffix
         construction = build_construction(suffix, authorized)
@@ -132,17 +148,19 @@ def main():
                 "Police-blueprint subject may not sustain the measured following gap or be visible in all original views"},
             "candidates": [],
         }
-        manifest["cases"] = [row for row in manifest["cases"] if row["case_id"] != case] + [entry]
+        manifest["cases"] = [row for row in manifest["cases"]
+                             if row["case_id"] != case and not row["case_id"].endswith("_police_at500")] + [entry]
     save(MANIFEST, manifest)
     path = HERE / "case-plan.json"
     plan = json.loads(path.read_text())
-    ids = [BASE + "__ordinary_police_at500", BASE + "__authorized_police_at500"]
-    plan["cases"] = [row for row in plan["cases"] if row["case_id"] not in ids]
-    for suffix, authorized in (("ordinary_police_at500", False),
-                               ("authorized_police_at500", True)):
+    ids = [BASE + "__ordinary_police_at499", BASE + "__authorized_police_at499"]
+    plan["cases"] = [row for row in plan["cases"]
+                     if row["case_id"] not in ids and not row["case_id"].endswith("_police_at500")]
+    for suffix, authorized in (("ordinary_police_at499", False),
+                               ("authorized_police_at499", True)):
         plan["cases"].append({
             "case_id": BASE + "__" + suffix, "target_law_id": "NRS-484B-710",
-            "branch": "traveling_follow", "target_distance_ft": 500,
+            "branch": "traveling_follow", "target_distance_ft": 499,
             "gap_ids": ["authorized-exception"],
             "construction_status": "exact_bundle_pending_proofs",
             "physical_risk": {
@@ -160,25 +178,30 @@ def main():
     plan["comparisons"].append({
         "comparison_id": "authorized_emergency_exception", "case_ids": ids,
         "fixed_conditions": ["same police blueprint and C109514 through-intersection route",
-                             "same 500 ft commanded gap and measured original footprints",
+                             "same 499 ft commanded gap and measured original footprints",
                              "same fire apparatus alarm response, cameras, duration and controller"],
         "deliberate_differences": ["separately sourced subject emergency authorization and official-business duty"]})
     save(path, plan)
     path = HERE / "proposals/cases.json"
     proposals = json.loads(path.read_text())
     reference_proposal = next(row for row in proposals["cases"] if row["case_id"].endswith("__traveling_follow_500ft"))
-    proposals["cases"] = [row for row in proposals["cases"] if row["case_id"] not in ids]
-    for suffix, authorized in (("ordinary_police_at500", False),
-                               ("authorized_police_at500", True)):
+    proposals["cases"] = [row for row in proposals["cases"]
+                          if row["case_id"] not in ids and not row["case_id"].endswith("_police_at500")]
+    for suffix, authorized in (("ordinary_police_at499", False),
+                               ("authorized_police_at499", True)):
         row = deepcopy(reference_proposal)
         row["case_id"] = BASE + "__" + suffix
-        row["target_type"] = "exception_probe"
+        row["target_type"] = "compliant_attempt" if authorized else "violating_attempt"
         row["rationale"] = "Matched police-blueprint comparison of separately sourced emergency authorization and duty premises"
-        row["variable_assignments"]["authorized_on_official_business"] = {
-            "kind": "sourced_context", "value": authorized}
+        row["variable_assignments"]["target_distance_ft"]["value"] = 499
+        row["variable_assignments"]["target_centre_ft"]["value"] = 499
+        row["variable_assignments"]["subject_authorized_emergency"]["value"] = authorized
+        row["variable_assignments"]["subject_official_business"]["value"] = authorized
         row["paired_probe_id"] = "authorized_emergency_exception"
-        row["deliberate_differences"] = ["authorized_on_official_business"]
-        row.pop("probe", None)
+        row["deliberate_differences"] = ["subject_authorized_emergency", "subject_official_business"]
+        row["probe"] = {"primary_variable": "subject_authorized_emergency",
+                        "comparison_or_standard": "NRS 484B.710 exception applies only to authorized emergency vehicles on official business",
+                        "target_value_or_branch": "authorized_on_duty" if authorized else "ordinary"}
         proposals["cases"].append(row)
     save(path, proposals)
 

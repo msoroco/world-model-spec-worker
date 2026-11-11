@@ -3,8 +3,114 @@
   "law_id": "NRS-484B-207-2",
   "cell_id": "C179789",
   "actor": "motor_vehicle_driver",
-  "cases": [],
-  "comparisons": [],
+  "cases": [
+    {
+      "case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed",
+      "target_law_id": "NRS-484B-207-2",
+      "branch": "gives_way_holds_speed",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "original_motion_measurement_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Native passing actor may not remain near subject through the signal and pass-completion interval",
+        "trigger_source": "original overtaker pose and signal stream",
+        "trigger_metric": "frame ordering, original lateral offset and speed",
+        "failure_condition": "signal or passing overlap does not bracket at least one precompletion motion frame"
+      }
+    },
+    {
+      "case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__no_right_yield_holds_speed",
+      "target_law_id": "NRS-484B-207-2",
+      "branch": "no_right_yield_holds_speed",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "original_motion_measurement_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Native passing actor may not remain near subject through the signal and pass-completion interval",
+        "trigger_source": "original overtaker pose and signal stream",
+        "trigger_metric": "frame ordering, original lateral offset and speed",
+        "failure_condition": "signal or passing overlap does not bracket at least one precompletion motion frame"
+      }
+    },
+    {
+      "case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_increases_speed",
+      "target_law_id": "NRS-484B-207-2",
+      "branch": "gives_way_increases_speed",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "original_motion_measurement_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Native passing actor may not remain near subject through the signal and pass-completion interval",
+        "trigger_source": "original overtaker pose and signal stream",
+        "trigger_metric": "frame ordering, original lateral offset and speed",
+        "failure_condition": "signal or passing overlap does not bracket at least one precompletion motion frame"
+      }
+    },
+    {
+      "case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__right_pass_permitted_no_right_yield",
+      "target_law_id": "NRS-484B-207-2",
+      "branch": "right_pass_permitted_no_right_yield",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "original_motion_measurement_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Native passing actor may not remain near subject through the signal and pass-completion interval",
+        "trigger_source": "original overtaker pose and signal stream",
+        "trigger_metric": "frame ordering, original lateral offset and speed",
+        "failure_condition": "signal or passing overlap does not bracket at least one precompletion motion frame"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "right_yield",
+      "case_ids": [
+        "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed",
+        "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__no_right_yield_holds_speed"
+      ],
+      "fixed_conditions": [
+        "C179789 road, same actors and audible signal",
+        "right passing not permitted premise",
+        "same speed path and camera/duration plan"
+      ],
+      "deliberate_differences": [
+        "measured original rightward displacement after notice"
+      ]
+    },
+    {
+      "comparison_id": "speed_hold_until_complete",
+      "case_ids": [
+        "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed",
+        "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_increases_speed"
+      ],
+      "fixed_conditions": [
+        "C179789 road, same actors and audible signal",
+        "right passing not permitted premise",
+        "same rightward motion and camera/duration plan"
+      ],
+      "deliberate_differences": [
+        "measured speed change before pass completion"
+      ]
+    },
+    {
+      "comparison_id": "right_pass_exception",
+      "case_ids": [
+        "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__no_right_yield_holds_speed",
+        "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__right_pass_permitted_no_right_yield"
+      ],
+      "fixed_conditions": [
+        "C179789 road, same actors and audible signal",
+        "same measured rightward motion and speed path, camera/duration plan"
+      ],
+      "deliberate_differences": [
+        "sourced premise of permission to overtake on the right; legal applicability remains for independent review"
+      ]
+    }
+  ],
   "observations": [
     {
       "term": "drv.overtaking",
@@ -55,7 +161,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No exact construction, finalizer, compatibility receipts, saved-only fixture proof, independent delivery/comparison audit, or fallback construction has been prepared. Actual CARLA realization is also unverified."
+    "Original motion measurement and comparison audit are CPU-tested. Native passing construction, capture/finalization, compatibility, saved processing and delivery audit remain CPU work. Right-pass permission and any legal conclusion require source review."
   ],
   "evidence_review": {
     "reviewer": "worker-partition-03",

@@ -14,9 +14,9 @@ Cell C136014: narrow_road / reverse / other_vehicle; actor motor_vehicle_driver.
 
 ## Current checkpoint
 
-No accepted recordings are supplied for this assignment. The exact text, selected branch, exceptions, timing and source observations still require a finite controlled case comparison and an executable delivery package.
+Three planned cases compare observed reverse clearance from other traffic and other-traffic speed response independently on the narrow road. `backing.py` requests narrow-road geometry, a reverse-geared subject and approaching vehicle through an adapter, then measures original 20 Hz reverse displacement, center distance and other speed change. Tests cover creation calls and missing-source, missing-motion and changed-fixed-condition rejection; `cpu-tests.log` SHA256 is `95b24ff83addcef2f141ac5ca1a3fbe12b6f1966f607763b025ad4d67601f24e`. These engineering measurements do not decide reasonable safety or interference.
 
-The case plan reviews 0 accepted source summaries and records a source-bound gap. This assignment is partial. No physical, legal, Native or delivery readiness is claimed.
+Status remains partial. Concrete Native adapter, four-camera capture, exact runner/config/construction, three fallbacks per case, compatibility, saved processing, semantic proposals and delivery audit remain CPU work.
 
 ## Exact next CPU work
 
@@ -28,3 +28,7 @@ The case plan reviews 0 accepted source summaries and records a source-bound gap
 ## Dependencies and limits
 
 Use the pinned runtime. CARLA, SQLite and canonical source recordings are unavailable in this CPU repository; those do not block the listed CPU preparation. The accepted summaries are retained as historical source evidence.
+
+## Current CPU proof
+
+Run `.venv-cpu/bin/python -m unittest discover -s work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/tests -v` and `.venv-cpu/bin/python worker_check.py --assignment heldout__C136014__NRS-484B-113-1__motor_vehicle_driver --complete`. Strict readiness still fails while this package is partial.

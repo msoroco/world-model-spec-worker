@@ -3,8 +3,87 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C152976",
   "law_id": "NRS-484B-400-5",
-  "cases": [],
-  "comparisons": [],
+  "cases": [
+    {
+      "case_id": "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference",
+      "target_law_id": "NRS-484B-400-5",
+      "branch": "left_edge_reference",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "cpu_geometry_draft",
+      "physical_risk": {
+        "risk": "One-way lane orientation, full-body curb clearance and completed left turn may differ from authored geometry after Native execution.",
+        "trigger_source": "Native map lanes, full-body footprint history and original camera streams",
+        "trigger_metric": "approach and departure full-body left-edge-to-curb gap in metres",
+        "failure_condition": "Missing one-way map direction, absent body/curb observation, lost turn or camera view of either segment."
+      }
+    },
+    {
+      "case_id": "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right",
+      "target_law_id": "NRS-484B-400-5",
+      "branch": "approach_shifted_right",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "cpu_geometry_draft",
+      "physical_risk": {
+        "risk": "One-way lane orientation, full-body curb clearance and completed left turn may differ from authored geometry after Native execution.",
+        "trigger_source": "Native map lanes, full-body footprint history and original camera streams",
+        "trigger_metric": "approach and departure full-body left-edge-to-curb gap in metres",
+        "failure_condition": "Missing one-way map direction, absent body/curb observation, lost turn or camera view of either segment."
+      }
+    },
+    {
+      "case_id": "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right",
+      "target_law_id": "NRS-484B-400-5",
+      "branch": "departure_shifted_right",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "cpu_geometry_draft",
+      "physical_risk": {
+        "risk": "One-way lane orientation, full-body curb clearance and completed left turn may differ from authored geometry after Native execution.",
+        "trigger_source": "Native map lanes, full-body footprint history and original camera streams",
+        "trigger_metric": "approach and departure full-body left-edge-to-curb gap in metres",
+        "failure_condition": "Missing one-way map direction, absent body/curb observation, lost turn or camera view of either segment."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "approach_left_edge",
+      "case_ids": [
+        "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference",
+        "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right"
+      ],
+      "fixed_conditions": [
+        "two physical one-way intersecting roads, northbound to westbound",
+        "same left turn",
+        "departure centerline and left curb",
+        "vehicle, controller policy, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "approach lateral body position relative to measured left-hand curb"
+      ]
+    },
+    {
+      "comparison_id": "departure_left_edge",
+      "case_ids": [
+        "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference",
+        "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right"
+      ],
+      "fixed_conditions": [
+        "two physical one-way intersecting roads, northbound to westbound",
+        "same left turn",
+        "approach centerline and left curb",
+        "vehicle, controller policy, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "departure lateral body position relative to measured left-hand curb and corresponding turn transition"
+      ]
+    }
+  ],
   "observations": [],
   "sources": [
     {
@@ -18,7 +97,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No executable construction, finalizer, capture plan or physical observation has yet been produced for this assignment."
+    "Map/actor adapter, exact runner and full finalization/capture/proofs remain worker-owned CPU work.",
+    "No numeric legal cutoff for as close as practicable is adopted."
   ],
   "evidence_review": {
     "reviewer": "partition-04 CPU scope review",
@@ -27,7 +107,7 @@
     "gaps": [
       {
         "id": "uncovered-branches",
-        "requirement": "Construct one-way intersecting highways and a left turn; compare measured approach and departure body proximity to the left curb or edge while holding turn geometry fixed. Keep \u201cas close as practicable\u201d unresolved.",
+        "requirement": "Construct one-way intersecting highways and a left turn; compare measured approach and departure body proximity to the left curb or edge while holding turn geometry fixed. Keep “as close as practicable” unresolved.",
         "source": {
           "path": "inputs/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/assignment.json",
           "sha256": "f21e85be86b0a4028ae8b192c1235490b66d5281273887e733ec222a2445cc0e"
@@ -35,5 +115,96 @@
         "why_existing_insufficient": "The frozen evidence inventory lists no accepted recordings for this assignment."
       }
     ]
-  }
+  },
+  "branch_inventory": [
+    {
+      "branch": "approach_as_close_as_practicable",
+      "case_ids": [
+        "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference",
+        "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right"
+      ],
+      "status": "construction_draft"
+    },
+    {
+      "branch": "departure_as_close_as_practicable",
+      "case_ids": [
+        "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference",
+        "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right"
+      ],
+      "status": "construction_draft"
+    }
+  ],
+  "review_status": "partial_cpu_construction",
+  "source_observation_mapping": [
+    {
+      "term": "drv.turning",
+      "measurement": "original Native one-way lane directions, body footprint and physical curb geometry along approach or departure",
+      "source_refs": [
+        "native/lanes.jsonl",
+        "native/footprints.jsonl",
+        "video_frames.jsonl"
+      ],
+      "limitation": "Left-edge gap is descriptive; it does not define the legal practicability standard."
+    },
+    {
+      "term": "st.one_way_roadway",
+      "measurement": "original Native one-way lane directions, body footprint and physical curb geometry along approach or departure",
+      "source_refs": [
+        "native/lanes.jsonl",
+        "native/footprints.jsonl",
+        "video_frames.jsonl"
+      ],
+      "limitation": "Left-edge gap is descriptive; it does not define the legal practicability standard."
+    },
+    {
+      "term": "st.road_edge",
+      "measurement": "original Native one-way lane directions, body footprint and physical curb geometry along approach or departure",
+      "source_refs": [
+        "native/lanes.jsonl",
+        "native/footprints.jsonl",
+        "video_frames.jsonl"
+      ],
+      "limitation": "Left-edge gap is descriptive; it does not define the legal practicability standard."
+    },
+    {
+      "term": "rel.occupies",
+      "measurement": "original Native one-way lane directions, body footprint and physical curb geometry along approach or departure",
+      "source_refs": [
+        "native/lanes.jsonl",
+        "native/footprints.jsonl",
+        "video_frames.jsonl"
+      ],
+      "limitation": "Left-edge gap is descriptive; it does not define the legal practicability standard."
+    },
+    {
+      "term": "kin.position",
+      "measurement": "original Native one-way lane directions, body footprint and physical curb geometry along approach or departure",
+      "source_refs": [
+        "native/lanes.jsonl",
+        "native/footprints.jsonl",
+        "video_frames.jsonl"
+      ],
+      "limitation": "Left-edge gap is descriptive; it does not define the legal practicability standard."
+    },
+    {
+      "term": "st.intersection",
+      "measurement": "original Native one-way lane directions, body footprint and physical curb geometry along approach or departure",
+      "source_refs": [
+        "native/lanes.jsonl",
+        "native/footprints.jsonl",
+        "video_frames.jsonl"
+      ],
+      "limitation": "Left-edge gap is descriptive; it does not define the legal practicability standard."
+    },
+    {
+      "term": "st.lane_enters",
+      "measurement": "original Native one-way lane directions, body footprint and physical curb geometry along approach or departure",
+      "source_refs": [
+        "native/lanes.jsonl",
+        "native/footprints.jsonl",
+        "video_frames.jsonl"
+      ],
+      "limitation": "Left-edge gap is descriptive; it does not define the legal practicability standard."
+    }
+  ]
 }

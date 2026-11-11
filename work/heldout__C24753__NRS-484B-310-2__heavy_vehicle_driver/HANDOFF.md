@@ -14,9 +14,9 @@ Cell C24753: blind_intersection / travel / flashing_yellow_signal; actor heavy_v
 
 ## Current checkpoint
 
-No accepted recordings are supplied for this assignment. The exact text, selected branch, exceptions, timing and source observations still require a finite controlled case comparison and an executable delivery package.
+Four planned cases compare a heavy vehicle from east/west approaches, engineering approach speed and crossing-traffic presence while retaining the same official flashing-yellow premise. `flashing_yellow_heavy.py` requests a physical yellow signal head, linked official device, blind intersection, heavy subject and optional crossing vehicle through an adapter. Its source-shaped measurement requires original 20 Hz signal and participant readbacks and keeps the legal “with caution” judgment open. Tests cover both approach directions, creation calls, missing-source rejection and fixed-condition comparison; `cpu-tests.log` SHA256 is `af7e3f206e5267a8ff2e06d0a2fefd00e69a646799c2c61bbcd2fecaea8941d3`.
 
-The case plan reviews 0 accepted source summaries and records a source-bound gap. This assignment is partial. No physical, legal, Native or delivery readiness is claimed.
+Status remains partial. A concrete Native adapter, four-camera capture, exact runner/config/construction, three fallbacks per case, compatibility, saved processing, semantic proposals and delivery audit remain CPU work.
 
 ## Exact next CPU work
 
@@ -28,3 +28,7 @@ The case plan reviews 0 accepted source summaries and records a source-bound gap
 ## Dependencies and limits
 
 Use the pinned runtime. CARLA, SQLite and canonical source recordings are unavailable in this CPU repository; those do not block the listed CPU preparation. The accepted summaries are retained as historical source evidence.
+
+## Current CPU proof
+
+Run `.venv-cpu/bin/python -m unittest discover -s work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/tests -v` and `.venv-cpu/bin/python worker_check.py --assignment heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver --complete`. Strict readiness still fails while this package is partial.

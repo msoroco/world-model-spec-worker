@@ -30,3 +30,28 @@ The external CARLA run is a later operator action; remaining CPU omissions above
 ## Controlled left-turn comparisons
 
 `case-plan.json` plans a shared reference case plus separate approach and departure variants. `approach_position` changes only measured approach body position within the right half near the centerline; `departure_position` changes only measured departure body position near the one-way left curb. Both hold connected two-directional approach, one-way departure, left-turn maneuver, cameras and duration fixed. The exact law gives no lateral cutoff. All cases are planned only; construction, source-bound measurements, fallbacks, compatibility and saved audits remain CPU work.
+
+## 2026-11-11 geometry continuation
+
+The pinned `.venv-cpu/bin/python runtime.py preflight` passes with the updated
+CPU environment, FFmpeg and Lean. `turn_geometry.py` implements descriptive
+body-corner offsets from a directed two-directional approach centerline and
+distances from the destination one-way highway's left curb, with the surveyed
+intersection-entry point required on the centerline. Negative approach offsets
+are on the right half when the line points into the intersection. The helper
+does not decide which portion is legally nearest or what is practicable; those
+remain contextual review questions. Two CPU tests exercise a right-half body,
+a crossing body, rotated directions and invalid geometry. Run
+`.venv-cpu/bin/python -m unittest discover -s
+work/heldout__C109705__NRS-484B-400-3__motor_vehicle_driver/tests -v`;
+`cpu-tests.log` and its SHA256 are recorded in `result.json`.
+
+Next CPU work: retain the surveyed centerline, destination curb, roadway
+directions, intersection entry and original body corners from Native source
+frames; build the selected reference case through exact runner, four-camera
+source capture, finalizer, offline and positive/negative compatibility and
+saved-processing proofs. Then realize the isolated approach and departure
+comparisons, fallback constructions, semantic proposals and independent
+audits. The geometry test is a software fixture and proves no actual turn.
+
+Latest scoped strict gate log `strict-gate.log` SHA256 `89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`; exit code 1 because status is correctly partial.

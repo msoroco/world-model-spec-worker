@@ -3,8 +3,83 @@
   "law_id": "NRS-484B-400-5",
   "cell_id": "C152972",
   "actor": "motor_vehicle_driver",
-  "cases": [],
-  "comparisons": [],
+  "cases": [
+    {
+      "case_id": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_near",
+      "target_law_id": "NRS-484B-400-5",
+      "branch": "approach_near_depart_near",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "original_footprint_measurement_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Native body path may not keep left-curb proximity independently on source and destination roads",
+        "trigger_source": "original map curb lines and ground body footprints",
+        "trigger_metric": "approach and departure curb distances",
+        "failure_condition": "actual original body corners fail to isolate the intended comparison variable"
+      }
+    },
+    {
+      "case_id": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_far_depart_near",
+      "target_law_id": "NRS-484B-400-5",
+      "branch": "approach_far_depart_near",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "original_footprint_measurement_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Native body path may not keep left-curb proximity independently on source and destination roads",
+        "trigger_source": "original map curb lines and ground body footprints",
+        "trigger_metric": "approach and departure curb distances",
+        "failure_condition": "actual original body corners fail to isolate the intended comparison variable"
+      }
+    },
+    {
+      "case_id": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_far",
+      "target_law_id": "NRS-484B-400-5",
+      "branch": "approach_near_depart_far",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "original_footprint_measurement_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Native body path may not keep left-curb proximity independently on source and destination roads",
+        "trigger_source": "original map curb lines and ground body footprints",
+        "trigger_metric": "approach and departure curb distances",
+        "failure_condition": "actual original body corners fail to isolate the intended comparison variable"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "approach_left_curb_position",
+      "case_ids": [
+        "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_near",
+        "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_far_depart_near"
+      ],
+      "fixed_conditions": [
+        "one-way source and destination, same left turn",
+        "same subject, intersection, departure body path, four cameras and duration"
+      ],
+      "deliberate_differences": [
+        "measured approach body distance from source left curb; no numeric legal cutoff"
+      ]
+    },
+    {
+      "comparison_id": "turn_departure_left_curb_position",
+      "case_ids": [
+        "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_near",
+        "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_far"
+      ],
+      "fixed_conditions": [
+        "one-way source and destination, same left turn",
+        "same subject, intersection, approach body path, four cameras and duration"
+      ],
+      "deliberate_differences": [
+        "measured departure body distance from destination left curb; no numeric legal cutoff"
+      ]
+    }
+  ],
   "observations": [
     {
       "term": "drv.turning",
@@ -47,7 +122,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No exact construction, finalizer, compatibility receipts, saved-only fixture proof, independent delivery/comparison audit, or fallback construction has been prepared. Actual CARLA realization is also unverified."
+    "Both original-footprint curb measurements and independent comparison audit are CPU-tested. Native construction, capture, exact compatibility, saved processing and delivery audit remain CPU work. Practicability remains an independent legal/source question."
   ],
   "evidence_review": {
     "reviewer": "worker-partition-03",

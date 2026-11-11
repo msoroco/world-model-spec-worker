@@ -24,24 +24,24 @@ def main():
     manifest = json.loads(MANIFEST.read_text())
     for entry in manifest["cases"]:
         suffix = entry["case_id"].split("__")[-1]
-        if suffix not in ("ordinary_police_at500", "authorized_police_at500"):
+        if suffix not in ("ordinary_police_at499", "authorized_police_at499"):
             continue
         folder = HERE / "cases" / suffix
         primary = json.loads((folder / "construction.json").read_text())
         variants = [
             ("fallback1", "runner.py",
-             "select_intersection_route(world.get_map(), target_gap_ft=500)",
-             "select_intersection_route(world.get_map(), target_gap_ft=500, step_m=2.5)",
+             "select_intersection_route(world.get_map(), target_gap_ft=499)",
+             "select_intersection_route(world.get_map(), target_gap_ft=499, step_m=2.5)",
              "Native route sample step 5 m to 2.5 m",
              {"source": "Native waypoint route-selection diagnostic",
               "metric": "connected through-intersection route count",
               "failure_condition": "Primary 5 m sampling finds no connected route with the junction between actors"}),
             ("fallback2", "runner.py",
-             "control_step(ego, apparatus, target_gap_ft=500,\n                         steer=",
-             "control_step(ego, apparatus, target_gap_ft=500,\n                         gain=0.12, speed_gain=0.22, steer=",
+             "control_step(ego, apparatus, target_gap_ft=499,\n                         steer=",
+             "control_step(ego, apparatus, target_gap_ft=499,\n                         gain=0.12, speed_gain=0.22, steer=",
              "following gap and speed feedback gains 0.18/0.30 to 0.12/0.22",
              {"source": "original participant footprint and state streams",
-              "metric": "active-frame gap oscillation around commanded 500 ft",
+              "metric": "active-frame gap oscillation around commanded 499 ft",
               "failure_condition": "Primary gain produces sustained gap oscillation outside a predeclared engineering attainment band"}),
             ("fallback3", "fire_camera_capture.py",
              '"approach": ((1.2, 0.0, 2.0), (0.0, 0.0, 0.0), (1280, 720), 90)',

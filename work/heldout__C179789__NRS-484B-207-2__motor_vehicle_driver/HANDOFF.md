@@ -14,9 +14,9 @@ Cell C179789: paved_road / travel / other_vehicle; actor motor_vehicle_driver.
 
 ## Current checkpoint
 
-No accepted recordings are supplied for this assignment. The exact text, selected branch, exceptions, timing and source observations still require a finite controlled case comparison and an executable delivery package.
+Four cases now separate the rightward-yield clause, no-speed-increase-until-passed clause, and the sourced right-passing exception premise. `overtaken_response.py` measures original speed and right offset after an observed or audible notice and before pass completion. `overtaken_comparison_audit.py` checks the held actor, notice and motion conditions and rejects a missing source binding. CPU tests pass; `cpu-tests.log` SHA256 is `199c77cf3f2c75565ad845489c8a7c6f65ad386d2322ab498befeef5e815c9a1`. No legal conclusion is drawn from the measured deltas.
 
-The case plan reviews 0 accepted source summaries and records a source-bound gap. This assignment is partial. No physical, legal, Native or delivery readiness is claimed.
+Status remains partial. Native passing construction, four-camera capture, finalizer integration, three fallbacks per exact case, compatibility, saved processing, semantic proposals and delivery audit remain CPU work.
 
 ## Exact next CPU work
 
@@ -28,3 +28,7 @@ The case plan reviews 0 accepted source summaries and records a source-bound gap
 ## Dependencies and limits
 
 Use the pinned runtime. CARLA, SQLite and canonical source recordings are unavailable in this CPU repository; those do not block the listed CPU preparation. The accepted summaries are retained as historical source evidence.
+
+## Current CPU proof
+
+Run `.venv-cpu/bin/python -m unittest discover -s work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/tests -v` and `.venv-cpu/bin/python worker_check.py --assignment heldout__C179789__NRS-484B-207-2__motor_vehicle_driver --complete`. The strict readiness gate still fails while this package is partial.

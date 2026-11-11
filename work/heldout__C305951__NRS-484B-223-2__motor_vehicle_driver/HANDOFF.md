@@ -16,9 +16,9 @@ Cell C305951: three_lane_road / travel / lane_marking; actor motor_vehicle_drive
 
 ## Current checkpoint
 
-No accepted recordings are supplied for this assignment. The exact text, selected branch, exceptions, timing and source observations still require a finite controlled case comparison and an executable delivery package.
+Eight planned cases cover the extreme-left prohibition, center lane without exception, visible/occluded passing context, left-turn preparation, and center-lane allocation with and without a posted sign. `three_lane.py` requests actual markings, a passing actor, a sight-blocking occluder, turn route and allocation sign through an adapter; it measures original lane occupancy and checks source presence. Tests exercise feature creation and missing-source/fixed-condition rejection; `cpu-tests.log` SHA256 is `a14a836e617e577bea18de5ac6eee35d08fc837cbc2d50a4dad7f520a8e9ba96`. The sight and safe-distance judgments remain open.
 
-The case plan reviews 0 accepted source summaries and records a source-bound gap. This assignment is partial. No physical, legal, Native or delivery readiness is claimed.
+Status remains partial. Concrete Native adapter, four-camera capture, exact runner/config/construction, three fallbacks per case, compatibility, saved processing, semantic proposals and delivery audit remain CPU work.
 
 ## Exact next CPU work
 
@@ -30,3 +30,7 @@ The case plan reviews 0 accepted source summaries and records a source-bound gap
 ## Dependencies and limits
 
 Use the pinned runtime. CARLA, SQLite and canonical source recordings are unavailable in this CPU repository; those do not block the listed CPU preparation. The accepted summaries are retained as historical source evidence.
+
+## Current CPU proof
+
+Run `.venv-cpu/bin/python -m unittest discover -s work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/tests -v` and `.venv-cpu/bin/python worker_check.py --assignment heldout__C305951__NRS-484B-223-2__motor_vehicle_driver --complete`. Strict readiness still fails while this package is partial.

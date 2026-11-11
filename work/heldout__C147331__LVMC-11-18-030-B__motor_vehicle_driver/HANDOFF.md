@@ -81,3 +81,24 @@ actor-compatible `adjacent_lanes` / `left_turn` / `lane_marking` cell, with
 LVMC-11-18-030-B in its annotation provenance. `case-plan.json` records this
 as a proposed additional binding for the lawful-turn-preparation branch. It is
 not yet allocated in shared coverage, and no lawful-turn claim is made.
+
+Original capture now retains the ego light-state readback when available.
+Saved measurement projects ego and passing-vehicle body centers onto each
+Native lane heading, preserves per-frame signed longitudinal offsets, and
+reports observed negative-to-positive order reversal. The passing comparison
+checker rejects absent order reversal, absent motion-source hashes, source
+hash fields, case identity errors and changed fixed conditions. Eight tests
+pass with missing-evidence negative branches; current hash is in `result.json`.
+`case-plan.json.source_observation_mapping` names all eight planning terms and
+marks the still-missing turn source explicitly. The audit is a draft CPU helper;
+actual promoted bytes and finalizer outputs must be bound before readiness.
+
+`case-plan.json` now gives each of the three exact planned cases its own
+physical motion or camera risk. Candidate constructions remain explicitly
+`not_yet_implemented`; no fallback or receipt is claimed. The within-lane case
+needs body-corner clearance and marking visibility, the unexcused crossing
+needs measured boundary excursion, and the passing case additionally needs a
+measured longitudinal order reversal. These are engineering triggers, not
+legal thresholds or physical-success claims.
+
+Latest scoped strict gate log `strict-gate.log` SHA256 `89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`; exit code 1 because status is correctly partial.
