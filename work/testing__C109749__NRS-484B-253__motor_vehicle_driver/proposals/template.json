@@ -1,0 +1,97 @@
+{
+  "template_id": "NRS-484B-253@motor_vehicle_driver",
+  "law_id": "NRS-484B-253",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "The driver of a vehicle within an intersection intending to turn to the left shall yield the right-of-way to any vehicle approaching from the opposite direction which is within the intersection or so close thereto as to constitute an immediate hazard, but such driver, having so yielded and having given a signal when and as required, may make such left turn and the drivers of all other vehicles approaching the intersection from the opposite direction shall yield the right-of-way to the vehicle making the left turn.",
+  "structure": {
+    "law_id": "NRS-484B-253",
+    "activation": {
+      "condition": "driver is within an intersection intending to turn left; an opposite-direction vehicle is within the intersection or sufficiently close to pose an immediate hazard",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "yield right-of-way to the qualifying opposite-direction vehicle before making the left turn",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "subject has yielded and given a signal when and as required",
+        "effect": "subject may make the left turn",
+        "replacement_obligation": "other opposite-direction drivers approaching the intersection shall yield to the turning vehicle",
+        "source_clause": "but such driver, having so yielded and having given a signal when and as required, may make such left turn and the drivers of all other vehicles approaching the intersection from the opposite direction shall yield the right-of-way to the vehicle making the left turn."
+      }
+    ],
+    "timing": {
+      "description": "initial yield precedes the signalled turn; opposing duty follows the subject having yielded and making the turn",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "immediate hazard",
+        "note": "No numeric legal time-to-conflict threshold is supplied."
+      },
+      {
+        "phrase": "when and as required",
+        "note": "Signal sufficiency depends on other applicable signal rules and original context."
+      },
+      {
+        "phrase": "yield the right-of-way",
+        "note": "Observed body and speed histories do not by themselves decide legal priority."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "controller_release_ttc_s",
+      "kind": "controller",
+      "range_or_domain": "positive engineering seconds; no legal hazard cutoff"
+    },
+    {
+      "name": "approach_speed_mps",
+      "kind": "controller",
+      "range_or_domain": "positive engineering metres per second"
+    },
+    {
+      "name": "reciprocal_approach_speed_mps",
+      "kind": "controller",
+      "range_or_domain": "positive engineering metres per second"
+    },
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "positive engineering metres per second"
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": "authored left-turn waypoint path"
+    },
+    {
+      "name": "initial_opposing_in_intersection",
+      "kind": "subject_behavior",
+      "range_or_domain": "observed boolean from opposing body and sourced junction"
+    },
+    {
+      "name": "ego_turn_onset",
+      "kind": "subject_behavior",
+      "range_or_domain": "observed Native frame"
+    },
+    {
+      "name": "reciprocal_stop_outside",
+      "kind": "subject_behavior",
+      "range_or_domain": "observed boolean from later opposing body and velocity"
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "observed metres per second, never a controller request"
+    },
+    {
+      "name": "later_opposing_braking_policy",
+      "kind": "controller",
+      "range_or_domain": "boolean engineering policy for later opposing target speed"
+    }
+  ]
+}
