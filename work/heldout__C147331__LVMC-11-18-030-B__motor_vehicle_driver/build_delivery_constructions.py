@@ -18,6 +18,7 @@ def dump(path, value):
 
 def main():
     probe_manifest = json.loads(PROBES.read_text())
+    delivery_description = json.loads((HERE / "delivery-recording-description.json").read_text())
     entries = []
     for entry in probe_manifest["cases"]:
         probe = json.loads((HERE / entry["construction"]).read_text())
@@ -29,7 +30,9 @@ def main():
         config = json.loads(config_file["content"])
         if config.pop("construction_probe_only") is not True:
             raise ValueError("Expected reviewed probe config")
+        config["case"]["recording_description"] = delivery_description
         config_file["content"] = json.dumps(config, indent=2) + "\n"
+        probe["recording_description"] = delivery_description
         selected_test = next(row for row in probe["files"]
                              if row["path"] == "tests/test_selected_case_config.py")
         selected_test["content"] = selected_test["content"].replace(

@@ -49,14 +49,34 @@ def analyze(attempt, *, write_channel=True):
     expected_ego = source_rows[0]["ego_id"]
     measured = measure_saved_lane(source_path, expected_ego,
                                   require_overtaken=case_id.endswith("__passing_boundary_crossing"))
-    channel = root / "lane_clearance_m.jsonl"
+    channel_rows = {
+        "lane_clearance_m": [(frame["time_s"], frame["minimum_corner_clearance_m"])
+                             for frame in measured["frames"]],
+        "native_lane_boundaries": [(row["time_s"], row["lane"]) for row in source_rows],
+        "ego_vehicle_footprint": [(row["time_s"], {
+            "ego_id": row["ego_id"], "corners_xy_m": row["ego_corners_xy_m"],
+            "velocity_xy_mps": row["ego_velocity_xy_mps"]}) for row in source_rows],
+        "lane_boundary_overlap": [(frame["time_s"], frame["minimum_corner_clearance_m"])
+                                  for frame in measured["frames"]],
+        "passing_context": [(row["time_s"], {
+            "overtaken_id": row.get("overtaken_id"),
+            "corners_xy_m": row.get("overtaken_corners_xy_m"),
+            "velocity_xy_mps": row.get("overtaken_velocity_xy_mps")}) for row in source_rows],
+        "turn_indicator_state": [(row["time_s"], {
+            "ego_light_state": row.get("ego_light_state")}) for row in source_rows],
+        "ego_turn_motion": [(row["time_s"], {
+            "position": row.get("position"), "heading_deg": row.get("heading_deg"),
+            "speed_mps": row.get("speed_mps")}) for row in trace],
+    }
     if write_channel:
-        if channel.exists():
-            raise ValueError("Retain prior derived lane channel")
-        channel.write_text("".join(json.dumps({"frame": frame["frame"],
-                                                "time_s": frame["time_s"],
-                                                "value": frame["minimum_corner_clearance_m"]}) + "\n"
-                                   for frame in measured["frames"]))
+        for name, values in channel_rows.items():
+            channel = root / (name + ".jsonl")
+            if channel.exists():
+                raise ValueError("Retain prior derived lane channel: " + name)
+            channel.write_text("".join(json.dumps({"frame": source_rows[index]["frame"],
+                                                    "time_s": time_s, "value": value},
+                                                   allow_nan=False) + "\n"
+                                       for index, (time_s, value) in enumerate(values)))
     sources = {"video_frames.jsonl": map_sha, "trace.jsonl": trace_sha,
                "marked_lane_sources.jsonl": source_sha}
     return {"format": "worker-analysis-report", "case_id": case_id,
@@ -75,7 +95,15 @@ def build_result(attempt, report):
     value = report["measurements"]["lane_boundary_observation"]["value"]
     frames = value["frames"]
     minimum = min(frame["minimum_corner_clearance_m"] for frame in frames)
-    channel = root / "lane_clearance_m.jsonl"
+    evidence = []
+    for channel_description in description["channels"]:
+        name = channel_description["name"]
+        path = root / (name + ".jsonl")
+        if not path.is_file():
+            raise ValueError("Missing derived observation channel: " + name)
+        evidence.append({"name": name, "unit": channel_description["unit"],
+                         "reference": path.name,
+                         "sha256": sha256(path.read_bytes()).hexdigest()})
     return {"case_id": report["case_id"],
             "measured_values": {"lane_boundary_observation": value},
             "target_checks": [{"target": "measured marked-lane footprint history",
@@ -93,9 +121,7 @@ def build_result(attempt, report):
                                  "driver_reference.mkv"],
             "video_frame_map_reference": "video_frames.jsonl",
             "recording_description": description,
-            "recording_evidence": [{"name": "lane_clearance_m", "unit": "m",
-                                    "reference": "lane_clearance_m.jsonl",
-                                    "sha256": sha256(channel.read_bytes()).hexdigest()}],
+            "recording_evidence": evidence,
             "realized_observables": {"lane_clearance_m": {
                 "unit": "m", "method": "signed minimum ground-corner clearance from original Native lane source",
                 "time_window": "all original frames", "statistic": "min",

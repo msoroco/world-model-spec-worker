@@ -24,6 +24,8 @@ def check_config(config):
         raise ValueError('Right-half probe identity differs')
     if config.get('rate_hz') != 20 or config.get('frames', 0) < 80:
         raise ValueError('Right-half probe requires at least 80 frames at 20 Hz')
+    if config.get('travel_direction') != 'east':
+        raise ValueError('Exact baseline east case requires eastward travel')
     if config.get('construction_probe_only') is not True:
         raise ValueError('Probe may not masquerade as delivery')
 
@@ -49,7 +51,7 @@ def run(config, output, host, port):
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
-        route = select_two_way_route(world.get_map())
+        route = select_two_way_route(world.get_map(), desired_direction=config['travel_direction'])
         ego = world.try_spawn_actor(
             world.get_blueprint_library().find('vehicle.tesla.model3'),
             route[0].transform)

@@ -5,15 +5,23 @@ from math import atan2, hypot
 from directed_geometry import adjacent_opposing_lane
 
 
-def select_two_way_route(world_map, *, minimum_steps=12, step_m=2.5):
+def select_two_way_route(world_map, *, minimum_steps=12, step_m=2.5,
+                         desired_direction='east'):
     """Choose connected mapped right-side travel with an adjacent opposing lane.
 
     A median-opening witness still needs separate map-specific proof; this selector
     only establishes the two-way geometry needed by the baseline construction.
     """
+    if desired_direction not in ('east', 'west'):
+        raise ValueError('Unsupported directed route request')
     for transform in world_map.get_spawn_points():
         start = world_map.get_waypoint(transform.location)
         if start is None or start.is_junction:
+            continue
+        tangent = start.transform.get_forward_vector()
+        if desired_direction == 'east' and tangent.x <= .8:
+            continue
+        if desired_direction == 'west' and tangent.x >= -.8:
             continue
         try:
             adjacent_opposing_lane(start)

@@ -1,0 +1,93 @@
+{
+  "template_id": "NRS-484B-623-1@motor_vehicle_driver",
+  "law_id": "NRS-484B-623-1",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A person shall not drive a motor vehicle at such a slow speed as to impede the normal and reasonable movement of traffic except when reduced speed is necessary for safe operation or in compliance with law.",
+  "structure": {
+    "law_id": "NRS-484B-623-1",
+    "activation": {
+      "condition": "A person drives a motor vehicle at a slow speed that may impede normal and reasonable traffic movement.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Do not drive at a slow speed that impedes normal and reasonable movement of traffic, subject to the stated exceptions.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Reduced speed is necessary for safe operation.",
+        "effect": "The slow-speed prohibition has the stated safety exception.",
+        "replacement_obligation": "none stated in this section",
+        "source_clause": "except when reduced speed is necessary for safe operation"
+      },
+      {
+        "trigger": "Reduced speed is in compliance with law.",
+        "effect": "The slow-speed prohibition has the stated compliance exception.",
+        "replacement_obligation": "none stated in this section",
+        "source_clause": "or in compliance with law"
+      }
+    ],
+    "timing": {
+      "description": "Observe synchronized subject and following traffic motion over the complete original interval; the statute gives no numeric duration.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "normal and reasonable movement of traffic",
+        "note": "No statutory numeric traffic-speed, queue-size, or duration cutoff."
+      },
+      {
+        "phrase": "necessary for safe operation",
+        "note": "Physical obstruction and reduced speed require source-backed necessity review."
+      },
+      {
+        "phrase": "in compliance with law",
+        "note": "Physical speed-limit device does not by itself establish governing legal authority."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "ego_speed_target_mps",
+      "kind": "controller",
+      "range_or_domain": "nonnegative target m/s; measured speed separate"
+    },
+    {
+      "name": "follower_cruise_mps",
+      "kind": "controller",
+      "range_or_domain": "nonnegative target m/s; measured follower speed separate"
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured nonnegative m/s"
+    },
+    {
+      "name": "follower_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured nonnegative m/s"
+    },
+    {
+      "name": "follower_gap",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured nonnegative m"
+    },
+    {
+      "name": "obstruction_present",
+      "kind": "world_setup",
+      "range_or_domain": "source-backed boolean"
+    },
+    {
+      "name": "control_present",
+      "kind": "world_setup",
+      "range_or_domain": "source-backed boolean"
+    },
+    {
+      "name": "governing_control_valid",
+      "kind": "world_setup",
+      "range_or_domain": "separately sourced authority and governed road portion"
+    }
+  ]
+}

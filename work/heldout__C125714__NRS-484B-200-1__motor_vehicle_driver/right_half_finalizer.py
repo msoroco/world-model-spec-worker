@@ -11,6 +11,7 @@ from right_half_measurement import measure
 CASE_SUFFIXES = ('baseline_right_east', 'baseline_right_west', 'unexcepted_left',
                  'passing_same_direction', 'right_half_closed', 'three_lane',
                  'posted_one_way', 'insufficient_width')
+CASE_PREFIX = 'heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__'
 
 
 def _source(root, name):
@@ -29,7 +30,7 @@ def analyze(attempt):
     config_path, _ = _source(root, 'config.json')
     config = json.loads(config_path.read_text())
     case_id = config.get('selected_case_id', '')
-    if not any(case_id.endswith('__' + suffix) for suffix in CASE_SUFFIXES) or (
+    if case_id not in {CASE_PREFIX + suffix for suffix in CASE_SUFFIXES} or (
             config.get('law_id'), config.get('cell_id'), config.get('actor')) != (
             'NRS-484B-200-1', 'C125714', 'motor_vehicle_driver'):
         raise ValueError('Wrong exact right-half finalizer identity')

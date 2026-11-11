@@ -183,3 +183,77 @@ proposals, final source-bound acceptance handoff and C5191 turn branch are
 unfinished CPU work. No synthetic receipt proves physical visibility, motion,
 municipal applicability or a legal exception. All current commands and log
 hashes are recorded in `result.json` and the named proof JSON files.
+
+## Delivery construction checkpoint (2026-11-11)
+
+`runner.py` is now a CARLA-lazy Native delivery entrypoint for the three exact
+C147331 cases. It records the original `PipelineCapture` trace/capture tree,
+`video_frames.jsonl` via `FrameMap`, `marked_lane_sources.jsonl` from Native
+waypoints and participant bodies, and four FFV1 source streams. It restores
+world settings and seals the attempt only after full frame and camera checks.
+The earlier `native_construction_probe.py` and probe receipts remain separate
+historical diagnostics and do not represent a deliverable capture.
+
+`delivery-construction-manifest.json` binds three primary delivery
+constructions and nine distinct fallback constructions. Every case has a
+physical-risk assessment. Fallback triggers are (1) insufficient connected
+marked route at 2 m sampling, addressed by 1 m sampling; (2) body excursion
+from controller overshoot, addressed by reduced requested speed/gain; and (3)
+failed primary route spawn, addressed by the next sorted verified route.
+These are engineering alternatives with unchanged case identity, observations,
+recording description, four-camera plan and duration. Their triggers require
+Native evidence; CPU compatibility does not claim their physical success.
+
+`delivery-case-proofs.json` records passing exact offline and positive/negative
+compatibility checks for all three primaries. The nine fallback offline and
+compatibility receipts and their source hashes are embedded in the delivery
+manifest; `candidate_constructions.validate(..., required=True,
+require_alternate=True, candidate_count=4)` passes for every exact case.
+`delivery-saved-proofs.json` records three passing saved-only processing runs,
+with originals preserved and missing evidence false. `delivery-source-audit-proofs.json`
+records independent recomputation and full decodes of all four cameras for
+those three saved outputs. `delivery-comparison-audit.json` records both passing
+software comparisons over the saved outputs. All media in those checks are
+synthetic adapter diagnostics and remain under ignored `.runtime-work`.
+
+Status stays **partial**. The canonical semantic stage proposals and full
+statutory branch including proposed C5191 turn remain unfinished. The canonical
+`execution-manifest.json`, first-case `construction.json`/`config.json`, delivery
+job queue, and acceptance fields have not yet been reconciled to the strict
+gate. No CARLA capture, municipal applicability finding, physical visibility
+finding, lawful-passing determination or legal verdict is claimed. Next CPU
+work: implement the turn case and finalizer/source audit, complete semantic
+stage proposals, reconcile canonical package artifacts, then rerun all affected
+proofs and the scoped strict gate before changing status to ready.
+
+## Semantic and turn branch checkpoint
+
+The six law/cell semantic draft artifacts in `proposals/relevance_batch.json`,
+`relevance.json`, `template.json`, `judgment_passing.json`,
+`judgment_turn.json` and `bindings.json` now pass the frozen stage validators.
+`semantic-draft-proof.json` binds their hashes. The template preserves both
+express exceptions as distinct unresolved judgment phrases. This is not yet a
+canonical `semantic-index.json`: the current `proposals/cases.json` still lacks
+the baseline, complete bound variable assignments and physical judgment sweep
+coverage required by the stage contract. It must be expanded and independently
+validated before strict readiness.
+
+`proposals/c5191-turn-branch.json` cites the exact frozen law assignment and
+candidate-cell inventory for C5191, which is `adjacent_lanes/left_turn/lane_marking`
+and is not allocated in `batch.json`. It defines three proposed exact comparison
+cases without adding them to the C147331 delivery manifest. `turn_route.py`
+adds a CARLA-lazy selector for a connected marked approach and genuinely
+leftward exit waypoint. The local tests exercise accepted left-turn geometry
+and rejection of rightward or unmarked exits. A complete C5191 runner,
+original turn evidence, finalizer and audits remain to be authored after an
+exact allocation; C147331's frozen `travel` cell must not be silently changed.
+
+`execution-manifest.json` now carries the three delivery primaries, their exact
+offline log hashes, all nine tested fallback receipts, and the Native handoff
+variables. Running the frozen execution-manifest validator reaches its next
+specific CPU gap: `physical_preparation` is absent for the first case. That
+contract requires three measured physical-outcome fixture classes and an
+ordered Native owner-release lifecycle proof per case. These must be authored
+and tested from retained sources; the existing saved-processing receipts alone
+do not satisfy that gate. The manifest remains a partial draft until this and
+the semantic/delivery handoff requirements pass.

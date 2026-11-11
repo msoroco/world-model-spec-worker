@@ -4,7 +4,7 @@ import argparse,json,subprocess,hashlib
 from pathlib import Path
 
 PREFIX='heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__'
-SLUGS={'reverse_clear_traffic_steady','reverse_close_traffic_steady','reverse_clear_traffic_brakes'}
+SLUGS={'reverse_clear_traffic_steady','reverse_close_traffic_steady','reverse_clear_traffic_brakes', 'backing_safety_spacing_grid-0000','backing_safety_spacing_grid-0001','backing_safety_spacing_grid-0002','backing_interference_onset_grid-0000','backing_interference_onset_grid-0001','backing_interference_onset_grid-0002'}
 
 def audit(case,attempt):
     slug=case.removeprefix(PREFIX)

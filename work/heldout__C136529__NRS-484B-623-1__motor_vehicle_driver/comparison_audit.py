@@ -15,6 +15,10 @@ PAIRS={
                        {'obstruction_present'}),
  'lawful_control':('slow_with_following_traffic','slow_under_control',
                   {'control_present','ego_target_mps','follower_cruise_mps'}),
+ 'safety_speed_response':('slow_for_obstruction','safety_speed_probe__slow_for_obstruction',
+                          {'ego_target_mps'}),
+ 'control_speed_response':('slow_under_control','control_speed_probe__slow_under_control',
+                           {'ego_target_mps'}),
 }
 
 def _hash(path):return sha256(Path(path).read_bytes()).hexdigest()
@@ -51,7 +55,8 @@ def audit(comparison_id,left,right):
     if comparison_id not in PAIRS:raise ValueError('Unknown exact comparison')
     expected_left,expected_right,allowed=PAIRS[comparison_id]
     a,b=_case(left),_case(right)
-    if (a['cfg']['case_branch'],b['cfg']['case_branch'])!=(expected_left,expected_right):
+    if (not a['cfg']['selected_case_id'].endswith('__'+expected_left)
+            or not b['cfg']['selected_case_id'].endswith('__'+expected_right)):
         raise ValueError('Comparison selects another exact case pair')
     fixed=('cell_id','law_id','actor','rate_hz','duration_s','frames','cameras',
            'required_atoms','source_packets')

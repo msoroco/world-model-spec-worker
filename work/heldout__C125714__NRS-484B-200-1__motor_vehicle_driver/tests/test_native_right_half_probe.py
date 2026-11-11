@@ -11,6 +11,7 @@ class ProbeConfigTests(unittest.TestCase):
         config = {'selected_case_id': 'heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_east',
                   'law_id': 'NRS-484B-200-1', 'cell_id': 'C125714',
                   'actor': 'motor_vehicle_driver', 'rate_hz': 20, 'frames': 80,
+                  'travel_direction': 'east',
                   'construction_probe_only': True}
         check_config(config)
         with self.assertRaisesRegex(ValueError, 'masquerade'):
@@ -19,6 +20,8 @@ class ProbeConfigTests(unittest.TestCase):
             check_config(dict(config, law_id='wrong'))
         with self.assertRaisesRegex(ValueError, 'Unknown'):
             check_config(dict(config, selected_case_id='wrong'))
+        with self.assertRaisesRegex(ValueError, 'eastward'):
+            check_config(dict(config, travel_direction='west'))
 
 
 if __name__ == '__main__':

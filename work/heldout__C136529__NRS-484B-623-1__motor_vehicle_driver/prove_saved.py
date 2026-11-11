@@ -24,7 +24,9 @@ with tempfile.TemporaryDirectory(prefix='c136529-saved-',dir=work) as temp:
         ('slow_with_following_traffic',folder/'diagnostic-recipe.json'),
         ('flowing_reference',folder/'cases/flowing_reference/diagnostic-recipe.json'),
         ('slow_for_obstruction',folder/'cases/slow_for_obstruction/diagnostic-recipe.json'),
-        ('slow_under_control',folder/'cases/slow_under_control/diagnostic-recipe.json')):
+        ('slow_under_control',folder/'cases/slow_under_control/diagnostic-recipe.json'),
+        ('safety_speed_probe__slow_for_obstruction',folder/'cases/safety_speed_probe-slow_for_obstruction/diagnostic-recipe.json'),
+        ('control_speed_probe__slow_under_control',folder/'cases/control_speed_probe-slow_under_control/diagnostic-recipe.json')):
         case=folder.name+'__'+branch
         branch_dir=base/branch;branch_dir.mkdir()
         fixture=branch_dir/'fixture'

@@ -3,15 +3,230 @@
   "status": "draft",
   "cell_id": "C136529",
   "actor": "motor_vehicle_driver",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "c136529-judgment-1",
+      "target_law_id": "NRS-484B-623-1",
+      "judgment_refs": [
+        {
+          "phrase": "normal and reasonable movement of traffic",
+          "note": "No statutory numeric traffic-speed, queue-size, or duration cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical coverage planning for an unresolved statutory phrase.",
+      "missing_inputs": [
+        "A sourced, feasible numeric range and spacing for this physical dimension across the selected narrow-road scenario is not yet documented; the selected cases are fixed exact comparisons, not an asserted full judgment grid."
+      ]
+    },
+    {
+      "sweep_id": "c136529-judgment-2",
+      "target_law_id": "NRS-484B-623-1",
+      "judgment_refs": [
+        {
+          "phrase": "necessary for safe operation",
+          "note": "Physical obstruction and reduced speed require source-backed necessity review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical coverage planning for an unresolved statutory phrase.",
+      "missing_inputs": [
+        "A sourced, feasible numeric range and spacing for this physical dimension across the selected narrow-road scenario is not yet documented; the selected cases are fixed exact comparisons, not an asserted full judgment grid."
+      ]
+    },
+    {
+      "sweep_id": "c136529-judgment-3",
+      "target_law_id": "NRS-484B-623-1",
+      "judgment_refs": [
+        {
+          "phrase": "in compliance with law",
+          "note": "Physical speed-limit device does not by itself establish governing legal authority."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical coverage planning for an unresolved statutory phrase.",
+      "missing_inputs": [
+        "A sourced, feasible numeric range and spacing for this physical dimension across the selected narrow-road scenario is not yet documented; the selected cases are fixed exact comparisons, not an asserted full judgment grid."
+      ]
+    }
+  ],
   "cases": [
+    {
+      "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared dry narrow-road reference; no law outcome assigned.",
+      "variable_assignments": {
+        "ego_speed_target_mps": {
+          "kind": "controller",
+          "value": 8.0
+        },
+        "follower_cruise_mps": {
+          "kind": "controller",
+          "value": 8.0
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "follower_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "follower_gap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "obstruction_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "control_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "governing_control_valid": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native subject velocity vector magnitude",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native velocity precision and 20 Hz temporal sampling"
+          },
+          {
+            "name": "follower_speed_mps",
+            "unit": "m/s",
+            "method": "Native following vehicle velocity vector magnitude",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native velocity precision and 20 Hz temporal sampling"
+          },
+          {
+            "name": "follower_gap_m",
+            "unit": "m",
+            "method": "Native actor-center ground-plane separation; full body gap separately requires footprint capture",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Actor-center distance is a descriptive traffic proxy, not full body separation"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Normal and reasonable movement remains a legal judgment; actual traffic impedance and camera visibility need physical review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "normal and reasonable movement of traffic",
+        "necessary for safe operation",
+        "in compliance with law"
+      ]
+    },
+    {
+      "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__flowing_reference",
+      "target_law_id": "NRS-484B-623-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Measured flow reference on the same narrow road; no legal outcome is assigned.",
+      "variable_assignments": {
+        "ego_speed_target_mps": {
+          "kind": "controller",
+          "value": 8.0
+        },
+        "follower_cruise_mps": {
+          "kind": "controller",
+          "value": 8.0
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "follower_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "follower_gap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "obstruction_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "control_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "governing_control_valid": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "normal and reasonable movement of traffic",
+        "necessary for safe operation",
+        "in compliance with law"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native subject velocity vector magnitude",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native velocity precision and 20 Hz temporal sampling"
+          },
+          {
+            "name": "follower_speed_mps",
+            "unit": "m/s",
+            "method": "Native following vehicle velocity vector magnitude",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native velocity precision and 20 Hz temporal sampling"
+          },
+          {
+            "name": "follower_gap_m",
+            "unit": "m",
+            "method": "Native actor-center ground-plane separation; full body gap separately requires footprint capture",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Actor-center distance is a descriptive traffic proxy, not full body separation"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Normal and reasonable movement remains a legal judgment; actual traffic impedance and camera visibility need physical review."
+        ]
+      },
+      "paired_probe_id": "traffic_impedance",
+      "deliberate_differences": [
+        "ego_speed_target_mps"
+      ],
+      "probe": {
+        "primary_variable": "ego_speed_target_mps",
+        "comparison_or_standard": "physical source coverage; statutory judgment unresolved",
+        "target_value_or_branch": "flowing_reference"
+      }
+    },
     {
       "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_with_following_traffic",
       "target_law_id": "NRS-484B-623-1",
-      "target_type": "compliant_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Physical slow-speed traffic-interaction sample; no legal outcome is assigned.",
       "variable_assignments": {
-        "ego_target_mps": {
+        "ego_speed_target_mps": {
           "kind": "controller",
           "value": 3.0
         },
@@ -19,13 +234,35 @@
           "kind": "controller",
           "value": 8.0
         },
-        "traffic_impedance": {
+        "ego_speed": {
           "kind": "subject_behavior",
+          "value": null
+        },
+        "follower_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "follower_gap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "obstruction_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "control_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "governing_control_valid": {
+          "kind": "world_setup",
           "value": null
         }
       },
       "unresolved_judgment_calls": [
-        "normal and reasonable movement of traffic"
+        "normal and reasonable movement of traffic",
+        "necessary for safe operation",
+        "in compliance with law"
       ],
       "recording_description": {
         "channels": [
@@ -64,88 +301,21 @@
       },
       "paired_probe_id": "traffic_impedance",
       "deliberate_differences": [
-        "ego_target_mps"
+        "ego_speed_target_mps"
       ],
       "probe": {
-        "primary_variable": "ego_target_mps",
-        "comparison_or_standard": "source-grounded traffic interaction with normal and reasonable movement unresolved",
-        "target_value_or_branch": "slow sample"
-      }
-    },
-    {
-      "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__flowing_reference",
-      "target_law_id": "NRS-484B-623-1",
-      "target_type": "compliant_attempt",
-      "rationale": "Measured flow reference on the same narrow road; no legal outcome is assigned.",
-      "variable_assignments": {
-        "ego_target_mps": {
-          "kind": "controller",
-          "value": 8.0
-        },
-        "follower_cruise_mps": {
-          "kind": "controller",
-          "value": 8.0
-        },
-        "traffic_impedance": {
-          "kind": "subject_behavior",
-          "value": null
-        }
-      },
-      "unresolved_judgment_calls": [
-        "normal and reasonable movement of traffic"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "ego_speed_mps",
-            "unit": "m/s",
-            "method": "Native subject velocity vector magnitude",
-            "sampling_rate_hz": 20,
-            "time_window": "all original frames",
-            "reference_frame": "world ground plane",
-            "uncertainty": "Native velocity precision and 20 Hz temporal sampling"
-          },
-          {
-            "name": "follower_speed_mps",
-            "unit": "m/s",
-            "method": "Native following vehicle velocity vector magnitude",
-            "sampling_rate_hz": 20,
-            "time_window": "all original frames",
-            "reference_frame": "world ground plane",
-            "uncertainty": "Native velocity precision and 20 Hz temporal sampling"
-          },
-          {
-            "name": "follower_gap_m",
-            "unit": "m",
-            "method": "Native actor-center ground-plane separation; full body gap separately requires footprint capture",
-            "sampling_rate_hz": 20,
-            "time_window": "all original frames",
-            "reference_frame": "world ground plane",
-            "uncertainty": "Actor-center distance is a descriptive traffic proxy, not full body separation"
-          }
-        ],
-        "context_inputs": [],
-        "limitations": [
-          "Normal and reasonable movement remains a legal judgment; actual traffic impedance and camera visibility need physical review."
-        ]
-      },
-      "paired_probe_id": "traffic_impedance",
-      "deliberate_differences": [
-        "ego_target_mps"
-      ],
-      "probe": {
-        "primary_variable": "ego_target_mps",
-        "comparison_or_standard": "source-grounded traffic interaction with normal and reasonable movement unresolved",
-        "target_value_or_branch": "slow sample"
+        "primary_variable": "ego_speed_target_mps",
+        "comparison_or_standard": "physical source coverage; statutory judgment unresolved",
+        "target_value_or_branch": "slow_with_following_traffic"
       }
     },
     {
       "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_for_obstruction",
       "target_law_id": "NRS-484B-623-1",
-      "target_type": "compliant_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Physical parked-vehicle obstruction with measured reduced subject speed; necessity remains unresolved.",
       "variable_assignments": {
-        "ego_target_mps": {
+        "ego_speed_target_mps": {
           "kind": "controller",
           "value": 3.0
         },
@@ -153,17 +323,35 @@
           "kind": "controller",
           "value": 8.0
         },
-        "traffic_impedance": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "follower_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "follower_gap": {
           "kind": "subject_behavior",
           "value": null
         },
         "obstruction_present": {
           "kind": "world_setup",
           "value": true
+        },
+        "control_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "governing_control_valid": {
+          "kind": "world_setup",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
-        "normal and reasonable movement of traffic"
+        "normal and reasonable movement of traffic",
+        "necessary for safe operation",
+        "in compliance with law"
       ],
       "recording_description": {
         "channels": [
@@ -205,18 +393,18 @@
         "obstruction_present"
       ],
       "probe": {
-        "primary_variable": "ego_target_mps",
-        "comparison_or_standard": "source-grounded traffic interaction with normal and reasonable movement unresolved",
-        "target_value_or_branch": "slow sample"
+        "primary_variable": "obstruction_present",
+        "comparison_or_standard": "physical source coverage; statutory judgment unresolved",
+        "target_value_or_branch": "slow_for_obstruction"
       }
     },
     {
       "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_under_control",
       "target_law_id": "NRS-484B-623-1",
-      "target_type": "compliant_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Physical 30 km/h sign and reduced subject speed; local regulatory validity and legal outcome remain unresolved.",
       "variable_assignments": {
-        "ego_target_mps": {
+        "ego_speed_target_mps": {
           "kind": "controller",
           "value": 8.0
         },
@@ -224,17 +412,35 @@
           "kind": "controller",
           "value": 12.0
         },
-        "traffic_impedance": {
+        "ego_speed": {
           "kind": "subject_behavior",
           "value": null
+        },
+        "follower_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "follower_gap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "obstruction_present": {
+          "kind": "world_setup",
+          "value": false
         },
         "control_present": {
           "kind": "world_setup",
           "value": true
+        },
+        "governing_control_valid": {
+          "kind": "world_setup",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
-        "normal and reasonable movement of traffic"
+        "normal and reasonable movement of traffic",
+        "necessary for safe operation",
+        "in compliance with law"
       ],
       "recording_description": {
         "channels": [
@@ -274,14 +480,193 @@
       "paired_probe_id": "lawful_control",
       "deliberate_differences": [
         "control_present",
-        "ego_target_mps",
+        "ego_speed_target_mps",
         "follower_cruise_mps"
       ],
       "probe": {
-        "primary_variable": "ego_target_mps",
-        "comparison_or_standard": "source-grounded traffic interaction with normal and reasonable movement unresolved",
-        "target_value_or_branch": "slow sample"
+        "primary_variable": "control_present",
+        "comparison_or_standard": "physical source coverage; statutory judgment unresolved",
+        "target_value_or_branch": "slow_under_control"
+      }
+    },
+    {
+      "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__safety_speed_probe__slow_for_obstruction",
+      "target_law_id": "NRS-484B-623-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Physical parked-vehicle obstruction with measured reduced subject speed; necessity remains unresolved.",
+      "variable_assignments": {
+        "ego_speed_target_mps": {
+          "kind": "controller",
+          "value": 6.0
+        },
+        "follower_cruise_mps": {
+          "kind": "controller",
+          "value": 8.0
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "follower_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "follower_gap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "obstruction_present": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "control_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "governing_control_valid": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "normal and reasonable movement of traffic",
+        "necessary for safe operation",
+        "in compliance with law"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native subject velocity vector magnitude",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native velocity precision and 20 Hz temporal sampling"
+          },
+          {
+            "name": "follower_speed_mps",
+            "unit": "m/s",
+            "method": "Native following vehicle velocity vector magnitude",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native velocity precision and 20 Hz temporal sampling"
+          },
+          {
+            "name": "follower_gap_m",
+            "unit": "m",
+            "method": "Native actor-center ground-plane separation; full body gap separately requires footprint capture",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Actor-center distance is a descriptive traffic proxy, not full body separation"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Normal and reasonable movement remains a legal judgment; actual traffic impedance and camera visibility need physical review."
+        ]
+      },
+      "paired_probe_id": "safety_speed_response",
+      "deliberate_differences": [
+        "ego_speed_target_mps"
+      ],
+      "probe": {
+        "primary_variable": "ego_speed_target_mps",
+        "comparison_or_standard": "physical source coverage; statutory judgment unresolved",
+        "target_value_or_branch": "safety_speed_probe__slow_for_obstruction"
+      }
+    },
+    {
+      "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__control_speed_probe__slow_under_control",
+      "target_law_id": "NRS-484B-623-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Physical 30 km/h sign and reduced subject speed; local regulatory validity and legal outcome remain unresolved.",
+      "variable_assignments": {
+        "ego_speed_target_mps": {
+          "kind": "controller",
+          "value": 10.0
+        },
+        "follower_cruise_mps": {
+          "kind": "controller",
+          "value": 12.0
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "follower_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "follower_gap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "obstruction_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "control_present": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "governing_control_valid": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "normal and reasonable movement of traffic",
+        "necessary for safe operation",
+        "in compliance with law"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native subject velocity vector magnitude",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native velocity precision and 20 Hz temporal sampling"
+          },
+          {
+            "name": "follower_speed_mps",
+            "unit": "m/s",
+            "method": "Native following vehicle velocity vector magnitude",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native velocity precision and 20 Hz temporal sampling"
+          },
+          {
+            "name": "follower_gap_m",
+            "unit": "m",
+            "method": "Native actor-center ground-plane separation; full body gap separately requires footprint capture",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Actor-center distance is a descriptive traffic proxy, not full body separation"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Normal and reasonable movement remains a legal judgment; actual traffic impedance and camera visibility need physical review."
+        ]
+      },
+      "paired_probe_id": "control_speed_response",
+      "deliberate_differences": [
+        "ego_speed_target_mps"
+      ],
+      "probe": {
+        "primary_variable": "ego_speed_target_mps",
+        "comparison_or_standard": "physical source coverage; statutory judgment unresolved",
+        "target_value_or_branch": "control_speed_probe__slow_under_control"
       }
     }
-  ]
+  ],
+  "sweeps_expanded": true
 }

@@ -9,17 +9,18 @@ sha=lambda path:hashlib.sha256(path.read_bytes()).hexdigest()
 manifest_path=root/'execution-manifest.json'
 manifest=json.loads(manifest_path.read_text())
 for entry in manifest['cases']:
-    case=entry['case_id'];branch=case.split('__')[-1]
+    case=entry['case_id'];branch=case.removeprefix(root.name+'__').replace('__','-')
+    version='v7' if '_speed_probe__' in case else 'v4'
     for candidate,item in [('primary',entry)]+[(x['id'],x) for x in entry['candidates']]:
         stem=branch+'-'+candidate
-        offline_dir=repo/'.runtime-work'/('c136529-'+stem+'-offline-v3')
-        compat_dir=repo/'.runtime-work'/('c136529-'+stem+'-compat-v3')
+        offline_dir=repo/'.runtime-work'/('c136529-'+stem+'-offline-'+version)
+        compat_dir=repo/'.runtime-work'/('c136529-'+stem+'-compat-'+version)
         outputs=[('offline.log',offline_dir/'offline.log'),
                  ('compatibility.json',compat_dir/'compatibility.json'),
                  ('compat.log',compat_dir/'compatibility-analysis.log'),
                  ('negative.log',compat_dir/'negative-analysis.log')]
         for suffix,source in outputs:copyfile(source,root/(stem+'-'+suffix))
-        item['offline']={'command':f'.venv-cpu/bin/python runtime.py offline --manifest work/{root.name}/execution-manifest.json --case {case} --candidate {candidate} --output .runtime-work/c136529-{stem}-offline-v3 --python "$PWD/.venv-cpu/bin/python"',
+        item['offline']={'command':f'.venv-cpu/bin/python runtime.py offline --manifest work/{root.name}/execution-manifest.json --case {case} --candidate {candidate} --output .runtime-work/c136529-{stem}-offline-{version} --python "$PWD/.venv-cpu/bin/python"',
                          'exit_code':0,'log':stem+'-offline.log',
                          'log_sha256':sha(root/(stem+'-offline.log')),
                          'construction_sha256':item['construction_sha256']}

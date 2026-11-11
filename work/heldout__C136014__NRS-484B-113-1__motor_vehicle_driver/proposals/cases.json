@@ -5,7 +5,7 @@
   "actor": "motor_vehicle_driver",
   "sweep_specs": [
     {
-      "sweep_id": "backing-safety-physical-grid",
+      "sweep_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_safety_spacing_grid",
       "target_law_id": "NRS-484B-113-1",
       "judgment_refs": [
         {
@@ -13,14 +13,88 @@
           "note": "No statutory numeric safety cutoff."
         }
       ],
-      "status": "incomplete",
-      "rationale": "A fixed physical sampling grid is required before canonical judgment coverage.",
-      "missing_inputs": [
-        "Exact controller sweep axes and complete Native feasibility evidence are not yet encoded in selected constructions."
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "other_traffic_spacing",
+          "observable": "other_traffic_spacing",
+          "unit": "m",
+          "min": 8,
+          "max": 16,
+          "spacing": 4,
+          "measurement": {
+            "method": "original first-frame actor-center separation",
+            "time_window": "all original backing frames",
+            "statistic": "first"
+          },
+          "range_rationale": "The 8\u201316 m commanded spawn range spans visible close and clear encounter geometry; 4 m spacing resolves an interior physical setting.",
+          "spacing_rationale": "Three fixed physical settings including both endpoints and one interior point; no legal cutoff.",
+          "feasibility_evidence": "Native waypoint selection and timed control are encoded in the exact runner; actual realization requires retained original source review."
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Fixed three-point physical coverage; legal judgment remains unresolved.",
+      "variable_assignments": {
+        "reverse_motion": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_spacing": {
+          "kind": "world_setup",
+          "value": 12.0
+        },
+        "other_traffic_speed_policy": {
+          "kind": "world_setup",
+          "value": "steady"
+        },
+        "other_traffic_brake_start_frame": {
+          "kind": "world_setup",
+          "value": 80
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "reverse_displacement_m",
+            "unit": "m",
+            "method": "original ego position displacement after reverse gear readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world coordinates",
+            "uncertainty": "20 Hz sampling and Native pose precision"
+          },
+          {
+            "name": "other_traffic_center_distance_m",
+            "unit": "m",
+            "method": "original actor-center separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "body clearance requires footprint audit"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "other_traffic_spacing",
+            "unit": "m",
+            "method": "Derived from original joined backing_history.jsonl after capture"
+          }
+        ],
+        "limitations": [
+          "Reasonable safety and interference remain independent physical/legal questions."
+        ]
+      },
+      "spec_version": "f8784eb1306fce18a7bd0700dceddbf42a2f322ae6e1bc6307fb25d3129a8750",
+      "planned_case_count": 3,
+      "selection_order": [
+        "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_safety_spacing_grid-0000",
+        "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_safety_spacing_grid-0001",
+        "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_safety_spacing_grid-0002"
       ]
     },
     {
-      "sweep_id": "backing-interference-physical-grid",
+      "sweep_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid",
       "target_law_id": "NRS-484B-113-1",
       "judgment_refs": [
         {
@@ -28,10 +102,84 @@
           "note": "Traffic interference requires independent original-source observations."
         }
       ],
-      "status": "incomplete",
-      "rationale": "A fixed traffic-response sampling grid is required before canonical judgment coverage.",
-      "missing_inputs": [
-        "Original other-speed response channel and complete Native feasibility evidence are not yet encoded in selected constructions."
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "other_traffic_brake_start_frame",
+          "observable": "other_traffic_brake_start_frame",
+          "unit": "frame",
+          "min": 40,
+          "max": 120,
+          "spacing": 40,
+          "measurement": {
+            "method": "original first traffic deceleration frame",
+            "time_window": "all original backing frames",
+            "statistic": "first"
+          },
+          "range_rationale": "Frames 40\u2013120 bracket early and late braking within 160 captured frames; 40-frame spacing gives an interior onset.",
+          "spacing_rationale": "Three fixed physical settings including both endpoints and one interior point; no legal cutoff.",
+          "feasibility_evidence": "Native waypoint selection and timed control are encoded in the exact runner; actual realization requires retained original source review."
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Fixed three-point physical coverage; legal judgment remains unresolved.",
+      "variable_assignments": {
+        "reverse_motion": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_spacing": {
+          "kind": "world_setup",
+          "value": 12.0
+        },
+        "other_traffic_speed_policy": {
+          "kind": "world_setup",
+          "value": "braking"
+        },
+        "other_traffic_brake_start_frame": {
+          "kind": "world_setup",
+          "value": 80
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "reverse_displacement_m",
+            "unit": "m",
+            "method": "original ego position displacement after reverse gear readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world coordinates",
+            "uncertainty": "20 Hz sampling and Native pose precision"
+          },
+          {
+            "name": "other_traffic_center_distance_m",
+            "unit": "m",
+            "method": "original actor-center separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "body clearance requires footprint audit"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "other_traffic_brake_start_frame",
+            "unit": "frame",
+            "method": "Derived from original joined backing_history.jsonl after capture"
+          }
+        ],
+        "limitations": [
+          "Reasonable safety and interference remain independent physical/legal questions."
+        ]
+      },
+      "spec_version": "aae9ec82f95b2c3f3507070947f8a672d61638512617eb21be8cf3050bccd821",
+      "planned_case_count": 3,
+      "selection_order": [
+        "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0000",
+        "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0001",
+        "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0002"
       ]
     }
   ],
@@ -53,6 +201,10 @@
         "other_traffic_speed_policy": {
           "kind": "world_setup",
           "value": "steady"
+        },
+        "other_traffic_brake_start_frame": {
+          "kind": "world_setup",
+          "value": 80
         }
       },
       "recording_description": {
@@ -100,6 +252,10 @@
         "other_traffic_speed_policy": {
           "kind": "world_setup",
           "value": "steady"
+        },
+        "other_traffic_brake_start_frame": {
+          "kind": "world_setup",
+          "value": 80
         }
       },
       "recording_description": {
@@ -159,6 +315,10 @@
         "other_traffic_speed_policy": {
           "kind": "world_setup",
           "value": "steady"
+        },
+        "other_traffic_brake_start_frame": {
+          "kind": "world_setup",
+          "value": 80
         }
       },
       "recording_description": {
@@ -218,6 +378,10 @@
         "other_traffic_speed_policy": {
           "kind": "world_setup",
           "value": "braking"
+        },
+        "other_traffic_brake_start_frame": {
+          "kind": "world_setup",
+          "value": 80
         }
       },
       "recording_description": {
@@ -260,6 +424,540 @@
         "comparison_or_standard": "physical contrast; legal judgment unresolved",
         "target_value_or_branch": "braking"
       }
+    },
+    {
+      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_safety_spacing_grid-0000",
+      "target_law_id": "NRS-484B-113-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed three-point physical coverage; legal judgment remains unresolved.",
+      "paired_probe_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_safety_spacing_grid",
+      "deliberate_differences": [
+        "other_traffic_spacing"
+      ],
+      "probe": {
+        "primary_variable": "other_traffic_spacing",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "other_traffic_spacing": 8.0
+        }
+      },
+      "sweep_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_safety_spacing_grid",
+      "sweep_spec_version": "f8784eb1306fce18a7bd0700dceddbf42a2f322ae6e1bc6307fb25d3129a8750",
+      "sweep_point": {
+        "other_traffic_spacing": 8.0
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "reverse_motion": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_spacing": {
+          "kind": "world_setup",
+          "value": 8.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "other_traffic_speed_policy": {
+          "kind": "world_setup",
+          "value": "steady"
+        },
+        "other_traffic_brake_start_frame": {
+          "kind": "world_setup",
+          "value": 80
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "reverse_displacement_m",
+            "unit": "m",
+            "method": "original ego position displacement after reverse gear readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world coordinates",
+            "uncertainty": "20 Hz sampling and Native pose precision"
+          },
+          {
+            "name": "other_traffic_center_distance_m",
+            "unit": "m",
+            "method": "original actor-center separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "body clearance requires footprint audit"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "other_traffic_spacing",
+            "unit": "m",
+            "method": "Derived from original joined backing_history.jsonl after capture"
+          }
+        ],
+        "limitations": [
+          "Reasonable safety and interference remain independent physical/legal questions."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "other_traffic_spacing",
+          "unit": "m",
+          "measurement": {
+            "method": "original first-frame actor-center separation",
+            "time_window": "all original backing frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "without interfering with other traffic"
+      ]
+    },
+    {
+      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_safety_spacing_grid-0001",
+      "target_law_id": "NRS-484B-113-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed three-point physical coverage; legal judgment remains unresolved.",
+      "paired_probe_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_safety_spacing_grid",
+      "deliberate_differences": [
+        "other_traffic_spacing"
+      ],
+      "probe": {
+        "primary_variable": "other_traffic_spacing",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "other_traffic_spacing": 16.0
+        }
+      },
+      "sweep_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_safety_spacing_grid",
+      "sweep_spec_version": "f8784eb1306fce18a7bd0700dceddbf42a2f322ae6e1bc6307fb25d3129a8750",
+      "sweep_point": {
+        "other_traffic_spacing": 16.0
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "reverse_motion": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_spacing": {
+          "kind": "world_setup",
+          "value": 16.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "other_traffic_speed_policy": {
+          "kind": "world_setup",
+          "value": "steady"
+        },
+        "other_traffic_brake_start_frame": {
+          "kind": "world_setup",
+          "value": 80
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "reverse_displacement_m",
+            "unit": "m",
+            "method": "original ego position displacement after reverse gear readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world coordinates",
+            "uncertainty": "20 Hz sampling and Native pose precision"
+          },
+          {
+            "name": "other_traffic_center_distance_m",
+            "unit": "m",
+            "method": "original actor-center separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "body clearance requires footprint audit"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "other_traffic_spacing",
+            "unit": "m",
+            "method": "Derived from original joined backing_history.jsonl after capture"
+          }
+        ],
+        "limitations": [
+          "Reasonable safety and interference remain independent physical/legal questions."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "other_traffic_spacing",
+          "unit": "m",
+          "measurement": {
+            "method": "original first-frame actor-center separation",
+            "time_window": "all original backing frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "without interfering with other traffic"
+      ]
+    },
+    {
+      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_safety_spacing_grid-0002",
+      "target_law_id": "NRS-484B-113-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed three-point physical coverage; legal judgment remains unresolved.",
+      "paired_probe_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_safety_spacing_grid",
+      "deliberate_differences": [
+        "other_traffic_spacing"
+      ],
+      "probe": {
+        "primary_variable": "other_traffic_spacing",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "other_traffic_spacing": 12.0
+        }
+      },
+      "sweep_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_safety_spacing_grid",
+      "sweep_spec_version": "f8784eb1306fce18a7bd0700dceddbf42a2f322ae6e1bc6307fb25d3129a8750",
+      "sweep_point": {
+        "other_traffic_spacing": 12.0
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "reverse_motion": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_spacing": {
+          "kind": "world_setup",
+          "value": 12.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "other_traffic_speed_policy": {
+          "kind": "world_setup",
+          "value": "steady"
+        },
+        "other_traffic_brake_start_frame": {
+          "kind": "world_setup",
+          "value": 80
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "reverse_displacement_m",
+            "unit": "m",
+            "method": "original ego position displacement after reverse gear readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world coordinates",
+            "uncertainty": "20 Hz sampling and Native pose precision"
+          },
+          {
+            "name": "other_traffic_center_distance_m",
+            "unit": "m",
+            "method": "original actor-center separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "body clearance requires footprint audit"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "other_traffic_spacing",
+            "unit": "m",
+            "method": "Derived from original joined backing_history.jsonl after capture"
+          }
+        ],
+        "limitations": [
+          "Reasonable safety and interference remain independent physical/legal questions."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "other_traffic_spacing",
+          "unit": "m",
+          "measurement": {
+            "method": "original first-frame actor-center separation",
+            "time_window": "all original backing frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "without interfering with other traffic"
+      ]
+    },
+    {
+      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0000",
+      "target_law_id": "NRS-484B-113-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed three-point physical coverage; legal judgment remains unresolved.",
+      "paired_probe_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid",
+      "deliberate_differences": [
+        "other_traffic_brake_start_frame"
+      ],
+      "probe": {
+        "primary_variable": "other_traffic_brake_start_frame",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "other_traffic_brake_start_frame": 40.0
+        }
+      },
+      "sweep_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid",
+      "sweep_spec_version": "aae9ec82f95b2c3f3507070947f8a672d61638512617eb21be8cf3050bccd821",
+      "sweep_point": {
+        "other_traffic_brake_start_frame": 40.0
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "reverse_motion": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_spacing": {
+          "kind": "world_setup",
+          "value": 12.0
+        },
+        "other_traffic_speed_policy": {
+          "kind": "world_setup",
+          "value": "braking"
+        },
+        "other_traffic_brake_start_frame": {
+          "kind": "world_setup",
+          "value": 40.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "reverse_displacement_m",
+            "unit": "m",
+            "method": "original ego position displacement after reverse gear readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world coordinates",
+            "uncertainty": "20 Hz sampling and Native pose precision"
+          },
+          {
+            "name": "other_traffic_center_distance_m",
+            "unit": "m",
+            "method": "original actor-center separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "body clearance requires footprint audit"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "other_traffic_brake_start_frame",
+            "unit": "frame",
+            "method": "Derived from original joined backing_history.jsonl after capture"
+          }
+        ],
+        "limitations": [
+          "Reasonable safety and interference remain independent physical/legal questions."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "other_traffic_brake_start_frame",
+          "unit": "frame",
+          "measurement": {
+            "method": "original first traffic deceleration frame",
+            "time_window": "all original backing frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "without interfering with other traffic"
+      ]
+    },
+    {
+      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0001",
+      "target_law_id": "NRS-484B-113-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed three-point physical coverage; legal judgment remains unresolved.",
+      "paired_probe_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid",
+      "deliberate_differences": [
+        "other_traffic_brake_start_frame"
+      ],
+      "probe": {
+        "primary_variable": "other_traffic_brake_start_frame",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "other_traffic_brake_start_frame": 120.0
+        }
+      },
+      "sweep_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid",
+      "sweep_spec_version": "aae9ec82f95b2c3f3507070947f8a672d61638512617eb21be8cf3050bccd821",
+      "sweep_point": {
+        "other_traffic_brake_start_frame": 120.0
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "reverse_motion": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_spacing": {
+          "kind": "world_setup",
+          "value": 12.0
+        },
+        "other_traffic_speed_policy": {
+          "kind": "world_setup",
+          "value": "braking"
+        },
+        "other_traffic_brake_start_frame": {
+          "kind": "world_setup",
+          "value": 120.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "reverse_displacement_m",
+            "unit": "m",
+            "method": "original ego position displacement after reverse gear readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world coordinates",
+            "uncertainty": "20 Hz sampling and Native pose precision"
+          },
+          {
+            "name": "other_traffic_center_distance_m",
+            "unit": "m",
+            "method": "original actor-center separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "body clearance requires footprint audit"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "other_traffic_brake_start_frame",
+            "unit": "frame",
+            "method": "Derived from original joined backing_history.jsonl after capture"
+          }
+        ],
+        "limitations": [
+          "Reasonable safety and interference remain independent physical/legal questions."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "other_traffic_brake_start_frame",
+          "unit": "frame",
+          "measurement": {
+            "method": "original first traffic deceleration frame",
+            "time_window": "all original backing frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "without interfering with other traffic"
+      ]
+    },
+    {
+      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0002",
+      "target_law_id": "NRS-484B-113-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed three-point physical coverage; legal judgment remains unresolved.",
+      "paired_probe_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid",
+      "deliberate_differences": [
+        "other_traffic_brake_start_frame"
+      ],
+      "probe": {
+        "primary_variable": "other_traffic_brake_start_frame",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "other_traffic_brake_start_frame": 80.0
+        }
+      },
+      "sweep_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid",
+      "sweep_spec_version": "aae9ec82f95b2c3f3507070947f8a672d61638512617eb21be8cf3050bccd821",
+      "sweep_point": {
+        "other_traffic_brake_start_frame": 80.0
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "reverse_motion": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_spacing": {
+          "kind": "world_setup",
+          "value": 12.0
+        },
+        "other_traffic_speed_policy": {
+          "kind": "world_setup",
+          "value": "braking"
+        },
+        "other_traffic_brake_start_frame": {
+          "kind": "world_setup",
+          "value": 80.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "reverse_displacement_m",
+            "unit": "m",
+            "method": "original ego position displacement after reverse gear readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world coordinates",
+            "uncertainty": "20 Hz sampling and Native pose precision"
+          },
+          {
+            "name": "other_traffic_center_distance_m",
+            "unit": "m",
+            "method": "original actor-center separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "body clearance requires footprint audit"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "other_traffic_brake_start_frame",
+            "unit": "frame",
+            "method": "Derived from original joined backing_history.jsonl after capture"
+          }
+        ],
+        "limitations": [
+          "Reasonable safety and interference remain independent physical/legal questions."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "other_traffic_brake_start_frame",
+          "unit": "frame",
+          "measurement": {
+            "method": "original first traffic deceleration frame",
+            "time_window": "all original backing frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "without interfering with other traffic"
+      ]
     }
   ],
   "sweeps_expanded": true

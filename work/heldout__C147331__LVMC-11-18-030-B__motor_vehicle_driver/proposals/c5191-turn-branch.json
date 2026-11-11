@@ -1,0 +1,60 @@
+{
+  "format": "worker-unallocated-branch-proposal",
+  "status": "draft",
+  "law_id": "LVMC-11-18-030-B",
+  "actor": "motor_vehicle_driver",
+  "proposed_cell_id": "C5191",
+  "allocation_status": "unallocated_in_batch",
+  "cell_facts": {
+    "layout": "adjacent_lanes",
+    "maneuver": "left_turn",
+    "control": "lane_marking"
+  },
+  "source_refs": [
+    {
+      "path": "inputs/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/assignment.json",
+      "sha256": "92dfd9b7e7f6909014b19bef360d5d4de6fc48ebf7cff0941102b507f6e14f83"
+    },
+    {
+      "path": "inputs/coverage/candidate-cells.json",
+      "sha256": "d067de719af99bb6b0bf1c0cf513f64df3f63e5e8f340d8339650770b711798a"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "proposed__C5191__LVMC-11-18-030-B__motor_vehicle_driver__marked_lane_straight_reference",
+      "purpose": "Keep the full footprint within marked lane boundaries on the approach."
+    },
+    {
+      "case_id": "proposed__C5191__LVMC-11-18-030-B__motor_vehicle_driver__lateral_crossing_without_turn",
+      "purpose": "Cross the same marked boundary without turn preparation or passing participant."
+    },
+    {
+      "case_id": "proposed__C5191__LVMC-11-18-030-B__motor_vehicle_driver__preparatory_left_turn_boundary_crossing",
+      "purpose": "Record indicator readback, preturn trajectory, marked boundary crossing and completed left-turn geometry; lawful-turn facts stay independently sourced."
+    }
+  ],
+  "required_original_sources": [
+    "Native lane boundary and marking inventory before, during and after crossing",
+    "Ego full-body footprint and velocity every original tick",
+    "Indicator readback every original tick",
+    "Connected approach, intersection and exit waypoint geometry",
+    "Four synchronized source cameras and original frame map"
+  ],
+  "comparison_controls": [
+    "same marked approach geometry and vehicle class",
+    "same recording rate and camera plan",
+    "only declared preturn path and indicator use vary between crossing cases"
+  ],
+  "unresolved": [
+    "C5191 has no batch assignment or exact frozen input; this proposal does not create one.",
+    "Actual CARLA turn and legal lawfulness remain unverified."
+  ],
+  "next_cpu_work": "Integrate route into a C5191-specific Native runner with original turn sources, saved-only turn finalizer and independent comparison audit after an exact allocated input exists.",
+  "construction_primitive": {
+    "path": "turn_route.py",
+    "sha256": "062b0de83d3c8fed1f42e4fe7ef0308c23affe7eff2f24d5517424263fd30953",
+    "test": "tests/test_turn_route.py",
+    "scope": "connected marked approach and leftward exit waypoint candidate only"
+  }
+}

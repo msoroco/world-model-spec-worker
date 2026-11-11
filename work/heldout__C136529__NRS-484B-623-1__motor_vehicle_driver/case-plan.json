@@ -67,6 +67,38 @@
         "trigger_metric": "measured speed, full-body spacing, feature geometry and visibility over recorded time",
         "failure_condition": "Missing synchronized participants, feature, or source camera evidence; requested targets alone are insufficient."
       }
+    },
+    {
+      "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__safety_speed_probe__slow_for_obstruction",
+      "target_law_id": "NRS-484B-623-1",
+      "branch": "slow_for_obstruction",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "primary_and_three_fallbacks_offline_compatibility_saved_proved",
+      "description": "Fixed obstruction geometry with a higher requested ego speed.",
+      "physical_risk": {
+        "risk": "Requested speed, follower interaction, physical feature visibility and control validity remain unconfirmed until native capture.",
+        "trigger_source": "saved native participant states, prop inventory and four original camera streams",
+        "trigger_metric": "measured speed, full-body spacing, feature geometry and visibility over recorded time",
+        "failure_condition": "Missing synchronized participants, feature, or source camera evidence; requested targets alone are insufficient."
+      }
+    },
+    {
+      "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__control_speed_probe__slow_under_control",
+      "target_law_id": "NRS-484B-623-1",
+      "branch": "slow_under_control",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "primary_and_three_fallbacks_offline_compatibility_saved_proved",
+      "description": "Fixed physical sign and route with a higher requested ego speed; governing authority unresolved.",
+      "physical_risk": {
+        "risk": "Requested speed, follower interaction, physical feature visibility and control validity remain unconfirmed until native capture.",
+        "trigger_source": "saved native participant states, prop inventory and four original camera streams",
+        "trigger_metric": "measured speed, full-body spacing, feature geometry and visibility over recorded time",
+        "failure_condition": "Missing synchronized participants, feature, or source camera evidence; requested targets alone are insufficient."
+      }
     }
   ],
   "comparisons": [
@@ -88,7 +120,7 @@
       ],
       "audit_proof": {
         "script": "comparison_audit.py",
-        "script_sha256": "8b5cb19abd63f3384358929791d24c28aab5bde2a5aee7994434538e6670bb3f",
+        "script_sha256": "823a4145998f806d1a6161862d5fccaf47a8834dd7377fa9f4adb388fade5247",
         "command": ".venv-cpu/bin/python work/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/prove_comparisons.py --comparison traffic_impedance",
         "exit_code": 0,
         "log": "traffic_impedance-comparison-positive.log",
@@ -97,7 +129,7 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Fixed comparison condition differs: duration_s",
         "negative_log": "traffic_impedance-comparison-negative.log",
-        "negative_log_sha256": "ba65fe194d4b6e78507825ac6529bbebfa52dc5c69a16692fb050542d3531a57"
+        "negative_log_sha256": "6e520e85524513d4e45d050f91b4a1909eb909a825079112bf5fc87ae0bd541b"
       }
     },
     {
@@ -117,7 +149,7 @@
       ],
       "audit_proof": {
         "script": "comparison_audit.py",
-        "script_sha256": "8b5cb19abd63f3384358929791d24c28aab5bde2a5aee7994434538e6670bb3f",
+        "script_sha256": "823a4145998f806d1a6161862d5fccaf47a8834dd7377fa9f4adb388fade5247",
         "command": ".venv-cpu/bin/python work/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/prove_comparisons.py --comparison safety_obstruction",
         "exit_code": 0,
         "log": "safety_obstruction-comparison-positive.log",
@@ -126,7 +158,7 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Fixed comparison condition differs: duration_s",
         "negative_log": "safety_obstruction-comparison-negative.log",
-        "negative_log_sha256": "ba65fe194d4b6e78507825ac6529bbebfa52dc5c69a16692fb050542d3531a57"
+        "negative_log_sha256": "6e520e85524513d4e45d050f91b4a1909eb909a825079112bf5fc87ae0bd541b"
       }
     },
     {
@@ -146,7 +178,7 @@
       ],
       "audit_proof": {
         "script": "comparison_audit.py",
-        "script_sha256": "8b5cb19abd63f3384358929791d24c28aab5bde2a5aee7994434538e6670bb3f",
+        "script_sha256": "823a4145998f806d1a6161862d5fccaf47a8834dd7377fa9f4adb388fade5247",
         "command": ".venv-cpu/bin/python work/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/prove_comparisons.py --comparison lawful_control",
         "exit_code": 0,
         "log": "lawful_control-comparison-positive.log",
@@ -155,7 +187,67 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Fixed comparison condition differs: duration_s",
         "negative_log": "lawful_control-comparison-negative.log",
-        "negative_log_sha256": "ba65fe194d4b6e78507825ac6529bbebfa52dc5c69a16692fb050542d3531a57"
+        "negative_log_sha256": "6e520e85524513d4e45d050f91b4a1909eb909a825079112bf5fc87ae0bd541b"
+      }
+    },
+    {
+      "comparison_id": "safety_speed_response",
+      "case_ids": [
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_for_obstruction",
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__safety_speed_probe__slow_for_obstruction"
+      ],
+      "fixed_conditions": [
+        "same C136529 narrow road and route",
+        "same three vehicles",
+        "same obstruction or physical sign",
+        "same dry Native weather",
+        "same cameras and duration"
+      ],
+      "deliberate_differences": [
+        "requested ego speed only; measured speed and physical response require source review"
+      ],
+      "audit_proof": {
+        "script": "comparison_audit.py",
+        "script_sha256": "823a4145998f806d1a6161862d5fccaf47a8834dd7377fa9f4adb388fade5247",
+        "command": ".venv-cpu/bin/python work/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/prove_comparisons.py --comparison safety_speed_response",
+        "exit_code": 0,
+        "log": "safety_speed_response-comparison-positive.log",
+        "log_sha256": "8b0c57709d965fe610d9280c7d7b6eabf31103747d395d861cb7b2e325255150",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/prove_comparisons.py --comparison safety_speed_response --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Fixed comparison condition differs: duration_s",
+        "negative_log": "safety_speed_response-comparison-negative.log",
+        "negative_log_sha256": "6e520e85524513d4e45d050f91b4a1909eb909a825079112bf5fc87ae0bd541b"
+      }
+    },
+    {
+      "comparison_id": "control_speed_response",
+      "case_ids": [
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_under_control",
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__control_speed_probe__slow_under_control"
+      ],
+      "fixed_conditions": [
+        "same C136529 narrow road and route",
+        "same three vehicles",
+        "same obstruction or physical sign",
+        "same dry Native weather",
+        "same cameras and duration"
+      ],
+      "deliberate_differences": [
+        "requested ego speed only; measured speed and physical response require source review"
+      ],
+      "audit_proof": {
+        "script": "comparison_audit.py",
+        "script_sha256": "823a4145998f806d1a6161862d5fccaf47a8834dd7377fa9f4adb388fade5247",
+        "command": ".venv-cpu/bin/python work/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/prove_comparisons.py --comparison control_speed_response",
+        "exit_code": 0,
+        "log": "control_speed_response-comparison-positive.log",
+        "log_sha256": "8aea522dc935fcf652d9d1205ae72c228da77e177ff0ccbd6147e2adf5ad5091",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/prove_comparisons.py --comparison control_speed_response --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Fixed comparison condition differs: duration_s",
+        "negative_log": "control_speed_response-comparison-negative.log",
+        "negative_log_sha256": "6e520e85524513d4e45d050f91b4a1909eb909a825079112bf5fc87ae0bd541b"
       }
     }
   ],
@@ -191,7 +283,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "All four exact cases have CPU construction, fallback, source/compatibility and saved-processing proofs. Physical motion, source camera visibility, regulatory validity and legal judgment remain unverified until native capture. Canonical semantic-stage proposals remain incomplete.",
+    "All four exact cases have CPU construction, fallback, source/compatibility, saved-processing, independent audit, and physical-preparation fixture proofs. Actual Native motion, four-view visibility, regulatory validity and legal judgment remain unverified until capture. The canonical semantic chain validates, but all three qualitative judgment sweep specs remain explicitly incomplete pending a feasible physical range and spacing for the narrow-road scene.",
     "No legal cutoff is defined for normal and reasonable movement or necessity."
   ],
   "evidence_review": {
@@ -201,7 +293,7 @@
     "gaps": [
       {
         "id": "uncovered-branches",
-        "requirement": "Compare slow travel with measured traffic impedance; separately cover reduced speed necessary for safety and compliance with law. Keep “normal and reasonable movement” and “necessary” as judgment phrases, without numeric legal cutoffs.",
+        "requirement": "Compare slow travel with measured traffic impedance; separately cover reduced speed necessary for safety and compliance with law. Keep \u201cnormal and reasonable movement\u201d and \u201cnecessary\u201d as judgment phrases, without numeric legal cutoffs.",
         "source": {
           "path": "inputs/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/assignment.json",
           "sha256": "069715deef26f235500708a570abb0304660c3655a1a2ffa3498e268dacc0ce3"
@@ -414,7 +506,8 @@
       "source": "NRS 484B.623(1) full text in inputs/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/assignment.json",
       "status": "selected_required",
       "case_ids": [
-        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_for_obstruction"
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_for_obstruction",
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__safety_speed_probe__slow_for_obstruction"
       ],
       "evidence_or_gap": "Original participant, prop and context histories are needed; no accepted recording exists."
     },
@@ -423,7 +516,8 @@
       "source": "NRS 484B.623(1) full text in inputs/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/assignment.json",
       "status": "selected_required",
       "case_ids": [
-        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_under_control"
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_under_control",
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__control_speed_probe__slow_under_control"
       ],
       "evidence_or_gap": "Original participant, prop and context histories are needed; no accepted recording exists."
     }

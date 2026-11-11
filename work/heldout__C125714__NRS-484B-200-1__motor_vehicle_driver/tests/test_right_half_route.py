@@ -8,13 +8,15 @@ from right_half_route import control_step, select_two_way_route
 from test_directed_geometry import lane
 
 
-def mapped_route(opposite_gap=False):
-    points = [lane(-1, i * 2.5, -1.5, 1) for i in range(14)]
+def mapped_route(opposite_gap=False, direction=1):
+    points = [lane(-1, i * 2.5 * direction, -1.5 * direction, direction) for i in range(14)]
     for i, point in enumerate(points):
         point.is_junction = False
-        point.get_left_lane = lambda i=i: lane(1, i * 2.5, 3 if opposite_gap else 1.5, -1)
+        point.get_left_lane = lambda i=i: lane(1, i * 2.5 * direction,
+                                               (3 if opposite_gap else 1.5) * direction,
+                                               -direction)
         point.next = lambda step, i=i: [points[i + 1]] if i + 1 < len(points) else []
-    world_map = NS(get_spawn_points=lambda: [NS(location=NS(x=0, y=-1.5))],
+    world_map = NS(get_spawn_points=lambda: [NS(location=NS(x=0, y=-1.5 * direction))],
                    get_waypoint=lambda _: points[0])
     return world_map, points
 
@@ -26,6 +28,14 @@ class RouteTests(unittest.TestCase):
         world_map, _ = mapped_route(opposite_gap=True)
         with self.assertRaisesRegex(ValueError, 'No connected two-way'):
             select_two_way_route(world_map)
+
+    def test_direction_is_bound_to_exact_case(self):
+        world_map, points = mapped_route(direction=-1)
+        self.assertEqual(select_two_way_route(world_map, desired_direction='west'), points[:13])
+        with self.assertRaisesRegex(ValueError, 'No connected'):
+            select_two_way_route(world_map, desired_direction='east')
+        with self.assertRaisesRegex(ValueError, 'Unsupported'):
+            select_two_way_route(world_map, desired_direction='north')
 
     def test_feedback_in_both_travel_directions(self):
         east = control_step([0, 0], [1, 0], [1, 0], [5, 1])
