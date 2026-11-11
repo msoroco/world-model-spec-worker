@@ -1,0 +1,246 @@
+{
+  "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C129731",
+  "law_id": "NRS-484B-407",
+  "selected_branch": "Mountain-road curve with documented visibility circumstances.",
+  "cases": [
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft",
+      "target_law_id": "NRS-484B-407",
+      "gap_ids": [
+        "new-sightline-evidence"
+      ],
+      "feature": "curve",
+      "probe": "short_of_500ft",
+      "description": "Planned U-turn at curve with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet."
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__at_500ft",
+      "target_law_id": "NRS-484B-407",
+      "gap_ids": [
+        "new-sightline-evidence"
+      ],
+      "feature": "curve",
+      "probe": "at_500ft",
+      "description": "Planned U-turn at curve with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet."
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__beyond_500ft",
+      "target_law_id": "NRS-484B-407",
+      "gap_ids": [
+        "new-sightline-evidence"
+      ],
+      "feature": "curve",
+      "probe": "beyond_500ft",
+      "description": "Planned U-turn at curve with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet."
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft",
+      "target_law_id": "NRS-484B-407",
+      "gap_ids": [
+        "new-sightline-evidence"
+      ],
+      "feature": "crest",
+      "probe": "short_of_500ft",
+      "description": "Planned U-turn at crest with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet."
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__at_500ft",
+      "target_law_id": "NRS-484B-407",
+      "gap_ids": [
+        "new-sightline-evidence"
+      ],
+      "feature": "crest",
+      "probe": "at_500ft",
+      "description": "Planned U-turn at crest with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet."
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft",
+      "target_law_id": "NRS-484B-407",
+      "gap_ids": [
+        "new-sightline-evidence"
+      ],
+      "feature": "crest",
+      "probe": "beyond_500ft",
+      "description": "Planned U-turn at crest with two-direction sight-line inventory and a controlled visibility bracket; no physical realization yet."
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "curve_visibility_boundary",
+      "case_ids": [
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft",
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__at_500ft",
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__beyond_500ft"
+      ],
+      "fixed_conditions": [
+        "same mountain-road map segment and U-turn site",
+        "same actor and U-turn controller",
+        "same road surface, weather, traffic and device context",
+        "same four camera streams, 20 Hz and duration",
+        "both approach directions inventoried"
+      ],
+      "deliberate_differences": [
+        "engineered occlusion bracket around 500 feet on one inventoried approach, with the other approach held clear"
+      ]
+    },
+    {
+      "comparison_id": "crest_visibility_boundary",
+      "case_ids": [
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft",
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__at_500ft",
+        "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft"
+      ],
+      "fixed_conditions": [
+        "same mountain-road map segment and U-turn site",
+        "same actor and U-turn controller",
+        "same road surface, weather, traffic and device context",
+        "same four camera streams, 20 Hz and duration",
+        "both approach directions inventoried"
+      ],
+      "deliberate_differences": [
+        "engineered occlusion bracket around 500 feet on one inventoried approach, with the other approach held clear"
+      ]
+    }
+  ],
+  "observations": [
+    "500 feet is 152.4 meters; preserve below, at and above probes without assigning a legal verdict",
+    "record U-turn position and completed heading reversal",
+    "record curve or approach/near-crest location",
+    "inventory both approach directions and retain ray source/brackets, including any censored extent",
+    "record approaching vehicle trajectories and camera visibility"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+      "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+    },
+    {
+      "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ee949b41e86803b5e2bc727748d80aac24d8ed79a7b12662bc5ce62eea1daf80"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "No accepted recording is supplied for this assignment. All six planned cases remain unconstructed and physically unverified.",
+    "The pinned sight-distance proxy uses virtual observers 1.4 m above lane waypoints and ego center/corners; it does not establish an actual driver-eye view.",
+    "Pinned CPU preflight fails on missing numpy, and ffmpeg/ffprobe/lake are absent from PATH."
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Read exact law and witness; confirmed evidence.json has no recordings. No source-backed reuse available.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "new-sightline-evidence",
+        "requirement": "Source-bound two-direction 500-foot visibility, curve/crest geometry and actual U-turn motion at each probe",
+        "source": "NRS 484B.407",
+        "why_existing_insufficient": "The frozen evidence inventory has zero recordings."
+      }
+    ]
+  },
+  "source_observation_mapping": [
+    {
+      "term": "drv.u_turn",
+      "measurement": "recorded trajectory and heading reversal",
+      "planned_source": "Native ego poses and route intent",
+      "status": "planned_unverified",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ]
+    },
+    {
+      "term": "st.curvature",
+      "measurement": "map lane geometry and local curvature",
+      "planned_source": "Native map waypoints",
+      "status": "planned_unverified",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ]
+    },
+    {
+      "term": "st.grade",
+      "measurement": "elevation and grade profile",
+      "planned_source": "Native map waypoints and surface measurements",
+      "status": "planned_unverified",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ]
+    },
+    {
+      "term": "st.sight_distance",
+      "measurement": "two-direction virtual-observer sight-line brackets",
+      "planned_source": "retained PipelineCapture rays and ego body samples",
+      "status": "planned_unverified",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ]
+    },
+    {
+      "term": "rel.oncoming",
+      "measurement": "approach-a vehicle trajectory",
+      "planned_source": "Native participant poses",
+      "status": "planned_unverified",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ]
+    },
+    {
+      "term": "drv.approaching",
+      "measurement": "approach-b vehicle trajectory",
+      "planned_source": "Native participant poses",
+      "status": "planned_unverified",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ]
+    },
+    {
+      "term": "kin.position",
+      "measurement": "U-turn site and trajectory positions",
+      "planned_source": "Native ego poses",
+      "status": "planned_unverified",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ]
+    },
+    {
+      "term": "st.crest",
+      "measurement": "crest station relative to maneuver site",
+      "planned_source": "Native map waypoints and surface measurements",
+      "status": "planned_unverified",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ]
+    }
+  ],
+  "planning_status": "partial; constructions, source packets, finalizer, cameras and compatibility proofs pending"
+}
