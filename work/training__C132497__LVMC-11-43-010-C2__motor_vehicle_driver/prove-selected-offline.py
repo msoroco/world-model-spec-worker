@@ -22,7 +22,7 @@ def main():
         if sha(manifest) != item['manifest_sha256']:
             raise ValueError('Selected manifest changed: '+case+'/'+candidate)
         output = (REPO/'.runtime-work/c132497-selected-offline'/case/candidate/
-                  item['manifest_sha256'][:12])
+                  (item['manifest_sha256'][:12]+'-'+sha(ROOT/'native/finalize_current.py')[:12]))
         output.parent.mkdir(parents=True, exist_ok=True)
         command = [str(REPO/'.venv-cpu/bin/python'), str(REPO/'runtime.py'),
                    'offline', '--manifest', str(manifest), '--case', item['case_id'],

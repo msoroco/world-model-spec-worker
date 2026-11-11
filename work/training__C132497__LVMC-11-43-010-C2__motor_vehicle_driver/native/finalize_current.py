@@ -40,6 +40,59 @@ def measure_right_lane_exit(observed):
     return bool(circle and exits and all(row['observed_lane_id'] == -2 for row in circle))
 
 
+def assess_original_motion(observed, trace, mapping, cfg, map_readback, capture):
+    """Assess the finite authored route from retained Native readback, not law.
+
+    The numeric minima are engineering checks for this 240-frame attempt. A
+    successful assessment does not establish lane legality, visibility or cause.
+    """
+    failures = []
+    if map_readback.get('road_sha256') != cfg['road_sha256']:
+        failures.append('Native map readback differs from authored road')
+    if capture.get('case_id') != cfg['case_id'] or capture.get('candidate_id') != cfg['candidate_id'] or capture.get('error') is not None or capture.get('observed_frames') != 240:
+        failures.append('Native capture identity or frame count differs')
+    expected_lane = cfg['requested_lane_id']
+    roads = [row['observed_road_id'] for row in observed]
+    lanes = [row['observed_lane_id'] for row in observed]
+    entry = [i for i, road in enumerate(roads) if road == 20]
+    circle = [i for i, road in enumerate(roads) if road == 21]
+    exits = [i for i, road in enumerate(roads) if road == 22]
+    if not (roads[0] == 20 and roads[-1] == 22 and len(entry) >= 5 and
+            len(circle) >= 10 and len(exits) >= 5 and
+            max(entry) < min(circle) and max(circle) < min(exits) and
+            all(road in (20, 21, 22) for road in roads)):
+        failures.append('Measured entry, circulation and first right-exit sequence incomplete')
+    if circle and exits and not (lanes[circle[-1]] == expected_lane and
+                                  lanes[exits[0]] == expected_lane and
+                                  all(lanes[i] == expected_lane for i in circle)):
+        failures.append('Measured circulating and exit lane differ from exact request')
+    path_m = sum(math.dist(a['ego']['center_native_xyz_m'][:2],
+                           b['ego']['center_native_xyz_m'][:2])
+                 for a, b in zip(observed, observed[1:]))
+    if path_m < 5.0 or not any(row['ego']['speed_mps'] > 0.5 for row in observed):
+        failures.append('Measured original ego progress below authored engineering minimum')
+    for i, (row, point, frame) in enumerate(zip(observed, trace, mapping)):
+        ego = row['ego']
+        if (point.get('frame') != frame.get('carla_frame') or
+            point.get('position_m') != ego['center_native_xyz_m'] or
+            abs(point.get('speed_mps', -1) - ego['speed_mps']) > 1e-6 or
+            abs(point.get('heading_deg', float('inf')) - ego['yaw_deg']) > 1e-6 or
+            point.get('velocity_mps') != ego.get('velocity_native_xyz_mps')):
+            failures.append('Measured trace differs from actor readback at frame '+str(i))
+            break
+    return {'setup_confirmed': not any('map readback' in x or 'capture identity' in x for x in failures),
+            'behavior_attempted': path_m >= 5.0 and bool(circle) and
+                                  any(row['ego']['speed_mps'] > 0.5 for row in observed),
+            'maneuver_completed': not failures,
+            'physical_failure_flags': failures,
+            'physical_checks': {'method': 'retained original Native actor, trace, frame and map readback',
+                'engineering_minimum_path_m': 5.0, 'measured_path_m': path_m,
+                'entry_frames': len(entry), 'circulation_frames': len(circle),
+                'exit_frames': len(exits), 'observed_exit_lane_id':
+                    lanes[exits[0]] if exits else None,
+                'legal_verdict_claimed': False, 'physical_causation_claimed': False}}
+
+
 def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt/'result.json').exists() or (attempt/'channels').exists():
@@ -131,6 +184,19 @@ def finalize(attempt, output):
         evidence.append({'name': name, 'unit': 'structured', 'reference': target})
     measured = measurements['right_lane_exit']['value']
     requested = cfg['requested_lane_id'] == -2
+    if source_kind == 'original_native':
+        map_readback = json.loads(require(attempt/'native-map-readback.json').read_text())
+        capture = json.loads(require(attempt/'native-capture-report.json').read_text())
+        physical = assess_original_motion(observed, trace, mapping, cfg, map_readback, capture)
+        physical['physical_checks']['sources'] = {name: sha(attempt/name) for name in
+            ('native-raw-actors.jsonl', 'trace.jsonl', 'video_frames.jsonl',
+             'native-map-readback.json', 'native-capture-report.json')}
+    else:
+        physical = {'setup_confirmed': False, 'behavior_attempted': False,
+                    'maneuver_completed': False,
+                    'physical_failure_flags': ['Synthetic Native motion cannot establish original physical completion'],
+                    'physical_checks': {'method': 'synthetic diagnostic only',
+                                        'legal_verdict_claimed': False}}
     result = {'case_id': cfg['case_id'], 'measured_values': {'right_lane_exit': measured},
               'target_checks': [{'target': 'right lane while taking intended right exit',
                                  'requested': requested, 'measured': measured,
@@ -138,10 +204,12 @@ def finalize(attempt, output):
                                  'tolerance': 'one 50 ms frame', 'matched': requested == measured,
                                  'physical_cause_confirmed': False,
                                  'cause_evidence': ['native-raw-actors.jsonl']}],
-              'setup_confirmed': False, 'behavior_attempted': False,
-              'maneuver_completed': False,
+              'setup_confirmed': physical['setup_confirmed'],
+              'behavior_attempted': physical['behavior_attempted'],
+              'maneuver_completed': physical['maneuver_completed'],
               'termination_reason': '240-frame diagnostic window; original Native review pending',
-              'physical_failure_flags': ['Native lane allocation and right-exit motion unverified'],
+              'physical_failure_flags': physical['physical_failure_flags'],
+              'physical_checks': physical['physical_checks'],
               'trace_reference': 'trace.jsonl',
               'video_references': [n+'.mkv' for n in
                   ('overview','approach','reference_corner','driver_reference')],

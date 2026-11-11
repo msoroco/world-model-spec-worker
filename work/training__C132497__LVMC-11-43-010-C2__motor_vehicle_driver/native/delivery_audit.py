@@ -186,6 +186,22 @@ def audit(case,job_id,attempt_number,recording_id,attempt,review_path,
     frames=lines(attempt/'video_frames.jsonl')
     trace=lines(attempt/'trace.jsonl')
     physical=validate_rows(raw,frames,trace,case,candidate)
+    checks=result.get('physical_checks',{})
+    require(result.get('setup_confirmed') is True and
+            result.get('behavior_attempted') is True and
+            result.get('maneuver_completed') is True and
+            result.get('physical_failure_flags') == [] and
+            checks.get('legal_verdict_claimed') is False and
+            checks.get('physical_causation_claimed') is False and
+            type(checks.get('measured_path_m')) in (int,float) and
+            checks['measured_path_m'] >= checks.get('engineering_minimum_path_m',5.0) and
+            checks.get('circulation_frames') == physical['circulating_frames'] and
+            checks.get('exit_frames') == physical['exit_frames'] and
+            checks.get('observed_exit_lane_id') == physical['exit_lane_id'] and
+            all(checks.get('sources',{}).get(name) == sha(attempt/name) for name in
+                ('native-raw-actors.jsonl','trace.jsonl','video_frames.jsonl',
+                 'native-map-readback.json','native-capture-report.json')),
+            'Original source-bound physical completion assessment missing or stale')
     core_path=attempt/'converted/trace.json'
     core=read(core_path).get('scenes')
     require(isinstance(core,list) and len(core)==240 and
