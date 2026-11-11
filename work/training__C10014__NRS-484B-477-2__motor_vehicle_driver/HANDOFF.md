@@ -1,6 +1,6 @@
 # training__C10014__NRS-484B-477-2__motor_vehicle_driver
 
-Status: blocked. No delivery recording is selected or claimed.
+Status: partial. No delivery recording is selected or claimed. Earlier blocked statements below are historical; the current status is the Update 015 checkpoint.
 
 ## Source review
 
@@ -26,6 +26,16 @@ The observed-pose runner is a work-owned, unexecuted Native proposal. Its CPU ch
 
 Both 480-frame synthetic cases pass source-bound saved finalization, four source-video decodes, pinned Native attempt validation with `rebuild_required: true`, and missing-Native-source negatives. The independent saved audit holds the original approach prefix fixed and verifies source hashes, measurement contracts/reports, 0.0 m versus 5.2 m overlap, video counts and negative logs. Both Core/decoder/render probes pass with retained graph templates. All eight unselected exact bundles pass full-resolution pinned v1 package positives and packaged missing-source negatives; the independent audit verifies current construction/runtime and fixture/finalizer hashes, four source audits and final decode. Strict v2 recipe-backed compatibility, physical Native alley/access and stop evidence, scenario-specific graphs, legal blocking judgment and independent delivery acceptance remain worker-owned. Status stays blocked; no case or GPU row is selected.
 
-## Strict v2 fixture capability reproduction
+## Historical v1 fixture capability reproduction
 
-The source/status reproducer at `work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/reproduce-v2-fixture-limit.py` passes and records a 3-row pinned retained base for trace, frame map, evidence, and Native frames. This assignment needs 480 frames; `fixture_recipe.inspect` rejects a portable addition that replaces a pinned source with `Fixture addition shadows pinned source`. Log SHA-256: `f20eb84cf0cadbf412c915503b7d9c30f2fb724beb8c72b6766f4521d205b937`. See `v2-fixture-capability-blocker.json` in the C10014 assignment for the exact remedy. This does not establish physical execution or satisfy other CPU delivery requirements; the assignment stays blocked and unselected.
+The retained reproducer and `v2-fixture-capability-blocker.json` describe the old `worker-fixture-recipe-v1` contract. Its three-row base and source-shadow rejection are historical. The current `fixture_recipe.py` accepts `worker-fixture-recipe` with an inventoried, source-hashed generator specification, so this prior blocker is superseded and must not be used to defer a current exact-case recipe.
+
+## Update 015 CPU checkpoint (2026-11-10)
+
+The eight authored, unselected exact construction bundles were rerun with the current exported `runtime.py offline`; all eight exit 0 with six tests each. `audit-draft-offline.py` independently validates their current command logs, construction hashes and source files: `update015-offline-audit.log` SHA-256 `bc9b8e8a5fd954fc53f342cb1738a69571768aa25211323a126f6f754a3fe3a9`. The two draft measurement contracts were migrated from the historical `worker-measurement-contract-v1` tag to the current `worker-measurement-contract` tag, rebuilt with `build-measurement-contracts.py`, and source/value validation passes. These are still unselected draft and synthetic measurement proofs, not strict compatibility or saved processing.
+
+Pinned CPU dependencies and FFmpeg/ffprobe are now available. Elan and the exact `leanprover/lean4:v4.28.0` toolchain were installed under ignored `.runtime-work/elan`; `runtime.py preflight` passes when `ELAN_HOME` and the corresponding `PATH` are set. The earlier missing-tool preflight log (`update015-preflight.log`, SHA-256 `0a17ffa1ba0c346a95da8aa6aaa71601eb2983a4d2d42ecefad3e594cccbd75f`) is a historical environment checkpoint, not an active blocker. The assignment static gate passes (`update015-static-gate.log`, SHA-256 `11f90eeae0b6698d270ad48d2695ba15cbcb08a55bdcd1221909c7ee69d0bdfa`); the strict gate exits 1 because the result is partial and no selected delivery package exists (`update015-strict-gate.log`, SHA-256 `f269c2d5acd89b61494632191e9062f5a604d37a03156e205eac15b87b44e653`).
+
+Passing preflight receipt: `update015-preflight-passing.log`, SHA-256 `d383d69c93230f5b52b7c8796df8e5ea3a329d4b05df73f952b2c0bdf5da2230`.
+
+Resume with `ELAN_HOME=$PWD/.runtime-work/elan PATH=$PWD/.runtime-work/elan/bin:$PATH .venv-cpu/bin/python runtime.py preflight`, then build the current `worker-fixture-recipe` and saved-only finalizer proofs from retained raw sources and four cameras. Complete semantic proposals, delivery and comparison audits, risk-reviewed candidates and strict gate before changing status. The remaining gaps are worker-owned CPU implementation, not an external fixture capability blocker. No physical CARLA or legal conclusion has been claimed.

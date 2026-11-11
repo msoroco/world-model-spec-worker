@@ -28,7 +28,7 @@ def build():
                 'value_type':'object',
                 'kind':'measured' if index==0 else 'sourced_context',
                 'inputs':['native_samples.jsonl','road_geometry.json']})
-        contract={'format':'worker-measurement-contract-v1','case_id':draft['case_id'],
+        contract={'format':'worker-measurement-contract','case_id':draft['case_id'],
                   'requirements':requirements,
                   'negative':{'remove':['native_samples.jsonl'],
                               'error_contains':'Missing required source: native_samples.jsonl'}}
