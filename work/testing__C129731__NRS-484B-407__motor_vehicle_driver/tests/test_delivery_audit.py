@@ -3,6 +3,7 @@ import importlib.util
 import json
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
 import unittest
 
 HERE = Path(__file__).resolve().parents[1]
@@ -23,8 +24,13 @@ class DeliveryAuditSources(unittest.TestCase):
                  "capture/evidence.jsonl", "turn_history.jsonl")
         for name in names:
             rows = [json.loads(line) for line in (SOURCE / name).open().readlines()[:3]]
+            if name == "motion_history.jsonl":
+                for row in rows:
+                    row["ego"]["id"] = 101
+                    row["approaches"]["approach_a"]["id"] = 102
+                    row["approaches"]["approach_b"]["id"] = 103
             if name == "capture/evidence.jsonl":
-                motion = [json.loads(line) for line in (SOURCE / "motion_history.jsonl").open().readlines()[:3]]
+                motion = MODULE.rows(self.attempt / "motion_history.jsonl")
                 for ray, m in zip(rows, motion):
                     sample = ray["original_observations"]["participants"][0]
                     for index, direction in enumerate(("approach_a", "approach_b"), start=1):
@@ -66,6 +72,18 @@ class DeliveryAuditSources(unittest.TestCase):
         inspect, finish = MODULE.review_checker([{"video_frame": 1, "bbox_xyxy": [0, 0, 3, 3]}], 3, 3)
         with self.assertRaisesRegex(ValueError, "not decoded"):
             finish()
+
+    def test_decoded_pixel_box_requires_detail(self):
+        samples = [{"video_frame": 1, "bbox_xyxy": [0, 0, 4, 4]}]
+        blank = SimpleNamespace(index=1, width=4, height=4, pixels=b"\0" * 48)
+        inspect, _ = MODULE.review_checker(samples, 4, 4)
+        with self.assertRaisesRegex(ValueError, "no pixel detail"):
+            inspect(blank)
+        colored = SimpleNamespace(index=1, width=4, height=4,
+                                  pixels=b"\0" * 45 + b"\xff\0\0")
+        inspect, finish = MODULE.review_checker(samples, 4, 4)
+        inspect(colored)
+        finish()
 
     def test_diagnostic_result_cannot_be_delivery(self):
         (self.attempt / "result.json").write_bytes((SOURCE / "result.json").read_bytes())

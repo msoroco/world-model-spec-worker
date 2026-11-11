@@ -99,6 +99,10 @@ def validate_originals(attempt, case_id, expected_frames):
         ids = [p.get("actor_id") for p in people if isinstance(p, dict)]
         if len(ids) != len(people) or len(set(ids)) != len(ids) or capture.get("actor_id") not in ids:
             raise ValueError("Missing complete participant inventory")
+        required_ids = {motion.get("ego", {}).get("id"),
+                        approaches["approach_a"].get("id"), approaches["approach_b"].get("id")}
+        if None in required_ids or len(required_ids) != 3 or not required_ids <= set(ids):
+            raise ValueError("Original ego and both approaches absent from participant inventory")
         for person in people:
             vertices = person.get("body_vertices_m")
             if (not finite_vector(person.get("position_m"), 3) or
@@ -190,6 +194,13 @@ def audit(attempt, case_id, job_id, attempt_number, recording_id, review_path, o
     observations = review.get("observations", [])
     if not observations or not set(joined["participant_ids"]) <= {x.get("actor_id") for x in observations}:
         raise ValueError("Independent pixel review omits a participant")
+    original_frames = rows(attempt / "capture/evidence.jsonl")
+    for item in observations:
+        frame_number = item.get("video_frame")
+        if (type(frame_number) is not int or not 0 <= frame_number < joined["frames"] or
+                item.get("camera") not in CAMERAS or item.get("actor_id") not in {
+                    person["actor_id"] for person in original_frames[frame_number]["original_observations"]["participants"]}):
+            raise ValueError("Pixel review actor/frame identity differs from original source")
     from worker_exchange.capture import PROFILE
     dimensions = {"overview": PROFILE["overview"], **dict(zip(CAMERAS[1:], PROFILE["detail_views"]))}
     for name, path in cameras.items():
