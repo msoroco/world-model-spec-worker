@@ -9,7 +9,7 @@ class Tests(unittest.TestCase):
   (root/'capture').mkdir()
   context={'native_map_id':'TownX','highway_id':1,'road_id':7,'following_lane_id':-1,'target_lane_id':-2,'hill_crest_source':'native-elevation-profile','lane_geometry_source':'native-waypoints','surface_source':'weather-and-road-review','traffic_source':'native-actor-inventory','route_source':'native-waypoints','following_forward_xy':[1,0]}
   (root/'road_context.json').write_text(json.dumps(context))
-  config={'selected_case_id':CASE,'requested_engineering_gap_m':6.0,'engineering_gap_tolerance_m':1.0,'recording_description':{'channels':[{'name':'kin.speed'},{'name':'kin.position'}]}}
+  config={'selected_case_id':CASE,'law_id':'NRS-484B-127-1','duration_s':45,'rate_hz':20,'requested_engineering_gap_m':6.0,'engineering_gap_tolerance_m':1.0,'recording_description':{'channels':[{'name':'kin.speed'},{'name':'kin.position'}]},'physical_completion':json.loads((ROOT/'config.json').read_text())['physical_completion']}
   (root/'config.json').write_text(json.dumps(config))
   history=[]
   for i,(x,y,change) in enumerate(((0,0,False),(2,0,False),(4,4,True))):
@@ -30,7 +30,7 @@ class Tests(unittest.TestCase):
    self.assertEqual(result['measured_values']['minimum_sampled_body_gap_m'],6)
    self.assertTrue(result['measured_values']['following_end_before_lane_change'])
    self.assertEqual(report['measurements']['minimum_sampled_body_gap_m']['sources']['vehicle_history.jsonl'],source_hash)
-   self.assertFalse(result['maneuver_completed']);self.assertNotIn('legal_verdict',result)
+   self.assertTrue(result['maneuver_completed']);self.assertEqual(result['physical_checks']['maneuver']['status'],'met');self.assertNotIn('legal_verdict',result)
    sys.path.insert(0,str(REPO/'runtime/scenario_pipeline'))
    from worker_exchange.measurement_contract import validate,verify_report
    contract=json.loads((ROOT/'measurement-contract.json').read_text())

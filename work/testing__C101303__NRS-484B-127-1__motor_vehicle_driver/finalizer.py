@@ -22,7 +22,7 @@ def measure_following_interval(report):
     return report["following_end"]["time_s"]<report["first_lane_change"]["time_s"]
 
 def finalize(attempt:Path,output:Path)->dict:
-    from worker_exchange.native_output import write_result
+    from worker_exchange.native_output import write_result, physical_result
     attempt,output=Path(attempt),Path(output)
     if output.exists() or (attempt/'result.json').exists():
         raise ValueError('Retain prior finalization; choose a fresh attempt')
@@ -83,6 +83,7 @@ def finalize(attempt:Path,output:Path)->dict:
             'source_evidence_hashes':source_hashes,
             'capture_evidence_sha256':sha(attempt/'capture/evidence.jsonl'),
             'realized_observables':{}}
+    result=physical_result(attempt,result)
     analysis={'format':'worker-following-analysis','case_id':case_id,
               'measurements':{'minimum_sampled_body_gap_m':{'method':'measure_minimum_following_gap',
                   'value':gap,'sources':source_hashes},
