@@ -18,3 +18,11 @@ Resume: read each accepted metadata source, decompose full law text and exceptio
 - authorized emergency vehicle on official business exception
 
 No legal judgment threshold is inferred from these engineering comparisons. Verify cell compatibility and governing cross-references before selecting exact cases.
+
+## Current evidence disposition
+
+`evidence.json` contains no accepted recordings, so `case-plan.json.evidence_review` now records four source-cited gaps for the traveling, stopped-driving, stopped-parking and authorized-on-official-business branches. No C102304 accepted recording is claimed equivalent to this intersection cell. Next construct the primary following case with measured original-frame body separation, then run its offline, positive/negative compatibility and saved-processing proofs before expanding comparisons and fallbacks.
+
+## Current gate
+
+`.venv-cpu/bin/python worker_check.py --assignment heldout__C109514__NRS-484B-710__motor_vehicle_driver --complete` passed static checks (`worker-check.log`). Status remains partial because exact construction and CPU proofs have not been built. The current pinned runtime preflight passes; no dependency or tool blocker is claimed.
