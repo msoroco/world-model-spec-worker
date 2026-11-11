@@ -81,13 +81,21 @@ def measure_approach(attempt):
                    context['one_way'],context['zone_kind'])
     return {'value':result,'method':'measure_approach',
             'sources':{name:sha(attempt/name) for name in
-              ('native_samples.jsonl','road_geometry.json','statutory_context.json','road.xodr')},
+              ('native_samples.jsonl','road_geometry.json','statutory_context.json')},
             'statutory_context':context}
 
 def measure_left_side(attempt):
     approach=measure_approach(attempt)
     return {'value':approach['value']['left_driving_frames']>0,
             'method':'measure_left_side','sources':approach['sources']}
+
+
+def measure_context(attempt):
+    """Bind the one-way exception context to the retained Native survey."""
+    approach=measure_approach(attempt)
+    return {'value':approach['statutory_context'],'method':'measure_context',
+            'sources':{name:sha(Path(attempt)/name) for name in
+                       ('statutory_context.json','road_geometry.json')}}
 
 
 def derive_channels(attempt,config,count):
@@ -209,10 +217,7 @@ def finalize(attempt,output):
             'candidate_id':config['candidate_id'],
             'measurements':{'left_side_driving':measure_left_side(attempt),
                             'statutory_approach_relation':measured,
-                            'statutory_context':{'value':measured['statutory_context'],
-                                'method':'inspect',
-                                'sources':{name:sha(attempt/name) for name in
-                                   ('statutory_context.json','road_geometry.json','road.xodr')}}},
+                            'statutory_context':measure_context(attempt)},
             'original_joins':original,'video_frames':video_counts,
             'scope':'saved original Native sources and source video decode, not independent acceptance or legal verdict'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')

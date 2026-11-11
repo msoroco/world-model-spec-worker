@@ -68,6 +68,8 @@ def main():
             "measurement_contract":f"draft-traversal-contracts/{suffix}/measurement-contract.json",
             "measurement_procedure":{"entrypoint":"finalize.py","output_schema":"c110454-traversal-saved-analysis-v1"},
             "candidates":[]}
+        if (HERE/f'update015-{suffix}-recipe.json').is_file():
+            entry['fixture_recipe']=f'work/{HERE.name}/update015-{suffix}-recipe.json'
         proposals.append({"case_id":case_id,"target_law_id":"NRS-484B-213-2b",
             "target_type":"attempt","recording_description":description})
         write(HERE / "draft-traversal-contracts" / suffix / "measurement-contract.json",

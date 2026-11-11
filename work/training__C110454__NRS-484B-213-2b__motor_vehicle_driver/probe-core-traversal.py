@@ -24,6 +24,9 @@ def make_attempt(destination: Path, suffix: str, full_resolution=True):
     if suffix not in ("traversal_reference","traversal_contrast"):
         raise ValueError("Unknown traversal case")
     core.make_attempt(destination,"reference",full_resolution=full_resolution)
+    construction=json.loads((HERE/'draft-traversal-candidates'/suffix/'primary/construction.json').read_text())
+    config=json.loads(next(item['content'] for item in construction['files'] if item['path']=='config.json'))
+    (destination/'config.json').write_text(json.dumps(config))
     trace = core.rows(destination / "trace.jsonl")
     evidence = core.rows(destination / "capture/evidence.jsonl")
     samples = core.rows(destination / "native_samples.jsonl")

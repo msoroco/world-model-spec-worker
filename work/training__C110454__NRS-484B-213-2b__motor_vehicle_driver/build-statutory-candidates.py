@@ -56,22 +56,26 @@ def main():
             'measurement_contract':f'draft-statutory-contracts/{suffix}/measurement-contract.json',
             'measurement_procedure':{'entrypoint':'finalize.py','output_schema':'c110454-saved-analysis-v1'},
             'candidates':[]}
+        if (HERE/f'update015-{suffix}-recipe.json').is_file():
+            entry['fixture_recipe']=f'work/{HERE.name}/update015-{suffix}-recipe.json'
         proposals.append({'case_id':case_id,'target_law_id':'NRS-484B-213-2b','target_type':'attempt',
             'recording_description':recording})
-        write(HERE/'draft-statutory-contracts'/suffix/'measurement-contract.json',{
-            'format':'worker-measurement-contract','case_id':case_id,
-            'requirements':[{'disposition_index':0,'requirement':'text-0',
+        requirements=[{'disposition_index':0,'requirement':'text-0',
                 'source':'inputs/coverage/branch-sources.json','output_key':'left_side_driving',
                 'method':'measure_left_side','value_type':'boolean','kind':'measured',
-                'inputs':['native_samples.jsonl','road_geometry.json','statutory_context.json','road.xodr']},
+                'inputs':['native_samples.jsonl','road_geometry.json','statutory_context.json']},
                 {'disposition_index':1,'requirement':'text-1',
                 'source':'inputs/coverage/branch-sources.json','output_key':'statutory_approach_relation',
                 'method':'measure_approach','value_type':'object','kind':'measured',
-                'inputs':['native_samples.jsonl','road_geometry.json','statutory_context.json','road.xodr']},
-                {'disposition_index':2,'requirement':'text-2',
+                'inputs':['native_samples.jsonl','road_geometry.json','statutory_context.json']}]
+        if suffix.startswith('oneway_'):
+            requirements.append({'disposition_index':2,'requirement':'text-2',
                 'source':'inputs/coverage/branch-sources.json','output_key':'statutory_context',
-                'method':'inspect','value_type':'object','kind':'measured',
-                'inputs':['statutory_context.json','road_geometry.json','road.xodr']}],
+                'method':'measure_context','value_type':'object','kind':'sourced_context',
+                'inputs':['statutory_context.json','road_geometry.json']})
+        write(HERE/'draft-statutory-contracts'/suffix/'measurement-contract.json',{
+            'format':'worker-measurement-contract','case_id':case_id,
+            'requirements':requirements,
             'negative':{'remove':['statutory_context.json'],
                 'error_contains':'Missing required source: statutory_context.json'},
             'scope':'saved source identity and sampled geometry only; one-way exception applicability requires independent review'})

@@ -6,7 +6,7 @@ import json
 import math
 from pathlib import Path
 
-from finalize_base import rows, sha, verify_original_joins, video_frames
+from finalize_base import rows, sha, verify_original_joins, video_frames, derive_channels
 
 
 def measure_traversal(attempt):
@@ -76,6 +76,19 @@ def finalize(attempt, output):
     if config["duration_s"] != 24 or config["rate_hz"] != 20:
         raise ValueError("Traversal requires 480 original frames")
     original = verify_original_joins(attempt,480)
+    capture=json.loads((attempt/'capture/manifest.json').read_text())
+    synthetic=capture.get('synthetic_diagnostic') is True or capture.get('synthetic_fixture') is True
+    if synthetic:
+        trace=rows(attempt/'trace.jsonl')
+        evidence=rows(attempt/'capture/evidence.jsonl')
+        motion=rows(attempt/'native_samples.jsonl')
+        if not all(row.get('synthetic_diagnostic') is True and
+                   row.get('speed_provenance')=='synthetic_native_sample'
+                   for source in (trace,motion) for row in source) or not all(
+                       row.get('synthetic_diagnostic') is True and
+                       row.get('ego',{}).get('speed_provenance')=='synthetic_native_sample'
+                       for row in evidence):
+            raise ValueError('Synthetic speed must retain diagnostic provenance')
     measured = measure_traversal(attempt)
     names = ("overview","approach","reference_corner","driver_reference")
     videos = [name + ".mkv" for name in names]
@@ -90,6 +103,7 @@ def finalize(attempt, output):
     endpoint = rows(attempt / "native_samples.jsonl")[-1]
     parked = math.dist(endpoint["native_center_xy_m"],[20,-5.25]) <= .8 and endpoint["speed_m_s"] <= .3
     description = config["recording_description"]
+    derive_channels(attempt,config,480)
     recording_evidence = []
     for channel in description["channels"]:
         reference = "channels/" + channel["name"] + ".jsonl"
@@ -108,7 +122,8 @@ def finalize(attempt, output):
             "tolerance":"50 ms sampling; physical cause and pixels require independent review",
             "matched":matched,"physical_cause_confirmed":False,
             "cause_evidence":["native_samples.jsonl","road_geometry.json"]}],
-        "setup_confirmed":True,"behavior_attempted":True,"maneuver_completed":parked,
+        "setup_confirmed":not synthetic,"behavior_attempted":not synthetic,
+        "maneuver_completed":not synthetic and parked,
         "termination_reason":"full original duration retained",
         "physical_failure_flags":["camera_and_native_surface_review_pending"] +
             ([] if matched and parked else ["tracking_or_completion_unconfirmed"]),
@@ -119,7 +134,8 @@ def finalize(attempt, output):
             "value":left_frames,"unit":"frames","method":"full original body inside surveyed intersection and left of centerline while moving",
             "time_window":"original 24 s / 480 frame attempt","statistic":"count",
             "reference":"native_samples.jsonl"}},
-        "provenance_kind":"native","accepted":False,"legal_verdict_claimed":False}
+        "provenance_kind":"synthetic_local_diagnostic" if synthetic else "native",
+        "accepted":False,"legal_verdict_claimed":False}
     from worker_exchange.native_output import validate_result
     validate_result(result)
     report = {"format":"c110454-traversal-saved-analysis-v1",
