@@ -1,0 +1,102 @@
+{
+  "assignment_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C158208",
+  "law_id": "NRS-484B-257-1",
+  "selected_branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+  "cases": [
+    {
+      "case_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_slowed",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "No stop line/crosswalk; yield sign; slowed at source-measured nearest view of through traffic",
+      "physical_risk": "sight point depends on occlusion, camera/ray geometry"
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_stopped",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Same geometry, complete stop before entry at nearest view",
+      "physical_risk": "traffic timing and braking drift"
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_unchanged_speed",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Same geometry and traffic, no observed slowdown",
+      "physical_risk": "controller may slow for unrelated obstacle"
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_through_occupied",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Through-highway vehicle entered before ego crossing",
+      "physical_risk": "other occupancy timing may change"
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_through_approaching",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Through traffic approaches as ego crosses; preserve hazard timing without legal cutoff",
+      "physical_risk": "paths may not meet at common conflict point"
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_slowed",
+        "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_stopped",
+        "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_unchanged_speed"
+      ],
+      "fixed_conditions": [
+        "same yield-sign-governed approach, source-proven absent markings and through highway",
+        "same sight geometry, traffic and cameras"
+      ],
+      "deliberate_differences": [
+        "ego speed response at nearest view"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_through_occupied",
+        "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_through_approaching"
+      ],
+      "fixed_conditions": [
+        "same yield approach and ego route"
+      ],
+      "deliberate_differences": [
+        "through vehicle already entered versus approaching during crossing"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "recordings_reviewed": [],
+    "accepted_recording_count": 0,
+    "supported_reuses": [],
+    "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
+  },
+  "observations": [
+    "Native yield-sign trigger, face, proper erection and governed approach",
+    "sourced absence of clearly marked stop line and near crosswalk",
+    "nearest point with a view of approaching traffic from through highway",
+    "original-frame ego speed response and complete body entry",
+    "through-highway occupancy and time-to-conflict throughout ego crossing",
+    "officer/signal exceptions from source context"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+      "sha256": "2a06a4d17d767b441b36a0ca351eff068f83a154ce4a40c56a2499fa80a06671"
+    },
+    {
+      "path": "inputs/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "sha256": "ee232e600e69c01aa7c4d2b9b278e5e6034c041548a85f0f1d1bab6e2829d33f"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Neither a sign label nor a visibility flag proves proper erection or actual through-highway sight line.",
+    "Immediate hazard and yield adequacy remain judgment questions; no numeric legal cutoff is invented.",
+    "The selector and nearest-view measurement are components, not a complete exact construction or saved-processing proof."
+  ],
+  "planning_status": "partial; Native yield-sign trigger selection and source-bound nearest-view measurement CPU-tested"
+}

@@ -1,0 +1,120 @@
+{
+  "assignment_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C178244",
+  "law_id": "NRS-484B-413-2",
+  "selected_branch": "Frozen branch label: business-district right-turn signaling; bound cell is paved_road/left_turn/other_vehicle.",
+  "binding_review": "The frozen witness says original business_district/right_turn cell cannot support left-turn alternatives, and relocates to C178244. This package plans left-turn alternatives only. Original right-turn requirement remains in C378304 work and is not claimed covered by this cell.",
+  "cases": [
+    {
+      "case_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_under_100_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "Business district, left indication continuous just under final 100 feet",
+      "physical_risk": "Native indicator timing and course onset drift"
+    },
+    {
+      "case_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_at_100_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "Same district and left route at final 100-foot boundary",
+      "physical_risk": "sample quantization obscures exact equality"
+    },
+    {
+      "case_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_over_100_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "Same district and left route over 100 feet",
+      "physical_risk": "route approaches may be too short"
+    },
+    {
+      "case_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_under_300_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "Other area, same left course change under 300 feet",
+      "physical_risk": "district status/frontage can be uncertain"
+    },
+    {
+      "case_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_at_300_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "Other area, left indication at 300-foot boundary",
+      "physical_risk": "long direct approach unavailable"
+    },
+    {
+      "case_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_interrupted",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "Business district with an interruption inside final 100 feet",
+      "physical_risk": "Native blink phase versus command state ambiguity"
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_under_100_ft",
+        "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_at_100_ft",
+        "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_over_100_ft"
+      ],
+      "fixed_conditions": [
+        "same sourced business district, paved-road left-turn route, vehicle and cameras"
+      ],
+      "deliberate_differences": [
+        "observed continuous left-signal distance around 100 feet"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_under_300_ft",
+        "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_at_300_ft"
+      ],
+      "fixed_conditions": [
+        "same sourced other-area left-turn route and cameras"
+      ],
+      "deliberate_differences": [
+        "observed continuous left-signal distance around 300 feet"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_at_100_ft",
+        "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_interrupted"
+      ],
+      "fixed_conditions": [
+        "same business route and last-100-foot interval"
+      ],
+      "deliberate_differences": [
+        "uninterrupted versus interrupted indication"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "recordings_reviewed": [],
+    "accepted_recording_count": 0,
+    "supported_reuses": [],
+    "uncovered": "All exact cases; evidence.json has zero accepted recordings."
+  },
+  "observations": [
+    "source-supported business/residential/other district class and highway status",
+    "Native route direction and course-change onset",
+    "original-frame vehicle positions, indicator command/readback and displayed lamp",
+    "continuous signal distance over last 100 or 300 feet",
+    "weather retained but never used as exception"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+      "sha256": "012032846f6200306dff267caf4c28ee45a20248a15824d63bd90b521ae4a684"
+    },
+    {
+      "path": "inputs/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/witnesses.json",
+      "sha256": "2191c7fcbac8d085604511bedea750824e3c4c48eed6bcaf19e5b6149d5b23f2"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Frozen branch label says right turn but assigned cell fixes left turn; no right-turn coverage claimed in C178244.",
+    "District status requires source-backed building/frontage facts, not map label alone.",
+    "Native light command/readback is not proof that the lamp is visible in camera.",
+    "Turn signal module is a CPU component, not a full construction or saved-processing proof."
+  ],
+  "planning_status": "partial; Native left-indicator control and original-frame distance measurement CPU-tested"
+}

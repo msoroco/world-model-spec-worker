@@ -1,0 +1,95 @@
+{
+  "assignment_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C136559",
+  "law_id": "NRS-484B-600-1c",
+  "selected_branch": "Posted-speed obligation on a narrow road.",
+  "cases": [
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_below",
+      "target_law_id": "NRS-484B-600-1c",
+      "purpose": "Source-confirmed signed narrow-road portion, observed just below posted value",
+      "physical_risk": "vehicle cannot hold just below target without drift"
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_at",
+      "target_law_id": "NRS-484B-600-1c",
+      "purpose": "Same portion, observed at posted value within declared instrument resolution",
+      "physical_risk": "sample timing and quantization obscure equality"
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_above",
+      "target_law_id": "NRS-484B-600-1c",
+      "purpose": "Same portion, observed just above posted value",
+      "physical_risk": "short/curved route or traffic prevents target safely"
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_outside_zone",
+      "target_law_id": "NRS-484B-600-1c",
+      "purpose": "Speed above the candidate posted value outside its sourced governed portion",
+      "physical_risk": "road/s lane mapping or sign extent ambiguous"
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_below",
+        "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_at",
+        "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_above"
+      ],
+      "fixed_conditions": [
+        "same public-authority posting and governed highway portion/direction",
+        "same narrow-road route, motor vehicle, cameras and measurement method"
+      ],
+      "deliberate_differences": [
+        "source-observed speed below, at and above posted rate"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_above",
+        "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_outside_zone"
+      ],
+      "fixed_conditions": [
+        "same candidate posting and vehicle class"
+      ],
+      "deliberate_differences": [
+        "source-observed location inside versus outside posted portion"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "recordings_reviewed": [],
+    "accepted_recording_count": 0,
+    "supported_reuses": [],
+    "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
+  },
+  "observations": [
+    "posted sign face, rate and unit from original camera",
+    "public-authority jurisdiction, highway dedication/access and governed portion and direction from retained source",
+    "Native sign actor and landmark plus trigger governance, road/lane/s coordinates",
+    "narrow-road geometry and vehicle clearance",
+    "original-frame 3D actor.get_velocity and frame/video joins"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json",
+      "sha256": "f1fef09152a262b8411a5d5a884fb92aa287b2a8fe7d7201425e1dcfac2f14eb"
+    },
+    {
+      "path": "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/witnesses.json",
+      "sha256": "7ce852e434f0f069ccecc317a7d68c4103501e7ce93c2999c98acee66fa905a7"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "A CARLA speed-limit sign actor or trigger alone does not prove public authority, sign visibility, or governed highway portion.",
+    "No numeric statutory tolerance or duration is added; sampled observations cannot prove unsampled maxima.",
+    "CPU-tested selector/controller/measurement are components, not complete exact construction, saved processing or physical evidence."
+  ],
+  "planning_status": "partial; Native speed-limit sign selection, control and source-bound speed measurement CPU-tested; exact package pending"
+}

@@ -7,3 +7,5 @@ Status: **partial**. The frozen selected branch is other-first entry at a median
 Next CPU work: source a real properly erected yield sign and median-opening crossing, construct both vehicles and slow/stop behavior, capture all four source cameras and raw map/device/motion evidence, implement saved finalizer, three physical-risk fallbacks per selected case, semantic proposals and independent audits, then run exact offline, compatibility, saved-processing and assignment strict proofs. Actual sign visibility, official status, statutory crossing and motion remain physical checks; the listed implementation and CPU proofs are worker-owned.
 
 The pinned CPU preflight passes. No frozen input, runtime or batch file was edited.
+
+Checkpoint: assignment-scoped `worker_check.py --complete` passed; see `assignment-check.log`. The complete strict gate fails at the next missing result, C136559, in `strict-gate.log`. This is unfinished worker preparation, not an external blocker.

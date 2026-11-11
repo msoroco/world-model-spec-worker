@@ -1,0 +1,116 @@
+{
+  "assignment_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver",
+  "actor": "heavy_vehicle_driver",
+  "cell_id": "C149752",
+  "law_id": "NRS-484B-127-2",
+  "selected_branch": "Qualifying truck following in one_way_road/overtake/truck cell",
+  "binding_note": "Frozen witness relocates overtaking permission branch from fixed-follow C149237 to this overtaking cell.",
+  "cases": [
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft",
+      "target_law_id": "NRS-484B-127-2",
+      "purpose": "Qualifying >=80-inch trucks on one available lane, sustained body gap below 500 feet before pass",
+      "physical_risk": "long continuous one-lane road and two trucks may not safely realize spacing"
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_at_500_ft",
+      "target_law_id": "NRS-484B-127-2",
+      "purpose": "Same following context at statutory 500-foot body gap",
+      "physical_risk": "motion drift and sampled-frame resolution obscure exact equality"
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_over_500_ft",
+      "target_law_id": "NRS-484B-127-2",
+      "purpose": "Same following context above statutory spacing",
+      "physical_risk": "map length and traffic truncate following interval"
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtaking_pass",
+      "target_law_id": "NRS-484B-127-2",
+      "purpose": "Ego begins behind lead, laterally clears and finishes ahead; preserve pass exception context",
+      "physical_risk": "one-way one-lane route may lack safe lateral clearance"
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__two_lanes",
+      "target_law_id": "NRS-484B-127-2",
+      "purpose": "Two same-direction lanes available, testing express statutory nonapplication",
+      "physical_risk": "lane inventory may change through junctions"
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_at_500_ft",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_over_500_ft"
+      ],
+      "fixed_conditions": [
+        "same sourced highway with one available lane in direction",
+        "same two qualifying >=80-inch truck classes, cameras and observation method"
+      ],
+      "deliberate_differences": [
+        "observed body gap relative to 500 feet"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtaking_pass"
+      ],
+      "fixed_conditions": [
+        "same trucks, highway and source capture"
+      ],
+      "deliberate_differences": [
+        "sustained following versus measured lateral passing sequence"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft",
+        "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__two_lanes"
+      ],
+      "fixed_conditions": [
+        "same truck widths and nominal following gap"
+      ],
+      "deliberate_differences": [
+        "available same-direction lane count"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "recordings_reviewed": [],
+    "accepted_recording_count": 0,
+    "supported_reuses": [],
+    "uncovered": "All exact branches; evidence.json has zero accepted recordings."
+  },
+  "observations": [
+    "public-highway status and one-way geometry",
+    "available same-direction lane count over time, not inferred from one-way label",
+    "both truck/combination identities and overall widths >=80 inches",
+    "complete body gap relative to 500 feet throughout following period",
+    "body entry/exit order and lateral clearance during pass",
+    "conditions-permit and safe occupancy context preserved for review"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+      "sha256": "baa8e2cabd71cd9257a721ac66f3770cef6ec0e53761eda8cc078427849c3a66"
+    },
+    {
+      "path": "inputs/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/witnesses.json",
+      "sha256": "7d10e78eedd22bae22179f1742a8be05ede6ffcbcd498714ecd06754b42e6763"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "One-way road does not establish one available lane.",
+    "An overtake maneuver label alone does not establish physical passing or statutory permission.",
+    "Conditions permit and without-danger are unresolved judgments; no legal result is inferred from gap or pass alone.",
+    "The overtaking sequence module is only one package component; exact runner, cameras and full proofs remain CPU work."
+  ],
+  "planning_status": "partial; original-frame physical passing sequence CPU-tested, exact package pending"
+}

@@ -7,3 +7,5 @@ Status: **partial**. The frozen selected branch requires a vehicle from a differ
 Next CPU work: select source-grounded median-opening geometry and distinct highway approaches, construct both vehicles and all comparisons, capture four source cameras plus raw histories, implement full yield and left-turn-exception measurements and saved finalizer, three distinct physical-risk fallbacks per selected case, semantic proposals and independent delivery/comparison audits. Run exact offline, compatibility, saved-processing and assignment strict proofs. Actual signal condition, statutory crossing geometry, motion and visibility remain later physical checks; all listed implementation and CPU proofs remain worker-owned.
 
 The pinned CPU preflight passes. No frozen input, runtime or batch file was edited.
+
+Checkpoint: assignment-scoped `worker_check.py --complete` passed; see `assignment-check.log`. The complete strict gate then failed at missing C125745 result in `strict-gate.log`; that assignment now has a partial checkpoint.

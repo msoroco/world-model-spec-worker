@@ -7,3 +7,5 @@ Status: **partial**. The frozen selected branch is other-first entry at the same
 Next CPU work: select an actual source-grounded median-opening junction, properly erected sign and two highway approaches; construct actors and stop/entry controllers; capture all four source cameras and raw map/device/motion evidence; implement saved finalizer, three distinct physical-risk fallbacks per case, semantic proposals and independent audits; run exact offline, compatibility, saved-processing and assignment strict proofs. Actual sign visibility, official status, crossing geometry and motion remain later physical checks, but all listed construction and CPU proofs remain worker-owned.
 
 The pinned CPU preflight passes. No frozen input, runtime or batch file was edited.
+
+Checkpoint: assignment-scoped `worker_check.py --complete` passed; see `assignment-check.log`. The complete strict gate then failed at missing C125763 result in `strict-gate.log`; that assignment now has a partial checkpoint.
