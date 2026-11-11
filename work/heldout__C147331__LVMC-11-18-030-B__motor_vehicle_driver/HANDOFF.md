@@ -257,3 +257,61 @@ ordered Native owner-release lifecycle proof per case. These must be authored
 and tested from retained sources; the existing saved-processing receipts alone
 do not satisfy that gate. The manifest remains a partial draft until this and
 the semantic/delivery handoff requirements pass.
+
+## Source-expanded contract and physical preparation checkpoint
+
+The delivery recording description now declares seven case-specific channels:
+original-derived lane clearance, lane boundary geometry, ego footprint,
+clearance overlap, passing participant context, ego indicator readback and ego
+motion. `lane_finalizer.py` regenerates each channel only from retained
+original frame-joined sources. Three primary and nine fallback inline
+constructions were rebuilt with that description, and every affected exact
+offline/compatibility proof was rerun. Three primary saved-processing receipts,
+three independent four-camera source audits and the new
+`delivery-comparison-audit-v2.json` pass on the current hashes.
+
+The canonical `proposals/semantic-index.json` now validates through the frozen
+seven-stage semantic chain for all three selected C147331 cases. It includes a
+baseline and two explicitly incomplete physical judgment sweep specifications:
+passing needs independently sourced applicable rules and a frozen physical
+grid; turn preparation needs an allocated compatible turn cell. These are
+recorded as incomplete rather than supplying invented legal thresholds or
+pretending the fixed travel cell completed a turn.
+
+`physical_fixture.py` tests all three case-specific measured outcomes using
+synthetic Native-shaped original sources: complete motion, incomplete motion,
+and missing required lane source. `lifecycle_fixture.py` exercises actual
+runtime seal, Native exit, owner-release and saved-processing functions in the
+required order with a synthetic diagnostic fixture. All nine outcome runs and
+three lifecycle runs pass and are source-hashed under `physical/`.
+`execution-manifest.json` validates through the frozen execution-manifest
+validator, including the current fallback and physical-preparation receipts.
+This proves CPU preparation behavior only, not actual CARLA realization.
+
+Status remains **partial**. The two judgment sweeps are not complete; C5191 is
+unallocated. Canonical delivery acceptance proofs, first-case canonical
+construction/config contract, and final handoff/queue checks remain CPU work.
+The scoped strict gate must be rerun and pass before setting ready.
+
+## Delivery acceptance and canonical first package checkpoint
+
+`lane_physical_outcome.py` requires independent source recomputation, measured
+case-specific motion, four fully decoded original camera streams and a
+source-hashed pixel-review record covering markings and bodies. It leaves
+legal exception judgments unresolved. `acceptance_fixture.py` exercises the
+positive path and rejects a deliberately stale approach-camera review; all
+three exact case pairs pass. `execution-manifest.json` binds those positive and
+negative logs as delivery acceptance contracts, and frozen
+`delivery_handoff.validate_case` passes for each selected case.
+
+The manifest now also binds primary compatibility receipts, original-source
+negative logs and all seven acquisition channel implementations. Frozen
+`package_compatibility.check_receipts` passes. Canonical `config.json`,
+`construction.json` and `runner.py` are present for the first exact case;
+`runner.py --check` passes against that canonical config. `case-plan.json` now
+has the exact four-view camera profile and source-observation channel mapping.
+The first GPU dispatch command is populated in `result.json`, while status
+remains partial. These CPU fixtures do not assert actual pixel visibility or
+physical realization. The two incomplete judgment sweeps and C5191 allocation
+still prevent a truthful ready declaration; the global queue belongs to the
+shared handoff and has not been edited by this worker.

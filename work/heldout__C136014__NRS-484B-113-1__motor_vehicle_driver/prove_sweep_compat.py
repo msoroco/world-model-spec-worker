@@ -5,7 +5,7 @@ sha=lambda q:hashlib.sha256(q.read_bytes()).hexdigest()
 for e in m['cases'][3:]:
  slug=e['case_id'].rsplit('__',1)[-1];sub=r/'cases'/slug
  for candidate in ('primary','fallback1','fallback2','fallback3'):
-  out=repo/'.runtime-work'/('c136014-'+slug+'-'+candidate+'-compat-005')
+  out=repo/'.runtime-work'/('c136014-'+slug+'-'+candidate+'-compat-006')
   cmd=[sys.executable,str(repo/'runtime.py'),'compatibility','--manifest',str(p),'--case',e['case_id']]
   if candidate!='primary':cmd+=['--candidate',candidate]
   cmd+=['--output',str(out),'--library',str(repo/'runtime/library'),'--validator',str(validator)]

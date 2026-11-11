@@ -32,3 +32,9 @@ Use the pinned runtime. CARLA, SQLite and canonical source recordings are unavai
 ## Current CPU proof
 
 Run `.venv-cpu/bin/python -m unittest discover -s work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/tests -v` and `.venv-cpu/bin/python worker_check.py --assignment heldout__C10365__NRS-484B-100__motor_vehicle_driver --complete`. The strict readiness gate still fails because this package is partial; do not mark ready until every exact case and fallback passes its source-bound proofs.
+
+## Native construction progress, 2026-11-11
+
+`officer_native_runner.py` now implements a connected narrow alley lane and adjacent sidewalk search, motor vehicle and walker spawning, a timed stop/proceed arm pose using CARLA walker bone control, all four predeclared post-indication vehicle control branches, original motion/context/direction retention, four source camera capture, frame joins, capture closure and settings restoration. `officer_camera_capture.py` retains the four original streams. Three new CPU tests exercise route selection, the four control branches and distinct pose calls; all eight assignment tests pass in `cpu-tests.log`. CARLA's published Python API documents `Walker.get_bones`, `Walker.set_bones`, and `Walker.blend_pose`; actual skeleton naming, visible gesture, alley geometry, officer identity and legal authority require original Native review.
+
+The runner is not yet an exact executable package: there is no materialized config/construction or finalizer integration for any of the four cases. Next, build one exact case with source-bound finalization and positive/missing-source offline, compatibility and saved-only proofs; then expand the other cases and three fallbacks each, semantic proposals, lifecycle/physical fixtures, delivery and comparison audits. Keep result partial until the strict scoped gate passes.

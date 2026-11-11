@@ -1,23 +1,19 @@
 # Handoff: heldout__C136014__NRS-484B-113-1__motor_vehicle_driver
 
-## Exact frozen scope
+## Scope and coverage
 
-NRS 484B.113(1): a driver shall not back unless the movement can be made with reasonable safety and without interfering with other traffic. C136014 is a narrow-road reverse maneuver with another vehicle; actor is `motor_vehicle_driver`. The law supplies no numeric safety or interference cutoff.
+NRS 484B.113(1) governs backing only when it can be done with reasonable safety and without interfering with other traffic. The package keeps those judgments unresolved; no legal numeric threshold is invented. The nine exact selected cases cover clear/close traffic, steady/braking traffic, three rear spacing setpoints (8, 16, 12 m), and three other-traffic braking onset controls (frames 40, 120, 80). The source-bound seven-stage semantic draft and `case-plan.json` map both judgment phrases to these comparisons and original observation sources.
 
-## Constructed exact cases and CPU proofs
+## Construction and CPU proof
 
-Three exact cases isolate clear traffic with steady speed, close traffic with steady speed, and clear traffic with braking. Each has a Native CARLA runner, four synchronized cameras, retained backing history, source-bound finalizer, measurement contract, diagnostic recipe, and three distinct risk-triggered fallbacks. All 12 primary/fallback bundles passed `runtime.py offline`, refreshed positive and missing-source `runtime.py compatibility`, and refreshed positive and missing-source `runtime.py process-saved` with the pinned Lean decoder. The associated logs and SHA-bound compatibility receipts are in `execution-manifest.json`. These synthetic CPU fixtures do not establish physical backing acceptance.
+`execution-manifest.json` selects all nine exact cases and three distinct risk-triggered fallback constructions per case. Each has a Native CARLA runner, four named synchronized original camera streams, retained backing history, measurement finalizer and contract, diagnostic recipe, and source-bound acquisition description. All 36 candidate bundles passed exact offline, positive/negative software compatibility, and positive/missing-source saved-only processing with the pinned CPU runtime and Lean decoder. Compatibility receipts, command logs, and saved proof hashes are bound in the manifest.
 
-`comparison_audit.py` independently joins original history, trace and video-frame map, recomputes reverse motion, minimum center distance and traffic speed change, checks fixed road and ego trajectories, and rejects swapped case sources. `delivery_audit.py` checks exact case identity, both participant sources, complete frame joins and four full video decodes; `prove_delivery_audit.py` confirms removal of `backing_history.jsonl` is rejected for each case. Fixture `physical_completion_check` remains false.
+`physical_fixture.py` exercised complete, incomplete and missing-evidence outcomes for each case. `lifecycle_fixture.py` verified capture, encoder, settings restoration, owner release and saved-only processing order. `delivery_audit.py` independently checked both participants, source time joins and four full video decodes, and rejected a missing backing history. `comparison_audit.py` and `sweep_comparison_audit.py` independently checked the source joins and fixed grid controls, including swapped-source rejection. These are CPU fixtures and protocol proofs. The spacing fixture reproduces all three spacing setpoints; the interference fixture measures braking onset at frame 1 for all three requested onset controls, marks the requested target missed, and makes no physical realization claim. Native capture must determine whether the controls produce the requested onset and whether physical motion and original pixels meet acceptance.
 
-`physical_fixture.py` exercises complete reverse motion, incomplete motion and missing evidence against original-shaped fixture streams for each exact case. `lifecycle_fixture.py` runs each bundled runner against mocked Native ownership and verifies capture closure, encoder closure, settings restoration and saved-only processing order. These proofs are protocol fixtures only; actual Native completion and original-pixel visibility remain for the delivery operator.
+Eight unit tests pass in `cpu-tests.log`. The scoped strict gate passes:
 
-A source-hashed seven-stage semantic chain (`relevance_batch`, `relevance`, `template`, two `judgment_observables`, `bindings`, `cases`) validates against the exact frozen law and cell. The canonical cases draft selects the three exact cases and a shared baseline. Its two judgment sweep specifications are explicitly **incomplete** because fixed physical grids, Native feasibility evidence and the original traffic-response recording channel are not yet encoded. This is the remaining CPU preparation gap; no legal judgment is inferred from the measured center distance or braking.
+```sh
+.venv-cpu/bin/python worker_check.py --assignment heldout__C136014__NRS-484B-113-1__motor_vehicle_driver --complete --require-delivery-ready
+```
 
-The exact execution manifest, semantic chain, package compatibility receipts and delivery acceptance contracts pass direct CPU preflight (`readiness-preflight.log`). Three four-view delivery audits and two independent comparisons pass their positive and rejection proofs. Eight unit tests pass (`cpu-tests.log`). `.venv-cpu/bin/python worker_check.py --assignment heldout__C136014__NRS-484B-113-1__motor_vehicle_driver --complete` passes. The scoped strict `--require-delivery-ready` check fails while `result.json` truthfully remains `partial`.
-
-## Next CPU work
-
-1. Complete fixed judgment sweep grids for both qualitative phrases with source-backed feasibility, materialize every selected sweep case, and add its exact construction, fallback and CPU proofs. Add an original traffic speed-response channel if required by that sweep; regenerate every affected bundle and receipt.
-2. Re-run the full exact-case offline, compatibility, saved-only, physical protocol, comparison and delivery audits after the expanded case/recording contract. Update source hashes in the semantic index and manifest.
-3. Run the scoped strict gate and mark `ready` only after it passes. Original Native physical motion and visual body review remain part of later delivery acceptance.
+`result.json` declares `delivery_prepared` and provides the first canonical exact GPU command. This is CPU delivery readiness, not physical or legal acceptance. The later delivery operator must use actual Native recordings, full four-view original decodes, participant/time joins and measured maneuver completion to accept or reject each case.

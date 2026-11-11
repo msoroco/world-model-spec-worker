@@ -5,6 +5,7 @@ test_containment_and_passing_pairs (test_lane_comparison_audit.ComparisonAuditTe
 test_rejects_missing_or_changed_evidence (test_lane_comparison_audit.ComparisonAuditTests.test_rejects_missing_or_changed_evidence) ... ok
 test_controller_uses_readback_in_both_directions (test_lane_construction.NativeConstructionTests.test_controller_uses_readback_in_both_directions) ... ok
 test_opposite_direction_or_missing_marking_rejected (test_lane_construction.NativeConstructionTests.test_opposite_direction_or_missing_marking_rejected) ... ok
+test_passing_sweep_requests_distinct_connected_paths (test_lane_construction.NativeConstructionTests.test_passing_sweep_requests_distinct_connected_paths) ... ok
 test_three_exact_paths_in_both_directions (test_lane_construction.NativeConstructionTests.test_three_exact_paths_in_both_directions) ... ok
 test_missing_source_and_frame_mismatch_rejected (test_lane_finalizer.SavedLaneFinalizerTests.test_missing_source_and_frame_mismatch_rejected) ... ok
 test_positive_original_source_and_native_shape (test_lane_finalizer.SavedLaneFinalizerTests.test_positive_original_source_and_native_shape) ... ok
@@ -15,11 +16,22 @@ test_measured_passing_order_reversal (test_lane_sources.NativeLaneSourcesTest.te
 test_missing_passing_source (test_lane_sources.NativeLaneSourcesTest.test_missing_passing_source) ... ok
 test_retained_source_measurement_and_rejections (test_lane_sources.NativeLaneSourcesTest.test_retained_source_measurement_and_rejections) ... ok
 test_exact_identity_and_probe_flag (test_native_construction_probe.ProbeConfigTests.test_exact_identity_and_probe_flag) ... ok
-test_materialized_exact_case (test_selected_case_config.SelectedCaseConfigTest.test_materialized_exact_case) ... skipped 'Materialized exact construction only'
+test_materialized_exact_case (test_selected_case_config.SelectedCaseConfigTest.test_materialized_exact_case) ... ERROR
 test_rejects_right_and_unmarked_exit (test_turn_route.TurnRouteTest.test_rejects_right_and_unmarked_exit) ... ok
 test_selects_connected_leftward_exit (test_turn_route.TurnRouteTest.test_selects_connected_leftward_exit) ... ok
 
+======================================================================
+ERROR: test_materialized_exact_case (test_selected_case_config.SelectedCaseConfigTest.test_materialized_exact_case)
 ----------------------------------------------------------------------
-Ran 20 tests in 0.015s
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/tests/test_selected_case_config.py", line 16, in test_materialized_exact_case
+    suffix = check_config(config)
+             ^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/native_construction_probe.py", line 28, in check_config
+    raise ValueError("Construction probe must not masquerade as delivery")
+ValueError: Construction probe must not masquerade as delivery
 
-OK (skipped=1)
+----------------------------------------------------------------------
+Ran 21 tests in 0.012s
+
+FAILED (errors=1)

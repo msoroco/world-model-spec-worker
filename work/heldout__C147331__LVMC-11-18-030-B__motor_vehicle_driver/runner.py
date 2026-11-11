@@ -39,7 +39,7 @@ def check_config(config):
     engineering = config.get("engineering", {})
     if not isinstance(engineering, dict) or set(engineering) - {
             "route_spacing_m", "route_steps", "route_candidate_index",
-            "target_speed_mps", "speed_gain"}:
+            "target_speed_mps", "speed_gain", "crossing_fraction"}:
         raise ValueError("Unknown lane engineering knob")
     if (engineering.get("route_spacing_m", 2.0), engineering.get("route_steps", 15)) not in (
             (2.0, 15), (1.0, 30)):
@@ -49,6 +49,11 @@ def check_config(config):
     if (engineering.get("target_speed_mps", 6.0), engineering.get("speed_gain", .25)) not in (
             (6.0, .25), (4.5, .2)):
         raise ValueError("Unsupported lane controller tuning")
+    expected_fraction = {"passing_excursion-0000": .4,
+                         "passing_excursion-0001": .6,
+                         "passing_excursion-0002": .8}.get(suffix, .6)
+    if engineering.get("crossing_fraction", .6) != expected_fraction:
+        raise ValueError("Crossing sweep value differs from exact case")
     return suffix
 
 
@@ -99,7 +104,8 @@ def run(output_dir, host, port):
             world.get_map(), spacing_m=engineering.get("route_spacing_m", 2.0),
             steps=engineering.get("route_steps", 15),
             candidate_index=engineering.get("route_candidate_index", 0))
-        targets = route_targets(selection, suffix)
+        targets = route_targets(selection, suffix,
+                                crossing_fraction=engineering.get("crossing_fraction", .6))
         ego = _spawn(world, "vehicle.tesla.model3", selection["primary"][0].transform)
         owned.append(ego)
         other = None

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
@@ -11,6 +12,7 @@ from tempfile import TemporaryDirectory
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
+os.environ.setdefault("SCENARIO_PIPELINE_OUTPUT_ROOT", str(ROOT / ".runtime-work" / "c147331-pipeline-output"))
 sys.path.insert(0, str(ROOT / "runtime/scenario_pipeline"))
 from worker_exchange.fixture_recipe import materialize as make_fixture
 from worker_exchange.native_output import seal_capture

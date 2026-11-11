@@ -10,7 +10,7 @@ manifest_path=root/'execution-manifest.json'
 manifest=json.loads(manifest_path.read_text())
 for entry in manifest['cases']:
     case=entry['case_id'];branch=case.removeprefix(root.name+'__').replace('__','-')
-    version='v7' if '_speed_probe__' in case else 'v4'
+    version='v9'
     for candidate,item in [('primary',entry)]+[(x['id'],x) for x in entry['candidates']]:
         stem=branch+'-'+candidate
         offline_dir=repo/'.runtime-work'/('c136529-'+stem+'-offline-'+version)

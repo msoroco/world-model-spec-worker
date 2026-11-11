@@ -32,6 +32,14 @@
         "lane_path": {
           "kind": "controller",
           "value": "within_marked_lane"
+        },
+        "lane_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_crossing_fraction": {
+          "kind": "controller",
+          "value": 0.0
         }
       },
       "unresolved_judgment_calls": [],
@@ -137,6 +145,14 @@
         "lane_path": {
           "kind": "controller",
           "value": "within_marked_lane"
+        },
+        "lane_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_crossing_fraction": {
+          "kind": "controller",
+          "value": 0.0
         }
       },
       "unresolved_judgment_calls": [
@@ -218,7 +234,8 @@
       "paired_probe_id": "marked_lane_behavior_pair",
       "deliberate_differences": [
         "lane_path",
-        "passing_participant_present"
+        "passing_participant_present",
+        "lane_crossing_fraction"
       ],
       "probe": {
         "primary_variable": "lane_path",
@@ -255,6 +272,14 @@
         "lane_path": {
           "kind": "controller",
           "value": "boundary_crossing"
+        },
+        "lane_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_crossing_fraction": {
+          "kind": "controller",
+          "value": 0.6
         }
       },
       "unresolved_judgment_calls": [
@@ -336,7 +361,8 @@
       "paired_probe_id": "marked_lane_behavior_pair",
       "deliberate_differences": [
         "lane_path",
-        "passing_participant_present"
+        "passing_participant_present",
+        "lane_crossing_fraction"
       ],
       "probe": {
         "primary_variable": "lane_path",
@@ -373,6 +399,14 @@
         "lane_path": {
           "kind": "controller",
           "value": "boundary_crossing"
+        },
+        "lane_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_crossing_fraction": {
+          "kind": "controller",
+          "value": 0.6
         }
       },
       "unresolved_judgment_calls": [
@@ -454,18 +488,454 @@
       "paired_probe_id": "marked_lane_behavior_pair",
       "deliberate_differences": [
         "lane_path",
-        "passing_participant_present"
+        "passing_participant_present",
+        "lane_crossing_fraction"
       ],
       "probe": {
         "primary_variable": "passing_participant_present",
         "comparison_or_standard": "measured physical marked-lane behavior; no legal predicate",
         "target_value_or_branch": "passing_boundary_crossing"
       }
+    },
+    {
+      "case_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion-0000",
+      "target_law_id": "LVMC-11-18-030-B",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample passing-context lateral excursion while retaining overtaken participant and unresolved legal lawfulness.",
+      "paired_probe_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion",
+      "deliberate_differences": [
+        "lane_crossing_fraction"
+      ],
+      "probe": {
+        "primary_variable": "lane_crossing_fraction",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "lane_crossing_fraction": 0.4
+        }
+      },
+      "sweep_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion",
+      "sweep_spec_version": "03a59d68554560a8aeee15b255331c806b8f40d413f36deca441313c0b4c7fe0",
+      "sweep_point": {
+        "lane_crossing_fraction": 0.4
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "lane_boundary_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "passing_participant_present": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "passing_order_reversal": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "turn_preparation_path": {
+          "kind": "controller",
+          "value": "straight"
+        },
+        "turn_indicator_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_path": {
+          "kind": "controller",
+          "value": "boundary_crossing"
+        },
+        "lane_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_crossing_fraction": {
+          "kind": "controller",
+          "value": 0.4,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "lane_clearance_m",
+            "unit": "m",
+            "method": "signed minimum body-corner clearance from retained Native waypoint lane source",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native vertex/waypoint precision and local lane slice approximation"
+          },
+          {
+            "name": "native_lane_boundaries",
+            "unit": "structured record",
+            "method": "original Native waypoint lane polygon, direction and marking types",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "ego_vehicle_footprint",
+            "unit": "structured record",
+            "method": "original Native lower body corners and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "lane_boundary_overlap",
+            "unit": "m",
+            "method": "signed minimum body-corner clearance from retained original lane source",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "passing_context",
+            "unit": "structured record",
+            "method": "original overtaken participant body, identity and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "turn_indicator_state",
+            "unit": "structured record",
+            "method": "original ego light-state readback with unknown preserved",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "ego_turn_motion",
+            "unit": "structured record",
+            "method": "original Native trace position heading and speed readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native trace readback; no turn intent or lawful completion inferred"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original markings and full vehicle visibility require source-pixel review.",
+          "Municipal applicability, lawful passing and lawful turn preparation require independent legal and factual sources; no legal verdict is generated."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "lane_clearance_m",
+          "unit": "m",
+          "measurement": {
+            "method": "signed minimum ground-corner clearance from original Native lane source",
+            "time_window": "all original frames",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "lawfully passing another vehicle",
+        "preparatory to making a lawful turning movement"
+      ]
+    },
+    {
+      "case_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion-0001",
+      "target_law_id": "LVMC-11-18-030-B",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample passing-context lateral excursion while retaining overtaken participant and unresolved legal lawfulness.",
+      "paired_probe_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion",
+      "deliberate_differences": [
+        "lane_crossing_fraction"
+      ],
+      "probe": {
+        "primary_variable": "lane_crossing_fraction",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "lane_crossing_fraction": 0.8
+        }
+      },
+      "sweep_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion",
+      "sweep_spec_version": "03a59d68554560a8aeee15b255331c806b8f40d413f36deca441313c0b4c7fe0",
+      "sweep_point": {
+        "lane_crossing_fraction": 0.8
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "lane_boundary_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "passing_participant_present": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "passing_order_reversal": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "turn_preparation_path": {
+          "kind": "controller",
+          "value": "straight"
+        },
+        "turn_indicator_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_path": {
+          "kind": "controller",
+          "value": "boundary_crossing"
+        },
+        "lane_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_crossing_fraction": {
+          "kind": "controller",
+          "value": 0.8,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "lane_clearance_m",
+            "unit": "m",
+            "method": "signed minimum body-corner clearance from retained Native waypoint lane source",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native vertex/waypoint precision and local lane slice approximation"
+          },
+          {
+            "name": "native_lane_boundaries",
+            "unit": "structured record",
+            "method": "original Native waypoint lane polygon, direction and marking types",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "ego_vehicle_footprint",
+            "unit": "structured record",
+            "method": "original Native lower body corners and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "lane_boundary_overlap",
+            "unit": "m",
+            "method": "signed minimum body-corner clearance from retained original lane source",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "passing_context",
+            "unit": "structured record",
+            "method": "original overtaken participant body, identity and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "turn_indicator_state",
+            "unit": "structured record",
+            "method": "original ego light-state readback with unknown preserved",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "ego_turn_motion",
+            "unit": "structured record",
+            "method": "original Native trace position heading and speed readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native trace readback; no turn intent or lawful completion inferred"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original markings and full vehicle visibility require source-pixel review.",
+          "Municipal applicability, lawful passing and lawful turn preparation require independent legal and factual sources; no legal verdict is generated."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "lane_clearance_m",
+          "unit": "m",
+          "measurement": {
+            "method": "signed minimum ground-corner clearance from original Native lane source",
+            "time_window": "all original frames",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "lawfully passing another vehicle",
+        "preparatory to making a lawful turning movement"
+      ]
+    },
+    {
+      "case_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion-0002",
+      "target_law_id": "LVMC-11-18-030-B",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample passing-context lateral excursion while retaining overtaken participant and unresolved legal lawfulness.",
+      "paired_probe_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion",
+      "deliberate_differences": [
+        "lane_crossing_fraction"
+      ],
+      "probe": {
+        "primary_variable": "lane_crossing_fraction",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "lane_crossing_fraction": 0.6
+        }
+      },
+      "sweep_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion",
+      "sweep_spec_version": "03a59d68554560a8aeee15b255331c806b8f40d413f36deca441313c0b4c7fe0",
+      "sweep_point": {
+        "lane_crossing_fraction": 0.6
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "lane_boundary_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "passing_participant_present": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "passing_order_reversal": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "turn_preparation_path": {
+          "kind": "controller",
+          "value": "straight"
+        },
+        "turn_indicator_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_path": {
+          "kind": "controller",
+          "value": "boundary_crossing"
+        },
+        "lane_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_crossing_fraction": {
+          "kind": "controller",
+          "value": 0.6,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "lane_clearance_m",
+            "unit": "m",
+            "method": "signed minimum body-corner clearance from retained Native waypoint lane source",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native vertex/waypoint precision and local lane slice approximation"
+          },
+          {
+            "name": "native_lane_boundaries",
+            "unit": "structured record",
+            "method": "original Native waypoint lane polygon, direction and marking types",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "ego_vehicle_footprint",
+            "unit": "structured record",
+            "method": "original Native lower body corners and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "lane_boundary_overlap",
+            "unit": "m",
+            "method": "signed minimum body-corner clearance from retained original lane source",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "passing_context",
+            "unit": "structured record",
+            "method": "original overtaken participant body, identity and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "turn_indicator_state",
+            "unit": "structured record",
+            "method": "original ego light-state readback with unknown preserved",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "ego_turn_motion",
+            "unit": "structured record",
+            "method": "original Native trace position heading and speed readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native trace readback; no turn intent or lawful completion inferred"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original markings and full vehicle visibility require source-pixel review.",
+          "Municipal applicability, lawful passing and lawful turn preparation require independent legal and factual sources; no legal verdict is generated."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "lane_clearance_m",
+          "unit": "m",
+          "measurement": {
+            "method": "signed minimum ground-corner clearance from original Native lane source",
+            "time_window": "all original frames",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "lawfully passing another vehicle",
+        "preparatory to making a lawful turning movement"
+      ]
     }
   ],
   "sweep_specs": [
     {
-      "sweep_id": "passing_exception_physical_sweep",
+      "sweep_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion",
       "target_law_id": "LVMC-11-18-030-B",
       "judgment_refs": [
         {
@@ -473,10 +943,140 @@
           "note": "Passing lawfulness depends on separate applicable rules and the observed participant/maneuver facts."
         }
       ],
-      "status": "incomplete",
-      "rationale": "Physical variation and source review needed before any later judgment.",
-      "missing_inputs": [
-        "External applicable-rule source and frozen physical sweep grid are not yet available."
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "lane_crossing_fraction",
+          "observable": "lane_clearance_m",
+          "unit": "m",
+          "min": 0.4,
+          "max": 0.8,
+          "spacing": 0.2,
+          "measurement": {
+            "method": "signed minimum ground-corner clearance from original Native lane source",
+            "time_window": "all original frames",
+            "statistic": "min"
+          },
+          "range_rationale": "Three physically distinct lateral path requests around an adjacent marked boundary; engineering coverage only.",
+          "spacing_rationale": "0.2 lane-center fraction separates commanded paths without a legal cutoff.",
+          "feasibility_evidence": "lane_construction.route_targets uses Native adjacent lane centers and accepts a bounded crossing_fraction."
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Sample passing-context lateral excursion while retaining overtaken participant and unresolved legal lawfulness.",
+      "variable_assignments": {
+        "lane_boundary_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "passing_participant_present": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "passing_order_reversal": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "turn_preparation_path": {
+          "kind": "controller",
+          "value": "straight"
+        },
+        "turn_indicator_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_path": {
+          "kind": "controller",
+          "value": "boundary_crossing"
+        },
+        "lane_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_crossing_fraction": {
+          "kind": "controller",
+          "value": 0.6
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "lane_clearance_m",
+            "unit": "m",
+            "method": "signed minimum body-corner clearance from retained Native waypoint lane source",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native vertex/waypoint precision and local lane slice approximation"
+          },
+          {
+            "name": "native_lane_boundaries",
+            "unit": "structured record",
+            "method": "original Native waypoint lane polygon, direction and marking types",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "ego_vehicle_footprint",
+            "unit": "structured record",
+            "method": "original Native lower body corners and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "lane_boundary_overlap",
+            "unit": "m",
+            "method": "signed minimum body-corner clearance from retained original lane source",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "passing_context",
+            "unit": "structured record",
+            "method": "original overtaken participant body, identity and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "turn_indicator_state",
+            "unit": "structured record",
+            "method": "original ego light-state readback with unknown preserved",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native source frame",
+            "uncertainty": "Native source readback and local lane slice approximation; absence remains unknown"
+          },
+          {
+            "name": "ego_turn_motion",
+            "unit": "structured record",
+            "method": "original Native trace position heading and speed readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native trace readback; no turn intent or lawful completion inferred"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original markings and full vehicle visibility require source-pixel review.",
+          "Municipal applicability, lawful passing and lawful turn preparation require independent legal and factual sources; no legal verdict is generated."
+        ]
+      },
+      "spec_version": "03a59d68554560a8aeee15b255331c806b8f40d413f36deca441313c0b4c7fe0",
+      "planned_case_count": 3,
+      "selection_order": [
+        "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion-0000",
+        "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion-0001",
+        "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion-0002"
       ]
     },
     {

@@ -10,7 +10,8 @@ from math import atan2, hypot, isfinite, pi
 
 
 CASE_SUFFIXES = ("within_marked_lane", "unexcused_boundary_crossing",
-                 "passing_boundary_crossing")
+                 "passing_boundary_crossing", "passing_excursion-0000",
+                 "passing_excursion-0001", "passing_excursion-0002")
 
 
 def _xy(location):
@@ -123,7 +124,7 @@ def route_targets(selection, case_suffix, *, crossing_fraction=0.6):
                       a[1] + fraction * (b[1] - a[1])])
     return {"case_suffix": case_suffix, "targets_xy_m": route,
             "overtaken_spawn": primary[len(primary) // 2].transform
-            if case_suffix == "passing_boundary_crossing" else None,
+            if case_suffix == "passing_boundary_crossing" or case_suffix.startswith("passing_excursion-") else None,
             "engineering_crossing_fraction": 0.0 if case_suffix == "within_marked_lane"
             else crossing_fraction}
 

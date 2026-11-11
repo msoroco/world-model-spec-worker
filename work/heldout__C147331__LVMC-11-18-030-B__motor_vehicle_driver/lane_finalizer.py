@@ -48,7 +48,8 @@ def analyze(attempt, *, write_channel=True):
             raise ValueError("Original lane source/frame-map join failed")
     expected_ego = source_rows[0]["ego_id"]
     measured = measure_saved_lane(source_path, expected_ego,
-                                  require_overtaken=case_id.endswith("__passing_boundary_crossing"))
+                                  require_overtaken=(case_id.endswith("__passing_boundary_crossing")
+                                                     or "__passing_excursion-" in case_id))
     channel_rows = {
         "lane_clearance_m": [(frame["time_s"], frame["minimum_corner_clearance_m"])
                              for frame in measured["frames"]],

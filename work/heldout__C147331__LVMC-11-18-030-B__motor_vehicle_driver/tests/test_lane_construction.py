@@ -72,6 +72,18 @@ class NativeConstructionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "No connected marked one-way"):
             select_marked_one_way_pair(world_map, steps=4)
 
+    def test_passing_sweep_requests_distinct_connected_paths(self):
+        world_map, _, _ = road()
+        selected = select_marked_one_way_pair(world_map, steps=4)
+        endings = []
+        for index, fraction in enumerate((.4, .6, .8)):
+            route = route_targets(selected, "passing_excursion-" + f"{index:04d}",
+                                  crossing_fraction=fraction)
+            self.assertIsNotNone(route["overtaken_spawn"])
+            endings.append(route["targets_xy_m"][-1][1])
+        self.assertEqual(endings, sorted(endings))
+        self.assertEqual(len(set(endings)), 3)
+
     def test_controller_uses_readback_in_both_directions(self):
         east = control_step([0, 0], [1, 0], [2, 0], [5, 1])
         west = control_step([0, 0], [-1, 0], [-2, 0], [-5, -1])
