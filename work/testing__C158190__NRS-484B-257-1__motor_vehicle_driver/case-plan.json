@@ -1,0 +1,269 @@
+{
+  "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C158190",
+  "law_id": "NRS-484B-257-1",
+  "selected_branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+  "cases": [
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_approaches",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Yield sign governs; no line/crosswalk; ego slows at sourced nearest-view point while through-highway vehicle approaches"
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_entered",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Same sign and markings; through-highway vehicle is already within intersection"
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Same sign and markings; no immediate through-highway conflict"
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Same sign/roadway/through traffic; ego does not slow at nearest-view approach"
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_approaches",
+        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear"
+      ],
+      "deliberate_differences": [
+        "through-highway vehicle present and approaching during ego crossing"
+      ],
+      "fixed_conditions": [
+        "governing yield sign",
+        "no stop line or near-side crosswalk",
+        "same one-way-to-two-way geometry and ego speed profile"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_approaches",
+        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow"
+      ],
+      "deliberate_differences": [
+        "ego slowing at sourced nearest-view location"
+      ],
+      "fixed_conditions": [
+        "governing yield sign and same through-highway vehicle",
+        "no stop line or near-side crosswalk",
+        "road geometry and camera positions"
+      ]
+    }
+  ],
+  "observations": [
+    "Native yield sign actor, physical face/trigger, and governed approach",
+    "negative inventory evidence for stop line and near-side crosswalk",
+    "source-camera and raycast visibility at positions approaching intersection",
+    "sourced nearest position with view of through highway",
+    "ego speed and position history with original-frame join",
+    "through vehicle entry and approach, conflict times and clearance",
+    "police officer and signal-control exception inventory"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+      "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+    },
+    {
+      "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "sha256": "1fd6bc23f7918d88b1e271658aab3a34c49c41384e02a4f1c9fc4effebbbb3e4"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Frozen cell control is stop_sign while selected binding expressly requires a yield sign. The exact branch must be constructed and proven at C158190 without silently substituting a stop-sign behavior.",
+    "Frozen evidence inventory has zero accepted recordings; no reuse is claimed.",
+    "Nearest-view location and absence of stop line/crosswalk require Native geometry plus source-camera corroboration; a context flag alone is insufficient.",
+    "Immediate hazard and adequate yielding are judgment elements with no supplied numeric cutoff.",
+    "Runner, sign construction, four cameras, saved finalizer, three fallbacks per case, semantic proposals, audits and exact proofs remain worker-owned CPU work."
+  ],
+  "source_observation_mapping": {
+    "dev.stop_sign": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.yield_sign": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.governs": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.lane_enters": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.stop_line": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.crosswalk": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.sight_distance": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "rel.visible": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.stopped": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "kin.speed": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.priority_roadway": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.entering_intersection": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.yields_to": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.human_direction": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.traffic_signal": {
+      "evidence": "Planned Native device/road context, raw approach and through-traffic traces, visibility rays and source cameras; yield_measurements.py covers nearest-view and speed only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18"
+        }
+      ],
+      "status": "planned_unverified"
+    }
+  },
+  "planning_status": "partial; nearest-view and speed source join implemented; full branch construction pending"
+}

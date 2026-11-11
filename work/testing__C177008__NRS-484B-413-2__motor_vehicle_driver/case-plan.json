@@ -1,0 +1,204 @@
+{
+  "assignment_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C177008",
+  "law_id": "NRS-484B-413-2",
+  "selected_branch": "Business-district right-turn signaling",
+  "cases": [
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_below_100ft",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "Right-turn signal begins below last 100 feet in business district"
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "Right-turn signal continuously on for last 100 feet in business district"
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_above_100ft",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "Right-turn signal continuously on for over 100 feet in business district"
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_interrupted",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "Right signal begins early but interrupts within last 100 feet"
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_wet",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "Same 100-foot business-district signal under rain"
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "Other-area 300-foot counterpart for statutory district boundary"
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_below_100ft",
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft",
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_above_100ft"
+      ],
+      "deliberate_differences": [
+        "continuous observed right-signal distance before course change"
+      ],
+      "fixed_conditions": [
+        "business district and Native right-turn route",
+        "same ego and other-vehicle geometry",
+        "same speed and weather"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft",
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_interrupted"
+      ],
+      "deliberate_differences": [
+        "interruption in right signal during last 100 feet"
+      ],
+      "fixed_conditions": [
+        "same route, district and onset position",
+        "same other vehicle and speed"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft",
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_wet"
+      ],
+      "deliberate_differences": [
+        "rain versus dry weather"
+      ],
+      "fixed_conditions": [
+        "same Native route and signal distance",
+        "same vehicle speed and course change"
+      ]
+    }
+  ],
+  "observations": [
+    "Native district classification and map source for business/residential vs other area",
+    "selected Native right-turn route and measured course-change onset",
+    "retained turn-indicator state on every original frame",
+    "continuous sampled path length before onset, below/at/above 100 feet",
+    "300-foot other-area counterpart",
+    "rain/weather state without legal exception",
+    "other-vehicle position and four-camera indicator visibility"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+      "sha256": "185bc248f92ced7dc04828c5d0d7760e2a081dac6353098f87aeacf72c4d26d3"
+    },
+    {
+      "path": "inputs/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/witnesses.json",
+      "sha256": "0b3c456359b8a1c8205ef10d57964554bdea4f82b48a18b5dd3b279549aa0efb"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Frozen cell maneuver is change_lane while selected binding explicitly says business-district right turn. Implement and prove the selected right turn without relabeling a lane change.",
+    "Frozen evidence inventory has zero accepted recordings; no reuse claimed.",
+    "District classification needs source-reviewed authority and Native map context; a context field alone is insufficient.",
+    "Turn onset needs measured route/heading change rather than only an authored onset frame.",
+    "Exact runner, four-camera capture, finalizer, fallbacks, semantic proposals, audits and exact proofs remain worker-owned CPU work."
+  ],
+  "source_observation_mapping": {
+    "sig.turn_indicator": {
+      "evidence": "Planned Native route, indicator, video and weather sources; turn_signal_measurements.py presently covers only sampled right-indicator continuity and path distance.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "185bc248f92ced7dc04828c5d0d7760e2a081dac6353098f87aeacf72c4d26d3"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "sig.hand_signal": {
+      "evidence": "Planned Native route, indicator, video and weather sources; turn_signal_measurements.py presently covers only sampled right-indicator continuity and path distance.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "185bc248f92ced7dc04828c5d0d7760e2a081dac6353098f87aeacf72c4d26d3"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.distance_while": {
+      "evidence": "Planned Native route, indicator, video and weather sources; turn_signal_measurements.py presently covers only sampled right-indicator continuity and path distance.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "185bc248f92ced7dc04828c5d0d7760e2a081dac6353098f87aeacf72c4d26d3"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "kin.path_length": {
+      "evidence": "Planned Native route, indicator, video and weather sources; turn_signal_measurements.py presently covers only sampled right-indicator continuity and path distance.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "185bc248f92ced7dc04828c5d0d7760e2a081dac6353098f87aeacf72c4d26d3"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.turning": {
+      "evidence": "Planned Native route, indicator, video and weather sources; turn_signal_measurements.py presently covers only sampled right-indicator continuity and path distance.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "185bc248f92ced7dc04828c5d0d7760e2a081dac6353098f87aeacf72c4d26d3"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.lane_change": {
+      "evidence": "Planned Native route, indicator, video and weather sources; turn_signal_measurements.py presently covers only sampled right-indicator continuity and path distance.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "185bc248f92ced7dc04828c5d0d7760e2a081dac6353098f87aeacf72c4d26d3"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "env.precipitation": {
+      "evidence": "Planned Native route, indicator, video and weather sources; turn_signal_measurements.py presently covers only sampled right-indicator continuity and path distance.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "185bc248f92ced7dc04828c5d0d7760e2a081dac6353098f87aeacf72c4d26d3"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "kin.speed": {
+      "evidence": "Planned Native route, indicator, video and weather sources; turn_signal_measurements.py presently covers only sampled right-indicator continuity and path distance.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "185bc248f92ced7dc04828c5d0d7760e2a081dac6353098f87aeacf72c4d26d3"
+        }
+      ],
+      "status": "planned_unverified"
+    }
+  },
+  "planning_status": "partial; indicator path-distance observation CPU-tested; exact route construction pending"
+}

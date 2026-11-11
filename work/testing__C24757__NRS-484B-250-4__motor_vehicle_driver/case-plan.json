@@ -1,0 +1,248 @@
+{
+  "assignment_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C24757",
+  "law_id": "NRS-484B-250-4",
+  "selected_branch": "Blind-intersection post-stop interactions under complete signal inoperability.",
+  "cases": [
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_prior",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "Off installed uncovered signal; marked line; other vehicle completes stop first and enters before ego"
+    },
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_ego_prior",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "Same physical junction; ego completes stop first"
+    },
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "Other vehicle already inside at ego post-stop entry"
+    },
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "Ego slows but does not fully halt at marked line"
+    },
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__crosswalk_no_stop_line",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "No line; near-side crosswalk is the required stopping location"
+    },
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__nearest_view_no_line_or_crosswalk",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "No line/crosswalk; stop at nearest point with a view of through traffic"
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_prior",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_ego_prior"
+      ],
+      "deliberate_differences": [
+        "order of completed full halts"
+      ],
+      "fixed_conditions": [
+        "same Off signal and governed lanes",
+        "same marked stop line, junction and vehicle class",
+        "same source cameras and traffic conditions"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_prior",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt"
+      ],
+      "deliberate_differences": [
+        "ego full halt versus slowing only"
+      ],
+      "fixed_conditions": [
+        "same Off signal and other vehicle stop/entry",
+        "same marked stop line and approach"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_prior",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__crosswalk_no_stop_line",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__nearest_view_no_line_or_crosswalk"
+      ],
+      "deliberate_differences": [
+        "available marked line, crosswalk or nearest-view stopping reference"
+      ],
+      "fixed_conditions": [
+        "installed uncovered Off signal and same subject/through traffic",
+        "same intersection topology"
+      ]
+    }
+  ],
+  "observations": [
+    "installed and uncovered vehicular signal head with Native governance and visible source-camera proof",
+    "Native Off indication at ego body entry",
+    "stop-line/crosswalk/nearest-view hierarchy from map and camera",
+    "full halt before or at required stop reference",
+    "first body entry of both vehicles and prior-stop order",
+    "vehicles already within intersection at ego entry",
+    "post-stop approach speed, clearance and cautious motion without invented legal cutoff"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
+    },
+    {
+      "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/witnesses.json",
+      "sha256": "f00881ea18fb42b40c5ecd475447237c42cba8f8aa0f143defae9cdb0356a879"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Frozen evidence inventory has zero accepted recordings; no reuse is claimed.",
+    "Native Off state does not itself prove statutory inoperability or installed uncovered heads; source-camera evidence and review are necessary.",
+    "Current measurement implements marked stop-line subbranch only. Crosswalk and nearest-view alternatives remain CPU work.",
+    "Actual map blind intersection, signal governance, stop marking and actor motion remain unverified physical facts.",
+    "Exact runner/controller, four-camera capture, saved finalizer, three fallbacks per selected case, semantic proposals, audits and proofs remain worker-owned CPU work."
+  ],
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "evidence": "Planned Native road/signal/stop-line and original-frame vehicle traces; inoperative_stop_measurements.py presently covers stop-line stop/order observations only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.inoperative": {
+      "evidence": "Planned Native road/signal/stop-line and original-frame vehicle traces; inoperative_stop_measurements.py presently covers stop-line stop/order observations only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.lane_enters": {
+      "evidence": "Planned Native road/signal/stop-line and original-frame vehicle traces; inoperative_stop_measurements.py presently covers stop-line stop/order observations only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.stop_line": {
+      "evidence": "Planned Native road/signal/stop-line and original-frame vehicle traces; inoperative_stop_measurements.py presently covers stop-line stop/order observations only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.crosswalk": {
+      "evidence": "Planned Native road/signal/stop-line and original-frame vehicle traces; inoperative_stop_measurements.py presently covers stop-line stop/order observations only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.sight_distance": {
+      "evidence": "Planned Native road/signal/stop-line and original-frame vehicle traces; inoperative_stop_measurements.py presently covers stop-line stop/order observations only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "rel.visible": {
+      "evidence": "Planned Native road/signal/stop-line and original-frame vehicle traces; inoperative_stop_measurements.py presently covers stop-line stop/order observations only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.stopped": {
+      "evidence": "Planned Native road/signal/stop-line and original-frame vehicle traces; inoperative_stop_measurements.py presently covers stop-line stop/order observations only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.entering_intersection": {
+      "evidence": "Planned Native road/signal/stop-line and original-frame vehicle traces; inoperative_stop_measurements.py presently covers stop-line stop/order observations only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.arrival_order": {
+      "evidence": "Planned Native road/signal/stop-line and original-frame vehicle traces; inoperative_stop_measurements.py presently covers stop-line stop/order observations only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.in_intersection": {
+      "evidence": "Planned Native road/signal/stop-line and original-frame vehicle traces; inoperative_stop_measurements.py presently covers stop-line stop/order observations only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.yields_to": {
+      "evidence": "Planned Native road/signal/stop-line and original-frame vehicle traces; inoperative_stop_measurements.py presently covers stop-line stop/order observations only.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
+        }
+      ],
+      "status": "planned_unverified"
+    }
+  },
+  "planning_status": "partial; Off-signal stop-line order and body-entry measurement CPU-tested; exact construction pending"
+}

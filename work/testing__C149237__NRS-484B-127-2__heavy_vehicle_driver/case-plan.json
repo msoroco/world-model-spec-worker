@@ -1,0 +1,228 @@
+{
+  "assignment_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver",
+  "actor": "heavy_vehicle_driver",
+  "cell_id": "C149237",
+  "law_id": "NRS-484B-127-2",
+  "selected_branch": "Qualifying truck following",
+  "cases": [
+    {
+      "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft",
+      "target_law_id": "NRS-484B-127-2",
+      "purpose": "One same-direction lane; two qualifying trucks; measured body gap below 500 feet"
+    },
+    {
+      "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft",
+      "target_law_id": "NRS-484B-127-2",
+      "purpose": "Same setup; measured body gap at 500 feet"
+    },
+    {
+      "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft",
+      "target_law_id": "NRS-484B-127-2",
+      "purpose": "Same setup; measured body gap above 500 feet"
+    },
+    {
+      "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in",
+      "target_law_id": "NRS-484B-127-2",
+      "purpose": "Subject width below 80 inches; width-class negative control"
+    },
+    {
+      "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in",
+      "target_law_id": "NRS-484B-127-2",
+      "purpose": "Subject width at 80 inches; width-class boundary"
+    },
+    {
+      "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in",
+      "target_law_id": "NRS-484B-127-2",
+      "purpose": "Lead width below 80 inches; width-class negative control"
+    },
+    {
+      "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__two_same_direction_lanes",
+      "target_law_id": "NRS-484B-127-2",
+      "purpose": "Same truck pair and gap; two available same-direction lanes"
+    },
+    {
+      "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__overtaking",
+      "target_law_id": "NRS-484B-127-2",
+      "purpose": "Same truck pair while subject overtakes and passes"
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft",
+        "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft",
+        "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft"
+      ],
+      "deliberate_differences": [
+        "measured longitudinal body gap relative to 500 feet"
+      ],
+      "fixed_conditions": [
+        "vehicle blueprints and widths",
+        "Native road and one-lane same-direction topology",
+        "speed and traffic conditions"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft",
+        "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in",
+        "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in",
+        "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in"
+      ],
+      "deliberate_differences": [
+        "subject or lead overall width at/below 80 inches"
+      ],
+      "fixed_conditions": [
+        "one same-direction lane",
+        "same following behavior and traffic conditions",
+        "body-gap target"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft",
+        "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__two_same_direction_lanes"
+      ],
+      "deliberate_differences": [
+        "number of lanes available in the same direction"
+      ],
+      "fixed_conditions": [
+        "qualifying truck dimensions",
+        "following relation and gap target",
+        "speed and traffic conditions"
+      ]
+    }
+  ],
+  "observations": [
+    "Native blueprint/actor class and overall width of both vehicles and combinations",
+    "original-frame body vertices and longitudinal surface gap on sourced lane tangent",
+    "same lane, direction and following interval",
+    "Native map topology count of same-direction available lanes",
+    "overtaking trajectory, start/end times and vehicles passed",
+    "conditions permitting and safe occupancy context without an invented legal cutoff"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+      "sha256": "25b365e5565f5d528a89b79eea5ec05f76d91fe6a8d02e683d5a9a9edab8d9fc"
+    },
+    {
+      "path": "inputs/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/witnesses.json",
+      "sha256": "7b565570d397254a1603e01f8e02ea9323a8637720469d00bce32f3c2ca8267e"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Zero accepted recordings in frozen evidence.json; no reuse is claimed.",
+    "Actual one-lane highway map, truck blueprints with >=80-inch measured width and overtaking room have not been selected or tested.",
+    "Overall width of a combination must include trailers, not merely the tractor bounding box.",
+    "Conditions permitting and an overtaker entering without danger are factual/legal judgments requiring source review; the exact 80-inch and 500-foot thresholds alone do not decide compliance.",
+    "Runner, source capture, finalizer, fallbacks, semantic proposals, audits and saved-processing proofs remain worker-owned CPU work."
+  ],
+  "source_observation_mapping": {
+    "ru.truck": {
+      "evidence": "Planned Native road/actor telemetry and original-frame truck body measurements; truck_measurements.py presently implements only geometry and lane-count observations.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+          "sha256": "25b365e5565f5d528a89b79eea5ec05f76d91fe6a8d02e683d5a9a9edab8d9fc"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "ru.trailer_or_combination": {
+      "evidence": "Planned Native road/actor telemetry and original-frame truck body measurements; truck_measurements.py presently implements only geometry and lane-count observations.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+          "sha256": "25b365e5565f5d528a89b79eea5ec05f76d91fe6a8d02e683d5a9a9edab8d9fc"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "kin.extent": {
+      "evidence": "Planned Native road/actor telemetry and original-frame truck body measurements; truck_measurements.py presently implements only geometry and lane-count observations.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+          "sha256": "25b365e5565f5d528a89b79eea5ec05f76d91fe6a8d02e683d5a9a9edab8d9fc"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.following": {
+      "evidence": "Planned Native road/actor telemetry and original-frame truck body measurements; truck_measurements.py presently implements only geometry and lane-count observations.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+          "sha256": "25b365e5565f5d528a89b79eea5ec05f76d91fe6a8d02e683d5a9a9edab8d9fc"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "rel.surface_gap": {
+      "evidence": "Planned Native road/actor telemetry and original-frame truck body measurements; truck_measurements.py presently implements only geometry and lane-count observations.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+          "sha256": "25b365e5565f5d528a89b79eea5ec05f76d91fe6a8d02e683d5a9a9edab8d9fc"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "rel.ahead_behind_in_lane": {
+      "evidence": "Planned Native road/actor telemetry and original-frame truck body measurements; truck_measurements.py presently implements only geometry and lane-count observations.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+          "sha256": "25b365e5565f5d528a89b79eea5ec05f76d91fe6a8d02e683d5a9a9edab8d9fc"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.laned_roadway": {
+      "evidence": "Planned Native road/actor telemetry and original-frame truck body measurements; truck_measurements.py presently implements only geometry and lane-count observations.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+          "sha256": "25b365e5565f5d528a89b79eea5ec05f76d91fe6a8d02e683d5a9a9edab8d9fc"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.lane_adjacency": {
+      "evidence": "Planned Native road/actor telemetry and original-frame truck body measurements; truck_measurements.py presently implements only geometry and lane-count observations.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+          "sha256": "25b365e5565f5d528a89b79eea5ec05f76d91fe6a8d02e683d5a9a9edab8d9fc"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.overtaking": {
+      "evidence": "Planned Native road/actor telemetry and original-frame truck body measurements; truck_measurements.py presently implements only geometry and lane-count observations.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+          "sha256": "25b365e5565f5d528a89b79eea5ec05f76d91fe6a8d02e683d5a9a9edab8d9fc"
+        }
+      ],
+      "status": "planned_unverified"
+    }
+  },
+  "planning_status": "partial; source-bound truck body-gap and width measurement CPU-tested; exact construction pending"
+}
