@@ -14,16 +14,77 @@
         {
           "name": "rider_signal_event",
           "unit": "count",
-          "method": "source-video reviewed arm signal per original frame",
+          "method": "reviewed visible arm-signal event per original frame",
           "sampling_rate_hz": 20,
           "time_window": "all original frames",
-          "reference_frame": "source video joined to Native frame",
-          "uncertainty": "diagnostic black frames do not establish physical visibility"
+          "reference_frame": "Native frame joined to four source RGB streams",
+          "uncertainty": "physical actor visibility and source completeness require Native review"
+        },
+        {
+          "name": "rider_turn_heading_deg",
+          "unit": "deg",
+          "method": "original bicycle transform yaw",
+          "sampling_rate_hz": 20,
+          "time_window": "all original frames",
+          "reference_frame": "Native frame joined to four source RGB streams",
+          "uncertainty": "physical actor visibility and source completeness require Native review"
+        },
+        {
+          "name": "participant_clearance_m",
+          "unit": "m",
+          "method": "original participant body-footprint minimum separation",
+          "sampling_rate_hz": 20,
+          "time_window": "all original frames",
+          "reference_frame": "Native frame joined to four source RGB streams",
+          "uncertainty": "physical actor visibility and source completeness require Native review"
+        },
+        {
+          "name": "time_to_conflict_s",
+          "unit": "s",
+          "method": "original relative motion and conflict-zone geometry",
+          "sampling_rate_hz": 20,
+          "time_window": "all original frames",
+          "reference_frame": "Native frame joined to four source RGB streams",
+          "uncertainty": "physical actor visibility and source completeness require Native review"
+        },
+        {
+          "name": "rider_hand_contact",
+          "unit": "categorical",
+          "method": "framewise source-video hand-to-control review",
+          "sampling_rate_hz": 20,
+          "time_window": "all original frames",
+          "reference_frame": "Native frame joined to four source RGB streams",
+          "uncertainty": "physical actor visibility and source completeness require Native review"
+        },
+        {
+          "name": "rider_control_stability",
+          "unit": "structured_record",
+          "method": "original steering and control response",
+          "sampling_rate_hz": 20,
+          "time_window": "all original frames",
+          "reference_frame": "Native frame joined to four source RGB streams",
+          "uncertainty": "physical actor visibility and source completeness require Native review"
         }
       ],
-      "context_inputs": [],
+      "context_inputs": [
+        {
+          "name": "rider_device_class",
+          "unit": "categorical",
+          "method": "Native blueprint and original device review"
+        },
+        {
+          "name": "rider_roadway_status",
+          "unit": "categorical",
+          "method": "Native map/roadway geometry and original occupancy review"
+        },
+        {
+          "name": "turn_path_geometry",
+          "unit": "structured_record",
+          "method": "retained Native route/lane geometry with participant identities"
+        }
+      ],
       "limitations": [
-        "Native rider signal visibility and legal appropriateness are unverified; synthetic black frames only test software joins."
+        "Source-video visibility, physical completion, reasonable safety, signal appropriateness and both-hands necessity are unresolved."
       ]
     },
     "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once"

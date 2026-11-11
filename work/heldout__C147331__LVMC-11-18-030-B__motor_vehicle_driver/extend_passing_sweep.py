@@ -11,8 +11,8 @@ HERE = Path(__file__).resolve().parent
 BASE_SUFFIX = "passing_boundary_crossing"
 PREFIX = "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__"
 POINTS = {"passing_excursion-0000": .4,
-          "passing_excursion-0001": .6,
-          "passing_excursion-0002": .8}
+          "passing_excursion-0001": .8,
+          "passing_excursion-0002": .6}
 
 
 def read(path):

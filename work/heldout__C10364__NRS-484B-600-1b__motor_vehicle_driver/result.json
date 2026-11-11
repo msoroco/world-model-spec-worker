@@ -5,15 +5,22 @@
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/tests -v",
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "d4c9317e3d52b8426dd40d21cacbe6d18eb4c0caca831af375b171daa233ccb6"
+      "sha256": "df573b1849a32ae1c006e0d560572debdb6836d7d56ec458e8a210b147ca068d",
+      "passed": 19
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline:runtime .venv-cpu/bin/python work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/validate_semantic_stages.py",
+      "exit_code": 0,
+      "log": "semantic-stage-validation.log",
+      "sha256": "711092f208ab72b853c04d9a242f2188aa7967b355c9b9a6c53a26be258d1b15"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and duration remain unverified after CPU preparation."
   ],
-  "reason": "Partial: six exact cases and three comparisons are planned; original-source geometry/capture/measurement and comparison audit exist. New CARLA-lazy polygon-bounded alley route selection and feedback control pass east/west, out-of-alley, narrow-lane, wrong-way and speed-response CPU tests (15 total). Exact selected runner, four cameras, finalizer, fallback constructions, semantic proposals, compatibility, saved processing and delivery audits remain CPU work.",
+  "reason": "Partial: six exact alley person/property speed settings, a CARLA-lazy four-camera Native capture runner, original-source capture/measurement and saved finalizer, and a canonical six-case semantic stage chain pass 19 CPU tests/stage validation. A selected original alley polygon and exact case configs/constructions, fallback manifests, runtime offline/compatibility/saved processing, complete qualitative sweep and independent delivery proofs remain worker-owned CPU construction; no Native or legal outcome is claimed.",
   "readiness_kind": "delivery_prepared"
 }

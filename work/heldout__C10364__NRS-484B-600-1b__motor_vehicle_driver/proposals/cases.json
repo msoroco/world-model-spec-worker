@@ -1,0 +1,563 @@
+{
+  "status": "draft",
+  "cell_id": "C10364",
+  "actor": "motor_vehicle_driver",
+  "sweep_specs": [
+    {
+      "sweep_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_speed_judgment_sweep",
+      "target_law_id": "NRS-484B-600-1b",
+      "judgment_refs": [
+        {
+          "phrase": "Such a rate of speed as to endanger the life, limb or property of any person",
+          "note": "Measure original speed, pedestrian/property body gaps, contact, forward-time and braking proxies; no numeric legal endangerment threshold is inferred."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "target_speed_mps",
+          "observable": "target_speed_mps",
+          "unit": "m/s",
+          "min": 3,
+          "max": 7,
+          "spacing": 2,
+          "measurement": {
+            "method": "authored controller target; original realized speed measured separately",
+            "time_window": "selected setup",
+            "statistic": "first"
+          },
+          "range_rationale": "The three planned 3/5/7 m/s engineering contrasts bracket a moderate alley speed without creating a legal cutoff.",
+          "spacing_rationale": "Two m/s spacing gives low, middle and high requested-speed points.",
+          "feasibility_evidence": "alley_route.control_step and alley_geometry.plan_alley pass CPU tests; selected source-backed alley geometry remains unconstructed."
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Finite requested-speed judgment sampling must be bound to a selected source-backed alley route and original measured motion.",
+      "variable_assignments": {
+        "target_speed_mps": {
+          "kind": "controller",
+          "value": 3.0
+        },
+        "protected_interest": {
+          "kind": "world_setup",
+          "value": "person"
+        },
+        "alley_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_footprints",
+            "unit": "structured record",
+            "method": "original Native ego, pedestrian and owned-property body polygons",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native actor bounding-box precision"
+          },
+          {
+            "name": "pedestrian_gap_m",
+            "unit": "m",
+            "method": "original Native subject/pedestrian body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          },
+          {
+            "name": "property_gap_m",
+            "unit": "m",
+            "method": "original Native subject/property body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Engineering speed targets and alley placements do not establish legal endangerment, visibility or completion."
+        ]
+      },
+      "missing_inputs": [
+        "Selected original alley polygon and exact Native route source are absent; generated cases and physical feasibility proofs remain CPU construction work."
+      ]
+    }
+  ],
+  "sweeps_expanded": false,
+  "cases": [
+    {
+      "case_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared planned alley setup; no baseline delivery or legal result.",
+      "variable_assignments": {
+        "target_speed_mps": {
+          "kind": "controller",
+          "value": 3.0
+        },
+        "protected_interest": {
+          "kind": "world_setup",
+          "value": "person"
+        },
+        "alley_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Such a rate of speed as to endanger the life, limb or property of any person"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_footprints",
+            "unit": "structured record",
+            "method": "original Native ego, pedestrian and owned-property body polygons",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native actor bounding-box precision"
+          },
+          {
+            "name": "pedestrian_gap_m",
+            "unit": "m",
+            "method": "original Native subject/pedestrian body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          },
+          {
+            "name": "property_gap_m",
+            "unit": "m",
+            "method": "original Native subject/property body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Engineering speed targets and alley placements do not establish legal endangerment, visibility or completion."
+        ]
+      },
+      "paired_probe_id": "person_speed_sweep",
+      "deliberate_differences": [
+        "target_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "target_speed_mps",
+        "comparison_or_standard": "controlled engineering contrast without legal cutoff",
+        "target_value_or_branch": 3.0
+      }
+    },
+    {
+      "case_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__person_3mps",
+      "target_law_id": "NRS-484B-600-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original person exposure during 3 m/s requested alley travel; legal judgment unresolved.",
+      "variable_assignments": {
+        "target_speed_mps": {
+          "kind": "controller",
+          "value": 3.0
+        },
+        "protected_interest": {
+          "kind": "world_setup",
+          "value": "person"
+        },
+        "alley_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Such a rate of speed as to endanger the life, limb or property of any person"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_footprints",
+            "unit": "structured record",
+            "method": "original Native ego, pedestrian and owned-property body polygons",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native actor bounding-box precision"
+          },
+          {
+            "name": "pedestrian_gap_m",
+            "unit": "m",
+            "method": "original Native subject/pedestrian body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          },
+          {
+            "name": "property_gap_m",
+            "unit": "m",
+            "method": "original Native subject/property body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Engineering speed targets and alley placements do not establish legal endangerment, visibility or completion."
+        ]
+      },
+      "paired_probe_id": "person_speed_sweep",
+      "deliberate_differences": [
+        "target_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "target_speed_mps",
+        "comparison_or_standard": "controlled engineering contrast without legal cutoff",
+        "target_value_or_branch": 3.0
+      }
+    },
+    {
+      "case_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__person_5mps",
+      "target_law_id": "NRS-484B-600-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original person exposure during 5 m/s requested alley travel; legal judgment unresolved.",
+      "variable_assignments": {
+        "target_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "protected_interest": {
+          "kind": "world_setup",
+          "value": "person"
+        },
+        "alley_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Such a rate of speed as to endanger the life, limb or property of any person"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_footprints",
+            "unit": "structured record",
+            "method": "original Native ego, pedestrian and owned-property body polygons",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native actor bounding-box precision"
+          },
+          {
+            "name": "pedestrian_gap_m",
+            "unit": "m",
+            "method": "original Native subject/pedestrian body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          },
+          {
+            "name": "property_gap_m",
+            "unit": "m",
+            "method": "original Native subject/property body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Engineering speed targets and alley placements do not establish legal endangerment, visibility or completion."
+        ]
+      },
+      "paired_probe_id": "person_speed_sweep",
+      "deliberate_differences": [
+        "target_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "target_speed_mps",
+        "comparison_or_standard": "controlled engineering contrast without legal cutoff",
+        "target_value_or_branch": 5.0
+      }
+    },
+    {
+      "case_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__person_7mps",
+      "target_law_id": "NRS-484B-600-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original person exposure during 7 m/s requested alley travel; legal judgment unresolved.",
+      "variable_assignments": {
+        "target_speed_mps": {
+          "kind": "controller",
+          "value": 7.0
+        },
+        "protected_interest": {
+          "kind": "world_setup",
+          "value": "person"
+        },
+        "alley_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Such a rate of speed as to endanger the life, limb or property of any person"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_footprints",
+            "unit": "structured record",
+            "method": "original Native ego, pedestrian and owned-property body polygons",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native actor bounding-box precision"
+          },
+          {
+            "name": "pedestrian_gap_m",
+            "unit": "m",
+            "method": "original Native subject/pedestrian body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          },
+          {
+            "name": "property_gap_m",
+            "unit": "m",
+            "method": "original Native subject/property body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Engineering speed targets and alley placements do not establish legal endangerment, visibility or completion."
+        ]
+      },
+      "paired_probe_id": "person_speed_sweep",
+      "deliberate_differences": [
+        "target_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "target_speed_mps",
+        "comparison_or_standard": "controlled engineering contrast without legal cutoff",
+        "target_value_or_branch": 7.0
+      }
+    },
+    {
+      "case_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__property_3mps",
+      "target_law_id": "NRS-484B-600-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original property exposure during 3 m/s requested alley travel; legal judgment unresolved.",
+      "variable_assignments": {
+        "target_speed_mps": {
+          "kind": "controller",
+          "value": 3.0
+        },
+        "protected_interest": {
+          "kind": "world_setup",
+          "value": "property"
+        },
+        "alley_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Such a rate of speed as to endanger the life, limb or property of any person"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_footprints",
+            "unit": "structured record",
+            "method": "original Native ego, pedestrian and owned-property body polygons",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native actor bounding-box precision"
+          },
+          {
+            "name": "pedestrian_gap_m",
+            "unit": "m",
+            "method": "original Native subject/pedestrian body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          },
+          {
+            "name": "property_gap_m",
+            "unit": "m",
+            "method": "original Native subject/property body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Engineering speed targets and alley placements do not establish legal endangerment, visibility or completion."
+        ]
+      },
+      "paired_probe_id": "property_speed_sweep",
+      "deliberate_differences": [
+        "target_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "target_speed_mps",
+        "comparison_or_standard": "controlled engineering contrast without legal cutoff",
+        "target_value_or_branch": 3.0
+      }
+    },
+    {
+      "case_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__property_5mps",
+      "target_law_id": "NRS-484B-600-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original property exposure during 5 m/s requested alley travel; legal judgment unresolved.",
+      "variable_assignments": {
+        "target_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "protected_interest": {
+          "kind": "world_setup",
+          "value": "property"
+        },
+        "alley_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Such a rate of speed as to endanger the life, limb or property of any person"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_footprints",
+            "unit": "structured record",
+            "method": "original Native ego, pedestrian and owned-property body polygons",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native actor bounding-box precision"
+          },
+          {
+            "name": "pedestrian_gap_m",
+            "unit": "m",
+            "method": "original Native subject/pedestrian body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          },
+          {
+            "name": "property_gap_m",
+            "unit": "m",
+            "method": "original Native subject/property body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Engineering speed targets and alley placements do not establish legal endangerment, visibility or completion."
+        ]
+      },
+      "paired_probe_id": "property_speed_sweep",
+      "deliberate_differences": [
+        "target_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "target_speed_mps",
+        "comparison_or_standard": "controlled engineering contrast without legal cutoff",
+        "target_value_or_branch": 5.0
+      }
+    },
+    {
+      "case_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__property_7mps",
+      "target_law_id": "NRS-484B-600-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original property exposure during 7 m/s requested alley travel; legal judgment unresolved.",
+      "variable_assignments": {
+        "target_speed_mps": {
+          "kind": "controller",
+          "value": 7.0
+        },
+        "protected_interest": {
+          "kind": "world_setup",
+          "value": "property"
+        },
+        "alley_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Such a rate of speed as to endanger the life, limb or property of any person"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_footprints",
+            "unit": "structured record",
+            "method": "original Native ego, pedestrian and owned-property body polygons",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native actor bounding-box precision"
+          },
+          {
+            "name": "pedestrian_gap_m",
+            "unit": "m",
+            "method": "original Native subject/pedestrian body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          },
+          {
+            "name": "property_gap_m",
+            "unit": "m",
+            "method": "original Native subject/property body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Engineering speed targets and alley placements do not establish legal endangerment, visibility or completion."
+        ]
+      },
+      "paired_probe_id": "property_speed_sweep",
+      "deliberate_differences": [
+        "target_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "target_speed_mps",
+        "comparison_or_standard": "controlled engineering contrast without legal cutoff",
+        "target_value_or_branch": 7.0
+      }
+    }
+  ]
+}

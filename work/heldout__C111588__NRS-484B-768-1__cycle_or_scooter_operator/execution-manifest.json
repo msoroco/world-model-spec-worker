@@ -7,7 +7,7 @@
       "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once",
       "kind": "delivery",
       "construction": "first-construction.json",
-      "construction_sha256": "3d8a58edd1abf4016633c2c070f3d0ddcde24bffaf0eb67ed6ebc3f909fc1f9f",
+      "construction_sha256": "c167424e05e5e24268f5f0b88514494f6c96062242e2006b82b119af67aebb1f",
       "measurement_contract": "first-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "rider_signal_finalizer.py"
@@ -27,13 +27,38 @@
           "entrypoint": "rider_signal_finalizer.py",
           "method": "join retained source video review to Native motion and frame map",
           "evidence": "rider_signal_review.jsonl plus four RGB original streams and rider motion"
+        },
+        "rider_turn_heading_deg": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_turn_heading_deg",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "participant_clearance_m": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for participant_clearance_m",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "time_to_conflict_s": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for time_to_conflict_s",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_hand_contact": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_hand_contact",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_control_stability": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_control_stability",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
         }
       },
       "candidates": [
         {
           "id": "fallback1",
           "construction": "cases/bicycle_signal_once/fallback1-construction.json",
-          "construction_sha256": "de6e0b5614dea068a702acc82f6a989fc7d30436fca137cff3e0990b4a30dc8e",
+          "construction_sha256": "bfcaec0f097e37c04c92c682160ed8250682d5e5f8531006ad3ac3fa40b3634e",
           "trigger": {
             "source": "Native map waypoint topology and route-selector failure record",
             "metric": "count of connected left-turn candidates at 2.5 m sampling",
@@ -43,23 +68,23 @@
             "route waypoint sampling step 2.5 m to 1.5 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/first-execution-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --candidate fallback1 --output .runtime-work/c111588-once-fb1-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/first-execution-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --output .runtime-work/c111588-common-bicycle_signal_once-fallback1-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
             "exit_code": 0,
-            "log": "cases/bicycle_signal_once/fallback1-tests.log",
-            "log_sha256": "1a902fd4c537c33c9c15041b84a9ad5661cfe31a3f4d21f81c9f7ae7a631eec6",
-            "construction_sha256": "de6e0b5614dea068a702acc82f6a989fc7d30436fca137cff3e0990b4a30dc8e"
+            "log": "cases/bicycle_signal_once/fallback1-tests-j.log",
+            "log_sha256": "e0198c4c2375b9a45d42477335d5ffa0399234a3677b53f9d11d32e54b8c1b22",
+            "construction_sha256": "bfcaec0f097e37c04c92c682160ed8250682d5e5f8531006ad3ac3fa40b3634e"
           },
           "compatibility": {
-            "receipt": "cases/bicycle_signal_once/fallback1-receipt.json",
-            "sha256": "cabfcc6ca5ee25c4222c11a996d257d9de59f30b4cf3e4ca01be9bf8ed37a5a3",
-            "log": "cases/bicycle_signal_once/fallback1-analysis.log",
-            "negative_log": "cases/bicycle_signal_once/fallback1-negative.log"
+            "receipt": "cases/bicycle_signal_once/fallback1-receipt-j.json",
+            "sha256": "1f7d86f2559b66fc601a4e341b0a9c238944cba2a3ffe065173fe4b6151eff35",
+            "log": "cases/bicycle_signal_once/fallback1-analysis-j.log",
+            "negative_log": "cases/bicycle_signal_once/fallback1-negative-j.log"
           }
         },
         {
           "id": "fallback2",
           "construction": "cases/bicycle_signal_once/fallback2-construction.json",
-          "construction_sha256": "a8432d3b8ec6a8ec6f9bd157c3f0697fd45cd745ea52bf43f141c3ea3f90cbdf",
+          "construction_sha256": "ee572c4f6b3370a1b1d76c9b4c240f67fe8c9555ec97d46fba37276e350ec315",
           "trigger": {
             "source": "original rider/seat pixels from four synchronized RGB streams",
             "metric": "rider-to-bicycle seat alignment and body overlap across frames",
@@ -69,23 +94,23 @@
             "attached walker relative height 0.65 m to 0.85 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/first-execution-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --candidate fallback2 --output .runtime-work/c111588-once-fb2-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/first-execution-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --output .runtime-work/c111588-common-bicycle_signal_once-fallback2-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
             "exit_code": 0,
-            "log": "cases/bicycle_signal_once/fallback2-tests.log",
-            "log_sha256": "1a902fd4c537c33c9c15041b84a9ad5661cfe31a3f4d21f81c9f7ae7a631eec6",
-            "construction_sha256": "a8432d3b8ec6a8ec6f9bd157c3f0697fd45cd745ea52bf43f141c3ea3f90cbdf"
+            "log": "cases/bicycle_signal_once/fallback2-tests-j.log",
+            "log_sha256": "fc9848e1abf5ff5e561cce8469633d1a024d3143860f698fa11c587f01e58d10",
+            "construction_sha256": "ee572c4f6b3370a1b1d76c9b4c240f67fe8c9555ec97d46fba37276e350ec315"
           },
           "compatibility": {
-            "receipt": "cases/bicycle_signal_once/fallback2-receipt.json",
-            "sha256": "394ea1e4555d695a7405a18aabd936dfead2d8467e909f4f4fd4149a6816dfc5",
-            "log": "cases/bicycle_signal_once/fallback2-analysis.log",
-            "negative_log": "cases/bicycle_signal_once/fallback2-negative.log"
+            "receipt": "cases/bicycle_signal_once/fallback2-receipt-j.json",
+            "sha256": "fcacf7c0debed23359c4c8d15cce9a5796b22ff8946e4c781bb478fce2550e1d",
+            "log": "cases/bicycle_signal_once/fallback2-analysis-j.log",
+            "negative_log": "cases/bicycle_signal_once/fallback2-negative-j.log"
           }
         },
         {
           "id": "fallback3",
           "construction": "cases/bicycle_signal_once/fallback3-construction.json",
-          "construction_sha256": "dea50ec6565b9f971370477849efdadbcef000859c2343668d98724eb864a0f4",
+          "construction_sha256": "f87fdd8cbf7645ae7abd5b72e751d9050a45dec49a4f18e1f03ce5c90e1accc9",
           "trigger": {
             "source": "original driver_reference and side RGB frame review",
             "metric": "count of frames in which the rider and left arm can be resolved",
@@ -95,38 +120,38 @@
             "driver_reference camera relative height 1.8 m to 2.2 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/first-execution-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --candidate fallback3 --output .runtime-work/c111588-once-fb3-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/first-execution-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --output .runtime-work/c111588-common-bicycle_signal_once-fallback3-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
             "exit_code": 0,
-            "log": "cases/bicycle_signal_once/fallback3-tests.log",
-            "log_sha256": "1a902fd4c537c33c9c15041b84a9ad5661cfe31a3f4d21f81c9f7ae7a631eec6",
-            "construction_sha256": "dea50ec6565b9f971370477849efdadbcef000859c2343668d98724eb864a0f4"
+            "log": "cases/bicycle_signal_once/fallback3-tests-j.log",
+            "log_sha256": "66897ecb3ae8e08bfe5272507f445697ff73ab2fe29a0756ac66e18c3a09b608",
+            "construction_sha256": "f87fdd8cbf7645ae7abd5b72e751d9050a45dec49a4f18e1f03ce5c90e1accc9"
           },
           "compatibility": {
-            "receipt": "cases/bicycle_signal_once/fallback3-receipt.json",
-            "sha256": "104e27890af9bfc9dc31473acdf4e7b45cfbd6ba09ebaff265db050af97efaca",
-            "log": "cases/bicycle_signal_once/fallback3-analysis.log",
-            "negative_log": "cases/bicycle_signal_once/fallback3-negative.log"
+            "receipt": "cases/bicycle_signal_once/fallback3-receipt-j.json",
+            "sha256": "d8700a7e35a2b9ff66d245e1a9d87732ca8c1b5677cb9f9025039278a763d831",
+            "log": "cases/bicycle_signal_once/fallback3-analysis-j.log",
+            "negative_log": "cases/bicycle_signal_once/fallback3-negative-j.log"
           }
         }
       ],
       "physical_preparation": {
-        "receipt": "physical/bicycle_signal_once-proof.json",
-        "sha256": "93764cad2b4126ce69226235da9e82235908fe6e31d43deb1efba2a27806b77f"
+        "receipt": "cases/bicycle_signal_once/physical-j/proof.json",
+        "sha256": "ba2b135848f7e28b285707ded7958cd913d98876ae95655e1437a98a7e9b37a8"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/first-execution-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --output .runtime-work/c111588-once-primary-offline-g --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/first-execution-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --output .runtime-work/c111588-common-bicycle_signal_once-primary-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
         "exit_code": 0,
-        "log": "first-offline.log",
-        "log_sha256": "cb24a90b3f2cd6f39130615c084bb07f76e83c20a8b516a39bb2975768263eea",
-        "construction_sha256": "3d8a58edd1abf4016633c2c070f3d0ddcde24bffaf0eb67ed6ebc3f909fc1f9f"
+        "log": "cases/bicycle_signal_once/primary-tests-j.log",
+        "log_sha256": "00970f493e47f5434c8d86270d5ccc08f8c53b3d1f4821ee180fcefbe4ba2477",
+        "construction_sha256": "c167424e05e5e24268f5f0b88514494f6c96062242e2006b82b119af67aebb1f"
       },
       "compatibility": {
-        "receipt": "first-compatibility-receipt.json",
-        "sha256": "1c947c2c8de10c4e2a2e1d2babfbffd686fafefb6eb1d26c90305e9c80071de3",
-        "log": "first-compatibility-analysis.log"
+        "receipt": "cases/bicycle_signal_once/primary-receipt-j.json",
+        "sha256": "0cae0d1daed8ff2246d26166218a3f295333df949ec859bbdaeae0b92a4390de",
+        "log": "cases/bicycle_signal_once/primary-analysis-j.log"
       },
       "negative": {
-        "log": "first-negative-analysis.log"
+        "log": "cases/bicycle_signal_once/primary-negative-j.log"
       },
       "delivery_acceptance": {
         "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once",
@@ -143,11 +168,11 @@
         ],
         "script": "rider_acceptance_check.py",
         "script_sha256": "5de82d3e0acfaad2375ce8dc63a7a26034ddb9b424631f0a5885b814e54f6906",
-        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --attempt .runtime-work/c111588-once-primary-compat-g",
+        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --attempt .runtime-work/c111588-common-bicycle_signal_once-primary-compat-j",
         "test_exit_code": 0,
         "test_log": "cases/bicycle_signal_once/physical/acceptance-positive.log",
         "test_log_sha256": "6b951e625c62fb002b5a31ef571d9b2db59a15c20c7196f8886865b96c219151",
-        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --attempt .runtime-work/c111588-once-primary-compat-g --negative",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --attempt .runtime-work/c111588-common-bicycle_signal_once-primary-compat-j --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "Stale or missing original source: rider_arm_bones.jsonl",
         "negative_log": "cases/bicycle_signal_once/physical/acceptance-negative.log",
@@ -158,7 +183,7 @@
       "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal",
       "kind": "delivery",
       "construction": "cases/bicycle_no_signal/construction.json",
-      "construction_sha256": "becbef2ebe66e8b9933db0e75e5ee1931908c624dda67b8da91635dd6fdc7fc0",
+      "construction_sha256": "213f2696c82c758933cf9ba5249c6b1e8dcdbbc6c7509befd8001cc87b33a928",
       "measurement_contract": "cases/bicycle_no_signal/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "rider_signal_finalizer.py"
@@ -178,13 +203,38 @@
           "entrypoint": "rider_signal_finalizer.py",
           "method": "join retained source video review to Native motion and frame map",
           "evidence": "rider_signal_review.jsonl plus four RGB original streams and rider motion"
+        },
+        "rider_turn_heading_deg": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_turn_heading_deg",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "participant_clearance_m": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for participant_clearance_m",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "time_to_conflict_s": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for time_to_conflict_s",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_hand_contact": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_hand_contact",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_control_stability": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_control_stability",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
         }
       },
       "candidates": [
         {
           "id": "fallback1",
           "construction": "cases/bicycle_no_signal/fallback1-construction.json",
-          "construction_sha256": "35f9abbf287ab0d0c359ae4eb4be690e2ada0c4fdaa95a0e176f305a916e6eb7",
+          "construction_sha256": "6c8288e2d74ffca574b8e26bc614f4f7d7ba0d653bb19380d99d6934008db77c",
           "trigger": {
             "source": "Native map waypoint topology and route-selector failure record",
             "metric": "count of connected left-turn candidates at 2.5 m sampling",
@@ -194,23 +244,23 @@
             "route waypoint sampling step 2.5 m to 1.5 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/no-signal-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal --candidate fallback1 --output .runtime-work/c111588-none-fb1-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/no-signal-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal --output .runtime-work/c111588-common-bicycle_no_signal-fallback1-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
             "exit_code": 0,
-            "log": "cases/bicycle_no_signal/fallback1-tests.log",
-            "log_sha256": "1d83585b97486319bb9c2fff2996c7435fd78e26e63e611aae2ad6791d35db6b",
-            "construction_sha256": "35f9abbf287ab0d0c359ae4eb4be690e2ada0c4fdaa95a0e176f305a916e6eb7"
+            "log": "cases/bicycle_no_signal/fallback1-tests-j.log",
+            "log_sha256": "213afb16f53c3828adcb40341468f493b033ff08d6e0b7003e84434681d4517d",
+            "construction_sha256": "6c8288e2d74ffca574b8e26bc614f4f7d7ba0d653bb19380d99d6934008db77c"
           },
           "compatibility": {
-            "receipt": "cases/bicycle_no_signal/fallback1-receipt.json",
-            "sha256": "6a0ef23cdcf757a34e8f2fd3cff949552fd2f9e61439a84eac7fca5c94b69086",
-            "log": "cases/bicycle_no_signal/fallback1-analysis.log",
-            "negative_log": "cases/bicycle_no_signal/fallback1-negative.log"
+            "receipt": "cases/bicycle_no_signal/fallback1-receipt-j.json",
+            "sha256": "e5a4a95594951faee4c3fc9e8459a35ba5a4148229e286cb33aa97beaa909baa",
+            "log": "cases/bicycle_no_signal/fallback1-analysis-j.log",
+            "negative_log": "cases/bicycle_no_signal/fallback1-negative-j.log"
           }
         },
         {
           "id": "fallback2",
           "construction": "cases/bicycle_no_signal/fallback2-construction.json",
-          "construction_sha256": "d8ba89b5121de97f362e586441346d84a6511c97a900a8e1cbf05a299693e45c",
+          "construction_sha256": "fd718bb54ded0e9a2b630857481cfc072abcff465fcbfbb52be9cbc0c1bc7296",
           "trigger": {
             "source": "original rider/seat pixels from four synchronized RGB streams",
             "metric": "rider-to-bicycle seat alignment and body overlap across frames",
@@ -220,23 +270,23 @@
             "attached walker relative height 0.65 m to 0.85 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/no-signal-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal --candidate fallback2 --output .runtime-work/c111588-none-fb2-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/no-signal-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal --output .runtime-work/c111588-common-bicycle_no_signal-fallback2-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
             "exit_code": 0,
-            "log": "cases/bicycle_no_signal/fallback2-tests.log",
-            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc",
-            "construction_sha256": "d8ba89b5121de97f362e586441346d84a6511c97a900a8e1cbf05a299693e45c"
+            "log": "cases/bicycle_no_signal/fallback2-tests-j.log",
+            "log_sha256": "8fd21545b602f7d39f7d81c2c1318ed9967b3a44fb282c60db8abbc12fc7ff58",
+            "construction_sha256": "fd718bb54ded0e9a2b630857481cfc072abcff465fcbfbb52be9cbc0c1bc7296"
           },
           "compatibility": {
-            "receipt": "cases/bicycle_no_signal/fallback2-receipt.json",
-            "sha256": "99d7c006dbcb1938385192dfd9c436f3d7250f781db97ae70230ffcbac8db2a7",
-            "log": "cases/bicycle_no_signal/fallback2-analysis.log",
-            "negative_log": "cases/bicycle_no_signal/fallback2-negative.log"
+            "receipt": "cases/bicycle_no_signal/fallback2-receipt-j.json",
+            "sha256": "0bd84d9ebaec846221ecd9e17da025cc4ed180701c7181072fc98fe5d8fe2c08",
+            "log": "cases/bicycle_no_signal/fallback2-analysis-j.log",
+            "negative_log": "cases/bicycle_no_signal/fallback2-negative-j.log"
           }
         },
         {
           "id": "fallback3",
           "construction": "cases/bicycle_no_signal/fallback3-construction.json",
-          "construction_sha256": "00dfb1b8d1c31d3853562ed1198de1e0022baeb4c3be9800c83a9a9792d87497",
+          "construction_sha256": "bbc8beb3b1f2a01cf92a1231f3c8e4817b7c9b365fbb4844376d6fde66a275a9",
           "trigger": {
             "source": "original driver_reference and side RGB frame review",
             "metric": "count of frames in which the rider and left arm can be resolved",
@@ -246,38 +296,38 @@
             "driver_reference camera relative height 1.8 m to 2.2 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/no-signal-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal --candidate fallback3 --output .runtime-work/c111588-none-fb3-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/no-signal-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal --output .runtime-work/c111588-common-bicycle_no_signal-fallback3-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
             "exit_code": 0,
-            "log": "cases/bicycle_no_signal/fallback3-tests.log",
-            "log_sha256": "1d83585b97486319bb9c2fff2996c7435fd78e26e63e611aae2ad6791d35db6b",
-            "construction_sha256": "00dfb1b8d1c31d3853562ed1198de1e0022baeb4c3be9800c83a9a9792d87497"
+            "log": "cases/bicycle_no_signal/fallback3-tests-j.log",
+            "log_sha256": "4a832f17faf7177c5d5f4c902f36632ce9ff46871844e1568106a241f28f36d3",
+            "construction_sha256": "bbc8beb3b1f2a01cf92a1231f3c8e4817b7c9b365fbb4844376d6fde66a275a9"
           },
           "compatibility": {
-            "receipt": "cases/bicycle_no_signal/fallback3-receipt.json",
-            "sha256": "110d088f3250d66d2badbd826066d09e6b4f02de9411d24625881ddacf6c25e9",
-            "log": "cases/bicycle_no_signal/fallback3-analysis.log",
-            "negative_log": "cases/bicycle_no_signal/fallback3-negative.log"
+            "receipt": "cases/bicycle_no_signal/fallback3-receipt-j.json",
+            "sha256": "745c5429476726df2eec5ada273a41252cade0841db93f35adcb85c00ac2cefc",
+            "log": "cases/bicycle_no_signal/fallback3-analysis-j.log",
+            "negative_log": "cases/bicycle_no_signal/fallback3-negative-j.log"
           }
         }
       ],
       "physical_preparation": {
-        "receipt": "physical/bicycle_no_signal-proof.json",
-        "sha256": "01ea4371b9921c9319b36899032297e9587eab27599cf8a5137881763a85e3ca"
+        "receipt": "cases/bicycle_no_signal/physical-j/proof.json",
+        "sha256": "f7c0bf2ff7aedb4915684091f587b262d3534a1208e271f391a180ffae7b8c96"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/no-signal-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal --output .runtime-work/c111588-none-primary-offline-g --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/no-signal-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal --output .runtime-work/c111588-common-bicycle_no_signal-primary-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
         "exit_code": 0,
-        "log": "cases/bicycle_no_signal/offline.log",
-        "log_sha256": "588e2688506090aa4a19b401a64b0f81d1b050a23a8023608a8c2abb8d107f1f",
-        "construction_sha256": "becbef2ebe66e8b9933db0e75e5ee1931908c624dda67b8da91635dd6fdc7fc0"
+        "log": "cases/bicycle_no_signal/primary-tests-j.log",
+        "log_sha256": "7ecbd5f220d6aaef7af4b63a324dbe955c568256cbe8cc8fbfce494b579adc9c",
+        "construction_sha256": "213f2696c82c758933cf9ba5249c6b1e8dcdbbc6c7509befd8001cc87b33a928"
       },
       "compatibility": {
-        "receipt": "cases/bicycle_no_signal/compat-receipt.json",
-        "sha256": "3bfc7b32c7936165aceb748c971b1646f63341d013171ee6670634afdae9d30e",
-        "log": "cases/bicycle_no_signal/analysis.log"
+        "receipt": "cases/bicycle_no_signal/primary-receipt-j.json",
+        "sha256": "02468b95897e559018b14421256f80d82430d3f0b606a2df661dbd97bb61bd48",
+        "log": "cases/bicycle_no_signal/primary-analysis-j.log"
       },
       "negative": {
-        "log": "cases/bicycle_no_signal/negative-analysis.log"
+        "log": "cases/bicycle_no_signal/primary-negative-j.log"
       },
       "delivery_acceptance": {
         "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal",
@@ -294,11 +344,11 @@
         ],
         "script": "rider_acceptance_check.py",
         "script_sha256": "5de82d3e0acfaad2375ce8dc63a7a26034ddb9b424631f0a5885b814e54f6906",
-        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal --attempt .runtime-work/c111588-none-primary-compat-g",
+        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal --attempt .runtime-work/c111588-common-bicycle_no_signal-primary-compat-j",
         "test_exit_code": 0,
         "test_log": "cases/bicycle_no_signal/physical/acceptance-positive.log",
         "test_log_sha256": "16df7ba0ee4bb2f446a8304e7975ab177a0febb7cfe85dce3bf58af2a5c26023",
-        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal --attempt .runtime-work/c111588-none-primary-compat-g --negative",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal --attempt .runtime-work/c111588-common-bicycle_no_signal-primary-compat-j --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "Stale or missing original source: rider_arm_bones.jsonl",
         "negative_log": "cases/bicycle_no_signal/physical/acceptance-negative.log",
@@ -309,7 +359,7 @@
       "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous",
       "kind": "delivery",
       "construction": "cases/bicycle_signal_continuous/construction.json",
-      "construction_sha256": "4ec80ee9c05f27ab7ab566808a68109e968907c4ca199432ccc3e200e6ad35a2",
+      "construction_sha256": "1bb5a42885d69c677d9a7f04b02165562a11716899292ccab0403c5a215773b7",
       "measurement_contract": "cases/bicycle_signal_continuous/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "rider_signal_finalizer.py"
@@ -329,13 +379,38 @@
           "entrypoint": "rider_signal_finalizer.py",
           "method": "join retained source video review to Native motion and frame map",
           "evidence": "rider_signal_review.jsonl plus four RGB original streams and rider motion"
+        },
+        "rider_turn_heading_deg": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_turn_heading_deg",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "participant_clearance_m": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for participant_clearance_m",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "time_to_conflict_s": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for time_to_conflict_s",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_hand_contact": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_hand_contact",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_control_stability": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_control_stability",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
         }
       },
       "candidates": [
         {
           "id": "fallback1",
           "construction": "cases/bicycle_signal_continuous/fallback1-construction.json",
-          "construction_sha256": "a79ce7b355a0721640a2ef39ef4641219d0482b1eb5bb0d6082b4b8127cc20e6",
+          "construction_sha256": "ec03f9f5654a5ad371a56ee38c39cf0bec6de1ae6f0385c711eac8dc65193ea6",
           "trigger": {
             "source": "Native map waypoint topology and route-selector failure record",
             "metric": "count of connected left-turn candidates at 2.5 m sampling",
@@ -345,23 +420,23 @@
             "route waypoint sampling step 2.5 m to 1.5 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/continuous-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous --candidate fallback1 --output .runtime-work/c111588-continuous-fb1-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/continuous-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous --output .runtime-work/c111588-common-bicycle_signal_continuous-fallback1-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
             "exit_code": 0,
-            "log": "cases/bicycle_signal_continuous/fallback1-tests.log",
-            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc",
-            "construction_sha256": "a79ce7b355a0721640a2ef39ef4641219d0482b1eb5bb0d6082b4b8127cc20e6"
+            "log": "cases/bicycle_signal_continuous/fallback1-tests-j.log",
+            "log_sha256": "841395650809a588dc68441a01751a05de8827564b7d513503cea03039cb5d09",
+            "construction_sha256": "ec03f9f5654a5ad371a56ee38c39cf0bec6de1ae6f0385c711eac8dc65193ea6"
           },
           "compatibility": {
-            "receipt": "cases/bicycle_signal_continuous/fallback1-receipt.json",
-            "sha256": "f3d6a2bf0f9c95e0827518232b4e78a64e49ecbf92b09ae9df72e098fb9043ed",
-            "log": "cases/bicycle_signal_continuous/fallback1-analysis.log",
-            "negative_log": "cases/bicycle_signal_continuous/fallback1-negative.log"
+            "receipt": "cases/bicycle_signal_continuous/fallback1-receipt-j.json",
+            "sha256": "4a1393f2cd010e1e40b5d727899b73b98a825e95df4f9e2f567feeca8120e784",
+            "log": "cases/bicycle_signal_continuous/fallback1-analysis-j.log",
+            "negative_log": "cases/bicycle_signal_continuous/fallback1-negative-j.log"
           }
         },
         {
           "id": "fallback2",
           "construction": "cases/bicycle_signal_continuous/fallback2-construction.json",
-          "construction_sha256": "8e1dd3876c8c2714ceadf70a46da09302f6f27aa9b948f27bebf5ec97c2b6d2c",
+          "construction_sha256": "29675d7eac9af26d2021c826ddd2c006d4d3e2f187393845579d500c6fca8d68",
           "trigger": {
             "source": "original rider/seat pixels from four synchronized RGB streams",
             "metric": "rider-to-bicycle seat alignment and body overlap across frames",
@@ -371,23 +446,23 @@
             "attached walker relative height 0.65 m to 0.85 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/continuous-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous --candidate fallback2 --output .runtime-work/c111588-continuous-fb2-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/continuous-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous --output .runtime-work/c111588-common-bicycle_signal_continuous-fallback2-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
             "exit_code": 0,
-            "log": "cases/bicycle_signal_continuous/fallback2-tests.log",
-            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc",
-            "construction_sha256": "8e1dd3876c8c2714ceadf70a46da09302f6f27aa9b948f27bebf5ec97c2b6d2c"
+            "log": "cases/bicycle_signal_continuous/fallback2-tests-j.log",
+            "log_sha256": "a60e891db0208a7bfedb0b6ee4c79a6de5465b43ba6b4b9edee5aff4cc9fe6d1",
+            "construction_sha256": "29675d7eac9af26d2021c826ddd2c006d4d3e2f187393845579d500c6fca8d68"
           },
           "compatibility": {
-            "receipt": "cases/bicycle_signal_continuous/fallback2-receipt.json",
-            "sha256": "3c0f7002b36b3212ea3dc62c5c45b57ac3710541ce42a1cd44ca9237704d1652",
-            "log": "cases/bicycle_signal_continuous/fallback2-analysis.log",
-            "negative_log": "cases/bicycle_signal_continuous/fallback2-negative.log"
+            "receipt": "cases/bicycle_signal_continuous/fallback2-receipt-j.json",
+            "sha256": "d3c90e1adaa5d1b88a1f1501f53a26f1fd91982b1bd42a01edbfae30f74b4eda",
+            "log": "cases/bicycle_signal_continuous/fallback2-analysis-j.log",
+            "negative_log": "cases/bicycle_signal_continuous/fallback2-negative-j.log"
           }
         },
         {
           "id": "fallback3",
           "construction": "cases/bicycle_signal_continuous/fallback3-construction.json",
-          "construction_sha256": "109c0eac2960a8ae08d4b8e62a7f0ee84faa9bd76291888085aaafaa2741e75a",
+          "construction_sha256": "682beca5ef5e1732736e126497dd6b6c41838ee67823e0f970d8630a20ab3e2d",
           "trigger": {
             "source": "original driver_reference and side RGB frame review",
             "metric": "count of frames in which the rider and left arm can be resolved",
@@ -397,38 +472,38 @@
             "driver_reference camera relative height 1.8 m to 2.2 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/continuous-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous --candidate fallback3 --output .runtime-work/c111588-continuous-fb3-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/continuous-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous --output .runtime-work/c111588-common-bicycle_signal_continuous-fallback3-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
             "exit_code": 0,
-            "log": "cases/bicycle_signal_continuous/fallback3-tests.log",
-            "log_sha256": "1d83585b97486319bb9c2fff2996c7435fd78e26e63e611aae2ad6791d35db6b",
-            "construction_sha256": "109c0eac2960a8ae08d4b8e62a7f0ee84faa9bd76291888085aaafaa2741e75a"
+            "log": "cases/bicycle_signal_continuous/fallback3-tests-j.log",
+            "log_sha256": "93eae55b713262ede6920185f272a5ac83df5057fc9ddd91a3439ec0921bc0db",
+            "construction_sha256": "682beca5ef5e1732736e126497dd6b6c41838ee67823e0f970d8630a20ab3e2d"
           },
           "compatibility": {
-            "receipt": "cases/bicycle_signal_continuous/fallback3-receipt.json",
-            "sha256": "73d82018f17f58dd7b1b6d77a73175ecac6bb40fb5ca4c660b5c704dd30f200a",
-            "log": "cases/bicycle_signal_continuous/fallback3-analysis.log",
-            "negative_log": "cases/bicycle_signal_continuous/fallback3-negative.log"
+            "receipt": "cases/bicycle_signal_continuous/fallback3-receipt-j.json",
+            "sha256": "3f2318ccd14cfacf0918161617dd89d7cb3fcc8299e0e31787ac705307f88c12",
+            "log": "cases/bicycle_signal_continuous/fallback3-analysis-j.log",
+            "negative_log": "cases/bicycle_signal_continuous/fallback3-negative-j.log"
           }
         }
       ],
       "physical_preparation": {
-        "receipt": "physical/bicycle_signal_continuous-proof.json",
-        "sha256": "85e6841606d899605e58dc7dd6ad487f6c780fc3fb581818c5ffe91f5530d2ed"
+        "receipt": "cases/bicycle_signal_continuous/physical-j/proof.json",
+        "sha256": "0cc9cc449cf30b1349d2b003f657c0452ebcd2deac08a82a04068abd066c7724"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/continuous-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous --output .runtime-work/c111588-continuous-primary-offline-g --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/continuous-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous --output .runtime-work/c111588-common-bicycle_signal_continuous-primary-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
         "exit_code": 0,
-        "log": "cases/bicycle_signal_continuous/offline.log",
-        "log_sha256": "14c64913f21752f1075d028c049ee536ac8f89f0700e464230c708070bf533b8",
-        "construction_sha256": "4ec80ee9c05f27ab7ab566808a68109e968907c4ca199432ccc3e200e6ad35a2"
+        "log": "cases/bicycle_signal_continuous/primary-tests-j.log",
+        "log_sha256": "b3cfaf45900a1e0163ea9a78ed21aee0a73a3c72e7694d9a4e86b28d66e4eeda",
+        "construction_sha256": "1bb5a42885d69c677d9a7f04b02165562a11716899292ccab0403c5a215773b7"
       },
       "compatibility": {
-        "receipt": "cases/bicycle_signal_continuous/compat-receipt.json",
-        "sha256": "3d987b9c23b0149848a5fb0d96fc9f4b6710ded80ec9a50be8357ca0262547c1",
-        "log": "cases/bicycle_signal_continuous/analysis.log"
+        "receipt": "cases/bicycle_signal_continuous/primary-receipt-j.json",
+        "sha256": "75e538cc5d843d704961f2d819473581e1d462c902e27f78065216c7a61e109c",
+        "log": "cases/bicycle_signal_continuous/primary-analysis-j.log"
       },
       "negative": {
-        "log": "cases/bicycle_signal_continuous/negative-analysis.log"
+        "log": "cases/bicycle_signal_continuous/primary-negative-j.log"
       },
       "delivery_acceptance": {
         "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous",
@@ -445,11 +520,11 @@
         ],
         "script": "rider_acceptance_check.py",
         "script_sha256": "5de82d3e0acfaad2375ce8dc63a7a26034ddb9b424631f0a5885b814e54f6906",
-        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous --attempt .runtime-work/c111588-continuous-primary-compat-g",
+        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous --attempt .runtime-work/c111588-common-bicycle_signal_continuous-primary-compat-j",
         "test_exit_code": 0,
         "test_log": "cases/bicycle_signal_continuous/physical/acceptance-positive.log",
         "test_log_sha256": "607d5b0bf9d16573af83dc4ad476bb7b9340035f0bd268463def2ade936e0296",
-        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous --attempt .runtime-work/c111588-continuous-primary-compat-g --negative",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous --attempt .runtime-work/c111588-common-bicycle_signal_continuous-primary-compat-j --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "Stale or missing original source: rider_arm_bones.jsonl",
         "negative_log": "cases/bicycle_signal_continuous/physical/acceptance-negative.log",
@@ -460,7 +535,7 @@
       "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once",
       "kind": "delivery",
       "construction": "cases/electric_bicycle_signal_once/construction.json",
-      "construction_sha256": "80bab953e47cce26ad032e0bd64a0d07627504d0dec9efad1ef66aef6135f158",
+      "construction_sha256": "c9301484d052978edb04d5db7ee0c2e7183aaf4ed276d3c55d063706874ea8f8",
       "measurement_contract": "cases/electric_bicycle_signal_once/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "rider_signal_finalizer.py"
@@ -481,9 +556,29 @@
           "method": "join retained source video review to Native motion and frame map",
           "evidence": "rider_signal_review.jsonl plus four RGB original streams and rider motion"
         },
-        "electric_device_observation": {
-          "entrypoint": "rider_signal_finalizer.py",
-          "method": "original source join and derived recording channel for electric_device_observation",
+        "rider_turn_heading_deg": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_turn_heading_deg",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "participant_clearance_m": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for participant_clearance_m",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "time_to_conflict_s": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for time_to_conflict_s",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_hand_contact": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_hand_contact",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_control_stability": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_control_stability",
           "evidence": "case-specific retained source packets and four synchronized original RGB videos"
         }
       },
@@ -491,7 +586,7 @@
         {
           "id": "fallback1",
           "construction": "cases/electric_bicycle_signal_once/fallback1-construction.json",
-          "construction_sha256": "a5da7804b35dba4f19751af79c42ccdca92eef883b8ca2f4291ebf44952cfbf0",
+          "construction_sha256": "7dd2466f2d1896fdbdf9a588fd184a78f2603b38a02f667c2ee52b76073d2489",
           "trigger": {
             "source": "Native map waypoint topology and route-selector failure record",
             "metric": "count of connected left-turn candidates at 2.5 m sampling",
@@ -501,23 +596,23 @@
             "route waypoint sampling step 2.5 m to 1.5 m"
           ],
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-bicycle-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once --output .runtime-work/c111588-electric_bicycle-fallback1-offline-final-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-bicycle-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once --output .runtime-work/c111588-common-electric_bicycle_signal_once-fallback1-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
             "exit_code": 0,
-            "log": "cases/electric_bicycle_signal_once/fallback1-tests.log",
-            "log_sha256": "98ba0fbea566aea2f8c267adbdd138376b5624ca2cbc5941e961e6cc3f4fd891",
-            "construction_sha256": "a5da7804b35dba4f19751af79c42ccdca92eef883b8ca2f4291ebf44952cfbf0"
+            "log": "cases/electric_bicycle_signal_once/fallback1-tests-j.log",
+            "log_sha256": "891d6909a891a8e563ef57d39433c0606b32b68ca9a05ab8a78ff442210f3290",
+            "construction_sha256": "7dd2466f2d1896fdbdf9a588fd184a78f2603b38a02f667c2ee52b76073d2489"
           },
           "compatibility": {
-            "receipt": "cases/electric_bicycle_signal_once/fallback1-receipt.json",
-            "sha256": "d87e31847f16eb109eb8316d5b67b9d2b805ca9e8e630b5ef60b8b762b15d713",
-            "log": "cases/electric_bicycle_signal_once/fallback1-analysis.log",
-            "negative_log": "cases/electric_bicycle_signal_once/fallback1-negative.log"
+            "receipt": "cases/electric_bicycle_signal_once/fallback1-receipt-j.json",
+            "sha256": "8ee4c34ca90b6eab5e78f690a24e513b21ae137c3ca96c423fe51220c498f364",
+            "log": "cases/electric_bicycle_signal_once/fallback1-analysis-j.log",
+            "negative_log": "cases/electric_bicycle_signal_once/fallback1-negative-j.log"
           }
         },
         {
           "id": "fallback2",
           "construction": "cases/electric_bicycle_signal_once/fallback2-construction.json",
-          "construction_sha256": "f38c860a6669e0f45c9f0317cc4701e8926591b53b404b84de81db95e6accd4c",
+          "construction_sha256": "0bd403d1b85a8df50586251606ba389269d48736a8a28454011b656ec0cd3589",
           "trigger": {
             "source": "original rider/seat pixels from four synchronized RGB streams",
             "metric": "rider-to-bicycle seat alignment and body overlap across frames",
@@ -527,23 +622,23 @@
             "attached walker relative height 0.65 m to 0.85 m"
           ],
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-bicycle-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once --output .runtime-work/c111588-electric_bicycle-fallback2-offline-final-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-bicycle-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once --output .runtime-work/c111588-common-electric_bicycle_signal_once-fallback2-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
             "exit_code": 0,
-            "log": "cases/electric_bicycle_signal_once/fallback2-tests.log",
-            "log_sha256": "0c9ee2e478e4a399a2be0c664fcc9757aa8eabfae3aacfb73a83d101b311e995",
-            "construction_sha256": "f38c860a6669e0f45c9f0317cc4701e8926591b53b404b84de81db95e6accd4c"
+            "log": "cases/electric_bicycle_signal_once/fallback2-tests-j.log",
+            "log_sha256": "ff68cc2e317a0dd5588cc52995d474f6f1a6d0c110b5691d7f7cbfc650a454be",
+            "construction_sha256": "0bd403d1b85a8df50586251606ba389269d48736a8a28454011b656ec0cd3589"
           },
           "compatibility": {
-            "receipt": "cases/electric_bicycle_signal_once/fallback2-receipt.json",
-            "sha256": "35344524f5c8fc9833d1705f208e0b32fa14ede02d66112d0dedca0f60a67076",
-            "log": "cases/electric_bicycle_signal_once/fallback2-analysis.log",
-            "negative_log": "cases/electric_bicycle_signal_once/fallback2-negative.log"
+            "receipt": "cases/electric_bicycle_signal_once/fallback2-receipt-j.json",
+            "sha256": "a4593e10b64c4b8cd9e9d81122f977e0c1d1a61b560ca9dda3aa616838fbbfad",
+            "log": "cases/electric_bicycle_signal_once/fallback2-analysis-j.log",
+            "negative_log": "cases/electric_bicycle_signal_once/fallback2-negative-j.log"
           }
         },
         {
           "id": "fallback3",
           "construction": "cases/electric_bicycle_signal_once/fallback3-construction.json",
-          "construction_sha256": "60886937dd4df607a01b2ec2ebbebf68eb985833d3e18a2ef19942ea9a09188a",
+          "construction_sha256": "ff25587ddc7a1f873355b4a56c63c0cf0980270e1b148105db2112c93ebfcaaa",
           "trigger": {
             "source": "original driver_reference and side RGB frame review",
             "metric": "count of frames in which the rider and left arm can be resolved",
@@ -553,38 +648,38 @@
             "driver_reference camera relative height 1.8 m to 2.2 m"
           ],
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-bicycle-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once --output .runtime-work/c111588-electric_bicycle-fallback3-offline-final-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-bicycle-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once --output .runtime-work/c111588-common-electric_bicycle_signal_once-fallback3-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
             "exit_code": 0,
-            "log": "cases/electric_bicycle_signal_once/fallback3-tests.log",
-            "log_sha256": "2335f2657be224ff5ba9588fdbb65a7c9aaeabb2dd2bd7daf5d7ee539c791baf",
-            "construction_sha256": "60886937dd4df607a01b2ec2ebbebf68eb985833d3e18a2ef19942ea9a09188a"
+            "log": "cases/electric_bicycle_signal_once/fallback3-tests-j.log",
+            "log_sha256": "7c9c9564bb7566d54bcc38880f0962c09db689ce0ab89c6a6de80a8526734dc0",
+            "construction_sha256": "ff25587ddc7a1f873355b4a56c63c0cf0980270e1b148105db2112c93ebfcaaa"
           },
           "compatibility": {
-            "receipt": "cases/electric_bicycle_signal_once/fallback3-receipt.json",
-            "sha256": "dded1c2529288e5ff55c0d7c451a51c0c6a5bc80e1b099f1a161297e2cc71313",
-            "log": "cases/electric_bicycle_signal_once/fallback3-analysis.log",
-            "negative_log": "cases/electric_bicycle_signal_once/fallback3-negative.log"
+            "receipt": "cases/electric_bicycle_signal_once/fallback3-receipt-j.json",
+            "sha256": "2f11bc579aadca9c07a92227d9b0dfc65663f26583ae054aff4c00cfbb95d29c",
+            "log": "cases/electric_bicycle_signal_once/fallback3-analysis-j.log",
+            "negative_log": "cases/electric_bicycle_signal_once/fallback3-negative-j.log"
           }
         }
       ],
       "physical_preparation": {
-        "receipt": "cases/electric_bicycle_signal_once/physical/proof.json",
-        "sha256": "b5b46ec2261f1a18dc9aef2bac8d14ebe2e89fefa2b2517c0a436901b910e7c0"
+        "receipt": "cases/electric_bicycle_signal_once/physical-j/proof.json",
+        "sha256": "a5aabb81febcef9e495c7aea41f7cba1e0d9f3eee73f37b76c0e0d6db97c9c1e"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-bicycle-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once --output .runtime-work/c111588-electric_bicycle-primary-offline-final-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-bicycle-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once --output .runtime-work/c111588-common-electric_bicycle_signal_once-primary-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
         "exit_code": 0,
-        "log": "cases/electric_bicycle_signal_once/primary-tests.log",
-        "log_sha256": "2696c65c9925fc168ec7aa34799aab80573500478d9ae262840f031192ef8d3c",
-        "construction_sha256": "80bab953e47cce26ad032e0bd64a0d07627504d0dec9efad1ef66aef6135f158"
+        "log": "cases/electric_bicycle_signal_once/primary-tests-j.log",
+        "log_sha256": "be20f434c9fa89c75f991d76ca3357096b540a877a1b41ee9fd2e9098576c10f",
+        "construction_sha256": "c9301484d052978edb04d5db7ee0c2e7183aaf4ed276d3c55d063706874ea8f8"
       },
       "compatibility": {
-        "receipt": "cases/electric_bicycle_signal_once/primary-receipt.json",
-        "sha256": "d30b4181beeab1557228927bd9a044f89a29e482a2cc596a8bb941a03a91d29f",
-        "log": "cases/electric_bicycle_signal_once/primary-analysis.log"
+        "receipt": "cases/electric_bicycle_signal_once/primary-receipt-j.json",
+        "sha256": "9ec2bbda1fd8ec57146e3db09f08f60494fac662380c910779911b3c0c9c83db",
+        "log": "cases/electric_bicycle_signal_once/primary-analysis-j.log"
       },
       "negative": {
-        "log": "cases/electric_bicycle_signal_once/primary-negative.log"
+        "log": "cases/electric_bicycle_signal_once/primary-negative-j.log"
       },
       "delivery_acceptance": {
         "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once",
@@ -601,11 +696,11 @@
         ],
         "script": "rider_acceptance_check.py",
         "script_sha256": "5de82d3e0acfaad2375ce8dc63a7a26034ddb9b424631f0a5885b814e54f6906",
-        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once --attempt .runtime-work/c111588-electric_bicycle-primary-compat-final-b",
+        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once --attempt .runtime-work/c111588-common-electric_bicycle_signal_once-primary-compat-j",
         "test_exit_code": 0,
         "test_log": "cases/electric_bicycle_signal_once/physical/acceptance-positive.log",
         "test_log_sha256": "45d3a90e0dac221d0c02c8139bdc0e6b2d65c97d9f5d23872c2fabeac47d0338",
-        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once --attempt .runtime-work/c111588-electric_bicycle-primary-compat-final-b --negative",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once --attempt .runtime-work/c111588-common-electric_bicycle_signal_once-primary-compat-j --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "Stale or missing original source: rider_arm_bones.jsonl",
         "negative_log": "cases/electric_bicycle_signal_once/physical/acceptance-negative.log",
@@ -616,7 +711,7 @@
       "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once",
       "kind": "delivery",
       "construction": "cases/electric_scooter_signal_once/construction.json",
-      "construction_sha256": "71c594ff523a219f41cc6a3cfcadcfe8e53a17736f253818cb954a8b73db4f41",
+      "construction_sha256": "e471451d6491e4ed1ab34cd7cf0735ab2df803aa0f03acf3fced30b605434ea8",
       "measurement_contract": "cases/electric_scooter_signal_once/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "rider_signal_finalizer.py"
@@ -637,9 +732,29 @@
           "method": "join retained source video review to Native motion and frame map",
           "evidence": "rider_signal_review.jsonl plus four RGB original streams and rider motion"
         },
-        "electric_device_observation": {
-          "entrypoint": "rider_signal_finalizer.py",
-          "method": "original source join and derived recording channel for electric_device_observation",
+        "rider_turn_heading_deg": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_turn_heading_deg",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "participant_clearance_m": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for participant_clearance_m",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "time_to_conflict_s": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for time_to_conflict_s",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_hand_contact": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_hand_contact",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_control_stability": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_control_stability",
           "evidence": "case-specific retained source packets and four synchronized original RGB videos"
         }
       },
@@ -647,7 +762,7 @@
         {
           "id": "fallback1",
           "construction": "cases/electric_scooter_signal_once/fallback1-construction.json",
-          "construction_sha256": "01eab3affc2ab848a4f9626ee95307024ae8747bae7f9a0a6a81ecf81b1652a3",
+          "construction_sha256": "b2b75e02b36b09614a9969946d9b973f531f84c61775562109e9a56c19787660",
           "trigger": {
             "source": "Native map waypoint topology and route-selector failure record",
             "metric": "count of connected left-turn candidates at 2.5 m sampling",
@@ -657,23 +772,23 @@
             "route waypoint sampling step 2.5 m to 1.5 m"
           ],
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-scooter-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --output .runtime-work/c111588-electric_scooter-fallback1-offline-final-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-scooter-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --output .runtime-work/c111588-common-electric_scooter_signal_once-fallback1-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
             "exit_code": 0,
-            "log": "cases/electric_scooter_signal_once/fallback1-tests.log",
-            "log_sha256": "d3fb2100d46352fb5dd408a7229d1ca9f0a7fadfc6a775561c831dbc697363de",
-            "construction_sha256": "01eab3affc2ab848a4f9626ee95307024ae8747bae7f9a0a6a81ecf81b1652a3"
+            "log": "cases/electric_scooter_signal_once/fallback1-tests-j.log",
+            "log_sha256": "308887b434d4795c2fff70cdecfee86f8afedd008be439c60ac6b74b4d23ac80",
+            "construction_sha256": "b2b75e02b36b09614a9969946d9b973f531f84c61775562109e9a56c19787660"
           },
           "compatibility": {
-            "receipt": "cases/electric_scooter_signal_once/fallback1-receipt.json",
-            "sha256": "8b048280786b182a0e3b062413d61fe2a970d6f9f1986fc3ea6c187d87d2ed8d",
-            "log": "cases/electric_scooter_signal_once/fallback1-analysis.log",
-            "negative_log": "cases/electric_scooter_signal_once/fallback1-negative.log"
+            "receipt": "cases/electric_scooter_signal_once/fallback1-receipt-j.json",
+            "sha256": "65a0a58b65998b327f3c8797a7ffe0a62f263b76b75e3fa51bdc714bfc594422",
+            "log": "cases/electric_scooter_signal_once/fallback1-analysis-j.log",
+            "negative_log": "cases/electric_scooter_signal_once/fallback1-negative-j.log"
           }
         },
         {
           "id": "fallback2",
           "construction": "cases/electric_scooter_signal_once/fallback2-construction.json",
-          "construction_sha256": "0bc7035661a93abb1993c70a1189a40939c4791b92a8846faa745acc5ca36b37",
+          "construction_sha256": "3da02bfc34dea38ffab1858689f982546ca45052b70909a84ae0386f0b1fef32",
           "trigger": {
             "source": "original rider/seat pixels from four synchronized RGB streams",
             "metric": "rider-to-bicycle seat alignment and body overlap across frames",
@@ -683,23 +798,23 @@
             "attached walker relative height 0.65 m to 0.85 m"
           ],
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-scooter-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --output .runtime-work/c111588-electric_scooter-fallback2-offline-final-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-scooter-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --output .runtime-work/c111588-common-electric_scooter_signal_once-fallback2-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
             "exit_code": 0,
-            "log": "cases/electric_scooter_signal_once/fallback2-tests.log",
-            "log_sha256": "d3f1515132b7217c8a9bd4d4e0b1876341b274f08a5c46841e04af5efbb0956b",
-            "construction_sha256": "0bc7035661a93abb1993c70a1189a40939c4791b92a8846faa745acc5ca36b37"
+            "log": "cases/electric_scooter_signal_once/fallback2-tests-j.log",
+            "log_sha256": "12f0f556cc33441d9c87c5e64d867932ba93f77cdae5031f70739e5a72076fb4",
+            "construction_sha256": "3da02bfc34dea38ffab1858689f982546ca45052b70909a84ae0386f0b1fef32"
           },
           "compatibility": {
-            "receipt": "cases/electric_scooter_signal_once/fallback2-receipt.json",
-            "sha256": "919c0558d7400b8cdfdc4c9eb79be51aec91f01b4adea2270874a8b6cb3bc4fc",
-            "log": "cases/electric_scooter_signal_once/fallback2-analysis.log",
-            "negative_log": "cases/electric_scooter_signal_once/fallback2-negative.log"
+            "receipt": "cases/electric_scooter_signal_once/fallback2-receipt-j.json",
+            "sha256": "d046b7bea78bc45aa03fa6fedca67a69715a99c3fee6c0d8efbf37988328721c",
+            "log": "cases/electric_scooter_signal_once/fallback2-analysis-j.log",
+            "negative_log": "cases/electric_scooter_signal_once/fallback2-negative-j.log"
           }
         },
         {
           "id": "fallback3",
           "construction": "cases/electric_scooter_signal_once/fallback3-construction.json",
-          "construction_sha256": "7aba98ad9b354fab0c8686e77f2cde1479c4ee4d60a34d27843ac92ad3273862",
+          "construction_sha256": "92a16a4bdd616e5b30ea6a48d044404d2a4b188c3f3c910535394b0a49f21bfb",
           "trigger": {
             "source": "original driver_reference and side RGB frame review",
             "metric": "count of frames in which the rider and left arm can be resolved",
@@ -709,38 +824,38 @@
             "driver_reference camera relative height 1.8 m to 2.2 m"
           ],
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-scooter-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --output .runtime-work/c111588-electric_scooter-fallback3-offline-final-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-scooter-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --output .runtime-work/c111588-common-electric_scooter_signal_once-fallback3-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
             "exit_code": 0,
-            "log": "cases/electric_scooter_signal_once/fallback3-tests.log",
-            "log_sha256": "b02d1ad7a4af249abfeeb1ec7e1c410035a63dc3a52bea9e01515ada7bacb781",
-            "construction_sha256": "7aba98ad9b354fab0c8686e77f2cde1479c4ee4d60a34d27843ac92ad3273862"
+            "log": "cases/electric_scooter_signal_once/fallback3-tests-j.log",
+            "log_sha256": "04ed32f1633c5a1223c3c762901c40b37f8e192f26187cad4addc30a10dde045",
+            "construction_sha256": "92a16a4bdd616e5b30ea6a48d044404d2a4b188c3f3c910535394b0a49f21bfb"
           },
           "compatibility": {
-            "receipt": "cases/electric_scooter_signal_once/fallback3-receipt.json",
-            "sha256": "3492be3c0b21d8750bb4f98d828963dcdd6d7cbf003b13156661cd6b8d3e79aa",
-            "log": "cases/electric_scooter_signal_once/fallback3-analysis.log",
-            "negative_log": "cases/electric_scooter_signal_once/fallback3-negative.log"
+            "receipt": "cases/electric_scooter_signal_once/fallback3-receipt-j.json",
+            "sha256": "7d23f1fdab415a07f3be74916cdce5648701a2ac5e16d93bd25772b50020b5ab",
+            "log": "cases/electric_scooter_signal_once/fallback3-analysis-j.log",
+            "negative_log": "cases/electric_scooter_signal_once/fallback3-negative-j.log"
           }
         }
       ],
       "physical_preparation": {
-        "receipt": "cases/electric_scooter_signal_once/physical/proof.json",
-        "sha256": "2f10fe1f9593f8866b7f9e41366edde3c22c6496cc1749540009d4906689ba82"
+        "receipt": "cases/electric_scooter_signal_once/physical-j/proof.json",
+        "sha256": "df66f2afdfac66ebb2e9f9e6ebbbd15b9ab259fcc5bba64b99c8da5f3be418a3"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-scooter-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --output .runtime-work/c111588-electric_scooter-primary-offline-final-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/electric-scooter-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --output .runtime-work/c111588-common-electric_scooter_signal_once-primary-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
         "exit_code": 0,
-        "log": "cases/electric_scooter_signal_once/primary-tests.log",
-        "log_sha256": "c427e47300b72f64282b9a572cecc42e98b611de6f83ec97be094b887245f83d",
-        "construction_sha256": "71c594ff523a219f41cc6a3cfcadcfe8e53a17736f253818cb954a8b73db4f41"
+        "log": "cases/electric_scooter_signal_once/primary-tests-j.log",
+        "log_sha256": "1ac63dee643a5ad23a25d768a6792f771ceb2e4127732882aeb2af14f2aaaae6",
+        "construction_sha256": "e471451d6491e4ed1ab34cd7cf0735ab2df803aa0f03acf3fced30b605434ea8"
       },
       "compatibility": {
-        "receipt": "cases/electric_scooter_signal_once/primary-receipt.json",
-        "sha256": "0db0989cf6c4ccfb5b9567cd3cd21d652fbbb6475e19843fae114a474fddd266",
-        "log": "cases/electric_scooter_signal_once/primary-analysis.log"
+        "receipt": "cases/electric_scooter_signal_once/primary-receipt-j.json",
+        "sha256": "8cc6e6433dec3203f72c258a5f85f8a7a2cc1ffd0cf8cf9909ec71abf574708c",
+        "log": "cases/electric_scooter_signal_once/primary-analysis-j.log"
       },
       "negative": {
-        "log": "cases/electric_scooter_signal_once/primary-negative.log"
+        "log": "cases/electric_scooter_signal_once/primary-negative-j.log"
       },
       "delivery_acceptance": {
         "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once",
@@ -757,11 +872,11 @@
         ],
         "script": "rider_acceptance_check.py",
         "script_sha256": "5de82d3e0acfaad2375ce8dc63a7a26034ddb9b424631f0a5885b814e54f6906",
-        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --attempt .runtime-work/c111588-electric_scooter-primary-compat-final-b",
+        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --attempt .runtime-work/c111588-common-electric_scooter_signal_once-primary-compat-j",
         "test_exit_code": 0,
         "test_log": "cases/electric_scooter_signal_once/physical/acceptance-positive.log",
         "test_log_sha256": "48eac64f1fd5664b012a968d44c3f61edb06e6456a3ea522a6d2c648e6e9b666",
-        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --attempt .runtime-work/c111588-electric_scooter-primary-compat-final-b --negative",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once --attempt .runtime-work/c111588-common-electric_scooter_signal_once-primary-compat-j --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "Stale or missing original source: rider_arm_bones.jsonl",
         "negative_log": "cases/electric_scooter_signal_once/physical/acceptance-negative.log",
@@ -772,7 +887,7 @@
       "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal",
       "kind": "delivery",
       "construction": "cases/turn_lane_no_signal/construction.json",
-      "construction_sha256": "978160bcc4d53c867b2d19516666d0782e08e7573e8f5d30235a67ad2e72848f",
+      "construction_sha256": "5262c793915d5f77bb83c07ada7b7d85500561ab166082e0a433b9cde6d1f715",
       "measurement_contract": "cases/turn_lane_no_signal/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "rider_signal_finalizer.py"
@@ -793,9 +908,29 @@
           "method": "join retained source video review to Native motion and frame map",
           "evidence": "rider_signal_review.jsonl plus four RGB original streams and rider motion"
         },
-        "turn_lane_designation_visible": {
-          "entrypoint": "rider_signal_finalizer.py",
-          "method": "original source join and derived recording channel for turn_lane_designation_visible",
+        "rider_turn_heading_deg": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_turn_heading_deg",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "participant_clearance_m": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for participant_clearance_m",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "time_to_conflict_s": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for time_to_conflict_s",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_hand_contact": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_hand_contact",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_control_stability": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_control_stability",
           "evidence": "case-specific retained source packets and four synchronized original RGB videos"
         }
       },
@@ -803,7 +938,7 @@
         {
           "id": "fallback1",
           "construction": "cases/turn_lane_no_signal/fallback1-construction.json",
-          "construction_sha256": "d9287d838834ad37e11b2c3c709ec1d5ac507705e8f1f5594393a766849e2313",
+          "construction_sha256": "11b4f93e2425dcc4029328f5cffd8981f863f8fe61afe4cba7b9b1dd9d843629",
           "trigger": {
             "source": "Native map waypoint topology and route-selector failure record",
             "metric": "count of connected left-turn candidates at 2.5 m sampling",
@@ -813,23 +948,23 @@
             "route waypoint sampling step 2.5 m to 1.5 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/turn-lane-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --candidate fallback1 --output .runtime-work/c111588-turn-lane-fb1-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/turn-lane-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --output .runtime-work/c111588-common-turn_lane_no_signal-fallback1-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
             "exit_code": 0,
-            "log": "cases/turn_lane_no_signal/fallback1-tests.log",
-            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc",
-            "construction_sha256": "d9287d838834ad37e11b2c3c709ec1d5ac507705e8f1f5594393a766849e2313"
+            "log": "cases/turn_lane_no_signal/fallback1-tests-j.log",
+            "log_sha256": "598e74864d6a701dcbad3b086d7956c42cb9ee1252774a3ce49e818c9d1cd958",
+            "construction_sha256": "11b4f93e2425dcc4029328f5cffd8981f863f8fe61afe4cba7b9b1dd9d843629"
           },
           "compatibility": {
-            "receipt": "cases/turn_lane_no_signal/fallback1-receipt.json",
-            "sha256": "32b96a31a174049d528d933f756f24693190cac0a927eef54db512697237e208",
-            "log": "cases/turn_lane_no_signal/fallback1-analysis.log",
-            "negative_log": "cases/turn_lane_no_signal/fallback1-negative.log"
+            "receipt": "cases/turn_lane_no_signal/fallback1-receipt-j.json",
+            "sha256": "f6c61b69f752f830f455642b991fbf537ddb4e19a99787e308093f9bb8f011df",
+            "log": "cases/turn_lane_no_signal/fallback1-analysis-j.log",
+            "negative_log": "cases/turn_lane_no_signal/fallback1-negative-j.log"
           }
         },
         {
           "id": "fallback2",
           "construction": "cases/turn_lane_no_signal/fallback2-construction.json",
-          "construction_sha256": "af1c8d708c7b1f8790e3ede4344e68d1414ee38a8c2f2d9bc9fdf13e65818441",
+          "construction_sha256": "a2b2e44e980fbd6284f3435acabc117560cea730585e00f1c5a9c6d331c476e1",
           "trigger": {
             "source": "original rider/seat pixels from four synchronized RGB streams",
             "metric": "rider-to-bicycle seat alignment and body overlap across frames",
@@ -839,23 +974,23 @@
             "attached walker relative height 0.65 m to 0.85 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/turn-lane-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --candidate fallback2 --output .runtime-work/c111588-turn-lane-fb2-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/turn-lane-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --output .runtime-work/c111588-common-turn_lane_no_signal-fallback2-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
             "exit_code": 0,
-            "log": "cases/turn_lane_no_signal/fallback2-tests.log",
-            "log_sha256": "1d83585b97486319bb9c2fff2996c7435fd78e26e63e611aae2ad6791d35db6b",
-            "construction_sha256": "af1c8d708c7b1f8790e3ede4344e68d1414ee38a8c2f2d9bc9fdf13e65818441"
+            "log": "cases/turn_lane_no_signal/fallback2-tests-j.log",
+            "log_sha256": "ab62f151dea13e2d8b456486e41256032ab8a7225b46bd8b9d03e9d0f1dfc31a",
+            "construction_sha256": "a2b2e44e980fbd6284f3435acabc117560cea730585e00f1c5a9c6d331c476e1"
           },
           "compatibility": {
-            "receipt": "cases/turn_lane_no_signal/fallback2-receipt.json",
-            "sha256": "704e730b683f3ac1f1b7847c5491fcd66da1bc6bd16fa6c560562ab9fc2be3a1",
-            "log": "cases/turn_lane_no_signal/fallback2-analysis.log",
-            "negative_log": "cases/turn_lane_no_signal/fallback2-negative.log"
+            "receipt": "cases/turn_lane_no_signal/fallback2-receipt-j.json",
+            "sha256": "d6bf8200ceb79d9c92e5008db09702b2ecff2676e30056742a2b9c60fe83b8aa",
+            "log": "cases/turn_lane_no_signal/fallback2-analysis-j.log",
+            "negative_log": "cases/turn_lane_no_signal/fallback2-negative-j.log"
           }
         },
         {
           "id": "fallback3",
           "construction": "cases/turn_lane_no_signal/fallback3-construction.json",
-          "construction_sha256": "4e64f2fc55eb3610963e6e5b7a0aefa4f36bb5b00edd50410e4b6eafe177915b",
+          "construction_sha256": "65b26ae5951216c1c618ffb080b4e1931c6fac0077f637ded14c40cffa87c7ba",
           "trigger": {
             "source": "original driver_reference and side RGB frame review",
             "metric": "count of frames in which the rider and left arm can be resolved",
@@ -865,38 +1000,38 @@
             "driver_reference camera relative height 1.8 m to 2.2 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/turn-lane-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --candidate fallback3 --output .runtime-work/c111588-turn-lane-fb3-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/turn-lane-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --output .runtime-work/c111588-common-turn_lane_no_signal-fallback3-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
             "exit_code": 0,
-            "log": "cases/turn_lane_no_signal/fallback3-tests.log",
-            "log_sha256": "6a5161b3cf086718f005a0ea6d682568d0515d223388a0eecf7c27866f37699d",
-            "construction_sha256": "4e64f2fc55eb3610963e6e5b7a0aefa4f36bb5b00edd50410e4b6eafe177915b"
+            "log": "cases/turn_lane_no_signal/fallback3-tests-j.log",
+            "log_sha256": "8e68ed5151bb88bf1d0b1f26a53a200f103a75189be79a438d263e58efd970d9",
+            "construction_sha256": "65b26ae5951216c1c618ffb080b4e1931c6fac0077f637ded14c40cffa87c7ba"
           },
           "compatibility": {
-            "receipt": "cases/turn_lane_no_signal/fallback3-receipt.json",
-            "sha256": "3ed93914902b9b47b4e670721a2874f4f93209348e831e2da9080d65fde8212b",
-            "log": "cases/turn_lane_no_signal/fallback3-analysis.log",
-            "negative_log": "cases/turn_lane_no_signal/fallback3-negative.log"
+            "receipt": "cases/turn_lane_no_signal/fallback3-receipt-j.json",
+            "sha256": "8a84c45e078e0059fa5aedebdef898602e1da54fc29430990649c7d2d7f5bb37",
+            "log": "cases/turn_lane_no_signal/fallback3-analysis-j.log",
+            "negative_log": "cases/turn_lane_no_signal/fallback3-negative-j.log"
           }
         }
       ],
       "physical_preparation": {
-        "receipt": "cases/turn_lane_no_signal/physical/proof.json",
-        "sha256": "6dfc7d29a98670f4a62ce53c0600dd9911f372d7e9708d49ee813e9dc271be4b"
+        "receipt": "cases/turn_lane_no_signal/physical-j/proof.json",
+        "sha256": "5f736d36661730a6195d756321dfa168df205d001e9edd004495d7c6177e9d7e"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/turn-lane-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --output .runtime-work/c111588-turn-lane-primary-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/turn-lane-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --output .runtime-work/c111588-common-turn_lane_no_signal-primary-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
         "exit_code": 0,
-        "log": "cases/turn_lane_no_signal/proof-offline-log.log",
-        "log_sha256": "395f4ba177429a162b2f04a7e5dd660a39233158ce91c848b5b64fb547fbd0ed",
-        "construction_sha256": "978160bcc4d53c867b2d19516666d0782e08e7573e8f5d30235a67ad2e72848f"
+        "log": "cases/turn_lane_no_signal/primary-tests-j.log",
+        "log_sha256": "5fe608ca92d9c3a19981bf9183c15a31097d02d38fbae6989c379495700d35cb",
+        "construction_sha256": "5262c793915d5f77bb83c07ada7b7d85500561ab166082e0a433b9cde6d1f715"
       },
       "compatibility": {
-        "receipt": "cases/turn_lane_no_signal/proof-compatibility-receipt.json",
-        "sha256": "15685878a328fa4eb9aad97a6bab686856aaee7cd157db2a55822b7f13885f20",
-        "log": "cases/turn_lane_no_signal/proof-compatibility-analysis-log.log"
+        "receipt": "cases/turn_lane_no_signal/primary-receipt-j.json",
+        "sha256": "87155401aa1a533bc119772f2c1b002fdeab3e7dc69be482da5ca5cd02daeeaf",
+        "log": "cases/turn_lane_no_signal/primary-analysis-j.log"
       },
       "negative": {
-        "log": "cases/turn_lane_no_signal/proof-compatibility-negative-log.log"
+        "log": "cases/turn_lane_no_signal/primary-negative-j.log"
       },
       "delivery_acceptance": {
         "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal",
@@ -913,11 +1048,11 @@
         ],
         "script": "rider_acceptance_check.py",
         "script_sha256": "5de82d3e0acfaad2375ce8dc63a7a26034ddb9b424631f0a5885b814e54f6906",
-        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --attempt .runtime-work/c111588-turn-lane-primary-compat-b",
+        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --attempt .runtime-work/c111588-common-turn_lane_no_signal-primary-compat-j",
         "test_exit_code": 0,
         "test_log": "cases/turn_lane_no_signal/physical/acceptance-positive.log",
         "test_log_sha256": "a443e33259e85a1e23989f925e6768ed3cf9ce149dfa344654ef39c5ee830900",
-        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --attempt .runtime-work/c111588-turn-lane-primary-compat-b --negative",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --attempt .runtime-work/c111588-common-turn_lane_no_signal-primary-compat-j --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "Stale or missing original source: rider_arm_bones.jsonl",
         "negative_log": "cases/turn_lane_no_signal/physical/acceptance-negative.log",
@@ -928,7 +1063,7 @@
       "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal",
       "kind": "delivery",
       "construction": "cases/both_hands_no_signal/construction.json",
-      "construction_sha256": "687262332841263dc92bf36db83ae3e9e49129395fb10f001b0e8a7d29bf4055",
+      "construction_sha256": "96687fb23867536b48b9de9dbb1544917b26fe76c71600a77fc50da6aa86f405",
       "measurement_contract": "cases/both_hands_no_signal/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "rider_signal_finalizer.py"
@@ -949,9 +1084,29 @@
           "method": "join retained source video review to Native motion and frame map",
           "evidence": "rider_signal_review.jsonl plus four RGB original streams and rider motion"
         },
-        "two_hand_contact_observed": {
-          "entrypoint": "rider_signal_finalizer.py",
-          "method": "original source join and derived recording channel for two_hand_contact_observed",
+        "rider_turn_heading_deg": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_turn_heading_deg",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "participant_clearance_m": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for participant_clearance_m",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "time_to_conflict_s": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for time_to_conflict_s",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_hand_contact": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_hand_contact",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_control_stability": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_control_stability",
           "evidence": "case-specific retained source packets and four synchronized original RGB videos"
         }
       },
@@ -959,7 +1114,7 @@
         {
           "id": "fallback1",
           "construction": "cases/both_hands_no_signal/fallback1-construction.json",
-          "construction_sha256": "bb4e3fdc82613fc75ae688dfa3630ee344073dbe66a531ae81bcbc7917a412b9",
+          "construction_sha256": "03386e732474303ce1013c4401e79fe11590b9314c2fa202006992d7d3b82726",
           "trigger": {
             "source": "Native map waypoint topology and route-selector failure record",
             "metric": "count of connected left-turn candidates at 2.5 m sampling",
@@ -969,23 +1124,23 @@
             "route waypoint sampling step 2.5 m to 1.5 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/both-hands-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --candidate fallback1 --output .runtime-work/c111588-both-hands-fb1-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/both-hands-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --output .runtime-work/c111588-common-both_hands_no_signal-fallback1-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
             "exit_code": 0,
-            "log": "cases/both_hands_no_signal/fallback1-tests.log",
-            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc",
-            "construction_sha256": "bb4e3fdc82613fc75ae688dfa3630ee344073dbe66a531ae81bcbc7917a412b9"
+            "log": "cases/both_hands_no_signal/fallback1-tests-j.log",
+            "log_sha256": "8c1c5d844e5955b08f4df82dd540905a4baa8c1d76f0298bd4115268f23d52b2",
+            "construction_sha256": "03386e732474303ce1013c4401e79fe11590b9314c2fa202006992d7d3b82726"
           },
           "compatibility": {
-            "receipt": "cases/both_hands_no_signal/fallback1-receipt.json",
-            "sha256": "8ae397551d8006261d2b2c1619f0278c4646750bd09142ea9beb2b5583bd94e8",
-            "log": "cases/both_hands_no_signal/fallback1-analysis.log",
-            "negative_log": "cases/both_hands_no_signal/fallback1-negative.log"
+            "receipt": "cases/both_hands_no_signal/fallback1-receipt-j.json",
+            "sha256": "c1dd3b5c2abebfa93f2f81d5b0f8da80b2181a0de9b51336c198db6a9e63158b",
+            "log": "cases/both_hands_no_signal/fallback1-analysis-j.log",
+            "negative_log": "cases/both_hands_no_signal/fallback1-negative-j.log"
           }
         },
         {
           "id": "fallback2",
           "construction": "cases/both_hands_no_signal/fallback2-construction.json",
-          "construction_sha256": "78772a610573ca66797a6c6dcbb3cb4d4d4ed46fa8cd2043f6a120d1ed34757d",
+          "construction_sha256": "b5fa4048768367bad777677d4e29854ffe3712715f6e413a8f270ef7a9837589",
           "trigger": {
             "source": "original rider/seat pixels from four synchronized RGB streams",
             "metric": "rider-to-bicycle seat alignment and body overlap across frames",
@@ -995,23 +1150,23 @@
             "attached walker relative height 0.65 m to 0.85 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/both-hands-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --candidate fallback2 --output .runtime-work/c111588-both-hands-fb2-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/both-hands-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --output .runtime-work/c111588-common-both_hands_no_signal-fallback2-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
             "exit_code": 0,
-            "log": "cases/both_hands_no_signal/fallback2-tests.log",
-            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc",
-            "construction_sha256": "78772a610573ca66797a6c6dcbb3cb4d4d4ed46fa8cd2043f6a120d1ed34757d"
+            "log": "cases/both_hands_no_signal/fallback2-tests-j.log",
+            "log_sha256": "4cc085d7acfc1db61b4574db7de99a739d6c3c8c557216d5c0600b54c7bbf7fd",
+            "construction_sha256": "b5fa4048768367bad777677d4e29854ffe3712715f6e413a8f270ef7a9837589"
           },
           "compatibility": {
-            "receipt": "cases/both_hands_no_signal/fallback2-receipt.json",
-            "sha256": "208bbb6d07b132ef91c1bb5da997944b1b573159b62019e02b5c5abaf98b9f1e",
-            "log": "cases/both_hands_no_signal/fallback2-analysis.log",
-            "negative_log": "cases/both_hands_no_signal/fallback2-negative.log"
+            "receipt": "cases/both_hands_no_signal/fallback2-receipt-j.json",
+            "sha256": "df5b54e5ce19f7db3011d6d6dfd50218516a6ea64b92e4a96cc01c78e92719c6",
+            "log": "cases/both_hands_no_signal/fallback2-analysis-j.log",
+            "negative_log": "cases/both_hands_no_signal/fallback2-negative-j.log"
           }
         },
         {
           "id": "fallback3",
           "construction": "cases/both_hands_no_signal/fallback3-construction.json",
-          "construction_sha256": "dac01b6a67736fb335c42e80acb943a99232e090163c2d2f3f8086be601b2de6",
+          "construction_sha256": "68330e260e4f816387fe862c0642980e226a6a48d1f01775ff26b1104116c33f",
           "trigger": {
             "source": "original driver_reference and side RGB frame review",
             "metric": "count of frames in which the rider and left arm can be resolved",
@@ -1021,38 +1176,38 @@
             "driver_reference camera relative height 1.8 m to 2.2 m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/both-hands-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --candidate fallback3 --output .runtime-work/c111588-both-hands-fb3-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/both-hands-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --output .runtime-work/c111588-common-both_hands_no_signal-fallback3-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
             "exit_code": 0,
-            "log": "cases/both_hands_no_signal/fallback3-tests.log",
-            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc",
-            "construction_sha256": "dac01b6a67736fb335c42e80acb943a99232e090163c2d2f3f8086be601b2de6"
+            "log": "cases/both_hands_no_signal/fallback3-tests-j.log",
+            "log_sha256": "ee8587fdea8a88b707fc3b44c5d6d0857d9b29e05d9ecf979937eecc245ee594",
+            "construction_sha256": "68330e260e4f816387fe862c0642980e226a6a48d1f01775ff26b1104116c33f"
           },
           "compatibility": {
-            "receipt": "cases/both_hands_no_signal/fallback3-receipt.json",
-            "sha256": "7cd6c39cda2ed859698025208c5448acf9e74411375f41d5c4882c387af07816",
-            "log": "cases/both_hands_no_signal/fallback3-analysis.log",
-            "negative_log": "cases/both_hands_no_signal/fallback3-negative.log"
+            "receipt": "cases/both_hands_no_signal/fallback3-receipt-j.json",
+            "sha256": "761be19004894b5c86ed79f9aeb2b563d5df715e46266228bbf01bd3cd5072f3",
+            "log": "cases/both_hands_no_signal/fallback3-analysis-j.log",
+            "negative_log": "cases/both_hands_no_signal/fallback3-negative-j.log"
           }
         }
       ],
       "physical_preparation": {
-        "receipt": "cases/both_hands_no_signal/physical/proof.json",
-        "sha256": "b2f209250202a034490736daf4f91b268a4323b0032260cb93b9fb73f8ad813c"
+        "receipt": "cases/both_hands_no_signal/physical-j/proof.json",
+        "sha256": "0c85a07d27c7c1183fc0c20b5c5659b21350c03259991dbe205b079085a6b14e"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/both-hands-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --output .runtime-work/c111588-both-hands-primary-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/both-hands-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --output .runtime-work/c111588-common-both_hands_no_signal-primary-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
         "exit_code": 0,
-        "log": "cases/both_hands_no_signal/proof-offline-log.log",
-        "log_sha256": "395f4ba177429a162b2f04a7e5dd660a39233158ce91c848b5b64fb547fbd0ed",
-        "construction_sha256": "687262332841263dc92bf36db83ae3e9e49129395fb10f001b0e8a7d29bf4055"
+        "log": "cases/both_hands_no_signal/primary-tests-j.log",
+        "log_sha256": "d2751303e2dd7f839e5d7432beffd549ded878b450656e3047a7cbd8aa61ce52",
+        "construction_sha256": "96687fb23867536b48b9de9dbb1544917b26fe76c71600a77fc50da6aa86f405"
       },
       "compatibility": {
-        "receipt": "cases/both_hands_no_signal/proof-compatibility-receipt.json",
-        "sha256": "10578a51b9fa02c772ca0fb657755ce159789e535ab78385093491f324908730",
-        "log": "cases/both_hands_no_signal/proof-compatibility-analysis-log.log"
+        "receipt": "cases/both_hands_no_signal/primary-receipt-j.json",
+        "sha256": "6bc4d1c54ef92de4d2a6135844a9f95c93fb01c61811fe5a74053653c8faefd2",
+        "log": "cases/both_hands_no_signal/primary-analysis-j.log"
       },
       "negative": {
-        "log": "cases/both_hands_no_signal/proof-compatibility-negative-log.log"
+        "log": "cases/both_hands_no_signal/primary-negative-j.log"
       },
       "delivery_acceptance": {
         "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal",
@@ -1069,11 +1224,11 @@
         ],
         "script": "rider_acceptance_check.py",
         "script_sha256": "5de82d3e0acfaad2375ce8dc63a7a26034ddb9b424631f0a5885b814e54f6906",
-        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --attempt .runtime-work/c111588-both-hands-primary-compat-b",
+        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --attempt .runtime-work/c111588-common-both_hands_no_signal-primary-compat-j",
         "test_exit_code": 0,
         "test_log": "cases/both_hands_no_signal/physical/acceptance-positive.log",
         "test_log_sha256": "4741677ea7555c784b0dae1488596df511dfa51bd2452e5fd1f46c8edea28a52",
-        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --attempt .runtime-work/c111588-both-hands-primary-compat-b --negative",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --attempt .runtime-work/c111588-common-both_hands_no_signal-primary-compat-j --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "Stale or missing original source: rider_arm_bones.jsonl",
         "negative_log": "cases/both_hands_no_signal/physical/acceptance-negative.log",
@@ -1084,7 +1239,7 @@
       "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide",
       "kind": "delivery",
       "construction": "cases/safety_wide/construction.json",
-      "construction_sha256": "2b7d184b8e911a3901c869d031ccd647ed6289b0dae120a7b27cf82fe9f1bbc7",
+      "construction_sha256": "ca5e99f1e039972bcbf512476ea892db4fb3b0f88b93b561fe3d6651defb56ee",
       "measurement_contract": "cases/safety_wide/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "rider_signal_finalizer.py"
@@ -1105,19 +1260,29 @@
           "method": "join retained source video review to Native motion and frame map",
           "evidence": "rider_signal_review.jsonl plus four RGB original streams and rider motion"
         },
-        "participant_center_clearance": {
-          "entrypoint": "rider_signal_finalizer.py",
-          "method": "original source join and derived recording channel for participant_center_clearance",
+        "rider_turn_heading_deg": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_turn_heading_deg",
           "evidence": "case-specific retained source packets and four synchronized original RGB videos"
         },
         "participant_clearance_m": {
-          "entrypoint": "rider_signal_finalizer.py",
+          "entrypoint": "rider_common_finalizer.py",
           "method": "original source join and derived recording channel for participant_clearance_m",
           "evidence": "case-specific retained source packets and four synchronized original RGB videos"
         },
         "time_to_conflict_s": {
-          "entrypoint": "rider_signal_finalizer.py",
+          "entrypoint": "rider_common_finalizer.py",
           "method": "original source join and derived recording channel for time_to_conflict_s",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_hand_contact": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_hand_contact",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_control_stability": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_control_stability",
           "evidence": "case-specific retained source packets and four synchronized original RGB videos"
         }
       },
@@ -1125,7 +1290,7 @@
         {
           "id": "fallback1",
           "construction": "cases/safety_wide/fallback1-construction.json",
-          "construction_sha256": "fa35bbe7a418266eb4b50ce8838fab8230db07821c7ed60084f0abb29e7efd97",
+          "construction_sha256": "828c0aa9b5cfa423ef10de38e33fc4a64bc8db01445495d922bfdafa08e3bd58",
           "trigger": {
             "source": "Native map waypoint topology and route-selector failure record",
             "metric": "count of connected left-turn candidates at 2.5 m sampling",
@@ -1135,23 +1300,23 @@
             "route waypoint sampling step 2.5 m to 1.5 m"
           ],
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-wide-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide --output .runtime-work/c111588-safety_wide-fallback1-offline-h --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-wide-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide --output .runtime-work/c111588-common-safety_wide-fallback1-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
             "exit_code": 0,
-            "log": "cases/safety_wide/fallback1-tests.log",
-            "log_sha256": "196ae52734219887c1de61bc486818ba3d9184ad61a418ae402f3cbdad7e2934",
-            "construction_sha256": "fa35bbe7a418266eb4b50ce8838fab8230db07821c7ed60084f0abb29e7efd97"
+            "log": "cases/safety_wide/fallback1-tests-j.log",
+            "log_sha256": "43eecd4edc35996f3eaa89fa2f8a365cd8139bfc789908d58f1977b728a64f5c",
+            "construction_sha256": "828c0aa9b5cfa423ef10de38e33fc4a64bc8db01445495d922bfdafa08e3bd58"
           },
           "compatibility": {
-            "receipt": "cases/safety_wide/fallback1-receipt.json",
-            "sha256": "5e458b02f7d0196a41027eab570d0bfe5777cea36cd436aeeb07757cb4f247e2",
-            "log": "cases/safety_wide/fallback1-analysis.log",
-            "negative_log": "cases/safety_wide/fallback1-negative.log"
+            "receipt": "cases/safety_wide/fallback1-receipt-j.json",
+            "sha256": "6daf4cebf23a51157837c3ea311202547069e41cb1cc3b5326f9dc94649fb8c1",
+            "log": "cases/safety_wide/fallback1-analysis-j.log",
+            "negative_log": "cases/safety_wide/fallback1-negative-j.log"
           }
         },
         {
           "id": "fallback2",
           "construction": "cases/safety_wide/fallback2-construction.json",
-          "construction_sha256": "43913803dbe70ea444de722d7361e95e8f58a2b0846c742d2de80ce1c568e07b",
+          "construction_sha256": "88ae69e87b3a07e3e72ce5352f4884cb52559e60dac8311a3bc65899b1013fae",
           "trigger": {
             "source": "original rider/seat pixels from four synchronized RGB streams",
             "metric": "rider-to-bicycle seat alignment and body overlap across frames",
@@ -1161,23 +1326,23 @@
             "attached walker relative height 0.65 m to 0.85 m"
           ],
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-wide-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide --output .runtime-work/c111588-safety_wide-fallback2-offline-h --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-wide-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide --output .runtime-work/c111588-common-safety_wide-fallback2-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
             "exit_code": 0,
-            "log": "cases/safety_wide/fallback2-tests.log",
-            "log_sha256": "31ab113e0aa03e1760efc0176ea46067c6bf3aebfdda18470082e150a7e47611",
-            "construction_sha256": "43913803dbe70ea444de722d7361e95e8f58a2b0846c742d2de80ce1c568e07b"
+            "log": "cases/safety_wide/fallback2-tests-j.log",
+            "log_sha256": "f0d89a168f875637403baf71f19519a84b4dcd7456d0b9356634ea9bab6d249f",
+            "construction_sha256": "88ae69e87b3a07e3e72ce5352f4884cb52559e60dac8311a3bc65899b1013fae"
           },
           "compatibility": {
-            "receipt": "cases/safety_wide/fallback2-receipt.json",
-            "sha256": "1e51c7a7fba292056b546ad55e9d6491839728c0abca8531e48853d3dcca007c",
-            "log": "cases/safety_wide/fallback2-analysis.log",
-            "negative_log": "cases/safety_wide/fallback2-negative.log"
+            "receipt": "cases/safety_wide/fallback2-receipt-j.json",
+            "sha256": "d43c0aa7895ad70d0f06e4ba4acbbaf62005d933b197b8bb164941172cd99c36",
+            "log": "cases/safety_wide/fallback2-analysis-j.log",
+            "negative_log": "cases/safety_wide/fallback2-negative-j.log"
           }
         },
         {
           "id": "fallback3",
           "construction": "cases/safety_wide/fallback3-construction.json",
-          "construction_sha256": "4905fd54a50d84be47cda7ed7d575be6f2f487dee1c4ee07d30de0279191c85c",
+          "construction_sha256": "35b523d4ed5f9e8ca0bc9d0f10606ce04b86bfe8aff08bbc5ee972c454a1e089",
           "trigger": {
             "source": "original driver_reference and side RGB frame review",
             "metric": "count of frames in which the rider and left arm can be resolved",
@@ -1187,38 +1352,38 @@
             "driver_reference camera relative height 1.8 m to 2.2 m"
           ],
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-wide-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide --output .runtime-work/c111588-safety_wide-fallback3-offline-h --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-wide-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide --output .runtime-work/c111588-common-safety_wide-fallback3-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
             "exit_code": 0,
-            "log": "cases/safety_wide/fallback3-tests.log",
-            "log_sha256": "40c740c35fac2dce0648041109c6a3ed2d8cf4d723a2e803887497a7676eee60",
-            "construction_sha256": "4905fd54a50d84be47cda7ed7d575be6f2f487dee1c4ee07d30de0279191c85c"
+            "log": "cases/safety_wide/fallback3-tests-j.log",
+            "log_sha256": "c703cd5b88a1088774263ac2398097b06f4977cb1f443c2e52a4da55af3e9738",
+            "construction_sha256": "35b523d4ed5f9e8ca0bc9d0f10606ce04b86bfe8aff08bbc5ee972c454a1e089"
           },
           "compatibility": {
-            "receipt": "cases/safety_wide/fallback3-receipt.json",
-            "sha256": "44aef8b78a66b0c74ac65eb579a8161c611bc4739e4df9e1c15b251c5e0a55d9",
-            "log": "cases/safety_wide/fallback3-analysis.log",
-            "negative_log": "cases/safety_wide/fallback3-negative.log"
+            "receipt": "cases/safety_wide/fallback3-receipt-j.json",
+            "sha256": "6ce83e96bf3c80da59e858948a69edf6760fce689d985fa40fa12960b93260f8",
+            "log": "cases/safety_wide/fallback3-analysis-j.log",
+            "negative_log": "cases/safety_wide/fallback3-negative-j.log"
           }
         }
       ],
       "physical_preparation": {
-        "receipt": "cases/safety_wide/physical-h/proof.json",
-        "sha256": "442740077e9de82ff00658de27cc9d647eaea9e6dc1705e4af1543859302d05c"
+        "receipt": "cases/safety_wide/physical-j/proof.json",
+        "sha256": "1fb4b2a2758637d9261145cf335e139785edb43659effd7620d447b6b721e7cc"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-wide-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide --output .runtime-work/c111588-safety_wide-primary-offline-h --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-wide-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide --output .runtime-work/c111588-common-safety_wide-primary-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
         "exit_code": 0,
-        "log": "cases/safety_wide/primary-tests.log",
-        "log_sha256": "a42d89017932512b85538b72b7537c2398dd4e6188d94bd5c917cd0c7042254f",
-        "construction_sha256": "2b7d184b8e911a3901c869d031ccd647ed6289b0dae120a7b27cf82fe9f1bbc7"
+        "log": "cases/safety_wide/primary-tests-j.log",
+        "log_sha256": "87cf0d3bd2a96f5f841b8ddc1a45eb777aac97a785bd4801b80abc2a78babd6c",
+        "construction_sha256": "ca5e99f1e039972bcbf512476ea892db4fb3b0f88b93b561fe3d6651defb56ee"
       },
       "compatibility": {
-        "receipt": "cases/safety_wide/primary-receipt.json",
-        "sha256": "2603f65ee7a4a4882b48395788710dd618c43635e6d4994d9c753c076257b402",
-        "log": "cases/safety_wide/primary-analysis.log"
+        "receipt": "cases/safety_wide/primary-receipt-j.json",
+        "sha256": "d1953b3df00c28e1661213478b7b4585137974b502899a9eb72adbf16c604b49",
+        "log": "cases/safety_wide/primary-analysis-j.log"
       },
       "negative": {
-        "log": "cases/safety_wide/primary-negative.log"
+        "log": "cases/safety_wide/primary-negative-j.log"
       },
       "delivery_acceptance": {
         "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide",
@@ -1235,11 +1400,11 @@
         ],
         "script": "rider_acceptance_check.py",
         "script_sha256": "5de82d3e0acfaad2375ce8dc63a7a26034ddb9b424631f0a5885b814e54f6906",
-        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide --attempt .runtime-work/c111588-safety_wide-primary-compat-h",
+        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide --attempt .runtime-work/c111588-common-safety_wide-primary-compat-j",
         "test_exit_code": 0,
         "test_log": "cases/safety_wide/physical/acceptance-positive.log",
         "test_log_sha256": "65c5e675e365c65f7ec05128e0a92537aafc95625cccde3e63ac212cfab019b6",
-        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide --attempt .runtime-work/c111588-safety_wide-primary-compat-h --negative",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide --attempt .runtime-work/c111588-common-safety_wide-primary-compat-j --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "Stale or missing original source: rider_arm_bones.jsonl",
         "negative_log": "cases/safety_wide/physical/acceptance-negative.log",
@@ -1250,7 +1415,7 @@
       "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow",
       "kind": "delivery",
       "construction": "cases/safety_narrow/construction.json",
-      "construction_sha256": "49682c10841613bcfd994d036ba1c81e93df8b853cd79c7db243f60af910b66e",
+      "construction_sha256": "4f887823c52d58d514466711d67a1d9f9cf2f5aac750c676e30f1f22a354a7d5",
       "measurement_contract": "cases/safety_narrow/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "rider_signal_finalizer.py"
@@ -1271,19 +1436,29 @@
           "method": "join retained source video review to Native motion and frame map",
           "evidence": "rider_signal_review.jsonl plus four RGB original streams and rider motion"
         },
-        "participant_center_clearance": {
-          "entrypoint": "rider_signal_finalizer.py",
-          "method": "original source join and derived recording channel for participant_center_clearance",
+        "rider_turn_heading_deg": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_turn_heading_deg",
           "evidence": "case-specific retained source packets and four synchronized original RGB videos"
         },
         "participant_clearance_m": {
-          "entrypoint": "rider_signal_finalizer.py",
+          "entrypoint": "rider_common_finalizer.py",
           "method": "original source join and derived recording channel for participant_clearance_m",
           "evidence": "case-specific retained source packets and four synchronized original RGB videos"
         },
         "time_to_conflict_s": {
-          "entrypoint": "rider_signal_finalizer.py",
+          "entrypoint": "rider_common_finalizer.py",
           "method": "original source join and derived recording channel for time_to_conflict_s",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_hand_contact": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_hand_contact",
+          "evidence": "case-specific retained source packets and four synchronized original RGB videos"
+        },
+        "rider_control_stability": {
+          "entrypoint": "rider_common_finalizer.py",
+          "method": "original source join and derived recording channel for rider_control_stability",
           "evidence": "case-specific retained source packets and four synchronized original RGB videos"
         }
       },
@@ -1291,7 +1466,7 @@
         {
           "id": "fallback1",
           "construction": "cases/safety_narrow/fallback1-construction.json",
-          "construction_sha256": "bda916cbb786f4182b6bc74626c3daff32e0c5d2173ff2e20126bdf60a895c69",
+          "construction_sha256": "5680e397a2267121687d5eed50824980e045777ed8cc8b28951ab9dd21ba3855",
           "trigger": {
             "source": "Native map waypoint topology and route-selector failure record",
             "metric": "count of connected left-turn candidates at 2.5 m sampling",
@@ -1301,23 +1476,23 @@
             "route waypoint sampling step 2.5 m to 1.5 m"
           ],
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-narrow-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow --output .runtime-work/c111588-safety_narrow-fallback1-offline-h --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-narrow-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow --output .runtime-work/c111588-common-safety_narrow-fallback1-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
             "exit_code": 0,
-            "log": "cases/safety_narrow/fallback1-tests.log",
-            "log_sha256": "04ac2a9c0c34e66aa1df827388a32f7444f77a81e462ea69b818718a51e740c9",
-            "construction_sha256": "bda916cbb786f4182b6bc74626c3daff32e0c5d2173ff2e20126bdf60a895c69"
+            "log": "cases/safety_narrow/fallback1-tests-j.log",
+            "log_sha256": "b0cf429554347f3495f47ceed1343b6505658e54edb7b310e08230055e22b5ab",
+            "construction_sha256": "5680e397a2267121687d5eed50824980e045777ed8cc8b28951ab9dd21ba3855"
           },
           "compatibility": {
-            "receipt": "cases/safety_narrow/fallback1-receipt.json",
-            "sha256": "d33bd02d14fbf3ba9b8882fb9c3467811254c6a62a4b2406a9864077764b6ec6",
-            "log": "cases/safety_narrow/fallback1-analysis.log",
-            "negative_log": "cases/safety_narrow/fallback1-negative.log"
+            "receipt": "cases/safety_narrow/fallback1-receipt-j.json",
+            "sha256": "d8ba36baaf1aacd368f4de95ed777b39d3e636d9fb21cae5a7672032805c984c",
+            "log": "cases/safety_narrow/fallback1-analysis-j.log",
+            "negative_log": "cases/safety_narrow/fallback1-negative-j.log"
           }
         },
         {
           "id": "fallback2",
           "construction": "cases/safety_narrow/fallback2-construction.json",
-          "construction_sha256": "5030d344219b1600e3123f4062f34fdcc92cfec89f82d39137ac29005ce3c755",
+          "construction_sha256": "2df57a4e645db0468d70fc333e285a6a457e429c03caac8faa95be86a6aa6cea",
           "trigger": {
             "source": "original rider/seat pixels from four synchronized RGB streams",
             "metric": "rider-to-bicycle seat alignment and body overlap across frames",
@@ -1327,23 +1502,23 @@
             "attached walker relative height 0.65 m to 0.85 m"
           ],
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-narrow-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow --output .runtime-work/c111588-safety_narrow-fallback2-offline-h --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-narrow-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow --output .runtime-work/c111588-common-safety_narrow-fallback2-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
             "exit_code": 0,
-            "log": "cases/safety_narrow/fallback2-tests.log",
-            "log_sha256": "507b023b3a54498edf83a2c52e41c9c94a54067e42af51b6881903291375534d",
-            "construction_sha256": "5030d344219b1600e3123f4062f34fdcc92cfec89f82d39137ac29005ce3c755"
+            "log": "cases/safety_narrow/fallback2-tests-j.log",
+            "log_sha256": "152b72c345058b1d0b645f543e60778420c9c97d297f28fee773dff10f838b5e",
+            "construction_sha256": "2df57a4e645db0468d70fc333e285a6a457e429c03caac8faa95be86a6aa6cea"
           },
           "compatibility": {
-            "receipt": "cases/safety_narrow/fallback2-receipt.json",
-            "sha256": "af21e58ea3e1ef2d38b6401e75cc3b9e4d5f985561d909c84bdb20498b739478",
-            "log": "cases/safety_narrow/fallback2-analysis.log",
-            "negative_log": "cases/safety_narrow/fallback2-negative.log"
+            "receipt": "cases/safety_narrow/fallback2-receipt-j.json",
+            "sha256": "a000d7aba678d9a914da880019820dad70af46547c3cf8ec5d3fe7330cf5aa6d",
+            "log": "cases/safety_narrow/fallback2-analysis-j.log",
+            "negative_log": "cases/safety_narrow/fallback2-negative-j.log"
           }
         },
         {
           "id": "fallback3",
           "construction": "cases/safety_narrow/fallback3-construction.json",
-          "construction_sha256": "0895974084c5da3123333c096119bf600e77b81b05196d07851596c16c6a3fd5",
+          "construction_sha256": "296afc22b9ae2b2fe349b1c42caab73858539427b328764a27a3ffc6125d92a3",
           "trigger": {
             "source": "original driver_reference and side RGB frame review",
             "metric": "count of frames in which the rider and left arm can be resolved",
@@ -1353,38 +1528,38 @@
             "driver_reference camera relative height 1.8 m to 2.2 m"
           ],
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-narrow-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow --output .runtime-work/c111588-safety_narrow-fallback3-offline-h --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-narrow-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow --output .runtime-work/c111588-common-safety_narrow-fallback3-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
             "exit_code": 0,
-            "log": "cases/safety_narrow/fallback3-tests.log",
-            "log_sha256": "848d5a6082f360552f3d521a2e0fa8af9ad8207f6011a89f694ce6d6725cd37d",
-            "construction_sha256": "0895974084c5da3123333c096119bf600e77b81b05196d07851596c16c6a3fd5"
+            "log": "cases/safety_narrow/fallback3-tests-j.log",
+            "log_sha256": "e417da9be731da904741f0344a4346fd90781231aae6cdb8b10c859c33fcee04",
+            "construction_sha256": "296afc22b9ae2b2fe349b1c42caab73858539427b328764a27a3ffc6125d92a3"
           },
           "compatibility": {
-            "receipt": "cases/safety_narrow/fallback3-receipt.json",
-            "sha256": "3e50270c4af6d238f9957ca3900f7604fe2c2316bd988774812512d938304913",
-            "log": "cases/safety_narrow/fallback3-analysis.log",
-            "negative_log": "cases/safety_narrow/fallback3-negative.log"
+            "receipt": "cases/safety_narrow/fallback3-receipt-j.json",
+            "sha256": "7239c3bf4d1fdcca6ff15189e7071aa0af707f822caa459b3c1e500ff47266d8",
+            "log": "cases/safety_narrow/fallback3-analysis-j.log",
+            "negative_log": "cases/safety_narrow/fallback3-negative-j.log"
           }
         }
       ],
       "physical_preparation": {
-        "receipt": "cases/safety_narrow/physical-h/proof.json",
-        "sha256": "92eba3800195d86c668b534ecd6b4ccba4f69c4617060331421312e964797d18"
+        "receipt": "cases/safety_narrow/physical-j/proof.json",
+        "sha256": "a57d9105bb2337d3af71050a53c86bb2f72ba527b403d2f5d14cf75fdb6b1eac"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-narrow-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow --output .runtime-work/c111588-safety_narrow-primary-offline-h --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/safety-narrow-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow --output .runtime-work/c111588-common-safety_narrow-primary-offline-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
         "exit_code": 0,
-        "log": "cases/safety_narrow/primary-tests.log",
-        "log_sha256": "c1e587cec00b5b04e5e80bdda82ee5f4aff1afbaf8b3a4003cd8035771e6d692",
-        "construction_sha256": "49682c10841613bcfd994d036ba1c81e93df8b853cd79c7db243f60af910b66e"
+        "log": "cases/safety_narrow/primary-tests-j.log",
+        "log_sha256": "9d574edc411583b449f17f24cb81ab36a74114a8d07d5f2c5f278a59287a24d5",
+        "construction_sha256": "4f887823c52d58d514466711d67a1d9f9cf2f5aac750c676e30f1f22a354a7d5"
       },
       "compatibility": {
-        "receipt": "cases/safety_narrow/primary-receipt.json",
-        "sha256": "473933d4a804362f1e92b4dcb69c8ae998500028f45c2063a79cf3ee2c14525f",
-        "log": "cases/safety_narrow/primary-analysis.log"
+        "receipt": "cases/safety_narrow/primary-receipt-j.json",
+        "sha256": "a19e3a90ea3acb4bda87dec5cc825d30d68150491c2947cb410a3f866955d71d",
+        "log": "cases/safety_narrow/primary-analysis-j.log"
       },
       "negative": {
-        "log": "cases/safety_narrow/primary-negative.log"
+        "log": "cases/safety_narrow/primary-negative-j.log"
       },
       "delivery_acceptance": {
         "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow",
@@ -1401,11 +1576,11 @@
         ],
         "script": "rider_acceptance_check.py",
         "script_sha256": "5de82d3e0acfaad2375ce8dc63a7a26034ddb9b424631f0a5885b814e54f6906",
-        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow --attempt .runtime-work/c111588-safety_narrow-primary-compat-h",
+        "command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow --attempt .runtime-work/c111588-common-safety_narrow-primary-compat-j",
         "test_exit_code": 0,
         "test_log": "cases/safety_narrow/physical/acceptance-positive.log",
         "test_log_sha256": "3772e4825c767cb759dcab25968e37f363e46ec005a5c7c171f551dfc22fcb9b",
-        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow --attempt .runtime-work/c111588-safety_narrow-primary-compat-h --negative",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/rider_acceptance_check.py --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow --attempt .runtime-work/c111588-common-safety_narrow-primary-compat-j --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "Stale or missing original source: rider_arm_bones.jsonl",
         "negative_log": "cases/safety_narrow/physical/acceptance-negative.log",

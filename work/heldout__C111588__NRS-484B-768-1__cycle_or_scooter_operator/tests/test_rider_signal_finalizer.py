@@ -27,7 +27,7 @@ def sources(root):
     rows = {
         'video_frames.jsonl': [{'video_frame': i, 'carla_frame': i,
                                 'time_s': i * .05} for i in range(4)],
-        'trace.jsonl': [{'frame': i, 'time_s': i * .05} for i in range(4)],
+        'trace.jsonl': [{'frame': i, 'time_s': i * .05, 'position_m': [float(i), 0.0, 0.0]} for i in range(4)],
         'rider_motion.jsonl': [{'frame': i, 'time_s': i * .05,
                                 'rider_id': 'rider-1', 'rider_yaw_deg': (0, 0, 25, 70)[i]}
                                for i in range(4)],
@@ -42,6 +42,21 @@ def sources(root):
                                       'visible_signal': i == 1,
                                       'signal_type': 'left_arm' if i == 1 else 'none'}
                                      for i in range(4)]}
+    (root / 'route_waypoints.json').write_text(json.dumps({'waypoints': [{'road_id': 1, 'lane_id': 1, 'position_m': [float(i), 0, 0]} for i in range(3)]}) + '\n')
+    rows['participant_motion.jsonl'] = [{'frame': i, 'time_s': i * .05, 'actor_id': 'other-1',
+        'position_m': [float(i), 8.0 - i * .05, 0.0],
+        'rider_half_width_m': .45, 'participant_half_width_m': .35} for i in range(4)]
+    rows['clearance_samples.jsonl'] = [{'frame': i, 'time_s': i * .05,
+        'participant_actor_id': 'other-1', 'center_distance_m': 8.0 - i * .05} for i in range(4)]
+    rows['hand_contact_readback.jsonl'] = [{'frame': i, 'time_s': i * .05, 'rider_id': 'rider-1',
+        'hand_bone_readback': {'crl_hand__L': None, 'crl_hand__R': None},
+        'physical_handlebar_contact_verified': None} for i in range(4)]
+    rows['control_stability.jsonl'] = [{'frame': i, 'time_s': i * .05,
+        'wheel_steer_angle_deg': 0, 'speed_mps': 1, 'accel_longitudinal_mps2': 0,
+        'commanded_steer': 0, 'control_stability_judgment': None} for i in range(4)]
+    rows['hand_contact_review.jsonl'] = [{'frame': i, 'time_s': i * .05,
+        'source_video_sha256': video_sha, 'left_hand_contact': None,
+        'right_hand_contact': None} for i in range(4)]
     for name, items in rows.items():
         (root / name).write_text(''.join(json.dumps(item) + '\n' for item in items))
 

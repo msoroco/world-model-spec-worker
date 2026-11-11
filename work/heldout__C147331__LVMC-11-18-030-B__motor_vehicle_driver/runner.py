@@ -50,8 +50,8 @@ def check_config(config):
             (6.0, .25), (4.5, .2)):
         raise ValueError("Unsupported lane controller tuning")
     expected_fraction = {"passing_excursion-0000": .4,
-                         "passing_excursion-0001": .6,
-                         "passing_excursion-0002": .8}.get(suffix, .6)
+                         "passing_excursion-0001": .8,
+                         "passing_excursion-0002": .6}.get(suffix, .6)
     if engineering.get("crossing_fraction", .6) != expected_fraction:
         raise ValueError("Crossing sweep value differs from exact case")
     return suffix

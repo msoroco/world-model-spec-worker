@@ -514,7 +514,7 @@
         }
       },
       "sweep_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion",
-      "sweep_spec_version": "03a59d68554560a8aeee15b255331c806b8f40d413f36deca441313c0b4c7fe0",
+      "sweep_spec_version": "195e0203385349ae614781c615ed391c97f662da926d6437fde8e174ff7bf54b",
       "sweep_point": {
         "lane_crossing_fraction": 0.4
       },
@@ -618,6 +618,15 @@
             "time_window": "all original frames",
             "reference_frame": "world ground plane",
             "uncertainty": "Native trace readback; no turn intent or lawful completion inferred"
+          },
+          {
+            "name": "lane_crossing_fraction",
+            "unit": "fraction",
+            "method": "absolute original ego-center lateral displacement from retained lane center divided by original lane width",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "retained original lane ground plane",
+            "uncertainty": "Native body corners and local waypoint lane slice; no adjacent-lane identity inferred"
           }
         ],
         "context_inputs": [],
@@ -628,12 +637,12 @@
       },
       "sweep_measurements": [
         {
-          "observable": "lane_clearance_m",
-          "unit": "m",
+          "observable": "lane_crossing_fraction",
+          "unit": "fraction",
           "measurement": {
-            "method": "signed minimum ground-corner clearance from original Native lane source",
+            "method": "maximum absolute original ego-center displacement from retained primary lane center, projected across lane heading and divided by retained original lane width",
             "time_window": "all original frames",
-            "statistic": "min"
+            "statistic": "max"
           }
         }
       ],
@@ -659,7 +668,7 @@
         }
       },
       "sweep_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion",
-      "sweep_spec_version": "03a59d68554560a8aeee15b255331c806b8f40d413f36deca441313c0b4c7fe0",
+      "sweep_spec_version": "195e0203385349ae614781c615ed391c97f662da926d6437fde8e174ff7bf54b",
       "sweep_point": {
         "lane_crossing_fraction": 0.8
       },
@@ -763,6 +772,15 @@
             "time_window": "all original frames",
             "reference_frame": "world ground plane",
             "uncertainty": "Native trace readback; no turn intent or lawful completion inferred"
+          },
+          {
+            "name": "lane_crossing_fraction",
+            "unit": "fraction",
+            "method": "absolute original ego-center lateral displacement from retained lane center divided by original lane width",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "retained original lane ground plane",
+            "uncertainty": "Native body corners and local waypoint lane slice; no adjacent-lane identity inferred"
           }
         ],
         "context_inputs": [],
@@ -773,12 +791,12 @@
       },
       "sweep_measurements": [
         {
-          "observable": "lane_clearance_m",
-          "unit": "m",
+          "observable": "lane_crossing_fraction",
+          "unit": "fraction",
           "measurement": {
-            "method": "signed minimum ground-corner clearance from original Native lane source",
+            "method": "maximum absolute original ego-center displacement from retained primary lane center, projected across lane heading and divided by retained original lane width",
             "time_window": "all original frames",
-            "statistic": "min"
+            "statistic": "max"
           }
         }
       ],
@@ -804,7 +822,7 @@
         }
       },
       "sweep_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion",
-      "sweep_spec_version": "03a59d68554560a8aeee15b255331c806b8f40d413f36deca441313c0b4c7fe0",
+      "sweep_spec_version": "195e0203385349ae614781c615ed391c97f662da926d6437fde8e174ff7bf54b",
       "sweep_point": {
         "lane_crossing_fraction": 0.6
       },
@@ -908,6 +926,15 @@
             "time_window": "all original frames",
             "reference_frame": "world ground plane",
             "uncertainty": "Native trace readback; no turn intent or lawful completion inferred"
+          },
+          {
+            "name": "lane_crossing_fraction",
+            "unit": "fraction",
+            "method": "absolute original ego-center lateral displacement from retained lane center divided by original lane width",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "retained original lane ground plane",
+            "uncertainty": "Native body corners and local waypoint lane slice; no adjacent-lane identity inferred"
           }
         ],
         "context_inputs": [],
@@ -918,12 +945,12 @@
       },
       "sweep_measurements": [
         {
-          "observable": "lane_clearance_m",
-          "unit": "m",
+          "observable": "lane_crossing_fraction",
+          "unit": "fraction",
           "measurement": {
-            "method": "signed minimum ground-corner clearance from original Native lane source",
+            "method": "maximum absolute original ego-center displacement from retained primary lane center, projected across lane heading and divided by retained original lane width",
             "time_window": "all original frames",
-            "statistic": "min"
+            "statistic": "max"
           }
         }
       ],
@@ -948,23 +975,23 @@
       "axes": [
         {
           "variable": "lane_crossing_fraction",
-          "observable": "lane_clearance_m",
-          "unit": "m",
+          "observable": "lane_crossing_fraction",
+          "unit": "fraction",
           "min": 0.4,
           "max": 0.8,
           "spacing": 0.2,
           "measurement": {
-            "method": "signed minimum ground-corner clearance from original Native lane source",
+            "method": "maximum absolute original ego-center displacement from retained primary lane center, projected across lane heading and divided by retained original lane width",
             "time_window": "all original frames",
-            "statistic": "min"
+            "statistic": "max"
           },
-          "range_rationale": "Three physically distinct lateral path requests around an adjacent marked boundary; engineering coverage only.",
-          "spacing_rationale": "0.2 lane-center fraction separates commanded paths without a legal cutoff.",
-          "feasibility_evidence": "lane_construction.route_targets uses Native adjacent lane centers and accepts a bounded crossing_fraction."
+          "range_rationale": "Dimensionless original-source lateral excursion, not metre-valued clearance or legal cutoff.",
+          "spacing_rationale": "Requested controller steps of 0.2 fraction remain intended engineering resolution; realized separation is unverified.",
+          "feasibility_evidence": "Case-specific synthetic CPU fixtures yield exact source-derived lateral fractions 0.4/0.8/0.6; Native physical realization remains subject to capture and completion review."
         }
       ],
       "landmarks": [],
-      "rationale": "Sample passing-context lateral excursion while retaining overtaken participant and unresolved legal lawfulness.",
+      "rationale": "Three fixed dimensionless lateral target points with retained original source fraction stream; lawful passing remains unresolved.",
       "variable_assignments": {
         "lane_boundary_clearance_m": {
           "kind": "subject_behavior",
@@ -1063,6 +1090,15 @@
             "time_window": "all original frames",
             "reference_frame": "world ground plane",
             "uncertainty": "Native trace readback; no turn intent or lawful completion inferred"
+          },
+          {
+            "name": "lane_crossing_fraction",
+            "unit": "fraction",
+            "method": "absolute original ego-center lateral displacement from retained lane center divided by original lane width",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "retained original lane ground plane",
+            "uncertainty": "Native body corners and local waypoint lane slice; no adjacent-lane identity inferred"
           }
         ],
         "context_inputs": [],
@@ -1071,7 +1107,7 @@
           "Municipal applicability, lawful passing and lawful turn preparation require independent legal and factual sources; no legal verdict is generated."
         ]
       },
-      "spec_version": "03a59d68554560a8aeee15b255331c806b8f40d413f36deca441313c0b4c7fe0",
+      "spec_version": "195e0203385349ae614781c615ed391c97f662da926d6437fde8e174ff7bf54b",
       "planned_case_count": 3,
       "selection_order": [
         "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion-0000",

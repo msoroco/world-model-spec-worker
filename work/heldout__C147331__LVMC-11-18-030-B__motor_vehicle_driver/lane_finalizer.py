@@ -26,6 +26,21 @@ def measure_saved_lane(path, ego_id, *, require_overtaken=False):
                                  require_overtaken=require_overtaken)
 
 
+def observed_lateral_fraction(row):
+    """Dimensionless original ego-center excursion from its recorded lane center."""
+    lane = row['lane']
+    polygon = lane['polygon_xy_m']
+    corners = row['ego_corners_xy_m']
+    width = lane['lane_width_m']
+    if width <= 0 or len(polygon) < 4 or len(corners) < 4:
+        raise ValueError('Original lateral-fraction geometry incomplete')
+    center = [sum(point[i] for point in polygon) / len(polygon) for i in (0, 1)]
+    ego = [sum(point[i] for point in corners) / len(corners) for i in (0, 1)]
+    heading = lane['lane_heading_xy']
+    normal = (-heading[1], heading[0])
+    return abs(sum((ego[i] - center[i]) * normal[i] for i in (0, 1))) / width
+
+
 def analyze(attempt, *, write_channel=True):
     root = Path(attempt)
     config_path, _ = required(root, "config.json")
@@ -69,6 +84,9 @@ def analyze(attempt, *, write_channel=True):
             "position": row.get("position"), "heading_deg": row.get("heading_deg"),
             "speed_mps": row.get("speed_mps")}) for row in trace],
     }
+    if '__passing_excursion-' in case_id:
+        channel_rows['lane_crossing_fraction'] = [
+            (row['time_s'], observed_lateral_fraction(row)) for row in source_rows]
     if write_channel:
         for name, values in channel_rows.items():
             channel = root / (name + ".jsonl")
@@ -105,6 +123,20 @@ def build_result(attempt, report):
         evidence.append({"name": name, "unit": channel_description["unit"],
                          "reference": path.name,
                          "sha256": sha256(path.read_bytes()).hexdigest()})
+    realized = {"lane_clearance_m": {
+                "unit": "m", "method": "signed minimum ground-corner clearance from original Native lane source",
+                "time_window": "all original frames", "statistic": "min",
+                "reference": "lane_clearance_m.jsonl", "value": minimum,
+                "sample_window_s": [frames[0]["time_s"], frames[-1]["time_s"]]}}
+    if '__passing_excursion-' in report['case_id']:
+        fraction_rows = _rows(root / 'lane_crossing_fraction.jsonl')
+        realized['lane_crossing_fraction'] = {
+            'unit': 'fraction',
+            'method': 'maximum absolute original ego-center displacement from retained primary lane center, projected across lane heading and divided by retained original lane width',
+            'time_window': 'all original frames', 'statistic': 'max',
+            'reference': 'lane_crossing_fraction.jsonl',
+            'value': max(row['value'] for row in fraction_rows),
+            'sample_window_s': [fraction_rows[0]['time_s'], fraction_rows[-1]['time_s']]}
     return {"case_id": report["case_id"],
             "measured_values": {"lane_boundary_observation": value},
             "target_checks": [{"target": "measured marked-lane footprint history",
@@ -123,11 +155,7 @@ def build_result(attempt, report):
             "video_frame_map_reference": "video_frames.jsonl",
             "recording_description": description,
             "recording_evidence": evidence,
-            "realized_observables": {"lane_clearance_m": {
-                "unit": "m", "method": "signed minimum ground-corner clearance from original Native lane source",
-                "time_window": "all original frames", "statistic": "min",
-                "reference": "lane_clearance_m.jsonl", "value": minimum,
-                "sample_window_s": [frames[0]["time_s"], frames[-1]["time_s"]]}},
+            "realized_observables": realized,
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
 

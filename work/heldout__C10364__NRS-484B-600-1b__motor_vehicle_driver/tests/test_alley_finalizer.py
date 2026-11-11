@@ -62,7 +62,7 @@ class SavedOriginalSourceTest(unittest.TestCase):
         validate_result(result)
         self.assertIn('pedestrian_gap_m', result['realized_observables'])
         self.assertIn('property_gap_m', result['realized_observables'])
-        self.assertEqual(len(result['recording_evidence']), 2)
+        self.assertEqual(len(result['recording_evidence']), 3)
         self.assertFalse(result['physical_acceptance_claimed'])
         self.assertFalse(result['legal_acceptance_claimed'])
 
@@ -74,7 +74,7 @@ class SavedOriginalSourceTest(unittest.TestCase):
         self.config['selected_case_id'] = 'heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__person_3mps'
         (self.root / 'config.json').write_text(json.dumps(self.config))
         (self.root / 'ego_motion.jsonl').unlink()
-        with self.assertRaisesRegex(ValueError, 'Missing required original source'):
+        with self.assertRaisesRegex(ValueError, 'Missing required source'):
             analyze(self.root)
 
 

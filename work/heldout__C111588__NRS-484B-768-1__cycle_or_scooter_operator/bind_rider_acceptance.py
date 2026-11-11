@@ -10,15 +10,15 @@ REPO = ROOT.parents[1]
 PY = str(REPO / '.venv-cpu/bin/python')
 AUDITOR = ROOT / 'rider_acceptance_check.py'
 ATTEMPTS = {
- 'bicycle_signal_once': '.runtime-work/c111588-once-primary-compat-g',
- 'bicycle_no_signal': '.runtime-work/c111588-none-primary-compat-g',
- 'bicycle_signal_continuous': '.runtime-work/c111588-continuous-primary-compat-g',
- 'electric_bicycle_signal_once': '.runtime-work/c111588-electric_bicycle-primary-compat-final-b',
- 'electric_scooter_signal_once': '.runtime-work/c111588-electric_scooter-primary-compat-final-b',
- 'turn_lane_no_signal': '.runtime-work/c111588-turn-lane-primary-compat-b',
- 'both_hands_no_signal': '.runtime-work/c111588-both-hands-primary-compat-b',
- 'safety_wide': '.runtime-work/c111588-safety_wide-primary-compat-h',
- 'safety_narrow': '.runtime-work/c111588-safety_narrow-primary-compat-h',
+ 'bicycle_signal_once': '.runtime-work/c111588-common-bicycle_signal_once-primary-compat-j',
+ 'bicycle_no_signal': '.runtime-work/c111588-common-bicycle_no_signal-primary-compat-j',
+ 'bicycle_signal_continuous': '.runtime-work/c111588-common-bicycle_signal_continuous-primary-compat-j',
+ 'electric_bicycle_signal_once': '.runtime-work/c111588-common-electric_bicycle_signal_once-primary-compat-j',
+ 'electric_scooter_signal_once': '.runtime-work/c111588-common-electric_scooter_signal_once-primary-compat-j',
+ 'turn_lane_no_signal': '.runtime-work/c111588-common-turn_lane_no_signal-primary-compat-j',
+ 'both_hands_no_signal': '.runtime-work/c111588-common-both_hands_no_signal-primary-compat-j',
+ 'safety_wide': '.runtime-work/c111588-common-safety_wide-primary-compat-j',
+ 'safety_narrow': '.runtime-work/c111588-common-safety_narrow-primary-compat-j',
 }
 
 def sha(path):

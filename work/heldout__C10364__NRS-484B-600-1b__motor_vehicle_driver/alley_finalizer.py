@@ -15,6 +15,17 @@ SUFFIXES = {f'{interest}_{speed}mps' for interest in ('person', 'property')
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
+def measure_alley(attempt):
+    """Named selected measurement entrypoint for the exact source contract."""
+    root = Path(attempt)
+    for name in ('participant_footprints.jsonl', 'ego_motion.jsonl',
+                 'trace.jsonl', 'video_frames.jsonl'):
+        path = root / name
+        if not path.is_file() or not path.read_bytes():
+            raise ValueError('Missing required source: ' + name)
+    return measure(root)
+
+
 def digest(path):
     return sha256(Path(path).read_bytes()).hexdigest()
 
@@ -35,10 +46,10 @@ def selected_config(root):
 def analyze(attempt):
     root = Path(attempt)
     _, case, _ = selected_config(root)
-    observed = measure(root)
+    observed = measure_alley(root)
     return {'format': 'worker-analysis-report', 'case_id': case,
             'measurements': {'alley_original_exposure': {
-                'method': 'measure', 'value': observed,
+                'method': 'measure_alley', 'value': observed,
                 'sources': observed['source_sha256']}},
             'limitations': observed['limitations'] + [
                 'Original geometry and motion do not establish camera visibility or legal endangerment.'],
@@ -87,7 +98,22 @@ def build_result(attempt, report):
     config, case, description = selected_config(root)
     observed = report['measurements']['alley_original_exposure']['value']
     frames = observed['observations']
-    evidence = []
+    footprint_source = root / 'participant_footprints.jsonl'
+    footprint_rows = [json.loads(line) for line in footprint_source.read_text().splitlines() if line.strip()]
+    footprint_channel = root / 'participant_footprints_channel.jsonl'
+    if footprint_channel.exists():
+        raise ValueError('Retain prior derived alley channel')
+    footprint_channel.write_text(''.join(json.dumps({
+        'frame': row['frame'], 'time_s': row['time_s'],
+        'value': {'ego_id': row['ego_id'], 'pedestrian_id': row['pedestrian_id'],
+                  'property_id': row['property_id'],
+                  'ego_corners': row['ego_corners'],
+                  'pedestrian_corners': row['pedestrian_corners'],
+                  'property_corners': row['property_corners']}}) + '\n'
+        for row in footprint_rows))
+    evidence = [{'name': 'participant_footprints', 'unit': 'structured record',
+                 'reference': footprint_channel.name,
+                 'sha256': digest(footprint_channel)}]
     observables = {}
     for kind, key in (('pedestrian', 'pedestrian_surface_gap_m'),
                       ('property', 'property_surface_gap_m')):

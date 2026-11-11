@@ -11,6 +11,8 @@ from pathlib import Path
 from rider_arm import RiderArm
 from rider_camera import CAMERAS, LosslessSourceSink, RiderCameraCapture
 from rider_route import control, select_left_turn
+from rider_hand_control import capture_hands, capture_stability
+from rider_participant import Recorder, spawn
 
 
 CASE_ID = 'heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once'
@@ -52,12 +54,18 @@ def run(config, output, host, port):
     actors = []
     pipeline = frame_map = cameras = motion = bone_rows = None
     sinks = {}
+    hand_rows = stability_rows = None
+    participant_recorder = None
     try:
         settings = world.get_settings()
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
         route = select_left_turn(world.get_map())
+        (output / 'route_waypoints.json').write_text(json.dumps({'waypoints': [
+            {'road_id': point.road_id, 'lane_id': point.lane_id,
+             'position_m': [point.transform.location.x, point.transform.location.y, point.transform.location.z]}
+            for point in route]}, indent=2) + '\n')
         library = world.get_blueprint_library()
         bicycle_blueprint = library.find('vehicle.bh.crossbike')
         if bicycle_blueprint.get_attribute('base_type').as_str() != 'bicycle':
@@ -66,6 +74,8 @@ def run(config, output, host, port):
         if bicycle is None:
             raise ValueError('Native bicycle spawn failed')
         actors.append(bicycle)
+        participant = spawn(world, carla, library, route, 8.0)
+        actors.append(participant)
         walker_blueprint = library.filter('walker.pedestrian.*')[0]
         rider = world.try_spawn_actor(
             walker_blueprint,
@@ -81,6 +91,9 @@ def run(config, output, host, port):
         frame_map = FrameMap(output / 'video_frames.jsonl')
         motion = (output / 'rider_motion.jsonl').open('x')
         bone_rows = (output / 'rider_arm_bones.jsonl').open('x')
+        hand_rows = (output / 'hand_contact_readback.jsonl').open('x')
+        stability_rows = (output / 'control_stability.jsonl').open('x')
+        participant_recorder = Recorder(output)
         for name in CAMERAS:
             sinks[name] = LosslessSourceSink(output, name)
         cameras = RiderCameraCapture(world, carla, bicycle, sinks)
@@ -93,11 +106,13 @@ def run(config, output, host, port):
             'both_hands_required_for_safety': {'value': None, 'source_ref': None}},
             indent=2) + '\n')
         frames = []
+        frame_times = []
         start = None
         for index in range(config['frames']):
             arm.set_signal(index == config['signal_frame_index'])
             target = route[min(3 + index // 6, len(route) - 1)]
-            bicycle.apply_control(carla.VehicleControl(**_control(bicycle, target)))
+            command = _control(bicycle, target)
+            bicycle.apply_control(carla.VehicleControl(**command))
             frame = world.tick()
             cameras.wait_for_frame(frame)
             snapshot = world.get_snapshot()
@@ -115,9 +130,22 @@ def run(config, output, host, port):
             bone_rows.write(json.dumps({'frame': frame, 'time_s': time_s,
                                         'rider_id': str(rider.id),
                                         **arm.readback()}) + '\n')
+            participant_recorder.capture(frame, time_s, trace, participant, bicycle)
+            hand_rows.write(json.dumps(capture_hands(rider, frame, time_s)) + '\n')
+            stability_rows.write(json.dumps(capture_stability(trace, frame, time_s, command)) + '\n')
             frame_map.append(frame, time_s)
             frames.append(frame)
+            frame_times.append(time_s)
         cameras.verify(frames)
+        for sink in sinks.values():
+            sink.close()
+        sinks.clear()
+        from hashlib import sha256
+        video_sha = sha256((output / 'driver_reference.mkv').read_bytes()).hexdigest()
+        (output / 'hand_contact_review.jsonl').write_text(''.join(
+            json.dumps({'frame': frame, 'time_s': time_s, 'source_video_sha256': video_sha,
+                        'left_hand_contact': None, 'right_hand_contact': None}) + '\n'
+            for frame, time_s in zip(frames, frame_times)))
         (output / 'construction-probe.json').write_text(json.dumps({
             'format': 'worker-rider-construction-probe',
             'case_id': CASE_ID, 'map_name': world.get_map().name,
@@ -131,6 +159,12 @@ def run(config, output, host, port):
             motion.close()
         if bone_rows is not None:
             bone_rows.close()
+        if hand_rows is not None:
+            hand_rows.close()
+        if stability_rows is not None:
+            stability_rows.close()
+        if participant_recorder is not None:
+            participant_recorder.close()
         if frame_map is not None:
             frame_map.close()
         if pipeline is not None:

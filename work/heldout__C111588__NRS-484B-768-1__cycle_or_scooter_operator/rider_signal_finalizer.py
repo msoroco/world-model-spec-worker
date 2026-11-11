@@ -130,5 +130,12 @@ def main():
     write_result(args.attempt, build_result(args.attempt, report))
 
 
+from rider_common_finalizer import enrich as _common_enrich
+
+_previous_build_result = build_result
+def build_result(attempt, report):
+    result = _previous_build_result(attempt, report)
+    return _common_enrich(attempt, result)
+
 if __name__ == '__main__':
     main()

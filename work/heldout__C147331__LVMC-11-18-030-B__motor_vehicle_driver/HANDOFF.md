@@ -331,3 +331,21 @@ The three CPU fixture scripts now set `SCENARIO_PIPELINE_OUTPUT_ROOT` to ignored
 ## 2026-11-11 passing sweep unit review
 
 The current complete passing excursion plan varies `lane_crossing_fraction` at 0.4/0.6/0.8 (dimensionless controller requests), but declares `lane_clearance_m` as the realized observable in metres with the same numeric axis limits. The pinned `realized_coverage` calculation compares measured observable values directly with those limits, so this mixes units. The three retained diagnostic measurements are all -1.4 m despite distinct requests. They test source binding and construction, not realized sweep separation. Next CPU step is to retain adjacent-lane center on original Native ticks and derive an observed dimensionless lateral fraction from original body/lane geometry, or replace the controller with a metre-valued clearance target and reprove all affected exact cases/fallbacks/saved/audit receipts. Do not infer a legal cutoff or a physical trend from the current fixtures. The package stays partial.
+
+## 2026-11-11 passing sweep unit correction
+
+The canonical passing sweep no longer compares dimensionless requested fractions 0.4/0.6/0.8 against metre-valued `lane_clearance_m`. Its planned axis is now dimensionless observed `lane_crossing_fraction`, derived as maximum original ego-center displacement from the retained lane center projected across lane heading, divided by the original lane width. `audit_passing_sweep.py` independently reads the saved original source, binds its hash and reports all three diagnostic observed fractions as **0.625**. Requested controls remain 0.4/0.6/0.8; diagnostic realization has no separation. The sweep status is `incomplete` until a retained original fraction channel, distinct Native realizations and applicable passing-rule facts are available. The six selected constructions and 18 fallback proofs were not changed.
+
+Canonical semantic index SHA-256 `2065588b7e90f9d9358c59b24892d1b5819c7a493f97ae01912634b09358e573`; corrected source sweep audit SHA-256 `b51c57f95d1afa14676d38e89ec851b96971957b8b6381de628e047dda783907`. Seven-stage semantic validation and scoped `worker_check --complete` pass. Scoped strict gate still fails at truthful partial status (`strict-gate.log` SHA-256 `89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`).
+
+## 2026-11-11 distinct passing diagnostic sources
+
+`build_passing_sweep_diagnostics.py` now generates separate source-shaped original ego trajectories for the three unchanged exact requested controller fractions. The fixture updates original body corners, trace, captured ego/participant evidence, graph attributes and capture trace hash together. All six primary and 18 fallback offline/positive-negative compatibility receipts were regenerated, followed by six saved-only proofs, original-source four-camera audits, synthetic physical/lifecycle and positive/stale-source delivery acceptance fixtures. A fresh saved comparison audit is `delivery-comparison-audit-v3.json`.
+
+The independent saved-source sweep audit measures diagnostic observed lateral fractions **0.4, 0.6, 0.8**, with minimum body clearances **-0.5, -1.3, -2.1 m** respectively. This is synthetic CPU source realization and does not prove Native route control, actual pixel visibility, physical completion or lawful passing. The canonical sweep stays `incomplete` pending a retained original fraction recording channel and physical/legal facts.
+
+- `delivery-construction-manifest.json` SHA-256 `1c2fa8a0b65a800ae7548cede3fac06324f41b004d5ada1aea0071cf4b6704a9`
+- `execution-manifest.json` SHA-256 `dc469d7afef7a90b9d16dbc909f5b2853ae470605f916a66e4b7b62033a064d7`
+- `proposals/semantic-index.json` SHA-256 `ce156c043f212fa86fcdae0128097357b896acee4e18e39574d89221b47e1e13`
+- `delivery-passing-sweep-audit.json` SHA-256 `fd81e8596f698e25bfe0a3bb26b2dfe4ec795e91b54399a74ccc53ccea7a9922`
+- `delivery-comparison-audit-v3.json` SHA-256 `98fc04f05f78a33c78d05b3d326f452dbd0e2322c22c21660b77e8e6d9ad8bd3`

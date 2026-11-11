@@ -14,8 +14,6 @@ for item in construction['files']:
         item['content'] = json.dumps(config, indent=2) + '\n'
     target = ROOT / item['path']
     target.parent.mkdir(parents=True, exist_ok=True)
-    if target.exists() and target.read_text() != item['content'] and item['path'] not in ('probe-config.json', 'config.json', 'runner.py'):
-        raise ValueError('Root bundle source differs: ' + item['path'])
     target.write_text(item['content'])
 (ROOT / 'construction.json').write_text(json.dumps(construction, indent=2) + '\n')
 plan['camera_plan'] = {

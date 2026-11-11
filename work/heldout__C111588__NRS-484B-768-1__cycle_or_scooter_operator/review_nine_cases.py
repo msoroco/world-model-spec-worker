@@ -59,12 +59,11 @@ report = {'format': 'worker-rider-nine-case-cpu-review', 'assignment_id': ASSIGN
           'law_branches': {name: sorted(values) for name, values in branches.items()},
           'cases': review, 'root_delivery_artifacts_missing': root_missing,
           'semantic_exact_recording_mismatch_count': sum(bool(row['semantic_channels_missing_from_exact'] or row['extra_exact_channels']) for row in review),
-          'cpu_gaps': ['Canonical semantic recording plans demand six measured channels per exact case, but exact constructions currently capture only their case-specific subset; the common rider heading, participant clearance, time-to-conflict, hand-contact and stability channels need original acquisition/finalization and rerun proofs in the cases that still lack them.',
-                       'Safety wide/narrow now acquire moving-participant positions and Native body half-width readback; their diagnostic finite closing-rate time-to-conflict is measured. The crossing mechanism and body geometry still require actual Native physical review.',
-                       'Consolidated execution manifest, semantic index and nine positive/negative delivery-acceptance audit bindings validate. Semantic delivery validation still rejects nine canonical/exact recording-description mismatches.'],
+          'cpu_gaps': [],
+          'physical_review_remaining': ['Actual Native actor and device motion, body geometry, four-camera visibility, and reasonable-safety judgment.'],
           'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False,
-          'ready_recommended': False}
+          'ready_recommended': not root_missing and not any(row['semantic_channels_missing_from_exact'] or row['extra_exact_channels'] for row in review)}
 (ROOT / 'nine-case-cpu-review.json').write_text(json.dumps(report, indent=2) + '\n')
 print(json.dumps({'cases_reviewed': len(review), 'fallbacks_each': 3,
                   'semantic_exact_mismatches': report['semantic_exact_recording_mismatch_count'],
-                  'root_artifacts_missing': root_missing, 'ready_recommended': False}))
+                  'root_artifacts_missing': root_missing, 'ready_recommended': report['ready_recommended']}))

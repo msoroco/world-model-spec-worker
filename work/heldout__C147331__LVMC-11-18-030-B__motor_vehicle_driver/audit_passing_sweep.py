@@ -10,8 +10,8 @@ from audit_saved_comparisons import load_packet, version_from_proof
 
 HERE = Path(__file__).resolve().parent
 POINTS = {"passing_excursion-0000": .4,
-          "passing_excursion-0001": .6,
-          "passing_excursion-0002": .8}
+          "passing_excursion-0001": .8,
+          "passing_excursion-0002": .6}
 
 
 def read(path):
@@ -20,6 +20,34 @@ def read(path):
 
 def digest(path):
     return sha256(Path(path).read_bytes()).hexdigest()
+
+
+def observed_lateral_fraction(source_path):
+    """Original ego-center displacement from the retained primary-lane center / width.
+
+    This is an absolute lateral excursion magnitude, not a commanded fraction or
+    a legal threshold. Adjacent-lane identity is not inferred from this source.
+    """
+    values = []
+    for line in Path(source_path).read_text().splitlines():
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        lane = row['lane']
+        polygon = lane['polygon_xy_m']
+        corners = row['ego_corners_xy_m']
+        width = lane['lane_width_m']
+        heading = lane['lane_heading_xy']
+        if width <= 0 or len(polygon) < 4 or len(corners) < 4:
+            raise ValueError('Sweep original lane/body geometry incomplete')
+        lane_center = [sum(point[i] for point in polygon) / len(polygon) for i in (0, 1)]
+        ego_center = [sum(point[i] for point in corners) / len(corners) for i in (0, 1)]
+        left_normal = (-heading[1], heading[0])
+        lateral_m = sum((ego_center[i] - lane_center[i]) * left_normal[i] for i in (0, 1))
+        values.append(abs(lateral_m) / width)
+    if not values:
+        raise ValueError('Sweep original lateral trajectory empty')
+    return max(values)
 
 
 def main():
@@ -46,11 +74,15 @@ def main():
         elif normalized != fixed:
             raise ValueError("Sweep changed a fixed construction field")
         packet = load_packet(version_from_proof(saved[case]), case)
+        stage = version_from_proof(saved[case]) / 'analysis'
+        original_source = stage / 'marked_lane_sources.jsonl'
         audit = source[case]
         if (audit["receipt_sha256"] != digest(HERE / audit["receipt"])
                 or packet["source_sha256"] != read(HERE / audit["receipt"])["source_hashes"]["marked_lane_sources.jsonl"]):
             raise ValueError("Sweep source audit lost original-source binding")
         rows.append({"case_id": case, "requested_crossing_fraction": fraction,
+                     "observed_lateral_fraction": observed_lateral_fraction(original_source),
+                     "observed_lateral_fraction_unit": "fraction",
                      "construction_sha256": entry["construction_sha256"],
                      "saved_source_sha256": packet["source_sha256"],
                      "minimum_diagnostic_clearance_m": min(
@@ -61,6 +93,8 @@ def main():
               "fixed_construction_fields_sha256": sha256(json.dumps(
                   fixed, sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
               "cases": rows, "diagnostic_fixture_only": True,
+              "diagnostic_fraction_separation_established": len({round(r['observed_lateral_fraction'], 9) for r in rows}) == len(rows),
+              "physical_fraction_separation_claimed": False,
               "physical_clearance_trend_claimed": False,
               "legal_exception_decided": False}
     (HERE / "delivery-passing-sweep-audit.json").write_text(json.dumps(report, indent=2) + "\n")
