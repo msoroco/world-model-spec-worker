@@ -6,13 +6,87 @@
   "sweeps_expanded": true,
   "sweep_specs": [
     {
-      "sweep_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_review",
+      "sweep_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep",
       "target_law_id": "NRS-484D-215-2",
       "judgment_refs": [
         {
           "phrase": "safe distance in advance of the vehicle",
           "note": "Safe illumination distance has no numeric value in this assigned subsection."
+        }
+      ],
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "requested_gap_ft",
+          "observable": "headlamp_gap_ft",
+          "unit": "ft",
+          "min": 150,
+          "max": 299,
+          "spacing": 75,
+          "measurement": {
+            "method": "original Native body polygon distance",
+            "time_window": "all original frames",
+            "statistic": "mean"
+          },
+          "range_rationale": "NRS 484D.215(2) names following within 300 ft; 150 to 299 ft samples the applicable interval without defining a safe illumination cutoff.",
+          "spacing_rationale": "75 ft covers a near, middle, and near-boundary presentation at fixed low-beam setup; the terminal interval is 74 ft.",
+          "feasibility_evidence": "headlamp_follow_route.select_follow_route already constructs a connected 299 ft following route; shorter positive setpoints use the same route selector and are checked on original body polygons."
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Sample following distance for later original-pixel review of persons and vehicles revealed ahead; the assigned law gives no numeric safe-distance judgment.",
+      "variable_assignments": {
+        "headlamp_gap_ft": {
+          "kind": "subject_behavior",
+          "value": null
         },
+        "requested_gap_ft": {
+          "kind": "controller",
+          "value": 299
+        },
+        "requested_uppermost_distribution": {
+          "kind": "controller",
+          "value": false
+        },
+        "lighting_time_premise": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "requested_roadway_position": {
+          "kind": "world_setup",
+          "value": "driving"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "headlamp_gap_ft",
+            "unit": "ft",
+            "method": "original Native body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounds and 20 Hz sampling"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Headlamp bits and civil-time context remain separate sourced measurements; no physical or legal acceptance from CPU diagnostics."
+        ]
+      },
+      "spec_version": "4f89fc9cf107f77be235448a69d8f419ec1920f69f6638eaa4a0b3d526edbde3",
+      "planned_case_count": 3,
+      "selection_order": [
+        "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0000",
+        "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0001",
+        "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0002"
+      ]
+    },
+    {
+      "sweep_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__beam_permissibility_review",
+      "target_law_id": "NRS-484D-215-2",
+      "judgment_refs": [
         {
           "phrase": "permissible under this chapter",
           "note": "Native high/low beam bits do not independently establish a permissible distribution."
@@ -20,9 +94,9 @@
       ],
       "status": "incomplete",
       "missing_inputs": [
-        "Original Native illumination pixels and independent civil-time/beam-permissibility sources are unavailable in CPU diagnostics."
+        "Chapter-permissible beam distribution requires independent source interpretation and original Native beam/pixel evidence."
       ],
-      "rationale": "Physical illumination/permissibility review remains source-dependent; do not invent a judgment threshold."
+      "rationale": "The Native high/low beam bit alone cannot decide chapter permissibility."
     }
   ],
   "cases": [
@@ -443,6 +517,240 @@
         "comparison_or_standard": "Measured 300 ft statutory boundary or controlled beam/time/roadway context; requested setup is not realized measurement.",
         "target_value_or_branch": 299
       }
+    },
+    {
+      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0000",
+      "target_law_id": "NRS-484D-215-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample following distance for later original-pixel review of persons and vehicles revealed ahead; the assigned law gives no numeric safe-distance judgment.",
+      "paired_probe_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep",
+      "deliberate_differences": [
+        "requested_gap_ft"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_ft",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "requested_gap_ft": 150.0
+        }
+      },
+      "sweep_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep",
+      "sweep_spec_version": "4f89fc9cf107f77be235448a69d8f419ec1920f69f6638eaa4a0b3d526edbde3",
+      "sweep_point": {
+        "requested_gap_ft": 150.0
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "headlamp_gap_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_gap_ft": {
+          "kind": "controller",
+          "value": 150.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "requested_uppermost_distribution": {
+          "kind": "controller",
+          "value": false
+        },
+        "lighting_time_premise": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "requested_roadway_position": {
+          "kind": "world_setup",
+          "value": "driving"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "headlamp_gap_ft",
+            "unit": "ft",
+            "method": "original Native body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounds and 20 Hz sampling"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Headlamp bits and civil-time context remain separate sourced measurements; no physical or legal acceptance from CPU diagnostics."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "headlamp_gap_ft",
+          "unit": "ft",
+          "measurement": {
+            "method": "original Native body polygon distance",
+            "time_window": "all original frames",
+            "statistic": "mean"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "permissible under this chapter",
+        "safe distance in advance of the vehicle"
+      ]
+    },
+    {
+      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0001",
+      "target_law_id": "NRS-484D-215-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample following distance for later original-pixel review of persons and vehicles revealed ahead; the assigned law gives no numeric safe-distance judgment.",
+      "paired_probe_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep",
+      "deliberate_differences": [
+        "requested_gap_ft"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_ft",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "requested_gap_ft": 299.0
+        }
+      },
+      "sweep_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep",
+      "sweep_spec_version": "4f89fc9cf107f77be235448a69d8f419ec1920f69f6638eaa4a0b3d526edbde3",
+      "sweep_point": {
+        "requested_gap_ft": 299.0
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "headlamp_gap_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_gap_ft": {
+          "kind": "controller",
+          "value": 299.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "requested_uppermost_distribution": {
+          "kind": "controller",
+          "value": false
+        },
+        "lighting_time_premise": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "requested_roadway_position": {
+          "kind": "world_setup",
+          "value": "driving"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "headlamp_gap_ft",
+            "unit": "ft",
+            "method": "original Native body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounds and 20 Hz sampling"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Headlamp bits and civil-time context remain separate sourced measurements; no physical or legal acceptance from CPU diagnostics."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "headlamp_gap_ft",
+          "unit": "ft",
+          "measurement": {
+            "method": "original Native body polygon distance",
+            "time_window": "all original frames",
+            "statistic": "mean"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "permissible under this chapter",
+        "safe distance in advance of the vehicle"
+      ]
+    },
+    {
+      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep-0002",
+      "target_law_id": "NRS-484D-215-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample following distance for later original-pixel review of persons and vehicles revealed ahead; the assigned law gives no numeric safe-distance judgment.",
+      "paired_probe_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep",
+      "deliberate_differences": [
+        "requested_gap_ft"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_ft",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "requested_gap_ft": 225.0
+        }
+      },
+      "sweep_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_gap_sweep",
+      "sweep_spec_version": "4f89fc9cf107f77be235448a69d8f419ec1920f69f6638eaa4a0b3d526edbde3",
+      "sweep_point": {
+        "requested_gap_ft": 225.0
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "headlamp_gap_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_gap_ft": {
+          "kind": "controller",
+          "value": 225.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "requested_uppermost_distribution": {
+          "kind": "controller",
+          "value": false
+        },
+        "lighting_time_premise": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "requested_roadway_position": {
+          "kind": "world_setup",
+          "value": "driving"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "headlamp_gap_ft",
+            "unit": "ft",
+            "method": "original Native body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounds and 20 Hz sampling"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Headlamp bits and civil-time context remain separate sourced measurements; no physical or legal acceptance from CPU diagnostics."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "headlamp_gap_ft",
+          "unit": "ft",
+          "measurement": {
+            "method": "original Native body polygon distance",
+            "time_window": "all original frames",
+            "statistic": "mean"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "permissible under this chapter",
+        "safe distance in advance of the vehicle"
+      ]
     }
   ]
 }

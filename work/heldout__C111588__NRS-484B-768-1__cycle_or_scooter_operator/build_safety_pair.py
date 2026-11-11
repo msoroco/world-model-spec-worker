@@ -61,10 +61,22 @@ _signal_build_result = build_result
 def build_result(attempt, report):
     result = _signal_build_result(attempt, report)
     result['measured_values']['rider_clearance_observation'] = report['measurements']['rider_clearance_observation']['value']
+    from hashlib import sha256
+    original = Path(attempt) / 'clearance_samples.jsonl'
+    path = Path(attempt) / 'participant_center_clearance.jsonl'
+    if path.exists():
+        raise ValueError('Retain prior derived clearance channel')
+    samples = [json.loads(line) for line in original.read_text().splitlines() if line.strip()]
+    path.write_text(''.join(json.dumps({'frame': row['frame'], 'time_s': row['time_s'],
+        'value': row['center_distance_m']}) + '\\n' for row in samples))
+    result['recording_evidence'].append({
+        'name': 'participant_center_clearance', 'unit': 'm',
+        'reference': 'participant_center_clearance.jsonl',
+        'sha256': sha256(path.read_bytes()).hexdigest()})
     result['realized_observables']['participant_center_clearance'] = {
         'unit': 'm', 'method': 'joined original rider and participant trajectories',
         'time_window': 'all original frames', 'statistic': 'minimum',
-        'reference': 'clearance_samples.jsonl',
+        'reference': 'participant_center_clearance.jsonl',
         'value': result['measured_values']['rider_clearance_observation']['minimum_center_distance_m'],
         'sample_window_s': [0, 10]}
     result['physical_acceptance_claimed'] = False
@@ -99,6 +111,12 @@ def build_one(slug, offset):
     construction['case_id'] = case_id
     construction['recording_description']['limitations'].append(
         'Participant clearance is a synthetic source-join diagnostic; black video does not confirm the participant.')
+    construction['recording_description']['channels'].append({
+        'name': 'participant_center_clearance', 'unit': 'm',
+        'method': 'per-frame original rider/participant planar center distance',
+        'sampling_rate_hz': 20, 'time_window': 'all original frames',
+        'reference_frame': 'Native world XY joined to original frame map',
+        'uncertainty': 'center distance alone omits body extents and legal safety judgment'})
     files = {entry['path']: entry for entry in construction['files']}
     for name in ('probe-config.json', 'config.json'):
         config = json.loads(files[name]['content'])
@@ -189,6 +207,7 @@ if __name__ == '__main__':
         case = json.loads(json.dumps(proposal['cases'][0]))
         case['case_id'] = PREFIX + slug
         case['rationale'] = 'Controlled participant-clearance source join diagnostic; physical and legal decisions remain open'
+        case['recording_description'] = json.loads((ROOT / 'cases' / slug / 'construction.json').read_text())['recording_description']
         case['variable_assignments']['participant_lateral_offset_m'] = {
             'kind': 'controller', 'value': float(offset)}
         case['paired_probe_id'] = 'reasonable_safety_clearance'

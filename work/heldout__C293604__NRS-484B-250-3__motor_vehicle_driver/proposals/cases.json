@@ -454,6 +454,68 @@
         "official traffic-control devices",
         "yield the right-of-way"
       ]
+    },
+    {
+      "case_id": "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_shallow_turn",
+      "target_law_id": "NRS-484B-250-3",
+      "target_type": "boundary_probe",
+      "rationale": "Source planned shallow left exit and opposite approach; actual Native completion and legal judgment unresolved.",
+      "variable_assignments": {
+        "opposing_approach": {
+          "kind": "world_setup",
+          "value": "connected Native opposite-direction routes"
+        },
+        "turn_release_policy": {
+          "kind": "controller",
+          "value": "release after opposite clears"
+        },
+        "turn_heading_change": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "turn_release_delay_frames": {
+          "kind": "controller",
+          "value": 0
+        },
+        "turn_heading_last_rad": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately the same time",
+        "highway which ends at the intersection",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "approaching each other from opposite directions",
+        "intending to or is making a left turn"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "opposing_left_participants",
+            "unit": "m and rad",
+            "sampling_rate_hz": 20,
+            "method": "original Native body corners and heading readbacks for both participants",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native body geometry"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The software fixture does not establish physical turn completion or legal exception applicability."
+        ]
+      },
+      "paired_probe_id": "opposing_left_shallow_vs_orthogonal",
+      "deliberate_differences": [
+        "planned_exit_heading"
+      ],
+      "probe": {
+        "primary_variable": "planned_exit_heading",
+        "comparison_or_standard": "source-backed categorical left-turn point without legal cutoff",
+        "target_value_or_branch": "shallow_left"
+      }
     }
   ],
   "sweep_specs": [

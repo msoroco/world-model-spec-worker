@@ -816,6 +816,77 @@
         "negative_log": "sweep-0002-delivery-audit-negative.log",
         "negative_log_sha256": "9ca04d7ed48f51825142af68129e3f87b65418787ee4e7faa5a16096167f2b99"
       }
+    },
+    {
+      "case_id": "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_shallow_turn",
+      "construction": "construction-shallow-turn.json",
+      "construction_sha256": "9837dc6b14d6a70d9d33a6f6f359af9e7b5e87b70316c044d38685ca891be1ab",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "opposing_left_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-shallow-turn.json",
+      "fixture_recipe": "work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-shallow-turn.json",
+      "acquisition": {
+        "opposing_left_participants": {
+          "entrypoint": "opposing_left_finalizer.py",
+          "method": "original Native route, participant body and heading readbacks joined by frame identity",
+          "evidence": "opposing_left_context.json, opposing_left_participants.jsonl, trace.jsonl and video_frames.jsonl"
+        }
+      },
+      "negative": {
+        "log": "opposing-left-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map suitability, opposing actor clearance and visibility may fail"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-shallow-fallback1.json",
+          "construction_sha256": "5643b4aeb98def82a1ef366ec7e2edf8475f92ab65a058a1a8bb41ee75e61aa3",
+          "trigger": {
+            "source": "original Native route selection",
+            "metric": "eligible connected opposite-direction route pairs",
+            "failure_condition": "primary search finds no admissible connected opposing left-turn route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-shallow-fallback2.json",
+          "construction_sha256": "88943a24a672e91d913e5206228c61f7e92f86f21bd19f391a22c420537a6de9",
+          "trigger": {
+            "source": "original Native speed and body trace",
+            "metric": "speed settling and frame-to-frame acceleration",
+            "failure_condition": "primary gain produces unstable approach speed or misses authored approach timing"
+          },
+          "changed_knobs": [
+            "speed controller proportional gain 0.22 to 0.18"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-shallow-fallback3.json",
+          "construction_sha256": "be12ff6b002e2a33a95c73ee93b7c78ae5c67715504f81f28b740e6d13dab107",
+          "trigger": {
+            "source": "full-resolution overview source decode",
+            "metric": "both participant bodies visible in overview pixels",
+            "failure_condition": "primary overview mount crops either participant"
+          },
+          "changed_knobs": [
+            "overview mount x -9 m to -10 m"
+          ]
+        }
+      ]
     }
   ],
   "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"

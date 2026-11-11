@@ -21,8 +21,8 @@ source_files = ('config.json', 'trace.jsonl', 'video_frames.jsonl',
 names = sorted({name for pair in PAIRS.values() for name in pair[:2]})
 attempts = {}
 for name in names:
-    source = repo / f'.runtime-work/c136539-{name}-compat-passage-a'
-    target = repo / f'.runtime-work/c136539-{name}-comparison-diagnostic-a'
+    source = repo / f'.runtime-work/c136539-{name}-compat-geometry'
+    target = repo / f'.runtime-work/c136539-{name}-comparison-diagnostic-geometry'
     if target.exists():
         raise ValueError('Retain prior diagnostic comparison fixture: ' + name)
     target.mkdir()

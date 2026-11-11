@@ -28,7 +28,7 @@ def audit_attempt(attempt, report, *, decoder=None):
     case = report.get('case_id', '')
     if not case.startswith('heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__'):
         raise ValueError('Wrong C111294 delivery audit case')
-    official = case.endswith('__official_device_control')
+    official = case.endswith(('__official_device_control', '__official_device_green_phase'))
     names = BASE_SOURCES + (DEVICE_SOURCES if official else ('control_inventory.json',))
     for name in (*names, 'config.json'):
         if not (root / name).is_file():
@@ -60,6 +60,13 @@ def audit_attempt(attempt, report, *, decoder=None):
                  root / 'video_frames.jsonl')
         if device != report['measurements']['official_device_observation']['value']:
             raise ValueError('Official-device measurement differs from originals')
+        if case.endswith('__official_device_green_phase'):
+            states = [json.loads(line) for line in
+                      (root / 'official_device_states.jsonl').read_text().splitlines()
+                      if line.strip()]
+            if not states or any(row.get('native_state') != 'TrafficLightState.Green'
+                                 for row in states):
+                raise ValueError('Green-phase original Native readback differs')
     mapping = _rows(root / 'video_frames.jsonl')
     trace = _rows(root / 'trace.jsonl')
     participants = _rows(root / 'intersection_participants.jsonl')

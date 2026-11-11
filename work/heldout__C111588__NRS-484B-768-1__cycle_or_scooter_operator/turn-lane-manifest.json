@@ -1,0 +1,118 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal",
+      "kind": "delivery",
+      "construction": "cases/turn_lane_no_signal/construction.json",
+      "construction_sha256": "978160bcc4d53c867b2d19516666d0782e08e7573e8f5d30235a67ad2e72848f",
+      "measurement_contract": "cases/turn_lane_no_signal/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "rider_signal_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/cases/turn_lane_no_signal/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native rider attachment or arm articulation may be invisible"
+      },
+      "acquisition": {
+        "rider_signal_event": {
+          "entrypoint": "rider_signal_finalizer.py",
+          "method": "join retained source video review to Native motion and frame map",
+          "evidence": "rider_signal_review.jsonl plus four RGB original streams and rider motion"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/turn_lane_no_signal/fallback1-construction.json",
+          "construction_sha256": "d9287d838834ad37e11b2c3c709ec1d5ac507705e8f1f5594393a766849e2313",
+          "trigger": {
+            "source": "Native map waypoint topology and route-selector failure record",
+            "metric": "count of connected left-turn candidates at 2.5 m sampling",
+            "failure_condition": "No connected route survives primary waypoint sampling"
+          },
+          "changed_knobs": [
+            "route waypoint sampling step 2.5 m to 1.5 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/turn-lane-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --candidate fallback1 --output .runtime-work/c111588-turn-lane-fb1-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/turn_lane_no_signal/fallback1-tests.log",
+            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc",
+            "construction_sha256": "d9287d838834ad37e11b2c3c709ec1d5ac507705e8f1f5594393a766849e2313"
+          },
+          "compatibility": {
+            "receipt": "cases/turn_lane_no_signal/fallback1-receipt.json",
+            "sha256": "32b96a31a174049d528d933f756f24693190cac0a927eef54db512697237e208",
+            "log": "cases/turn_lane_no_signal/fallback1-analysis.log",
+            "negative_log": "cases/turn_lane_no_signal/fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/turn_lane_no_signal/fallback2-construction.json",
+          "construction_sha256": "af1c8d708c7b1f8790e3ede4344e68d1414ee38a8c2f2d9bc9fdf13e65818441",
+          "trigger": {
+            "source": "original rider/seat pixels from four synchronized RGB streams",
+            "metric": "rider-to-bicycle seat alignment and body overlap across frames",
+            "failure_condition": "Attached rider is too low, overlaps the bicycle body, or hides the arm"
+          },
+          "changed_knobs": [
+            "attached walker relative height 0.65 m to 0.85 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/turn-lane-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --candidate fallback2 --output .runtime-work/c111588-turn-lane-fb2-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/turn_lane_no_signal/fallback2-tests.log",
+            "log_sha256": "1d83585b97486319bb9c2fff2996c7435fd78e26e63e611aae2ad6791d35db6b",
+            "construction_sha256": "af1c8d708c7b1f8790e3ede4344e68d1414ee38a8c2f2d9bc9fdf13e65818441"
+          },
+          "compatibility": {
+            "receipt": "cases/turn_lane_no_signal/fallback2-receipt.json",
+            "sha256": "704e730b683f3ac1f1b7847c5491fcd66da1bc6bd16fa6c560562ab9fc2be3a1",
+            "log": "cases/turn_lane_no_signal/fallback2-analysis.log",
+            "negative_log": "cases/turn_lane_no_signal/fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/turn_lane_no_signal/fallback3-construction.json",
+          "construction_sha256": "4e64f2fc55eb3610963e6e5b7a0aefa4f36bb5b00edd50410e4b6eafe177915b",
+          "trigger": {
+            "source": "original driver_reference and side RGB frame review",
+            "metric": "count of frames in which the rider and left arm can be resolved",
+            "failure_condition": "Primary camera height hides rider/arm visibility or prevents a defensible no-signal review"
+          },
+          "changed_knobs": [
+            "driver_reference camera relative height 1.8 m to 2.2 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/turn-lane-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal --candidate fallback3 --output .runtime-work/c111588-turn-lane-fb3-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/turn_lane_no_signal/fallback3-tests.log",
+            "log_sha256": "6a5161b3cf086718f005a0ea6d682568d0515d223388a0eecf7c27866f37699d",
+            "construction_sha256": "4e64f2fc55eb3610963e6e5b7a0aefa4f36bb5b00edd50410e4b6eafe177915b"
+          },
+          "compatibility": {
+            "receipt": "cases/turn_lane_no_signal/fallback3-receipt.json",
+            "sha256": "3ed93914902b9b47b4e670721a2874f4f93209348e831e2da9080d65fde8212b",
+            "log": "cases/turn_lane_no_signal/fallback3-analysis.log",
+            "negative_log": "cases/turn_lane_no_signal/fallback3-negative.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "cases/turn_lane_no_signal/physical/proof.json",
+        "sha256": "6dfc7d29a98670f4a62ce53c0600dd9911f372d7e9708d49ee813e9dc271be4b"
+      }
+    }
+  ]
+}

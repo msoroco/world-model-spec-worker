@@ -21,7 +21,7 @@ for case in primary['cases']:
     proof = by_physical[ident]
     offline_log = f'cases/execution-offline-{suffix}.log'
     offline_command = (f'.venv-cpu/bin/python runtime.py offline --manifest work/{root.name}/execution-manifest.json '
-                       f'--case {ident} --output .runtime-work/c136539-{suffix}-execution-offline-a '
+                       f'--case {ident} --output .runtime-work/c136539-{suffix}-execution-offline-geometry '
                        f'--python "$PWD/.venv-cpu/bin/python"')
     saved_log = f'cases/execution-saved-{suffix}.log'
     positive = f'delivery-audit-{suffix if suffix != "slow_person_exposure" else "slow"}-positive.log'
@@ -47,13 +47,13 @@ for case in primary['cases']:
                             'actual_pixels', 'physical_completion'],
                  'script': 'delivery_audit.py', 'script_sha256': sha(root / 'delivery_audit.py'),
                  'command': (f'.venv-cpu/bin/python work/{root.name}/delivery_audit.py --case {ident} '
-                             f'--attempt .runtime-work/c136539-{suffix}-compat-passage-a '
-                             f'--report .runtime-work/c136539-{suffix}-compat-passage-a/analysis-report.json '
+                             f'--attempt .runtime-work/c136539-{suffix}-compat-geometry '
+                             f'--report .runtime-work/c136539-{suffix}-compat-geometry/analysis-report.json '
                              '--diagnostic-fixture'),
                  'test_exit_code': 0, 'test_log': positive, 'test_log_sha256': sha(root / positive),
                  'negative_command': (f'.venv-cpu/bin/python work/{root.name}/delivery_audit.py --case {ident} '
-                                      f'--attempt .runtime-work/c136539-{suffix}-compat-passage-a '
-                                      f'--report .runtime-work/c136539-{suffix}-tampered-passage-report.json '
+                                      f'--attempt .runtime-work/c136539-{suffix}-compat-geometry '
+                                      f'--report .runtime-work/c136539-{suffix}-tampered-closure-report.json '
                                       '--diagnostic-fixture'),
                  'negative_exit_code': 1, 'negative_expected_error': 'hash differs',
                  'negative_log': negative, 'negative_log_sha256': sha(root / negative)},

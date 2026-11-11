@@ -180,7 +180,7 @@
       "Original lamp readback, body separation, travel direction, lighting-time source, roadway/shoulder occupancy and safe-distance light visibility are unsupplied."
     ]
   },
-  "review_status": "partial: six distance/distribution/time/position cases and five comparisons planned, no delivery construction",
+  "review_status": "Partial: all six cases and source comparisons have synthetic CPU proofs; actual Native motion, pixels, civil time and roadway occupancy unreviewed.",
   "branch_inventory": [
     {
       "source": {
@@ -188,7 +188,7 @@
         "sha256": "2f105d16236025597cabc7739a57b53a7442fc2321118497538a014738ce3687"
       },
       "requirement": "nighttime or other NRS 484D.100 activation context with follower within/below/at/above 300 ft",
-      "status": "planned_unimplemented"
+      "status": "source_bound_synthetic_software_proved_physical_unverified"
     },
     {
       "source": {
@@ -196,7 +196,7 @@
         "sha256": "2f105d16236025597cabc7739a57b53a7442fc2321118497538a014738ce3687"
       },
       "requirement": "within 300 ft: uppermost beam versus permitted lower distribution",
-      "status": "planned_unimplemented"
+      "status": "source_bound_synthetic_software_proved_physical_unverified"
     },
     {
       "source": {
@@ -204,7 +204,7 @@
         "sha256": "2f105d16236025597cabc7739a57b53a7442fc2321118497538a014738ce3687"
       },
       "requirement": "traveled portion versus adjacent shoulder",
-      "status": "planned_unimplemented"
+      "status": "source_bound_synthetic_software_proved_physical_unverified"
     },
     {
       "source": {
@@ -212,7 +212,7 @@
         "sha256": "2f105d16236025597cabc7739a57b53a7442fc2321118497538a014738ce3687"
       },
       "requirement": "outside 300 ft comparison without treating it as permission to use an otherwise impermissible beam",
-      "status": "planned_unimplemented"
+      "status": "source_bound_synthetic_software_proved_physical_unverified"
     }
   ],
   "observations": [
@@ -222,14 +222,11 @@
   "runtime_uncertainties": [
     "Native readback of a permissible non-uppermost beam, physical nighttime visibility, road/shoulder occupancy and all exact delivery proofs remain unverified."
   ],
-  "source_observation_mapping": [
-    {
-      "term": "sig.headlamp",
+  "source_observation_mapping": {
+    "sig.headlamp": {
       "measurement": "Native uppermost distribution readback",
       "evidence": "original 20 Hz Native footprint/lamp readback or separately cited context",
-      "channels": [
-        "headlamp_readbacks.jsonl"
-      ],
+      "channels": [],
       "source_refs": [
         {
           "path": "inputs/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/assignment.json",
@@ -237,12 +234,11 @@
         }
       ]
     },
-    {
-      "term": "drv.following",
+    "drv.following": {
       "measurement": "same-direction lead-ahead geometry",
       "evidence": "original 20 Hz Native footprint/lamp readback or separately cited context",
       "channels": [
-        "following_footprints.jsonl"
+        "headlamp_gap_ft"
       ],
       "source_refs": [
         {
@@ -251,12 +247,11 @@
         }
       ]
     },
-    {
-      "term": "rel.surface_gap",
+    "rel.surface_gap": {
       "measurement": "ground-body polygon separation in feet",
       "evidence": "original 20 Hz Native footprint/lamp readback or separately cited context",
       "channels": [
-        "following_footprints.jsonl"
+        "headlamp_gap_ft"
       ],
       "source_refs": [
         {
@@ -265,13 +260,11 @@
         }
       ]
     },
-    {
-      "term": "rel.ahead_behind_in_lane",
+    "rel.ahead_behind_in_lane": {
       "measurement": "lead centroid longitudinal projection and lane source pending",
       "evidence": "original 20 Hz Native footprint/lamp readback or separately cited context",
       "channels": [
-        "following_footprints.jsonl",
-        "lane_context.json"
+        "headlamp_gap_ft"
       ],
       "source_refs": [
         {
@@ -280,13 +273,10 @@
         }
       ]
     },
-    {
-      "term": "drv.civil_night",
+    "drv.civil_night": {
       "measurement": "cited lighting-time applicability",
       "evidence": "original 20 Hz Native footprint/lamp readback or separately cited context",
-      "channels": [
-        "lighting_context.json"
-      ],
+      "channels": [],
       "source_refs": [
         {
           "path": "inputs/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/assignment.json",
@@ -294,13 +284,10 @@
         }
       ]
     },
-    {
-      "term": "env.civil_time",
+    "env.civil_time": {
       "measurement": "original clock and NRS 484D.100 premise",
       "evidence": "original 20 Hz Native footprint/lamp readback or separately cited context",
-      "channels": [
-        "lighting_context.json"
-      ],
+      "channels": [],
       "source_refs": [
         {
           "path": "inputs/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/assignment.json",
@@ -308,13 +295,10 @@
         }
       ]
     },
-    {
-      "term": "st.roadway",
+    "st.roadway": {
       "measurement": "traveled-portion map occupancy pending",
       "evidence": "original 20 Hz Native footprint/lamp readback or separately cited context",
-      "channels": [
-        "roadway_context.json"
-      ],
+      "channels": [],
       "source_refs": [
         {
           "path": "inputs/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/assignment.json",
@@ -322,13 +306,10 @@
         }
       ]
     },
-    {
-      "term": "st.shoulder",
+    "st.shoulder": {
       "measurement": "adjacent shoulder map occupancy pending",
       "evidence": "original 20 Hz Native footprint/lamp readback or separately cited context",
-      "channels": [
-        "roadway_context.json"
-      ],
+      "channels": [],
       "source_refs": [
         {
           "path": "inputs/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/assignment.json",
@@ -336,7 +317,7 @@
         }
       ]
     }
-  ],
+  },
   "requirement_dispositions": [
     {
       "requirement": "NRS 484D.215(2) following within 300 ft during NRS 484D.100 lighting times on traveled highway or adjacent shoulder requires a permissible non-uppermost distribution",
@@ -352,5 +333,32 @@
       ],
       "evidence_or_gap": "No accepted original; body separation, beam bits, road context and civil-time premise require new source capture."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 4,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "complete subject and lead bodies, roadway surface and following interval",
+        "interval": "entire four-second original-frame interval"
+      },
+      {
+        "view": "approach",
+        "subject": "forward lighting region and lead body",
+        "interval": "entire four-second original-frame interval"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "subject and lead body edges and roadside context",
+        "interval": "entire four-second original-frame interval"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject-facing forward beam and lead silhouette",
+        "interval": "entire four-second original-frame interval"
+      }
+    ]
+  }
 }

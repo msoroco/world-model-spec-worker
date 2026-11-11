@@ -219,11 +219,21 @@
             "time_window": "all original frames",
             "reference_frame": "source video joined to Native frame",
             "uncertainty": "diagnostic black frames do not establish physical visibility"
+          },
+          {
+            "name": "participant_center_clearance",
+            "unit": "m",
+            "method": "per-frame original rider/participant planar center distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world XY joined to original frame map",
+            "uncertainty": "center distance alone omits body extents and legal safety judgment"
           }
         ],
         "context_inputs": [],
         "limitations": [
-          "Native rider signal visibility and legal appropriateness are unverified; synthetic black frames only test software joins."
+          "Native rider signal visibility and legal appropriateness are unverified; synthetic black frames only test software joins.",
+          "Participant clearance is a synthetic source-join diagnostic; black video does not confirm the participant."
         ]
       },
       "paired_probe_id": "reasonable_safety_clearance",
@@ -275,11 +285,21 @@
             "time_window": "all original frames",
             "reference_frame": "source video joined to Native frame",
             "uncertainty": "diagnostic black frames do not establish physical visibility"
+          },
+          {
+            "name": "participant_center_clearance",
+            "unit": "m",
+            "method": "per-frame original rider/participant planar center distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world XY joined to original frame map",
+            "uncertainty": "center distance alone omits body extents and legal safety judgment"
           }
         ],
         "context_inputs": [],
         "limitations": [
-          "Native rider signal visibility and legal appropriateness are unverified; synthetic black frames only test software joins."
+          "Native rider signal visibility and legal appropriateness are unverified; synthetic black frames only test software joins.",
+          "Participant clearance is a synthetic source-join diagnostic; black video does not confirm the participant."
         ]
       },
       "paired_probe_id": "reasonable_safety_clearance",
@@ -291,6 +311,146 @@
         "primary_variable": "participant_lateral_offset_m",
         "comparison_or_standard": "wide versus narrow participant clearance",
         "target_value_or_branch": "safety_narrow"
+      }
+    },
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal",
+      "target_law_id": "NRS-484B-768-1",
+      "target_type": "boundary_probe",
+      "rationale": "No-signal turn-lane source-join diagnostic; actual designation and legal exception remain open",
+      "variable_assignments": {
+        "pre_turn_signal_count": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "device_type": {
+          "kind": "world_setup",
+          "value": "bicycle"
+        },
+        "signal_frame_index": {
+          "kind": "controller",
+          "value": 35
+        },
+        "signal_schedule_frames": {
+          "kind": "controller",
+          "value": []
+        },
+        "lane_route_selector": {
+          "kind": "controller",
+          "value": "designated_left_turn_lane_candidate"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "appropriate signal",
+        "reasonable safety",
+        "both hands required for safety"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "rider_signal_event",
+            "unit": "count",
+            "method": "source-video reviewed arm signal per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "source video joined to Native frame",
+            "uncertainty": "diagnostic black frames do not establish physical visibility"
+          },
+          {
+            "name": "turn_lane_designation_visible",
+            "unit": "count",
+            "method": "per-frame source-video review joined to Native lane waypoint",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "driver_reference video and original Native frame map",
+            "uncertainty": "map lane marking readback does not by itself prove a designated turn lane"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Native rider signal visibility and legal appropriateness are unverified; synthetic black frames only test software joins.",
+          "Black diagnostic video cannot confirm turn-lane designation; no legal exception is claimed."
+        ]
+      },
+      "paired_probe_id": "turn_lane_exception",
+      "deliberate_differences": [
+        "lane_route_selector"
+      ],
+      "epsilon_used": 1,
+      "probe": {
+        "primary_variable": "lane_route_selector",
+        "comparison_or_standard": "no-signal generic lane versus designated-turn-lane candidate",
+        "target_value_or_branch": "turn-lane candidate"
+      }
+    },
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal",
+      "target_law_id": "NRS-484B-768-1",
+      "target_type": "boundary_probe",
+      "rationale": "No-signal two-hand control-demand source-join diagnostic; safety necessity and exception remain open",
+      "variable_assignments": {
+        "pre_turn_signal_count": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "device_type": {
+          "kind": "world_setup",
+          "value": "bicycle"
+        },
+        "signal_frame_index": {
+          "kind": "controller",
+          "value": 35
+        },
+        "signal_schedule_frames": {
+          "kind": "controller",
+          "value": []
+        },
+        "both_hands_demand_mode": {
+          "kind": "controller",
+          "value": "steering_perturbation_28_to_40"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "appropriate signal",
+        "reasonable safety",
+        "both hands required for safety"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "rider_signal_event",
+            "unit": "count",
+            "method": "source-video reviewed arm signal per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "source video joined to Native frame",
+            "uncertainty": "diagnostic black frames do not establish physical visibility"
+          },
+          {
+            "name": "two_hand_contact_observed",
+            "unit": "count",
+            "method": "per-frame source-video review joined to hand-bone and control readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "driver_reference video and original Native frame map",
+            "uncertainty": "bone pose and command do not establish physical contact or safety necessity"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Native rider signal visibility and legal appropriateness are unverified; synthetic black frames only test software joins.",
+          "Black diagnostic video cannot confirm either hand on the handlebar or that safe operation requires both hands."
+        ]
+      },
+      "paired_probe_id": "both_hands_exception",
+      "deliberate_differences": [
+        "both_hands_demand_mode"
+      ],
+      "epsilon_used": 1,
+      "probe": {
+        "primary_variable": "both_hands_demand_mode",
+        "comparison_or_standard": "no-signal generic turn versus two-hand control-demand candidate",
+        "target_value_or_branch": "two-hand demand candidate"
       }
     }
   ]

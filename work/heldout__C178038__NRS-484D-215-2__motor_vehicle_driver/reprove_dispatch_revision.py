@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import sys
 from uuid import uuid4
+import argparse
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -62,8 +63,13 @@ def run_case(entry, candidate):
     print(stem, 'offline and positive/negative compatibility passed', flush=True)
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--only-fallback12', action='store_true')
+args = parser.parse_args()
 for entry in manifest['cases']:
-    for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
+    candidates = ('fallback1', 'fallback2') if args.only_fallback12 else (
+        'primary', 'fallback1', 'fallback2', 'fallback3')
+    for candidate in candidates:
         run_case(entry, candidate)
     MANIFEST.write_text(json.dumps(manifest, indent=2) + '\n')
 

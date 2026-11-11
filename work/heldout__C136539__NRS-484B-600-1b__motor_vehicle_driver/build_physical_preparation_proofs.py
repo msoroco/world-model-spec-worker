@@ -25,14 +25,14 @@ for entry in manifest['cases']:
         result = f'physical/{suffix}-{kind}-result.json'
         receipt['fixtures'].append({
             'kind': kind,
-            'command': f'PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/{root.name}/physical_probe.py --case {entry["case_id"]} --kind {kind} --output .runtime-work/c136539-{suffix}-physical-{kind}-a',
+            'command': f'PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/{root.name}/physical_probe.py --case {entry["case_id"]} --kind {kind} --output .runtime-work/c136539-{suffix}-physical-{kind}-geometry',
             'exit_code': 0, 'log': log, 'log_sha256': sha(root / log),
             'result': result, 'result_sha256': sha(root / result)})
     life_log = f'physical/{suffix}-lifecycle.log'
     life = json.loads((root / life_log).read_text())
     receipt['lifecycle'] = {
         'events': life['events'],
-        'command': f'PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/{root.name}/physical_probe.py --case {entry["case_id"]} --kind lifecycle --output .runtime-work/c136539-{suffix}-physical-lifecycle-a',
+        'command': f'PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/{root.name}/physical_probe.py --case {entry["case_id"]} --kind lifecycle --output .runtime-work/c136539-{suffix}-physical-lifecycle-geometry',
         'exit_code': 0, 'log': life_log, 'log_sha256': sha(root / life_log),
         'premature_seal_rejected': life['premature_seal_rejected']}
     path = root / f'physical/{suffix}-proof.json'

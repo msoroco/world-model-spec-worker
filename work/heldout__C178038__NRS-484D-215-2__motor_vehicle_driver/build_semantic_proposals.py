@@ -4,10 +4,13 @@ from copy import deepcopy
 from hashlib import sha256
 import json
 from pathlib import Path
+import sys
 
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
+sys.path.insert(0, str(ROOT / 'runtime/scenario_pipeline'))
+from batch_pipeline.sweeps import expand_sweeps
 ASSIGNMENT = json.loads((ROOT / 'inputs' / HERE.name / 'assignment.json').read_text())
 LAW = ASSIGNMENT['law']
 LAW_ID = ASSIGNMENT['law_id']
@@ -35,7 +38,7 @@ phrases = [('safe distance in advance of the vehicle',
             'Native high/low beam bits do not independently establish a permissible distribution.')]
 parameters = [
     ('headlamp_gap_ft', 'subject_behavior', 'measured nonnegative ground-body distance in ft'),
-    ('requested_gap_ft', 'controller', 'requested 299, 300 or 301 ft boundary setup'),
+    ('requested_gap_ft', 'controller', 'requested following-distance setup in feet'),
     ('requested_uppermost_distribution', 'controller', 'requested beam-state setup'),
     ('lighting_time_premise', 'world_setup', 'separately sourced NRS 484D.100 time premise'),
     ('requested_roadway_position', 'world_setup', 'traveled portion or adjacent shoulder setup'),
@@ -107,16 +110,35 @@ baseline.update(case_id=ASSIGNMENT['assignment_id'] + '__neutral_baseline',
                 rationale='Neutral reference for selected comparison probes; no delivery recording')
 for key in ('paired_probe_id', 'deliberate_differences', 'probe', 'epsilon_used'):
     baseline.pop(key, None)
+sweep_id = ASSIGNMENT['assignment_id'] + '__illumination_gap_sweep'
+illumination_sweep = {
+    'sweep_id': sweep_id, 'target_law_id': LAW_ID,
+    'judgment_refs': [{'phrase': phrases[0][0], 'note': phrases[0][1]}],
+    'status': 'complete', 'mode': 'one_dimensional',
+    'axes': [{'variable': 'requested_gap_ft', 'observable': 'headlamp_gap_ft',
+              'unit': 'ft', 'min': 150, 'max': 299, 'spacing': 75,
+              'measurement': {'method': 'original Native body polygon distance',
+                              'time_window': 'all original frames', 'statistic': 'mean'},
+              'range_rationale': 'NRS 484D.215(2) names following within 300 ft; 150 to 299 ft samples the applicable interval without defining a safe illumination cutoff.',
+              'spacing_rationale': '75 ft covers a near, middle, and near-boundary presentation at fixed low-beam setup; the terminal interval is 74 ft.',
+              'feasibility_evidence': 'headlamp_follow_route.select_follow_route already constructs a connected 299 ft following route; shorter positive setpoints use the same route selector and are checked on original body polygons.'}],
+    'landmarks': [],
+    'rationale': 'Sample following distance for later original-pixel review of persons and vehicles revealed ahead; the assigned law gives no numeric safe-distance judgment.',
+    'variable_assignments': deepcopy(selected[1]['variable_assignments']),
+    'recording_description': deepcopy(selected[1]['recording_description']),
+}
 semantic_cases = {'format': 'scenario-coverage-cases', 'status': 'draft',
                   'cell_id': ASSIGNMENT['cell_id'], 'actor': ACTOR,
-                  'sweeps_expanded': True,
-                  'sweep_specs': [{'sweep_id': ASSIGNMENT['assignment_id'] + '__illumination_review',
+                  'sweeps_expanded': False,
+                  'sweep_specs': [illumination_sweep,
+                                  {'sweep_id': ASSIGNMENT['assignment_id'] + '__beam_permissibility_review',
                                    'target_law_id': LAW_ID,
-                                   'judgment_refs': [{'phrase': p, 'note': n} for p, n in phrases],
+                                   'judgment_refs': [{'phrase': phrases[1][0], 'note': phrases[1][1]}],
                                    'status': 'incomplete',
-                                   'missing_inputs': ['Original Native illumination pixels and independent civil-time/beam-permissibility sources are unavailable in CPU diagnostics.'],
-                                   'rationale': 'Physical illumination/permissibility review remains source-dependent; do not invent a judgment threshold.'}],
+                                   'missing_inputs': ['Chapter-permissible beam distribution requires independent source interpretation and original Native beam/pixel evidence.'],
+                                   'rationale': 'The Native high/low beam bit alone cannot decide chapter permissibility.'}],
                   'cases': [baseline, *selected]}
+expand_sweeps(semantic_cases, [template], bindings)
 
 
 def observable(phrase, note):
@@ -124,7 +146,10 @@ def observable(phrase, note):
             'status': 'draft', 'observable_requirements': {
                 'observables': [{'name': 'headlamp_gap_ft', 'unit': 'ft',
                                  'description': 'Original body separation and following geometry needed to locate the applicable interval.'}],
-                'context_inputs': [], 'sweep_dimensions': [], 'landmarks': [],
+                'context_inputs': [],
+                'sweep_dimensions': ([{'name': 'headlamp_gap_ft', 'unit': 'ft',
+                                      'description': 'Actual source-derived following separation for illumination coverage sampling.'}]
+                                     if phrase == phrases[0][0] else []), 'landmarks': [],
                 'recording_needs': [{'name': 'headlamp_gap_ft', 'unit': 'ft',
                                      'description': 'Source-derived following separation over original frames.'}],
                 'limitations': ['Original lamp readbacks, pixel visibility, civil time and chapter permissibility need separate source review; this observation defines no legal judgment.']}}

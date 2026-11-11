@@ -726,6 +726,96 @@
         "official traffic-control devices",
         "yield the right-of-way"
       ]
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_green_phase",
+      "target_law_id": "NRS-484B-250-3",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound governing Native device Green-phase alternative; phase is commanded and original state is retained, while legal official status and subsection 4 remain unresolved",
+      "variable_assignments": {
+        "entry_delta_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ending_through_topology": {
+          "kind": "world_setup",
+          "value": "connected ending and through Native route plan"
+        },
+        "intersection_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_device_state": {
+          "kind": "world_setup",
+          "value": "governing Native device commanded Green"
+        },
+        "subject_release_delay_frames": {
+          "kind": "controller",
+          "value": 0
+        },
+        "subject_displacement_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "subject_entry_elapsed_s": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately the same time",
+        "highway which ends at the intersection",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "approaching each other from opposite directions",
+        "intending to or is making a left turn"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "intersection_occupancy",
+            "unit": "bool",
+            "sampling_rate_hz": 20,
+            "method": "original Native body polygons against retained conflict polygon for both participants",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native bounding-box precision"
+          },
+          {
+            "name": "official_device_state",
+            "unit": "categorical",
+            "sampling_rate_hz": 20,
+            "method": "original Native traffic-light state readback for affected ending approach",
+            "time_window": "full 8 s trace",
+            "reference_frame": "governing signal actor",
+            "uncertainty": "Native actor association and 20 Hz sampling"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "lanes",
+            "method": "Native OpenDRIVE road/lane and successor readback",
+            "unit": "structured topology"
+          },
+          {
+            "name": "device_id",
+            "unit": "native id",
+            "method": "Native OpenDRIVE signal ID and affected-lane readback"
+          }
+        ],
+        "limitations": [
+          "No legal approximately-same-time or yield judgment follows from a CPU fixture."
+        ]
+      },
+      "paired_probe_id": "official_device_phase_contrast",
+      "deliberate_differences": [
+        "commanded Native device Green state"
+      ],
+      "probe": {
+        "primary_variable": "official_device_state",
+        "comparison_or_standard": "original-source controlled comparison without a legal cutoff",
+        "target_value_or_branch": "official_device_control"
+      }
     }
   ],
   "sweep_specs": [

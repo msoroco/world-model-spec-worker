@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 cases = {}
 for slug, suffix in (('safety_wide', 'wide'), ('safety_narrow', 'narrow')):
-    path = REPO / '.runtime-work' / (f'c111588-safety-{suffix}-compat-' + ('f' if suffix == 'wide' else 'b')) / 'compatibility.json'
+    path = REPO / '.runtime-work' / (f'c111588-safety-{suffix}-compat-' + ('h' if suffix == 'wide' else 'c')) / 'compatibility.json'
     receipt = json.loads(path.read_text())
     assert receipt['passed'] is True and receipt['negative_removed'] == 'participant_motion.jsonl'
     cases[slug] = receipt
@@ -26,7 +26,7 @@ def value(receipt):
     return receipt['measurement_examples']['rider_clearance_observation']['value']['minimum_center_distance_m']
 assert abs(value(wide)-8) < .01 and abs(value(narrow)-3) < .01
 with tempfile.TemporaryDirectory(prefix='rider-clearance-stale-') as tmp:
-    source = REPO / '.runtime-work/c111588-safety-wide-original-b'
+    source = REPO / '.runtime-work/c111588-safety-wide-original-c'
     root = Path(tmp)
     for name in ('trace.jsonl','video_frames.jsonl','participant_motion.jsonl','clearance_samples.jsonl'):
         shutil.copy2(source / name, root / name)

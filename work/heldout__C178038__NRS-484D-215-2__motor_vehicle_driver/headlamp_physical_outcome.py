@@ -14,7 +14,8 @@ def check_physical_outcome(source_audit, analysis, review, *, target_ft,
         raise ValueError('Physical review frame count differs')
     if not all(row['following_geometry'] for row in frames):
         raise ValueError('Original geometry does not show following')
-    expected_upper = 'night_299_other' not in case_id
+    expected_upper = not (case_id.endswith('night_299_other') or
+                          'illumination_gap_sweep-' in case_id)
     if not all(row['uppermost_distribution_readback'] is expected_upper for row in frames):
         raise ValueError('Original beam readback differs from selected case')
     if abs(observation['minimum_surface_gap_ft'] - target_ft) > attainment_band_ft:

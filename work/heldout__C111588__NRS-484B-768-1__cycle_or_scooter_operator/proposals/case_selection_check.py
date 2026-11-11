@@ -18,7 +18,7 @@ def check():
     selected = set(selection['selected_cpu_diagnostic_cases'])
     pending = set(selection['pending_physical_cases'])
     planned = {case['case_id'] for case in plan['cases']}
-    assert len(selected) == 3 and len(pending) == 6
+    assert len(selected) == 6 and len(pending) == 3
     assert selected | pending == planned and not selected & pending
     defined = {case['case_id'] for case in proposal['cases'] if case['target_type'] != 'baseline'}
     assert defined == planned

@@ -9,7 +9,9 @@ from headlamp_follow_measurement import measure
 
 
 CASE_SUFFIXES = ('night_299_upper', 'night_299_other', 'night_300_upper',
-                 'night_301_upper', 'day_299_upper', 'shoulder_299_upper')
+                 'night_301_upper', 'day_299_upper', 'shoulder_299_upper',
+                 'illumination_gap_sweep-0000', 'illumination_gap_sweep-0001',
+                 'illumination_gap_sweep-0002')
 CASE_PREFIX = 'heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__'
 
 

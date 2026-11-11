@@ -4,7 +4,7 @@ from pathlib import Path
 from types import SimpleNamespace as NS
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from exposure_case_setup import CASES, PREFIX, case_settings, exposed_transform_point, spawn_exposed
+from exposure_case_setup import CASES, EXPOSED_WAYPOINT_INDEX, PREFIX, case_settings, exposed_transform_point, spawn_exposed
 from test_narrow_exposure_route import route_map
 
 
@@ -33,12 +33,13 @@ class ExposureCaseSetupTests(unittest.TestCase):
             _, route = route_map(direction=direction)
             near = exposed_transform_point(route, outside_edge_m=.4)
             far = exposed_transform_point(route, outside_edge_m=2.0)
+            self.assertEqual(abs(near[0]), EXPOSED_WAYPOINT_INDEX * 2.5)
             self.assertGreater(near[1] * direction, 0)
             self.assertGreater(abs(far[1]), abs(near[1]))
 
     def test_real_spawn_calls_and_fixed_property_physics(self):
         _, route = route_map()
-        route[8].transform.rotation = NS(yaw=0)
+        route[EXPOSED_WAYPOINT_INDEX].transform.rotation = NS(yaw=0)
         spawned = []
         actor = NS(set_simulate_physics=lambda value: spawned.append(('physics', value)))
         world = NS(get_blueprint_library=lambda: NS(find=lambda value: value),

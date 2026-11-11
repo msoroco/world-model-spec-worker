@@ -83,11 +83,21 @@ def audit(ending, official, turning, holding):
         for name in ('opposing_left_context.json', 'opposing_left_participants.jsonl',
                      'video_frames.jsonl'):
             (temp / name).write_bytes((turning / name).read_bytes())
-        context = json.loads((temp / 'opposing_left_context.json').read_text())
+        original_context = json.loads((temp / 'opposing_left_context.json').read_text())
+        context = json.loads(json.dumps(original_context))
         context['opposite_route'][0]['heading_xy'] = context['turning_route'][0]['heading_xy']
         (temp / 'opposing_left_context.json').write_text(json.dumps(context) + '\n')
         bad_opposite = expect_rejection(lambda: measure_opposing_left(temp),
                                         'does not establish opposing leftward plan')
+        context = json.loads(json.dumps(original_context))
+        context['turning_route'][-1]['heading_xy'] = context['turning_route'][0]['heading_xy']
+        (temp / 'opposing_left_context.json').write_text(json.dumps(context) + '\n')
+        bad_straight = expect_rejection(lambda: measure_opposing_left(temp),
+                                        'does not establish opposing leftward plan')
+        context['opposite_route'][0]['heading_xy'] = context['turning_route'][0]['heading_xy']
+        (temp / 'opposing_left_context.json').write_text(json.dumps(context) + '\n')
+        bad_same_straight = expect_rejection(lambda: measure_opposing_left(temp),
+                                             'does not establish opposing leftward plan')
     return {'format': 'worker-categorical-qualitative-source-matrix',
             'law_id': 'NRS-484B-250-3',
             'ending_case': json.loads((ending / 'config.json').read_text())['selected_case_id'],
@@ -102,7 +112,8 @@ def audit(ending, official, turning, holding):
             'planned_left_cross': turn['planned_left_cross'],
             'observed_turn_heading_change_rad': turn['observed_turn_heading_change_rad'],
             'observed_hold_heading_change_rad': hold['observed_turn_heading_change_rad'],
-            'negative_rejections': [bad_ending, bad_through, bad_device, bad_opposite],
+            'negative_rejections': [bad_ending, bad_through, bad_device,
+                                    bad_opposite, bad_straight, bad_same_straight],
             'native_capture_claimed': False, 'legal_judgment_claimed': False}
 
 

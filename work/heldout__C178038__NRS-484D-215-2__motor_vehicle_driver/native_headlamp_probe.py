@@ -25,22 +25,28 @@ CONTEXT_CASES = {
     CASE_PREFIX + 'day_299_upper': (299, True, False, 'driving'),
     CASE_PREFIX + 'shoulder_299_upper': (299, True, True, 'shoulder'),
 }
+SWEEP_CASES = {
+    CASE_PREFIX + 'illumination_gap_sweep-0000': (150, False),
+    CASE_PREFIX + 'illumination_gap_sweep-0001': (299, False),
+    CASE_PREFIX + 'illumination_gap_sweep-0002': (225, False),
+}
 
 
 def check_config(config):
     case_id = config.get('selected_case_id')
-    if case_id not in NIGHT_CASES and case_id not in CONTEXT_CASES:
+    if case_id not in NIGHT_CASES and case_id not in CONTEXT_CASES and case_id not in SWEEP_CASES:
         raise ValueError('Unknown exact following probe case')
     if (config.get('law_id'), config.get('cell_id'), config.get('actor')) != (
             'NRS-484D-215-2', 'C178038', 'motor_vehicle_driver'):
         raise ValueError('Following probe identity differs')
     gap_ft, uppermost = (NIGHT_CASES[case_id] if case_id in NIGHT_CASES
+                         else SWEEP_CASES[case_id] if case_id in SWEEP_CASES
                          else CONTEXT_CASES[case_id][:2])
     if (config.get('rate_hz'), config.get('frames'), config.get('requested_gap_ft')) != (20, 80, gap_ft):
         raise ValueError('Following probe rate, duration or gap differs')
     if config.get('requested_uppermost_distribution') is not uppermost:
         raise ValueError('Following probe beam setup differs')
-    expected_time, expected_surface = ((True, 'driving') if case_id in NIGHT_CASES
+    expected_time, expected_surface = ((True, 'driving') if case_id in NIGHT_CASES or case_id in SWEEP_CASES
                                        else CONTEXT_CASES[case_id][2:])
     if (config.get('requested_lighting_time_applies', True) is not expected_time or
             config.get('requested_roadway_position', 'driving') != expected_surface):
@@ -77,6 +83,24 @@ def prepare_output(output, config):
     return output
 
 
+def seal_provenance(output, frames, route, map_name):
+    """Seal closed original acquisition only after Native restoration succeeds."""
+    from worker_exchange.native_output import seal_capture
+
+    output = Path(output)
+    if not frames or len(set(frames)) != len(frames):
+        raise ValueError('Native following capture has no complete frame sequence')
+    (output / 'acquisition-provenance.json').write_text(json.dumps({
+        'provenance_kind': 'native', 'diagnostic_fixture': False,
+        'original_frames': len(frames)}) + '\n')
+    return seal_capture(output, frames=len(frames), restoration={'restored': True},
+                        errors=[], encoder_exit_codes={name: 0 for name in CAMERAS},
+                        context={'native_map_name': map_name,
+                                 'route_road_id': route['ego'].road_id,
+                                 'route_lane_id': route['ego'].lane_id,
+                                 'requested_gap_ft': route['requested_gap_ft']})
+
+
 def run(config, output, host, port):
     import carla
     from pipeline_capture import PipelineCapture
@@ -92,6 +116,8 @@ def run(config, output, host, port):
     actors = []
     recorder = roadway = pipeline = frame_map = cameras = None
     sinks = {}
+    frames = []
+    capture_complete = False
     try:
         settings = world.get_settings()
         settings.synchronous_mode = True
@@ -137,7 +163,6 @@ def run(config, output, host, port):
         for name in CAMERAS:
             sinks[name] = LosslessSourceSink(output, name)
         cameras = HeadlampCameraCapture(world, carla, ego, sinks)
-        frames = []
         start = None
         for index in range(config['frames']):
             lead.apply_control(carla.VehicleControl(**_command(
@@ -172,6 +197,7 @@ def run(config, output, host, port):
             'lighting_time_physical_verification': False,
             'roadway_occupancy_physical_verification': False,
             'delivery_ready': False}, indent=2) + '\n')
+        capture_complete = True
     finally:
         if frame_map is not None:
             frame_map.close()
@@ -180,7 +206,7 @@ def run(config, output, host, port):
         if roadway is not None:
             roadway.close()
         if pipeline is not None:
-            pipeline.close(confirmed=False)
+            pipeline.close(confirmed=capture_complete)
         if cameras is not None:
             cameras.close()
         for sink in sinks.values():
@@ -193,6 +219,8 @@ def run(config, output, host, port):
         if (restored.synchronous_mode != original.synchronous_mode or
                 restored.fixed_delta_seconds != original.fixed_delta_seconds):
             raise ValueError('Native following world settings restore failed')
+    if capture_complete:
+        seal_provenance(output, frames, route, world.get_map().name)
 
 
 def main():

@@ -15,6 +15,7 @@ CASES = {
     'property_near': (5.0, 'property', 0.4),
     'property_far': (5.0, 'property', 2.0),
 }
+EXPOSED_WAYPOINT_INDEX = 4
 
 
 def case_settings(config):
@@ -38,7 +39,7 @@ def case_settings(config):
             'outside_edge_m': lateral}
 
 
-def exposed_transform_point(route, *, outside_edge_m, waypoint_index=8):
+def exposed_transform_point(route, *, outside_edge_m, waypoint_index=EXPOSED_WAYPOINT_INDEX):
     if len(route) <= waypoint_index or outside_edge_m < 0:
         raise ValueError('Exposure route or lateral placement invalid')
     waypoint = route[waypoint_index]
@@ -59,7 +60,8 @@ def spawn_exposed(world, carla, route, settings):
     blueprint_id = ('walker.pedestrian.0001' if kind == 'pedestrian'
                     else 'vehicle.tesla.model3')
     blueprint = world.get_blueprint_library().find(blueprint_id)
-    transform = carla.Transform(carla.Location(*point), route[8].transform.rotation)
+    transform = carla.Transform(carla.Location(*point),
+                                route[EXPOSED_WAYPOINT_INDEX].transform.rotation)
     actor = world.try_spawn_actor(blueprint, transform)
     if actor is None:
         raise ValueError('Native exposed ' + kind + ' spawn failed')

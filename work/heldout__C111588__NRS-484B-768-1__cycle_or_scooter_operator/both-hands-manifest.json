@@ -1,0 +1,114 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal",
+      "kind": "delivery",
+      "construction": "cases/both_hands_no_signal/construction.json",
+      "construction_sha256": "687262332841263dc92bf36db83ae3e9e49129395fb10f001b0e8a7d29bf4055",
+      "measurement_contract": "cases/both_hands_no_signal/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "rider_signal_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/cases/both_hands_no_signal/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native rider attachment or arm articulation may be invisible"
+      },
+      "acquisition": {
+        "rider_signal_event": {
+          "entrypoint": "rider_signal_finalizer.py",
+          "method": "join retained source video review to Native motion and frame map",
+          "evidence": "rider_signal_review.jsonl plus four RGB original streams and rider motion"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/both_hands_no_signal/fallback1-construction.json",
+          "construction_sha256": "bb4e3fdc82613fc75ae688dfa3630ee344073dbe66a531ae81bcbc7917a412b9",
+          "trigger": {
+            "source": "Native map waypoint topology and route-selector failure record",
+            "metric": "count of connected left-turn candidates at 2.5 m sampling",
+            "failure_condition": "No connected route survives primary waypoint sampling"
+          },
+          "changed_knobs": [
+            "route waypoint sampling step 2.5 m to 1.5 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/both-hands-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --candidate fallback1 --output .runtime-work/c111588-both-hands-fb1-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/both_hands_no_signal/fallback1-tests.log",
+            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc",
+            "construction_sha256": "bb4e3fdc82613fc75ae688dfa3630ee344073dbe66a531ae81bcbc7917a412b9"
+          },
+          "compatibility": {
+            "receipt": "cases/both_hands_no_signal/fallback1-receipt.json",
+            "sha256": "8ae397551d8006261d2b2c1619f0278c4646750bd09142ea9beb2b5583bd94e8",
+            "log": "cases/both_hands_no_signal/fallback1-analysis.log",
+            "negative_log": "cases/both_hands_no_signal/fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/both_hands_no_signal/fallback2-construction.json",
+          "construction_sha256": "78772a610573ca66797a6c6dcbb3cb4d4d4ed46fa8cd2043f6a120d1ed34757d",
+          "trigger": {
+            "source": "original rider/seat pixels from four synchronized RGB streams",
+            "metric": "rider-to-bicycle seat alignment and body overlap across frames",
+            "failure_condition": "Attached rider is too low, overlaps the bicycle body, or hides the arm"
+          },
+          "changed_knobs": [
+            "attached walker relative height 0.65 m to 0.85 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/both-hands-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --candidate fallback2 --output .runtime-work/c111588-both-hands-fb2-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/both_hands_no_signal/fallback2-tests.log",
+            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc",
+            "construction_sha256": "78772a610573ca66797a6c6dcbb3cb4d4d4ed46fa8cd2043f6a120d1ed34757d"
+          },
+          "compatibility": {
+            "receipt": "cases/both_hands_no_signal/fallback2-receipt.json",
+            "sha256": "208bbb6d07b132ef91c1bb5da997944b1b573159b62019e02b5c5abaf98b9f1e",
+            "log": "cases/both_hands_no_signal/fallback2-analysis.log",
+            "negative_log": "cases/both_hands_no_signal/fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/both_hands_no_signal/fallback3-construction.json",
+          "construction_sha256": "dac01b6a67736fb335c42e80acb943a99232e090163c2d2f3f8086be601b2de6",
+          "trigger": {
+            "source": "original driver_reference and side RGB frame review",
+            "metric": "count of frames in which the rider and left arm can be resolved",
+            "failure_condition": "Primary camera height hides rider/arm visibility or prevents a defensible no-signal review"
+          },
+          "changed_knobs": [
+            "driver_reference camera relative height 1.8 m to 2.2 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/both-hands-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal --candidate fallback3 --output .runtime-work/c111588-both-hands-fb3-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/both_hands_no_signal/fallback3-tests.log",
+            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc",
+            "construction_sha256": "dac01b6a67736fb335c42e80acb943a99232e090163c2d2f3f8086be601b2de6"
+          },
+          "compatibility": {
+            "receipt": "cases/both_hands_no_signal/fallback3-receipt.json",
+            "sha256": "7cd6c39cda2ed859698025208c5448acf9e74411375f41d5c4882c387af07816",
+            "log": "cases/both_hands_no_signal/fallback3-analysis.log",
+            "negative_log": "cases/both_hands_no_signal/fallback3-negative.log"
+          }
+        }
+      ]
+    }
+  ]
+}

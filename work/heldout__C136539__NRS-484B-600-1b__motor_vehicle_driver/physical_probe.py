@@ -44,8 +44,8 @@ def fixture(case_id, kind, output):
           {'provenance_kind': 'native', 'diagnostic_fixture': True,
            'fixture_scope': 'CPU simulation of original-source protocol'})
     count = 160
-    total = 40.0 if kind == 'complete_motion' else 1.0
-    exposed_x = 20.0
+    total = config['requested_speed_mps'] * 8.0 if kind == 'complete_motion' else 1.0
+    exposed_x = 10.0
     frames, trace, footprints = [], [], []
     for index in range(count):
         time_s = index / 20
