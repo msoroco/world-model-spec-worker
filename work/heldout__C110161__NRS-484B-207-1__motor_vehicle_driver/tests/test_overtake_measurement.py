@@ -60,6 +60,21 @@ class OvertakeMeasurementTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, '20 Hz'):
             measure(self.path)
 
+    def test_rejects_nonfinite_geometry_and_skipped_native_frame(self):
+        self.write()
+        rows = [json.loads(line) for line in self.path.read_text().splitlines()]
+        rows[1]['ego_corners'][0][0] = float('nan')
+        self.path.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+        with self.assertRaisesRegex(ValueError, 'Nonfinite original footprint'):
+            measure(self.path)
+        self.write()
+        rows = [json.loads(line) for line in self.path.read_text().splitlines()]
+        rows[2]['frame'] += 10
+        rows[3]['frame'] += 10
+        self.path.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+        with self.assertRaisesRegex(ValueError, '20 Hz'):
+            measure(self.path)
+
 
 if __name__ == '__main__':
     unittest.main()

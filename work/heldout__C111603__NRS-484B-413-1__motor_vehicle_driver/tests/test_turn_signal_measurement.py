@@ -72,6 +72,23 @@ class TurnSignalMeasurementTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'signal/audio frame join'):
             self.result()
 
+    def test_rejects_nonfinite_original_audio_yaw_and_time(self):
+        self.signals[1]['listener_audio_samples'] = [float('nan')] * 8
+        self.write()
+        with self.assertRaisesRegex(ValueError, 'out of range'):
+            self.result()
+        self.signals[1]['listener_audio_samples'] = [.2] * 8
+        self.motion[2]['ego_yaw_deg'] = float('inf')
+        self.write()
+        with self.assertRaisesRegex(ValueError, 'yaw is not finite'):
+            self.result()
+        self.motion[2]['ego_yaw_deg'] = 20
+        self.motion[1]['time_s'] = float('nan')
+        self.signals[1]['time_s'] = float('nan')
+        self.write()
+        with self.assertRaisesRegex(ValueError, 'frame/time identity missing'):
+            self.result()
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -59,6 +59,26 @@ class EndingRoadMeasurementTests(unittest.TestCase):
         self.assertTrue(result['conflict_overlap_observed'])
         self.assertFalse(result['subject_entered_after_other_last_conflict_frame'])
 
+    def test_traverses_source_backed_junction_lanes_to_exterior_highways(self):
+        for start, interior, exterior in (('S', 'JS', 'C'), ('T', 'JT', 'U')):
+            self.topology['lanes'][start]['junction_id'] = None
+            self.topology['lanes'][start]['successors'] = [interior]
+            self.topology['lanes'][interior] = {
+                'junction_id': 'J',
+                'highway_id': self.topology['lanes'][start]['highway_id'],
+                'successors': [exterior],
+            }
+        self.write([-3, 1, 5], [-3, 1, 5])
+        result = measure(self.root / 'intersection_topology.json',
+                         self.root / 'intersection_participants.jsonl')
+        self.assertEqual(result['approaches']['subject']['exterior_lanes'], ['C'])
+        self.assertTrue(result['approaches']['other']['continues_beyond_junction'])
+        self.topology['lanes']['JT']['successors'] = ['missing']
+        (self.root / 'intersection_topology.json').write_text(json.dumps(self.topology))
+        with self.assertRaisesRegex(ValueError, 'absent from topology'):
+            measure(self.root / 'intersection_topology.json',
+                    self.root / 'intersection_participants.jsonl')
+
     def test_rejects_falsely_declared_ending_road_and_bad_frame_join(self):
         self.write([-3, 1, 5], [-3, 1, 5])
         self.topology['lanes']['C']['highway_id'] = 'ending_road'
@@ -71,6 +91,21 @@ class EndingRoadMeasurementTests(unittest.TestCase):
         frames = self.root / 'intersection_participants.jsonl'
         rows = [json.loads(line) for line in frames.read_text().splitlines()]
         rows[1]['time_s'] = .2
+        frames.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+        with self.assertRaisesRegex(ValueError, '20 Hz'):
+            measure(self.root / 'intersection_topology.json', frames)
+
+    def test_rejects_nonfinite_original_polygon_and_skipped_frame(self):
+        self.write([-3, 1, 5], [-3, 1, 5])
+        frames = self.root / 'intersection_participants.jsonl'
+        rows = [json.loads(line) for line in frames.read_text().splitlines()]
+        rows[1]['subject_corners'][0][0] = float('nan')
+        frames.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+        with self.assertRaisesRegex(ValueError, 'Nonfinite original polygon'):
+            measure(self.root / 'intersection_topology.json', frames)
+        self.write([-3, 1, 5], [-3, 1, 5])
+        rows = [json.loads(line) for line in frames.read_text().splitlines()]
+        rows[2]['frame'] += 1
         frames.write_text(''.join(json.dumps(row) + '\n' for row in rows))
         with self.assertRaisesRegex(ValueError, '20 Hz'):
             measure(self.root / 'intersection_topology.json', frames)

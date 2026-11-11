@@ -6,7 +6,7 @@ identity, not a scenario flag saying that the subject road ends.
 
 from hashlib import sha256
 import json
-from math import hypot
+from math import hypot, isfinite
 from pathlib import Path
 
 
@@ -32,7 +32,7 @@ def classify_approaches(topology):
     selected = {}
     for role in ("subject", "other"):
         start = topology.get(role + "_approach_lane")
-        if start not in nodes or nodes[start].get("junction_id") != topology["junction_id"]:
+        if start not in nodes or nodes[start].get("junction_id") not in (None, topology["junction_id"]):
             raise ValueError("Selected approach does not enter the same junction")
         highway = nodes[start].get("highway_id")
         if not highway:
@@ -40,15 +40,40 @@ def classify_approaches(topology):
         outgoing = nodes[start].get("successors")
         if not isinstance(outgoing, list) or not outgoing:
             raise ValueError("Approach lacks a drivable junction successor")
-        for successor in outgoing:
+        # Native maps commonly put one or more junction lanes between the
+        # approach and the outgoing highway. Follow those lanes to the first
+        # exterior lane rather than treating the junction waypoint as an exit.
+        pending = list(outgoing)
+        visited = set()
+        exterior = []
+        entered_junction = nodes[start].get("junction_id") == topology["junction_id"]
+        while pending:
+            successor = pending.pop()
             if successor not in nodes:
                 raise ValueError("Lane successor is absent from topology")
-        same_highway_out = [successor for successor in outgoing
-                            if nodes[successor].get("highway_id") == highway
-                            and nodes[successor].get("junction_id") is None]
+            if successor in visited:
+                continue
+            visited.add(successor)
+            lane = nodes[successor]
+            if lane.get("junction_id") == topology["junction_id"]:
+                entered_junction = True
+                following = lane.get("successors")
+                if not isinstance(following, list):
+                    raise ValueError("Junction lane lacks source-backed successors")
+                pending.extend(following)
+            elif lane.get("junction_id") is None:
+                if not entered_junction:
+                    raise ValueError("Selected approach bypasses the same junction")
+                exterior.append(successor)
+            else:
+                raise ValueError("Approach successor enters another junction")
+        if not entered_junction or not exterior:
+            raise ValueError("Approach has no source-backed exit beyond junction")
+        same_highway_out = [successor for successor in exterior
+                            if nodes[successor].get("highway_id") == highway]
         selected[role] = {"approach_lane": start, "highway_id": highway,
                           "continues_beyond_junction": bool(same_highway_out),
-                          "successors": outgoing}
+                          "successors": outgoing, "exterior_lanes": sorted(exterior)}
     if selected["subject"]["continues_beyond_junction"]:
         raise ValueError("Subject highway does not end at the junction")
     if not selected["other"]["continues_beyond_junction"]:
@@ -61,7 +86,10 @@ def classify_approaches(topology):
 def _polygon(value, label):
     if not isinstance(value, list) or len(value) < 3:
         raise ValueError("Missing original polygon: " + label)
-    return [(float(x), float(y)) for x, y in value]
+    polygon = [(float(x), float(y)) for x, y in value]
+    if any(not (isfinite(x) and isfinite(y)) for x, y in polygon):
+        raise ValueError("Nonfinite original polygon: " + label)
+    return polygon
 
 
 def _overlap(a, b):
@@ -104,7 +132,10 @@ def measure(topology_path, frames_path):
         frame, time_s = row.get("frame"), row.get("time_s")
         if type(frame) is not int or type(time_s) not in (int, float):
             raise ValueError("Original frame/time identity missing")
-        if previous is not None and (frame <= previous[0] or abs(time_s - previous[1] - .05) > 1e-4):
+        if not isfinite(time_s):
+            raise ValueError("Nonfinite original intersection time")
+        if previous is not None and (frame != previous[0] + 1 or
+                                     abs(time_s - previous[1] - .05) > 1e-4):
             raise ValueError("Intersection original frames are not joined at 20 Hz")
         previous = frame, time_s
         if row.get("subject_id") != subject_id or row.get("other_id") != other_id:

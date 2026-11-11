@@ -6,7 +6,7 @@ for "clearly audible". Potentially affected participants remain sourced context.
 
 from hashlib import sha256
 import json
-from math import atan2, cos, sin, sqrt, radians
+from math import atan2, cos, isfinite, sin, sqrt, radians
 from pathlib import Path
 
 
@@ -40,7 +40,7 @@ def _rms(samples):
     if not isinstance(samples, list) or len(samples) < 8:
         raise ValueError('Original listener audio needs at least eight samples per frame')
     values = [float(value) for value in samples]
-    if any(abs(value) > 1 for value in values):
+    if any(not isfinite(value) or abs(value) > 1 for value in values):
         raise ValueError('Original listener audio sample is out of range')
     return sqrt(sum(value * value for value in values) / len(values))
 
@@ -57,11 +57,13 @@ def measure(motion_path, signal_path, context_path):
     if not context.get('listener_id') or not context.get('listener_position_source'):
         raise ValueError('Listener audio needs a sourced location and identity')
     initial_yaw = float(motion[0]['ego_yaw_deg'])
+    if not isfinite(initial_yaw):
+        raise ValueError('Original turn yaw is not finite')
     observations = []
     previous = None
     for index, (movement, signal) in enumerate(zip(motion, signals)):
         frame, time_s = movement.get('frame'), movement.get('time_s')
-        if type(frame) is not int or type(time_s) not in (int, float):
+        if type(frame) is not int or type(time_s) not in (int, float) or not isfinite(time_s):
             raise ValueError('Original turn frame/time identity missing')
         if previous is not None and (frame <= previous[0] or abs(time_s - previous[1] - .05) > 1e-4):
             raise ValueError('Original turn frames are not joined at 20 Hz')
@@ -74,6 +76,8 @@ def measure(motion_path, signal_path, context_path):
         if indicator not in ('off', 'left', 'right'):
             raise ValueError('Turn indicator requires a Native side readback')
         yaw = float(movement['ego_yaw_deg'])
+        if not isfinite(yaw):
+            raise ValueError('Original turn yaw is not finite')
         delta = atan2(sin(radians(yaw - initial_yaw)), cos(radians(yaw - initial_yaw)))
         observations.append({'frame': frame, 'time_s': time_s,
                              'yaw_change_deg': delta * 180 / 3.141592653589793,

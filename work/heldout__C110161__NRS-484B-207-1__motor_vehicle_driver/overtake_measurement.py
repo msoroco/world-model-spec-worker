@@ -6,7 +6,7 @@ statutory definition of "safe distance" or "safely clear".
 
 from hashlib import sha256
 import json
-from math import hypot
+from math import hypot, isfinite
 from pathlib import Path
 
 
@@ -14,6 +14,8 @@ def _vector(value, label):
     if not isinstance(value, list) or len(value) != 2:
         raise ValueError("Missing original " + label)
     x, y = (float(part) for part in value)
+    if not (isfinite(x) and isfinite(y)):
+        raise ValueError("Nonfinite original " + label)
     length = hypot(x, y)
     if length < 1e-6:
         raise ValueError("Degenerate original " + label)
@@ -24,7 +26,10 @@ def _corners(row, key):
     value = row.get(key)
     if not isinstance(value, list) or len(value) != 4:
         raise ValueError("Missing four-corner original footprint: " + key)
-    return [(float(x), float(y)) for x, y in value]
+    corners = [(float(x), float(y)) for x, y in value]
+    if any(not (isfinite(x) and isfinite(y)) for x, y in corners):
+        raise ValueError("Nonfinite original footprint: " + key)
+    return corners
 
 
 def _projection(corners, axis):
@@ -56,7 +61,10 @@ def measure(source):
         frame, time_s = row.get("frame"), row.get("time_s")
         if type(frame) is not int or type(time_s) not in (int, float):
             raise ValueError("Original frame/time identity missing")
-        if previous is not None and (frame <= previous[0] or abs(time_s - previous[1] - .05) > 1e-4):
+        if not isfinite(time_s):
+            raise ValueError("Nonfinite original frame time")
+        if previous is not None and (frame != previous[0] + 1 or
+                                     abs(time_s - previous[1] - .05) > 1e-4):
             raise ValueError("Original overtake frames are not joined at 20 Hz")
         previous = frame, time_s
         tangent = _vector(row.get("road_tangent_xy"), "road tangent")
