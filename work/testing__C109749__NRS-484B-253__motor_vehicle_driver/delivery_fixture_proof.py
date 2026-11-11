@@ -12,10 +12,8 @@ sys.path.insert(0,str(REPO/'runtime/scenario_pipeline'))
 from worker_exchange.native_output import physical_result
 from worker_exchange.media import compose_four_views
 from worker_exchange.capture import PROFILE
-from delivery_audit import CAMERAS,audit_attempt,sha
+from delivery_audit import CAMERAS,RECIPROCAL_TARGETS,audit_attempt,sha
 from measurements import analyze
-
-CASE='testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn'
 
 
 def write(path,value):
@@ -28,13 +26,17 @@ def lines(path,items):
     path.write_text(''.join(json.dumps(item,allow_nan=False,separators=(',',':'))+'\n' for item in items))
 
 
-def build_positive(root):
+def build_positive(root,case):
     if root.exists():
         raise ValueError('Use a fresh diagnostic root')
     root.mkdir(parents=True)
     attempt=root/'attempt';attempt.mkdir()
-    diagnostic=json.loads((FOLDER/'diagnostic.json').read_text())['files']
-    config=json.loads((FOLDER/'config.json').read_text())
+    manifest=json.loads((FOLDER/'execution-manifest.json').read_text())
+    entry=next(e for e in manifest['cases'] if e['case_id']==case)
+    recipe=json.loads((REPO/entry['fixture_recipe']).read_text())
+    diagnostic=json.loads((REPO/recipe['generator']['source']).read_text())['files']
+    construction=json.loads((FOLDER/entry['construction']).read_text())
+    config=json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
     write(attempt/'config.json',config)
     (attempt/'intersection_geometry.json').write_text(diagnostic['intersection_geometry.json'])
     original=[json.loads(s) for s in diagnostic['interaction_history.jsonl'].splitlines() if s]
@@ -55,13 +57,13 @@ def build_positive(root):
     write(attempt/'acquisition-provenance.json',{'provenance_kind':'synthetic_fixture',
           'diagnostic_fixture':True,'scope':'CPU software audit fixture; no physical recording'})
     measured=analyze(attempt)
-    result=physical_result(attempt,{'case_id':CASE,'measured_values':{
+    result=physical_result(attempt,{'case_id':case,'measured_values':{
         'reciprocal_stopped_outside_during_turn':measured['reciprocal_stopped_outside_during_turn']},
         'target_checks':[],'realized_observables':{},'setup_confirmed':False,
         'behavior_attempted':False,'maneuver_completed':False})
     if (result['physical_checks']['setup']['status']!='met' or
             result['physical_checks']['maneuver']['status']!='met' or
-            measured['reciprocal_stopped_outside_during_turn'] is not True):
+            measured['reciprocal_stopped_outside_during_turn'] is not RECIPROCAL_TARGETS[case]):
         raise ValueError('Full-duration synthetic motion did not satisfy source-bound diagnostic checks')
     write(attempt/'result.json',result)
     sizes={'overview':PROFILE['overview'],**dict(zip(CAMERAS[1:],PROFILE['detail_views']))}
@@ -84,7 +86,7 @@ def build_positive(root):
           'capture_seal_sha256':sha(attempt/'capture-seal.json')})
     write(attempt/'owner-release.json',{'event':'owner_released','operator_attested':True,
           'native_exit_sha256':sha(attempt/'native-exit.json'),'diagnostic_fixture':True})
-    review={'case_id':CASE,'reviewer':'synthetic CPU fixture generator',
+    review={'case_id':case,'reviewer':'synthetic CPU fixture generator',
             'method':'static red test pattern; no actor identity or real visibility assertion',
             'frame_map_sha256':sha(attempt/'video_frames.jsonl'),
             'source_sha256':{name:sha(attempt/(name+'.mkv')) for name in CAMERAS},
@@ -95,20 +97,20 @@ def build_positive(root):
     return attempt
 
 
-def positive(root):
-    attempt=build_positive(root)
-    receipt=audit_attempt(attempt,CASE,'diagnostic-job',1,'diagnostic-recording',
+def positive(root,case):
+    attempt=build_positive(root,case)
+    receipt=audit_attempt(attempt,case,'diagnostic-job',1,'diagnostic-recording',
                           root/'pixel-review.json',attempt/'diagnostic-audit.json',
                           root/'source-decode.json',diagnostic_selftest=True)
     if (receipt['passed'] is not False or receipt['software_checks_passed'] is not True or
             receipt['diagnostic_fixture'] is not True or receipt['frames']!=900):
         raise ValueError('Diagnostic audit incorrectly claimed physical acceptance')
-    print(json.dumps({'case_id':CASE,'software_checks_passed':True,'frames':receipt['frames'],
+    print(json.dumps({'case_id':case,'software_checks_passed':True,'frames':receipt['frames'],
                       'diagnostic_fixture':True,'physical_acceptance_claimed':False,
                       'audit_sha256':sha(attempt/'diagnostic-audit.json')}))
 
 
-def negative(root,source_root):
+def negative(root,source_root,case):
     if root.exists():
         raise ValueError('Use a fresh negative diagnostic root')
     source=Path(source_root).resolve()/'attempt'
@@ -118,7 +120,7 @@ def negative(root,source_root):
     for name in ('config.json','result.json','capture-seal.json','native-exit.json','owner-release.json'):
         (attempt/name).write_bytes((source/name).read_bytes())
     # A sealed source is absent; the audit must fail before any decode or pixel review.
-    audit_attempt(attempt,CASE,'diagnostic-job',1,'diagnostic-recording',
+    audit_attempt(attempt,case,'diagnostic-job',1,'diagnostic-recording',
                   source_root/'pixel-review.json',attempt/'diagnostic-audit.json',
                   root/'source-decode.json',diagnostic_selftest=True)
     raise ValueError('Missing sealed original was accepted')
@@ -130,12 +132,12 @@ def main():
     p.add_argument('--output-root',type=Path,required=True)
     p.add_argument('--negative-source-root',type=Path)
     a=p.parse_args()
-    if a.case!=CASE:
+    if a.case not in RECIPROCAL_TARGETS:
         raise ValueError('Exact C109749 audit case required')
     if a.negative_source_root:
-        negative(a.output_root.resolve(),a.negative_source_root.resolve())
+        negative(a.output_root.resolve(),a.negative_source_root.resolve(),a.case)
     else:
-        positive(a.output_root.resolve())
+        positive(a.output_root.resolve(),a.case)
 
 
 if __name__=='__main__':main()

@@ -21,6 +21,10 @@ from worker_exchange.capture import PROFILE
 CAMERAS = ('overview','approach','reference_corner','driver_reference')
 ROLES = ('ego','oncoming','reciprocal')
 CHECKS = ('native_source','all_participants','time_join','full_video_decode','actual_pixels','physical_completion')
+RECIPROCAL_TARGETS = {
+    'testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn': True,
+    'testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_continues_after_turn': False,
+}
 
 
 def sha(path):
@@ -140,6 +144,8 @@ def review_checker(samples,width,height):
 
 def audit_attempt(attempt,case_id,job_id,attempt_number,recording_id,pixel_review,output,decode_receipt,
                   *,diagnostic_selftest=False):
+    if case_id not in RECIPROCAL_TARGETS:
+        raise ValueError('Unsupported exact C109749 delivery case')
     root=Path(attempt).resolve();output=Path(output).resolve();decode_receipt=Path(decode_receipt).resolve()
     if output.name=='result.json' or root not in output.parents or root in decode_receipt.parents:
         raise ValueError('Audit output must remain under attempt; decode receipt must be external')
@@ -169,7 +175,7 @@ def audit_attempt(attempt,case_id,job_id,attempt_number,recording_id,pixel_revie
     physical=result.get('physical_checks',{})
     if (physical.get('setup',{}).get('status')!='met' or
             physical.get('maneuver',{}).get('status')!='met' or
-            result.get('measured_values',{}).get('reciprocal_stopped_outside_during_turn') is not True or
+            result.get('measured_values',{}).get('reciprocal_stopped_outside_during_turn') is not RECIPROCAL_TARGETS[case_id] or
             not result.get('realized_observables')):
         raise ValueError('Source-bound physical completion or reciprocal observation absent')
     sources={name:root/(name+'.mkv') for name in CAMERAS}

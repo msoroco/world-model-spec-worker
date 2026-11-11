@@ -58,7 +58,8 @@ def motion(entry, folder, kind, output):
 
 def lifecycle(entry, folder, output):
     construction = read(folder/entry['construction'])
-    saved = folder/'primary-saved-processing.json'
+    saved = (folder/'primary-saved-processing.json' if entry['construction']=='construction.json'
+             else (folder/entry['construction']).parent/'primary-saved-processing.json')
     receipt = read(saved)
     if (receipt.get('format') != 'worker-saved-processing' or receipt.get('passed') is not True
             or receipt.get('recorded_only') is not True
