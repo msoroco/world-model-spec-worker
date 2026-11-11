@@ -41,7 +41,7 @@ def build():
     proposals=[]
     for case in eng.CASES:
         case_id=FOLDER.name+'__'+case
-        contract={'format':'worker-measurement-contract-v1','case_id':case_id,
+        contract={'format':'worker-measurement-contract','case_id':case_id,
                   'requirements':[{'disposition_index':index,
                                    'requirement':dispositions[index]['requirement'],
                                    'source':dispositions[index]['source'],
@@ -59,6 +59,8 @@ def build():
                'measurement_contract':str(contract_path.relative_to(FOLDER)),
                'measurement_procedure':{'entrypoint':'finalize.py','output_schema':'c110919-saved-analysis-v1'},
                'candidates':[]}
+        if (FOLDER/f'update015-{case}-recipe.json').is_file():
+            entry['fixture_recipe']=f'work/{FOLDER.name}/update015-{case}-recipe.json'
         for candidate in eng.CANDIDATES:
             config=json.loads((NATIVE/'config.json').read_text())
             config.update(case_id=case_id,selected_case_id=case_id,case_suffix=case,
@@ -67,7 +69,7 @@ def build():
                           source_packets=[],recording_description=recording,
                           cameras=[{'name':n,'width':w,'height':h} for n,w,h in
                                    (('overview',1920,1080),('approach',1280,720),
-                                    ('signal',1280,720),('destination',1280,720))])
+                                    ('reference_corner',1280,720),('driver_reference',1280,720))])
             files=[{'path':name,'content':code} for name,code in shared.items()]
             files.append({'path':'config.json','content':json.dumps(config,indent=2)+'\n'})
             construction={'case_id':case_id,'cell_id':'C110919','law_id':'NRS-484B-307-8a',

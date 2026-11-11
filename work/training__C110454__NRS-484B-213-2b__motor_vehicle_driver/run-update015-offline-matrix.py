@@ -21,9 +21,9 @@ def main():
     rows=[]
     for row in summary['rows']:
         family=row['family'];suffix=row['case_id'].split('__')[-1]
-        log=Path('update015-offline-logs-v7')/family/suffix/(row['candidate_id']+'.log')
+        log=Path('update015-offline-logs-v8')/family/suffix/(row['candidate_id']+'.log')
         path=HERE/log;path.parent.mkdir(parents=True,exist_ok=True)
-        output=REPO/'.runtime-work'/'c110454-update015-offline-v7'/family/suffix/row['candidate_id']
+        output=REPO/'.runtime-work'/'c110454-update015-offline-v8'/family/suffix/row['candidate_id']
         command=[sys.executable,str(REPO/'runtime.py'),'offline','--manifest',
                  str(HERE/MANIFEST[family]),'--case',row['case_id'],
                  '--candidate',row['candidate_id'],'--output',str(output)]

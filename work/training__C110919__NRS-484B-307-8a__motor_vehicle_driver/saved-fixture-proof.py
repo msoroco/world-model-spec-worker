@@ -57,13 +57,14 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
         trace.append({'frame':frame,'time_s':time,'position':{'x':x,'y':y,'z':.5},
                       'heading_deg':heading,'speed_mps':speed,
                       'position_m':[x,y,.5],'speed_mph':speed/.44704,
-                      'control':{'throttle':0,'brake':0,'hand_brake':False}})
+                      'control':{'throttle':0,'brake':0,'hand_brake':False},
+                      'synthetic_diagnostic':True,'speed_provenance':'synthetic_native_sample'})
         evidence.append({'original_frame':frame,'recording_time_s':time,
                          'replay_frame':frame,'replay_simulation_time_s':time,
-                         'actor_id':107,
+                         'actor_id':107,'synthetic_diagnostic':True,
                          'ego':{'body_vertices_m':vertices,'position_m':[x,y,.5],
                                 'heading_deg':heading,'speed_mps':speed,
-                                'speed_provenance':'original_trace_actor_get_velocity'},
+                                'speed_provenance':'synthetic_native_sample'},
                          'world':{'weather':{'cloudiness':0,'precipitation':0,
                                              'wetness':0,'fog_density':0},
                                   'road_projection':{'road_id':1 if i<181 else 13 if i<=241 else 2,
@@ -74,7 +75,8 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
                        'walker_center_xy_m':[10,0 if row['pedestrian_conflict_occupied'] else 5],
                        'walker_conflict_occupied':row['pedestrian_conflict_occupied'],
                        'signal_state_observed':'Red',
-                       'controller_request':{'synthetic_diagnostic':True}})
+                       'controller_request':{'synthetic_diagnostic':True},
+                       'synthetic_diagnostic':True,'speed_provenance':'synthetic_native_sample'})
         body.append({'frame':frame,'time_s':time,'body_vertices_m':vertices})
     for name,values in [('trace.jsonl',trace),('capture/evidence.jsonl',evidence),
                         ('video_frames.jsonl',mapping),('native_samples.jsonl',native),
@@ -82,27 +84,10 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     (destination/'capture/manifest.json').write_text(json.dumps({'extraction_confirmed':True,'frames':480,
                                                                    'synthetic_diagnostic':True}))
     (destination/'capture/recorder_info.txt').write_text('Create 107: vehicle.lincoln.mkz_2020\n')
-    (destination/'channels').mkdir()
-    for channel in config['recording_description']['channels']:
-        name=channel['name'];values=[]
-        for i,sample in enumerate(native):
-            if name=='dev.traffic_signal':value={'observed_state':'Red','native_actor_id':601}
-            elif name=='st.stop_line':value=-14.0
-            elif name=='st.crosswalk':value=-11.0
-            elif name=='drv.stopped':value=sample['speed_mps']<.05
-            elif name=='kin.velocity':value=sample['speed_mps']
-            elif name=='drv.extreme_lane':value=geometry['lanes']['approach_right']
-            elif name=='st.one_way_roadway':value=geometry['lanes']
-            elif name=='drv.yields_to':value={'walker_conflict_occupied':sample['walker_conflict_occupied']}
-            elif name=='native_body_pose_control':value=sample
-            elif name=='camera_frame_join':value=mapping[i]
-            else:raise ValueError('Unknown channel: '+name)
-            values.append({'time_s':sample['time_s'],'value':value})
-        write_rows(destination/'channels'/(name+'.jsonl'),values)
     sizes={camera['name']:f"{camera['width']}x{camera['height']}" for camera in config['cameras']}
-    for name in ('overview','approach','signal','destination'):
+    for name in ('overview','approach','reference_corner','driver_reference'):
         size=sizes[name] if full_resolution else '32x32'
-        subprocess.run([str(ROOT/'.runtime-work/linux_arm64/ffmpeg'),'-nostdin','-hide_banner','-loglevel','error','-y',
+        subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
             '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=24',
             '-frames:v','480','-c:v','ffv1',str(destination/(name+'.mkv'))],
             check=True,timeout=120)

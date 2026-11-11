@@ -107,6 +107,38 @@ def video_frames(path: Path):
         raise ValueError('Source video decode failed: '+path.name)
     return int(completed.stdout.strip())
 
+
+def derive_channels(attempt: Path,config: dict,native: list[dict],mapping: list[dict],geometry: dict):
+    """Rebuild observations from retained raw rows rather than incoming channels."""
+    names={item['name'] for item in config['recording_description']['channels']}
+    output={name:[] for name in names}
+    if len(native)!=len(mapping)!=480:raise ValueError('Original channel source counts differ')
+    for sample,frame in zip(native,mapping):
+        if sample['native_frame']!=frame['native_frame'] or abs(sample['time_s']-frame['time_s'])>1e-4:
+            raise ValueError('Original channel frame/time join differs')
+        speed=sample['speed_mps']
+        values={
+            'dev.traffic_signal':{'observed_state':sample['signal_state_observed'],
+                                  'native_actor_id':geometry['signal_actor_id']},
+            'st.stop_line':geometry['stop_line_y_m'],
+            'st.crosswalk':geometry['nearest_crosswalk_y_m'],
+            'drv.stopped':speed<.05,
+            'kin.velocity':speed,
+            'drv.extreme_lane':geometry['lanes']['approach_right'],
+            'st.one_way_roadway':geometry['lanes'],
+            'drv.yields_to':{'walker_xy_m':sample['walker_center_xy_m'],
+                             'conflict_occupied':sample['walker_conflict_occupied'],
+                             'legal_yield_verdict':None},
+            'native_body_pose_control':sample,
+            'camera_frame_join':frame}
+        if set(values)!=names:raise ValueError('Declared channels differ from raw derivation')
+        for name,value in values.items():
+            output[name].append(json.dumps({'time_s':frame['time_s'],'value':value},
+                                          allow_nan=False)+'\n')
+    folder=attempt/'channels';folder.mkdir(exist_ok=True)
+    for name,values in output.items():
+        (folder/(name+'.jsonl')).write_text(''.join(values))
+
 def finalize(attempt: Path,output: Path):
     attempt=attempt.resolve();output=output.resolve()
     if output.exists() or (attempt/'result.json').exists():
@@ -122,15 +154,26 @@ def finalize(attempt: Path,output: Path):
     if geometry_synthetic!=capture_synthetic:
         raise ValueError('Saved source provenance markers disagree')
     diagnostic_fixture=geometry_synthetic
+    if diagnostic_fixture:
+        trace=rows(source(attempt,'trace.jsonl'))
+        evidence=rows(source(attempt,'capture/evidence.jsonl'))
+        if not all(row.get('synthetic_diagnostic') is True and
+                   row.get('speed_provenance')=='synthetic_native_sample'
+                   for group in (trace,native) for row in group) or not all(
+                       row.get('synthetic_diagnostic') is True and
+                       row.get('ego',{}).get('speed_provenance')=='synthetic_native_sample'
+                       for row in evidence):
+            raise ValueError('Synthetic speed must retain diagnostic provenance')
     signal=measure_signal(attempt,native,geometry)
     stop=measure_stop(attempt,native,geometry)
     turn=measure_turn_yield(attempt,native,geometry)
-    videos=[f'{name}.mkv' for name in ('overview','approach','signal','destination')]
+    videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     counts={name:video_frames(attempt/name) for name in videos}
     if any(value!=count for value in counts.values()):
         raise ValueError('Original source video frame count differs')
     expected=config['case_suffix']=='reference'
     observed=stop['value']['halt_before_nearest_boundary']
+    derive_channels(attempt,config,native,mapping,geometry)
     recording=[]
     for channel in config['recording_description']['channels']:
         name=channel['name'];relative='channels/'+name+'.jsonl'
@@ -142,8 +185,8 @@ def finalize(attempt: Path,output: Path):
             'requested':expected,'measured':observed,'method':'saved original full body and speed before stop-line crossing',
             'tolerance':0,'matched':observed==expected,'physical_cause_confirmed':False,
             'cause_evidence':['native_samples.jsonl','road_geometry.json']}],
-        'setup_confirmed':True,'behavior_attempted':True,
-        'maneuver_completed':turn['value']['destination_exit_observed'],
+        'setup_confirmed':not diagnostic_fixture,'behavior_attempted':not diagnostic_fixture,
+        'maneuver_completed':not diagnostic_fixture and turn['value']['destination_exit_observed'],
         'termination_reason':'full original duration retained',
         'physical_failure_flags':['original_signal_direction_and_pixels_require_independent_review']+
             ([] if observed==expected and turn['value']['destination_exit_observed']
@@ -157,7 +200,7 @@ def finalize(attempt: Path,output: Path):
             'method':'source-hashed sampled full-body stop-line crossing',
             'time_window':'entire original 24 s attempt','statistic':'first',
             'reference':'native_samples.jsonl'}},
-        'provenance_kind':'synthetic_fixture' if diagnostic_fixture else 'native',
+        'provenance_kind':'synthetic_local_diagnostic' if diagnostic_fixture else 'native',
         'diagnostic_fixture':diagnostic_fixture,
         'accepted':False,'legal_verdict_claimed':False}
     from worker_exchange.native_output import validate_result
