@@ -24,6 +24,16 @@ for log in ('cpu-tests.log', 'preflight.log', 'atom-preflight.log'):
     assert log in existing
     claim(existing[log]['command'], log)
 
+for label, attempt, log in (
+    ('signalled', '.runtime-work/c109749-inside-yield-delivery-v2/attempt', 'signal-advance-positive.log'),
+    ('omitted', '.runtime-work/c109749-signal-omitted-delivery-v1/attempt', 'signal-advance-omitted.log'),
+):
+    claim(f'.venv-cpu/bin/python work/{result["assignment_id"]}/signal_advance_audit.py {attempt}', log)
+claim(f'.venv-cpu/bin/python -m unittest discover -s work/{result["assignment_id"]}/tests '
+      '-p test_signal_advance_audit.py -v', 'signal-advance-tests.log')
+claim(f'.venv-cpu/bin/python -m unittest discover -s work/{result["assignment_id"]}/tests '
+      '-p test_advance_signal_setup.py -v', 'advance-signal-setup-tests.log')
+
 for case in manifest['cases']:
     claim(case['offline']['command'], case['offline']['log'])
     claim(case['post_capture']['command'], case['post_capture']['test_log'])
@@ -113,6 +123,11 @@ result['reason'] = (
     'validators pass. Full-duration 900-frame synthetic delivery audits for all seven and four diagnostic '
     'comparisons exercise source joins, fixed conditions and negative rejection; their diagnostic '
     'receipts explicitly do not claim physical or legal acceptance. '
+    'A supplemental sealed-history signal-distance audit measures 12.24 m visible before the '
+    'signalled diagnostic turn and 0 m for omitted signal; neither source demonstrates the '
+    '30.48 m or 91.44 m advance probe, and capture-start signal onset is unknown. '
+    'A same-lane upstream waypoint selector for below/at/above distance candidates passes two '
+    'construction tests, but is not yet integrated into a selected Native runner or exact proofs. '
     'The three physical judgment sweep specs remain incomplete, and reciprocal-no-yield and other '
     'statutory alternatives have no complete selected constructions and CPU proofs. Accepted-original '
     'equivalence, actual Native motion and camera visibility are unverified. This and all other partial '

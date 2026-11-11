@@ -1,0 +1,56 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_no_yield",
+      "construction": "construction.json",
+      "construction_sha256": "7f2183400b2381bbc95afaeff36efb1ee801b2aecc4cb9c3e51984a50b1afd99",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "later opposing body may fail to enter before subject exits; actual Native motion and visibility unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "2419681738eafd519ced510577d15d2c687bd03313b4e0ce84c12651ffac429e",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "later opposing body remains outside at ego exit",
+            "failure_condition": "source body distance shows actor too far from junction at turn onset"
+          },
+          "changed_knobs": [
+            "reciprocal_spawn_behind_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "fallback2-construction.json",
+          "construction_sha256": "cfea16e909fdc4b52019c5baa605c53286f94a8ecd8c05caa464ebbf7ce9b1bf",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "later opposing body advances too slowly to enter during ego turn",
+            "failure_condition": "original later opposing closing speed is below planned approach"
+          },
+          "changed_knobs": [
+            "reciprocal_approach_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "fallback3-construction.json",
+          "construction_sha256": "3b886bb5412b963950d8705b451ca0dfee8c865d2ba010c22bc33fde839fa8f1",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "ego body exits before later opposing complete-body entry",
+            "failure_condition": "original ego body clears junction before later opposing entry"
+          },
+          "changed_knobs": [
+            "ego_turn_throttle"
+          ]
+        }
+      ]
+    }
+  ]
+}

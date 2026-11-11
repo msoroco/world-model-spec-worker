@@ -9,7 +9,7 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-253__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "927bc5ca18744846c782917b658741481b7a385b1feb1306a20b6b99f07a8c20"
+      "sha256": "3263f645492d3186f22626ff7ea9f0b3d43235aba81c44ce5a6e5fe9cdf26ad3"
     },
     {
       "command": "PYTHONPATH=runtime/scenario_pipeline:runtime/python .venv-cpu/bin/python -m worker_exchange.atom_preflight --runtime runtime --config work/testing__C109749__NRS-484B-253__motor_vehicle_driver/config.json",
@@ -27,7 +27,7 @@
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "preflight.log",
-      "sha256": "94fed1c7c417e37be8c13f0c1d89dbea1494a00d684666a02c5607f5080d082d"
+      "sha256": "69c4d8b6e77e61f16ed81becca3e44f9c85449689dde934e805dfae78ab7e304"
     },
     {
       "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --output .runtime-work/c109749-seven-case-reciprocal_yield_after_turn-primary-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
@@ -868,10 +868,34 @@
       "exit_code": 0,
       "log": "signal-comparison-negative.log",
       "sha256": "146a1b568204bc01d4427c3047559373f313d72e707d988e73eb0960b9f5dd95"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/signal_advance_audit.py .runtime-work/c109749-inside-yield-delivery-v2/attempt",
+      "exit_code": 0,
+      "log": "signal-advance-positive.log",
+      "sha256": "9b0534cd19974899f989252a4bd15fe6b7fd7931ed9b4cb3ce66817ea97754ce"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/signal_advance_audit.py .runtime-work/c109749-signal-omitted-delivery-v1/attempt",
+      "exit_code": 0,
+      "log": "signal-advance-omitted.log",
+      "sha256": "deebde8a7fae8d8d8698b5676e7bb9534ef55a544da8e7affd2260c2c39d137c"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-253__motor_vehicle_driver/tests -p test_signal_advance_audit.py -v",
+      "exit_code": 0,
+      "log": "signal-advance-tests.log",
+      "sha256": "ff9cb62c5b3fe35107d0000b436d1a347c409961cc2a2260a4926baff01cb972"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-253__motor_vehicle_driver/tests -p test_advance_signal_setup.py -v",
+      "exit_code": 0,
+      "log": "advance-signal-setup-tests.log",
+      "sha256": "a0691aa451a5018554816d79377699853ff4581493c9be6427472d3edd93cfda"
     }
   ],
   "remaining_gpu_checks": [
     "Actual opposing approach and subject motion, signal pixels and four-camera visibility."
   ],
-  "reason": "Seven C109749 exact cases (reciprocal yield/continue, subject yield/proceed with an opposing complete body inside or approaching outside the junction, and an omitted-signal contrast), each with three distinct physical-risk fallbacks, occur in the canonical case plan, semantic proposal and execution manifest. All 28 exact constructions pass current canonical offline, positive/negative compatibility and recorded-only saved processing. The pinned manifest, semantic, package-compatibility, physical-preparation and delivery-contract validators pass. Full-duration 900-frame synthetic delivery audits for all seven and four diagnostic comparisons exercise source joins, fixed conditions and negative rejection; their diagnostic receipts explicitly do not claim physical or legal acceptance. The three physical judgment sweep specs remain incomplete, and reciprocal-no-yield and other statutory alternatives have no complete selected constructions and CPU proofs. Accepted-original equivalence, actual Native motion and camera visibility are unverified. This and all other partial assignment packages are unfinished worker-owned CPU work, with no dependency or tool blocker. Strict assignment and batch gates fail with Preparation acceptance failed: partial/missing packages remain. See HANDOFF.md for exact sources and resume actions."
+  "reason": "Seven C109749 exact cases (reciprocal yield/continue, subject yield/proceed with an opposing complete body inside or approaching outside the junction, and an omitted-signal contrast), each with three distinct physical-risk fallbacks, occur in the canonical case plan, semantic proposal and execution manifest. All 28 exact constructions pass current canonical offline, positive/negative compatibility and recorded-only saved processing. The pinned manifest, semantic, package-compatibility, physical-preparation and delivery-contract validators pass. Full-duration 900-frame synthetic delivery audits for all seven and four diagnostic comparisons exercise source joins, fixed conditions and negative rejection; their diagnostic receipts explicitly do not claim physical or legal acceptance. A supplemental sealed-history signal-distance audit measures 12.24 m visible before the signalled diagnostic turn and 0 m for omitted signal; neither source demonstrates the 30.48 m or 91.44 m advance probe, and capture-start signal onset is unknown. A same-lane upstream waypoint selector for below/at/above distance candidates passes two construction tests, but is not yet integrated into a selected Native runner or exact proofs. The three physical judgment sweep specs remain incomplete, and reciprocal-no-yield and other statutory alternatives have no complete selected constructions and CPU proofs. Accepted-original equivalence, actual Native motion and camera visibility are unverified. This and all other partial assignment packages are unfinished worker-owned CPU work, with no dependency or tool blocker. Strict assignment and batch gates fail with Preparation acceptance failed: partial/missing packages remain. See HANDOFF.md for exact sources and resume actions."
 }
