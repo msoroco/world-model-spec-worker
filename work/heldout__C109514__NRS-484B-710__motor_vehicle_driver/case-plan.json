@@ -76,7 +76,7 @@
       "gap_ids": [
         "stopped-drive-to"
       ],
-      "construction_status": "exact_bundle_pending_proofs",
+      "construction_status": "exact_bundle_software_proved",
       "physical_risk": {
         "risk": "Controller may not stop at the target centre distance",
         "trigger_source": "original participant footprint and state streams",
@@ -92,12 +92,60 @@
       "gap_ids": [
         "stopped-drive-to"
       ],
-      "construction_status": "exact_bundle_pending_proofs",
+      "construction_status": "exact_bundle_software_proved",
       "physical_risk": {
         "risk": "Controller may not stop at the target centre distance",
         "trigger_source": "original participant footprint and state streams",
         "trigger_metric": "active-frame centre distance and closing motion",
         "failure_condition": "No active frame reaches the engineering target"
+      }
+    },
+    {
+      "case_id": "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft",
+      "target_law_id": "NRS-484B-710",
+      "branch": "stopped_park",
+      "target_distance_ft": 500,
+      "gap_ids": [
+        "stopped-park"
+      ],
+      "construction_status": "exact_bundle_software_proved",
+      "physical_risk": {
+        "risk": "Subject may fail to stop and park near the apparatus",
+        "trigger_source": "original participant state and footprint streams",
+        "trigger_metric": "parked active frames and measured centre distance",
+        "failure_condition": "No stationary handbraked frame at the engineering target"
+      }
+    },
+    {
+      "case_id": "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_park_499ft",
+      "target_law_id": "NRS-484B-710",
+      "branch": "stopped_park",
+      "target_distance_ft": 499,
+      "gap_ids": [
+        "stopped-park"
+      ],
+      "construction_status": "exact_bundle_software_proved",
+      "physical_risk": {
+        "risk": "Subject may fail to stop and park near the apparatus",
+        "trigger_source": "original participant state and footprint streams",
+        "trigger_metric": "parked active frames and measured centre distance",
+        "failure_condition": "No stationary handbraked frame at the engineering target"
+      }
+    },
+    {
+      "case_id": "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_park_501ft",
+      "target_law_id": "NRS-484B-710",
+      "branch": "stopped_park",
+      "target_distance_ft": 501,
+      "gap_ids": [
+        "stopped-park"
+      ],
+      "construction_status": "exact_bundle_software_proved",
+      "physical_risk": {
+        "risk": "Subject may fail to stop and park near the apparatus",
+        "trigger_source": "original participant state and footprint streams",
+        "trigger_metric": "parked active frames and measured centre distance",
+        "failure_condition": "No stationary handbraked frame at the engineering target"
       }
     }
   ],
@@ -133,6 +181,22 @@
       ],
       "deliberate_differences": [
         "commanded centre distance 499/500/501 ft; actual distance measured from original footprints"
+      ]
+    },
+    {
+      "comparison_id": "stopped_park_500_boundary",
+      "case_ids": [
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_park_499ft",
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft",
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_park_501ft"
+      ],
+      "fixed_conditions": [
+        "C109514 connected through-intersection route",
+        "ordinary subject, stopped apparatus in answer to alarm",
+        "same four-camera/duration plan and approach policy"
+      ],
+      "deliberate_differences": [
+        "commanded parking centre distance 499/500/501 ft; actual distance measured from original parked frames"
       ]
     }
   ],
@@ -205,7 +269,7 @@
         "sha256": "de7e87b9a58a07b73e09d602c4f7c12f4985702e6f0275c7403481245c223fe1"
       },
       "requirement": "stopped apparatus: drive to below/at/above 500 ft",
-      "status": "software_proved_500ft_primary_other_probes_pending"
+      "status": "software_proved_stopped_drive_to_boundary_triple"
     },
     {
       "source": {
@@ -213,7 +277,7 @@
         "sha256": "de7e87b9a58a07b73e09d602c4f7c12f4985702e6f0275c7403481245c223fe1"
       },
       "requirement": "stopped apparatus: park below/at/above 500 ft",
-      "status": "planned_unimplemented"
+      "status": "software_proved_stopped_park_boundary_triple"
     },
     {
       "source": {
@@ -236,13 +300,16 @@
         "heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_501ft",
         "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_500ft",
         "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_499ft",
-        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_501ft"
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_drive_to_501ft",
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_park_499ft",
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft",
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_park_501ft"
       ]
     }
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Pinned CPU preflight passes. Traveling triple and stopped drive-to 500 ft primary/fallback software paths pass, while remaining branches and audits are CPU incomplete.",
+    "Pinned CPU preflight passes. Traveling, stopped drive-to and stopped parking 499/500/501 ft primary/fallback software paths pass; exception, canonical proposals and delivery audits remain CPU incomplete.",
     "Actual CARLA motion, participant visibility, fire dispatch premise, and physical capture remain unverified."
   ],
   "requirement_dispositions": [
@@ -271,8 +338,13 @@
     {
       "requirement": "park within the boundary of stopped fire apparatus",
       "source": "inputs/heldout__C109514__NRS-484B-710__motor_vehicle_driver/assignment.json",
-      "status": "alternative_pending",
-      "evidence_or_gap": "No accepted recording; separate construction and below/at/above comparison pending."
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted recording; first parking case has an exact CPU construction draft.",
+      "case_ids": [
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_park_499ft",
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_park_500ft",
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__stopped_park_501ft"
+      ]
     },
     {
       "requirement": "authorized emergency vehicle on official business exception",
