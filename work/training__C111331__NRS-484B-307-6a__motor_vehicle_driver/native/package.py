@@ -150,7 +150,8 @@ def build():
             request = folder / 'native-requests.jsonl'
             assert authored['case_id'] == case_id and authored['candidate_id'] == candidate
             config = dict(authored)
-            config.update({'case_suffix': case, 'cell_id': 'C111331', 'law_id': 'NRS-484B-307-6a',
+            config.update({'case_suffix': case, 'selected_case_id': case_id,
+                           'cell_id': 'C111331', 'law_id': 'NRS-484B-307-6a',
                            'actor': 'motor_vehicle_driver', 'rate_hz': 20, 'duration_s': 24,
                            'native_requests_sha256': sha(request),
                            'authored_config_sha256': sha(folder / 'config.json'),

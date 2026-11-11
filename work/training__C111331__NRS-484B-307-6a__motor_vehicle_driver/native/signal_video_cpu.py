@@ -104,6 +104,14 @@ def inspect_original_format(source_dir, video_path, ffmpeg):
             'color_readout_pending_independent_review': True}
 
 
+def inspect_diagnostic_format(source_dir, video_path, ffmpeg):
+    """Decode generated camera frames without asserting physical signal color."""
+    receipt = inspect_original_format(source_dir, video_path, ffmpeg)
+    receipt['format'] = 'c111331-synthetic-camera-decode-v1'
+    receipt['source_kind'] = 'synthetic_cpu_camera_fixture'
+    return receipt
+
+
 if __name__ == '__main__':
     import argparse
     p = argparse.ArgumentParser()

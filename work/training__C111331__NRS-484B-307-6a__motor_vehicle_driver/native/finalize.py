@@ -8,7 +8,7 @@ from pathlib import Path
 import shutil
 
 from measure_saved import measure
-from signal_video_cpu import inspect as inspect_signal_video, inspect_original_format
+from signal_video_cpu import inspect_original_format, inspect_diagnostic_format
 
 
 def measure_yellow_onset(measurement):
@@ -81,7 +81,7 @@ def finalize(attempt, output):
                 raise ValueError('Missing required source: ' + name)
         video = inspect_original_format(attempt, attempt / signal_name, ffmpeg)
     else:
-        video = inspect_signal_video(attempt, attempt / signal_name, ffmpeg)
+        video = inspect_diagnostic_format(attempt, attempt / signal_name, ffmpeg)
     source_hashes = dict(measurement['sources'])
     source_hashes[signal_name] = video['video_sha256']
     report = {'format': 'c111331-saved-signal-entry-report-v1', 'case_id': config['case_id'],

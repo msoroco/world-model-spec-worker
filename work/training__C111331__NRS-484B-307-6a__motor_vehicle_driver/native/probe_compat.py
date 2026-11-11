@@ -49,7 +49,7 @@ def video(path, width, height, color):
                     '-an', '-c:v', 'ffv1', '-n', str(path)], check=True, timeout=180)
 
 
-def fixture(destination, case, candidate):
+def fixture(destination, case, candidate, *, text_only=False):
     destination.mkdir()
     source = HERE / 'synthetic-saved' / case / candidate
     native = rows(source / 'native_samples.jsonl')
@@ -58,8 +58,9 @@ def fixture(destination, case, candidate):
         raise ValueError('Exact saved 480-frame source required')
     for name in ('native_samples.jsonl', 'video_frames.jsonl'):
         shutil.copy2(source / name, destination / name)
-    shutil.copy2(REPO / '.runtime-work/c111331-signal-cpu-video' / case / candidate /
-                 'signal_reference.mkv', destination / 'signal_reference.mkv')
+    if not text_only:
+        shutil.copy2(REPO / '.runtime-work/c111331-signal-cpu-video' / case / candidate /
+                     'signal_reference.mkv', destination / 'signal_reference.mkv')
     graph_dir = destination / 'capture/native/graphs/base'
     graph_dir.mkdir(parents=True)
     trace, evidence, frames = [], [], []
@@ -136,16 +137,17 @@ def fixture(destination, case, candidate):
     (destination / 'acquisition-provenance.json').write_text(json.dumps({
         'provenance_kind': 'synthetic_local_diagnostic',
         'diagnostic_fixture': True, 'native_executed': False}) + '\n')
-    camera_paths = {}
-    for name, width, height, color in (
-            ('overview', 1920, 1080, 'blue'),
-            ('approach', 1280, 720, 'green'),
-            ('reference_corner', 1280, 720, 'yellow'),
-            ('driver_reference', 1280, 720, 'red')):
-        camera_paths[name] = destination / (name + '.mkv')
-        video(camera_paths[name], width, height, color)
-    compose_four_views(camera_paths, destination / 'video_frames.jsonl',
-                       destination / 'raw.mkv')
+    if not text_only:
+        camera_paths = {}
+        for name, width, height, color in (
+                ('overview', 1920, 1080, 'blue'),
+                ('approach', 1280, 720, 'green'),
+                ('reference_corner', 1280, 720, 'yellow'),
+                ('driver_reference', 1280, 720, 'red')):
+            camera_paths[name] = destination / (name + '.mkv')
+            video(camera_paths[name], width, height, color)
+        compose_four_views(camera_paths, destination / 'video_frames.jsonl',
+                           destination / 'raw.mkv')
     return {'fixture_sha256': sha(destination / 'capture/manifest.json'),
             'frames': 480, 'synthetic_only': True}
 
