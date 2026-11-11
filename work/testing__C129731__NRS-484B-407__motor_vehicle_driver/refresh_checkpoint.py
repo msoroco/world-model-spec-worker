@@ -19,6 +19,10 @@ CLAIMS = (
     ("branch-site-build.log", ".venv-cpu/bin/python " + PREFIX + "build_branch_sites.py"),
     ("crest-opendrive-build.log", ".venv-cpu/bin/python " + PREFIX + "build_crest_opendrive.py"),
     ("curve-opendrive-build.log", ".venv-cpu/bin/python " + PREFIX + "build_curve_opendrive.py"),
+    ("approach-branch-build.log", ".venv-cpu/bin/python " + PREFIX + "build_approach_branch_proof.py"),
+    ("approach-branch-offline.log", ".venv-cpu/bin/python runtime.py offline --manifest " + PREFIX + "diagnostic-approach-b-manifest.json --case " + AID + "__crest__short_of_500ft --output .runtime-work/c129731-approach-b-offline-v3"),
+    ("approach-branch-compatibility.json", "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py compatibility --manifest " + PREFIX + "diagnostic-approach-b-manifest.json --case " + AID + "__crest__short_of_500ft --output .runtime-work/c129731-approach-b-compat-v4 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"),
+    ("approach-branch-processing.json", "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest " + PREFIX + "diagnostic-approach-b-manifest.json --case " + AID + "__crest__short_of_500ft --attempt .runtime-work/c129731-approach-b-compat-v4 --output .runtime-work/c129731-approach-b-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"),
     ("assignment-check.log", ".venv-cpu/bin/python worker_check.py --assignment " + AID + " --complete"),
 )
 
@@ -61,7 +65,8 @@ def main():
         "OpenDRIVE road plan verifies six source-bound curve probe/direction site packets. Strict delivery "
         "readiness remains open: actual CARLA ingestion and Native asset/site review (a guarded loader has CPU "
         "mock proofs), full positive/negative saved "
-        "processing proofs for the new alternatives, a completed source-grounded judgment "
+        "processing proofs for the other new alternatives (one approach/B-occluded branch now has full "
+        "diagnostic offline, compatibility and recorded-only saved proof), a completed source-grounded judgment "
         "sweep, shared branch review/GPU queue/local integration proof and "
         "full-batch ready packages remain unfinished worker CPU work. Synthetic pixels/rays prove no physical or "
         "legal acceptance.")

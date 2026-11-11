@@ -1,0 +1,48 @@
+import hashlib
+import json
+import sys
+import unittest
+from pathlib import Path
+
+PACKAGE = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PACKAGE))
+
+from build_crest_opendrive import check_source_geometry
+from site_construction import validate_site
+
+
+class ApproachBranchProofTests(unittest.TestCase):
+    def test_transformed_sources_bind_approach_site_and_b_direction(self):
+        folder = PACKAGE / "branch-proof-approach-b"
+        site_path = folder / "diagnostic-site-crest-short.json"
+        site = validate_site(json.loads(site_path.read_text()))
+        self.assertEqual(site["turn_site_xyz_m"][0], -40)
+        self.assertEqual(site["occluder"]["target_direction"], "approach_b")
+        self.assertTrue(check_source_geometry(
+            (PACKAGE / "native-map-plan/crest-road.xodr").read_text(), site))
+        digest = hashlib.sha256(site_path.read_bytes()).hexdigest()
+        config = json.loads((folder / "config.json").read_text())
+        self.assertEqual(config["site_source"]["sha256"], digest)
+        motion = (folder / "sources/motion_history.jsonl").read_text().splitlines()
+        evidence = (folder / "sources/capture/evidence.jsonl").read_text().splitlines()
+        self.assertEqual(len(motion), 1100)
+        self.assertEqual(len(evidence), 1100)
+        for index in (0, 400, 1099):
+            actor = json.loads(motion[index])
+            native = json.loads(evidence[index])
+            self.assertEqual(actor["site_source_sha256"], digest)
+            self.assertEqual(actor["ego"]["location_xyz_m"], native["ego"]["position_m"])
+            self.assertEqual(actor["approaches"]["approach_a"]["road_lane"], [10, -1])
+            self.assertEqual(actor["approaches"]["approach_b"]["road_lane"], [10, 1])
+            rays = {r["lane_id"]: r for r in native["visibility"]["approaches"]}
+            self.assertEqual(rays[1]["any_body_sight_horizon"]["bound"],
+                             "first_sampled_occlusion")
+            self.assertEqual(rays[-1]["any_body_sight_horizon"]["bound"], "at_least")
+        source_manifest = json.loads((folder / "sources/capture/manifest.json").read_text())
+        for name in ("road.xodr", "trace.jsonl"):
+            actual = hashlib.sha256((folder / "sources" / name).read_bytes()).hexdigest()
+            self.assertEqual(source_manifest["sources"][name], actual)
+
+
+if __name__ == "__main__":
+    unittest.main()
