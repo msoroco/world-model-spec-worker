@@ -73,6 +73,14 @@ def build():
                                    "port_env_var": "CARLA_PORT"}
         physical = "physical-proofs/" + proof_slug + "/receipt.json"
         entry["physical_preparation"] = {"receipt": physical, "sha256": sha(physical)}
+        acceptance = "delivery-proofs/" + proof_slug + "/acceptance.json"
+        if (HERE / acceptance).is_file():
+            declared = read(acceptance)
+            if (declared.get("case_id") != selected or declared.get("script_sha256") != sha("delivery_audit.py") or
+                    declared.get("test_log_sha256") != sha(declared["test_log"]) or
+                    declared.get("negative_log_sha256") != sha(declared["negative_log"])):
+                raise ValueError("Stale diagnostic delivery audit proof: " + selected)
+            entry["delivery_acceptance"] = declared
         fallback_manifest = read("diagnostic-" + slug + "-fallback-manifest.json")
         alternatives = []
         for candidate in fallback_manifest["cases"][0]["candidates"]:

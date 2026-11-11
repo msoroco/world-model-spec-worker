@@ -150,17 +150,19 @@ def review_checker(samples, width, height):
     return inspect, finish
 
 
-def audit(attempt, case_id, job_id, attempt_number, recording_id, review_path, output, decode_receipt):
+def audit(attempt, case_id, job_id, attempt_number, recording_id, review_path, output, decode_receipt,
+          *, diagnostic_selftest=False):
     attempt, output, decode_receipt = (Path(p).resolve() for p in (attempt, output, decode_receipt))
     if attempt not in output.parents or attempt in decode_receipt.parents or output.name == "result.json":
         raise ValueError("Audit output must be under attempt and decode receipt outside it")
     result = read(attempt / "result.json")
-    if (result.get("case_id") != case_id or result.get("provenance_kind") != "native" or
-            result.get("diagnostic_fixture") is not False or result.get("physical_acceptance_claimed") is not False):
+    expected_provenance = "synthetic_fixture" if diagnostic_selftest else "native"
+    if (result.get("case_id") != case_id or result.get("provenance_kind") != expected_provenance or
+            result.get("diagnostic_fixture") is not diagnostic_selftest or result.get("physical_acceptance_claimed") is not False):
         raise ValueError("Native non-diagnostic result required")
     seal = read(attempt / "capture-seal.json")
-    if (seal.get("format") != "worker-sealed-capture" or seal.get("provenance_kind") != "native" or
-            seal.get("diagnostic_fixture") is not False):
+    if (seal.get("format") != "worker-sealed-capture" or seal.get("provenance_kind") != expected_provenance or
+            seal.get("diagnostic_fixture") is not diagnostic_selftest):
         raise ValueError("Native capture seal required")
     required = {"config.json", "trace.jsonl", "motion_history.jsonl", "video_frames.jsonl",
                 "capture/evidence.jsonl", "turn_history.jsonl", *(name + ".mkv" for name in CAMERAS)}
@@ -218,7 +220,9 @@ def audit(attempt, case_id, job_id, attempt_number, recording_id, review_path, o
     if len(scenes) != joined["frames"] or any(scene["t"] != round(row["time_s"] * 1000)
             for scene, row in zip(scenes, rows(attempt / "video_frames.jsonl"))):
         raise ValueError("Converted trace/original time join differs")
-    report = {"format": "worker-delivery-audit", "passed": True, "physical_acceptance_claimed": False,
+    report = {"format": "worker-delivery-audit-diagnostic" if diagnostic_selftest else "worker-delivery-audit",
+              "passed": not diagnostic_selftest, "software_checks_passed": True,
+              "diagnostic_fixture": diagnostic_selftest, "physical_acceptance_claimed": False,
               "case_id": case_id, "job_id": job_id, "attempt": attempt_number, "recording_id": recording_id,
               "checks": {key: True for key in CHECKS}, "frames": joined["frames"],
               "source_result_sha256": sha(attempt / "result.json"), "video": "raw.mkv", "video_sha256": sha(video),
@@ -237,8 +241,10 @@ if __name__ == "__main__":
     for key in ("case", "job-id", "recording-id"):
         parser.add_argument("--" + key, required=True)
     parser.add_argument("--attempt-number", type=int, required=True)
+    parser.add_argument("--diagnostic-selftest", action="store_true")
     for key in ("attempt", "pixel-review", "output", "decode-receipt"):
         parser.add_argument("--" + key, type=Path, required=True)
     args = parser.parse_args()
     print(json.dumps(audit(args.attempt, args.case, args.job_id, args.attempt_number, args.recording_id,
-                           args.pixel_review, args.output, args.decode_receipt), sort_keys=True))
+                           args.pixel_review, args.output, args.decode_receipt,
+                           diagnostic_selftest=args.diagnostic_selftest), sort_keys=True))

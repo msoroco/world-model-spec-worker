@@ -2,7 +2,83 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__neutral_baseline",
+      "rationale": "Shared fixed conditions for source comparison",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "pinned nine-body Native ray proxy from original capture/evidence.jsonl",
+            "name": "sight_distance",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 55-second capture",
+            "uncertainty": "virtual-observer proxy; driver recognition unverified",
+            "unit": "structured record"
+          },
+          {
+            "method": "original Native ego pose, yaw and velocity",
+            "name": "u_turn_motion",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 55-second capture",
+            "uncertainty": "requested control and observed motion kept separate",
+            "unit": "structured record"
+          },
+          {
+            "method": "both original Native other-vehicle poses, lanes and velocities",
+            "name": "approaching_actors",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 55-second capture",
+            "uncertainty": "physical approach and visibility require review",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Diagnostic source and media cannot establish physical or legal acceptance"
+        ]
+      },
+      "target_law_id": "NRS-484B-407",
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "near the crest of a grade",
+        "cannot be seen by the driver"
+      ],
+      "variable_assignments": {
+        "feature": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "curve"
+        },
+        "probe": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "short_of_500ft"
+        }
+      }
+    },
+    {
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft",
+      "deliberate_differences": [
+        "feature",
+        "probe"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering probe separation, not legal tolerance",
+        "unit": "ft",
+        "value": 10
+      },
+      "paired_probe_id": "nrs-484b-407-two-direction-boundary",
+      "probe": {
+        "comparison_or_standard": "statutory 500-foot approach distance; actual driver visibility unresolved",
+        "operator": "<=",
+        "primary_variable": "probe",
+        "target_value_or_branch": "short_of_500ft",
+        "test_value": 490,
+        "threshold_ref": "obligation.approach_distance_condition",
+        "unit": "ft"
+      },
       "rationale": "Curve U-turn with both 500-foot approach sight lines",
       "recording_description": {
         "channels": [
@@ -40,10 +116,10 @@
         ]
       },
       "target_law_id": "NRS-484B-407",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "actual driver visibility",
-        "legal turning circumstance"
+        "near the crest of a grade",
+        "cannot be seen by the driver"
       ],
       "variable_assignments": {
         "feature": {
@@ -60,6 +136,25 @@
     },
     {
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__at_500ft",
+      "deliberate_differences": [
+        "feature",
+        "probe"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering probe separation, not legal tolerance",
+        "unit": "ft",
+        "value": 10
+      },
+      "paired_probe_id": "nrs-484b-407-two-direction-boundary",
+      "probe": {
+        "comparison_or_standard": "statutory 500-foot approach distance; actual driver visibility unresolved",
+        "operator": "<=",
+        "primary_variable": "probe",
+        "target_value_or_branch": "at_500ft",
+        "test_value": 500,
+        "threshold_ref": "obligation.approach_distance_condition",
+        "unit": "ft"
+      },
       "rationale": "Curve U-turn with both 500-foot approach sight lines",
       "recording_description": {
         "channels": [
@@ -97,10 +192,10 @@
         ]
       },
       "target_law_id": "NRS-484B-407",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "actual driver visibility",
-        "legal turning circumstance"
+        "near the crest of a grade",
+        "cannot be seen by the driver"
       ],
       "variable_assignments": {
         "feature": {
@@ -117,6 +212,25 @@
     },
     {
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__beyond_500ft",
+      "deliberate_differences": [
+        "feature",
+        "probe"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering probe separation, not legal tolerance",
+        "unit": "ft",
+        "value": 10
+      },
+      "paired_probe_id": "nrs-484b-407-two-direction-boundary",
+      "probe": {
+        "comparison_or_standard": "statutory 500-foot approach distance; actual driver visibility unresolved",
+        "operator": "<=",
+        "primary_variable": "probe",
+        "target_value_or_branch": "beyond_500ft",
+        "test_value": 525,
+        "threshold_ref": "obligation.approach_distance_condition",
+        "unit": "ft"
+      },
       "rationale": "Curve U-turn with both 500-foot approach sight lines",
       "recording_description": {
         "channels": [
@@ -154,10 +268,10 @@
         ]
       },
       "target_law_id": "NRS-484B-407",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "actual driver visibility",
-        "legal turning circumstance"
+        "near the crest of a grade",
+        "cannot be seen by the driver"
       ],
       "variable_assignments": {
         "feature": {
@@ -174,6 +288,25 @@
     },
     {
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft",
+      "deliberate_differences": [
+        "feature",
+        "probe"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering probe separation, not legal tolerance",
+        "unit": "ft",
+        "value": 10
+      },
+      "paired_probe_id": "nrs-484b-407-two-direction-boundary",
+      "probe": {
+        "comparison_or_standard": "statutory 500-foot approach distance; actual driver visibility unresolved",
+        "operator": "<=",
+        "primary_variable": "probe",
+        "target_value_or_branch": "short_of_500ft",
+        "test_value": 490,
+        "threshold_ref": "obligation.approach_distance_condition",
+        "unit": "ft"
+      },
       "rationale": "Grade-crest U-turn with both 500-foot approach sight lines",
       "recording_description": {
         "channels": [
@@ -211,10 +344,10 @@
         ]
       },
       "target_law_id": "NRS-484B-407",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "actual driver visibility",
-        "legal turning circumstance"
+        "near the crest of a grade",
+        "cannot be seen by the driver"
       ],
       "variable_assignments": {
         "feature": {
@@ -231,6 +364,25 @@
     },
     {
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__at_500ft",
+      "deliberate_differences": [
+        "feature",
+        "probe"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering probe separation, not legal tolerance",
+        "unit": "ft",
+        "value": 10
+      },
+      "paired_probe_id": "nrs-484b-407-two-direction-boundary",
+      "probe": {
+        "comparison_or_standard": "statutory 500-foot approach distance; actual driver visibility unresolved",
+        "operator": "<=",
+        "primary_variable": "probe",
+        "target_value_or_branch": "at_500ft",
+        "test_value": 500,
+        "threshold_ref": "obligation.approach_distance_condition",
+        "unit": "ft"
+      },
       "rationale": "Grade-crest U-turn with both 500-foot approach sight lines",
       "recording_description": {
         "channels": [
@@ -268,10 +420,10 @@
         ]
       },
       "target_law_id": "NRS-484B-407",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "actual driver visibility",
-        "legal turning circumstance"
+        "near the crest of a grade",
+        "cannot be seen by the driver"
       ],
       "variable_assignments": {
         "feature": {
@@ -288,6 +440,25 @@
     },
     {
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft",
+      "deliberate_differences": [
+        "feature",
+        "probe"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering probe separation, not legal tolerance",
+        "unit": "ft",
+        "value": 10
+      },
+      "paired_probe_id": "nrs-484b-407-two-direction-boundary",
+      "probe": {
+        "comparison_or_standard": "statutory 500-foot approach distance; actual driver visibility unresolved",
+        "operator": "<=",
+        "primary_variable": "probe",
+        "target_value_or_branch": "beyond_500ft",
+        "test_value": 525,
+        "threshold_ref": "obligation.approach_distance_condition",
+        "unit": "ft"
+      },
       "rationale": "Grade-crest U-turn with both 500-foot approach sight lines",
       "recording_description": {
         "channels": [
@@ -325,10 +496,10 @@
         ]
       },
       "target_law_id": "NRS-484B-407",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "actual driver visibility",
-        "legal turning circumstance"
+        "near the crest of a grade",
+        "cannot be seen by the driver"
       ],
       "variable_assignments": {
         "feature": {
@@ -346,5 +517,26 @@
   ],
   "cell_id": "C129731",
   "status": "draft",
-  "sweep_specs": []
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "No invented distance defines near; retain source geometry and pose.",
+          "phrase": "near the crest of a grade"
+        },
+        {
+          "note": "Virtual eye rays are physical proxies; driver recognition is unresolved.",
+          "phrase": "cannot be seen by the driver"
+        }
+      ],
+      "missing_inputs": [
+        "Reviewed Native map/camera/actor evidence to bound a meaningful physical sweep and its feasibility."
+      ],
+      "rationale": "Driver recognition and proximity to a crest need source-grounded range selection without a numerical legal threshold.",
+      "status": "incomplete",
+      "sweep_id": "nrs-484b-407-driver-visibility",
+      "target_law_id": "NRS-484B-407"
+    }
+  ],
+  "sweeps_expanded": true
 }
