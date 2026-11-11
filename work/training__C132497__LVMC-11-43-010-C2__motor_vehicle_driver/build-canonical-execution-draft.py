@@ -59,7 +59,7 @@ def main():
             assert row['manifest_sha256'] == indexed['manifest_sha256']
             assert sha(ROOT/indexed['manifest']) == indexed['manifest_sha256']
             output = (REPO/'.runtime-work/c132497-selected-offline'/short/ident/
-                      (indexed['manifest_sha256'][:12]+'-'+sha(ROOT/'native/finalize_current.py')[:12]+'-canonical-v1'))
+                      (indexed['manifest_sha256'][:12]+'-'+sha(ROOT/'native/finalize_current.py')[:12]+'-canonical-v2'))
             command = [str(REPO/'.venv-cpu/bin/python'), str(REPO/'runtime.py'),
                        'offline', '--manifest', str(ROOT/indexed['manifest']),
                        '--case', case_id, '--candidate', ident,

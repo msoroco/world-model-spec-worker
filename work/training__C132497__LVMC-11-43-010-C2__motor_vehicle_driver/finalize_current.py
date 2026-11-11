@@ -93,6 +93,24 @@ def assess_original_motion(observed, trace, mapping, cfg, map_readback, capture)
                 'legal_verdict_claimed': False, 'physical_causation_claimed': False}}
 
 
+def merge_physical_assessments(generic, route):
+    """Require both sampled progress and the exact ordered right-exit route."""
+    checks = generic['physical_checks']
+    maneuver = checks['maneuver']
+    route_check = route['physical_checks']
+    maneuver['method'] += ' and ordered first right-exit lane readback'
+    maneuver['sources'].update(route_check['sources'])
+    maneuver.setdefault('details', {})['right_exit_route'] = route_check
+    if not route['maneuver_completed'] and maneuver['status'] == 'met':
+        maneuver['status'] = 'not_met'
+    checks.update({key: route_check[key] for key in
+                   ('sources', 'measured_path_m', 'circulation_frames',
+                    'exit_frames', 'observed_exit_lane_id',
+                    'engineering_minimum_path_m', 'legal_verdict_claimed',
+                    'physical_causation_claimed')})
+    return checks
+
+
 def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt/'result.json').exists() or (attempt/'channels').exists():
@@ -228,6 +246,19 @@ def finalize(attempt, output):
                   'reference': 'native-raw-actors.jsonl'}},
               'provenance_kind': 'synthetic_local_diagnostic' if source_kind == 'synthetic_native_sample'
                                  else 'original_native_unreviewed', 'accepted': False}
+    if source_kind == 'original_native':
+        from worker_exchange.native_output import assess_physical
+        generic = assess_physical(attempt, cfg, result['target_checks'])
+        result['physical_checks'] = merge_physical_assessments(generic, physical)
+        result['maneuver_completed'] = (result['physical_checks']['maneuver']['status'] == 'met')
+        result['setup_confirmed'] = (generic['setup_confirmed'] and physical['setup_confirmed'])
+        result['behavior_attempted'] = (generic['behavior_attempted'] and physical['behavior_attempted'])
+    else:
+        result['physical_checks']['maneuver'] = {
+            'status': 'unverified', 'method': 'synthetic diagnostic cannot establish Native motion',
+            'sources': {'native-raw-actors.jsonl': raw_hash},
+            'missing_evidence': ['original Native acquisition'],
+            'legal_verdict_claimed': False, 'physical_causation_claimed': False}
     from worker_exchange.native_output import validate_result
     validate_result(result)
     output.write_text(json.dumps(report, indent=2, allow_nan=False)+'\n')

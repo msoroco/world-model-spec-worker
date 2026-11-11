@@ -1,5 +1,6 @@
 """Synthetic rows exercise original assessment mechanics; no original claim."""
 import importlib.util
+import copy
 from pathlib import Path
 import unittest
 
@@ -66,6 +67,23 @@ class PhysicalAssessmentMechanics(unittest.TestCase):
     def test_capture_failure_rejected(self):
         self.capture['error'] = 'camera failed'
         self.assertFalse(self.assess()['maneuver_completed'])
+
+    def test_pinned_progress_and_route_must_both_pass(self):
+        route = self.assess()
+        route['physical_checks']['sources'] = {'native-raw-actors.jsonl': 'a'*64}
+        generic = {'physical_checks': {'maneuver': {
+            'status': 'met', 'method': 'synthetic sampled progress check',
+            'sources': {'trace.jsonl': 'b'*64}, 'details': {}}}}
+        merged = FINAL.merge_physical_assessments(copy.deepcopy(generic), route)
+        self.assertEqual(merged['maneuver']['status'], 'met')
+        self.assertEqual(set(merged['maneuver']['sources']),
+                         {'trace.jsonl', 'native-raw-actors.jsonl'})
+        route['maneuver_completed'] = False
+        self.assertEqual(FINAL.merge_physical_assessments(
+            copy.deepcopy(generic), route)['maneuver']['status'], 'not_met')
+        generic['physical_checks']['maneuver']['status'] = 'unverified'
+        self.assertEqual(FINAL.merge_physical_assessments(
+            copy.deepcopy(generic), route)['maneuver']['status'], 'unverified')
 
 
 if __name__ == '__main__': unittest.main()
