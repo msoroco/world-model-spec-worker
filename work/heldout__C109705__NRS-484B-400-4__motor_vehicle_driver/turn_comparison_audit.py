@@ -15,10 +15,14 @@ def audit(paths,variable):
     if variable=="approach_curb_position":
         if rows[0].get("departure_all_corners_right_of_centerline")!=rows[1].get("departure_all_corners_right_of_centerline"):
             raise ValueError("held departure side changed")
+        for bound in ("departure_centerline_min_signed_m", "departure_centerline_max_signed_m"):
+            if abs(rows[0][bound]-rows[1][bound])>0.001:
+                raise ValueError("held departure position changed: "+bound)
         key="approach_left_curb_nearest_m"
     else:
-        if abs(rows[0].get("approach_left_curb_nearest_m",-1)-rows[1].get("approach_left_curb_nearest_m",-2))>0.001:
-            raise ValueError("held approach curb position changed")
+        for bound in ("approach_left_curb_nearest_m", "approach_left_curb_farthest_m"):
+            if abs(rows[0][bound]-rows[1][bound])>0.001:
+                raise ValueError("held approach curb position changed: "+bound)
         key="departure_centerline_max_signed_m"
     if abs(rows[0][key]-rows[1][key])<0.001:
         raise ValueError("deliberate measured position did not vary")

@@ -38,9 +38,20 @@ def main():
                 raise
         else:
             raise ValueError('Changed held departure escaped comparison audit')
+        changed = deepcopy(far)
+        changed['departure_centerline_max_signed_m'] -= .2
+        paths[1].write_text(json.dumps(changed) + '\n')
+        try:
+            audit(paths[:2], 'approach_curb_position')
+        except ValueError as error:
+            if 'held departure position' not in str(error):
+                raise
+        else:
+            raise ValueError('Same-side changed held departure position escaped comparison audit')
     (ROOT / 'contrast-comparison-proof.json').write_text(json.dumps({
         'approach': approach, 'departure': departure,
         'negative_changed_held_departure_rejected': True,
+        'negative_same_side_changed_departure_position_rejected': True,
         'source_case_measurement_logs': [
             'proof-approach_near_depart_right-compatibility.log',
             'proof-approach_far_depart_right-compatibility.log',

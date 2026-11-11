@@ -63,11 +63,27 @@ def main():
                 'parameter_refs': [{'name': name, 'kind': kind, 'range_or_domain': domain}
                                    for name, kind, domain in parameters]}
     refs['template'] = write('template', template)
+    dimensions = [
+        ('minimum_sampled_surface_gap_m', 'm',
+         'Minimum original-frame ego-to-participant body surface gap during the turn.'),
+        ('pre_turn_listener_audio_rms', 'normalized PCM',
+         'Original listener PCM amplitude before measured turn onset; physical audibility remains unresolved.'),
+        ('pedestrian_minimum_surface_gap_m', 'm',
+         'Minimum original-frame body surface gap to the identified pedestrian.'),
+        ('pre_turn_signal_frames', 'frames',
+         'Original Native indicator or hand-pose readback frames before measured turn onset.'),
+        ('vehicle_minimum_surface_gap_m', 'm',
+         'Minimum original-frame body surface gap to the identified other vehicle.'),
+    ]
     judgment_refs = []
     for index, (phrase, note) in enumerate(phrases, 1):
+        dimension_name, dimension_unit, dimension_description = dimensions[index - 1]
         requirement = {'observables': [{'name': 'turn_signal_observation', 'unit': 'structured',
                                         'description': 'Original turn, body, signal and listener status retained at 20 Hz.'}],
-                       'context_inputs': [], 'sweep_dimensions': [], 'landmarks': [],
+                       'context_inputs': [],
+                       'sweep_dimensions': [{'name': dimension_name, 'unit': dimension_unit,
+                                            'description': dimension_description}],
+                       'landmarks': [],
                        'recording_needs': [{'name': 'turn_signal_observation', 'unit': 'structured',
                                             'description': 'Original case-specific turn and conditional signal observation.'}],
                        'limitations': ['Diagnostic streams do not establish physical visibility, audibility, affected-party status or legal judgment.']}

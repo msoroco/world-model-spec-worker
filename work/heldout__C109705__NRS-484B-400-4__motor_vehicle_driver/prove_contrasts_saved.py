@@ -21,14 +21,20 @@ def digest(path):
 
 def main():
     entries = json.loads(MANIFEST.read_text())['cases']
+    records = []
     for entry in entries:
-        case = entry['case_id']
-        slug = case.split('__')[-1]
-        attempt = REPO / ('.runtime-work/c109705-saved-' + slug + '-attempt-v2')
-        output = REPO / ('.runtime-work/c109705-saved-' + slug + '-v2')
-        if attempt.exists():
-            raise ValueError('Retain prior C109705 diagnostic acquisition: ' + slug)
-        materialize(MANIFEST, case, attempt)
+      case = entry['case_id']
+      slug = case.split('__')[-1]
+      for candidate in ['primary'] + [item['id'] for item in entry.get('candidates', [])]:
+        revision = 1
+        stem = '.runtime-work/c109705-saved-' + slug + '-' + candidate
+        attempt = REPO / f'{stem}-attempt-v{revision}'
+        output = REPO / f'{stem}-v{revision}'
+        while attempt.exists() or output.exists():
+            revision += 1
+            attempt = REPO / f'{stem}-attempt-v{revision}'
+            output = REPO / f'{stem}-v{revision}'
+        materialize(MANIFEST, case, attempt, candidate)
         with tempfile.TemporaryDirectory(dir=REPO / '.runtime-work', prefix='c109705-source-') as temporary:
             fixture = Path(temporary) / 'source'
             fixture_materialize(REPO, REPO / entry['fixture_recipe'], fixture)
@@ -41,19 +47,26 @@ def main():
                    '--library', str(REPO / 'runtime/library'),
                    '--validator', str(REPO / '.runtime-work/c125714-validator/.lake/build/bin/adapterCheck')]
         process = subprocess.run(command, cwd=REPO, capture_output=True, text=True)
-        (ROOT / ('saved-' + slug + '.log')).write_text(process.stdout + process.stderr)
+        log = ROOT / 'cases' / ('saved-' + slug + '-' + candidate + '.log')
+        log.write_text(process.stdout + process.stderr)
         if process.returncode:
             raise ValueError('C109705 saved processing failed: ' + slug)
         receipt = json.loads(process.stdout)
         if (receipt.get('case_id') != case or not receipt.get('passed')
-                or receipt.get('candidate_id') != 'primary'
+                or receipt.get('candidate_id') != candidate
                 or receipt.get('physical_acceptance_claimed')
                 or receipt.get('legal_acceptance_claimed')
                 or not receipt.get('originals_preserved')
                 or any(digest(attempt / path) != value for path, value in before.items())):
             raise ValueError('C109705 saved receipt/original source differs: ' + slug)
-        (ROOT / ('saved-' + slug + '.json')).write_text(json.dumps(receipt, indent=2) + '\n')
-        print(slug, 'passed; originals preserved; no physical or legal acceptance')
+        receipt_path = ROOT / 'cases' / ('saved-' + slug + '-' + candidate + '.json')
+        receipt_path.write_text(json.dumps(receipt, indent=2) + '\n')
+        records.append({'case_id': case, 'candidate_id': candidate,
+                        'receipt': str(receipt_path.relative_to(ROOT)),
+                        'receipt_sha256': digest(receipt_path),
+                        'log': str(log.relative_to(ROOT)), 'log_sha256': digest(log)})
+        print(slug, candidate, 'passed; originals preserved; no physical or legal acceptance', flush=True)
+    (ROOT / 'saved-candidate-proofs.json').write_text(json.dumps(records, indent=2) + '\n')
 
 
 if __name__ == '__main__':

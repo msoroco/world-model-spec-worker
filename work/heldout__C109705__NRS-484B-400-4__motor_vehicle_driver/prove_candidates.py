@@ -27,7 +27,12 @@ def main():
                     ('offline', ['--python', PYTHON]),
                     ('compatibility', ['--library', str(REPO / 'runtime/library'),
                                        '--validator', str(REPO / '.runtime-work/c125714-validator/.lake/build/bin/adapterCheck')])):
-                output = REPO / ('.runtime-work/c109705-candidate-' + slug + '-' + candidate + '-' + mode + '-v1')
+                stem = REPO / ('.runtime-work/c109705-candidate-' + slug + '-' + candidate + '-' + mode)
+                revision = 1
+                output = Path(f'{stem}-v{revision}')
+                while output.exists():
+                    revision += 1
+                    output = Path(f'{stem}-v{revision}')
                 command = [PYTHON, str(REPO / 'runtime.py'), mode,
                            '--manifest', str(MANIFEST), '--case', case,
                            '--candidate', candidate, '--output', str(output)] + extras
