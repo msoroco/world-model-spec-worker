@@ -45,6 +45,10 @@
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
       "source_topic_ids": [
         "text-0"
+      ],
+      "gap_ids": [
+        "alley_stop_and_entrance",
+        "witness_context"
       ]
     },
     {
@@ -60,6 +64,10 @@
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
       "source_topic_ids": [
         "text-0"
+      ],
+      "gap_ids": [
+        "alley_stop_and_entrance",
+        "witness_context"
       ]
     }
   ],
@@ -191,5 +199,24 @@
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "evidence_review": {
+    "method": "Review frozen assignment, conditional witness, empty full-train membership and absent accepted-recording inventory",
+    "reviewer": "worker CPU preparation",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "alley_stop_and_entrance",
+        "requirement": "text-0",
+        "source": "inputs/coverage/branch-sources.json",
+        "why_existing_insufficient": "No accepted recording is listed. The conditional witness supplies a proposed cell, not observed Native alley status, qualifying stop or standing, abutting-property access or a blocking judgment."
+      },
+      {
+        "id": "witness_context",
+        "requirement": "reviewed-scope-0",
+        "source": "inputs/training__C10014__NRS-484B-477-2__motor_vehicle_driver/witnesses.json",
+        "why_existing_insufficient": "The witness requires public-highway/alley and private driveway context, actual use, actor purpose, directions, motion and footprint over time; none is established by an accepted recording."
+      }
+    ]
+  }
 }

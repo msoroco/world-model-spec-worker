@@ -45,6 +45,10 @@
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
       "source_topic_ids": [
         "text-0"
+      ],
+      "gap_ids": [
+        "right_half_and_practicability",
+        "marked_highway_crossing_context"
       ]
     },
     {
@@ -60,6 +64,10 @@
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
       "source_topic_ids": [
         "text-0"
+      ],
+      "gap_ids": [
+        "right_half_and_practicability",
+        "marked_highway_crossing_context"
       ]
     }
   ],
@@ -191,5 +199,24 @@
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "evidence_review": {
+    "method": "Review frozen assignment, low-confidence conditional crossing witness, empty full-train membership and absent accepted-recording inventory",
+    "reviewer": "worker CPU preparation",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "right_half_and_practicability",
+        "requirement": "text-0",
+        "source": "inputs/coverage/branch-sources.json",
+        "why_existing_insufficient": "No accepted recording is listed. The authored 1.3 m lateral diagnostic shows requested geometry, not an original right-half passage or whether right-half movement was practicable."
+      },
+      {
+        "id": "marked_highway_crossing_context",
+        "requirement": "reviewed-scope-0",
+        "source": "inputs/training__C10316__NRS-484B-293__pedestrian/witnesses.json",
+        "why_existing_insufficient": "The conditional witness requires a marked highway crosswalk connected to the alley route, associated controls, passage space, obstacles and other pedestrians. These are not established by accepted Native evidence."
+      }
+    ]
+  }
 }

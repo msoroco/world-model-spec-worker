@@ -1,7 +1,9 @@
 """Independent audit of current exact C10014 synthetic compatibility paths."""
 import hashlib
 import json
+import os
 from pathlib import Path
+import tempfile
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -103,14 +105,23 @@ def audit_attempt(folder, saved, selected, entry, candidate):
         require(len(source) == 4 and source == original ==
                 {(round(v[0], 5), round(v[1], 5)) for v in b['body_vertices_m']},
                 'raw vehicle footprint differs')
-    stop = [s for s in sample if s['native_road_id'] == 1 and
-            s['native_lane_id'] == -1 and s['speed_mps'] <= .1]
+    geometry = read(folder/'road_geometry.json')
+    xmin, ymin, xmax, ymax = geometry['driveway_entrance_native_xy_bounds_m']
+    stop = [s for s in sample if
+            s['native_road_id'] == geometry['alley_native_road_id'] and
+            s['native_lane_id'] == geometry['alley_native_lane_id'] and
+            s['speed_mps'] <= .1]
     require(len(stop) >= 40, 'stationary alley interval absent')
     suffix = entry['case_id'].rsplit('__', 1)[-1]
     expected = 0.0 if suffix == 'reference' else 5.2
-    overlap = max(max(0., min(max(v[0] for v in s['native_body_xy_m']), 3.)-
-                       max(min(v[0] for v in s['native_body_xy_m']), -3.))
-                  for s in stop)
+    def body_overlap(row):
+        body = row['native_body_xy_m']
+        width = max(0., min(max(v[0] for v in body), xmax)-
+                    max(min(v[0] for v in body), xmin))
+        height = max(0., min(max(v[1] for v in body), ymax)-
+                     max(min(v[1] for v in body), ymin))
+        return width if height > 0 else 0.
+    overlap = max(body_overlap(s) for s in stop)
     require(abs(overlap-expected) < 1e-6 and
             result['measured_values']['max_entrance_overlap_m'] == expected and
             report['measurements']['entrance_overlap_observation']['value']
@@ -168,13 +179,43 @@ def main():
                         'candidate_id', 'supported_case_ids', 'case'):
                 config.pop(key, None)
         require(config_a == config_b, 'controlled construction config differs')
+    first_entry = manifest['cases'][0]
+    first_folder, first_saved = paths('reference', 'primary')
+    negatives = []
+    for name in ('missing_samples', 'changed_frame', 'false_acceptance'):
+        with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',
+                                         prefix='c10014-audit-negative-') as temporary:
+            target = Path(temporary)
+            for item in first_folder.iterdir():
+                os.symlink(item, target/item.name, target_is_directory=item.is_dir())
+            if name == 'missing_samples':
+                (target/'native_samples.jsonl').unlink()
+            elif name == 'changed_frame':
+                source = rows(first_folder/'native_samples.jsonl')
+                source[8]['native_frame'] = 999
+                (target/'native_samples.jsonl').unlink()
+                (target/'native_samples.jsonl').write_text(
+                    ''.join(json.dumps(row)+'\n' for row in source))
+            else:
+                result = read(first_folder/'result.json')
+                result['accepted'] = True
+                (target/'result.json').unlink()
+                (target/'result.json').write_text(json.dumps(result)+'\n')
+            try:
+                audit_attempt(target, first_saved, first_entry, first_entry, 'primary')
+            except (ValueError, FileNotFoundError):
+                negatives.append(name)
+            else:
+                raise ValueError('Independent negative was accepted: '+name)
     report = {'format': 'c10014-update015-independent-exact-audit',
               'draft_manifest_sha256': sha(HERE/'draft-execution-manifest.json'),
               'attempts': audited, 'controlled_pairs': len(CANDIDATES),
+              'rejected_mutations': negatives,
               'scope': 'synthetic software proof; no Native or legal acceptance'}
     (HERE/'update015-exact-audit.json').write_text(json.dumps(report, indent=2)+'\n')
     print(json.dumps({'passed': True, 'attempts': len(audited),
-                      'controlled_pairs': len(CANDIDATES)}))
+                      'controlled_pairs': len(CANDIDATES),
+                      'rejected_mutations': negatives}))
 
 
 if __name__ == '__main__':
