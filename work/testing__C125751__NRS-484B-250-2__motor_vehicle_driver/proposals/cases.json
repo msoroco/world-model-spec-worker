@@ -4,19 +4,139 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
-      "target_law_id": "NRS-484B-250-2",
-      "target_type": "delivery",
-      "rationale": "Official traffic-control device governs both approaches; signal operates at entry; examine statutory exclusion.",
+      "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "shared controlled median-opening geometry and two-vehicle approach reference",
       "variable_assignments": {
-        "native_signal_pair": {
+        "commanded_approach_speed": {
           "kind": "controller",
-          "value": {
-            "ego": "Green",
-            "other": "Red"
-          }
+          "value": 5,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel_waypoints",
+          "unit": "structured record"
+        },
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "native_signal_state": {
+          "kind": "world_setup",
+          "value": "Green",
+          "unit": "categorical"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
         }
       },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native signal state by frame",
+            "name": "signal_state",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "uncertainty": "synthetic diagnostic only",
+            "unit": "structured record"
+          },
+          {
+            "method": "original speed and body occupancy by frame",
+            "name": "stop_state",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "uncertainty": "synthetic diagnostic only",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "saved body entry, signal and stop source join",
+            "name": "entry_context",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "Synthetic diagnostic site and media; physical and legal acceptance unresolved"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "boundary_probe",
+      "rationale": "source-bound Native signal-state comparison while official control and subsection-4 applicability remain unresolved",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel_waypoints",
+          "unit": "structured record"
+        },
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "native_signal_state": {
+          "kind": "world_setup",
+          "value": "Green",
+          "unit": "categorical"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately the same time",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "intending to or is making a left turn"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -49,25 +169,167 @@
           "Synthetic diagnostic site and media; physical and legal acceptance unresolved"
         ]
       },
-      "unresolved_judgment_calls": [
-        "approximately same time",
-        "official traffic-control-device status",
-        "statutory inoperability",
-        "statutory stop and yield"
-      ]
+      "paired_probe_id": "signal-control-pair",
+      "deliberate_differences": [
+        "native_signal_state"
+      ],
+      "probe": {
+        "primary_variable": "native_signal_state",
+        "comparison_or_standard": "operative versus Off Native signal under fixed source geometry",
+        "target_value_or_branch": "Green"
+      }
     },
     {
       "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
       "target_law_id": "NRS-484B-250-2",
-      "target_type": "delivery",
-      "rationale": "Same junction and approaches; installed uncovered signal Off at entry; examine subsection 4 qualification, stop and priority history.",
+      "target_type": "boundary_probe",
+      "rationale": "source-bound Native signal-state comparison while official control and subsection-4 applicability remain unresolved",
       "variable_assignments": {
-        "native_signal_pair": {
+        "commanded_approach_speed": {
           "kind": "controller",
-          "value": {
-            "ego": "Off",
-            "other": "Off"
+          "value": 5,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel_waypoints",
+          "unit": "structured record"
+        },
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "native_signal_state": {
+          "kind": "world_setup",
+          "value": "Off",
+          "unit": "categorical"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately the same time",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "intending to or is making a left turn"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native signal state by frame",
+            "name": "signal_state",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "uncertainty": "synthetic diagnostic only",
+            "unit": "structured record"
+          },
+          {
+            "method": "original speed and body occupancy by frame",
+            "name": "stop_state",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "uncertainty": "synthetic diagnostic only",
+            "unit": "structured record"
           }
+        ],
+        "context_inputs": [
+          {
+            "method": "saved body entry, signal and stop source join",
+            "name": "entry_context",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "Synthetic diagnostic site and media; physical and legal acceptance unresolved"
+        ]
+      },
+      "paired_probe_id": "signal-control-pair",
+      "deliberate_differences": [
+        "native_signal_state"
+      ],
+      "probe": {
+        "primary_variable": "native_signal_state",
+        "comparison_or_standard": "operative versus Off Native signal under fixed source geometry",
+        "target_value_or_branch": "Off"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c125751-1",
+      "target_law_id": "NRS-484B-250-2",
+      "judgment_refs": [
+        {
+          "phrase": "approximately the same time",
+          "note": "The supplied law has no numeric legal simultaneity cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "physical sweep requires source-verified Native feasibility and fixed range before selection",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel_waypoints",
+          "unit": "structured record"
+        },
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "native_signal_state": {
+          "kind": "world_setup",
+          "value": "Green",
+          "unit": "categorical"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
         }
       },
       "recording_description": {
@@ -102,14 +364,285 @@
           "Synthetic diagnostic site and media; physical and legal acceptance unresolved"
         ]
       },
-      "unresolved_judgment_calls": [
-        "approximately same time",
-        "official traffic-control-device status",
-        "statutory inoperability",
-        "statutory stop and yield"
+      "missing_inputs": [
+        "verified physical site and controller feasibility/range for approximately the same time"
+      ]
+    },
+    {
+      "sweep_id": "c125751-2",
+      "target_law_id": "NRS-484B-250-2",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way",
+          "note": "Original motion and priority context are required; no speed or time surrogate decides the duty."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "physical sweep requires source-verified Native feasibility and fixed range before selection",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel_waypoints",
+          "unit": "structured record"
+        },
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "native_signal_state": {
+          "kind": "world_setup",
+          "value": "Green",
+          "unit": "categorical"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native signal state by frame",
+            "name": "signal_state",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "uncertainty": "synthetic diagnostic only",
+            "unit": "structured record"
+          },
+          {
+            "method": "original speed and body occupancy by frame",
+            "name": "stop_state",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "uncertainty": "synthetic diagnostic only",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "saved body entry, signal and stop source join",
+            "name": "entry_context",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "Synthetic diagnostic site and media; physical and legal acceptance unresolved"
+        ]
+      },
+      "missing_inputs": [
+        "verified physical site and controller feasibility/range for yield the right-of-way"
+      ]
+    },
+    {
+      "sweep_id": "c125751-3",
+      "target_law_id": "NRS-484B-250-2",
+      "judgment_refs": [
+        {
+          "phrase": "official traffic-control devices",
+          "note": "Official status and governance require independent source review; Native light state alone is insufficient."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "physical sweep requires source-verified Native feasibility and fixed range before selection",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel_waypoints",
+          "unit": "structured record"
+        },
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "native_signal_state": {
+          "kind": "world_setup",
+          "value": "Green",
+          "unit": "categorical"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native signal state by frame",
+            "name": "signal_state",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "uncertainty": "synthetic diagnostic only",
+            "unit": "structured record"
+          },
+          {
+            "method": "original speed and body occupancy by frame",
+            "name": "stop_state",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "uncertainty": "synthetic diagnostic only",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "saved body entry, signal and stop source join",
+            "name": "entry_context",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "Synthetic diagnostic site and media; physical and legal acceptance unresolved"
+        ]
+      },
+      "missing_inputs": [
+        "verified physical site and controller feasibility/range for official traffic-control devices"
+      ]
+    },
+    {
+      "sweep_id": "c125751-4",
+      "target_law_id": "NRS-484B-250-2",
+      "judgment_refs": [
+        {
+          "phrase": "intending to or is making a left turn",
+          "note": "Turn intention and realized trajectory require route and original heading/body evidence."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "physical sweep requires source-verified Native feasibility and fixed range before selection",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5,
+          "unit": "m/s"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "travel_waypoints",
+          "unit": "structured record"
+        },
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "native_signal_state": {
+          "kind": "world_setup",
+          "value": "Green",
+          "unit": "categorical"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native signal state by frame",
+            "name": "signal_state",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "uncertainty": "synthetic diagnostic only",
+            "unit": "structured record"
+          },
+          {
+            "method": "original speed and body occupancy by frame",
+            "name": "stop_state",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "uncertainty": "synthetic diagnostic only",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "saved body entry, signal and stop source join",
+            "name": "entry_context",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "Synthetic diagnostic site and media; physical and legal acceptance unresolved"
+        ]
+      },
+      "missing_inputs": [
+        "verified physical site and controller feasibility/range for intending to or is making a left turn"
       ]
     }
-  ],
-  "sweep_specs": [],
-  "sweeps_expanded": []
+  ]
 }
