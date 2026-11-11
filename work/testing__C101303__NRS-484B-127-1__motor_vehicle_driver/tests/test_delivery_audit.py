@@ -21,7 +21,7 @@ class DeliveryAuditTest(unittest.TestCase):
                                      root/'trace.jsonl', case, expected_frames=9)
         self.assertEqual(joined['participant_ids'], [205, 307])
         self.assertEqual(joined['frames'], 9)
-        queued = REPO/'.runtime-work/c101303-queued-participant-v2/primary-compat'
+        queued = REPO/'.runtime-work/c101303-queued-participant-v3/primary-compat'
         queued_case = case.replace('source_verified_base','source_verified_queued_traffic')
         queued_join = audit.validate_join(queued/'video_frames.jsonl',
                                          queued/'vehicle_history.jsonl',queued/'trace.jsonl',
@@ -70,7 +70,7 @@ class DeliveryAuditTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaisesRegex(ValueError, 'Native non-diagnostic result required'):
                 audit.audit_attempt(root,case,'fixture-job',1,'fixture-recording',
-                                    Path(tmp)/'review.json',Path(tmp)/'audit.json',
+                                    Path(tmp)/'review.json',root/'delivery-audit.json',
                                     Path(tmp)/'decode.json')
 
 

@@ -132,18 +132,25 @@ def pixel_checker(samples, *, width, height):
 
 
 def audit_attempt(attempt, case_id, job_id, attempt_number, recording_id, review_path,
-                  output, decode_receipt):
+                  output, decode_receipt, *, diagnostic_selftest=False):
     attempt, output, decode_receipt = Path(attempt).resolve(), Path(output).resolve(), Path(decode_receipt).resolve()
-    if output.name == 'result.json' or attempt in output.parents or attempt in decode_receipt.parents:
-        raise ValueError('Keep independent audit outputs outside original attempt')
+    if output.name == 'result.json' or attempt not in output.parents or attempt in decode_receipt.parents:
+        raise ValueError('Keep audit under exact attempt and decode receipt outside it')
     result = read(attempt/'result.json')
-    if result.get('case_id') != case_id or result.get('provenance_kind') != 'native' or result.get('diagnostic_fixture') is not False:
+    if (result.get('case_id') != case_id or result.get('diagnostic_fixture') is not diagnostic_selftest
+            or result.get('provenance_kind') != ('synthetic_fixture' if diagnostic_selftest else 'native')):
         raise ValueError('Native non-diagnostic result required')
     if result.get('physical_acceptance_claimed') is not False:
         raise ValueError('Native result asserted premature physical acceptance')
     seal = read(attempt/'capture-seal.json')
-    if seal.get('format') != 'worker-sealed-capture' or seal.get('provenance_kind') != 'native' or seal.get('diagnostic_fixture'):
+    if (seal.get('format') != 'worker-sealed-capture'
+            or seal.get('provenance_kind') != ('synthetic_fixture' if diagnostic_selftest else 'native')
+            or seal.get('diagnostic_fixture') is not diagnostic_selftest):
         raise ValueError('Native capture seal required')
+    required_sealed = {'config.json', 'trace.jsonl', 'vehicle_history.jsonl',
+                       'video_frames.jsonl', *(name+'.mkv' for name in CAMERAS)}
+    if not required_sealed <= set(seal.get('sources', {})):
+        raise ValueError('Capture seal omits required original source')
     for name, digest in seal.get('sources', {}).items():
         source = (attempt/name).resolve()
         if attempt not in source.parents or not source.is_file() or sha(source) != digest:
@@ -174,6 +181,20 @@ def audit_attempt(attempt, case_id, job_id, attempt_number, recording_id, review
     if (not observations or not {'ego','lead'} <= {x.get('actor') for x in observations}
             or not set(joined['participant_ids']) <= {x.get('actor_id') for x in observations}):
         raise ValueError('Independent pixel review omits a participant')
+    history = lines(attempt/'vehicle_history.jsonl')
+    for observation in observations:
+        frame_number = observation.get('video_frame')
+        if type(frame_number) is not int or not 0 <= frame_number < len(history):
+            raise ValueError('Pixel review frame differs from original source')
+        row = history[frame_number]
+        roles = {'ego':row['ego']['actor_id'], 'lead':row['lead']['actor_id']}
+        roles.update({('other', actor['actor_id']):actor['actor_id']
+                      for actor in row.get('other_participants', [])})
+        actor = observation.get('actor')
+        actor_id = observation.get('actor_id')
+        if (actor in ('ego','lead') and actor_id != roles[actor]) or (
+                actor == 'other' and ('other',actor_id) not in roles) or actor not in ('ego','lead','other'):
+            raise ValueError('Pixel review actor identity differs from original source')
     from worker_exchange.capture import PROFILE
     dimensions = {'overview': PROFILE['overview'], **{name:size for name,size in zip(CAMERAS[1:],PROFILE['detail_views'])}}
     for name, path in sources.items():
@@ -191,7 +212,10 @@ def audit_attempt(attempt, case_id, job_id, attempt_number, recording_id, review
     if len(scenes) != joined['frames'] or any(scene['t'] != round(frame['time_s']*1000)
             for scene,frame in zip(scenes,lines(attempt/'video_frames.jsonl'))):
         raise ValueError('Core trace/original frame time join differs')
-    audit = {'format':'worker-delivery-audit','passed':True,'case_id':case_id,
+    audit = {'format':'worker-delivery-audit-diagnostic' if diagnostic_selftest else 'worker-delivery-audit',
+             'passed':not diagnostic_selftest,'software_checks_passed':True,
+             'diagnostic_fixture':diagnostic_selftest,'physical_acceptance_claimed':False,
+             'case_id':case_id,
              'job_id':job_id,'attempt':attempt_number,'recording_id':recording_id,
              'checks':{key:True for key in CHECKS},'frames':joined['frames'],
              'source_result_sha256':sha(attempt/'result.json'),
@@ -217,9 +241,11 @@ def main():
     parser.add_argument('--pixel-review',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--decode-receipt',type=Path,required=True)
+    parser.add_argument('--diagnostic-selftest',action='store_true')
     args=parser.parse_args()
     print(json.dumps(audit_attempt(args.attempt,args.case,args.job_id,args.attempt_number,
-          args.recording_id,args.pixel_review,args.output,args.decode_receipt),sort_keys=True))
+          args.recording_id,args.pixel_review,args.output,args.decode_receipt,
+          diagnostic_selftest=args.diagnostic_selftest),sort_keys=True))
 
 
 if __name__ == '__main__':
