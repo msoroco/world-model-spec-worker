@@ -1,24 +1,59 @@
 {
+  "cell_id": "C101303",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_base",
-      "target_law_id": "NRS-484B-127-1",
-      "target_type": "judgment_sweep",
-      "rationale": "Measure the body gap and both speeds before the lane change with sourced traffic and road condition; leave reasonable and prudent unresolved.",
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral comparison definition; no separate recording or legal label.",
       "variable_assignments": {
         "requested_engineering_gap_m": {
           "kind": "controller",
           "value": 10.0,
-          "unit": "m",
-          "source": "config.json"
+          "unit": "m"
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "lead_target_speed_mps": {
+          "kind": "controller",
+          "value": 3.5,
+          "unit": "m/s"
+        },
+        "lead_brake_start_fraction": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "fraction of corridor"
+        },
+        "requested_wetness_pct": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "percent"
+        },
+        "lane_change_start_fraction": {
+          "kind": "controller",
+          "value": 0.55,
+          "unit": "fraction of corridor"
+        },
+        "queued_traffic_required": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
         }
-      },
-      "paired_probe_id": "following-gap-source-verified",
-      "deliberate_differences": [],
-      "probe": {
-        "primary_variable": "requested_engineering_gap_m",
-        "comparison_or_standard": "reasonable and prudent given both speeds, traffic, and highway condition",
-        "target_value_or_branch": "following before the lane change; no numeric legal cutoff"
       },
       "recording_description": {
         "channels": [
@@ -68,7 +103,117 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "reasonable and prudent following gap"
+        "reasonable and prudent"
+      ]
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_base",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Measure the body gap and both speeds before the lane change with sourced traffic and road condition; leave reasonable and prudent unresolved.",
+      "variable_assignments": {
+        "requested_engineering_gap_m": {
+          "kind": "controller",
+          "value": 10.0,
+          "unit": "m"
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "lead_target_speed_mps": {
+          "kind": "controller",
+          "value": 3.5,
+          "unit": "m/s"
+        },
+        "lead_brake_start_fraction": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "fraction of corridor"
+        },
+        "requested_wetness_pct": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "percent"
+        },
+        "lane_change_start_fraction": {
+          "kind": "controller",
+          "value": 0.55,
+          "unit": "fraction of corridor"
+        },
+        "queued_traffic_required": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        }
+      },
+      "paired_probe_id": "c101303-controlled-following",
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "requested_engineering_gap_m",
+        "comparison_or_standard": "reasonableness and prudence with both speeds, traffic and highway condition unresolved",
+        "target_value_or_branch": "following before lane change"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original actor.get_velocity 3D magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "uncertainty": "sampled at 20 Hz; between-frame state unresolved",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "lead_speed",
+            "unit": "m/s",
+            "method": "original actor.get_velocity 3D magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "uncertainty": "sampled at 20 Hz; between-frame state unresolved",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "longitudinal_body_gap",
+            "unit": "m",
+            "method": "original complete-body projection along following lane",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "uncertainty": "sampled at 20 Hz; between-frame state unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "highway_condition",
+            "unit": "structured record",
+            "method": "original Native weather and sourced road context"
+          },
+          {
+            "name": "traffic_state",
+            "unit": "structured record",
+            "method": "original Native actor inventory and lane identities"
+          }
+        ],
+        "limitations": [
+          "reasonable-and-prudent following remains a legal judgment",
+          "actual motion, road authority and visibility require local original-source review"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent"
       ],
       "sweep_measurements": []
     },
@@ -81,18 +226,57 @@
         "requested_engineering_gap_m": {
           "kind": "controller",
           "value": 7.0,
-          "unit": "m",
-          "source": "config.json"
+          "unit": "m"
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "lead_target_speed_mps": {
+          "kind": "controller",
+          "value": 3.5,
+          "unit": "m/s"
+        },
+        "lead_brake_start_fraction": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "fraction of corridor"
+        },
+        "requested_wetness_pct": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "percent"
+        },
+        "lane_change_start_fraction": {
+          "kind": "controller",
+          "value": 0.55,
+          "unit": "fraction of corridor"
+        },
+        "queued_traffic_required": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
         }
       },
-      "paired_probe_id": "following-gap-source-verified",
+      "paired_probe_id": "c101303-controlled-following",
       "deliberate_differences": [
         "requested_engineering_gap_m"
       ],
       "probe": {
         "primary_variable": "requested_engineering_gap_m",
-        "comparison_or_standard": "reasonable and prudent given both speeds, traffic, and highway condition",
-        "target_value_or_branch": "following before the lane change; no numeric legal cutoff"
+        "comparison_or_standard": "reasonableness and prudence with both speeds, traffic and highway condition unresolved",
+        "target_value_or_branch": "following before lane change"
       },
       "recording_description": {
         "channels": [
@@ -142,7 +326,7 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "reasonable and prudent following gap"
+        "reasonable and prudent"
       ],
       "sweep_measurements": []
     },
@@ -155,24 +339,58 @@
         "requested_engineering_gap_m": {
           "kind": "controller",
           "value": 10.0,
-          "unit": "m",
-          "source": "config.json"
+          "unit": "m"
         },
         "ego_target_speed_mps": {
           "kind": "controller",
           "value": 5.0,
-          "unit": "m/s",
-          "source": "config.json"
+          "unit": "m/s"
+        },
+        "lead_target_speed_mps": {
+          "kind": "controller",
+          "value": 3.5,
+          "unit": "m/s"
+        },
+        "lead_brake_start_fraction": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "fraction of corridor"
+        },
+        "requested_wetness_pct": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "percent"
+        },
+        "lane_change_start_fraction": {
+          "kind": "controller",
+          "value": 0.55,
+          "unit": "fraction of corridor"
+        },
+        "queued_traffic_required": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
         }
       },
-      "paired_probe_id": "following-gap-source-verified",
+      "paired_probe_id": "c101303-controlled-following",
       "deliberate_differences": [
-        "ego_target_speed_mps"
+        "ego_target_speed_mps",
+        "commanded_approach_speed"
       ],
       "probe": {
         "primary_variable": "ego_target_speed_mps",
-        "comparison_or_standard": "reasonable and prudent given both speeds, traffic, and highway condition",
-        "target_value_or_branch": "following before the lane change; no numeric legal cutoff"
+        "comparison_or_standard": "reasonableness and prudence with both speeds, traffic and highway condition unresolved",
+        "target_value_or_branch": "following before lane change"
       },
       "recording_description": {
         "channels": [
@@ -222,7 +440,7 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "reasonable and prudent following gap"
+        "reasonable and prudent"
       ],
       "sweep_measurements": []
     },
@@ -235,24 +453,57 @@
         "requested_engineering_gap_m": {
           "kind": "controller",
           "value": 10.0,
-          "unit": "m",
-          "source": "config.json"
+          "unit": "m"
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
         },
         "lead_target_speed_mps": {
           "kind": "controller",
           "value": 2.5,
-          "unit": "m/s",
-          "source": "config.json"
+          "unit": "m/s"
+        },
+        "lead_brake_start_fraction": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "fraction of corridor"
+        },
+        "requested_wetness_pct": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "percent"
+        },
+        "lane_change_start_fraction": {
+          "kind": "controller",
+          "value": 0.55,
+          "unit": "fraction of corridor"
+        },
+        "queued_traffic_required": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
         }
       },
-      "paired_probe_id": "following-gap-source-verified",
+      "paired_probe_id": "c101303-controlled-following",
       "deliberate_differences": [
         "lead_target_speed_mps"
       ],
       "probe": {
         "primary_variable": "lead_target_speed_mps",
-        "comparison_or_standard": "reasonable and prudent given both speeds, traffic, and highway condition",
-        "target_value_or_branch": "following before the lane change; no numeric legal cutoff"
+        "comparison_or_standard": "reasonableness and prudence with both speeds, traffic and highway condition unresolved",
+        "target_value_or_branch": "following before lane change"
       },
       "recording_description": {
         "channels": [
@@ -302,7 +553,7 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "reasonable and prudent following gap"
+        "reasonable and prudent"
       ],
       "sweep_measurements": []
     },
@@ -315,24 +566,57 @@
         "requested_engineering_gap_m": {
           "kind": "controller",
           "value": 10.0,
-          "unit": "m",
-          "source": "config.json"
+          "unit": "m"
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "lead_target_speed_mps": {
+          "kind": "controller",
+          "value": 3.5,
+          "unit": "m/s"
         },
         "lead_brake_start_fraction": {
           "kind": "controller",
           "value": 0.35,
-          "unit": "fraction of sourced corridor",
-          "source": "config.json"
+          "unit": "fraction of corridor"
+        },
+        "requested_wetness_pct": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "percent"
+        },
+        "lane_change_start_fraction": {
+          "kind": "controller",
+          "value": 0.55,
+          "unit": "fraction of corridor"
+        },
+        "queued_traffic_required": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
         }
       },
-      "paired_probe_id": "following-gap-source-verified",
+      "paired_probe_id": "c101303-controlled-following",
       "deliberate_differences": [
-        "lead braking history"
+        "lead_brake_start_fraction"
       ],
       "probe": {
         "primary_variable": "lead_brake_start_fraction",
-        "comparison_or_standard": "reasonable and prudent given both speeds, traffic, and highway condition",
-        "target_value_or_branch": "following before the lane change; no numeric legal cutoff"
+        "comparison_or_standard": "reasonableness and prudence with both speeds, traffic and highway condition unresolved",
+        "target_value_or_branch": "following before lane change"
       },
       "recording_description": {
         "channels": [
@@ -382,7 +666,7 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "reasonable and prudent following gap"
+        "reasonable and prudent"
       ],
       "sweep_measurements": []
     },
@@ -395,24 +679,57 @@
         "requested_engineering_gap_m": {
           "kind": "controller",
           "value": 10.0,
-          "unit": "m",
-          "source": "config.json"
+          "unit": "m"
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "lead_target_speed_mps": {
+          "kind": "controller",
+          "value": 3.5,
+          "unit": "m/s"
+        },
+        "lead_brake_start_fraction": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "fraction of corridor"
         },
         "requested_wetness_pct": {
           "kind": "world_setup",
           "value": 80.0,
-          "unit": "percent",
-          "source": "config.json"
+          "unit": "percent"
+        },
+        "lane_change_start_fraction": {
+          "kind": "controller",
+          "value": 0.55,
+          "unit": "fraction of corridor"
+        },
+        "queued_traffic_required": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
         }
       },
-      "paired_probe_id": "following-gap-source-verified",
+      "paired_probe_id": "c101303-controlled-following",
       "deliberate_differences": [
-        "Native weather wetness and precipitation"
+        "requested_wetness_pct"
       ],
       "probe": {
         "primary_variable": "requested_wetness_pct",
-        "comparison_or_standard": "reasonable and prudent given both speeds, traffic, and highway condition",
-        "target_value_or_branch": "following before the lane change; no numeric legal cutoff"
+        "comparison_or_standard": "reasonableness and prudence with both speeds, traffic and highway condition unresolved",
+        "target_value_or_branch": "following before lane change"
       },
       "recording_description": {
         "channels": [
@@ -462,7 +779,7 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "reasonable and prudent following gap"
+        "reasonable and prudent"
       ],
       "sweep_measurements": []
     },
@@ -475,24 +792,57 @@
         "requested_engineering_gap_m": {
           "kind": "controller",
           "value": 10.0,
-          "unit": "m",
-          "source": "config.json"
+          "unit": "m"
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "lead_target_speed_mps": {
+          "kind": "controller",
+          "value": 3.5,
+          "unit": "m/s"
+        },
+        "lead_brake_start_fraction": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "fraction of corridor"
+        },
+        "requested_wetness_pct": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "percent"
         },
         "lane_change_start_fraction": {
           "kind": "controller",
           "value": 0.4,
-          "unit": "fraction of sourced corridor",
-          "source": "config.json"
+          "unit": "fraction of corridor"
+        },
+        "queued_traffic_required": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
         }
       },
-      "paired_probe_id": "following-gap-source-verified",
+      "paired_probe_id": "c101303-controlled-following",
       "deliberate_differences": [
-        "following end before lane change"
+        "lane_change_start_fraction"
       ],
       "probe": {
         "primary_variable": "lane_change_start_fraction",
-        "comparison_or_standard": "reasonable and prudent given both speeds, traffic, and highway condition",
-        "target_value_or_branch": "following before the lane change; no numeric legal cutoff"
+        "comparison_or_standard": "reasonableness and prudence with both speeds, traffic and highway condition unresolved",
+        "target_value_or_branch": "following before lane change"
       },
       "recording_description": {
         "channels": [
@@ -542,7 +892,7 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "reasonable and prudent following gap"
+        "reasonable and prudent"
       ],
       "sweep_measurements": []
     },
@@ -555,24 +905,57 @@
         "requested_engineering_gap_m": {
           "kind": "controller",
           "value": 10.0,
-          "unit": "m",
-          "source": "config.json"
+          "unit": "m"
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "lead_target_speed_mps": {
+          "kind": "controller",
+          "value": 3.5,
+          "unit": "m/s"
+        },
+        "lead_brake_start_fraction": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "fraction of corridor"
+        },
+        "requested_wetness_pct": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "percent"
+        },
+        "lane_change_start_fraction": {
+          "kind": "controller",
+          "value": 0.55,
+          "unit": "fraction of corridor"
         },
         "queued_traffic_required": {
           "kind": "world_setup",
           "value": true,
-          "unit": "boolean",
-          "source": "config.json"
+          "unit": "boolean"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
         }
       },
-      "paired_probe_id": "following-gap-source-verified",
+      "paired_probe_id": "c101303-controlled-following",
       "deliberate_differences": [
-        "stationary third vehicle ahead of lead"
+        "queued_traffic_required"
       ],
       "probe": {
         "primary_variable": "queued_traffic_required",
-        "comparison_or_standard": "reasonable and prudent given both speeds, traffic, and highway condition",
-        "target_value_or_branch": "following before the lane change; no numeric legal cutoff"
+        "comparison_or_standard": "reasonableness and prudence with both speeds, traffic and highway condition unresolved",
+        "target_value_or_branch": "following before lane change"
       },
       "recording_description": {
         "channels": [
@@ -622,9 +1005,26 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "reasonable and prudent following gap"
+        "reasonable and prudent"
       ],
       "sweep_measurements": []
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c101303-reasonable-prudent-following",
+      "target_law_id": "NRS-484B-127-1",
+      "judgment_refs": [
+        {
+          "phrase": "reasonable and prudent",
+          "note": "Due regard for both speeds, traffic, and highway condition; no numeric legal following gap."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The exact law requires judgment across gap, speeds, traffic and road condition without numeric cutoff.",
+      "missing_inputs": [
+        "Source-backed physical feasibility bounds and spacing for the selected Native hill crest are not in the exported accepted-recording metadata; complete the CPU sweep design after original-source review without defining a legal threshold."
+      ]
     }
   ],
   "sweeps_expanded": true

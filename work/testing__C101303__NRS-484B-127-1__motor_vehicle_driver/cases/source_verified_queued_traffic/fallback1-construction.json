@@ -110,5 +110,48 @@
       "content": "import unittest\nfrom types import SimpleNamespace as NS\nfrom queue_setup import spawn_queued_vehicle\n\nclass Actor:\n    def __init__(self,x):self.x=x;self.destroyed=False;self.control=None\n    def get_location(self):return NS(x=self.x,y=0,z=0)\n    def apply_control(self,control):self.control=control\n    def destroy(self):self.destroyed=True\nclass World:\n    def __init__(self,queued):self.queued=queued;self.calls=0\n    def try_spawn_actor(self,blueprint,transform):self.calls+=1;return self.queued\nclass Tests(unittest.TestCase):\n    def test_stationary_queue_is_spawned_braked_and_cleaned(self):\n        queued=Actor(30);world=World(queued)\n        with spawn_queued_vehicle(world,object(),object(),Actor(0),Actor(12),NS) as actor:\n            self.assertIs(actor,queued);self.assertEqual(actor.control.brake,1.0)\n        self.assertEqual(world.calls,1);self.assertTrue(queued.destroyed)\n    def test_unsafe_position_is_rejected_and_cleaned(self):\n        queued=Actor(14)\n        with self.assertRaisesRegex(ValueError,'safely ahead'):\n            with spawn_queued_vehicle(World(queued),object(),object(),Actor(0),Actor(12),NS):pass\n        self.assertTrue(queued.destroyed)\n",
       "source": "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/cases/source_verified_queued_traffic/test_queue_setup.py"
     }
-  ]
+  ],
+  "status": "draft",
+  "measurement_plan": {
+    "source_frames": "video_frames.jsonl",
+    "original_motion": "vehicle_history.jsonl",
+    "original_road_context": "road_context.json",
+    "methods": [
+      "measure_minimum_following_gap",
+      "measure_following_context",
+      "measure_following_interval"
+    ],
+    "physical_completion": "pinned native_output.physical_result on original body centers and lane readback",
+    "legal_judgment": "reasonable and prudent unresolved"
+  },
+  "static_checks": [
+    {
+      "name": "runner_check",
+      "status": "passed",
+      "method": "materialized runner --check without CARLA connection"
+    },
+    {
+      "name": "case_measurements",
+      "status": "passed",
+      "method": "positive/negative selected-source compatibility diagnostic"
+    },
+    {
+      "name": "four_source_cameras",
+      "status": "passed",
+      "method": "source dimensions and full FFV1 diagnostic decode"
+    }
+  ],
+  "termination_rules": [
+    "stop after 900 joined 20 Hz frames",
+    "fail on missing source camera frame or original body/velocity/lane readback",
+    "close every source encoder and restore world before sealing capture",
+    "retain source failure and feedback; do not infer a legal verdict"
+  ],
+  "mechanisms": {
+    "construction_status": "executable CPU-prepared Native candidate",
+    "following": "measured-feedback controller applied to ego and lead",
+    "lane_change": "Native steering toward measured adjacent driving lane",
+    "capture": "four Native RGB sensors, FrameMap and PipelineCapture",
+    "measurement": "saved-only source-hashed finalizer and pinned physical assessor"
+  }
 }

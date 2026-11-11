@@ -180,11 +180,21 @@
     }
   ],
   "observations": [
-    "lead and ego trajectories with synchronized frame IDs",
-    "longitudinal body-to-body following gap over the following interval",
-    "both vehicle speeds and any lead braking",
-    "traffic state and road surface condition",
-    "time and place where following relation ends before the lane change"
+    {
+      "name": "ego_speed",
+      "mandatory": true,
+      "purpose": "original Native ego velocity magnitude across following interval"
+    },
+    {
+      "name": "lead_speed",
+      "mandatory": true,
+      "purpose": "original Native lead velocity magnitude across following interval"
+    },
+    {
+      "name": "longitudinal_body_gap",
+      "mandatory": true,
+      "purpose": "complete-body projected following gap across interval"
+    }
   ],
   "sources": [
     {
@@ -455,5 +465,34 @@
       ],
       "evidence_or_gap": "gap-following-measurements: accepted metadata does not supply original measured bodies, velocities, traffic, surface and lane-change history"
     }
-  ]
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego and lead complete bodies, hill crest and lane change",
+        "interval": "startup through final observation"
+      },
+      {
+        "view": "approach",
+        "subject": "ego, lead and third queued vehicle where present",
+        "interval": "following approach and change initiation"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "both complete bodies and lane boundary",
+        "interval": "following interval through target-lane entry"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "forward traffic and road-surface context",
+        "interval": "entire capture"
+      }
+    ],
+    "physical_visibility_review": "pending original-source review; profile is prospective"
+  }
 }

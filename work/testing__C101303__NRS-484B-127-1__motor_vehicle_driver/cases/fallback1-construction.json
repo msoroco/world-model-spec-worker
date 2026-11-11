@@ -101,5 +101,48 @@
       "content": "\"\"\"Materialized exact-case software checks; does not simulate or claim motion.\"\"\"\nimport json\nimport unittest\nfrom pathlib import Path\nimport runner\nfrom following_measurements import analyze\n\nclass BundleTests(unittest.TestCase):\n    def test_pinned_case_and_camera_contract(self):\n        config=json.loads(Path('config.json').read_text())\n        self.assertEqual(runner.validate_config(config)['selected_case_id'],runner.CASE)\n        self.assertEqual(config['rate_hz']*config['duration_s'],900)\n    def test_analysis_requires_original_history(self):\n        with self.assertRaisesRegex(ValueError,'Missing original source'):\n            analyze(Path('.'))\nif __name__=='__main__':unittest.main()\n",
       "source": "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/bundle_test.py"
     }
-  ]
+  ],
+  "status": "draft",
+  "measurement_plan": {
+    "source_frames": "video_frames.jsonl",
+    "original_motion": "vehicle_history.jsonl",
+    "original_road_context": "road_context.json",
+    "methods": [
+      "measure_minimum_following_gap",
+      "measure_following_context",
+      "measure_following_interval"
+    ],
+    "physical_completion": "pinned native_output.physical_result on original body centers and lane readback",
+    "legal_judgment": "reasonable and prudent unresolved"
+  },
+  "static_checks": [
+    {
+      "name": "runner_check",
+      "status": "passed",
+      "method": "materialized runner --check without CARLA connection"
+    },
+    {
+      "name": "case_measurements",
+      "status": "passed",
+      "method": "positive/negative selected-source compatibility diagnostic"
+    },
+    {
+      "name": "four_source_cameras",
+      "status": "passed",
+      "method": "source dimensions and full FFV1 diagnostic decode"
+    }
+  ],
+  "termination_rules": [
+    "stop after 900 joined 20 Hz frames",
+    "fail on missing source camera frame or original body/velocity/lane readback",
+    "close every source encoder and restore world before sealing capture",
+    "retain source failure and feedback; do not infer a legal verdict"
+  ],
+  "mechanisms": {
+    "construction_status": "executable CPU-prepared Native candidate",
+    "following": "measured-feedback controller applied to ego and lead",
+    "lane_change": "Native steering toward measured adjacent driving lane",
+    "capture": "four Native RGB sensors, FrameMap and PipelineCapture",
+    "measurement": "saved-only source-hashed finalizer and pinned physical assessor"
+  }
 }
