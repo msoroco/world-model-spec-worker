@@ -40,8 +40,8 @@ def audit_attempt(folder, saved, selected, entry, candidate):
     result = read(folder/'result.json')
     report = read(folder/'analysis-report.json')
     config = read(folder/'config.json')
-    require(config['case']['case_id'] == entry['case_id'] and
-            config['case']['recording_description'] == config['recording_description'] and
+    require(config['case'].get('case_id') == entry['case_id'] and
+            config['case'].get('recording_description') == config['recording_description'] and
             config['recording_description'] == read(HERE/'proposals/cases.json')['cases'][
                 0 if entry['case_id'].endswith('__reference') else 1]['recording_description'],
             'selected case recording contract differs from source proposal')
