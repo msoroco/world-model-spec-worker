@@ -1,0 +1,635 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide",
+      "construction": "construction-delivery-left_pass_wide.json",
+      "construction_sha256": "9ee0374aafcf7b8a34eda9d6f3d2616cf5017f5922c7450808973d8d3d9741c7",
+      "measurement_contract": "first-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "overtake_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/diagnostic-recipe.json",
+      "acquisition": {
+        "left_pass_clearance_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "original body polygon separation while abreast",
+          "evidence": "participant_footprints.jsonl joined to video_frames.jsonl and trace.jsonl; derived only after saved acquisition"
+        },
+        "return_clearance_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "original body longitudinal projection at first rightward return",
+          "evidence": "participant_footprints.jsonl joined to video_frames.jsonl and trace.jsonl; derived only after saved acquisition"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --output .runtime-work/c110161-wide-offline-new --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "log": "delivery-left_pass_wide-offline.log",
+        "log_sha256": "3b4cee3d1a2522adbd40a8422c2e464ff8c88e64df3b67628ca332a45c0a0b98",
+        "construction_sha256": "9ee0374aafcf7b8a34eda9d6f3d2616cf5017f5922c7450808973d8d3d9741c7"
+      },
+      "compatibility": {
+        "receipt": "delivery-left_pass_wide-compatibility.json",
+        "sha256": "6ea23bdd50f6461019ce9ccb7122c77b214b3ac23f0a8c5e7f4ac5dcda1cb3ea",
+        "log": "delivery-left_pass_wide-compat.log"
+      },
+      "negative": {
+        "log": "delivery-left_pass_wide-negative.log"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-delivery-left_pass_wide-fallback1.json",
+          "construction_sha256": "e81cb700b22ff8971aadaa3a22eed03c7876eeef57125bf8273241d52caedf21",
+          "trigger": {
+            "source": "participant_footprints.jsonl",
+            "metric": "same-direction abreast frame count",
+            "failure_condition": "zero same-direction abreast frames in the sealed attempt"
+          },
+          "changed_knobs": [
+            "spawn index 8 to 6"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --candidate fallback1 --output .runtime-work/c110161-wide-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-left_pass_wide-fallback1-offline.log",
+            "log_sha256": "2097312fd3fd8462a3a08e24be4f5ef221f84ae4a0c635be2561a43080680d15",
+            "construction_sha256": "e81cb700b22ff8971aadaa3a22eed03c7876eeef57125bf8273241d52caedf21"
+          },
+          "compatibility": {
+            "receipt": "delivery-left_pass_wide-fallback1-compatibility.json",
+            "sha256": "7ab4d080dab63ca33665d65a56901b7cbadcb111a69076bf5588a8fbff9293ba",
+            "log": "delivery-left_pass_wide-fallback1-compat.log",
+            "negative_log": "delivery-left_pass_wide-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-delivery-left_pass_wide-fallback2.json",
+          "construction_sha256": "14a126ab8be1c2e7d395db8464e47b4e1c4e0879bd29b53057cec354c248da4a",
+          "trigger": {
+            "source": "participant_footprints.jsonl",
+            "metric": "first rightward return frame within 160 captured frames",
+            "failure_condition": "no measured rightward return after the observed abreast phase"
+          },
+          "changed_knobs": [
+            "overtaken target speed 4 to 3 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --candidate fallback2 --output .runtime-work/c110161-wide-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-left_pass_wide-fallback2-offline.log",
+            "log_sha256": "08e50ee550fd497b6fb96bc653b2eaea6e6ecb9ab2be6c016960afd3a29d9a19",
+            "construction_sha256": "14a126ab8be1c2e7d395db8464e47b4e1c4e0879bd29b53057cec354c248da4a"
+          },
+          "compatibility": {
+            "receipt": "delivery-left_pass_wide-fallback2-compatibility.json",
+            "sha256": "d0a61d861792d20980e32e6fab0b752d63f6133c3e179728f5844a7aad5a3911",
+            "log": "delivery-left_pass_wide-fallback2-compat.log",
+            "negative_log": "delivery-left_pass_wide-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-delivery-left_pass_wide-fallback3.json",
+          "construction_sha256": "ffc54a48bb15216d3c9bc9b29aaf08a7bda610fe4c80b3e7db0b39ab288641da",
+          "trigger": {
+            "source": "overview.mkv plus video_frames.jsonl",
+            "metric": "decoded original frame coverage of both participant bodies",
+            "failure_condition": "at least one required overview frame lacks either full participant body"
+          },
+          "changed_knobs": [
+            "overview camera rearward 4 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --candidate fallback3 --output .runtime-work/c110161-wide-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-left_pass_wide-fallback3-offline.log",
+            "log_sha256": "c148a3a81cb8cfe47f6b34fefb7a8b5623ed3255edff13a47e7b80067658620f",
+            "construction_sha256": "ffc54a48bb15216d3c9bc9b29aaf08a7bda610fe4c80b3e7db0b39ab288641da"
+          },
+          "compatibility": {
+            "receipt": "delivery-left_pass_wide-fallback3-compatibility.json",
+            "sha256": "c294d7cc525d8deef0a861a587705fadafb21690c5d2fab1f8ec34b4e51c8bf4",
+            "log": "delivery-left_pass_wide-fallback3-compat.log",
+            "negative_log": "delivery-left_pass_wide-fallback3-negative.log"
+          }
+        }
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native encounter, rightward return and four-camera visibility may fail to realize the measured overtaking comparison"
+      },
+      "kind": "delivery",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical/left_pass_wide-proof.json",
+        "sha256": "462eea129e7f3f2f125e7ff1b580ebf5fd98ed88f4de1bdc3d99e64eb8eeffeb"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/acceptance_fixture.py --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide",
+        "test_exit_code": 0,
+        "test_log": "acceptance/left_pass_wide-positive.log",
+        "test_log_sha256": "8ab30a3c69439dcd74d1eba62366d3ec0bd824f8435d89b02781100fc30eeff8",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/acceptance_fixture.py --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing, stale, or failed original-pixel review: approach",
+        "negative_log": "acceptance/left_pass_wide-negative.log",
+        "negative_log_sha256": "1aeea73779f2ea7c8325800377fb828e6eafe5eac0145dcad7133d5c904e80b4",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "b5a61917dcc37b83616175103abe2157b67c64b5acc61027ed0f2936d1cb0cc9",
+        "fixture_only": true
+      }
+    },
+    {
+      "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow",
+      "construction": "construction-delivery-left_pass_narrow.json",
+      "construction_sha256": "86bee6a139064dc6bc5f52f921fa5a642158d4222d81bb1265a30066daa743fc",
+      "measurement_contract": "measurement-contract-left_pass_narrow.json",
+      "measurement_procedure": {
+        "entrypoint": "overtake_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/diagnostic-recipe-left_pass_narrow.json",
+      "acquisition": {
+        "left_pass_clearance_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "original body polygon separation while abreast",
+          "evidence": "participant_footprints.jsonl joined to video_frames.jsonl and trace.jsonl; derived only after saved acquisition"
+        },
+        "return_clearance_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "original body longitudinal projection at first rightward return",
+          "evidence": "participant_footprints.jsonl joined to video_frames.jsonl and trace.jsonl; derived only after saved acquisition"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/variant-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow --output .runtime-work/c110161-left_pass_narrow-offline-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "log": "delivery-left_pass_narrow-offline.log",
+        "log_sha256": "d2e84596b8631681309e5f28f25410b38b46a7ab4070c2a41b82f543691d78ff",
+        "construction_sha256": "86bee6a139064dc6bc5f52f921fa5a642158d4222d81bb1265a30066daa743fc"
+      },
+      "compatibility": {
+        "receipt": "delivery-left_pass_narrow-compatibility.json",
+        "sha256": "f824a3c49d2e7b9567a7bd16cd500327f699b3edfe509790477d6ae1dd0440e1",
+        "log": "delivery-left_pass_narrow-compat.log"
+      },
+      "negative": {
+        "log": "delivery-left_pass_narrow-negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native encounter, rightward return and four-camera visibility may fail to realize this measured overtaking comparison"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-delivery-left_pass_narrow-fallback1.json",
+          "construction_sha256": "175d92e64349b2c280eaa8905de9a1a2ae52e7817a997a5bea5e6a4d7c0028c1",
+          "trigger": {
+            "source": "participant_footprints.jsonl",
+            "metric": "same-direction abreast frame count",
+            "failure_condition": "zero same-direction abreast frames in the sealed attempt"
+          },
+          "changed_knobs": [
+            "spawn index 8 to 6"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/variant-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow --candidate fallback1 --output .runtime-work/c110161-left_pass_narrow-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-left_pass_narrow-fallback1-offline.log",
+            "log_sha256": "9e92a50559f083c52b1bfe766be0cdeb734f5342cf3cf839e7185a461084b036",
+            "construction_sha256": "175d92e64349b2c280eaa8905de9a1a2ae52e7817a997a5bea5e6a4d7c0028c1"
+          },
+          "compatibility": {
+            "receipt": "delivery-left_pass_narrow-fallback1-compatibility.json",
+            "sha256": "46273914f004a13a0772a22c070fc761198d50586cd244d28849a4c59853731b",
+            "log": "delivery-left_pass_narrow-fallback1-compat.log",
+            "negative_log": "delivery-left_pass_narrow-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-delivery-left_pass_narrow-fallback2.json",
+          "construction_sha256": "9bdbd17fd7b368d43faa3ef456f4a95d2f29c57d967c97c916b9b77966db0910",
+          "trigger": {
+            "source": "participant_footprints.jsonl",
+            "metric": "first rightward return frame within 160 captured frames",
+            "failure_condition": "no measured rightward return after the observed abreast phase"
+          },
+          "changed_knobs": [
+            "overtaken target speed 4 to 3 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/variant-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow --candidate fallback2 --output .runtime-work/c110161-left_pass_narrow-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-left_pass_narrow-fallback2-offline.log",
+            "log_sha256": "9529db31b65ed325422b6e5fc4b5d66ea2c5d009342b1ab4792f8c89845f8589",
+            "construction_sha256": "9bdbd17fd7b368d43faa3ef456f4a95d2f29c57d967c97c916b9b77966db0910"
+          },
+          "compatibility": {
+            "receipt": "delivery-left_pass_narrow-fallback2-compatibility.json",
+            "sha256": "f837a94e9a1e4185d6b895a7d4f304b849071f53c5193408aef40a555130e6ca",
+            "log": "delivery-left_pass_narrow-fallback2-compat.log",
+            "negative_log": "delivery-left_pass_narrow-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-delivery-left_pass_narrow-fallback3.json",
+          "construction_sha256": "fcce355df95589c2f4684634aaae073f8fd0f8bf91242eb8f8567f71a69a6c6e",
+          "trigger": {
+            "source": "overview.mkv plus video_frames.jsonl",
+            "metric": "decoded original frame coverage of both participant bodies",
+            "failure_condition": "at least one required overview frame lacks either full participant body"
+          },
+          "changed_knobs": [
+            "overview camera rearward 4 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/variant-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow --candidate fallback3 --output .runtime-work/c110161-left_pass_narrow-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-left_pass_narrow-fallback3-offline.log",
+            "log_sha256": "8a22fc3754a478247da5a1940e1aa6774d5c61c7b9c043801307cc854fe2c823",
+            "construction_sha256": "fcce355df95589c2f4684634aaae073f8fd0f8bf91242eb8f8567f71a69a6c6e"
+          },
+          "compatibility": {
+            "receipt": "delivery-left_pass_narrow-fallback3-compatibility.json",
+            "sha256": "b6d146080fe61fb406b04e93928c534e839e43409b8be7061021035d2657b0e5",
+            "log": "delivery-left_pass_narrow-fallback3-compat.log",
+            "negative_log": "delivery-left_pass_narrow-fallback3-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical/left_pass_narrow-proof.json",
+        "sha256": "e5695f78b7c4ce202638af6adb86d9edb236d3a8798dc5c7ccaa2dffc685875e"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/acceptance_fixture.py --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow",
+        "test_exit_code": 0,
+        "test_log": "acceptance/left_pass_narrow-positive.log",
+        "test_log_sha256": "7deb40a4f4cc8ba9e2b9b2b9ed184132a495425b0ec94be7a13e454aac9dd89f",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/acceptance_fixture.py --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing, stale, or failed original-pixel review: approach",
+        "negative_log": "acceptance/left_pass_narrow-negative.log",
+        "negative_log_sha256": "1aeea73779f2ea7c8325800377fb828e6eafe5eac0145dcad7133d5c904e80b4",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "b5a61917dcc37b83616175103abe2157b67c64b5acc61027ed0f2936d1cb0cc9",
+        "fixture_only": true
+      }
+    },
+    {
+      "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_before_clear",
+      "construction": "construction-delivery-return_before_clear.json",
+      "construction_sha256": "2fb69177306dd70c9841dc32a6e1d02cbce333a2e48866356519cf32f988e6da",
+      "measurement_contract": "measurement-contract-return_before_clear.json",
+      "measurement_procedure": {
+        "entrypoint": "overtake_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/diagnostic-recipe-return_before_clear.json",
+      "acquisition": {
+        "left_pass_clearance_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "original body polygon separation while abreast",
+          "evidence": "participant_footprints.jsonl joined to video_frames.jsonl and trace.jsonl; derived only after saved acquisition"
+        },
+        "return_clearance_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "original body longitudinal projection at first rightward return",
+          "evidence": "participant_footprints.jsonl joined to video_frames.jsonl and trace.jsonl; derived only after saved acquisition"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/variant-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_before_clear --output .runtime-work/c110161-return_before_clear-offline-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "log": "delivery-return_before_clear-offline.log",
+        "log_sha256": "db95a8434c451d853c51b883f60b2da2df48adb431defce45a04f334258e8365",
+        "construction_sha256": "2fb69177306dd70c9841dc32a6e1d02cbce333a2e48866356519cf32f988e6da"
+      },
+      "compatibility": {
+        "receipt": "delivery-return_before_clear-compatibility.json",
+        "sha256": "4d66a8da1f123394b04f8509728f1cc9a949cd58625faf5b51f17e7d72268b8e",
+        "log": "delivery-return_before_clear-compat.log"
+      },
+      "negative": {
+        "log": "delivery-return_before_clear-negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native encounter, rightward return and four-camera visibility may fail to realize this measured overtaking comparison"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-delivery-return_before_clear-fallback1.json",
+          "construction_sha256": "d8417d8f9b85ee72374d9a5e241c0a0eed098997756bc33ca64bb4900c9c4e10",
+          "trigger": {
+            "source": "participant_footprints.jsonl",
+            "metric": "same-direction abreast frame count",
+            "failure_condition": "zero same-direction abreast frames in the sealed attempt"
+          },
+          "changed_knobs": [
+            "spawn index 8 to 6"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/variant-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_before_clear --candidate fallback1 --output .runtime-work/c110161-return_before_clear-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-return_before_clear-fallback1-offline.log",
+            "log_sha256": "42d244742de085d22c1b39bf6797d874883783b9519496816754fd2eda559cf4",
+            "construction_sha256": "d8417d8f9b85ee72374d9a5e241c0a0eed098997756bc33ca64bb4900c9c4e10"
+          },
+          "compatibility": {
+            "receipt": "delivery-return_before_clear-fallback1-compatibility.json",
+            "sha256": "94ec711f65456e6c1c11a88c4d6766d050d4cb1df0bfcd897d64127aeaae838c",
+            "log": "delivery-return_before_clear-fallback1-compat.log",
+            "negative_log": "delivery-return_before_clear-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-delivery-return_before_clear-fallback2.json",
+          "construction_sha256": "1c0ffb4fd21c487f93ae212283d1e0e3cd226efb1a4c7c076d4855fdaaded508",
+          "trigger": {
+            "source": "participant_footprints.jsonl",
+            "metric": "first rightward return frame within 160 captured frames",
+            "failure_condition": "no measured rightward return after the observed abreast phase"
+          },
+          "changed_knobs": [
+            "overtaken target speed 4 to 3 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/variant-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_before_clear --candidate fallback2 --output .runtime-work/c110161-return_before_clear-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-return_before_clear-fallback2-offline.log",
+            "log_sha256": "d129d7749090e89292a714850b4d2bb268e09bf247f84736cef7d06826af85f0",
+            "construction_sha256": "1c0ffb4fd21c487f93ae212283d1e0e3cd226efb1a4c7c076d4855fdaaded508"
+          },
+          "compatibility": {
+            "receipt": "delivery-return_before_clear-fallback2-compatibility.json",
+            "sha256": "13d70a470598c113aa6fbd0324a074808635461e5a919a419e31a391b0e6c471",
+            "log": "delivery-return_before_clear-fallback2-compat.log",
+            "negative_log": "delivery-return_before_clear-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-delivery-return_before_clear-fallback3.json",
+          "construction_sha256": "7392077e1b478ab33ea6d9ca0c0f476ccee174a733c040470ad6d459f6353bc8",
+          "trigger": {
+            "source": "overview.mkv plus video_frames.jsonl",
+            "metric": "decoded original frame coverage of both participant bodies",
+            "failure_condition": "at least one required overview frame lacks either full participant body"
+          },
+          "changed_knobs": [
+            "overview camera rearward 4 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/variant-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_before_clear --candidate fallback3 --output .runtime-work/c110161-return_before_clear-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-return_before_clear-fallback3-offline.log",
+            "log_sha256": "aa2cd1af4655f91383155c8cfdbc49aee1ed81ca919ce8f18de010eb48594d8c",
+            "construction_sha256": "7392077e1b478ab33ea6d9ca0c0f476ccee174a733c040470ad6d459f6353bc8"
+          },
+          "compatibility": {
+            "receipt": "delivery-return_before_clear-fallback3-compatibility.json",
+            "sha256": "d028482b80322cdd979ea5405b81e8970730b74dc940d10e01a7e1c9545583e6",
+            "log": "delivery-return_before_clear-fallback3-compat.log",
+            "negative_log": "delivery-return_before_clear-fallback3-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical/return_before_clear-proof.json",
+        "sha256": "f5e7d091934d40cd73f33433137d3abaa4f26a5c90e29257afa3585514e543f3"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_before_clear",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/acceptance_fixture.py --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_before_clear",
+        "test_exit_code": 0,
+        "test_log": "acceptance/return_before_clear-positive.log",
+        "test_log_sha256": "d97ec9cd6202465b0f6a45ca8ee132951070af873b35d7b55338a040a7a7573f",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/acceptance_fixture.py --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_before_clear --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing, stale, or failed original-pixel review: approach",
+        "negative_log": "acceptance/return_before_clear-negative.log",
+        "negative_log_sha256": "1aeea73779f2ea7c8325800377fb828e6eafe5eac0145dcad7133d5c904e80b4",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "b5a61917dcc37b83616175103abe2157b67c64b5acc61027ed0f2936d1cb0cc9",
+        "fixture_only": true
+      }
+    },
+    {
+      "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_after_clear",
+      "construction": "construction-delivery-return_after_clear.json",
+      "construction_sha256": "de9ac6c8b368384ccad870b2982350e35549682f1e0c05faf12139a57ea26cc5",
+      "measurement_contract": "measurement-contract-return_after_clear.json",
+      "measurement_procedure": {
+        "entrypoint": "overtake_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/diagnostic-recipe-return_after_clear.json",
+      "acquisition": {
+        "left_pass_clearance_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "original body polygon separation while abreast",
+          "evidence": "participant_footprints.jsonl joined to video_frames.jsonl and trace.jsonl; derived only after saved acquisition"
+        },
+        "return_clearance_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "original body longitudinal projection at first rightward return",
+          "evidence": "participant_footprints.jsonl joined to video_frames.jsonl and trace.jsonl; derived only after saved acquisition"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/variant-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_after_clear --output .runtime-work/c110161-return_after_clear-offline-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "log": "delivery-return_after_clear-offline.log",
+        "log_sha256": "77ed40cc0c97a97cba842371d886073f70e9092e27043b1c5240c66d5da48a26",
+        "construction_sha256": "de9ac6c8b368384ccad870b2982350e35549682f1e0c05faf12139a57ea26cc5"
+      },
+      "compatibility": {
+        "receipt": "delivery-return_after_clear-compatibility.json",
+        "sha256": "59ab607fc24faf390536fa4c1c98f37a97301d463d82ad881a94427170656a91",
+        "log": "delivery-return_after_clear-compat.log"
+      },
+      "negative": {
+        "log": "delivery-return_after_clear-negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native encounter, rightward return and four-camera visibility may fail to realize this measured overtaking comparison"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-delivery-return_after_clear-fallback1.json",
+          "construction_sha256": "446d9f5de0883c715dec8f992ba986389b24c1f4da83ec3866fe55c3603ba74a",
+          "trigger": {
+            "source": "participant_footprints.jsonl",
+            "metric": "same-direction abreast frame count",
+            "failure_condition": "zero same-direction abreast frames in the sealed attempt"
+          },
+          "changed_knobs": [
+            "spawn index 8 to 6"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/variant-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_after_clear --candidate fallback1 --output .runtime-work/c110161-return_after_clear-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-return_after_clear-fallback1-offline.log",
+            "log_sha256": "3141557a5d55d8f8507625e1e1db3372d1bb36c19298151a9b29e9319ed768ed",
+            "construction_sha256": "446d9f5de0883c715dec8f992ba986389b24c1f4da83ec3866fe55c3603ba74a"
+          },
+          "compatibility": {
+            "receipt": "delivery-return_after_clear-fallback1-compatibility.json",
+            "sha256": "e1b5d13b228c730886553a5094a9fa53bd207007c2811af9228d9b4e55c4faed",
+            "log": "delivery-return_after_clear-fallback1-compat.log",
+            "negative_log": "delivery-return_after_clear-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-delivery-return_after_clear-fallback2.json",
+          "construction_sha256": "b0244ab24fb041481332916450715eeb7ee3fd69b0d4ed6942ace3107ed8d653",
+          "trigger": {
+            "source": "participant_footprints.jsonl",
+            "metric": "first rightward return frame within 160 captured frames",
+            "failure_condition": "no measured rightward return after the observed abreast phase"
+          },
+          "changed_knobs": [
+            "overtaken target speed 4 to 3 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/variant-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_after_clear --candidate fallback2 --output .runtime-work/c110161-return_after_clear-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-return_after_clear-fallback2-offline.log",
+            "log_sha256": "68239516d0f68e39dcc04e2956fee41a7c08c96a6ab79dd35ec6c7f40568cb2d",
+            "construction_sha256": "b0244ab24fb041481332916450715eeb7ee3fd69b0d4ed6942ace3107ed8d653"
+          },
+          "compatibility": {
+            "receipt": "delivery-return_after_clear-fallback2-compatibility.json",
+            "sha256": "a38aea841fce4c68d7dc8326f2f157f63d0c2942739106ce270c6d37c7a836c5",
+            "log": "delivery-return_after_clear-fallback2-compat.log",
+            "negative_log": "delivery-return_after_clear-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-delivery-return_after_clear-fallback3.json",
+          "construction_sha256": "19c01e8a2c422963798adc905b772b5f65522406904c932a5d25afa330b019df",
+          "trigger": {
+            "source": "overview.mkv plus video_frames.jsonl",
+            "metric": "decoded original frame coverage of both participant bodies",
+            "failure_condition": "at least one required overview frame lacks either full participant body"
+          },
+          "changed_knobs": [
+            "overview camera rearward 4 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/variant-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_after_clear --candidate fallback3 --output .runtime-work/c110161-return_after_clear-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-return_after_clear-fallback3-offline.log",
+            "log_sha256": "ca76c1520d916115ebb12c7d420dc8d81c733122a6d53fa14701729362d17727",
+            "construction_sha256": "19c01e8a2c422963798adc905b772b5f65522406904c932a5d25afa330b019df"
+          },
+          "compatibility": {
+            "receipt": "delivery-return_after_clear-fallback3-compatibility.json",
+            "sha256": "b43a26d298f4351df7ad612ef5443e813e5e90df84a49622094a463a1ea0916d",
+            "log": "delivery-return_after_clear-fallback3-compat.log",
+            "negative_log": "delivery-return_after_clear-fallback3-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical/return_after_clear-proof.json",
+        "sha256": "bba207ab91d171778dca3f91b39672153a633dd072d71a479e51029c21487af9"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_after_clear",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/acceptance_fixture.py --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_after_clear",
+        "test_exit_code": 0,
+        "test_log": "acceptance/return_after_clear-positive.log",
+        "test_log_sha256": "ccd8433a2545bcdc47e921094641ce5015b91c2caf29e565cb9777508c467803",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/acceptance_fixture.py --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_after_clear --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing, stale, or failed original-pixel review: approach",
+        "negative_log": "acceptance/return_after_clear-negative.log",
+        "negative_log_sha256": "1aeea73779f2ea7c8325800377fb828e6eafe5eac0145dcad7133d5c904e80b4",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "b5a61917dcc37b83616175103abe2157b67c64b5acc61027ed0f2936d1cb0cc9",
+        "fixture_only": true
+      }
+    }
+  ],
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+}

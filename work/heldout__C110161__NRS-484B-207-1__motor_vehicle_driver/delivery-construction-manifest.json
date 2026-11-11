@@ -37,6 +37,90 @@
       },
       "negative": {
         "log": "delivery-left_pass_wide-negative.log"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-delivery-left_pass_wide-fallback1.json",
+          "construction_sha256": "e81cb700b22ff8971aadaa3a22eed03c7876eeef57125bf8273241d52caedf21",
+          "trigger": {
+            "source": "participant_footprints.jsonl",
+            "metric": "same-direction abreast frame count",
+            "failure_condition": "zero same-direction abreast frames in the sealed attempt"
+          },
+          "changed_knobs": [
+            "spawn index 8 to 6"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --candidate fallback1 --output .runtime-work/c110161-wide-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-left_pass_wide-fallback1-offline.log",
+            "log_sha256": "2097312fd3fd8462a3a08e24be4f5ef221f84ae4a0c635be2561a43080680d15",
+            "construction_sha256": "e81cb700b22ff8971aadaa3a22eed03c7876eeef57125bf8273241d52caedf21"
+          },
+          "compatibility": {
+            "receipt": "delivery-left_pass_wide-fallback1-compatibility.json",
+            "sha256": "7ab4d080dab63ca33665d65a56901b7cbadcb111a69076bf5588a8fbff9293ba",
+            "log": "delivery-left_pass_wide-fallback1-compat.log",
+            "negative_log": "delivery-left_pass_wide-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-delivery-left_pass_wide-fallback2.json",
+          "construction_sha256": "14a126ab8be1c2e7d395db8464e47b4e1c4e0879bd29b53057cec354c248da4a",
+          "trigger": {
+            "source": "participant_footprints.jsonl",
+            "metric": "first rightward return frame within 160 captured frames",
+            "failure_condition": "no measured rightward return after the observed abreast phase"
+          },
+          "changed_knobs": [
+            "overtaken target speed 4 to 3 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --candidate fallback2 --output .runtime-work/c110161-wide-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-left_pass_wide-fallback2-offline.log",
+            "log_sha256": "08e50ee550fd497b6fb96bc653b2eaea6e6ecb9ab2be6c016960afd3a29d9a19",
+            "construction_sha256": "14a126ab8be1c2e7d395db8464e47b4e1c4e0879bd29b53057cec354c248da4a"
+          },
+          "compatibility": {
+            "receipt": "delivery-left_pass_wide-fallback2-compatibility.json",
+            "sha256": "d0a61d861792d20980e32e6fab0b752d63f6133c3e179728f5844a7aad5a3911",
+            "log": "delivery-left_pass_wide-fallback2-compat.log",
+            "negative_log": "delivery-left_pass_wide-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-delivery-left_pass_wide-fallback3.json",
+          "construction_sha256": "ffc54a48bb15216d3c9bc9b29aaf08a7bda610fe4c80b3e7db0b39ab288641da",
+          "trigger": {
+            "source": "overview.mkv plus video_frames.jsonl",
+            "metric": "decoded original frame coverage of both participant bodies",
+            "failure_condition": "at least one required overview frame lacks either full participant body"
+          },
+          "changed_knobs": [
+            "overview camera rearward 4 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --candidate fallback3 --output .runtime-work/c110161-wide-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "delivery-left_pass_wide-fallback3-offline.log",
+            "log_sha256": "c148a3a81cb8cfe47f6b34fefb7a8b5623ed3255edff13a47e7b80067658620f",
+            "construction_sha256": "ffc54a48bb15216d3c9bc9b29aaf08a7bda610fe4c80b3e7db0b39ab288641da"
+          },
+          "compatibility": {
+            "receipt": "delivery-left_pass_wide-fallback3-compatibility.json",
+            "sha256": "c294d7cc525d8deef0a861a587705fadafb21690c5d2fab1f8ec34b4e51c8bf4",
+            "log": "delivery-left_pass_wide-fallback3-compat.log",
+            "negative_log": "delivery-left_pass_wide-fallback3-negative.log"
+          }
+        }
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native encounter, rightward return and four-camera visibility may fail to realize the measured overtaking comparison"
       }
     }
   ],
