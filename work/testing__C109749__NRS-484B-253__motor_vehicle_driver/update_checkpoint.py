@@ -63,8 +63,12 @@ claim(f'PYTHONPATH=work/{result["assignment_id"]} .venv-cpu/bin/python '
       'cases/inside_no_yield/runner-check.log')
 claim(f'PYTHONPATH=work/{result["assignment_id"]} .venv-cpu/bin/python '
       f'work/{result["assignment_id"]}/inside_comparison_audit.py '
+      '--yield-recipe .runtime-work/c109749-inside-yield-delivery-v2/attempt '
+      '--no-yield-recipe .runtime-work/c109749-inside-no-yield-delivery-v1/attempt '
       f'--output work/{result["assignment_id"]}/inside-comparison-receipt.json',
       'inside-comparison-positive.log')
+claim(f'.venv-cpu/bin/python work/{result["assignment_id"]}/validate_inside_delivery.py',
+      'inside-delivery-validation.log')
 result['tests'] = list(existing.values())
 result['readiness_kind'] = 'two_case_delivery_with_inside_pair_staged_draft_checkpoint'
 result['reason'] = (
@@ -78,8 +82,10 @@ result['reason'] = (
     'observations and three distinct risk-based fallbacks each. All eight draft candidates pass '
     'exact offline, positive/negative compatibility and recorded-only saved processing in isolated '
     'ignored staging roots. An independent diagnostic comparison confirms common opposing trajectories '
-    'and contrasting subject turn order and rejects a perturbed opposing trajectory; it claims no '
-    'physical or legal acceptance. The pair is not yet in the canonical plan, proposal or manifest, '
+    'and contrasting subject turn order over 900-frame diagnostic sources and rejects a perturbed '
+    'opposing trajectory. Independent full-duration delivery audits for both staged cases pass '
+    'software checks and reject absent sealed original history; diagnostic receipts explicitly say '
+    'passed=false and claim no physical or legal acceptance. The pair is not yet in the canonical plan, proposal or manifest, '
     'and is not delivery-ready. The six-stage semantic chain validates for the original two cases, but all '
     'three physical judgment sweeps remain explicitly incomplete and statutory alternatives are not '
     'yet covered. These, complete '

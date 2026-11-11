@@ -24,8 +24,22 @@ def _sha(path):
 
 def _load(recipe):
     recipe = Path(recipe)
-    files = ({name: (recipe / name).read_text() for name in SOURCES}
-             if recipe.is_dir() else json.loads(recipe.read_text())['files'])
+    if recipe.is_dir():
+        seal = json.loads((recipe / 'capture-seal.json').read_text())
+        audit = json.loads((recipe / 'diagnostic-audit.json').read_text())
+        if not (audit.get('software_checks_passed') is True
+                and audit.get('diagnostic_fixture') is True
+                and audit.get('passed') is False and audit.get('frames') == 900):
+            raise ValueError('Paired full-duration diagnostic audit missing')
+        if any(seal.get('sources', {}).get(name) != _sha(recipe / name)
+               for name in SOURCES):
+            raise ValueError('Paired original source differs from capture seal')
+        if (audit.get('original_sources', {}).get('history_sha256')
+                != _sha(recipe / 'interaction_history.jsonl')):
+            raise ValueError('Paired original history differs from delivery audit')
+        files = {name: (recipe / name).read_text() for name in SOURCES}
+    else:
+        files = json.loads(recipe.read_text())['files']
     if any(name not in files for name in SOURCES):
         raise ValueError('Comparison original source missing')
     return files
