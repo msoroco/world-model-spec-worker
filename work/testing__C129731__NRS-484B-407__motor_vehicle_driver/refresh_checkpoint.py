@@ -16,6 +16,9 @@ CLAIMS = (
     ("semantic-proposals.log", ".venv-cpu/bin/python " + PREFIX + "build_semantic_proposals.py"),
     ("execution-manifest-build.log", ".venv-cpu/bin/python " + PREFIX + "build_execution_manifest.py"),
     ("delivery-audit-sweep.log", ".venv-cpu/bin/python " + PREFIX + "prove_delivery_audits.py --version v5"),
+    ("branch-site-build.log", ".venv-cpu/bin/python " + PREFIX + "build_branch_sites.py"),
+    ("crest-opendrive-build.log", ".venv-cpu/bin/python " + PREFIX + "build_crest_opendrive.py"),
+    ("curve-opendrive-build.log", ".venv-cpu/bin/python " + PREFIX + "build_curve_opendrive.py"),
     ("assignment-check.log", ".venv-cpu/bin/python worker_check.py --assignment " + AID + " --complete"),
 )
 
@@ -52,9 +55,14 @@ def main():
         "Six exact selected cases and all 18 risk-triggered fallbacks have current offline, positive/negative "
         "compatibility and recorded-only saved-processing proofs. Seven semantic stages, the six-case canonical "
         "execution manifest, six physical classifier/lifecycle receipts and six independent full-path diagnostic "
-        "delivery audit positive/negative proofs validate. Strict delivery readiness remains open: a reviewed "
-        "Native site/map candidate and additional approach-to-crest / swapped-direction construction coverage, "
-        "source-grounded completed judgment sweep, shared branch review/GPU queue/local integration proof and "
+        "delivery audit positive/negative proofs validate. Four CPU-tested diagnostic crest alternatives now "
+        "construct near-summit and approach-to-crest turn sites with either approach ray occluded; a separate "
+        "source-bound OpenDRIVE crest road plan verifies lane stations and grade geometry; a separate curved "
+        "OpenDRIVE road plan verifies six source-bound curve probe/direction site packets. Strict delivery "
+        "readiness remains open: actual CARLA ingestion and Native asset/site review (a guarded loader has CPU "
+        "mock proofs), full positive/negative saved "
+        "processing proofs for the new alternatives, a completed source-grounded judgment "
+        "sweep, shared branch review/GPU queue/local integration proof and "
         "full-batch ready packages remain unfinished worker CPU work. Synthetic pixels/rays prove no physical or "
         "legal acceptance.")
     path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
