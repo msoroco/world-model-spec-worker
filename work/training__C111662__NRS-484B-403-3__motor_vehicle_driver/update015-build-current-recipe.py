@@ -13,10 +13,15 @@ if CASE not in ('reference','contrast','divided_reference','divided_opening'):
 CANDIDATE=sys.argv[2] if len(sys.argv)>2 else 'primary'
 if CANDIDATE not in ('primary','fallback1','fallback2','fallback3'):
     raise ValueError('Unknown authored candidate')
+SELECTED=len(sys.argv)>3 and sys.argv[3]=='selected'
+if len(sys.argv)>3 and not SELECTED:
+    raise ValueError('Unknown recipe scope')
 LABEL=CASE if CANDIDATE=='primary' else CASE+'-'+CANDIDATE
-SOURCE=ROOT/'native'/('divided-opening' if CASE.startswith('divided_') else '')/'synthetic'/CASE/CANDIDATE/'raw.json'
-SPEC=ROOT/f'update015-current-{LABEL}-diagnostic.json'
-RECIPE=ROOT/f'update015-current-{LABEL}-recipe.json'
+SOURCE=(ROOT/'native/selected-diagnostic'/CASE/CANDIDATE/'raw.json' if SELECTED else
+        ROOT/'native'/('divided-opening' if CASE.startswith('divided_') else '')/'synthetic'/CASE/CANDIDATE/'raw.json')
+PREFIX='selected' if SELECTED else 'current'
+SPEC=ROOT/f'update015-{PREFIX}-{LABEL}-diagnostic.json'
+RECIPE=ROOT/f'update015-{PREFIX}-{LABEL}-recipe.json'
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()

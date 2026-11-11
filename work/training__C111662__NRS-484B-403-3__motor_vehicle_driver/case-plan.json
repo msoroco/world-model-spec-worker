@@ -3,7 +3,7 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C111662",
   "law_id": "NRS-484B-403-3",
-  "selected_branch": null,
+  "selected_branch": "business-district U-turn rule and its intersection/divided-opening exceptions; applicability remains conditional",
   "scope_branches": [
     "Business-district rule with the express intersection exception.",
     "Separate divided-highway opening or crossing-place exception, authored CPU construction only."
@@ -46,7 +46,7 @@
     {
       "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference",
       "target_law_id": "NRS-484B-403-3",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_for_delivery_preparation_conditional",
       "target_type": "attempt",
       "comparison_variable": "u_turn_at_intersection_or_opening",
       "comparison_unit": "bool",
@@ -57,18 +57,21 @@
       "source_topic_ids": [
         "text-0"
       ],
-      "native_request_status": "unselected_cpu_diagnostic",
+      "native_request_status": "selected_cpu_preparation_original_unverified",
       "native_candidates": [
         "primary",
         "fallback1",
         "fallback2",
         "fallback3"
+      ],
+      "gap_ids": [
+        "business_district_and_original_turn"
       ]
     },
     {
       "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast",
       "target_law_id": "NRS-484B-403-3",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_for_delivery_preparation_conditional",
       "target_type": "attempt",
       "comparison_variable": "u_turn_at_intersection_or_opening",
       "comparison_unit": "bool",
@@ -79,18 +82,21 @@
       "source_topic_ids": [
         "text-0"
       ],
-      "native_request_status": "unselected_cpu_diagnostic",
+      "native_request_status": "selected_cpu_preparation_original_unverified",
       "native_candidates": [
         "primary",
         "fallback1",
         "fallback2",
         "fallback3"
+      ],
+      "gap_ids": [
+        "business_district_and_original_turn"
       ]
     },
     {
       "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference",
       "target_law_id": "NRS-484B-403-3",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_for_delivery_preparation_conditional",
       "target_type": "attempt",
       "comparison_variable": "u_turn_at_intersection_or_opening",
       "comparison_unit": "bool",
@@ -101,18 +107,21 @@
       "source_topic_ids": [
         "text-0"
       ],
-      "native_request_status": "unselected_cpu_diagnostic",
+      "native_request_status": "selected_cpu_preparation_original_unverified",
       "native_candidates": [
         "primary",
         "fallback1",
         "fallback2",
         "fallback3"
+      ],
+      "gap_ids": [
+        "business_district_and_original_turn"
       ]
     },
     {
       "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening",
       "target_law_id": "NRS-484B-403-3",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_for_delivery_preparation_conditional",
       "target_type": "attempt",
       "comparison_variable": "u_turn_at_intersection_or_opening",
       "comparison_unit": "bool",
@@ -123,12 +132,15 @@
       "source_topic_ids": [
         "text-0"
       ],
-      "native_request_status": "unselected_cpu_diagnostic",
+      "native_request_status": "selected_cpu_preparation_original_unverified",
       "native_candidates": [
         "primary",
         "fallback1",
         "fallback2",
         "fallback3"
+      ],
+      "gap_ids": [
+        "business_district_and_original_turn"
       ]
     }
   ],
@@ -151,7 +163,7 @@
         "other controller settings",
         "camera and capture profile"
       ],
-      "status": "planned_unverified"
+      "status": "selected_for_cpu_preparation_original_unverified"
     },
     {
       "comparison_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__comparison_divided_opening",
@@ -171,7 +183,7 @@
         "other controller settings",
         "camera and capture profile"
       ],
-      "status": "planned_unverified"
+      "status": "selected_for_cpu_preparation_original_unverified"
     }
   ],
   "observations": [
@@ -277,7 +289,8 @@
     "The authored type=town road and district flag do not prove statutory business-district designation.",
     "The authored x=0 intersection is not original generated intersection exception proof; divided-highway opening alternative has only an authored, unselected CPU case.",
     "Six-metre turn radius and lane layout are CPU geometry requests; physical vehicle path and camera framing remain unverified.",
-    "No accepted recording, source-hashed equivalence, independent legal verdict or selected candidate is claimed."
+    "No accepted recording, source-hashed equivalence, independent legal verdict or selected candidate is claimed.",
+    "All four exact case IDs are now selected for conditional CPU delivery preparation; original district/use, geometry, maneuver and pixels remain unverified."
   ],
   "selection_targets": [
     "full-train"
@@ -307,5 +320,22 @@
     "divided_opening_offline_proof": "native/divided-opening/pinned-offline-proof.json",
     "divided_opening_original_saved_processor": "native/process_original_divided.py",
     "divided_opening_original_shape_audit": "native/divided-opening/original-shape-audit.json"
+  },
+  "selection_review": {
+    "path": "native/selection-review.json",
+    "sha256": "4cd49edc858ed255f477db696ff82e833c29155092bab2b3f6c51fa4112be70a"
+  },
+  "evidence_review": {
+    "reviewer": "CPU worker source review",
+    "method": "Read frozen assignment, conditional witness, selection snapshot and official Nevada statutory clauses; zero accepted recordings were listed, so no existing original is reused.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "business_district_and_original_turn",
+        "requirement": "Source-backed qualifying business-district context and original U-turn at/away from the exception locations",
+        "source": "inputs/training__C111662__NRS-484B-403-3__motor_vehicle_driver/witnesses.json",
+        "why_existing_insufficient": "No accepted recording or full-train membership row is supplied."
+      }
+    ]
   }
 }
