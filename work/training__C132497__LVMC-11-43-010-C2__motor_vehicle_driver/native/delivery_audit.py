@@ -48,7 +48,8 @@ def validate_rows(raw,frames,trace,case,candidate,source_kind='original_native')
         require(row.get('source_kind')==source_kind and
                 row.get('frame')==i and row.get('native_frame')==start+i and
                 frame.get('video_frame')==i and frame.get('native_frame')==start+i and
-                point.get('frame')==i and
+                point.get('frame')==start+i and
+                frame.get('carla_frame')==start+i and
                 type(t) in (int,float) and math.isfinite(t) and
                 abs(frame.get('time_s',-999)-t)<1e-6 and
                 abs(point.get('time_s',-999)-t)<1e-6 and
@@ -168,9 +169,10 @@ def audit(case,job_id,attempt_number,recording_id,attempt,review_path,
     capture=read(attempt/'native-capture-report.json')
     review=read(review_path)
     candidate=config.get('candidate_id')
+    require(result.get('provenance_kind')=='original_native_unreviewed',
+            'Synthetic or unreviewed result cannot establish original Native delivery')
     require(config.get('case_id')==case and result.get('case_id')==case and
             result.get('accepted') is False and
-            result.get('provenance_kind')=='original_native_unreviewed' and
             intention.get('case_id')==case and intention.get('candidate_id')==candidate and
             intention.get('source_kind')=='authored_controller_route_before_motion' and
             intention.get('turn_direction')=='right' and

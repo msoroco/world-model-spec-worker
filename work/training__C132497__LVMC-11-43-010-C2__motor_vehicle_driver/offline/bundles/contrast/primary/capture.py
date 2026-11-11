@@ -70,11 +70,11 @@ def pose(actor):
         'speed_mps':math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2),
         'body_native_xyz_m':[[p.x,p.y,p.z] for p in body]}
 
-def trace_point(index,time_s,ego,applied_control):
+def trace_point(native_frame,time_s,ego,applied_control):
     """Retain a Native-measured trace row; requested tracks are never substituted."""
     x,y,z=ego['center_native_xyz_m']
     vx,vy,vz=ego['velocity_native_xyz_mps']
-    return {'frame':index,'time_s':time_s,
+    return {'frame':native_frame,'time_s':time_s,
         'position':{'x':x,'y':y,'z':z},'position_m':[x,y,z],
         'heading_deg':ego['yaw_deg'],'speed_mps':ego['speed_mps'],
         'speed_mph':ego['speed_mps']*2.2369362921,
@@ -227,7 +227,7 @@ def execute(bundle,output,host,port):
                     'actual_right_exit_verified':False,'legal_verdict':None}
                 capture.capture(frame,time_s,extra={'c132497_right_exit':row})
                 observed.write(json.dumps(row,allow_nan=False)+'\n')
-                retained_trace.write(json.dumps(trace_point(i,time_s,measured_ego,
+                retained_trace.write(json.dumps(trace_point(frame,time_s,measured_ego,
                     ego.get_control()),allow_nan=False)+'\n')
                 for name,width,height,_,_,_,_ in cameras:
                     image=camera_queues[name].get(timeout=30)
@@ -236,7 +236,8 @@ def execute(bundle,output,host,port):
                     rgb=np.frombuffer(image.raw_data,dtype=np.uint8).reshape(
                         height,width,4)[:,:,:3][:,:,::-1]
                     video[name].stdin.write(rgb.tobytes())
-                frame_map.write(json.dumps({'video_frame':i,'native_frame':frame,
+                frame_map.write(json.dumps({'video_frame':i,'carla_frame':frame,
+                    'native_frame':frame,
                     'time_s':time_s},allow_nan=False)+'\n')
                 frames+=1
     except BaseException as exc:

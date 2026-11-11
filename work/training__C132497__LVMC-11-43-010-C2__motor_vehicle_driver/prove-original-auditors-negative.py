@@ -2,12 +2,14 @@
 import hashlib
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 
 ROOT=Path(__file__).resolve().parent
 REPO=ROOT.parents[1]
 BASE=REPO/'.runtime-work/c132497-current-all-proof/reference/primary/compatibility'
+MOCK=REPO/'.runtime-work/c132497-original-auditor-negative/mock-recording/attempt-1'
 PYTHON=REPO/'.venv-cpu/bin/python'
 
 
@@ -28,21 +30,32 @@ def reject(name,script,args,needle):
 def main():
     if not (BASE/'result.json').is_file():
         raise ValueError('Run prove-current-all.py before original rejection proof')
+    MOCK.mkdir(parents=True,exist_ok=True)
+    for name in ('config.json','result.json','controller-intention.json'):
+        shutil.copyfile(BASE/name,MOCK/name)
+    cfg=json.loads((MOCK/'config.json').read_text())
+    (MOCK/'native-map-readback.json').write_text(json.dumps({
+        'road_sha256':cfg['road_sha256']}))
+    (MOCK/'native-capture-report.json').write_text(json.dumps({
+        'case_id':cfg['case_id'],'candidate_id':cfg['candidate_id'],
+        'observed_frames':240,'error':None}))
+    (MOCK/'raw.mkv').write_text('CPU negative marker; not original media')
+    (MOCK/'review.json').write_text('{}\n')
     case=ROOT.name+'__reference'
     results=[]
     results.append(reject('synthetic-delivery','delivery_audit.py',
         ['--case',case,'--job-id',1,'--attempt-number',1,
-         '--recording-id',BASE.parent.name,'--attempt',BASE,
-         '--review',BASE/'missing-original-review.json',
-         '--primary',BASE/'raw.mkv',
-         '--decode-receipt',BASE.parent/'negative-decode.json',
-         '--output',BASE/'negative-delivery-audit.json'],
-        'Missing delivery source: '+str(BASE/'native-map-readback.json')))
+         '--recording-id',MOCK.parent.name,'--attempt',MOCK,
+         '--review',MOCK/'review.json',
+         '--primary',MOCK/'raw.mkv',
+         '--decode-receipt',MOCK.parent/'negative-decode.json',
+         '--output',MOCK/'negative-delivery-audit.json'],
+        'Synthetic or unreviewed result cannot establish original Native delivery'))
     results.append(reject('reused-pair','audit_original_pair.py',
-        ['--reference',BASE,'--contrast',BASE,
-         '--reference-receipt',BASE/'missing-reference-audit.json',
-         '--contrast-receipt',BASE/'missing-contrast-audit.json',
-         '--output',BASE.parent/'negative-pair.json'],
+        ['--reference',MOCK,'--contrast',MOCK,
+         '--reference-receipt',MOCK/'missing-reference-audit.json',
+         '--contrast-receipt',MOCK/'missing-contrast-audit.json',
+         '--output',MOCK.parent/'negative-pair.json'],
         'Comparison reuses one attempt for both cases'))
     proof={'format':'c132497-original-auditor-negative-proof-v1',
         'source_result_sha256':sha(BASE/'result.json'),'rejections':results,

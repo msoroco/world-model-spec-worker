@@ -24,8 +24,9 @@ def sample(lane=-2):
             'observed_lane_id':lane,'ego':{'actor_id':7,
                 'center_native_xyz_m':[float(i),0.0,0.0],
                 'speed_mps':5.0}})
-        frames.append({'video_frame':i,'native_frame':1000+i,'time_s':t})
-        trace.append({'frame':i,'time_s':t})
+        frames.append({'video_frame':i,'carla_frame':1000+i,
+                       'native_frame':1000+i,'time_s':t})
+        trace.append({'frame':1000+i,'time_s':t})
     return raw,frames,trace
 
 
