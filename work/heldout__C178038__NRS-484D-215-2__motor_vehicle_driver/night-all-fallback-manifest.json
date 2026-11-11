@@ -1,0 +1,471 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_upper",
+      "kind": "delivery",
+      "construction": "night-probes/night_299_upper-construction.json",
+      "construction_sha256": "b59e15c10244fd1236d2db39561dc81cb861b41582fdffb6b2ad89766908bbf1",
+      "measurement_contract": "night-probes/night_299_upper-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "headlamp_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-probes/night_299_upper-diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual body gap or lamp readback may differ from requested setup."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "night-probes/night_299_upper-fallback1-construction.json",
+          "construction_sha256": "87c868098c427f7de75163e6902fd349fbf95795a106cba0a01f9d9066117798",
+          "trigger": {
+            "source": "Original Native waypoint route selector reports no connected 2.5 m sample route",
+            "metric": "connected eligible route count",
+            "failure_condition": "Primary route selector finds zero connected 299 ft same-lane routes"
+          },
+          "changed_knobs": [
+            "waypoint sampling 2.5 m to 1.25 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-fallback-manifest.json --case heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_upper --candidate fallback1 --output .runtime-work/c178038-night299-fallback1-offline-20261111a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "night-probes/night_299_upper-fallback1-offline.log",
+            "log_sha256": "4cf7f1d1a01e0a87de085e4e4242cda3c66c0ff89e95a7b50cce948ed3d375cf",
+            "construction_sha256": "87c868098c427f7de75163e6902fd349fbf95795a106cba0a01f9d9066117798"
+          },
+          "compatibility": {
+            "receipt": "night-probes/night_299_upper-fallback1-compatibility.json",
+            "sha256": "0ad78a9be34878f030362b55158b3b9da3727c99fad2f473feeafcd32bf8c87a",
+            "log": "night-probes/night_299_upper-fallback1-compat-analysis.log",
+            "negative_log": "night-probes/night_299_upper-fallback1-compat-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "night-probes/night_299_upper-fallback2-construction.json",
+          "construction_sha256": "b0d32e22bd093d3c2e2458f66e5f3e1dbddb10d9398a9c81f096a42f2caa5bdc",
+          "trigger": {
+            "source": "retained original subject and lead velocity plus body-gap rows",
+            "metric": "measured 20 Hz gap oscillation and tracking error",
+            "failure_condition": "Primary 6 m/s command fails the predeclared \u00b12 ft engineering attainment screen"
+          },
+          "changed_knobs": [
+            "target cruise speed 6 m/s to 5 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-fallback-manifest.json --case heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_upper --candidate fallback2 --output .runtime-work/c178038-night299-fallback2-offline-20261111a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "night-probes/night_299_upper-fallback2-offline.log",
+            "log_sha256": "4cf7f1d1a01e0a87de085e4e4242cda3c66c0ff89e95a7b50cce948ed3d375cf",
+            "construction_sha256": "b0d32e22bd093d3c2e2458f66e5f3e1dbddb10d9398a9c81f096a42f2caa5bdc"
+          },
+          "compatibility": {
+            "receipt": "night-probes/night_299_upper-fallback2-compatibility.json",
+            "sha256": "135a05f0de0a5eb3063c98ce9c3bbcd1d2d24e0e5332c8855ebf5dc84475ad85",
+            "log": "night-probes/night_299_upper-fallback2-compat-analysis.log",
+            "negative_log": "night-probes/night_299_upper-fallback2-compat-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "night-probes/night_299_upper-fallback3-construction.json",
+          "construction_sha256": "915df4696c7569c4e54c49c58b551dd4ab7fad56e21d22a2fc2a3cfdc77a0d2d",
+          "trigger": {
+            "source": "original overview source-pixel review",
+            "metric": "complete subject and lead body visibility across all frames",
+            "failure_condition": "Primary overview camera omits either required full body in any reviewed frame"
+          },
+          "changed_knobs": [
+            "overview mount from (-32,0,10) m to (-36,0,12) m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-fallback-manifest.json --case heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_upper --candidate fallback3 --output .runtime-work/c178038-night299-fallback3-offline-20261111a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "night-probes/night_299_upper-fallback3-offline.log",
+            "log_sha256": "474dae795f951822d9efb3cb10d4f6cb5ba05f2e84b3534f42c92c4745add0d8",
+            "construction_sha256": "915df4696c7569c4e54c49c58b551dd4ab7fad56e21d22a2fc2a3cfdc77a0d2d"
+          },
+          "compatibility": {
+            "receipt": "night-probes/night_299_upper-fallback3-compatibility.json",
+            "sha256": "881909ebca92455313e8dcc633cca49b161f09cf361d06e65388dea0fd97b48f",
+            "log": "night-probes/night_299_upper-fallback3-compat-analysis.log",
+            "negative_log": "night-probes/night_299_upper-fallback3-compat-negative.log"
+          }
+        }
+      ],
+      "negative": {
+        "log": "night-probes/night_299_upper-compat-negative.log"
+      },
+      "acquisition": {
+        "headlamp_gap_ft": {
+          "entrypoint": "headlamp_finalizer.py",
+          "method": "recompute each frame from retained original Native body polygons",
+          "evidence": "headlamp_source_capture.py records original actor bodies and light readbacks with Native frame identities; finalizer derives gap after capture."
+        }
+      },
+      "compatibility": {
+        "receipt": "night-probes/night_299_upper-compatibility.json",
+        "sha256": "cbad6388099082e9554b698025220ea779f554c8a76d9274e61cb22270e4ec2c",
+        "log": "night-probes/night_299_upper-compat-analysis.log",
+        "negative_log": "night-probes/night_299_upper-compat-negative.log"
+      }
+    },
+    {
+      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_other",
+      "kind": "delivery",
+      "construction": "night-probes/night_299_other-construction.json",
+      "construction_sha256": "192de84d7a30e4dc7d20cc76471627c5789a03f543c4ce0ca422e418a466537e",
+      "measurement_contract": "night-probes/night_299_other-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "headlamp_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-probes/night_299_other-diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual body gap or lamp readback may differ from requested setup."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "night-probes/night_299_other-fallback1-construction.json",
+          "construction_sha256": "79f7ee7f520057d5560e3db4ad33bd3d3e8fb40a77063e11c6764a2309ee0554",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "eligible connected same-lane route count",
+            "failure_condition": "Primary 2.5 m sampling finds no eligible route at the exact requested gap"
+          },
+          "changed_knobs": [
+            "route waypoint sampling 2.5 m to 1.25 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-all-fallback-manifest.json --case heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_other --candidate fallback1 --output .runtime-work/c178038-night_299_other-fallback1-offline-20261111a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "night-probes/night_299_other-fallback1-offline.log",
+            "log_sha256": "71a2d84d80cbfb2d9d84dbf06d99b7db4c1b706daf150bad7b89a206bb623912",
+            "construction_sha256": "79f7ee7f520057d5560e3db4ad33bd3d3e8fb40a77063e11c6764a2309ee0554"
+          },
+          "compatibility": {
+            "receipt": "night-probes/night_299_other-fallback1-compatibility.json",
+            "sha256": "5c58bb32649ba4a6dc87b91002bcd7fb8eddebff7221890a87ac1aefcbc46c96",
+            "log": "night-probes/night_299_other-fallback1-compat-analysis.log",
+            "negative_log": "night-probes/night_299_other-fallback1-compat-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "night-probes/night_299_other-fallback2-construction.json",
+          "construction_sha256": "4c9ab663bb70db0ee49edb9bcfcee6ecbf09c6fc713cf3e506ac83bafb8072cb",
+          "trigger": {
+            "source": "retained original actor velocity and full-body gap samples",
+            "metric": "20 Hz body-gap tracking error around requested target",
+            "failure_condition": "Primary 6 m/s command misses the stated \u00b12 ft engineering attainment screen"
+          },
+          "changed_knobs": [
+            "target cruise speed 6 m/s to 5 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-all-fallback-manifest.json --case heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_other --candidate fallback2 --output .runtime-work/c178038-night_299_other-fallback2-offline-20261111a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "night-probes/night_299_other-fallback2-offline.log",
+            "log_sha256": "4cf7f1d1a01e0a87de085e4e4242cda3c66c0ff89e95a7b50cce948ed3d375cf",
+            "construction_sha256": "4c9ab663bb70db0ee49edb9bcfcee6ecbf09c6fc713cf3e506ac83bafb8072cb"
+          },
+          "compatibility": {
+            "receipt": "night-probes/night_299_other-fallback2-compatibility.json",
+            "sha256": "deea9cc779d4be43c13c86a886f1edbeba939740168312bc2d6f120af92554e1",
+            "log": "night-probes/night_299_other-fallback2-compat-analysis.log",
+            "negative_log": "night-probes/night_299_other-fallback2-compat-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "night-probes/night_299_other-fallback3-construction.json",
+          "construction_sha256": "f3ccd2cc9c60e1b3b062e79d402683020852ac0b1a29c38ca96bf8ec567e01f0",
+          "trigger": {
+            "source": "original overview source-pixel review",
+            "metric": "complete subject and lead body visibility on all reviewed frames",
+            "failure_condition": "Primary overview source omits either required full body in any frame"
+          },
+          "changed_knobs": [
+            "overview mount (-32,0,10) m to (-36,0,12) m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-all-fallback-manifest.json --case heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_other --candidate fallback3 --output .runtime-work/c178038-night_299_other-fallback3-offline-20261111a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "night-probes/night_299_other-fallback3-offline.log",
+            "log_sha256": "ec91da9384c20fb44bcbb38fde402617ad1682b97587bce6c32a2838398567dc",
+            "construction_sha256": "f3ccd2cc9c60e1b3b062e79d402683020852ac0b1a29c38ca96bf8ec567e01f0"
+          },
+          "compatibility": {
+            "receipt": "night-probes/night_299_other-fallback3-compatibility.json",
+            "sha256": "fba8b50628150b25a7a5f8eb995cd59c0798c0386cc37db4c3bfe1d311a52eb2",
+            "log": "night-probes/night_299_other-fallback3-compat-analysis.log",
+            "negative_log": "night-probes/night_299_other-fallback3-compat-negative.log"
+          }
+        }
+      ],
+      "negative": {
+        "log": "night-probes/night_299_other-compat-negative.log"
+      },
+      "acquisition": {
+        "headlamp_gap_ft": {
+          "entrypoint": "headlamp_finalizer.py",
+          "method": "recompute each frame from retained original Native body polygons",
+          "evidence": "headlamp_source_capture.py records original actor bodies and light readbacks with Native frame identities; finalizer derives gap after capture."
+        }
+      },
+      "compatibility": {
+        "receipt": "night-probes/night_299_other-compatibility.json",
+        "sha256": "d6b0dc53710a790a02faf1f8cab694e4cd41a92f25d0c93d2c84a891df479e44",
+        "log": "night-probes/night_299_other-compat-analysis.log",
+        "negative_log": "night-probes/night_299_other-compat-negative.log"
+      }
+    },
+    {
+      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_300_upper",
+      "kind": "delivery",
+      "construction": "night-probes/night_300_upper-construction.json",
+      "construction_sha256": "12e8abf069f642fcf2299f5672ddb4416d05ddafb452f350979c733a4c4e0d5f",
+      "measurement_contract": "night-probes/night_300_upper-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "headlamp_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-probes/night_300_upper-diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual body gap or lamp readback may differ from requested setup."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "night-probes/night_300_upper-fallback1-construction.json",
+          "construction_sha256": "dcd5acb696f9b53daf278dbc40968cb1fbbcbe562636fe1a54cdf850c8466323",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "eligible connected same-lane route count",
+            "failure_condition": "Primary 2.5 m sampling finds no eligible route at the exact requested gap"
+          },
+          "changed_knobs": [
+            "route waypoint sampling 2.5 m to 1.25 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-all-fallback-manifest.json --case heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_300_upper --candidate fallback1 --output .runtime-work/c178038-night_300_upper-fallback1-offline-20261111a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "night-probes/night_300_upper-fallback1-offline.log",
+            "log_sha256": "4cf7f1d1a01e0a87de085e4e4242cda3c66c0ff89e95a7b50cce948ed3d375cf",
+            "construction_sha256": "dcd5acb696f9b53daf278dbc40968cb1fbbcbe562636fe1a54cdf850c8466323"
+          },
+          "compatibility": {
+            "receipt": "night-probes/night_300_upper-fallback1-compatibility.json",
+            "sha256": "cdd7ec94ab4181ba8cf985d577ae9ed199635978f112b8e1af7932a8db9fa555",
+            "log": "night-probes/night_300_upper-fallback1-compat-analysis.log",
+            "negative_log": "night-probes/night_300_upper-fallback1-compat-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "night-probes/night_300_upper-fallback2-construction.json",
+          "construction_sha256": "4bff9276079a9d124f81c22acb7e6807427fdf54916facf3690535096f904905",
+          "trigger": {
+            "source": "retained original actor velocity and full-body gap samples",
+            "metric": "20 Hz body-gap tracking error around requested target",
+            "failure_condition": "Primary 6 m/s command misses the stated \u00b12 ft engineering attainment screen"
+          },
+          "changed_knobs": [
+            "target cruise speed 6 m/s to 5 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-all-fallback-manifest.json --case heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_300_upper --candidate fallback2 --output .runtime-work/c178038-night_300_upper-fallback2-offline-20261111a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "night-probes/night_300_upper-fallback2-offline.log",
+            "log_sha256": "71a2d84d80cbfb2d9d84dbf06d99b7db4c1b706daf150bad7b89a206bb623912",
+            "construction_sha256": "4bff9276079a9d124f81c22acb7e6807427fdf54916facf3690535096f904905"
+          },
+          "compatibility": {
+            "receipt": "night-probes/night_300_upper-fallback2-compatibility.json",
+            "sha256": "0dee51966a967c182ecce9173f8ae776d4519a2c691414fa4e834a0bdc40524d",
+            "log": "night-probes/night_300_upper-fallback2-compat-analysis.log",
+            "negative_log": "night-probes/night_300_upper-fallback2-compat-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "night-probes/night_300_upper-fallback3-construction.json",
+          "construction_sha256": "0cb4c192258d3eb35a52d51fea6ef96becebe312b1b480178683bfc34f849758",
+          "trigger": {
+            "source": "original overview source-pixel review",
+            "metric": "complete subject and lead body visibility on all reviewed frames",
+            "failure_condition": "Primary overview source omits either required full body in any frame"
+          },
+          "changed_knobs": [
+            "overview mount (-32,0,10) m to (-36,0,12) m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-all-fallback-manifest.json --case heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_300_upper --candidate fallback3 --output .runtime-work/c178038-night_300_upper-fallback3-offline-20261111a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "night-probes/night_300_upper-fallback3-offline.log",
+            "log_sha256": "71a2d84d80cbfb2d9d84dbf06d99b7db4c1b706daf150bad7b89a206bb623912",
+            "construction_sha256": "0cb4c192258d3eb35a52d51fea6ef96becebe312b1b480178683bfc34f849758"
+          },
+          "compatibility": {
+            "receipt": "night-probes/night_300_upper-fallback3-compatibility.json",
+            "sha256": "e386443ce4c07de84b2bdc6f737d698ff835eca9d7598c676ffbdac667cad04e",
+            "log": "night-probes/night_300_upper-fallback3-compat-analysis.log",
+            "negative_log": "night-probes/night_300_upper-fallback3-compat-negative.log"
+          }
+        }
+      ],
+      "negative": {
+        "log": "night-probes/night_300_upper-compat-negative.log"
+      },
+      "acquisition": {
+        "headlamp_gap_ft": {
+          "entrypoint": "headlamp_finalizer.py",
+          "method": "recompute each frame from retained original Native body polygons",
+          "evidence": "headlamp_source_capture.py records original actor bodies and light readbacks with Native frame identities; finalizer derives gap after capture."
+        }
+      },
+      "compatibility": {
+        "receipt": "night-probes/night_300_upper-compatibility.json",
+        "sha256": "c605b8e447be7f6b055f041a1f53b117ac37dd2da990a4076f4cd0ed9e92b13f",
+        "log": "night-probes/night_300_upper-compat-analysis.log",
+        "negative_log": "night-probes/night_300_upper-compat-negative.log"
+      }
+    },
+    {
+      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_301_upper",
+      "kind": "delivery",
+      "construction": "night-probes/night_301_upper-construction.json",
+      "construction_sha256": "11e7f2b741e6cd52c93b2a3e59ba8dcfe988972f32d529268d927075cc32971f",
+      "measurement_contract": "night-probes/night_301_upper-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "headlamp_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-probes/night_301_upper-diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual body gap or lamp readback may differ from requested setup."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "night-probes/night_301_upper-fallback1-construction.json",
+          "construction_sha256": "47152c5299b588087b587b9e6542ac38622d191a74fdb4e156bd9bb7eaf0e2dd",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "eligible connected same-lane route count",
+            "failure_condition": "Primary 2.5 m sampling finds no eligible route at the exact requested gap"
+          },
+          "changed_knobs": [
+            "route waypoint sampling 2.5 m to 1.25 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-all-fallback-manifest.json --case heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_301_upper --candidate fallback1 --output .runtime-work/c178038-night_301_upper-fallback1-offline-20261111a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "night-probes/night_301_upper-fallback1-offline.log",
+            "log_sha256": "ec91da9384c20fb44bcbb38fde402617ad1682b97587bce6c32a2838398567dc",
+            "construction_sha256": "47152c5299b588087b587b9e6542ac38622d191a74fdb4e156bd9bb7eaf0e2dd"
+          },
+          "compatibility": {
+            "receipt": "night-probes/night_301_upper-fallback1-compatibility.json",
+            "sha256": "c39f1acdf0aaa47f3fae9d9343c9e7a54f741f25c8d29a5098f630da0ed9460b",
+            "log": "night-probes/night_301_upper-fallback1-compat-analysis.log",
+            "negative_log": "night-probes/night_301_upper-fallback1-compat-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "night-probes/night_301_upper-fallback2-construction.json",
+          "construction_sha256": "c38492ef401c3653d59ffdf2896a9fae45efa3b12ddc4a7ac6a01382c615f559",
+          "trigger": {
+            "source": "retained original actor velocity and full-body gap samples",
+            "metric": "20 Hz body-gap tracking error around requested target",
+            "failure_condition": "Primary 6 m/s command misses the stated \u00b12 ft engineering attainment screen"
+          },
+          "changed_knobs": [
+            "target cruise speed 6 m/s to 5 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-all-fallback-manifest.json --case heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_301_upper --candidate fallback2 --output .runtime-work/c178038-night_301_upper-fallback2-offline-20261111a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "night-probes/night_301_upper-fallback2-offline.log",
+            "log_sha256": "474dae795f951822d9efb3cb10d4f6cb5ba05f2e84b3534f42c92c4745add0d8",
+            "construction_sha256": "c38492ef401c3653d59ffdf2896a9fae45efa3b12ddc4a7ac6a01382c615f559"
+          },
+          "compatibility": {
+            "receipt": "night-probes/night_301_upper-fallback2-compatibility.json",
+            "sha256": "5846233010c4b54fec61abc2f68260873996ecd28bd8cb5108f450b491e29732",
+            "log": "night-probes/night_301_upper-fallback2-compat-analysis.log",
+            "negative_log": "night-probes/night_301_upper-fallback2-compat-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "night-probes/night_301_upper-fallback3-construction.json",
+          "construction_sha256": "76c764985829ea25a2b976f5fd97cb29be980879080cbed3798949eec256e29e",
+          "trigger": {
+            "source": "original overview source-pixel review",
+            "metric": "complete subject and lead body visibility on all reviewed frames",
+            "failure_condition": "Primary overview source omits either required full body in any frame"
+          },
+          "changed_knobs": [
+            "overview mount (-32,0,10) m to (-36,0,12) m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-all-fallback-manifest.json --case heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_301_upper --candidate fallback3 --output .runtime-work/c178038-night_301_upper-fallback3-offline-20261111a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "night-probes/night_301_upper-fallback3-offline.log",
+            "log_sha256": "474dae795f951822d9efb3cb10d4f6cb5ba05f2e84b3534f42c92c4745add0d8",
+            "construction_sha256": "76c764985829ea25a2b976f5fd97cb29be980879080cbed3798949eec256e29e"
+          },
+          "compatibility": {
+            "receipt": "night-probes/night_301_upper-fallback3-compatibility.json",
+            "sha256": "e42298904bc1462144fcba046723cd9ad59967cd3db6ed4e89774595514f3d69",
+            "log": "night-probes/night_301_upper-fallback3-compat-analysis.log",
+            "negative_log": "night-probes/night_301_upper-fallback3-compat-negative.log"
+          }
+        }
+      ],
+      "negative": {
+        "log": "night-probes/night_301_upper-compat-negative.log"
+      },
+      "acquisition": {
+        "headlamp_gap_ft": {
+          "entrypoint": "headlamp_finalizer.py",
+          "method": "recompute each frame from retained original Native body polygons",
+          "evidence": "headlamp_source_capture.py records original actor bodies and light readbacks with Native frame identities; finalizer derives gap after capture."
+        }
+      },
+      "compatibility": {
+        "receipt": "night-probes/night_301_upper-compatibility.json",
+        "sha256": "9e62506a877efcdd878776435cb2fccffbf631b558ed0b795361e42248a32968",
+        "log": "night-probes/night_301_upper-compat-analysis.log",
+        "negative_log": "night-probes/night_301_upper-compat-negative.log"
+      }
+    }
+  ]
+}

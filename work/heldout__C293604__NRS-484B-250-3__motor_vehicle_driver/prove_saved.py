@@ -25,7 +25,8 @@ def call(command, log):
 
 def prove(entry):
     case = entry['case_id']
-    short = 'intent' if case.endswith('__opposing_left_intent_hold') else 'turn'
+    short = (case.rsplit('__', 1)[-1] if '__turn_release_delay-' in case else
+             'intent' if case.endswith('__opposing_left_intent_hold') else 'turn')
     prefix = ROOT / '.runtime-work' / ('c293604-saved-' + short + '-' + str(time_ns()))
     fixture, attempt, output = (Path(str(prefix) + suffix)
                                 for suffix in ('-fixture', '-attempt', '-processing'))

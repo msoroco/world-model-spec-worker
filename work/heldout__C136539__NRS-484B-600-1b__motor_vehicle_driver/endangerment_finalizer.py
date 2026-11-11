@@ -103,7 +103,51 @@ def build_result(attempt, report):
     exposure_observable = result['realized_observables']['exposure_gap_m']
     result = physical_result(root, result)
     result['realized_observables']['exposure_gap_m'] = exposure_observable
+    passage = assess_exposure_passage(root)
+    result['physical_checks']['maneuver'] = passage
+    result['maneuver_completed'] = passage['status'] == 'met'
+    result['termination_reason'] = ('Saved exposure measurement complete; original body passage '
+                                    + passage['status'] + '; legal judgment remains separate')
     return result
+
+
+def assess_exposure_passage(attempt):
+    """Check a finite before/after body passage from the original Native rows."""
+    root = Path(attempt)
+    source = root / 'exposed_actor_footprints.jsonl'
+    rows = [json.loads(line) for line in source.read_text().splitlines() if line.strip()]
+    if len(rows) < 2:
+        raise ValueError('Exposure passage needs consecutive original body rows')
+
+    def center(body):
+        return [sum(point[axis] for point in body) / len(body) for axis in (0, 1)]
+
+    first_ego, last_ego = center(rows[0]['ego_corners_xy']), center(rows[-1]['ego_corners_xy'])
+    dx, dy = last_ego[0] - first_ego[0], last_ego[1] - first_ego[1]
+    from math import hypot
+    displacement = hypot(dx, dy)
+    source_ref = {'exposed_actor_footprints.jsonl': sha256(source.read_bytes()).hexdigest()}
+    intervals = [{'first_frame': rows[0]['frame'], 'last_frame': rows[-1]['frame'],
+                  'first_time_s': rows[0]['time_s'], 'last_time_s': rows[-1]['time_s']}]
+    if displacement < 1.0:
+        return {'status': 'not_met', 'method': 'Original body-center travel and before/after exposed-body passage',
+                'sources': source_ref, 'intervals': intervals,
+                'details': {'subject_displacement_m': displacement,
+                            'passage_observed': False}, 'legal_verdict_claimed': False}
+    unit = [dx / displacement, dy / displacement]
+    def ahead(row):
+        ego, exposed = center(row['ego_corners_xy']), center(row['exposed_corners_xy'])
+        return sum((exposed[axis] - ego[axis]) * unit[axis] for axis in (0, 1))
+    before, after = ahead(rows[0]), ahead(rows[-1])
+    passed = before > 0 and after < 0
+    return {'status': 'met' if passed else 'not_met',
+            'method': 'Original body-center travel and before/after exposed-body passage',
+            'sources': source_ref, 'intervals': intervals,
+            'details': {'subject_displacement_m': displacement,
+                        'exposed_ahead_initial_m': before,
+                        'exposed_ahead_final_m': after,
+                        'passage_observed': passed},
+            'legal_verdict_claimed': False}
 
 
 def main():

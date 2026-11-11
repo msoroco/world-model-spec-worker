@@ -28,8 +28,8 @@ def case_settings(config):
     if suffix not in CASES:
         raise ValueError('Unknown exact exposure case')
     speed, kind, lateral = CASES[suffix]
-    if (config.get('rate_hz'), config.get('frames')) != (20, 160):
-        raise ValueError('Exposure cases require 160 frames at 20 Hz')
+    if (config.get('rate_hz'), config.get('frames'), config.get('duration_s')) != (20, 160, 8):
+        raise ValueError('Exposure cases require 160 frames at 20 Hz over 8 s')
     if config.get('requested_speed_mps') != speed or config.get('exposed_kind') != kind or config.get('outside_edge_m') != lateral:
         raise ValueError('Exposure case engineering setting differs')
     if config.get('construction_probe_only') is not True:

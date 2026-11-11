@@ -57,6 +57,8 @@ def build():
             if target['content'].count(old) != 1:
                 raise ValueError(f'Expected one engineering knob in {file_name}')
             target['content'] = target['content'].replace(old, new)
+            if file_name == 'native_exposure_cases.py':
+                next(item for item in construction['files'] if item['path'] == 'runner.py')['content'] = target['content']
             construction['mechanisms'].append(change)
             construction_path = ROOT / 'cases' / f'construction-{suffix}-{ident}.json'
             construction_path.write_text(json.dumps(construction, indent=2) + '\n')

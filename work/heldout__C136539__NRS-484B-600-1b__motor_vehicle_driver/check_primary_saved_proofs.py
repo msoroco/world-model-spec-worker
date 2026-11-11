@@ -18,6 +18,10 @@ for case in proof['cases']:
     entry = entries[case['case_id']]
     if sha(root / entry['construction']) != case['construction_sha256']:
         raise ValueError('Primary construction changed')
+    construction = json.loads((root / entry['construction']).read_text())
+    files = {item['path']: item['content'] for item in construction['files']}
+    if files['runner.py'] != files['native_exposure_cases.py']:
+        raise ValueError('Capture seal runner alias differs from executed Native entrypoint')
     for name, expected in (
         ('compatibility_receipt', 'compatibility_sha256'),
         ('negative_log', 'negative_log_sha256'),

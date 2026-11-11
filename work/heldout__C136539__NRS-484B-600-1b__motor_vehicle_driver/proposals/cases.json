@@ -1,15 +1,30 @@
 {
-  "format": "scenario-coverage-cases",
   "status": "draft",
   "cell_id": "C136539",
   "actor": "motor_vehicle_driver",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "person_property_endangerment_physical_range",
+      "target_law_id": "NRS-484B-600-1b",
+      "judgment_refs": [
+        {
+          "phrase": "Such a rate of speed as to endanger the life, limb or property of any person",
+          "note": "Measure original subject speed, person/property body gap and contact; no numeric legal endangerment threshold is inferred."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Finite speed and placement engineering points exist, but Native physical feasibility, contact/visibility and legal endangerment range cannot be inferred from textual fixtures.",
+      "missing_inputs": [
+        "Native measured speed and actor visibility across each planned point; source-backed range and spacing feasibility for a complete physical judgment sweep."
+      ]
+    }
+  ],
   "cases": [
     {
-      "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__slow_person_exposure",
-      "target_law_id": "NRS-484B-600-1b",
-      "target_type": "baseline_probe",
-      "rationale": "Measure original source speed and person/property body clearance under 2 m/s requested travel past the same positioned pedestrian; legal endangerment unresolved",
+      "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared planned narrow-road exposure setup; no baseline delivery or legal result.",
       "variable_assignments": {
         "requested_speed_mps": {
           "kind": "controller",
@@ -25,7 +40,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "endangerment of life, limb or property"
+        "Such a rate of speed as to endanger the life, limb or property of any person"
       ],
       "recording_description": {
         "channels": [
@@ -43,6 +58,55 @@
         "limitations": [
           "Engineering speed and lateral placement do not establish legal endangerment, physical visibility or completion."
         ]
+      }
+    },
+    {
+      "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__slow_person_exposure",
+      "target_law_id": "NRS-484B-600-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original source speed and person/property body clearance under 2 m/s requested travel past the same positioned pedestrian; legal endangerment unresolved",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 2.0
+        },
+        "outside_edge_m": {
+          "kind": "world_setup",
+          "value": 0.4
+        },
+        "exposed_kind": {
+          "kind": "world_setup",
+          "value": "pedestrian"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Such a rate of speed as to endanger the life, limb or property of any person"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "exposure_gap_m",
+            "unit": "m",
+            "method": "original Native subject/exposed body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Engineering speed and lateral placement do not establish legal endangerment, physical visibility or completion."
+        ]
+      },
+      "paired_probe_id": "speed_sweep_low_mid",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "controlled engineering contrast without legal cutoff",
+        "target_value_or_branch": 2.0
       }
     },
     {
@@ -65,7 +129,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "endangerment of life, limb or property"
+        "Such a rate of speed as to endanger the life, limb or property of any person"
       ],
       "recording_description": {
         "channels": [
@@ -114,7 +178,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "endangerment of life, limb or property"
+        "Such a rate of speed as to endanger the life, limb or property of any person"
       ],
       "recording_description": {
         "channels": [
@@ -163,7 +227,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "endangerment of life, limb or property"
+        "Such a rate of speed as to endanger the life, limb or property of any person"
       ],
       "recording_description": {
         "channels": [
@@ -212,7 +276,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "endangerment of life, limb or property"
+        "Such a rate of speed as to endanger the life, limb or property of any person"
       ],
       "recording_description": {
         "channels": [
@@ -261,7 +325,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "endangerment of life, limb or property"
+        "Such a rate of speed as to endanger the life, limb or property of any person"
       ],
       "recording_description": {
         "channels": [

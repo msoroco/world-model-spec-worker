@@ -66,7 +66,7 @@ class SavedRiderTests(unittest.TestCase):
             root = Path(directory)
             sources(root)
             (root / 'approach.mkv').unlink()
-            with self.assertRaisesRegex(ValueError, 'Missing required original source'):
+            with self.assertRaisesRegex(ValueError, 'Missing required source'):
                 analyze(root)
             sources(root)
             bone = root / 'rider_arm_bones.jsonl'

@@ -17,12 +17,6 @@
       "sha256": "ac1fd1082979fea67e402eb9210428285591507f25487c29dae892dd426fa2d2"
     },
     {
-      "command": ".venv-cpu/bin/python work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/prove_saved.py",
-      "exit_code": 0,
-      "log": "turn-saved-processing.log",
-      "sha256": "bb8994bf9851ad6a3a2517a7aa70ff68729907861ce458aae75dcb98741f52e1"
-    },
-    {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_intent_hold --output .runtime-work/c293604-opposing-left-intent-offline --python \"$PWD/.venv-cpu/bin/python\"",
       "exit_code": 0,
       "log": "opposing-left-intent-offline.log",
@@ -37,13 +31,49 @@
     {
       "command": ".venv-cpu/bin/python work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/prove_saved.py",
       "exit_code": 0,
+      "log": "turn-saved-processing.log",
+      "sha256": "70558b5317ff026656e555bfd5db1fb4d08695183016ea507a62e49a761c268c"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/delivery_audit.py",
+      "exit_code": 0,
+      "log": "turn-delivery-audit-positive.log",
+      "sha256": "e2c47d74f764000c4eda46070a07468d150eaf481bbbb1a963cc7bb5fee86459"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/prove_saved.py",
+      "exit_code": 0,
       "log": "intent-saved-processing.log",
-      "sha256": "584a6632f55df872213ad6007675d6e8cdc667a9c4f5668a87319785f9548f0e"
+      "sha256": "2ff7569323b3a9e7d39bd809751b9dca2e90533e7cdd81c91ffdc410f44ae229"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/delivery_audit.py",
+      "exit_code": 0,
+      "log": "intent-delivery-audit-positive.log",
+      "sha256": "886d4640187e6d77a91e7130d274bc68f80d2cb4066d04d33d2986067da2aaf8"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/opposing_left_comparison_audit.py",
+      "exit_code": 0,
+      "log": "opposing-left-comparison-positive.log",
+      "sha256": "c8c11e342fc5f565fbd9243ac0e0b1fd34679e5c53507af03b62e6498e4ef356"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python pinned semantic_delivery.validate",
+      "exit_code": 0,
+      "log": "semantic-validation.log",
+      "sha256": "f7e3c4b424cc61996ca8e4e6ca18f5883a372bf9f451c4fd60022b881ba9a088"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python pinned execution_delivery.validate",
+      "exit_code": 0,
+      "log": "execution-validation.log",
+      "sha256": "fefae7dd5bffc2f66b07e8b56c8552ec7b74c6c242f52f0742fbb54384c4bb08"
     }
   ],
   "remaining_gpu_checks": [
     "Physical opposite-direction left turn, body clearance and camera visibility"
   ],
-  "reason": "Two C293604 controlled opposing-left cases pass exact offline, positive/missing-source compatibility and saved-only processing; six risk-triggered fallbacks pass exact offline and compatibility. The pinned candidate validator and receipt checker pass. Physical preparation, independent delivery/comparison audits, full canonical semantic judgment sweep and strict scoped delivery gate remain incomplete; no physical or legal outcome is claimed.",
+  "reason": "Two exact C293604 opposing-left cases, six risk fallbacks, both saved-only proofs, synthetic physical/lifecycle protocol and independent delivery/comparison audits pass. The canonical 11-stage source-bound semantic chain passes for two selected cases. Its full six-phrase qualitative sweep is explicitly incomplete: feasible physical axes and per-point constructions across C111294 and C293604 are not yet prepared. Status remains partial; physical and legal outcomes are unclaimed.",
   "readiness_kind": null
 }

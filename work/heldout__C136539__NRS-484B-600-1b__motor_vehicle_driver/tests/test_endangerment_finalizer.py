@@ -5,8 +5,8 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from endangerment_finalizer import analyze, build_result
-from test_endangerment_measurement import sample
+from endangerment_finalizer import analyze, build_result, assess_exposure_passage
+from test_endangerment_measurement import sample, square
 
 
 CASE = 'heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__moderate_person_exposure'
@@ -29,6 +29,19 @@ def sources(root):
 
 
 class FinalizerTests(unittest.TestCase):
+    def test_physical_passage_requires_original_before_and_after_body(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            sources(root)
+            path = root / 'exposed_actor_footprints.jsonl'
+            rows = [json.loads(line) for line in path.read_text().splitlines()]
+            rows[-1]['ego_corners_xy'] = square(5)
+            path.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+            self.assertEqual(assess_exposure_passage(root)['status'], 'met')
+            rows[-1]['ego_corners_xy'] = square(1)
+            path.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+            self.assertEqual(assess_exposure_passage(root)['status'], 'not_met')
+
     def test_saved_join_and_missing_source_rejection(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

@@ -15,12 +15,14 @@ by_id = {entry['case_id']: entry for entry in compat['cases']}
 runner = (root / 'native_exposure_cases.py').read_text().replace(
     "default='cases/slow_person_exposure.json'", "default='config.json'")
 finalizer = (root / 'endangerment_finalizer.py').read_text()
+finalizer_test = (root / 'tests/test_endangerment_finalizer.py').read_text()
 for entry in cases['cases']:
     path = root / entry['construction']
     construction = json.loads(path.read_text())
     files = {item['path']: item for item in construction['files']}
     files['native_exposure_cases.py']['content'] = runner
     files['endangerment_finalizer.py']['content'] = finalizer
+    files['tests/test_endangerment_finalizer.py']['content'] = finalizer_test
     if 'runner.py' not in files:
         construction['files'].append({'path': 'runner.py', 'content': runner})
     else:

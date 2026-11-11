@@ -15,12 +15,16 @@ CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_refer
 def _source(root, name):
     path = root / name
     if not path.is_file() or not path.read_bytes():
-        raise ValueError('Missing required original source: ' + name)
+        raise ValueError('Missing required source: ' + name)
     return path, sha256(path.read_bytes()).hexdigest()
 
 
 def _rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def measure_rider_signal(motion_path, review_path, context_path, video_path):
+    return measure(motion_path, review_path, context_path, video_path)
 
 
 def analyze(attempt):
@@ -54,11 +58,11 @@ def analyze(attempt):
                 bone.get('rider_id') != rider_id or
                 rider_row.get('rider_id') != rider_id):
             raise ValueError('Original rider source/frame-map join failed')
-    observed = measure(paths['rider_motion.jsonl'], paths['rider_signal_review.jsonl'],
+    observed = measure_rider_signal(paths['rider_motion.jsonl'], paths['rider_signal_review.jsonl'],
                        paths['rider_context.json'], paths['driver_reference.mkv'])
     return {'format': 'worker-analysis-report', 'case_id': CASE_ID,
             'measurements': {'rider_turn_signal_observation': {
-                'method': 'measure', 'value': observed,
+                'method': 'measure_rider_signal', 'value': observed,
                 'sources': {**observed['sources'], **hashes}}},
             'limitations': ['Bone readback and source-video review do not establish an appropriate legal signal or reasonable safety.'],
             'physical_acceptance_claimed': False,
@@ -77,7 +81,9 @@ def build_result(attempt, report):
         raise ValueError('Retain prior derived rider signal channel')
     channel.write_text(''.join(json.dumps({
         'frame': row['frame'], 'time_s': row['time_s'],
-        'value': row['visible_signal'], 'signal_type': row['signal_type']}) + '\n'
+        'value': int(row['visible_signal'] is True),
+        'reviewed': row['visible_signal'] is not None,
+        'signal_type': row['signal_type']}) + '\n'
         for row in observed['observations']))
     frames = observed['observations']
     return {'case_id': CASE_ID,
@@ -97,14 +103,14 @@ def build_result(attempt, report):
             'video_references': list(CAMERAS),
             'video_frame_map_reference': 'video_frames.jsonl',
             'recording_description': description,
-            'recording_evidence': [{'name': 'rider_signal_event', 'unit': 'bool',
+            'recording_evidence': [{'name': 'rider_signal_event', 'unit': 'count',
                                     'reference': 'rider_signal_event.jsonl',
                                     'sha256': sha256(channel.read_bytes()).hexdigest()}],
             'realized_observables': {'rider_signal_event': {
-                'unit': 'bool', 'method': 'source-video frame review',
+                'unit': 'count', 'method': 'source-video frame review',
                 'time_window': 'all original frames', 'statistic': 'pre-turn visible frames',
                 'reference': 'rider_signal_event.jsonl',
-                'value': observed['pre_turn_visible_signal_frames'],
+                'value': len(observed['pre_turn_visible_signal_frames']),
                 'sample_window_s': [frames[0]['time_s'], frames[-1]['time_s']]}},
             'physical_acceptance_claimed': False,
             'legal_acceptance_claimed': False}
