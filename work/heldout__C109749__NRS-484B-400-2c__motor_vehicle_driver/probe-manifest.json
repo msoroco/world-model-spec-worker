@@ -1,0 +1,130 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__front_pass_no_device",
+      "construction": "construction-front_pass_no_device.json",
+      "construction_sha256": "b5c06336d6f3a5ca05d576abc72a3d101b2c5b08ed59d25fd5041ab6b65da988",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "opposing_turn_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route continuity, simultaneous motion, crossing geometry and participant pixels may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-front_pass_no_device-fallback1.json",
+          "construction_sha256": "fa568abd4cd20ab94ef3a8832716766a2b64ab9d0193a01fc16f2849cc4e0210",
+          "changed_knobs": [
+            "route_step_m=1.0"
+          ],
+          "trigger": {
+            "source": "Original waypoint successor inventory and map topology",
+            "metric": "connected opposing left-turn paths at 1 m sampling",
+            "failure_condition": "Primary 2 m route sampling skips one connected left-turn branch"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver/probe-manifest.json --case heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__front_pass_no_device --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "front-fallback1-offline.log",
+            "log_sha256": "22ec392c7edf6c49d9b26317e05d6c3c7e706a2b3fd3b563d230e9a3fad80ab1",
+            "construction_sha256": "fa568abd4cd20ab94ef3a8832716766a2b64ab9d0193a01fc16f2849cc4e0210"
+          },
+          "compatibility": {
+            "receipt": "front-fallback1-compatibility.json",
+            "sha256": "29c330af016f2a1f0e33782bf5e0836bb818999b0451bc0a58a1b4141eaba1f4",
+            "log": "front-fallback1-compatibility.log",
+            "negative_log": "front-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-front_pass_no_device-fallback2.json",
+          "construction_sha256": "ad4bc8610cf80fece086916e1bb341b463f0df477e6a989282dc885fec714e50",
+          "changed_knobs": [
+            "target_speed_mps=4.0"
+          ],
+          "trigger": {
+            "source": "original subject/opposing body and heading source rows",
+            "metric": "sustained simultaneous left-turn frame count",
+            "failure_condition": "Primary 5 m/s pursuit separates the two junction intervals"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver/probe-manifest.json --case heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__front_pass_no_device --candidate fallback2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "front-fallback2-offline.log",
+            "log_sha256": "22ec392c7edf6c49d9b26317e05d6c3c7e706a2b3fd3b563d230e9a3fad80ab1",
+            "construction_sha256": "ad4bc8610cf80fece086916e1bb341b463f0df477e6a989282dc885fec714e50"
+          },
+          "compatibility": {
+            "receipt": "front-fallback2-compatibility.json",
+            "sha256": "9fcf097792c6480d0171635facf09af40b860daf32d51886bb9694ac44d09007",
+            "log": "front-fallback2-compatibility.log",
+            "negative_log": "front-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-front_pass_no_device-fallback3.json",
+          "construction_sha256": "a9c1a5570594f80aa40257bb512ec638c87d5055aee31fc352a518b7123e5f02",
+          "changed_knobs": [
+            "overview_height_delta_m=2.0"
+          ],
+          "trigger": {
+            "source": "overview.mkv and original frame map",
+            "metric": "both vehicle bodies and junction conflict area visible at source resolution",
+            "failure_condition": "Primary overview mount occludes one actor or the crossing area"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver/probe-manifest.json --case heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__front_pass_no_device --candidate fallback3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "front-fallback3-offline.log",
+            "log_sha256": "22ec392c7edf6c49d9b26317e05d6c3c7e706a2b3fd3b563d230e9a3fad80ab1",
+            "construction_sha256": "a9c1a5570594f80aa40257bb512ec638c87d5055aee31fc352a518b7123e5f02"
+          },
+          "compatibility": {
+            "receipt": "front-fallback3-compatibility.json",
+            "sha256": "475bd86a74fb27bc331353b8dcd9244245895b6542bcb1bbdf4b9ba019b5efd0",
+            "log": "front-fallback3-compatibility.log",
+            "negative_log": "front-fallback3-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract-front_pass_no_device.json",
+      "fixture_recipe": "work/heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver/diagnostic-recipe-front_pass_no_device.json",
+      "acquisition": {
+        "simultaneous_left_turn_frames": {
+          "entrypoint": "opposing_turn_finalizer.py",
+          "method": "original source joined Native body and map/device measurement",
+          "evidence": "subject_original.jsonl, opposing_original.jsonl, topology_original.json, devices_original.json and frame map"
+        },
+        "closest_ground_body_clearance_m": {
+          "entrypoint": "opposing_turn_finalizer.py",
+          "method": "original source joined Native body and map/device measurement",
+          "evidence": "subject_original.jsonl, opposing_original.jsonl, topology_original.json, devices_original.json and frame map"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver/probe-manifest.json --case heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__front_pass_no_device --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "log": "front-primary-offline.log",
+        "log_sha256": "31503230e36d8e43e62ace46f2caf83387e5a1dff128bbd85d8ac4daa732ad6a",
+        "construction_sha256": "b5c06336d6f3a5ca05d576abc72a3d101b2c5b08ed59d25fd5041ab6b65da988"
+      },
+      "compatibility": {
+        "receipt": "front-primary-compatibility.json",
+        "sha256": "4b5c519e191a854718997a54fa9a76391a5faf73833d083835d4fa9f863d5c42",
+        "log": "front-primary-compatibility.log",
+        "negative_log": "front-primary-negative.log"
+      },
+      "negative": {
+        "log": "front-primary-negative.log"
+      }
+    }
+  ]
+}

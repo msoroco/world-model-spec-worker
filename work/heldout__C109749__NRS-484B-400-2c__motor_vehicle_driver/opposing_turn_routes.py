@@ -41,6 +41,9 @@ def select_opposing_left_pair(routes, lane_inventory, *, route_accept=None):
                 continue
             if not (_left(a) and _left(b)):
                 continue
+            if ('approach_lane_id' in a and 'approach_lane_id' in b and
+                    a['approach_lane_id'] * b['approach_lane_id'] >= 0):
+                continue
             heading_a, heading_b = _unit(a['approach_heading_xy']), _unit(b['approach_heading_xy'])
             if heading_a[0]*heading_b[0]+heading_a[1]*heading_b[1] > -.8:
                 continue
