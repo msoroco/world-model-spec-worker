@@ -31,6 +31,7 @@ def build():
     manifest = json.loads(manifest_path.read_text())
     for entry in manifest["cases"]:
         primary = json.loads((HERE / entry["construction"]).read_text())
+        prior = {candidate["id"]: candidate for candidate in entry.get("candidates", [])}
         candidates = []
         for ident, knob, value, source, metric, condition in SPECS:
             construction = copy.deepcopy(primary)
@@ -46,10 +47,15 @@ def build():
             name = "diagnostic-construction-" + entry["case_id"].rsplit("__", 1)[-1] + "-" + ident + ".json"
             path = HERE / name
             write_json(path, construction)
-            candidates.append({"id": ident, "construction": name,
+            candidate = {"id": ident, "construction": name,
                 "construction_sha256": sha(path),
                 "trigger": {"source": source, "metric": metric, "failure_condition": condition},
-                "changed_knobs": [f"config.{knob}: {original} -> {value}"]})
+                "changed_knobs": [f"config.{knob}: {original} -> {value}"]}
+            if prior.get(ident, {}).get("construction_sha256") == candidate["construction_sha256"]:
+                for proof in ("offline", "compatibility"):
+                    if proof in prior[ident]:
+                        candidate[proof] = prior[ident][proof]
+            candidates.append(candidate)
         entry["candidate_risk"] = {"status": "physical",
             "reason": "Native stop placement, route timing and intersection entry can miss the selected physical sources; choose an alternate only after the named original-source trigger is observed."}
         entry["candidates"] = candidates
