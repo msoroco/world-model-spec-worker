@@ -20,6 +20,10 @@ def _rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def measure_intersection(topology_path, participant_path):
+    return measure(topology_path, participant_path)
+
+
 def analyze(attempt):
     root = Path(attempt)
     config_path, _ = _source(root, 'config.json')
@@ -41,10 +45,10 @@ def analyze(attempt):
                 (motion.get('frame'), motion.get('time_s')) != identity or
                 (participant.get('frame'), participant.get('time_s')) != identity):
             raise ValueError('Original intersection source/frame-map join failed')
-    observed = measure(topology_path, participant_path)
+    observed = measure_intersection(topology_path, participant_path)
     return {'format': 'worker-analysis-report', 'case_id': CASE,
             'measurements': {'intersection_observation': {
-                'method': 'original body polygons and connected Native lane graph',
+                'method': 'measure_intersection',
                 'value': observed,
                 'sources': {'intersection_topology.json': topology_sha,
                             'intersection_participants.jsonl': participant_sha,
@@ -87,9 +91,13 @@ def build_result(attempt, report):
                                  ('overview', 'approach', 'reference_corner', 'driver_reference')],
             'video_frame_map_reference': 'video_frames.jsonl',
             'recording_description': description,
-            'recording_evidence': [{'name': 'intersection_occupancy', 'unit': 'bool',
-                                    'reference': channel.name,
-                                    'sha256': sha256(channel.read_bytes()).hexdigest()}],
+            'recording_evidence': [
+                {'name': 'intersection_occupancy', 'unit': 'bool',
+                 'reference': channel.name,
+                 'sha256': sha256(channel.read_bytes()).hexdigest()},
+                {'name': 'lanes', 'unit': 'structured topology',
+                 'reference': 'intersection_topology.json',
+                 'sha256': sha256((root / 'intersection_topology.json').read_bytes()).hexdigest()}],
             'realized_observables': {'entry_delta_s': {'unit': 's',
                 'method': 'first original body overlap against conflict polygon',
                 'time_window': 'full original trace', 'statistic': 'first',

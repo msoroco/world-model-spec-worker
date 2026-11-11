@@ -192,15 +192,16 @@ def run(config, output, host='127.0.0.1', port=2000):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', required=True)
+    parser.add_argument('--config', default='config.json')
     parser.add_argument('--output-dir')
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
     parser.add_argument('--run', action='store_true')
+    parser.add_argument('--check', action='store_true')
     args = parser.parse_args()
     config = json.loads(Path(args.config).read_text())
     check_config(config)
-    if args.run:
+    if not args.check:
         if not args.output_dir: raise ValueError('Fresh Native output directory required')
         run(config, args.output_dir, args.host, args.port)
 

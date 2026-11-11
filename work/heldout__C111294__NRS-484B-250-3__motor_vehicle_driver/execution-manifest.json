@@ -1,0 +1,77 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields",
+      "construction": "construction-ending-yields.json",
+      "construction_sha256": "02fc2a2795abe4075ca9d3ad68a377be8419fe2a3e9d268a548de2b952cccd17",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native topology, realized yield timing and four-camera visibility may fail"
+      },
+      "candidates": [],
+      "measurement_contract": "measurement-contract-ending-yields.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --output .runtime-work/c111294-ending-yields-primary-offline7 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "ending-yields-offline.log",
+        "log_sha256": "b0590b82e911219fe14cac5312cc8e3ab0b7bc93f82965e02679b1debfc98089",
+        "construction_sha256": "02fc2a2795abe4075ca9d3ad68a377be8419fe2a3e9d268a548de2b952cccd17"
+      },
+      "fixture_recipe": "work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-ending-yields.json",
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        }
+      },
+      "compatibility": {
+        "receipt": "ending-yields-compatibility.json",
+        "sha256": "2322ade18264439525a67ed9c127c90da8f9bd62f7a31293c0e0f7185a7dc6ac",
+        "log": "ending-yields-compat-analysis.log",
+        "negative_log": "ending-yields-negative.log"
+      },
+      "negative": {
+        "log": "ending-yields-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "ending-yields-saved-processing.log",
+        "test_log_sha256": "35ae8bc2390a04318f8327bb3feb40ab7f49692c75f56c7a29c4b0f2644c3426",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first",
+      "construction": "construction-ending-enters-first.json",
+      "construction_sha256": "16c1858242f290215ed128732718421846c606034244d67b457851178a19f554",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-ending-enters-first.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Entry-order release may not produce a realized original-body contrast"
+      },
+      "candidates": [],
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        }
+      },
+      "fixture_recipe": "work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-ending-enters-first.json"
+    }
+  ],
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+}
