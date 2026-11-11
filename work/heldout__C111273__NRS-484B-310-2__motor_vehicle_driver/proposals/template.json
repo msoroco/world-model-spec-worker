@@ -1,0 +1,75 @@
+{
+  "template_id": "NRS-484B-310-2@motor_vehicle_driver",
+  "law_id": "NRS-484B-310-2",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Whenever an illuminated flashing red or yellow signal is used in conjunction with an official traffic-control device, it shall require obedience by vehicular traffic as follows: When a yellow lens is illuminated with rapid intermittent flashes, drivers of vehicles may proceed past such signal and through the intersection or other hazardous location only with caution.",
+  "structure": {
+    "law_id": "NRS-484B-310-2",
+    "activation": {
+      "condition": "A rapidly flashing illuminated yellow lens is used with an official traffic-control device at an intersection or other hazardous location.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "conditional_permission",
+      "description": "A driver may pass the light and traverse the intersection or other hazardous location only with caution.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Observe original-frame lamp state and driver approach and traversal throughout the hazardous location.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "rapidly flashing",
+        "note": "The law supplies no numerical flash frequency; 2 Hz is a source-capture engineering setting."
+      },
+      {
+        "phrase": "illuminated yellow lens used with an official traffic-control device",
+        "note": "Native Yellow/Off state does not prove lens pixels or official authority."
+      },
+      {
+        "phrase": "with caution",
+        "note": "Measured motion and crossing context do not set a legal caution cutoff."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "target_speed_mps",
+      "kind": "controller",
+      "range_or_domain": "positive engineering approach speed in m/s"
+    },
+    {
+      "name": "flash_period_s",
+      "kind": "controller",
+      "range_or_domain": "positive engineering period in seconds"
+    },
+    {
+      "name": "crossing_vehicle",
+      "kind": "world_setup",
+      "range_or_domain": "present or absent"
+    },
+    {
+      "name": "approach_direction",
+      "kind": "world_setup",
+      "range_or_domain": "east or west governed lane"
+    },
+    {
+      "name": "native_yellow_transitions",
+      "kind": "subject_behavior",
+      "range_or_domain": "nonnegative observed Native transition count"
+    },
+    {
+      "name": "ego_speed_mps",
+      "kind": "subject_behavior",
+      "range_or_domain": "nonnegative measured m/s"
+    },
+    {
+      "name": "official_control_valid",
+      "kind": "world_setup",
+      "range_or_domain": "source-backed unresolved authority"
+    }
+  ]
+}

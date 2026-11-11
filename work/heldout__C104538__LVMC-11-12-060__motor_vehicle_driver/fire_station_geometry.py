@@ -84,7 +84,7 @@ def validate_entrance(public_before, public_at, public_after, driveway_at, *,
     from legal labels. A driveway must be a distinct lane diverging from the
     public lane near its entrance. The source binds a map landmark or survey.
     """
-    if not isinstance(source, dict) or source.get('kind') not in ('map_landmark', 'operator_survey'):
+    if not isinstance(source, dict) or source.get('kind') not in ('map_landmark', 'operator_survey', 'authored_diagnostic'):
         raise ValueError('source-bound fire-station identification required')
     if not source.get('asset_id') or not source.get('source_sha256'):
         raise ValueError('fire-station source asset and hash required')

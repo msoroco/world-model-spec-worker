@@ -3,26 +3,177 @@
   "status": "draft",
   "cell_id": "C111273",
   "actor": "motor_vehicle_driver",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "c111273-judgment-1",
+      "target_law_id": "NRS-484B-310-2",
+      "judgment_refs": [
+        {
+          "phrase": "rapidly flashing",
+          "note": "The law supplies no numerical flash frequency; 2 Hz is a source-capture engineering setting."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical source coverage for an unresolved statutory phrase.",
+      "missing_inputs": [
+        "A sourced numeric range and spacing for this judgment dimension is not supplied by the statute; the selected cases are exact engineering comparisons."
+      ]
+    },
+    {
+      "sweep_id": "c111273-judgment-2",
+      "target_law_id": "NRS-484B-310-2",
+      "judgment_refs": [
+        {
+          "phrase": "illuminated yellow lens used with an official traffic-control device",
+          "note": "Native Yellow/Off state does not prove lens pixels or official authority."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical source coverage for an unresolved statutory phrase.",
+      "missing_inputs": [
+        "A sourced numeric range and spacing for this judgment dimension is not supplied by the statute; the selected cases are exact engineering comparisons."
+      ]
+    },
+    {
+      "sweep_id": "c111273-judgment-3",
+      "target_law_id": "NRS-484B-310-2",
+      "judgment_refs": [
+        {
+          "phrase": "with caution",
+          "note": "Measured motion and crossing context do not set a legal caution cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical source coverage for an unresolved statutory phrase.",
+      "missing_inputs": [
+        "A sourced numeric range and spacing for this judgment dimension is not supplied by the statute; the selected cases are exact engineering comparisons."
+      ]
+    }
+  ],
   "cases": [
+    {
+      "case_id": "heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Same governed intersection reference; no legal result assigned.",
+      "variable_assignments": {
+        "target_speed_mps": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "flash_period_s": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "crossing_vehicle": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        },
+        "native_yellow_transitions": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_control_valid": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_yellow_on",
+            "unit": "boolean",
+            "method": "saved Native light state readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish visual appearance or legal caution"
+          },
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "saved ego velocity magnitude",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish visual appearance or legal caution"
+          },
+          {
+            "name": "ego_center_xy",
+            "unit": "m",
+            "method": "saved ego world center",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish visual appearance or legal caution"
+          },
+          {
+            "name": "crossing_center_xy",
+            "unit": "m",
+            "method": "saved crossing vehicle world center",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish visual appearance or legal caution"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Official status, lens illumination in pixels, and caution require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "rapidly flashing",
+        "illuminated yellow lens used with an official traffic-control device",
+        "with caution"
+      ]
+    },
     {
       "case_id": "heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_cautious_approach",
       "target_law_id": "NRS-484B-310-2",
-      "target_type": "compliant_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Original Native flashing-yellow and approach sample; no legal caution outcome assigned.",
       "variable_assignments": {
         "target_speed_mps": {
           "kind": "controller",
           "value": 4.0
         },
+        "flash_period_s": {
+          "kind": "controller",
+          "value": 0.5
+        },
         "crossing_vehicle": {
-          "kind": "environment",
+          "kind": "world_setup",
           "value": true
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        },
+        "native_yellow_transitions": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_control_valid": {
+          "kind": "world_setup",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
-        "rapidly flashing illuminated lens",
-        "official device authority",
+        "rapidly flashing",
+        "illuminated yellow lens used with an official traffic-control device",
         "with caution"
       ],
       "recording_description": {
@@ -62,52 +213,61 @@
             "time_window": "all original frames",
             "reference_frame": "Native world and original frame identity",
             "uncertainty": "Native state does not establish visual appearance or legal caution"
-          },
-          {
-            "name": "lens_pixel_visible",
-            "unit": "unknown",
-            "method": "unresolved original-pixel review field",
-            "sampling_rate_hz": 20,
-            "time_window": "all original frames",
-            "reference_frame": "Native world and original frame identity",
-            "uncertainty": "Native state does not establish visual appearance or legal caution"
           }
         ],
-        "context_inputs": [
-          "signal_context.json"
-        ],
+        "context_inputs": [],
         "limitations": [
           "Official status, lens illumination in pixels, and caution require independent source review."
         ]
       },
       "paired_probe_id": "approach_speed_sample",
       "deliberate_differences": [
-        "target_speed_mps"
+        "approach_direction"
       ],
       "probe": {
-        "primary_variable": "target_speed_mps",
-        "comparison_or_standard": "controlled descriptive approach-speed sample; legal caution unresolved",
-        "target_value_or_branch": "4 m/s engineering sample"
+        "primary_variable": "approach_direction",
+        "comparison_or_standard": "controlled original-source comparison; legal caution unresolved",
+        "target_value_or_branch": "east_cautious_approach"
       }
     },
     {
       "case_id": "heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_faster_approach",
       "target_law_id": "NRS-484B-310-2",
-      "target_type": "compliant_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Original Native flashing-yellow and approach sample; no legal caution outcome assigned.",
       "variable_assignments": {
         "target_speed_mps": {
           "kind": "controller",
           "value": 9.0
         },
+        "flash_period_s": {
+          "kind": "controller",
+          "value": 0.5
+        },
         "crossing_vehicle": {
-          "kind": "environment",
+          "kind": "world_setup",
           "value": true
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        },
+        "native_yellow_transitions": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_control_valid": {
+          "kind": "world_setup",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
-        "rapidly flashing illuminated lens",
-        "official device authority",
+        "rapidly flashing",
+        "illuminated yellow lens used with an official traffic-control device",
         "with caution"
       ],
       "recording_description": {
@@ -160,28 +320,48 @@
       ],
       "probe": {
         "primary_variable": "target_speed_mps",
-        "comparison_or_standard": "controlled descriptive approach-speed sample; legal caution unresolved",
+        "comparison_or_standard": "controlled original-source comparison; legal caution unresolved",
         "target_value_or_branch": "east_faster_approach"
       }
     },
     {
       "case_id": "heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_clear_approach",
       "target_law_id": "NRS-484B-310-2",
-      "target_type": "compliant_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Original Native flashing-yellow and approach sample; no legal caution outcome assigned.",
       "variable_assignments": {
         "target_speed_mps": {
           "kind": "controller",
           "value": 4.0
         },
+        "flash_period_s": {
+          "kind": "controller",
+          "value": 0.5
+        },
         "crossing_vehicle": {
-          "kind": "environment",
+          "kind": "world_setup",
           "value": false
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        },
+        "native_yellow_transitions": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_control_valid": {
+          "kind": "world_setup",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
-        "rapidly flashing illuminated lens",
-        "official device authority",
+        "rapidly flashing",
+        "illuminated yellow lens used with an official traffic-control device",
         "with caution"
       ],
       "recording_description": {
@@ -219,34 +399,54 @@
           "Official status, lens illumination in pixels, and caution require independent source review."
         ]
       },
-      "paired_probe_id": "approach_speed_sample",
+      "paired_probe_id": "crossing_traffic_context",
       "deliberate_differences": [
-        "target_speed_mps"
+        "crossing_vehicle"
       ],
       "probe": {
-        "primary_variable": "target_speed_mps",
-        "comparison_or_standard": "controlled descriptive approach-speed sample; legal caution unresolved",
+        "primary_variable": "crossing_vehicle",
+        "comparison_or_standard": "controlled original-source comparison; legal caution unresolved",
         "target_value_or_branch": "east_clear_approach"
       }
     },
     {
       "case_id": "heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__west_cautious_approach",
       "target_law_id": "NRS-484B-310-2",
-      "target_type": "compliant_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Original Native flashing-yellow and approach sample; no legal caution outcome assigned.",
       "variable_assignments": {
         "target_speed_mps": {
           "kind": "controller",
           "value": 4.0
         },
+        "flash_period_s": {
+          "kind": "controller",
+          "value": 0.5
+        },
         "crossing_vehicle": {
-          "kind": "environment",
+          "kind": "world_setup",
           "value": true
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "west"
+        },
+        "native_yellow_transitions": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_control_valid": {
+          "kind": "world_setup",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
-        "rapidly flashing illuminated lens",
-        "official device authority",
+        "rapidly flashing",
+        "illuminated yellow lens used with an official traffic-control device",
         "with caution"
       ],
       "recording_description": {
@@ -293,15 +493,16 @@
           "Official status, lens illumination in pixels, and caution require independent source review."
         ]
       },
-      "paired_probe_id": "approach_speed_sample",
+      "paired_probe_id": "approach_direction",
       "deliberate_differences": [
-        "target_speed_mps"
+        "approach_direction"
       ],
       "probe": {
-        "primary_variable": "target_speed_mps",
-        "comparison_or_standard": "controlled descriptive approach-speed sample; legal caution unresolved",
+        "primary_variable": "approach_direction",
+        "comparison_or_standard": "controlled original-source comparison; legal caution unresolved",
         "target_value_or_branch": "west_cautious_approach"
       }
     }
-  ]
+  ],
+  "sweeps_expanded": true
 }

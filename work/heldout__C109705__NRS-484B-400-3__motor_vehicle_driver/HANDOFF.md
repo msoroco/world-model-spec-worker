@@ -1,5 +1,79 @@
 # heldout__C109705__NRS-484B-400-3__motor_vehicle_driver: CPU preparation checkpoint
 
+## 2026-11-11 independent saved-source audit continuation
+
+This section supersedes the exact proof hashes below after correcting the
+synthetic diagnostic fixture to isolate comparison phases. The approach variant
+changes only approach/entry original body positions and holds departure bodies
+fixed. The departure variant changes only departure bodies and holds
+approach/entry fixed. `source_comparison_audit.py` independently recomputes
+measurements from retained original rows, binds fixed route/config/cameras/trace,
+and rejects changed held phases or fixed config. Both synthetic comparisons
+pass positive and altered-config negative paths. Diagnostic measured approach
+nearest-corner offsets are 0.8 and 1.45 m; destination left-curb distances are
+2.807 and 2.926 m. These are software fixture values, not Native observations
+or legal cutoffs.
+
+`delivery_audit.py` independently joins source hashes and original frame/body/
+trace identities, decodes all four camera streams and composed primary with the
+pinned media auditor, and binds the source-decode receipt. Native mode requires
+source seal, Native exit, physical completion and an independent original-pixel
+review of ego body, approach centerline and destination left curb. All three
+marked synthetic positives pass and all three tampered-source negatives fail as
+required; their Native-only checks are false.
+
+Current receipts: `exact-proofs.json` SHA-256
+`49d15986874d94f51923873488099da10505e642380a665ff642b4bf7195d095`;
+`saved-proofs.json` SHA-256
+`a1b412c1c0ba2319e30d5178587ced60e23e7bd296ecbcf682acd138860ca255`;
+`delivery-audit-proofs.json` SHA-256
+`973d09f688de2c740ceacfc34a2c1609638f29e50803595b19b66f9f5e4c4c23`;
+`comparison-proofs.json` SHA-256
+`f83d296a42b0aa80f79466ffaa7fc99c416a11f71967d2b17330c20af1c4d66e`.
+Scoped complete passes; scoped strict rejects truthful **partial** status.
+Next CPU work is physical-completion protocol tests, the canonical semantic
+proposals and exact execution manifest with audit bindings. A source-backed
+Native two-directional/one-way intersection survey must replace the diagnostic
+coordinates before a physical capture. No actual turn or legal verdict is
+claimed.
+
+## 2026-11-11 exact Native turn construction and saved proof continuation
+
+This section supersedes older "no executable case" statements below.
+`turn_native.py` and its exact `runner.py` entrypoint implement CARLA-lazy
+source-hashed XODR waypoint verification, a bounded turn feedback controller,
+original full-body footprint and phase readback, frame-map and PipelineCapture
+sources, four named synchronized RGB streams, world restoration and capture
+sealing. `turn_finalizer.py` joins those retained sources through
+`turn_source_measurement.py`, generates the selected original-source offset
+channel and writes a Native-shaped result without a legal practicability
+verdict. The first Native map/route survey in this package is explicitly
+synthetic; the runner rejects a loaded map or waypoint position that differs.
+
+`build_turn_construction.py` authors three exact selected cases and three
+distinct bounded alternatives per case: shorter lookahead for route drift,
+slower turn target for curb overshoot, and raised overview camera for body
+occlusion. The current 12 constructions all pass pinned exact `runtime.py
+offline` and positive/missing-source `runtime.py compatibility`. Receipts and
+hashed logs are in `exact-proofs.json` (SHA-256
+`5ad32e34da6360685d79c3e29262f9dfd917e20cd9c206bb50f40c3e6017cda8`).
+All three primaries pass exact `runtime.py process-saved` on separately
+materialized marked synthetic original attempts, with original bytes preserved
+and `missing_evidence=false`; `saved-proofs.json` SHA-256 is
+`5e425363490b0b75c8e683b6ad07a0d363e665cc5035c1172a77300211336a1c`.
+The current construction and compatibility manifest hashes are respectively
+`9887c6c476ce9c0a25f9fa6ff503200b1f6a6cde3b7d3b82e4e8171da23f9252`
+and `fb854fd5e7a1bdf5e75f54943d90e0127df98f1f1dd4abe92622f511191cbad9`.
+
+These proofs exercise software paths and synthetic source geometry; the
+fixture's static underlying trace is not an actual turn. The source survey
+must be replaced with verified Native two-directional/one-way intersection
+coordinates before an operator capture. Independent delivery/comparison audits,
+the physical protocol, canonical semantic stage proposals and exact execution
+handoff still need CPU implementation and proofs. Scoped `worker_check.py
+--complete` passes; scoped strict still rejects the truthful **partial** result.
+No actual physical or legal acceptance is claimed.
+
 ## 2026-11-11 original-source measurement continuation
 
 `turn_source_measurement.py` now joins a named original road-geometry packet,

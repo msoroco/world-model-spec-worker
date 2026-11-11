@@ -161,24 +161,21 @@
   ],
   "observations": [
     {
-      "term": "dev.human_direction",
-      "note": "a person directing traffic with role police_officer, and the indication given"
+      "name": "officer_direction",
+      "mandatory": true,
+      "source_terms": [
+        "dev.human_direction",
+        "dev.governs",
+        "drv.officer_directed"
+      ]
     },
     {
-      "term": "dev.governs",
-      "note": "the direction is addressed to the subject"
-    },
-    {
-      "term": "ru.subject",
-      "note": "the person whose conduct is judged \u2014 any road user, not only a driver"
-    },
-    {
-      "term": "kin.velocity",
-      "note": "what the subject did after the direction"
-    },
-    {
-      "term": "drv.officer_directed",
-      "note": "an officer's indication governs the subject"
+      "name": "subject_speed_mps",
+      "mandatory": true,
+      "source_terms": [
+        "ru.subject",
+        "kin.velocity"
+      ]
     }
   ],
   "sources": [
@@ -225,14 +222,11 @@
       "status": "planning_pending_exact_cases"
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "dev.human_direction",
-      "measurement": "officer_response.py timed direction, source context and original subject motion",
+  "source_observation_mapping": {
+    "dev.human_direction": {
+      "evidence": "Original timed officer pose event and officer identity are retained; actual officer duty and legal authority require independent source review.",
       "channels": [
-        "officer_direction",
-        "subject_motion",
-        "officer_context"
+        "officer_direction"
       ],
       "source_refs": [
         {
@@ -241,13 +235,10 @@
         }
       ]
     },
-    {
-      "term": "dev.governs",
-      "measurement": "officer_response.py timed direction, source context and original subject motion",
+    "dev.governs": {
+      "evidence": "Original direction record joins officer_id and addressed subject_id; whether the order lawfully governs remains unresolved.",
       "channels": [
-        "officer_direction",
-        "subject_motion",
-        "officer_context"
+        "officer_direction"
       ],
       "source_refs": [
         {
@@ -256,13 +247,10 @@
         }
       ]
     },
-    {
-      "term": "ru.subject",
-      "measurement": "officer_response.py timed direction, source context and original subject motion",
+    "ru.subject": {
+      "evidence": "Original officer context and motion history identify the motor_vehicle_driver subject in this fixed cell.",
       "channels": [
-        "officer_direction",
-        "subject_motion",
-        "officer_context"
+        "subject_speed_mps"
       ],
       "source_refs": [
         {
@@ -271,13 +259,10 @@
         }
       ]
     },
-    {
-      "term": "kin.velocity",
-      "measurement": "officer_response.py timed direction, source context and original subject motion",
+    "kin.velocity": {
+      "evidence": "Original subject speed samples after the indication are retained at 20 Hz and source-joined.",
       "channels": [
-        "officer_direction",
-        "subject_motion",
-        "officer_context"
+        "subject_speed_mps"
       ],
       "source_refs": [
         {
@@ -286,13 +271,10 @@
         }
       ]
     },
-    {
-      "term": "drv.officer_directed",
-      "measurement": "officer_response.py timed direction, source context and original subject motion",
+    "drv.officer_directed": {
+      "evidence": "Officer pose event and addressed subject are retained; actual visibility and lawful direction need Native/source review.",
       "channels": [
-        "officer_direction",
-        "subject_motion",
-        "officer_context"
+        "officer_direction"
       ],
       "source_refs": [
         {
@@ -301,7 +283,7 @@
         }
       ]
     }
-  ],
+  },
   "selected_branch": "Route-applicable officer direction",
   "requirement_dispositions": [
     {

@@ -40,6 +40,11 @@ class RunnerAndFinalizerTest(unittest.TestCase):
         bad=self.config();survey=dict(SURVEY,routes={'through_driveway':[ref(7,1,0),ref(7,1,8),ref(7,-1,0)]});bad['station_survey']=survey
         with self.assertRaisesRegex(ValueError,'never enters'):
             check_config(bad)
+        for key,value,error in (('spawn_height_m',.7,'spawn height'),
+                                ('waypoint_arrival_m',.5,'arrival radius'),
+                                ('speed_gain',0,'speed gain')):
+            invalid=self.config();invalid[key]=value
+            with self.assertRaisesRegex(ValueError,error):check_config(invalid)
 
     def test_survey_resolves_both_public_approach_directions(self):
         def waypoint(road,lane,s):

@@ -1,25 +1,41 @@
 {
   "assignment_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver",
   "input_sha256": "5776688fce27800e22c7d1e12a05c4204db3e83393eb276866e59611e87575d3",
-  "status": "partial",
-  "readiness_kind": "incomplete",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "e7b78e291eac0d59bbb56aa0c7cf45c7a1b0a6240c05d053c569de22af32cf41"
+      "sha256": "b56039815110740ca72f85f8626f4c263c1e332cc7d957f8c03b6ee840bb98dd"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment heldout__C10365__NRS-484B-100__motor_vehicle_driver --complete",
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/validate_semantic_stages.py",
       "exit_code": 0,
-      "log": "worker-check.log",
-      "sha256": "7eb1f2df3f131e7568580c3a188dce97a16b1858b7467462e0fdf5254befc5be"
+      "log": "semantic-stage-validation.log",
+      "sha256": "370c3b0cd9a85756a4f17e99d90d708420ed2f731007370bcd4536e0babf1bbe"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/prove_all_candidates.py",
+      "exit_code": 0,
+      "log": "candidate-proofs.log",
+      "sha256": "b67f89765943584e50d6d7cf32154b91106de92807de49a742d1f9215f232f50"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/prove_execution_saved.py",
+      "exit_code": 0,
+      "log": "execution-saved-proofs.log",
+      "sha256": "a016a1ea3366f677babc959b183016a07e3a7df3c74b0a28ae92e98eefd12dc1"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual motion, geometry, camera visibility and capture quality after CPU preparation"
+    "Actual Native alley connectivity and subject response",
+    "Original officer gesture visibility in all four cameras",
+    "Officer duty, order lawfulness and willfulness require independent source/legal review",
+    "Original-pixel full-body visibility and capture quality"
   ],
-  "reason": "Pinned CPU preflight passes. All four primary exact cases and all three distinct physical-risk fallbacks per case passed current-runtime offline and positive/negative source-bound compatibility checks; four primaries also passed synthetic saved processing (candidate-proofs.json). Delivery execution manifest, complete judgment sweep, physical outcome fixtures, independent delivery/comparison audits and canonical dispatch bindings remain CPU work; no physical or legal acceptance is claimed."
+  "reason": null,
+  "first_gpu_delivery_command": "python scenario_pipeline/pipeline.py execute-delivery --assignment heldout__C10365__NRS-484B-100__motor_vehicle_driver --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_responds --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\""
 }

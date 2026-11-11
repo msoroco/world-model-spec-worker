@@ -9,11 +9,29 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "3afb3f68b624e9e2d90264cb0c3b196d0a2e3a5c18ae947e08b9bd7a151409df"
+      "sha256": "11f12f8bd199fa4b30fbc550f8b4f1900b23fac64d257b3e7e5ae035e13ba5a4"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/construction-probe-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --output .runtime-work/c109705-first-offline-v4 --python .venv-cpu/bin/python (absolute interpreter path used)",
+      "exit_code": 0,
+      "log": "first-offline.log",
+      "sha256": "59099628c9ef216814bf8964ebfd2f45e29a004230afb74451ab4c86864bb011"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --output .runtime-work/c109705-first-compat-v5 --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "first-compatibility.log",
+      "sha256": "fbe124ebc4046371a39b22f0705d24b3d704aa2d442dc109e5bf5897bc034361"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/prove_first_saved.py",
+      "exit_code": 0,
+      "log": "saved-first-proof.log",
+      "sha256": "25be37717de6cc9f4b60ab062674161f29719dbbd5f776b4cd1774bf2fd448db"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and capture quality after CPU preparation"
   ],
-  "reason": "CPU preparation incomplete. Exact Native constructions, four-camera capture, finalizer integration, three fallback constructions per case, offline/compatibility and saved-processing receipts, semantic proposals and delivery audit remain CPU work."
+  "reason": "First exact turn has CPU tests, offline, source-bound positive/negative compatibility and saved-only processing. Remaining exact cases, judgment sweep, three fallbacks per case, independent comparisons and delivery audit remain CPU work."
 }

@@ -53,8 +53,8 @@ def main():
             'fixture_note':'Synthetic turn-body rows; not Native travel or physical highway facts.'}
         bodies=[]
         for i,(state,frame) in enumerate(zip(trace,frames)):
-            x=100.0+(0.65 if suffix.startswith('farther_approach') else 0)
-            y=1.6+(0.65 if suffix.endswith('farther_departure') and i>=6 else 0)
+            x=100.0+(0.65 if suffix.startswith('farther_approach') and i<6 else 0)
+            y=1.6-(0.65 if suffix.endswith('farther_departure') and i>=6 else 0)
             corners=[[x-.2,y-.2],[x+.2,y-.2],[x+.2,y+.2],[x-.2,y+.2]]
             bodies.append({'frame':frame['carla_frame'],'time_s':frame['time_s'],
                 'actor_id':205,'phase':('approach' if i<3 else 'entry' if i<6 else 'departure'),

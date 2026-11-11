@@ -37,6 +37,12 @@ def check_config(config):
         raise ValueError('driveway-use route never enters the driveway road')
     if config.get('target_speed_mps', 0) <= 0:
         raise ValueError('positive engineering route speed required')
+    if not .2 <= config.get('spawn_height_m', .3) <= .6:
+        raise ValueError('spawn height outside engineering bounds')
+    if not 1.0 <= config.get('waypoint_arrival_m', 2.0) <= 4.0:
+        raise ValueError('arrival radius outside engineering bounds')
+    if not 0 < config.get('speed_gain', .22) <= .5:
+        raise ValueError('speed gain outside engineering bounds')
     return True
 
 
@@ -88,6 +94,8 @@ def run(output, host, port):
     output = Path(output)
     config = json.loads((output/'config.json').read_text())
     check_config(config)
+    if config['station_survey']['station_source']['kind']=='authored_diagnostic':
+        raise ValueError('Native capture requires a real source-bound station map survey')
     client = carla.Client(host, port); client.set_timeout(30.)
     world = client.get_world(); original = world.get_settings()
     ego = camera = pipeline = session = None
@@ -100,7 +108,7 @@ def run(output, host, port):
         geometry, route = resolve_survey(world_map, config['station_survey'], config['case_branch'])
         blueprint = world.get_blueprint_library().find(config.get('vehicle_blueprint', 'vehicle.tesla.model3'))
         spawn = route[0].transform
-        spawn.location.z += .3
+        spawn.location.z += config.get('spawn_height_m', .3)
         ego = world.try_spawn_actor(blueprint, spawn)
         if ego is None:
             raise ValueError('subject spawn failed at surveyed station route')

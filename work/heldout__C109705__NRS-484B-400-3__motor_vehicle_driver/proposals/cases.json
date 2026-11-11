@@ -1,11 +1,46 @@
 {
-  "format": "worker-scenario-cases",
+  "status": "draft",
+  "cell_id": "C109705",
+  "actor": "motor_vehicle_driver",
+  "sweep_specs": [
+    {
+      "sweep_id": "heldout__C109705__NRS-484B-400-3__motor_vehicle_driver__turn_judgment_1",
+      "target_law_id": "NRS-484B-400-3",
+      "judgment_refs": [
+        {
+          "phrase": "nearest the centerline thereof",
+          "note": "Measure original full-body approach distance from the centerline; the statute supplies no numeric nearest cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Verified Native two-directional/one-way connected roadway and physical feasible lateral range for a finite sweep"
+      ],
+      "rationale": "An actual feasible lateral range and spacing must be surveyed before selecting judgment sweep setpoints."
+    },
+    {
+      "sweep_id": "heldout__C109705__NRS-484B-400-3__motor_vehicle_driver__turn_judgment_2",
+      "target_law_id": "NRS-484B-400-3",
+      "judgment_refs": [
+        {
+          "phrase": "as close as practicable to the left-hand curb of the one-way highway",
+          "note": "Measure original body distance from the departure left curb and retain roadway feasibility; the statute supplies no numeric practicability cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Verified Native two-directional/one-way connected roadway and physical feasible lateral range for a finite sweep"
+      ],
+      "rationale": "An actual feasible lateral range and spacing must be surveyed before selecting judgment sweep setpoints."
+    }
+  ],
+  "sweeps_expanded": false,
   "cases": [
     {
-      "case_id": "heldout__C109705__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
-      "target_law_id": "NRS-484B-400-3",
-      "target_type": "controlled_comparison",
-      "rationale": "Original full-body left-turn positions; no legal lateral cutoff.",
+      "case_id": "heldout__C109705__NRS-484B-400-3__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared selected turn setup; no baseline delivery result.",
       "variable_assignments": {
         "turn_variant": {
           "kind": "controller",
@@ -13,7 +48,8 @@
         }
       },
       "unresolved_judgment_calls": [
-        "as close as practicable"
+        "nearest the centerline thereof",
+        "as close as practicable to the left-hand curb of the one-way highway"
       ],
       "recording_description": {
         "channels": [
@@ -31,13 +67,64 @@
         "limitations": [
           "No numerical nearest/practicable legal cutoff is supplied."
         ]
+      },
+      "paired_probe_id": "reference",
+      "deliberate_differences": [
+        "turn_variant"
+      ],
+      "probe": {
+        "primary_variable": "turn_variant",
+        "comparison_or_standard": "Controlled position contrast with no statutory distance threshold",
+        "target_value_or_branch": "centerline_approach_left_curb_departure"
+      }
+    },
+    {
+      "case_id": "heldout__C109705__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
+      "target_law_id": "NRS-484B-400-3",
+      "target_type": "boundary_probe",
+      "rationale": "Shared reference; actual body position must be measured.",
+      "variable_assignments": {
+        "turn_variant": {
+          "kind": "controller",
+          "value": "centerline_approach_left_curb_departure"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "nearest the centerline thereof",
+        "as close as practicable to the left-hand curb of the one-way highway"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_centerline_offset",
+            "unit": "m",
+            "method": "original full-body corners relative to directed approach centerline",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native map ground plane",
+            "uncertainty": "Native bounding-box and surveyed line precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No numerical nearest/practicable legal cutoff is supplied."
+        ]
+      },
+      "paired_probe_id": "reference",
+      "deliberate_differences": [
+        "turn_variant"
+      ],
+      "probe": {
+        "primary_variable": "turn_variant",
+        "comparison_or_standard": "Controlled position contrast with no statutory distance threshold",
+        "target_value_or_branch": "centerline_approach_left_curb_departure"
       }
     },
     {
       "case_id": "heldout__C109705__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure",
       "target_law_id": "NRS-484B-400-3",
-      "target_type": "controlled_comparison",
-      "rationale": "Original full-body left-turn positions; no legal lateral cutoff.",
+      "target_type": "boundary_probe",
+      "rationale": "Vary measured approach lateral position only, preserving departure target and geometry.",
       "variable_assignments": {
         "turn_variant": {
           "kind": "controller",
@@ -45,7 +132,8 @@
         }
       },
       "unresolved_judgment_calls": [
-        "as close as practicable"
+        "nearest the centerline thereof",
+        "as close as practicable to the left-hand curb of the one-way highway"
       ],
       "recording_description": {
         "channels": [
@@ -63,13 +151,22 @@
         "limitations": [
           "No numerical nearest/practicable legal cutoff is supplied."
         ]
+      },
+      "paired_probe_id": "approach_position",
+      "deliberate_differences": [
+        "turn_variant"
+      ],
+      "probe": {
+        "primary_variable": "turn_variant",
+        "comparison_or_standard": "Controlled position contrast with no statutory distance threshold",
+        "target_value_or_branch": "farther_approach_left_curb_departure"
       }
     },
     {
       "case_id": "heldout__C109705__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure",
       "target_law_id": "NRS-484B-400-3",
-      "target_type": "controlled_comparison",
-      "rationale": "Original full-body left-turn positions; no legal lateral cutoff.",
+      "target_type": "boundary_probe",
+      "rationale": "Vary measured departure lateral position only, preserving approach target and geometry.",
       "variable_assignments": {
         "turn_variant": {
           "kind": "controller",
@@ -77,7 +174,8 @@
         }
       },
       "unresolved_judgment_calls": [
-        "as close as practicable"
+        "nearest the centerline thereof",
+        "as close as practicable to the left-hand curb of the one-way highway"
       ],
       "recording_description": {
         "channels": [
@@ -95,6 +193,15 @@
         "limitations": [
           "No numerical nearest/practicable legal cutoff is supplied."
         ]
+      },
+      "paired_probe_id": "departure_position",
+      "deliberate_differences": [
+        "turn_variant"
+      ],
+      "probe": {
+        "primary_variable": "turn_variant",
+        "comparison_or_standard": "Controlled position contrast with no statutory distance threshold",
+        "target_value_or_branch": "centerline_approach_farther_departure"
       }
     }
   ]

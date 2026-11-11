@@ -77,7 +77,14 @@ def build_result(attempt, report):
             'sample_window_s': [rows[0]['time_s'], rows[-1]['time_s']]}},
         'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
     from worker_exchange.native_output import physical_result
-    return physical_result(root, result)
+    from turn_physical_probe import assess
+    result = physical_result(root, result)
+    passage = assess(root, config['selected_case_id'])
+    result['physical_checks']['maneuver'] = passage
+    result['maneuver_completed'] = passage['status'] == 'met'
+    result['termination_reason'] = ('Saved turn source measurement complete; original '
+                                    'body progress ' + passage['status'] + '; legal review separate')
+    return result
 
 
 def main():

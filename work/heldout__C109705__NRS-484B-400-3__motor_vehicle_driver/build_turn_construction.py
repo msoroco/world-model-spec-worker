@@ -41,7 +41,7 @@ def main():
         'context_inputs': [],
         'limitations': ['No numerical nearest/practicable legal cutoff is supplied.']}
     code = ['turn_native.py', 'turn_camera.py', 'turn_geometry.py',
-            'turn_source_measurement.py', 'turn_finalizer.py']
+            'turn_source_measurement.py', 'turn_physical_probe.py', 'turn_finalizer.py']
     tests = sorted((ROOT / 'tests').glob('test*.py'))
     entries = []
     for suffix in CASES:
@@ -64,10 +64,13 @@ def main():
             files = [{'path': 'config.json', 'content': json.dumps(config, indent=2)+'\n'},
                      {'path': 'turn-route-survey.json', 'content': survey_text}]
             files += [{'path': name, 'content': (ROOT / name).read_text()} for name in code]
+            files.append({'path': 'runner.py', 'content':
+                '"""Native entrypoint for the exact surveyed left turn."""\n'
+                'from turn_native import main\nif __name__ == "__main__": main()\n'})
             files += [{'path': 'tests/' + path.name, 'content': path.read_text()} for path in tests]
             construction = {'format': 'worker-inline-construction',
                 'case_id': case, 'law_id': base['law_id'], 'cell_id': base['cell_id'],
-                'actor': base['actor'], 'entrypoint': 'turn_native.py',
+                'actor': base['actor'], 'entrypoint': 'runner.py',
                 'recording_description': description, 'files': files,
                 'measurement_plan': {'original_rows': 'turn_road_geometry.json, body_footprints.jsonl and video_frames.jsonl',
                                      'saved_finalizer': 'turn_finalizer.py',
