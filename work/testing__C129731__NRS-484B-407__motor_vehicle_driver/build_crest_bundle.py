@@ -44,7 +44,10 @@ def build(probe="short_of_500ft"):
                     '"bracket_m": [150., 150.125]', '"bracket_m": ' + bracket).replace(
                     '"any_sample_clear_at_probe": False', '"any_sample_clear_at_probe": True').replace(
                     '"pinned_proxy_m"], 150.', '"pinned_proxy_m"], ' + expected)
-            row["source"] = str((HERE / "build_crest_bundle.py").relative_to(REPO))
+            generated = HERE / "generated-tests" / ("test_finalizer-" + suffix + ".py")
+            generated.parent.mkdir(exist_ok=True)
+            generated.write_text(row["content"])
+            row["source"] = str(generated.relative_to(REPO))
     first_site = HERE / "diagnostic-site.json"
     construction["files"].append({"path": first_site.name,
         "content": first_site.read_text(), "source": str(first_site.relative_to(REPO))})
