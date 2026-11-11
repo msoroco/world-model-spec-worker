@@ -14,6 +14,21 @@ import exception_comparison_audit
 
 
 class ExceptionComparisonTests(unittest.TestCase):
+    def test_complete_conjunction_and_missing_packet_rejection(self):
+        with tempfile.TemporaryDirectory(prefix='c109514-conjunction-',
+                                          dir=repo / '.runtime-work') as temp:
+            base = Path(temp)
+            names = ('ordinary_police_at499', 'authorized_offduty_at499',
+                     'unauthorized_onduty_at499', 'authorized_police_at499')
+            roots = {}
+            for name in names:
+                roots[name] = base / name
+                materialize(repo, folder / 'cases' / name / 'diagnostic-recipe.json', roots[name])
+            self.assertEqual(exception_comparison_audit.audit_conjunction(roots)['case_count'], 4)
+            (roots['authorized_offduty_at499'] / 'source_packets/authorization.json').unlink()
+            with self.assertRaisesRegex(ValueError, 'Missing required source'):
+                exception_comparison_audit.audit_conjunction(roots)
+
     def test_fixed_originals_and_packet_rejection(self):
         with tempfile.TemporaryDirectory(prefix='c109514-exception-audit-',
                                           dir=repo / '.runtime-work') as temp:

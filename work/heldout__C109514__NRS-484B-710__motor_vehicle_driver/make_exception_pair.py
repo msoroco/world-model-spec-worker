@@ -17,6 +17,10 @@ SOURCE = json.loads((HERE / "construction.json").read_text())
 DIAGNOSTIC = json.loads((HERE / "diagnostic-input.json").read_text())
 CONTRACT = json.loads((HERE / "first-measurement-contract.json").read_text())
 MANIFEST = HERE / "execution-manifest.json"
+CASES = (("ordinary_police_at499", False, False),
+         ("authorized_offduty_at499", True, False),
+         ("unauthorized_onduty_at499", False, True),
+         ("authorized_police_at499", True, True))
 
 
 def save(path, data):
@@ -36,7 +40,7 @@ def replace_one(value, before, after):
     return value.replace(before, after)
 
 
-def build_construction(suffix, authorized):
+def build_construction(suffix, authorized, official_business):
     case = BASE + "__" + suffix
     data = deepcopy(SOURCE)
     data["case_id"] = case
@@ -65,7 +69,7 @@ def build_construction(suffix, authorized):
     config["case"]["case_id"] = case
     config["target_distance_ft"] = 499
     config["fire_context"]["subject_authorized_emergency"] = authorized
-    config["fire_context"]["subject_official_business"] = authorized
+    config["fire_context"]["subject_official_business"] = official_business
     files["config.json"]["content"] = json.dumps(config, indent=2) + "\n"
     test = files["tests/test_runner.py"]["content"]
     test = test.replace("__traveling_follow_500ft", "__" + suffix)
@@ -79,7 +83,7 @@ def build_construction(suffix, authorized):
     return data
 
 
-def build_diagnostic(suffix, authorized, folder):
+def build_diagnostic(suffix, authorized, official_business, folder):
     case = BASE + "__" + suffix
     data = deepcopy(DIAGNOSTIC)
     footprints = [json.loads(line) for line in data["files"]["participant_footprints.jsonl"].splitlines()]
@@ -90,21 +94,22 @@ def build_diagnostic(suffix, authorized, folder):
         json.dumps(row, separators=(",", ":")) + "\n" for row in footprints)
     context = json.loads(data["files"]["fire_context.json"])
     context["subject_authorized_emergency"] = authorized
-    context["subject_official_business"] = authorized
+    context["subject_official_business"] = official_business
     data["files"]["fire_context.json"] = json.dumps(context, indent=2) + "\n"
     for name in ("capture/manifest.json", "fixture-provenance.json"):
         value = json.loads(data["files"][name])
         value["case_id"] = case
         data["files"][name] = json.dumps(value, indent=2) + "\n"
-    if authorized:
+    if authorized or official_business:
         source = {"ego_id": "ego"}
         for premise, filename in (("authorized_emergency", "authorization.json"),
                                   ("official_business", "official_business.json")):
             path = "source_packets/" + filename
-            packet = {"ego_id": "ego", "asserted": True,
+            asserted = authorized if premise == "authorized_emergency" else official_business
+            packet = {"ego_id": "ego", "asserted": asserted,
                       "source_ref": "synthetic diagnostic dispatch/" + premise}
             data["files"][path] = json.dumps(packet, indent=2) + "\n"
-            source[premise] = {"asserted": True, "source_ref": packet["source_ref"],
+            source[premise] = {"asserted": asserted, "source_ref": packet["source_ref"],
                                "packet": path,
                                "packet_sha256": sha256(data["files"][path].encode()).hexdigest()}
         data["files"]["subject_exception_source.json"] = json.dumps(source, indent=2) + "\n"
@@ -120,19 +125,18 @@ def build_diagnostic(suffix, authorized, folder):
 def main():
     manifest = json.loads(MANIFEST.read_text())
     reference = manifest["cases"][0]
-    for suffix, authorized in (("ordinary_police_at499", False),
-                               ("authorized_police_at499", True)):
+    for suffix, authorized, official_business in CASES:
         case = BASE + "__" + suffix
         folder = HERE / "cases" / suffix
-        construction = build_construction(suffix, authorized)
+        construction = build_construction(suffix, authorized, official_business)
         save(folder / "construction.json", construction)
-        build_diagnostic(suffix, authorized, folder)
+        build_diagnostic(suffix, authorized, official_business, folder)
         contract = deepcopy(CONTRACT)
         contract["case_id"] = case
         contract["requirements"][0]["disposition_index"] = 3
         contract["requirements"][0]["requirement"] = (
             "authorized emergency vehicle on official business exception")
-        if authorized:
+        if authorized or official_business:
             contract["requirements"][0]["inputs"] += ["subject_exception_source.json"]
         save(folder / "measurement-contract.json", contract)
         entry = {
@@ -153,11 +157,10 @@ def main():
     save(MANIFEST, manifest)
     path = HERE / "case-plan.json"
     plan = json.loads(path.read_text())
-    ids = [BASE + "__ordinary_police_at499", BASE + "__authorized_police_at499"]
+    ids = [BASE + "__" + suffix for suffix, _, _ in CASES]
     plan["cases"] = [row for row in plan["cases"]
                      if row["case_id"] not in ids and not row["case_id"].endswith("_police_at500")]
-    for suffix, authorized in (("ordinary_police_at499", False),
-                               ("authorized_police_at499", True)):
+    for suffix, authorized, official_business in CASES:
         plan["cases"].append({
             "case_id": BASE + "__" + suffix, "target_law_id": "NRS-484B-710",
             "branch": "traveling_follow", "target_distance_ft": 499,
@@ -168,12 +171,13 @@ def main():
                 "trigger_source": "original footprint/state and four original RGB streams",
                 "trigger_metric": "active measured gap and participant pixel visibility",
                 "failure_condition": "Missing measured active frames or missing subject pixels"},
-            "exception_premise": "sourced authorization and official business" if authorized else "ordinary subject"
+            "exception_premise": {"authorized_emergency": authorized,
+                                  "official_business": official_business}
         })
     disposition = plan["requirement_dispositions"][3]
     disposition["status"] = "selected_required"
     disposition["case_ids"] = ids
-    disposition["evidence_or_gap"] = "Matched police-blueprint exception pair with separate retained source packets; exact proofs pending."
+    disposition["evidence_or_gap"] = "Matched police-blueprint four-way conjunction with separate retained source packets; exact proofs pending."
     plan["comparisons"] = [row for row in plan["comparisons"] if row["comparison_id"] != "authorized_emergency_exception"]
     plan["comparisons"].append({
         "comparison_id": "authorized_emergency_exception", "case_ids": ids,
@@ -187,21 +191,20 @@ def main():
     reference_proposal = next(row for row in proposals["cases"] if row["case_id"].endswith("__traveling_follow_500ft"))
     proposals["cases"] = [row for row in proposals["cases"]
                           if row["case_id"] not in ids and not row["case_id"].endswith("_police_at500")]
-    for suffix, authorized in (("ordinary_police_at499", False),
-                               ("authorized_police_at499", True)):
+    for suffix, authorized, official_business in CASES:
         row = deepcopy(reference_proposal)
         row["case_id"] = BASE + "__" + suffix
-        row["target_type"] = "compliant_attempt" if authorized else "violating_attempt"
+        row["target_type"] = "compliant_attempt" if authorized and official_business else "violating_attempt"
         row["rationale"] = "Matched police-blueprint comparison of separately sourced emergency authorization and duty premises"
         row["variable_assignments"]["target_distance_ft"]["value"] = 499
         row["variable_assignments"]["target_centre_ft"]["value"] = 499
         row["variable_assignments"]["subject_authorized_emergency"]["value"] = authorized
-        row["variable_assignments"]["subject_official_business"]["value"] = authorized
+        row["variable_assignments"]["subject_official_business"]["value"] = official_business
         row["paired_probe_id"] = "authorized_emergency_exception"
         row["deliberate_differences"] = ["subject_authorized_emergency", "subject_official_business"]
         row["probe"] = {"primary_variable": "subject_authorized_emergency",
                         "comparison_or_standard": "NRS 484B.710 exception applies only to authorized emergency vehicles on official business",
-                        "target_value_or_branch": "authorized_on_duty" if authorized else "ordinary"}
+                        "target_value_or_branch": suffix}
         proposals["cases"].append(row)
     save(path, proposals)
 

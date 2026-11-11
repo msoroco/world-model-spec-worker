@@ -24,7 +24,8 @@ def main():
     manifest = json.loads(MANIFEST.read_text())
     for entry in manifest["cases"]:
         suffix = entry["case_id"].split("__")[-1]
-        if suffix not in ("ordinary_police_at499", "authorized_police_at499"):
+        if suffix not in ("ordinary_police_at499", "authorized_offduty_at499",
+                          "unauthorized_onduty_at499", "authorized_police_at499"):
             continue
         folder = HERE / "cases" / suffix
         primary = json.loads((folder / "construction.json").read_text())

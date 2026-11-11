@@ -27,11 +27,17 @@ def main():
     manifest = json.loads(MANIFEST.read_text())
     for entry in manifest["cases"]:
         suffix = entry["case_id"].split("__")[-1]
-        if suffix not in ("ordinary_police_at499", "authorized_police_at499"):
+        if suffix not in ("ordinary_police_at499", "authorized_offduty_at499",
+                          "unauthorized_onduty_at499", "authorized_police_at499"):
             continue
         folder = HERE / "cases" / suffix
         for label, row in [("primary", entry), *[(c["id"], c) for c in entry["candidates"]]]:
             stem = "c109514-" + suffix + "-" + label + "-" + row["construction_sha256"][:12]
+            attempt = 1
+            while ((ROOT / ".runtime-work" / (stem + "-r" + str(attempt) + "-offline")).exists()
+                   or (ROOT / ".runtime-work" / (stem + "-r" + str(attempt) + "-compat")).exists()):
+                attempt += 1
+            stem += "-r" + str(attempt)
             offline = [".venv-cpu/bin/python", "runtime.py", "offline", "--manifest",
                        MANIFEST.relative_to(ROOT).as_posix(), "--case", entry["case_id"],
                        "--candidate", label, "--output", ".runtime-work/" + stem + "-offline",

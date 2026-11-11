@@ -20,8 +20,11 @@ class ExceptionSavedTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix='c109514-exception-', dir=repo / '.runtime-work') as temp:
             base = Path(temp)
             decoder = repo / '.runtime-work/fire-decoder/.lake/build/bin/adapterCheck'
-            for suffix, expected in (('ordinary_police_at499', False),
-                                     ('authorized_police_at499', True)):
+            for suffix, expected_authorized, expected_business in (
+                ('ordinary_police_at499', False, False),
+                ('authorized_offduty_at499', True, False),
+                ('unauthorized_onduty_at499', False, True),
+                ('authorized_police_at499', True, True)):
                 case = folder.name + '__' + suffix
                 case_root = base / suffix
                 case_root.mkdir()
@@ -41,9 +44,9 @@ class ExceptionSavedTests(unittest.TestCase):
                         self.assertTrue(receipt['final_video_checks']['passed'])
                         report = json.loads((Path(receipt['analysis_directory']) / 'analysis-report.json').read_text())
                         self.assertIs(report['measurements']['exception_context']['value']
-                                      ['subject_authorized_emergency'], expected)
+                                      ['subject_authorized_emergency'], expected_authorized)
                         self.assertIs(report['measurements']['exception_context']['value']
-                                      ['subject_official_business'], expected)
+                                      ['subject_official_business'], expected_business)
 
 
 if __name__ == '__main__':

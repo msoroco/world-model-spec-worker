@@ -23,7 +23,7 @@ def main():
     variants = [
         ("fallback1", "runner.py",
          "select_intersection_route(world.get_map(), target_gap_ft=500)",
-         "select_crest_route(world.get_map(), target_gap_ft=500, step_m=2.5)",
+         "select_intersection_route(world.get_map(), target_gap_ft=500, step_m=2.5)",
          "native route waypoint sampling step: 5 m to 2.5 m",
          {"source": "Native waypoint route-selection diagnostic",
           "metric": "count of connected through-intersection spawn routes meeting the original 500 ft construction",

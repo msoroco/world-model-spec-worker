@@ -3,8 +3,96 @@
   "law_id": "NRS-484B-207-1",
   "cell_id": "C110161",
   "actor": "motor_vehicle_driver",
-  "cases": [],
-  "comparisons": [],
+  "cases": [
+    {
+      "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide",
+      "target_law_id": "NRS-484B-207-1",
+      "gap_ids": [
+        "left-clearance"
+      ],
+      "description": "wide left-footprint clearance during abreast phase",
+      "construction_status": "measurement_component_cpu_tested_exact_bundle_pending",
+      "physical_risk": {
+        "risk": "lateral footprint and heading geometry may not remain left of the overtaken body",
+        "trigger_source": "original participant_footprints.jsonl plus Native lane/heading source",
+        "trigger_metric": "abreast left-side footprint gap and clearance at first measured rightward return",
+        "failure_condition": "observed trace omits a same-direction abreast phase, left pass, or measurable rightward return"
+      }
+    },
+    {
+      "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow",
+      "target_law_id": "NRS-484B-207-1",
+      "gap_ids": [
+        "left-clearance"
+      ],
+      "description": "narrow left-footprint clearance during abreast phase",
+      "construction_status": "measurement_component_cpu_tested_exact_bundle_pending",
+      "physical_risk": {
+        "risk": "lateral footprint overlap may prevent an isolated narrow probe",
+        "trigger_source": "original participant_footprints.jsonl plus Native lane/heading source",
+        "trigger_metric": "abreast left-side footprint gap and clearance at first measured rightward return",
+        "failure_condition": "observed trace omits a same-direction abreast phase, left pass, or measurable rightward return"
+      }
+    },
+    {
+      "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_before_clear",
+      "target_law_id": "NRS-484B-207-1",
+      "gap_ids": [
+        "return-order"
+      ],
+      "description": "rightward return while measured front/rear bodies still overlap",
+      "construction_status": "measurement_component_cpu_tested_exact_bundle_pending",
+      "physical_risk": {
+        "risk": "controller may not begin a rightward return until the body is already clear",
+        "trigger_source": "original participant_footprints.jsonl plus Native lane/heading source",
+        "trigger_metric": "abreast left-side footprint gap and clearance at first measured rightward return",
+        "failure_condition": "observed trace omits a same-direction abreast phase, left pass, or measurable rightward return"
+      }
+    },
+    {
+      "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_after_clear",
+      "target_law_id": "NRS-484B-207-1",
+      "gap_ids": [
+        "return-order"
+      ],
+      "description": "rightward return after measured body clearance",
+      "construction_status": "measurement_component_cpu_tested_exact_bundle_pending",
+      "physical_risk": {
+        "risk": "controller may not preserve a full original-frame clear-ahead interval",
+        "trigger_source": "original participant_footprints.jsonl plus Native lane/heading source",
+        "trigger_metric": "abreast left-side footprint gap and clearance at first measured rightward return",
+        "failure_condition": "observed trace omits a same-direction abreast phase, left pass, or measurable rightward return"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "left_pass_clearance",
+      "case_ids": [
+        "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide",
+        "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow"
+      ],
+      "fixed_conditions": [
+        "same-direction actors, roadway direction, pass length and return policy"
+      ],
+      "deliberate_differences": [
+        "controlled lateral offset during original-frame abreast interval; safe distance remains unresolved"
+      ]
+    },
+    {
+      "comparison_id": "return_clearance_order",
+      "case_ids": [
+        "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_before_clear",
+        "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_after_clear"
+      ],
+      "fixed_conditions": [
+        "same-direction actors, left pass clearance and roadway geometry"
+      ],
+      "deliberate_differences": [
+        "controller return timing relative to measured complete-body longitudinal clearance; safely clear remains unresolved"
+      ]
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/assignment.json",
@@ -17,11 +105,24 @@
   ],
   "evidence_review": {
     "reviewer": "partition-01 CPU source inventory",
-    "method": "Exact law and evidence inventory read; no coverage or equivalence disposition asserted until each frozen accepted summary is compared with the law alternatives.",
+    "method": "Exact statute and frozen accepted-evidence inventory reviewed. Inventory is empty; two source-backed gaps remain. Neither a declared label nor synthetic geometry establishes safe distance or safely clear.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "left-clearance",
+        "requirement": "pass to the left at a safe distance through the abreast phase",
+        "source": "inputs/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are supplied for this assignment."
+      },
+      {
+        "id": "return-order",
+        "requirement": "do not drive right again until safely clear of the overtaken vehicle",
+        "source": "inputs/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are supplied for this assignment."
+      }
+    ]
   },
-  "review_status": "partial; statutory alternatives and accepted evidence still require source-grounded review",
+  "review_status": "partial: original-frame measurement is CPU tested; exact construction, controller sweeps and delivery proofs remain",
   "branch_inventory": [
     {
       "source": {
@@ -29,7 +130,7 @@
         "sha256": "3d4775f40455e9e592973ac849f9d6ad0086fe1478cd53ee720257419d49f87d"
       },
       "requirement": "overtake a same-direction vehicle on left at varying measured clearance; safe distance remains a judgment",
-      "status": "planned_unimplemented"
+      "status": "measurement_component_cpu_tested_exact_bundle_pending"
     },
     {
       "source": {
@@ -37,13 +138,100 @@
         "sha256": "3d4775f40455e9e592973ac849f9d6ad0086fe1478cd53ee720257419d49f87d"
       },
       "requirement": "remain left until safely clear versus early return to right; safely clear remains a judgment",
-      "status": "planned_unimplemented"
+      "status": "measurement_component_cpu_tested_exact_bundle_pending"
     }
   ],
-  "observations": [],
+  "observations": [
+    {
+      "name": "overtake_geometry",
+      "mandatory": true,
+      "source": "retained original participant footprint and Native road-heading stream",
+      "measurement": "same-direction pass side, abreast lateral gap and first-return longitudinal clearance",
+      "case_ids": [
+        "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide",
+        "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow",
+        "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_before_clear",
+        "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_after_clear"
+      ]
+    }
+  ],
   "existing_evidence": [],
   "runtime_uncertainties": [
     "Pinned CPU preflight now passes. Exact construction and saved-processing proofs have not yet been run for this partial assignment.",
     "Actual CARLA motion, participant visibility, and physical capture remain unverified."
-  ]
+  ],
+  "source_observation_mapping": {
+    "drv.overtaking": {
+      "evidence": "20 Hz original participant corners, heading vectors and frame identities measured by overtake_measurement.py; no legal threshold inferred",
+      "channels": [
+        "overtake_geometry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.passing_side": {
+      "evidence": "20 Hz original participant corners, heading vectors and frame identities measured by overtake_measurement.py; no legal threshold inferred",
+      "channels": [
+        "overtake_geometry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.same_direction": {
+      "evidence": "20 Hz original participant corners, heading vectors and frame identities measured by overtake_measurement.py; no legal threshold inferred",
+      "channels": [
+        "overtake_geometry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "20 Hz original participant corners, heading vectors and frame identities measured by overtake_measurement.py; no legal threshold inferred",
+      "channels": [
+        "overtake_geometry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.longitudinal_overlap": {
+      "evidence": "20 Hz original participant corners, heading vectors and frame identities measured by overtake_measurement.py; no legal threshold inferred",
+      "channels": [
+        "overtake_geometry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.ahead_behind_in_lane": {
+      "evidence": "20 Hz original participant corners, heading vectors and frame identities measured by overtake_measurement.py; no legal threshold inferred",
+      "channels": [
+        "overtake_geometry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.lane_change": {
+      "evidence": "20 Hz original participant corners, heading vectors and frame identities measured by overtake_measurement.py; no legal threshold inferred",
+      "channels": [
+        "overtake_geometry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.time_gap": {
+      "evidence": "20 Hz original participant corners, heading vectors and frame identities measured by overtake_measurement.py; no legal threshold inferred",
+      "channels": [
+        "overtake_geometry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C110161__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  }
 }
