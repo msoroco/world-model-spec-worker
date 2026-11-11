@@ -11,7 +11,7 @@ class Tests(unittest.TestCase):
   ctx={'native_map_id':'TownX','divided_highway_source':'road-and-camera-review','roadway_boundaries_source':'native-map-and-body','opening_geometry_source':'native-divider-gap','barrier_actors_source':'native-world-vertices','other_vehicle_source':'native-actor-and-camera','public_authority_source':'source-review-required','uturn_route_source':'native-waypoints','right_hand_roadway_xy_m':[[0,-10],[30,-10],[30,-2],[0,-2]],'destination_roadway_xy_m':[[0,2],[30,2],[30,10],[0,10]],'dividing_space_xy_m':[[0,-2],[30,-2],[30,2],[0,2]],'opening_xy_m':[[10,-2],[20,-2],[20,2],[10,2]]}
   (root/'divider_context.json').write_text(json.dumps(ctx))
   gear=['forward','forward','reverse','forward','forward'] if multiple else ['forward']*5
-  positions=[(0,-5,[1,0]),(12,-5,[1,0]),(opening_x,0,[0,1]),(15,3,[-.7,.7]),(15,5,[-1,0])]
+  positions=[(0,-5,[1,0]),(opening_x,1,[1,0]),(opening_x,0,[0,1]),(15,3,[-.7,.7]),(15,5,[-1,0])] if multiple else [(0,-5,[1,0]),(12,-5,[1,0]),(opening_x,0,[0,1]),(15,3,[-.7,.7]),(15,5,[-1,0])]
   rows=[{'frame':100+i,'time_s':1+i*.05,'ego_body_vertices_xy_m':body(x,y),'other_body_vertices_xy_m':body(25,-5),'ego_forward_xy':heading,'ego_gear':gear[i]} for i,(x,y,heading) in enumerate(positions)]
   frames=[{'video_frame':i,'carla_frame':r['frame'],'time_s':r['time_s']} for i,r in enumerate(rows)]
   (root/'movement_history.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows));(root/'video_frames.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in frames))
@@ -19,7 +19,7 @@ class Tests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as tmp:
    root=Path(tmp);self.fixture(root);r=measure.analyze(root)
    self.assertEqual(abs(r['observed_turn_angle_degrees']),180);self.assertTrue(r['opening_traversed_observed']);self.assertFalse(r['any_body_overlap_outside_opening']);self.assertFalse(r['multiple_movement_observed'])
-   self.fixture(root,True);self.assertTrue(measure.analyze(root)['multiple_movement_observed'])
+   self.fixture(root,True);self.assertTrue(measure.analyze(root)['reverse_motion_observed']);self.assertTrue(measure.analyze(root)['multiple_movement_observed'])
    self.fixture(root,False,5);self.assertTrue(measure.analyze(root)['any_body_overlap_outside_opening'])
  def test_stale_frame_and_missing_gear_rejected(self):
   with tempfile.TemporaryDirectory() as tmp:

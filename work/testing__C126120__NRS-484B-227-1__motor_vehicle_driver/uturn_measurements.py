@@ -54,7 +54,7 @@ def analyze(root:Path)->dict:
     blocked=divider.difference(opening)
     rows,frames=_rows(root/"movement_history.jsonl"),_rows(root/"video_frames.jsonl")
     if len(rows)<4 or len(rows)!=len(frames):raise ValueError("Incomplete movement history")
-    previous=(-1,-math.inf);samples=[];gears=[]
+    previous=(-1,-math.inf);samples=[];gears=[];centers=[]
     for i,(row,frame) in enumerate(zip(rows,frames)):
         fid,time=row.get("frame"),_number(row.get("time_s"),"time")
         if type(fid) is not int or fid<=previous[0] or time<=previous[1]:
@@ -63,6 +63,7 @@ def analyze(root:Path)->dict:
         if frame.get("video_frame")!=i or frame.get("carla_frame")!=fid or frame.get("time_s")!=time:
             raise ValueError("Original frame join failed")
         ego=_body(row.get("ego_body_vertices_xy_m"))
+        centers.append((ego.centroid.x,ego.centroid.y))
         other=_body(row.get("other_body_vertices_xy_m"))
         heading=row.get("ego_forward_xy")
         if not isinstance(heading,list) or len(heading)!=2:raise ValueError("Missing ego heading")
@@ -83,12 +84,19 @@ def analyze(root:Path)->dict:
     turn=math.degrees(math.atan2(before[0]*after[1]-before[1]*after[0],
                                  before[0]*after[0]+before[1]*after[1]))
     changes=sum(a!=b for a,b in zip(gears,gears[1:]))
+    reverse_motion=[]
+    for i in range(1,len(samples)):
+        if gears[i]=="reverse":
+            dx=centers[i][0]-centers[i-1][0];dy=centers[i][1]-centers[i-1][1]
+            heading=samples[i]["ego_forward_xy"]
+            reverse_motion.append(dx*heading[0]+dy*heading[1]<-0.05)
     return {"format":"worker-divided-road-uturn-observations","sources":hashes,
             "starts_on_right_hand_roadway":first["ego_in_right_roadway"],
             "ends_on_destination_roadway":last["ego_in_destination_roadway"],
             "opening_traversed_observed":any(s["ego_in_opening"] for s in samples),
             "any_body_overlap_outside_opening":any(s["ego_over_divider_outside_opening"] for s in samples),
             "observed_turn_angle_degrees":turn,"gear_changes":changes,
-            "multiple_movement_observed":changes>=2,"samples":samples,
+            "reverse_motion_observed":bool(reverse_motion and all(reverse_motion)),
+            "multiple_movement_observed":changes>=2 and bool(reverse_motion and all(reverse_motion)),"samples":samples,
             "public_authority_establishment_judgment":"unresolved",
             "legal_conclusion":"unresolved"}

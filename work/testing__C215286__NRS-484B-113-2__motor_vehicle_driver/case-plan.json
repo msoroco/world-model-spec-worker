@@ -1,0 +1,97 @@
+{
+  "assignment_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C215286",
+  "law_id": "NRS-484B-113-2",
+  "selected_branch": "Backing on or over a crosswalk on a residence-district highway.",
+  "cases": [
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_over_crosswalk",
+      "target_law_id": "NRS-484B-113-2",
+      "purpose": "Source-bound reverse motion with complete body on and over marked crosswalk",
+      "gap_ids": [
+        "crosswalk_geometry",
+        "reverse_motion"
+      ],
+      "physical_risk": "reverse path may strike crossing pedestrian or roadside object"
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk",
+      "target_law_id": "NRS-484B-113-2",
+      "purpose": "Same approach and reverse state, complete body stops short of crosswalk",
+      "gap_ids": [
+        "crosswalk_geometry",
+        "reverse_motion"
+      ],
+      "physical_risk": "rear body may still overlap crosswalk despite center stopping short"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "reverse_crosswalk_boundary",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_over_crosswalk",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk"
+      ],
+      "fixed_conditions": [
+        "same residence-district highway, crosswalk, vehicle, cameras and reverse approach"
+      ],
+      "deliberate_differences": [
+        "measured complete-body crosswalk intersection during reverse"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Frozen evidence inventory has zero accepted recordings; no reuse is proposed.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "crosswalk_geometry",
+        "requirement": "Crosswalk boundary, road and residence-district setting sourced.",
+        "source": {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; original reverse and crosswalk geometry must be constructed."
+      },
+      {
+        "id": "reverse_motion",
+        "requirement": "Original-frame Native reverse state and complete body on or over crosswalk.",
+        "source": {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; original reverse and crosswalk geometry must be constructed."
+      }
+    ],
+    "supported_reuses": []
+  },
+  "observations": [
+    "sourced crosswalk polygon and visible markings",
+    "original-frame Native reverse state and body vertices",
+    "body-croswalk overlap area and complete body crossing",
+    "same road/crosswalk identity across frames"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+      "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+    },
+    {
+      "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/witnesses.json",
+      "sha256": "9910fd76af9a9c6345bcd3f6906ce8745bad5d55a12636956f4732a101ebc312"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native reverse readback is setup evidence; actual backing requires original motion.",
+    "Cell covers crosswalk alternative, not intersection or around-corner alternatives.",
+    "Exact runner, cameras, saved finalizer, fallbacks, proposals, full proofs and independent audits remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; Native reverse control and original-frame body/crosswalk measurement CPU-tested"
+}

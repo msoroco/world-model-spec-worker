@@ -19,3 +19,5 @@ Resume commands:
 Pinned CPU preflight passes. No frozen input, runtime or batch file was edited; no Git command was run. Assignment and full-gate output are retained in `assignment-check.log` and `strict-gate.log`.
 
 Checkpoint: assignment-scoped static check passed. Complete strict gate next reports missing result `testing__C147311__NRS-484B-220-1__motor_vehicle_driver`; this is unfinished worker preparation, not an external dependency.
+
+Correction: the multiple-movement observation now requires measured reverse body displacement against the vehicle heading as well as a forward-reverse-forward gear sequence. The revised three-test suite passes; the result log hash was refreshed. This remains a CPU fixture, not physical U-turn evidence.

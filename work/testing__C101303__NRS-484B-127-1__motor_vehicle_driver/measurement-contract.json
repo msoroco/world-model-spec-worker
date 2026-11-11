@@ -1,0 +1,53 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "following distance and relation while ego follows another vehicle",
+      "source": "NRS 484B.127(1)",
+      "output_key": "minimum_sampled_body_gap_m",
+      "method": "measure_minimum_following_gap",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "road_context.json",
+        "vehicle_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "due regard for both vehicle speeds, traffic, and highway condition",
+      "source": "NRS 484B.127(1)",
+      "output_key": "following_context",
+      "method": "measure_following_context",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "road_context.json",
+        "vehicle_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "following relation ends before the assigned lane change",
+      "source": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/assignment.json",
+      "output_key": "following_end_before_lane_change",
+      "method": "measure_following_interval",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "road_context.json",
+        "vehicle_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "vehicle_history.jsonl"
+    ],
+    "error_contains": "Missing required source: vehicle_history.jsonl"
+  }
+}

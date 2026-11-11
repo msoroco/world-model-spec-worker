@@ -1,0 +1,128 @@
+{
+  "assignment_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C158196",
+  "law_id": "NRS-484B-257-2",
+  "selected_branch": "Signed one-way-to-two-way crossing; operative controlling signal is an express exception.",
+  "cases": [
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Operative governing signal controls ego; subsection-2 sign duty excepted",
+      "physical_risk": "signal head may not govern selected approach"
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Governing signal Off, properly erected ego sign and non-obligated other vehicle within intersection",
+      "physical_risk": "Off state may be confused with wholly inoperative physical signal"
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Illuminated signal elsewhere does not govern ego; signed-entrance duty remains candidate",
+      "physical_risk": "visible adjacent signal may be incorrectly attributed to ego"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "active_vs_off_signal_exception",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty"
+      ],
+      "fixed_conditions": [
+        "same signed junction, ego route, other vehicle and cameras"
+      ],
+      "deliberate_differences": [
+        "governing signal active versus Off"
+      ]
+    },
+    {
+      "comparison_id": "governing_vs_elsewhere_signal",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control"
+      ],
+      "fixed_conditions": [
+        "same signed entrance, signal state, other vehicle and cameras"
+      ],
+      "deliberate_differences": [
+        "affected-lane governance of ego entrance"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Frozen evidence inventory has zero accepted recordings; no reuse is proposed.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "signal_exception",
+        "requirement": "Operative traffic-control signal actually governs ego at entry.",
+        "source": {
+          "path": "inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "2e9f5e14f7f48a75e6a497888a04d8baeb97938bf5756c6e6e83851644d6419a"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; exact state, sign and vehicle trajectories require source-bound construction."
+      },
+      {
+        "id": "signed_entrance",
+        "requirement": "Stop/yield sign at non-through intersection and manner in subsection 1.",
+        "source": {
+          "path": "inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "2e9f5e14f7f48a75e6a497888a04d8baeb97938bf5756c6e6e83851644d6419a"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; exact state, sign and vehicle trajectories require source-bound construction."
+      },
+      {
+        "id": "non_obligated_traffic",
+        "requirement": "Other vehicle not obliged by sign is inside or approaching closely while ego crosses.",
+        "source": {
+          "path": "inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "2e9f5e14f7f48a75e6a497888a04d8baeb97938bf5756c6e6e83851644d6419a"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; exact state, sign and vehicle trajectories require source-bound construction."
+      },
+      {
+        "id": "hazard_sweep",
+        "requirement": "Approaching immediate-hazard branch remains unmeasured judgment.",
+        "source": {
+          "path": "inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "2e9f5e14f7f48a75e6a497888a04d8baeb97938bf5756c6e6e83851644d6419a"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; exact state, sign and vehicle trajectories require source-bound construction."
+      }
+    ],
+    "supported_reuses": []
+  },
+  "observations": [
+    "sourced non-through intersection and all entrance signs",
+    "Native signal affected lane and original head state at ego entry",
+    "ego/other complete bodies and other occupancy",
+    "sign duty when signal does not actually control ego",
+    "approaching hazard without invented numeric cutoff"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+      "sha256": "2e9f5e14f7f48a75e6a497888a04d8baeb97938bf5756c6e6e83851644d6419a"
+    },
+    {
+      "path": "inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/witnesses.json",
+      "sha256": "e9431586284a67a4f2137246e364b76e6db8282dbc15c0e63069c9d78841dcc4"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Active signal exception requires actual governance, not mere illuminated head.",
+    "Off state is not a legal conclusion about sign duty or inoperability.",
+    "Within-intersection observation does not complete approaching-hazard sweep.",
+    "Exact runner, cameras, finalizer, fallbacks, proposals, full proofs and independent audits remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; signal exception, within-intersection body and Native state checks CPU-tested"
+}

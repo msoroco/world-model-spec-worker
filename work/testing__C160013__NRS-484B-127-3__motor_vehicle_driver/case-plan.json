@@ -1,0 +1,108 @@
+{
+  "assignment_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C160013",
+  "law_id": "NRS-484B-127-3",
+  "selected_branch": "Motor-vehicle caravan outside business district must leave space for another vehicle to enter and occupy without danger.",
+  "cases": [
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__entrant_can_occupy_gap",
+      "target_law_id": "NRS-484B-127-3",
+      "purpose": "Source-backed caravan with entering vehicle occupying visible inter-vehicle gap",
+      "gap_ids": [
+        "district_and_caravan",
+        "physical_gap",
+        "occupancy_and_danger"
+      ],
+      "physical_risk": "merging vehicle may clip rear caravan member"
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__entrant_cannot_occupy_gap",
+      "target_law_id": "NRS-484B-127-3",
+      "purpose": "Same caravan with reduced body clearance and attempted entry",
+      "gap_ids": [
+        "physical_gap",
+        "occupancy_and_danger"
+      ],
+      "physical_risk": "narrow gap may cause contact or emergency braking"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "caravan_gap_occupancy",
+      "case_ids": [
+        "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__entrant_can_occupy_gap",
+        "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__entrant_cannot_occupy_gap"
+      ],
+      "fixed_conditions": [
+        "same outside-business highway, caravan members, entering vehicle, speed and cameras"
+      ],
+      "deliberate_differences": [
+        "measured inter-body clearance and entering-vehicle occupancy"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Frozen evidence inventory has zero accepted recordings; no reuse is proposed.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "district_and_caravan",
+        "requirement": "Motor vehicles on highway outside business district form caravan or motorcade, towing permitted.",
+        "source": {
+          "path": "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/assignment.json",
+          "sha256": "4fba3a867ccff1a6eeaedafd206433b355923d019a7a428e744bc62c92c04454"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; source-backed district status and physical trajectories require construction."
+      },
+      {
+        "id": "physical_gap",
+        "requirement": "Each inter-vehicle space permits another vehicle or combination to enter and occupy.",
+        "source": {
+          "path": "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/assignment.json",
+          "sha256": "4fba3a867ccff1a6eeaedafd206433b355923d019a7a428e744bc62c92c04454"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; source-backed district status and physical trajectories require construction."
+      },
+      {
+        "id": "occupancy_and_danger",
+        "requirement": "Actual entry and occupation without danger, with no invented numeric legal gap.",
+        "source": {
+          "path": "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/assignment.json",
+          "sha256": "4fba3a867ccff1a6eeaedafd206433b355923d019a7a428e744bc62c92c04454"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; source-backed district status and physical trajectories require construction."
+      }
+    ],
+    "supported_reuses": []
+  },
+  "observations": [
+    "source-backed highway outside business district",
+    "at least three motor vehicles participating in caravan",
+    "original-frame complete-body locations and inter-body distances",
+    "entering vehicle complete body and gap occupancy",
+    "hazard and danger judgment retained without numeric legal cutoff"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/assignment.json",
+      "sha256": "4fba3a867ccff1a6eeaedafd206433b355923d019a7a428e744bc62c92c04454"
+    },
+    {
+      "path": "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/witnesses.json",
+      "sha256": "6d8b86ec49869df3f72ee02b21c017b2934fbe8f4a97f243e4300fc73a02bd6a"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "District and caravan status require source review.",
+    "Body clearance is diagnostic; sufficient space without danger has no supplied numeric threshold.",
+    "Exact runner, cameras, saved finalizer, fallbacks, proposals, full proofs and audits remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; source-joined caravan gap and Native multi-vehicle spawn CPU-tested"
+}

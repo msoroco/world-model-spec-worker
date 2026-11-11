@@ -1,0 +1,135 @@
+{
+  "assignment_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C376646",
+  "law_id": "NRS-484B-250-4",
+  "selected_branch": "Blind intersection with installed uncovered vehicular signals wholly inoperative; stop hierarchy then post-stop priority.",
+  "cases": [
+    {
+      "case_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "Marked stop line, ego stops before it, other vehicle already within intersection",
+      "gap_ids": [
+        "all_head_inoperability",
+        "stop_hierarchy",
+        "post_stop_priority"
+      ],
+      "physical_risk": "occlusion may hide an active installed signal head"
+    },
+    {
+      "case_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__crosswalk_other_previously_stopped",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "No line, near-side crosswalk, ego stops before it, other vehicle previously completed stop",
+      "gap_ids": [
+        "all_head_inoperability",
+        "stop_hierarchy",
+        "post_stop_priority"
+      ],
+      "physical_risk": "crosswalk may be beyond sight line or obscured"
+    },
+    {
+      "case_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__nearest_view_other_inside",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "No line or crosswalk, ego stops at nearest-view point, other already within intersection",
+      "gap_ids": [
+        "all_head_inoperability",
+        "stop_hierarchy",
+        "post_stop_priority"
+      ],
+      "physical_risk": "nearest-view point may still lack approaching-traffic visibility"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "stop_reference_hierarchy",
+      "case_ids": [
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__crosswalk_other_previously_stopped",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__nearest_view_other_inside"
+      ],
+      "fixed_conditions": [
+        "same installed uncovered inoperative signal status, blind junction and cameras"
+      ],
+      "deliberate_differences": [
+        "presence of marked line/crosswalk and selected stop reference"
+      ]
+    },
+    {
+      "comparison_id": "other_priority_basis",
+      "case_ids": [
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__crosswalk_other_previously_stopped"
+      ],
+      "fixed_conditions": [
+        "same signal status and ego stop/cautious crossing"
+      ],
+      "deliberate_differences": [
+        "other already inside versus previously completed stop"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Frozen evidence inventory has zero accepted recordings; no reuse is proposed.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "all_head_inoperability",
+        "requirement": "Traffic-control signal installed, vehicular heads uncovered and inoperative when ego enters.",
+        "source": {
+          "path": "inputs/testing__C376646__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "af0bbba00493089a96711a27f84758b18bb50dc8cc6d9fd29c4d0fb546918f1b"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; all-head state, reference, stop and priority require source-bound construction."
+      },
+      {
+        "id": "stop_hierarchy",
+        "requirement": "Stop before marked line; absent line before near-side crosswalk; absent both at nearest view of approaching traffic.",
+        "source": {
+          "path": "inputs/testing__C376646__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "af0bbba00493089a96711a27f84758b18bb50dc8cc6d9fd29c4d0fb546918f1b"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; all-head state, reference, stop and priority require source-bound construction."
+      },
+      {
+        "id": "post_stop_priority",
+        "requirement": "After stop, cautious motion yields to vehicles previously completed stop or within intersection.",
+        "source": {
+          "path": "inputs/testing__C376646__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+          "sha256": "af0bbba00493089a96711a27f84758b18bb50dc8cc6d9fd29c4d0fb546918f1b"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; all-head state, reference, stop and priority require source-bound construction."
+      }
+    ],
+    "supported_reuses": []
+  },
+  "observations": [
+    "all installed uncovered entrance vehicular heads original-frame Off at ego entry",
+    "correct stop reference hierarchy and complete ego body before reference",
+    "original-frame ego speed at stop and later entry",
+    "other vehicle prior stop or body inside at ego entry",
+    "cautious yielding and blind sight conditions without invented cutoff"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C376646__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "sha256": "af0bbba00493089a96711a27f84758b18bb50dc8cc6d9fd29c4d0fb546918f1b"
+    },
+    {
+      "path": "inputs/testing__C376646__NRS-484B-250-4__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C376646__NRS-484B-250-4__motor_vehicle_driver/witnesses.json",
+      "sha256": "7533323cd6e1754437184c2ceab0265c7acab4c60e4e3bcb8d8f4277c0032c94"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native Off readback alone does not prove installed uncovered vehicular signals wholly inoperative.",
+    "Observed stop and priority presence do not prove cautious yielding.",
+    "Nearest-view point and blind visibility need original source review.",
+    "Exact runner, cameras, saved finalizer, fallbacks, proposals, full proofs and independent audits remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; all-head Native Off and original-frame stop/priority checks CPU-tested"
+}
