@@ -22,7 +22,7 @@
 
 ## Current result and exact next CPU actions
 
-Status is **partial**. No executable case, fallback, source measurement, or saved-processing receipt exists yet, and no physical outcome is asserted. Read `inputs/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/assignment.json`, `evidence.json`, `witnesses.json` and the exact law in `inputs/coverage/branch-sources.json`. Decompose alternatives and exceptions; map them to controlled exact cases and comparisons, using an additional compatible cell only if the fixed cell cannot carry a branch. Build one primary exact case end-to-end using the pinned runtime, then build every other case and three distinct tested fallback constructions per selected case. Test finalizers against retained raw sources (including all four named cameras), exact offline and positive/negative compatibility, saved-only processing, and independent delivery/comparison audits. Add canonical semantic proposals and hash all current receipts. Do not treat fixture media as physical evidence.
+Status is **partial**. The geometry, original-source measurement, and draft comparison audit described below exist; no executable case, fallback, or saved-processing receipt exists yet, and no physical outcome is asserted. Read `inputs/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/assignment.json`, `evidence.json`, `witnesses.json` and the exact law in `inputs/coverage/branch-sources.json`. Build one primary exact case end-to-end using the pinned runtime, then build every other case and three distinct tested fallback constructions per selected case. Test finalizers against retained raw sources (including all four named cameras), exact offline and positive/negative compatibility, saved-only processing, and independent delivery/comparison audits. Add canonical semantic proposals and hash all current receipts. Do not treat fixture media as physical evidence.
 
 Resume gate: `.venv-cpu/bin/python worker_check.py --assignment heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver --complete --require-delivery-ready`.
 
@@ -52,12 +52,17 @@ trace and frame-map, joins Native identities and times, measures original-frame
 speed and surface gaps, and rejects missing sources and participant changes. It
 also computes a forward-projection time-to-station proxy and a braking-distance
 proxy from the original instantaneous acceleration. The braking proxy is unknown
-when deceleration is absent; neither proxy is a legal cutoff. Nine tests pass:
+when deceleration is absent; neither proxy is a legal cutoff.
+`alley_comparison_audit.py` checks three exact case identities, declared fixed
+conditions, original-source hash fields, measured speed order and measured gaps;
+it reports an incomplete comparison when speed order is not realized. It is not
+yet wired to saved processing or validated against promoted source bytes. Twelve
+tests pass:
 
 `.venv-cpu/bin/python -m unittest discover -s work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/tests -v`
 
 The log is `cpu-tests.log` (SHA256
-`2aaf660032db924d72109a5a3c5231fb5982ccf89b2f8f5dde34d0a923a97daa`),
+`d2965c04265f747fd8edaf1a3a7bbed69c56930946ce64fc6112304cfc24652a`),
 also recorded in `result.json`. The checkpoint
 command `.venv-cpu/bin/python worker_check.py --assignment heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver --complete`
 passes static checks in `worker-check.log`. This is **partial**: the case plan is
