@@ -95,6 +95,10 @@ def execute(bundle,output,host,port):
     from worker_exchange.world_restore import snapshot,restore
     requests=[json.loads(x) for x in (bundle/'requested-tracks.jsonl').read_text().splitlines()]
     cfg=json.loads((bundle/'config.json').read_text())
+    intention=json.loads((bundle/'controller-intention.json').read_text())
+    write(output/'controller-intention.json',intention)
+    if sha(output/'controller-intention.json')!=cfg['controller_intention_sha256']:
+        raise ValueError('Predeclared controller intention changed before capture')
     client=carla.Client(host,int(port));client.set_timeout(180)
     saved=snapshot(client);old=client.get_world()
     if saved['settings'].synchronous_mode or any(
@@ -122,6 +126,17 @@ def execute(bundle,output,host,port):
                 'road_id':waypoint.road_id,'lane_id':waypoint.lane_id}
             if waypoint is None or waypoint.road_id!=21 or waypoint.lane_id!=lane:
                 raise RuntimeError('Generated Native right/other arc lanes differ')
+        loop_lane_readback={}
+        for lane,radius in ((-1,20.25),(-2,16.75)):
+            theta=math.pi/4
+            point=carla.Location(x=22+radius*math.cos(theta),
+                y=-22+radius*math.sin(theta),z=1)
+            waypoint=mapping.get_waypoint(point,project_to_road=False,
+                lane_type=carla.LaneType.Driving)
+            loop_lane_readback[str(lane)]=None if waypoint is None else {
+                'road_id':waypoint.road_id,'lane_id':waypoint.lane_id}
+            if waypoint is None or waypoint.road_id!=23 or waypoint.lane_id!=lane:
+                raise RuntimeError('Generated Native closed-loop lane readback differs')
         phase_readback={}
         for phase in ('entry','circulation','exit'):
             matching=[row for row in requests if row['phase']==phase]
@@ -146,7 +161,8 @@ def execute(bundle,output,host,port):
         write(output/'native-map-readback.json',{
             'road_sha256':sha(bundle/'right-exit-road.xodr'),
             'native_map_sha256':hashlib.sha256(mapping.to_opendrive().encode()).hexdigest(),
-            'arc_lane_readback':lane_readback,'phase_lane_readback':phase_readback,
+            'arc_lane_readback':lane_readback,'loop_lane_readback':loop_lane_readback,
+            'phase_lane_readback':phase_readback,
             'ego_actor_id':ego.id,'physical_roundabout_verified':False,
             'lane_allocation_verified':False,'actual_right_exit_verified':False,
             'legal_verdict':None})
@@ -218,6 +234,7 @@ def execute(bundle,output,host,port):
         write(output/'native-capture-report.json',{
             'case_id':checked['case_id'],'candidate_id':checked['candidate_id'],
             'config_sha256':sha(bundle/'config.json'),
+            'controller_intention_sha256':sha(output/'controller-intention.json'),
             'requested_frames':240,'observed_frames':frames,
             'camera_names':list(CAMERA_NAMES),
             'camera_dimensions':[list(row[1:3]) for row in cameras],

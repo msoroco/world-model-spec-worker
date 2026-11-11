@@ -18,6 +18,7 @@ def build():
             target.mkdir(parents=True,exist_ok=True)
             mapping={'config.json':source/'config.json',
                 'requested-tracks.jsonl':source/'requested-tracks.jsonl',
+                'controller-intention.json':source/'controller-intention.json',
                 'right-exit-road.xodr':NATIVE/'right-exit-road.xodr',
                 'measurement-contract.json':NATIVE/'measurement-contract.json',
                 'check.py':NATIVE/'check.py',

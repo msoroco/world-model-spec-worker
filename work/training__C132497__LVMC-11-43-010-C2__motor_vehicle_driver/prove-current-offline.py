@@ -15,7 +15,7 @@ matrix=[]
 for witness in ('reference','contrast'):
     case=ROOT.name+'__'+witness
     for candidate in ('primary','fallback1','fallback2','fallback3'):
-        output=BASE/('update015-'+witness+'-'+candidate)
+        output=BASE/('update015-'+witness+'-'+candidate+'-'+sha(MANIFEST)[:12])
         command=[sys.executable,str(REPOSITORY/'runtime.py'),'offline',
                  '--manifest',str(MANIFEST),'--case',case,
                  '--candidate',candidate,'--output',str(output)]

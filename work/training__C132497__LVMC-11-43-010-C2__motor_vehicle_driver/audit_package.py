@@ -27,19 +27,24 @@ def audit():
         manifest['assignment_id']!=CASE.name or
         manifest['construction_sha256']!=sha(NATIVE/'manifest.json') or
         proof['manifest_sha256']!=sha(manifest_path) or
-        len(proof['positives'])!=8 or len(proof['negatives'])!=32 or
-        len(proof['saved_positives'])!=24 or len(proof['saved_negatives'])!=32 or
+        len(proof['positives'])!=8 or len(proof['negatives'])!=40 or
+        len(proof['saved_positives'])!=24 or len(proof['saved_negatives'])!=40 or
         manifest['delivery_ready'] or proof['delivery_ready']):
         raise ValueError('C132497 proof coverage differs')
     road=ET.parse(NATIVE/'right-exit-road.xodr').getroot()
     nodes={int(x.attrib['id']):x for x in road.findall('road')}
-    if set(nodes)!={20,21,22}:raise ValueError('C132497 map roads differ')
-    geo=[x.find('./planView/geometry') for x in nodes.values()]
-    if (abs(float(geo[0].attrib['x']))>1e-9 or
-        abs(float(geo[0].attrib['y'])+52)>1e-9 or
-        abs(float(geo[1].attrib['y'])+22)>1e-9 or
-        abs(float(geo[2].attrib['x'])-22)>1e-9 or
-        abs(float(nodes[21].find('./planView/geometry/arc').attrib['curvature'])+1/22)>1e-9):
+    if set(nodes)!={20,21,22,23}:raise ValueError('C132497 map roads differ')
+    geo={ident:node.find('./planView/geometry') for ident,node in nodes.items()}
+    if (abs(float(geo[20].attrib['x']))>1e-9 or
+        abs(float(geo[20].attrib['y'])+52)>1e-9 or
+        abs(float(geo[21].attrib['y'])+22)>1e-9 or
+        abs(float(geo[22].attrib['x'])-22)>1e-9 or
+        abs(float(geo[23].attrib['x'])-22)>1e-9 or
+        abs(float(geo[23].attrib['y']))>1e-9 or
+        abs(float(geo[21].find('arc').attrib['curvature'])+1/22)>1e-9 or
+        abs(float(geo[23].find('arc').attrib['curvature'])+1/22)>1e-9 or
+        abs(float(geo[21].attrib['length'])+float(geo[23].attrib['length'])-44*math.pi)>1e-8 or
+        {int(x.attrib['id']) for x in road.findall('junction')}!={100,101}):
         raise ValueError('C132497 clockwise route geometry differs')
     seen=set();checks=0;rejections=0;saved_checks=0;saved_rejections=0;frames=0
     for entry in manifest['entries']:
@@ -50,6 +55,7 @@ def audit():
         source=NATIVE/'drafts'/witness/candidate
         mapping={'config.json':source/'config.json',
             'requested-tracks.jsonl':source/'requested-tracks.jsonl',
+            'controller-intention.json':source/'controller-intention.json',
             'right-exit-road.xodr':NATIVE/'right-exit-road.xodr',
             'measurement-contract.json':NATIVE/'measurement-contract.json',
             'check.py':NATIVE/'check.py','measure_saved.py':NATIVE/'measure_saved.py',
@@ -119,7 +125,13 @@ def audit():
                 '--output-dir',Path(temporary)/'missing_media']).returncode==0:
                 raise ValueError('C132497 original mode accepted missing FFV1 media')
             saved_rejections+=1
-        for name in ('requested-tracks.jsonl','assignment-source.json','right-exit-road.xodr','case-plan.json'):
+            (fresh/'controller-intention.json').unlink()
+            if run(bundle,'prepare_raw.py',['--bundle',bundle,'--raw-folder',fresh,
+                '--output-dir',Path(temporary)/'missing_intention','--synthetic-cpu']).returncode==0:
+                raise ValueError('C132497 raw source without controller intention accepted')
+            saved_rejections+=1
+        for name in ('requested-tracks.jsonl','assignment-source.json',
+                     'right-exit-road.xodr','case-plan.json','controller-intention.json'):
             with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
                 altered=Path(temporary)/'bundle';shutil.copytree(bundle,altered)
                 path=altered/name;path.write_bytes(path.read_bytes()+b' ')

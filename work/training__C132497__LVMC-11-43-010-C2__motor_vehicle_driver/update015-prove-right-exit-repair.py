@@ -9,7 +9,8 @@ ROOT=Path(__file__).resolve().parent
 NATIVE=ROOT/'native'
 PYTHON=sys.executable
 COMMANDS=(NATIVE/'build.py',NATIVE/'build_saved.py',ROOT/'build_offline.py',
-          NATIVE/'prove_camera_calls.py',NATIVE/'audit_construction.py',ROOT/'prove_compatibility.py',
+          NATIVE/'prove_camera_calls.py',NATIVE/'prove_roundabout_topology.py',
+          NATIVE/'audit_construction.py',ROOT/'prove_compatibility.py',
           NATIVE/'audit_saved.py',NATIVE/'prove_comparison.py',
           NATIVE/'prove_triggers.py',NATIVE/'audit_triggers.py',
           NATIVE/'audit_comparison.py',NATIVE/'build_statutory.py',NATIVE/'audit_statutory.py',
@@ -59,9 +60,10 @@ log_path=ROOT/'update015-right-exit-repair-command.log'
 log_path.write_text(''.join(f"{row['script']}: {row['exit_code']}\n{row['output']}" for row in log))
 proof={'format':'c132497-current-request-repair-proof-v1','passed':True,
        'assignment_id':ROOT.name,'copied_bundles':8,'authored_exit_requests':8,
+       'closed_loop_xml_geometry_authored':True,
        'camera_checks':camera_checks,'source_positive_checks':8,
-       'source_negative_rejections':32,'raw_saved_positive_checks':24,
-       'raw_saved_negative_rejections':32,'synthetic_comparison_pairs':4,
+       'source_negative_rejections':40,'raw_saved_positive_checks':24,
+       'raw_saved_negative_rejections':40,'synthetic_comparison_pairs':4,
        'original_native_observed':False,'current_runtime_offline_passed':False,
        'current_runtime_compatibility_passed':False,'current_runtime_process_saved_passed':False,
        'delivery_ready':False,'command_log':'update015-right-exit-repair-command.log',

@@ -9,7 +9,8 @@ import subprocess
 import check
 
 RAW = ('native-map-readback.json', 'native-raw-actors.jsonl',
-       'video_frames.jsonl', 'right-lane-review.jsonl', 'native-capture-report.json')
+       'video_frames.jsonl', 'right-lane-review.jsonl',
+       'controller-intention.json', 'native-capture-report.json')
 
 def sha(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def read(path): return json.loads(Path(path).read_text())
@@ -25,6 +26,7 @@ def prepare(bundle, raw, output, synthetic_cpu=False):
     require(not output.exists(), 'C132497 saved output must be fresh')
     hashes = {name: sha(raw/name) for name in RAW}
     readback, report = read(raw/RAW[0]), read(raw/RAW[-1])
+    intention=read(raw/'controller-intention.json')
     actors, video, reviews = (rows(raw/name) for name in RAW[1:4])
     requests = rows(bundle/'requested-tracks.jsonl')
     kind = 'synthetic_cpu' if synthetic_cpu else 'original_native'
@@ -35,6 +37,8 @@ def prepare(bundle, raw, output, synthetic_cpu=False):
             len(readback['native_map_sha256'])==64 and
             all(readback.get('arc_lane_readback',{}).get(str(lane))==
                 {'road_id':21,'lane_id':lane} for lane in (-1,-2)) and
+            all(readback.get('loop_lane_readback',{}).get(str(lane))==
+                {'road_id':23,'lane_id':lane} for lane in (-1,-2)) and
             all(readback.get('phase_lane_readback',{}).get(phase)==
                 {'road_id':road,'lane_id':cfg['requested_lane_id']}
                 for phase,road in (('entry',20),('circulation',21),('exit',22))
@@ -45,9 +49,20 @@ def prepare(bundle, raw, output, synthetic_cpu=False):
             readback.get('actual_right_exit_verified') is False and
             readback.get('legal_verdict') is None,
             'C132497 raw map or actor readback differs')
+    require(sha(raw/'controller-intention.json')==cfg['controller_intention_sha256'] and
+            intention.get('source_kind')=='authored_controller_route_before_motion' and
+            intention.get('case_id')==cfg['case_id'] and
+            intention.get('candidate_id')==cfg['candidate_id'] and
+            intention.get('route_road_ids')==[20,21,22] and
+            intention.get('circulating_loop_road_ids')==[21,23] and
+            intention.get('intended_exit_road_id')==22 and
+            intention.get('turn_direction')=='right' and
+            intention.get('actual_exit_observed') is False,
+            'C132497 predeclared controller intention differs')
     require(report.get('case_id')==checked['case_id'] and
             report.get('candidate_id')==checked['candidate_id'] and
             report.get('config_sha256')==sha(bundle/'config.json') and
+            report.get('controller_intention_sha256')==cfg['controller_intention_sha256'] and
             report.get('requested_frames')==report.get('observed_frames')==240 and
             report.get('error') is None and report.get('accepted') is False and
             report.get('delivery_ready') is False,
@@ -129,6 +144,7 @@ def prepare(bundle, raw, output, synthetic_cpu=False):
     (output/'lane-readback.json').write_text(json.dumps({
         'source_kind':kind,'road_sha256':cfg['road_sha256'],
         'request_sha256':cfg['tracks_sha256'],
+        'controller_intention_sha256':cfg['controller_intention_sha256'],
         'native_map_sha256':readback['native_map_sha256'],
         'ego_actor_id':readback['ego_actor_id'],
         'review_provenance':'synthetic_cpu' if synthetic_cpu else 'human_frame_review',

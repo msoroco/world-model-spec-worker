@@ -4,6 +4,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import shutil
 
 def sha(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def rows(path): return [json.loads(s) for s in Path(path).read_text().splitlines()]
@@ -47,6 +48,8 @@ def generate(bundle,output):
     write(output/'native-map-readback.json',{
         'road_sha256':cfg['road_sha256'],'native_map_sha256':'0'*64,
         'arc_lane_readback':{str(lane):{'road_id':21,'lane_id':lane}
+            for lane in (-1,-2)},
+        'loop_lane_readback':{str(lane):{'road_id':23,'lane_id':lane}
             for lane in (-1,-2)},'phase_lane_readback':phases,
         'ego_actor_id':actor_id,'physical_roundabout_verified':False,
         'lane_allocation_verified':False,'actual_right_exit_verified':False,
@@ -54,9 +57,11 @@ def generate(bundle,output):
     write_rows(output/'native-raw-actors.jsonl',actors)
     write_rows(output/'video_frames.jsonl',video)
     write_rows(output/'right-lane-review.jsonl',reviews)
+    shutil.copyfile(bundle/'controller-intention.json',output/'controller-intention.json')
     write(output/'native-capture-report.json',{
         'case_id':cfg['case_id'],'candidate_id':cfg['candidate_id'],
         'config_sha256':sha(bundle/'config.json'),
+        'controller_intention_sha256':sha(output/'controller-intention.json'),
         'requested_frames':240,'observed_frames':240,'error':None,
         'accepted':False,'delivery_ready':False})
     return output

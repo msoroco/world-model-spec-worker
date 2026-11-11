@@ -8,6 +8,7 @@ SOURCE=ROOT/'offline/bundles'
 DEST=ROOT/'current-runtime-drafts'
 NAMES=('capture.py','check.py','config.json','assignment-source.json',
        'case-plan.json','right-exit-road.xodr','requested-tracks.jsonl',
+       'controller-intention.json',
        'measurement-contract.json')
 TEST='''import sys
 from pathlib import Path
@@ -47,7 +48,7 @@ for witness in ('reference','contrast'):
                   'construction':entries[0]['construction'],
                   'construction_sha256':entries[0]['construction_sha256'],
                   'candidate_risk':{'status':'physical',
-                      'reason':'Full roundabout, original route, lane occupancy and pixels unverified'},
+                      'reason':'Authored closed-loop Native connectivity, original route, lane occupancy and pixels unverified'},
                   'candidates':[{'id':entry['id'],
                                  'construction':entry['construction'],
                                  'construction_sha256':entry['construction_sha256'],

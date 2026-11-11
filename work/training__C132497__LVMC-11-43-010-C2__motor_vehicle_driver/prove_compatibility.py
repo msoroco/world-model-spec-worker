@@ -66,6 +66,16 @@ def prove():
             raw=Path(temporary)/'raw'
             if run(folder,'fixture_raw.py',['--bundle',folder,'--output-dir',raw]).returncode:
                 raise AssertionError('C132497 raw fixture missing')
+            (raw/'controller-intention.json').unlink()
+            if run(folder,'prepare_raw.py',['--bundle',folder,'--raw-folder',raw,
+                '--output-dir',Path(temporary)/'missing-intention','--synthetic-cpu']).returncode==0:
+                raise AssertionError('C132497 missing controller intention accepted')
+            saved_negatives.append({'case_id':entry['case_id'],
+                'candidate_id':entry['candidate_id'],'mutation':'missing_controller_intention','rejected':True})
+        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            raw=Path(temporary)/'raw'
+            if run(folder,'fixture_raw.py',['--bundle',folder,'--output-dir',raw]).returncode:
+                raise AssertionError('C132497 raw fixture missing')
             if run(folder,'prepare_raw.py',['--bundle',folder,'--raw-folder',raw,
                 '--output-dir',Path(temporary)/'original']).returncode==0:
                 raise AssertionError('C132497 missing original FFV1 media accepted')
@@ -86,7 +96,7 @@ def prove():
                 'candidate_id':entry['candidate_id'],'mutation':'trigger_camera_frame','rejected':True})
         for mutation,name in (('track','requested-tracks.jsonl'),
             ('assignment','assignment-source.json'),('road','right-exit-road.xodr'),
-            ('plan','case-plan.json')):
+            ('plan','case-plan.json'),('intention','controller-intention.json')):
             with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
                 altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
                 path=altered/name;path.write_bytes(path.read_bytes()+b' ')
