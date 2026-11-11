@@ -1,0 +1,123 @@
+{
+  "assignment_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C179789",
+  "law_id": "NRS-484B-600-1a",
+  "selected_branch": "Paved-road speed with traffic, surface, width, weather and other highway conditions.",
+  "cases": [
+    {
+      "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic",
+      "target_law_id": "NRS-484B-600-1a",
+      "purpose": "Paved road, dry/clear weather and measured lead traffic at a stable body gap",
+      "physical_risk": "lead vehicle may not maintain gap"
+    },
+    {
+      "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic",
+      "target_law_id": "NRS-484B-600-1a",
+      "purpose": "Same road and traffic, wet surface/precipitation as changed condition",
+      "physical_risk": "rain may change visibility or traction unexpectedly"
+    },
+    {
+      "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrow_same_traffic",
+      "target_law_id": "NRS-484B-600-1a",
+      "purpose": "Same traffic and weather, narrower sourced highway width",
+      "physical_risk": "map may not provide safe narrow variant"
+    },
+    {
+      "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic",
+      "target_law_id": "NRS-484B-600-1a",
+      "purpose": "Same road surface and width, nearer/slower surrounding traffic",
+      "physical_risk": "traffic controllers may collide or change lanes"
+    },
+    {
+      "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__low_visibility",
+      "target_law_id": "NRS-484B-600-1a",
+      "purpose": "Same road/traffic, lower source-measured sight distance",
+      "physical_risk": "physical occlusion may not realize intended ray geometry"
+    },
+    {
+      "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow",
+      "target_law_id": "NRS-484B-600-1a",
+      "purpose": "Same road/traffic, ice or snow surface/weather condition",
+      "physical_risk": "Native weather may not realize ice/snow surface physically"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "surface_weather",
+      "case_ids": [
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic",
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic",
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow"
+      ],
+      "fixed_conditions": [
+        "same road route, vehicle, lead-traffic gap policy and cameras"
+      ],
+      "deliberate_differences": [
+        "source-measured surface and weather conditions"
+      ]
+    },
+    {
+      "comparison_id": "traffic",
+      "case_ids": [
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic",
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic"
+      ],
+      "fixed_conditions": [
+        "same road geometry, weather and ego target control"
+      ],
+      "deliberate_differences": [
+        "surrounding traffic speed and body gap"
+      ]
+    },
+    {
+      "comparison_id": "width_sight",
+      "case_ids": [
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic",
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrow_same_traffic",
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__low_visibility"
+      ],
+      "fixed_conditions": [
+        "same vehicle, basic traffic and source camera contract"
+      ],
+      "deliberate_differences": [
+        "sourced highway width or measured sight distance as declared per case"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "recordings_reviewed": [],
+    "accepted_recording_count": 0,
+    "supported_reuses": [],
+    "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
+  },
+  "observations": [
+    "original-frame 3D ego and surrounding-traffic velocities and body gaps",
+    "Native lane/highway width, road surface and curvature",
+    "weather, precipitation, wet/ice/snow surface state and visibility/sight rays",
+    "declared engineering reaction/deceleration model and derived stopping distance",
+    "reasonable-or-proper judgment kept separate from engineering surrogate"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment.json",
+      "sha256": "7d02695f45f88fa6833272af5d54550f58b1ae53822784a790f9d2b5187ae0cd"
+    },
+    {
+      "path": "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/witnesses.json",
+      "sha256": "54c094be0c5aed178cc6468869937d47c8c1fcba39cae80899e5c2ec4c923bcd"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "The law gives no numeric speed threshold; stopping/sight surrogate is an operational diagnostic only.",
+    "Native weather parameters do not themselves prove wet/ice/snow roadway surface or actual visibility.",
+    "Lead traffic spawn and software condition samples do not establish physically safe motion.",
+    "Exact runner, cameras, finalizer, fallbacks and proofs remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; Native lead traffic and frame-specific speed/condition observations CPU-tested"
+}

@@ -1,0 +1,97 @@
+{
+  "assignment_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C157964",
+  "law_id": "NRS-484B-257-1",
+  "selected_branch": "Frozen label references yield nearest-view; bound police_officer cell supplies express officer-control exception.",
+  "binding_review": "Witness relocates officer-control alternative from yield_sign C158208 to C157964. The yield nearest-view branch remains in C158208; this package does not claim physical yield case coverage from an officer performer.",
+  "cases": [
+    {
+      "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Police officer actually controls signed-entrance traffic; observed stop then go direction before ego entry",
+      "physical_risk": "performer gesture may not be visible or interpretable"
+    },
+    {
+      "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Same junction and officer with hold/stop direction throughout ego approach",
+      "physical_risk": "vehicle may enter due to controller timing"
+    },
+    {
+      "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Same officer visible but no actual traffic-control direction at ego entry",
+      "physical_risk": "presence can be misread as active control"
+    },
+    {
+      "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Same junction, properly erected yield sign, no officer control and nearest-view response",
+      "physical_risk": "sight geometry and sign may be unverified"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "officer_exception_active",
+      "case_ids": [
+        "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go",
+        "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive"
+      ],
+      "fixed_conditions": [
+        "same intersection, signed ego entrance, source camera plan and vehicle route"
+      ],
+      "deliberate_differences": [
+        "actual original-frame officer traffic control at ego entry"
+      ]
+    },
+    {
+      "comparison_id": "officer_direction",
+      "case_ids": [
+        "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go",
+        "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold"
+      ],
+      "fixed_conditions": [
+        "same officer authority, location, junction and ego route"
+      ],
+      "deliberate_differences": [
+        "observed stop then go versus sustained hold direction"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "recordings_reviewed": [],
+    "accepted_recording_count": 0,
+    "supported_reuses": [],
+    "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
+  },
+  "observations": [
+    "proper yield-sign erection and governed entrance for baseline context",
+    "actual police authority and source-reviewed uniform/identity",
+    "camera-visible officer direction and whether traffic was actually controlled at ego entry",
+    "ego body entry and motion joined to original officer video frames",
+    "nearest-view and through-highway traffic retained for no-officer comparison"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+      "sha256": "7430e3f56ecfa4906c10b07bdbd88484dbd51251cd9cabf240cc449bcc290e13"
+    },
+    {
+      "path": "inputs/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "sha256": "cdeed7cef3aca10cdb8710562c8b13eb86588f67917a4534d90d3bb2c4ec809e"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "A CARLA walker blueprint and costume do not establish police authority.",
+    "The current performer helper spawns an actor but does not yet author visible hand directions; direction construction remains worker-owned.",
+    "The fixed police_officer cell is for the express control exception, not a substitute for yield-sign nearest-view coverage.",
+    "Exact cameras, saved finalizer, fallbacks, proposals and proofs remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; Native officer performer placement and original-frame officer-control/ego-entry measurement CPU-tested"
+}

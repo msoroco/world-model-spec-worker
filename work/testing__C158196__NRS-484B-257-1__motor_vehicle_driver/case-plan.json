@@ -1,0 +1,97 @@
+{
+  "assignment_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C158196",
+  "law_id": "NRS-484B-257-1",
+  "selected_branch": "Frozen label references yield nearest-view; traffic_light cell supplies express active-signal exception.",
+  "binding_review": "Witness relocates traffic-signal governance from yield_sign C158208 to C158196. Nearest-view yield duty remains in C158208; no claim that a light-only case covers it.",
+  "cases": [
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Operative traffic-control signal actually governs signed ego approach at entry",
+      "physical_risk": "affected-lane mapping or signal phase changes before entry"
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Visible operative signal belongs to another entrance and does not control ego",
+      "physical_risk": "camera may not disambiguate governed lane"
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Same installed head Off at ego entry; preserve distinction from actual control",
+      "physical_risk": "Off may not demonstrate full inoperability"
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Proper yield-sign entrance without actual signal control, nearest-view reference",
+      "physical_risk": "visibility geometry and sign placement uncertain"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "signal_exception_control",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing"
+      ],
+      "fixed_conditions": [
+        "same signed intersection, ego route, physical light presence and original camera plan"
+      ],
+      "deliberate_differences": [
+        "whether operative signal actually governs ego lane at entry"
+      ]
+    },
+    {
+      "comparison_id": "signal_exception_state",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off"
+      ],
+      "fixed_conditions": [
+        "same governing head, affected lane and ego route"
+      ],
+      "deliberate_differences": [
+        "operative indication versus Off at ego entry"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "recordings_reviewed": [],
+    "accepted_recording_count": 0,
+    "supported_reuses": [],
+    "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
+  },
+  "observations": [
+    "proper signed-entrance and through-highway context for baseline",
+    "Native traffic-light affected lane and physical head at ego entrance",
+    "original-frame operative state and whether signal actually controls ego at entry",
+    "complete ego-body entry and frame/video join",
+    "officer control separately inventoried"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+      "sha256": "832d0f66d0e84fdb4d1644834af10535dcb35e525c0f6904866e3e177ced1b81"
+    },
+    {
+      "path": "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "sha256": "5ae8b0b054d2d9a945c043c2c036d620fbf9cba58876d2ca7d52d10c03bef8c8"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "A visible traffic light elsewhere does not establish ego approach control.",
+    "Native state/readback does not prove original head visibility or official status.",
+    "The fixed traffic_light cell is for the express exception, not a substitute for yield nearest-view coverage.",
+    "Exact runner, cameras, finalizer, fallbacks and full proofs remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; Native affected-lane selection/reversible state and original-frame signal exception measurement CPU-tested"
+}

@@ -1,0 +1,103 @@
+{
+  "assignment_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C144550",
+  "law_id": "NRS-484B-223-1b",
+  "selected_branch": "Both conjunctive prerequisites before moving from one of two or more clearly marked same-direction lanes.",
+  "cases": [
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap",
+      "target_law_id": "NRS-484B-223-1b",
+      "purpose": "Two marked same-direction lanes; left indicator before complete body begins leaving source lane, source-measured target gap",
+      "physical_risk": "indicator onset or lane crossing drifts"
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_late_clear_gap",
+      "target_law_id": "NRS-484B-223-1b",
+      "purpose": "Same lane change with appropriate indicator first observed after body begins leaving",
+      "physical_risk": "controller may signal early due to route setup"
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_wrong_signal_clear_gap",
+      "target_law_id": "NRS-484B-223-1b",
+      "purpose": "Same left lane change with wrong right indicator",
+      "physical_risk": "Native light command may differ from camera display"
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_close_gap",
+      "target_law_id": "NRS-484B-223-1b",
+      "purpose": "Same signaled movement with target vehicle nearer in measured gap",
+      "physical_risk": "target traffic timing or collision risk prevents capture"
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__right_signal_before_clear_gap",
+      "target_law_id": "NRS-484B-223-1b",
+      "purpose": "Right adjacent marked lane with appropriate right indicator before movement",
+      "physical_risk": "right-lane geometry or clearance differs"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "signal_order",
+      "case_ids": [
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap",
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_late_clear_gap",
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_wrong_signal_clear_gap"
+      ],
+      "fixed_conditions": [
+        "same one-way multilane Native road, source and target marked lanes, vehicle route and target traffic"
+      ],
+      "deliberate_differences": [
+        "appropriate signal timing and direction before first body departure"
+      ]
+    },
+    {
+      "comparison_id": "target_lane_gap",
+      "case_ids": [
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap",
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_close_gap"
+      ],
+      "fixed_conditions": [
+        "same lanes, appropriate signal timing and ego route"
+      ],
+      "deliberate_differences": [
+        "measured nearest target-lane body gap without legal safety cutoff"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "recordings_reviewed": [],
+    "accepted_recording_count": 0,
+    "supported_reuses": [],
+    "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
+  },
+  "observations": [
+    "Native and camera evidence of two or more clearly marked same-direction lanes",
+    "actual body departure from source lane boundary, both left and right options",
+    "appropriate indicator state displayed before departure and at departure",
+    "original-frame target-lane actor bodies, longitudinal gap and conflict timing",
+    "driver safety ascertainment context without invented numeric standard"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/assignment.json",
+      "sha256": "590c903751744bb300f1d22fccdd385535f60d12ad7401c5988f4b814eb8649b"
+    },
+    {
+      "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/witnesses.json",
+      "sha256": "a50ce754040fd3648afd73c778a1beedcbfab108b0ae518a90d1a3ae28084320"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Driver ascertainment of safety is a judgment not established by a gap measurement.",
+    "The statute supplies no signal lead-time or target-gap numeric threshold.",
+    "Native lane marking type does not by itself prove clearly marked appearance in original camera.",
+    "Current modules are components, not complete saved-processing proof."
+  ],
+  "planning_status": "partial; original-frame signal ordering/gap and Native left/right adjacent marked lanes CPU-tested"
+}

@@ -1,0 +1,116 @@
+{
+  "assignment_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C158208",
+  "law_id": "NRS-484B-257-2",
+  "selected_branch": "Within-intersection non-obligated vehicle plus approaching-hazard timing under yield-sign governance.",
+  "cases": [
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Non-through-highway yield-sign ego entrance, other not obligated to stop/yield already in intersection",
+      "physical_risk": "other occupancy or yield timing may drift"
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_approaching",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Same junction, other not obligated approaches during ego crossing; hazard context retained without legal cutoff",
+      "physical_risk": "conflict timing may miss observed crossing"
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_obligated",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Same junction, other entrance also has stop/yield obligation",
+      "physical_risk": "all-entrance device governance may be ambiguous"
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_no_slow",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Same ego route and yield sign, no observed slowing before reference",
+      "physical_risk": "controller may slow for traffic or geometry"
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__officer_control_exception",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Same junction with actual officer traffic control at ego entry",
+      "physical_risk": "visible direction may not establish authority"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "other_obligation",
+      "case_ids": [
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside",
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_obligated"
+      ],
+      "fixed_conditions": [
+        "same non-through-highway intersection, ego yield sign, ego route and cameras"
+      ],
+      "deliberate_differences": [
+        "other entrance stop/yield obligation"
+      ]
+    },
+    {
+      "comparison_id": "other_presence",
+      "case_ids": [
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside",
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_approaching"
+      ],
+      "fixed_conditions": [
+        "same junction, all-entrance devices, ego response and cameras"
+      ],
+      "deliberate_differences": [
+        "other already occupying versus approaching during ego crossing"
+      ]
+    },
+    {
+      "comparison_id": "yield_response",
+      "case_ids": [
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside",
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_no_slow"
+      ],
+      "fixed_conditions": [
+        "same sign, reference point, other route and traffic"
+      ],
+      "deliberate_differences": [
+        "observed pre-entry slowing"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "recordings_reviewed": [],
+    "accepted_recording_count": 0,
+    "supported_reuses": [],
+    "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
+  },
+  "observations": [
+    "proper yield sign and governed ego entrance",
+    "non-through-highway status and complete device inventory for every entrance",
+    "subsection-1 stopping-reference hierarchy and pre-entry slowing/stop",
+    "other entrance obligation and body occupancy throughout ego crossing",
+    "approaching time-to-conflict without legal hazard cutoff",
+    "officer/signal exception state"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+      "sha256": "3c315e0d1a80a3acad9dd1c1f16531924b95f21d134d89d606acdf7744a3dc98"
+    },
+    {
+      "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/witnesses.json",
+      "sha256": "0149fc73762a82aff229ad0d6a4180c196d8bbca16f5b04d96782baf629cd35d"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Nearest-view/stop-line/crosswalk hierarchy from subsection 1 remains to be constructed and sourced.",
+    "Immediate hazard and cautious proceeding remain judgments without invented thresholds.",
+    "Native yield trigger and device inventory alone do not establish proper erection or actual other-driver obligation.",
+    "The current modules are components, not full saved-processing proof."
+  ],
+  "planning_status": "partial; Native yield-sign selector and original-frame yield/occupancy/other-obligation measurement CPU-tested"
+}
