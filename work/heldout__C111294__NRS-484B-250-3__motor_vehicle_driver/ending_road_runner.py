@@ -6,7 +6,7 @@ from math import atan2, hypot, isfinite
 from pathlib import Path
 
 from ending_road_camera import CAMERAS, EndingRoadCameraCapture, LosslessSourceSink
-from ending_road_device import devices_at_junction
+from ending_road_control_inventory import ungoverned_route_pair
 from ending_road_route import select_t_routes
 from ending_road_source_capture import EndingRoadSourceRecorder, topology_from_native, _body
 
@@ -119,7 +119,7 @@ def run(config, output, host='127.0.0.1', port=2000):
         world.apply_settings(settings)
         lights = list(world.get_actors().filter('traffic.traffic_light*'))
         routes = select_t_routes(world.get_map(), route_accept=lambda ending, through:
-                                 not devices_at_junction(lights, ending['junction_id']))
+                                 ungoverned_route_pair(ending, through, lights))
         subject_path = extend_exit(routes['subject'])
         other_path = extend_exit(routes['other'])
         routes['subject'], routes['other'] = subject_path, other_path
