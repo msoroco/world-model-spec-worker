@@ -8,6 +8,7 @@ from controller import EngineeringKnobs,PathController
 from engineering import TRIGGERS,parameters
 from geometry import STOP_X_M,check,route
 from measure_entrance import entrance_overlap_m
+from runner import seal_after_release
 
 
 class AlleyDraftTests(unittest.TestCase):
@@ -65,6 +66,33 @@ class AlleyDraftTests(unittest.TestCase):
         self.assertGreater(moving['requested_speed_mps'],near['requested_speed_mps'])
         self.assertEqual(stopped['requested_speed_mps'],0)
         self.assertTrue(stopped['hand_brake'])
+
+    def test_native_seal_requires_full_capture_and_owner_closure(self):
+        import json
+        import tempfile
+        cameras={name:0 for name in
+                 ('overview','approach','reference_corner','driver_reference')}
+        called=[]
+        def fake_seal(output,**kwargs):
+            called.append(kwargs)
+            return {'sealed':True}
+        with tempfile.TemporaryDirectory() as directory:
+            (Path(directory)/'config.json').write_text(json.dumps({'case_id':'c10014-test'}))
+            self.assertEqual(seal_after_release(directory,480,{'restored':True},None,
+                                                cameras,seal=fake_seal),{'sealed':True})
+            self.assertEqual(len(called),1)
+            self.assertEqual(called[0]['encoder_exit_codes'],cameras)
+            for frames,restoration,error,codes in (
+                (479,{'restored':True},None,cameras),
+                (480,{'restored':False},None,cameras),
+                (480,{'restored':True},{'capture_error':'failed'},cameras),
+                (480,{'restored':True},None,{**cameras,'overview':1}),
+                (480,{'restored':True},None,{'overview':0}),
+            ):
+                with self.assertRaises(RuntimeError):
+                    seal_after_release(directory,frames,restoration,error,codes,
+                                       seal=fake_seal)
+            self.assertEqual(len(called),1)
 
 
 if __name__=='__main__':unittest.main()

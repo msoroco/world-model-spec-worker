@@ -40,10 +40,13 @@ def audit_attempt(folder, saved, selected, entry, candidate):
     result = read(folder/'result.json')
     report = read(folder/'analysis-report.json')
     config = read(folder/'config.json')
-    require(config['case'].get('case_id') == entry['case_id'] and
+    selected_cases = [case for case in read(HERE/'proposals/cases.json')['cases']
+                      if case['case_id'] == entry['case_id'] and
+                      case['target_type'] != 'baseline']
+    require(len(selected_cases) == 1 and
+            config['case'].get('case_id') == entry['case_id'] and
             config['case'].get('recording_description') == config['recording_description'] and
-            config['recording_description'] == read(HERE/'proposals/cases.json')['cases'][
-                0 if entry['case_id'].endswith('__reference') else 1]['recording_description'],
+            config['recording_description'] == selected_cases[0]['recording_description'],
             'selected case recording contract differs from source proposal')
     require(receipt['format'] == 'worker-package-compatibility' and receipt['passed'] is True,
             'compatibility did not pass')

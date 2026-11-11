@@ -22,6 +22,7 @@ from geometry import (ALLEY_LANE_ID,ALLEY_ROAD_ID,ENTRANCE_BOUNDS_M,
                       open_drive,route)
 
 ROOT=Path(__file__).resolve().parent
+CAMERA_NAMES=('overview','approach','reference_corner','driver_reference')
 
 
 def write_new(path,value):
@@ -96,6 +97,25 @@ def camera_transform(carla,spec):
                            carla.Rotation(pitch=pitch,yaw=yaw))
 
 
+def seal_after_release(output,frames,restoration,error,encoder_exit_codes,seal=None):
+    """Seal only a full original attempt after encoders and world are closed."""
+    if error or frames!=480:
+        raise RuntimeError('Cannot seal failed or short Native attempt')
+    if not isinstance(restoration,dict) or restoration.get('restored') is not True:
+        raise RuntimeError('Cannot seal before verified Native world restoration')
+    if set(encoder_exit_codes)!=set(CAMERA_NAMES) or \
+            any(code!=0 for code in encoder_exit_codes.values()):
+        raise RuntimeError('Cannot seal before all four source encoders exit cleanly')
+    if seal is None:
+        from worker_exchange.native_output import seal_capture
+        seal=seal_capture
+    return seal(output,frames=frames,restoration=restoration,errors=None,
+                encoder_exit_codes=encoder_exit_codes,
+                context={'case_id':json.loads((Path(output)/'config.json').read_text())['case_id'],
+                         'source':'original Native actor and four camera readback',
+                         'physical_acceptance_claimed':False})
+
+
 def execute(config,output,host,port):
     import carla
     import numpy as np
@@ -111,7 +131,7 @@ def execute(config,output,host,port):
         if a.type_id.startswith(('vehicle.','walker.','sensor.','controller.'))]:
         raise RuntimeError('Requires exclusive idle asynchronous world ownership')
     owned=[];encoders={};encoder_logs={};camera_queues={};channels={}
-    capture=None;changed=False;error=None;frames=0;restored=None
+    capture=None;changed=False;error=None;frames=0;restored=None;encoder_exit_codes={}
     try:
         world=client.generate_opendrive_world(open_drive(),carla.OpendriveGenerationParameters(
             vertex_distance=.25,max_road_length=50,wall_height=0,additional_width=0,
@@ -236,7 +256,8 @@ def execute(config,output,host,port):
         for name,encoder in encoders.items():
             try:
                 encoder.stdin.close()
-                if encoder.wait(timeout=180)!=0:raise RuntimeError('Lossless encoder failed: '+name)
+                encoder_exit_codes[name]=encoder.wait(timeout=180)
+                if encoder_exit_codes[name]!=0:raise RuntimeError('Lossless encoder failed: '+name)
             except BaseException as exc:error=error or {'encoder_error':str(exc)}
             encoder_logs[name].close()
         for actor in reversed(owned):
@@ -254,6 +275,7 @@ def execute(config,output,host,port):
             'required_saved_checks':['actual original pixels','Native alley/access designation',
                 'stop duration and entrance corridor overlap','independent blocking review']})
     if error:raise RuntimeError('Native attempt failed; see native-capture-report.json: '+str(error))
+    seal_after_release(output,frames,restored,error,encoder_exit_codes)
 
 
 def main():

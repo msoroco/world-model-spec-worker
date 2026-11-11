@@ -92,6 +92,8 @@ def build() -> dict:
             ],
         }],
     }
+    from batch_pipeline.sweeps import expand_sweeps
+    expand_sweeps(output, templates=[template], bindings=binding)
     rules = read(stages.ROOT / "data/canonical_parameter_aliases.json")
     stages.validate("cases", output, {
         "request": {"cell": assignment["cell"], "actor": assignment["actor"]},

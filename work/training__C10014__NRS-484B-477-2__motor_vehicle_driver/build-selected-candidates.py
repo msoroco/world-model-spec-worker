@@ -24,7 +24,8 @@ def build():
     exact = {row['case_id'] for row in plan['cases']}
     if (draft['assignment_id'] != HERE.name or len(draft['cases']) != 2 or
             exact != {row['case_id'] for row in draft['cases']} or
-            exact != {row['case_id'] for row in proposal['cases']}):
+            exact != {row['case_id'] for row in proposal['cases']
+                      if row['target_type'] != 'baseline'}):
         raise ValueError('Exact source-reviewed case pair differs')
     manifest = {'format': 'worker-execution-manifest',
                 'assignment_id': HERE.name,
