@@ -44,6 +44,26 @@ claim(signal_draft['measurement_draft']['validation_command'],
       'cases/signal_advance_100_at/' + signal_draft['measurement_draft']['validation_log'])
 claim(signal_draft['delivery_audit_draft']['test_command'],
       signal_draft['delivery_audit_draft']['test_log'])
+signal_exact = json.loads((folder / 'cases/signal_advance_100_at/exact-proof-receipt.json').read_text())
+signal_stage = '.runtime-work/c109749-signal-advance-stage-v4'
+signal_stage_manifest = signal_stage + '/work/' + result['assignment_id'] + '/draft-manifest.json'
+for proof in signal_exact['proofs']:
+    label = proof['candidate_id']
+    candidate = '' if label == 'primary' else ' --candidate ' + label
+    command = (f'.venv-cpu/bin/python runtime.py compatibility --manifest {signal_stage_manifest} '
+               f'--case {signal_exact["case_id"]} --output {signal_stage}/.runtime-work/signal-advance-{label}-compat '
+               '--library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck'
+               + candidate)
+    claim(command, f'cases/signal_advance_100_at/proofs/{label}/compatibility-command.log')
+    command = (f'.venv-cpu/bin/python runtime.py process-saved --manifest {signal_stage_manifest} '
+               f'--case {signal_exact["case_id"]} '
+               f'--attempt {signal_stage}/.runtime-work/signal-advance-{label}-compat '
+               f'--output {signal_stage}/.runtime-work/signal-advance-{label}-saved '
+               '--library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck')
+    claim(command, f'cases/signal_advance_100_at/proofs/{label}/saved-command.log')
+signal_delivery = json.loads((folder / 'cases/signal_advance_100_at/delivery-proof-receipt.json').read_text())
+claim(signal_delivery['positive']['command'],
+      'cases/signal_advance_100_at/' + signal_delivery['positive']['log'])
 claim(f'PYTHONPATH=work/{result["assignment_id"]} .venv-cpu/bin/python '
       f'work/{result["assignment_id"]}/cases/signal_advance_100_at/runner.py --check',
       'cases/signal_advance_100_at/runner-check.log')
@@ -168,10 +188,13 @@ result['reason'] = (
     '900-frame source-only fixture proves below/at/above both signal distances plus interruption '
     'and stale-source rejection. Its case-specific finalizer and measurement contract now measure '
     '30.48 m from original positions and indicator readback; below/at/above validation passes. '
-    'An independent full-duration delivery auditor is implemented and six source-contrast '
-    'tests pass, but its four-camera complete-attempt proof is still pending. '
-    'The draft has no exact compatibility, saved-processing, delivery '
-    'or canonical integration proof yet. '
+    'A compact 210-frame Native-shaped diagnostic now observes 30.4800001 m of continuous '
+    'preturn signalling with complete onset and occupied-junction yield. All four exact '
+    'positive/negative compatibility and recorded-only saved-processing paths pass from '
+    'current source-bound constructions. An independent 900-frame four-camera diagnostic '
+    'delivery audit and missing sealed-source rejection pass as software checks only; '
+    'the receipt explicitly says delivery passed false and no physical acceptance. '
+    'The controlled omitted-signal comparison and canonical integration proofs remain. '
     'Two canonical reciprocal cases now contrast later-opposing stopped-outside motion with body entry '
     'during the subject turn. Each has a runner, finalizer, three physical-risk fallbacks, four exact '
     'offline/compatibility/saved-processing paths, source-rejection checks, physical classifier/lifecycle '
