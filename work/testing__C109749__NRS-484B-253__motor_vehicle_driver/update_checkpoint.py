@@ -35,6 +35,16 @@ claim(f'.venv-cpu/bin/python -m unittest discover -s work/{result["assignment_id
       '-p test_advance_signal_setup.py -v', 'advance-signal-setup-tests.log')
 claim(f'.venv-cpu/bin/python -m unittest discover -s work/{result["assignment_id"]}/tests '
       '-p test_signal_advance_native_probe.py -v', 'signal-native-probe-tests.log')
+signal_draft = json.loads((folder / 'cases/signal_advance_100_at/draft-proof-receipt.json').read_text())
+for proof in signal_draft['offline']:
+    claim(proof['command'], 'cases/signal_advance_100_at/' + proof['log'])
+claim(signal_draft['signal_source_proof']['command'],
+      'cases/signal_advance_100_at/' + signal_draft['signal_source_proof']['log'])
+claim(signal_draft['measurement_draft']['validation_command'],
+      'cases/signal_advance_100_at/' + signal_draft['measurement_draft']['validation_log'])
+claim(f'PYTHONPATH=work/{result["assignment_id"]} .venv-cpu/bin/python '
+      f'work/{result["assignment_id"]}/cases/signal_advance_100_at/runner.py --check',
+      'cases/signal_advance_100_at/runner-check.log')
 
 for case in manifest['cases']:
     claim(case['offline']['command'], case['offline']['log'])
@@ -151,7 +161,13 @@ result['reason'] = (
     '30.48 m or 91.44 m advance probe, and capture-start signal onset is unknown. '
     'A same-lane upstream waypoint selector and Native-lazy delayed-indicator policy for '
     'below/at/above 30.48 m and 91.44 m candidates pass six construction tests, including actor '
-    'readback and rejection paths, but are not yet integrated into selected Native runners or exact proofs. '
+    'readback and rejection paths. An isolated signal_advance_100_at Native runner now uses that '
+    'policy; its primary and three risk fallbacks pass exact offline construction, and a sealed '
+    '900-frame source-only fixture proves below/at/above both signal distances plus interruption '
+    'and stale-source rejection. Its case-specific finalizer and measurement contract now measure '
+    '30.48 m from original positions and indicator readback; below/at/above validation passes. '
+    'The draft has no exact compatibility, saved-processing, delivery '
+    'or canonical integration proof yet. '
     'Two canonical reciprocal cases now contrast later-opposing stopped-outside motion with body entry '
     'during the subject turn. Each has a runner, finalizer, three physical-risk fallbacks, four exact '
     'offline/compatibility/saved-processing paths, source-rejection checks, physical classifier/lifecycle '

@@ -1,0 +1,56 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_at",
+      "construction": "construction.json",
+      "construction_sha256": "1190146407d89fff029180b152d54eb5309fc8fd4251780a02d7b42de4795b59",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "upstream lane extent, signalled path length, occupied junction and subject speed may not realize in Native motion"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "4dcedf9a4039e411dc380ac4d50be989fcc745694d4e1d172338d8be6f2c25de",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "signal_onset_margin_m original-source physical-risk check",
+            "failure_condition": "original signal onset has insufficient continuous preturn distance"
+          },
+          "changed_knobs": [
+            "signal_onset_margin_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "fallback2-construction.json",
+          "construction_sha256": "5c57b34b0a0dd50fedf35f99cc156a87997f62dcd50df90583cc118278796686",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "approach_speed_mps original-source physical-risk check",
+            "failure_condition": "subject reaches the occupied junction at excessive measured speed"
+          },
+          "changed_knobs": [
+            "approach_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "fallback3-construction.json",
+          "construction_sha256": "17a2f5500966ca894e5998f1612b757b81d9651f024525183c2d979f319e1433",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "inside_oncoming_travel_m original-source physical-risk check",
+            "failure_condition": "initial opposing complete body does not fit in the selected junction"
+          },
+          "changed_knobs": [
+            "inside_oncoming_travel_m"
+          ]
+        }
+      ]
+    }
+  ]
+}
