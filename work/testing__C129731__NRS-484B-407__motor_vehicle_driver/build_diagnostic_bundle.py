@@ -76,8 +76,11 @@ def build():
                 "unresolved_judgment_calls": ["actual driver visibility", "legal turning circumstance"],
                 "recording_description": config["recording_description"]}
     proposal_path = proposal_dir / "cases.json"
-    prior_cases = json.loads(proposal_path.read_text()).get("cases", []) if proposal_path.is_file() else []
-    _dump(proposal_path, {"cases": [proposal] + [row for row in prior_cases if row.get("case_id") != case]})
+    prior = json.loads(proposal_path.read_text()) if proposal_path.is_file() else {}
+    prior_cases = prior.get("cases", [])
+    _dump(proposal_path, {**prior, "cell_id": config["cell_id"], "actor": config["actor"],
+                          "status": "draft", "sweep_specs": [],
+                          "cases": [proposal] + [row for row in prior_cases if row.get("case_id") != case]})
     manifest = {"format": "worker-execution-manifest", "assignment_id": HERE.name,
                 "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
                 "status": "diagnostic_incomplete", "cases": [{"case_id": case, "kind": "delivery",
