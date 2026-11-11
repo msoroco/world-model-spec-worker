@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import os
 import pickle
 from pathlib import Path
 import sys
@@ -11,6 +12,8 @@ import networkx as nx
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
+os.environ.setdefault('SCENARIO_PIPELINE_OUTPUT_ROOT',
+                      str(ROOT/'.runtime-work/c10014-diagnostic-adapter'))
 sys.path.insert(0,str(HERE/'native'))
 sys.path.insert(0,str(ROOT/'runtime/pipeline/scenario_pipeline'))
 spec=importlib.util.spec_from_file_location('saved_fixture',HERE/'saved-fixture-proof.py')
@@ -90,14 +93,15 @@ def main():
     print('scratch',scratch,flush=True)
     finalize(attempt,attempt/'analysis-report.json')
     core=process(attempt,attempt/'converted',ROOT/'runtime/pipeline/library',
-                 ROOT/'.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck')
+                 ROOT/'.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck',
+                 diagnostic_fixture=True)
     config=json.loads((attempt/'config.json').read_text())
     video=render(attempt,attempt/'converted',config['case'])
     decoded=audit(video['video'],480,mapping_sha256=video['frame_map_sha256'],
                   receipt=attempt/'final-decode.json')
     print(json.dumps({'core':core,'render_frames':video['frames'],
                       'final_decode_passed':decoded['passed'],
-                      'scope':'synthetic software integration with retained graph templates; no CARLA or acceptance'}))
+                 'scope':'synthetic software integration with authored diagnostic graphs; no CARLA or acceptance'}))
 
 
 if __name__=='__main__':main()

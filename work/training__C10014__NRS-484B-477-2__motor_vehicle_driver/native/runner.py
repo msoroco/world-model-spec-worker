@@ -50,7 +50,7 @@ def check(config):
     cameras=camera_plan(candidate)
     if [(c['name'],c['width'],c['height']) for c in cameras] != [
         ('overview',1920,1080),('approach',1280,720),
-        ('entrance',1280,720),('driver_reference',1280,720)]:
+        ('reference_corner',1280,720),('driver_reference',1280,720)]:
         raise ValueError('Four-view source camera contract changed')
     return {'geometry':geometry,'candidate':candidate,'camera_count':len(cameras),
             'native_imported':False,'physical_success_claimed':False}

@@ -81,7 +81,7 @@ def make_base(destination,suffix,full_resolution=False):
     (destination/'channels/kin.position.jsonl').write_text(
         '{"time_s": 0, "value": "stale_fixture_channel"}\n')
     camera_sizes={c['name']:f"{c['width']}x{c['height']}" for c in config['cameras']}
-    for name in ('overview','approach','entrance','driver_reference'):
+    for name in ('overview','approach','reference_corner','driver_reference'):
         size=camera_sizes[name] if full_resolution else '32x32'
         subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
             '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=24',

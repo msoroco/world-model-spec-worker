@@ -10,7 +10,7 @@ def camera_plan(candidate):
          'fov_deg':105 if wide else 90,'attachment':'world'},
         {'name':'approach','width':1280,'height':720,'xyz_m':[-18,-2,5],
          'fov_deg':95,'attachment':'world'},
-        {'name':'entrance','width':1280,'height':720,'xyz_m':[0,-13,8 if wide else 6],
+        {'name':'reference_corner','width':1280,'height':720,'xyz_m':[0,-13,8 if wide else 6],
          'fov_deg':105 if wide else 90,'attachment':'world'},
         {'name':'driver_reference','width':1280,'height':720,'xyz_m':[1,0,2.2],
          'fov_deg':90,'attachment':'ego'}]

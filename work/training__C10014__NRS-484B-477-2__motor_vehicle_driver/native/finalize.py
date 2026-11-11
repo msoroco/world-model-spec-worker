@@ -141,7 +141,7 @@ def finalize(attempt,output):
     observed=measure(attempt/'native_samples.jsonl',attempt/'road_geometry.json')
     measurements={'entrance_overlap_observation':entrance_overlap_observation(attempt),
                   'alley_stop_context':alley_stop_context(attempt)}
-    videos=[f'{name}.mkv' for name in ('overview','approach','entrance','driver_reference')]
+    videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     counts={name:video_frames(attempt/name) for name in videos}
     if any(frames!=count for frames in counts.values()):
         raise ValueError('Source camera frame count differs from original trace')

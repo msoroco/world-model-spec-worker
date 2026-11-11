@@ -32,7 +32,7 @@ class AlleyDraftTests(unittest.TestCase):
     def test_source_camera_invariants(self):
         standard=camera_plan('primary');wide=camera_plan('fallback3')
         self.assertEqual([c['name'] for c in standard],
-                         ['overview','approach','entrance','driver_reference'])
+                         ['overview','approach','reference_corner','driver_reference'])
         self.assertEqual([(c['width'],c['height']) for c in standard],
                          [(1920,1080),(1280,720),(1280,720),(1280,720)])
         self.assertEqual([(c['width'],c['height']) for c in wide],

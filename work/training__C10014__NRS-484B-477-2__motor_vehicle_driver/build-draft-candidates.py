@@ -44,6 +44,7 @@ def build():
                'measurement_contract':contract,
                'measurement_procedure':{'entrypoint':'finalize.py',
                                         'output_schema':'c10014-alley-entrance-saved-analysis-v1'},
+               'fixture_recipe':f'work/{ASSIGNMENT}/update015-diagnostic-{suffix}-recipe.json',
                'candidates':[]}
         for candidate in NAMES:
             config=dict(template)
