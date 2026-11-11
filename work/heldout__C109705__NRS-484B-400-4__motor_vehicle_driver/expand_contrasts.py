@@ -46,6 +46,7 @@ def main():
         for item in bundle['files']:
             if item['path'] == 'config.json':
                 item['content'] = json.dumps(config, indent=2) + '\n'
+                item.pop('source', None)
             elif item['path'] in source_files:
                 item['content'] = (ROOT / item['path']).read_text()
         construction_path = ROOT / ('construction-' + slug + '.json')

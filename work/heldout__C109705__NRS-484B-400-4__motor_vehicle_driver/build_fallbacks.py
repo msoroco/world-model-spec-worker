@@ -45,6 +45,7 @@ def main():
         for identifier, knob, value, changed, trigger in FALLBACKS:
             candidate = deepcopy(primary)
             config_item = next(row for row in candidate['files'] if row['path'] == 'config.json')
+            config_item.pop('source', None)
             config = json.loads(config_item['content'])
             config[knob] = value
             config_item['content'] = json.dumps(config, indent=2) + '\n'

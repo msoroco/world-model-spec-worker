@@ -1,0 +1,52 @@
+{
+  "template_id": "NRS-484B-400-4@motor_vehicle_driver",
+  "law_id": "NRS-484B-400-4",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "If the driver of a vehicle intends to turn at an intersection and: The turn is a left turn from a one-way highway onto a two-directional highway, the left turn must be made by passing to the right of the centerline of the highway being entered upon leaving the intersection, and the approach for the left turn must be made as close as practicable to the left-hand curb of the one-way highway.",
+  "structure": {
+    "law_id": "NRS-484B-400-4",
+    "activation": {
+      "condition": "Driver intends a left turn at an intersection from a one-way highway onto a two-directional highway.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "Pass to the right of the entered highway centerline upon leaving the intersection and approach as close as practicable to the one-way highway left-hand curb.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Approach for the left turn and departure upon leaving the intersection.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "as close as practicable to the left-hand curb of the one-way highway",
+        "note": "Original approach body/curb distance is measurable; feasible position and legal practicability require independent source review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "approach_left_curb_offset_m",
+      "kind": "world_setup",
+      "range_or_domain": "commanded source-road lateral approach target in meters"
+    },
+    {
+      "name": "departure_centerline_offset_m",
+      "kind": "controller",
+      "range_or_domain": "commanded destination lateral departure target in meters"
+    },
+    {
+      "name": "approach_left_curb_distance_m",
+      "kind": "subject_behavior",
+      "range_or_domain": "original full-body nearest approach distance from source left curb in meters"
+    },
+    {
+      "name": "departure_centerline_signed_m",
+      "kind": "subject_behavior",
+      "range_or_domain": "original full-body signed departure position from entered centerline in meters"
+    }
+  ]
+}

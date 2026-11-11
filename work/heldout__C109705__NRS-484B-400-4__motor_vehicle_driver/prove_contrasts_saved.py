@@ -1,5 +1,6 @@
 """Run saved-only processing for all three source-shaped C109705 contrasts."""
 from hashlib import sha256
+import argparse
 import json
 from pathlib import Path
 import subprocess
@@ -20,21 +21,29 @@ def digest(path):
 
 
 def main():
-    entries = json.loads(MANIFEST.read_text())['cases']
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--manifest', default=str(MANIFEST))
+    parser.add_argument('--record-prefix', default='saved')
+    args = parser.parse_args()
+    manifest = Path(args.manifest).resolve()
+    prefix = args.record_prefix
+    if prefix not in ('saved', 'delivery-saved'):
+        raise ValueError('Unknown saved proof prefix')
+    entries = json.loads(manifest.read_text())['cases']
     records = []
     for entry in entries:
       case = entry['case_id']
       slug = case.split('__')[-1]
       for candidate in ['primary'] + [item['id'] for item in entry.get('candidates', [])]:
         revision = 1
-        stem = '.runtime-work/c109705-saved-' + slug + '-' + candidate
+        stem = '.runtime-work/c109705-' + prefix + '-' + slug + '-' + candidate
         attempt = REPO / f'{stem}-attempt-v{revision}'
         output = REPO / f'{stem}-v{revision}'
         while attempt.exists() or output.exists():
             revision += 1
             attempt = REPO / f'{stem}-attempt-v{revision}'
             output = REPO / f'{stem}-v{revision}'
-        materialize(MANIFEST, case, attempt, candidate)
+        materialize(manifest, case, attempt, candidate)
         with tempfile.TemporaryDirectory(dir=REPO / '.runtime-work', prefix='c109705-source-') as temporary:
             fixture = Path(temporary) / 'source'
             fixture_materialize(REPO, REPO / entry['fixture_recipe'], fixture)
@@ -42,12 +51,12 @@ def main():
         before = {path.relative_to(attempt).as_posix(): digest(path)
                   for path in attempt.rglob('*') if path.is_file()}
         command = [sys.executable, str(REPO / 'runtime.py'), 'process-saved',
-                   '--manifest', str(MANIFEST), '--case', case,
+                   '--manifest', str(manifest), '--case', case,
                    '--attempt', str(attempt), '--output', str(output),
                    '--library', str(REPO / 'runtime/library'),
                    '--validator', str(REPO / '.runtime-work/c125714-validator/.lake/build/bin/adapterCheck')]
         process = subprocess.run(command, cwd=REPO, capture_output=True, text=True)
-        log = ROOT / 'cases' / ('saved-' + slug + '-' + candidate + '.log')
+        log = ROOT / 'cases' / (prefix + '-' + slug + '-' + candidate + '.log')
         log.write_text(process.stdout + process.stderr)
         if process.returncode:
             raise ValueError('C109705 saved processing failed: ' + slug)
@@ -59,14 +68,14 @@ def main():
                 or not receipt.get('originals_preserved')
                 or any(digest(attempt / path) != value for path, value in before.items())):
             raise ValueError('C109705 saved receipt/original source differs: ' + slug)
-        receipt_path = ROOT / 'cases' / ('saved-' + slug + '-' + candidate + '.json')
+        receipt_path = ROOT / 'cases' / (prefix + '-' + slug + '-' + candidate + '.json')
         receipt_path.write_text(json.dumps(receipt, indent=2) + '\n')
         records.append({'case_id': case, 'candidate_id': candidate,
                         'receipt': str(receipt_path.relative_to(ROOT)),
                         'receipt_sha256': digest(receipt_path),
                         'log': str(log.relative_to(ROOT)), 'log_sha256': digest(log)})
         print(slug, candidate, 'passed; originals preserved; no physical or legal acceptance', flush=True)
-    (ROOT / 'saved-candidate-proofs.json').write_text(json.dumps(records, indent=2) + '\n')
+    (ROOT / (prefix + '-candidate-proofs.json')).write_text(json.dumps(records, indent=2) + '\n')
 
 
 if __name__ == '__main__':

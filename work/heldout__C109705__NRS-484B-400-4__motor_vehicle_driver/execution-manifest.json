@@ -1,0 +1,997 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right",
+      "construction": "construction-approach_near_depart_right.json",
+      "construction_sha256": "a82c00539cf6de28356f5e8a24353b56b595d817e0ade76383aed73e9e989e6d",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-approach_near_depart_right.json",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/diagnostic-recipe-approach_near_depart_right.json",
+      "acquisition": {
+        "approach_left_curb_distance_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to map left curb",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        },
+        "departure_centerline_signed_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to entered road directed centerline",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route connectivity, turn speed and original curb/centerline camera visibility may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-approach_near_depart_right-fallback1.json",
+          "construction_sha256": "31872bcc2badeb1faf10f3a57d874b64d2820aa186b05796ca6d69607aa4a815",
+          "changed_knobs": [
+            "Use one-meter connected route sampling"
+          ],
+          "trigger": {
+            "source": "road.xodr and original route/trace readback",
+            "metric": "connected junction and destination route at one-meter waypoint spacing",
+            "failure_condition": "Two-meter sampling skips the intended connected left-turn route"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_near_depart_right-fallback1-offline.log",
+            "log_sha256": "de61e94839dee38e282544a21e5236726d4aaf697d9df4104adfa9bb9715da0e",
+            "construction_sha256": "31872bcc2badeb1faf10f3a57d874b64d2820aa186b05796ca6d69607aa4a815"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_near_depart_right-fallback1.json",
+            "sha256": "e1578f36932726ebf7d6d9b079136d5833a531cd1e21e42fd04d1d3b06c9d19c",
+            "log": "cases/compat-approach_near_depart_right-fallback1-analysis.log",
+            "negative_log": "cases/compat-approach_near_depart_right-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-approach_near_depart_right-fallback2.json",
+          "construction_sha256": "30e7a880baf85325eeded8dc265f2136345c8a3da8c2dd24cec022536ff31955",
+          "changed_knobs": [
+            "Lower turn throttle to 0.16"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and body_footprints.jsonl",
+            "metric": "original departure completion and body-corner side after turn",
+            "failure_condition": "Primary turn speed overshoots the intended right-of-centerline departure"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --candidate fallback2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_near_depart_right-fallback2-offline.log",
+            "log_sha256": "fb6777a82541b76b983260e934e7f47763e0ee28a6340d0c5826de2acb75219b",
+            "construction_sha256": "30e7a880baf85325eeded8dc265f2136345c8a3da8c2dd24cec022536ff31955"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_near_depart_right-fallback2.json",
+            "sha256": "b5180e7b68083cca3b759a7719320b7507834a3ec6591d104fcd1c0d02344a6f",
+            "log": "cases/compat-approach_near_depart_right-fallback2-analysis.log",
+            "negative_log": "cases/compat-approach_near_depart_right-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-approach_near_depart_right-fallback3.json",
+          "construction_sha256": "8213f4b3ae15c81f8a75dd4a44fd4418360e56bb7172e0b4d7d0ea640a6f4066",
+          "changed_knobs": [
+            "Raise the overview camera by two meters"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "original left curb and entered-road centerline visibility",
+            "failure_condition": "Primary overview hides the source curb or entered centerline"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --candidate fallback3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_near_depart_right-fallback3-offline.log",
+            "log_sha256": "ea4e8a0a8127758360ec407bf1502dda3ad1e0b043d2e9f6c6278c34d01c5d34",
+            "construction_sha256": "8213f4b3ae15c81f8a75dd4a44fd4418360e56bb7172e0b4d7d0ea640a6f4066"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_near_depart_right-fallback3.json",
+            "sha256": "107770541f445ed1a08e739af148866f9e0219f7f18f29abbfdb7111dc322094",
+            "log": "cases/compat-approach_near_depart_right-fallback3-analysis.log",
+            "negative_log": "cases/compat-approach_near_depart_right-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/proof-approach_near_depart_right-primary-offline.log",
+        "log_sha256": "f3ad30b2643f42c98022d7987facacfc3ff91d6098511e8c23b02415102d2da7",
+        "construction_sha256": "a82c00539cf6de28356f5e8a24353b56b595d817e0ade76383aed73e9e989e6d"
+      },
+      "compatibility": {
+        "receipt": "cases/compat-approach_near_depart_right-primary.json",
+        "sha256": "d93c6e4dd5062d0ca3af2429445800e51908cf1e66e5ea01afb4b8092c38f93c",
+        "log": "cases/compat-approach_near_depart_right-primary-analysis.log",
+        "negative_log": "cases/compat-approach_near_depart_right-primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/compat-approach_near_depart_right-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/execution-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "cases/saved-approach_near_depart_right-primary.log",
+        "test_log_sha256": "45bca2fca2f859ea601399d5fed812c7cc85b7ad46393e7d0c017ed3cdcdc093",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical/approach_near_depart_right-proof.json",
+        "sha256": "518e0c663dfe9f3e685edee368e5758c456a4c4cd30e030a64df2e150e888c1a"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "turn_delivery_audit.py",
+        "script_sha256": "b4cf3206968533b77ac55176b20044b3e5394c5db34d171b13a7b71077230f3c",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_near_depart_right-primary-compatibility-v4 --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_near_depart_right-primary-compatibility-v4/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "cases/delivery-approach_near_depart_right-positive.log",
+        "test_log_sha256": "f579394b8c4f926555dd95758b46c18d409f364e35fd268a387a1c5821ee268d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-stale-lpjlu2nu --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_near_depart_right-primary-compatibility-v4/analysis-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Turn original source hash differs: road_geometry.json",
+        "negative_log": "cases/delivery-approach_near_depart_right-negative.log",
+        "negative_log_sha256": "9d79e065abda4255a9fadbef82a704809bd6dde41c58decaddc5bb7e948c1213"
+      }
+    },
+    {
+      "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right",
+      "construction": "construction-approach_far_depart_right.json",
+      "construction_sha256": "bc481d537ed40255be654b63e34ec6c1481e01c3f6ab7bd5d75954c5c6d440de",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-approach_far_depart_right.json",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/diagnostic-recipe-approach_far_depart_right.json",
+      "acquisition": {
+        "approach_left_curb_distance_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to map left curb",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        },
+        "departure_centerline_signed_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to entered road directed centerline",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route connectivity, turn speed and original curb/centerline camera visibility may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-approach_far_depart_right-fallback1.json",
+          "construction_sha256": "79550036fcc8465cf3f3388256c41fdecf9d8d13d82bdee1fa362ae411733caf",
+          "changed_knobs": [
+            "Use one-meter connected route sampling"
+          ],
+          "trigger": {
+            "source": "road.xodr and original route/trace readback",
+            "metric": "connected junction and destination route at one-meter waypoint spacing",
+            "failure_condition": "Two-meter sampling skips the intended connected left-turn route"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_far_depart_right-fallback1-offline.log",
+            "log_sha256": "adcadb35f45029cefd85ededdd57ccdd26cd8cbc56d34915991a24f19bfdb92c",
+            "construction_sha256": "79550036fcc8465cf3f3388256c41fdecf9d8d13d82bdee1fa362ae411733caf"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_far_depart_right-fallback1.json",
+            "sha256": "3f942d2ddb63efa34c9e3cfd320bc25cbfc05ad002d94881f9339eb1364ddab9",
+            "log": "cases/compat-approach_far_depart_right-fallback1-analysis.log",
+            "negative_log": "cases/compat-approach_far_depart_right-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-approach_far_depart_right-fallback2.json",
+          "construction_sha256": "9e9b7d8a400043910d33dea01fa2500b3cce661669bf3f2d59a0ca75cb754495",
+          "changed_knobs": [
+            "Lower turn throttle to 0.16"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and body_footprints.jsonl",
+            "metric": "original departure completion and body-corner side after turn",
+            "failure_condition": "Primary turn speed overshoots the intended right-of-centerline departure"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right --candidate fallback2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_far_depart_right-fallback2-offline.log",
+            "log_sha256": "d3d5b95a1c3fd767d024932f899133487c0b854f840e5c7d52b7726a69a68b80",
+            "construction_sha256": "9e9b7d8a400043910d33dea01fa2500b3cce661669bf3f2d59a0ca75cb754495"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_far_depart_right-fallback2.json",
+            "sha256": "4d91868fb40486283c33da9121d0a4ea36e94e6fa4a834225d10a2846d60f1c9",
+            "log": "cases/compat-approach_far_depart_right-fallback2-analysis.log",
+            "negative_log": "cases/compat-approach_far_depart_right-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-approach_far_depart_right-fallback3.json",
+          "construction_sha256": "b173433382117790fb964e91f685bffd36ca378eaffaa1eeb1d7657fab37ebaf",
+          "changed_knobs": [
+            "Raise the overview camera by two meters"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "original left curb and entered-road centerline visibility",
+            "failure_condition": "Primary overview hides the source curb or entered centerline"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right --candidate fallback3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_far_depart_right-fallback3-offline.log",
+            "log_sha256": "6c2516139e22c433c68f4ff023ee6c38f14fb86519b968bb2eddd432c6140593",
+            "construction_sha256": "b173433382117790fb964e91f685bffd36ca378eaffaa1eeb1d7657fab37ebaf"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_far_depart_right-fallback3.json",
+            "sha256": "fb177a55673c41a98445e538388f55a061bee1dc780aa961ff0665bb0c9a484f",
+            "log": "cases/compat-approach_far_depart_right-fallback3-analysis.log",
+            "negative_log": "cases/compat-approach_far_depart_right-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/proof-approach_far_depart_right-primary-offline.log",
+        "log_sha256": "7cfe96e59074545355ba0d48cdd3400d6b9efc5b69949c6349b4149aed2772bc",
+        "construction_sha256": "bc481d537ed40255be654b63e34ec6c1481e01c3f6ab7bd5d75954c5c6d440de"
+      },
+      "compatibility": {
+        "receipt": "cases/compat-approach_far_depart_right-primary.json",
+        "sha256": "fd1edb9cdd161517f22cb4c646916f9bbee74d694e94d4b18932fe58cd2cae76",
+        "log": "cases/compat-approach_far_depart_right-primary-analysis.log",
+        "negative_log": "cases/compat-approach_far_depart_right-primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/compat-approach_far_depart_right-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/execution-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "cases/saved-approach_far_depart_right-primary.log",
+        "test_log_sha256": "42dd8a0cffae1d1d625720680fbd7437bcdfd117146aca80b65eb15b544657dd",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical/approach_far_depart_right-proof.json",
+        "sha256": "74950ebe55cb3a5007ff75f1a446254d9a0f2c9949931987db0a32b1d6706db0"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "turn_delivery_audit.py",
+        "script_sha256": "b4cf3206968533b77ac55176b20044b3e5394c5db34d171b13a7b71077230f3c",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_far_depart_right-primary-compatibility-v4 --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_far_depart_right-primary-compatibility-v4/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "cases/delivery-approach_far_depart_right-positive.log",
+        "test_log_sha256": "aafd798213450e7947b6e21e01a0b0c54a1bdae624d40445c3f92e2570c2ce3b",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-stale-_udn7tx8 --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_far_depart_right-primary-compatibility-v4/analysis-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Turn original source hash differs: road_geometry.json",
+        "negative_log": "cases/delivery-approach_far_depart_right-negative.log",
+        "negative_log_sha256": "9d79e065abda4255a9fadbef82a704809bd6dde41c58decaddc5bb7e948c1213"
+      }
+    },
+    {
+      "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left",
+      "construction": "construction-approach_near_depart_left.json",
+      "construction_sha256": "eb2db19f997b0a49df86f8b9f5c15959b3df50f0720b1eac13a8ed7a9eea247e",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-approach_near_depart_left.json",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/diagnostic-recipe-approach_near_depart_left.json",
+      "acquisition": {
+        "approach_left_curb_distance_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to map left curb",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        },
+        "departure_centerline_signed_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to entered road directed centerline",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route connectivity, turn speed and original curb/centerline camera visibility may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-approach_near_depart_left-fallback1.json",
+          "construction_sha256": "497182fbafd0fbb190391a39c7177f6ad65e0326e1865be6edb89c4e7e352963",
+          "changed_knobs": [
+            "Use one-meter connected route sampling"
+          ],
+          "trigger": {
+            "source": "road.xodr and original route/trace readback",
+            "metric": "connected junction and destination route at one-meter waypoint spacing",
+            "failure_condition": "Two-meter sampling skips the intended connected left-turn route"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_near_depart_left-fallback1-offline.log",
+            "log_sha256": "d2cb01b59377e79e60f7876e0e7845448c26532e4665dfd1f999f07b917c4bb2",
+            "construction_sha256": "497182fbafd0fbb190391a39c7177f6ad65e0326e1865be6edb89c4e7e352963"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_near_depart_left-fallback1.json",
+            "sha256": "28d26a1cda7cf63a26dcd29202fdb2e1a9ae9987c7978a9b47bc7c2d89058c55",
+            "log": "cases/compat-approach_near_depart_left-fallback1-analysis.log",
+            "negative_log": "cases/compat-approach_near_depart_left-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-approach_near_depart_left-fallback2.json",
+          "construction_sha256": "d365a4f32e016da2d9be733c3f355a0bb0becb44b70ced1ab15202fb03c7b451",
+          "changed_knobs": [
+            "Lower turn throttle to 0.16"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and body_footprints.jsonl",
+            "metric": "original departure completion and body-corner side after turn",
+            "failure_condition": "Primary turn speed overshoots the intended right-of-centerline departure"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left --candidate fallback2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_near_depart_left-fallback2-offline.log",
+            "log_sha256": "6778e77e19313e11afe4a033523c2a4e963777608b411dab236a67c970d74952",
+            "construction_sha256": "d365a4f32e016da2d9be733c3f355a0bb0becb44b70ced1ab15202fb03c7b451"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_near_depart_left-fallback2.json",
+            "sha256": "0cbbe2bc8228668a582ee250b716539076df4b57023a7d66419cae4dddae3769",
+            "log": "cases/compat-approach_near_depart_left-fallback2-analysis.log",
+            "negative_log": "cases/compat-approach_near_depart_left-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-approach_near_depart_left-fallback3.json",
+          "construction_sha256": "1e0d2209f69f08fc7a60077f1d51a510c4644650f264625e07b0cd94e3aee01a",
+          "changed_knobs": [
+            "Raise the overview camera by two meters"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "original left curb and entered-road centerline visibility",
+            "failure_condition": "Primary overview hides the source curb or entered centerline"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left --candidate fallback3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_near_depart_left-fallback3-offline.log",
+            "log_sha256": "de9f85bf1e6d6829627b0349fb3f208aebb2ac262cad14f707b94ef4fa7e9326",
+            "construction_sha256": "1e0d2209f69f08fc7a60077f1d51a510c4644650f264625e07b0cd94e3aee01a"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_near_depart_left-fallback3.json",
+            "sha256": "a8dfb749dbebc6548d4b716ce9c0200c1b15e37104b3c12b4db9ce23c33c92be",
+            "log": "cases/compat-approach_near_depart_left-fallback3-analysis.log",
+            "negative_log": "cases/compat-approach_near_depart_left-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/proof-approach_near_depart_left-primary-offline.log",
+        "log_sha256": "1dc15c6010a457607f88fdf2fa7e3b9ea0b5cc41da5ce61f59965da78744c101",
+        "construction_sha256": "eb2db19f997b0a49df86f8b9f5c15959b3df50f0720b1eac13a8ed7a9eea247e"
+      },
+      "compatibility": {
+        "receipt": "cases/compat-approach_near_depart_left-primary.json",
+        "sha256": "3d05a24671e7819f89f125c2736a9d893e1c1d7ae4e3d5651ef867b110ffdf5a",
+        "log": "cases/compat-approach_near_depart_left-primary-analysis.log",
+        "negative_log": "cases/compat-approach_near_depart_left-primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/compat-approach_near_depart_left-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/execution-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "cases/saved-approach_near_depart_left-primary.log",
+        "test_log_sha256": "5ca94a1bbc011335d6e6759e3640f3306ecd64c54be25aa91a0bcb005bbe9f02",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical/approach_near_depart_left-proof.json",
+        "sha256": "89d291e8ff24a6c10b64287c76d0b9aaa3a64c899fc33dc2ff0ac3c46e341aa0"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "turn_delivery_audit.py",
+        "script_sha256": "b4cf3206968533b77ac55176b20044b3e5394c5db34d171b13a7b71077230f3c",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_near_depart_left-primary-compatibility-v4 --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_near_depart_left-primary-compatibility-v4/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "cases/delivery-approach_near_depart_left-positive.log",
+        "test_log_sha256": "6f3fb1c142705fdf678ac55ea90512777a438ddc3324f50be91c23b0659481db",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-stale-5nfsxbdi --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_near_depart_left-primary-compatibility-v4/analysis-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Turn original source hash differs: road_geometry.json",
+        "negative_log": "cases/delivery-approach_near_depart_left-negative.log",
+        "negative_log_sha256": "9d79e065abda4255a9fadbef82a704809bd6dde41c58decaddc5bb7e948c1213"
+      }
+    },
+    {
+      "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0000",
+      "construction": "construction-approach_practicability_grid-0000.json",
+      "construction_sha256": "9574dab84df6da2c720662b946fa594deb4f57bbe890065c4266ab81181ab5c7",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-approach_practicability_grid-0000.json",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/diagnostic-recipe-approach_practicability_grid-0000.json",
+      "acquisition": {
+        "approach_left_curb_distance_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to map left curb",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        },
+        "departure_centerline_signed_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to entered road directed centerline",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route connectivity, turn speed and original curb/centerline camera visibility may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-approach_practicability_grid-0000-fallback1.json",
+          "construction_sha256": "7261996322cb31d8f233afbd80c0054256a44832510821380f5d0273b16ff1c4",
+          "changed_knobs": [
+            "Use one-meter connected route sampling"
+          ],
+          "trigger": {
+            "source": "road.xodr and original route/trace readback",
+            "metric": "connected junction and destination route at one-meter waypoint spacing",
+            "failure_condition": "Two-meter sampling skips the intended connected left-turn route"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0000 --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_practicability_grid-0000-fallback1-offline.log",
+            "log_sha256": "a70828b2584e99634709d2efbb00a42f12d4cc1ed31f55574f0b5449031ab961",
+            "construction_sha256": "7261996322cb31d8f233afbd80c0054256a44832510821380f5d0273b16ff1c4"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_practicability_grid-0000-fallback1.json",
+            "sha256": "41ef916bef2383499f3899102dadad1a792e0454f7441ed2d925c885ce2824a7",
+            "log": "cases/compat-approach_practicability_grid-0000-fallback1-analysis.log",
+            "negative_log": "cases/compat-approach_practicability_grid-0000-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-approach_practicability_grid-0000-fallback2.json",
+          "construction_sha256": "68785b14086299a9c587c52dc7ef52824372f2d66518656e59a6e17be80c3b29",
+          "changed_knobs": [
+            "Lower turn throttle to 0.16"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and body_footprints.jsonl",
+            "metric": "original departure completion and body-corner side after turn",
+            "failure_condition": "Primary turn speed overshoots the intended right-of-centerline departure"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0000 --candidate fallback2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_practicability_grid-0000-fallback2-offline.log",
+            "log_sha256": "ecf26e6433d7889dece477dab60866482b912c468934f1bbbcf9bea22bd32f5a",
+            "construction_sha256": "68785b14086299a9c587c52dc7ef52824372f2d66518656e59a6e17be80c3b29"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_practicability_grid-0000-fallback2.json",
+            "sha256": "c13a20a14b7212feda9581d0cec8bd032380f5dfeb761de541d2b803c1da47da",
+            "log": "cases/compat-approach_practicability_grid-0000-fallback2-analysis.log",
+            "negative_log": "cases/compat-approach_practicability_grid-0000-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-approach_practicability_grid-0000-fallback3.json",
+          "construction_sha256": "60fe4b42cf59e3068b0a84f0d184acb98fe986895b7def7caa2e31d247881838",
+          "changed_knobs": [
+            "Raise the overview camera by two meters"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "original left curb and entered-road centerline visibility",
+            "failure_condition": "Primary overview hides the source curb or entered centerline"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0000 --candidate fallback3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_practicability_grid-0000-fallback3-offline.log",
+            "log_sha256": "e9f6e07ae7a08c4486bddd3c58fbcbe8d4ebe4b68acc7f6289c6ee7bd1976d72",
+            "construction_sha256": "60fe4b42cf59e3068b0a84f0d184acb98fe986895b7def7caa2e31d247881838"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_practicability_grid-0000-fallback3.json",
+            "sha256": "0164afbcb2a631d819f88210fe5a84c935e261f5f2d4ccc3bba5eb147156a039",
+            "log": "cases/compat-approach_practicability_grid-0000-fallback3-analysis.log",
+            "negative_log": "cases/compat-approach_practicability_grid-0000-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0000 --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/proof-approach_practicability_grid-0000-primary-offline.log",
+        "log_sha256": "aa38a5903ba6bc0dcb1514f21b16422353c5d8ea2a0ae57c4d22b6ef4261e89d",
+        "construction_sha256": "9574dab84df6da2c720662b946fa594deb4f57bbe890065c4266ab81181ab5c7"
+      },
+      "compatibility": {
+        "receipt": "cases/compat-approach_practicability_grid-0000-primary.json",
+        "sha256": "c6631a8654fa379a1310f185eed3e2fac115b1d3944d49fc6cde3895bc896c86",
+        "log": "cases/compat-approach_practicability_grid-0000-primary-analysis.log",
+        "negative_log": "cases/compat-approach_practicability_grid-0000-primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/compat-approach_practicability_grid-0000-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/execution-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0000 --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "cases/saved-approach_practicability_grid-0000-primary.log",
+        "test_log_sha256": "e7a90f874f7a8076cda5b30d622ab5ba5e2a37b98af639e2d78fa0cfe2133893",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical/approach_practicability_grid-0000-proof.json",
+        "sha256": "9c88fb1b18df1b18f04ac5e2511e3e5ae1bd32575440ce2cfea59ab8afc7e231"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0000",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "turn_delivery_audit.py",
+        "script_sha256": "b4cf3206968533b77ac55176b20044b3e5394c5db34d171b13a7b71077230f3c",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0000 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_practicability_grid-0000-primary-compatibility-v4 --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_practicability_grid-0000-primary-compatibility-v4/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "cases/delivery-approach_practicability_grid-0000-positive.log",
+        "test_log_sha256": "08938969427bd811200b274c899a6b47a7aa5fbf4128cbc37426fd83d2520313",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0000 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-stale-00ids5vf --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_practicability_grid-0000-primary-compatibility-v4/analysis-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Turn original source hash differs: road_geometry.json",
+        "negative_log": "cases/delivery-approach_practicability_grid-0000-negative.log",
+        "negative_log_sha256": "9d79e065abda4255a9fadbef82a704809bd6dde41c58decaddc5bb7e948c1213"
+      }
+    },
+    {
+      "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0001",
+      "construction": "construction-approach_practicability_grid-0001.json",
+      "construction_sha256": "5695e854a416060ee6b5b5e89df6d381e6e1e811bfaae8035ef4b6ee720b4d27",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-approach_practicability_grid-0001.json",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/diagnostic-recipe-approach_practicability_grid-0001.json",
+      "acquisition": {
+        "approach_left_curb_distance_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to map left curb",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        },
+        "departure_centerline_signed_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to entered road directed centerline",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route connectivity, turn speed and original curb/centerline camera visibility may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-approach_practicability_grid-0001-fallback1.json",
+          "construction_sha256": "3df8081ff5f680d14610ef38be4491edb6a2d423e57b6595aae2a849600253aa",
+          "changed_knobs": [
+            "Use one-meter connected route sampling"
+          ],
+          "trigger": {
+            "source": "road.xodr and original route/trace readback",
+            "metric": "connected junction and destination route at one-meter waypoint spacing",
+            "failure_condition": "Two-meter sampling skips the intended connected left-turn route"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0001 --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_practicability_grid-0001-fallback1-offline.log",
+            "log_sha256": "73a00ec0a8940d87bdbf6e842cb5fb667af056f2548302ff8f19a174d3933fdb",
+            "construction_sha256": "3df8081ff5f680d14610ef38be4491edb6a2d423e57b6595aae2a849600253aa"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_practicability_grid-0001-fallback1.json",
+            "sha256": "226d6d654cf6aaf83d7777b66e2f3b4b74b4c627752f5240fbbb71a0fd3c3c30",
+            "log": "cases/compat-approach_practicability_grid-0001-fallback1-analysis.log",
+            "negative_log": "cases/compat-approach_practicability_grid-0001-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-approach_practicability_grid-0001-fallback2.json",
+          "construction_sha256": "0adf916f463b20b4919ca65f9d68e0f247a336315e220da45efb52d342808db6",
+          "changed_knobs": [
+            "Lower turn throttle to 0.16"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and body_footprints.jsonl",
+            "metric": "original departure completion and body-corner side after turn",
+            "failure_condition": "Primary turn speed overshoots the intended right-of-centerline departure"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0001 --candidate fallback2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_practicability_grid-0001-fallback2-offline.log",
+            "log_sha256": "10a64ddc3eb0be5fb4ceda169e34b69fab26bdcfa330ecf2fe700640541aac19",
+            "construction_sha256": "0adf916f463b20b4919ca65f9d68e0f247a336315e220da45efb52d342808db6"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_practicability_grid-0001-fallback2.json",
+            "sha256": "456844797a7f4a741b8128cbdb671be9efe13d95591d6012c530c91bc9ce1d08",
+            "log": "cases/compat-approach_practicability_grid-0001-fallback2-analysis.log",
+            "negative_log": "cases/compat-approach_practicability_grid-0001-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-approach_practicability_grid-0001-fallback3.json",
+          "construction_sha256": "71b8ffedafcd1d20bc4db7b265da90db5eb0e96b5a12bce52630bf0834e25ffa",
+          "changed_knobs": [
+            "Raise the overview camera by two meters"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "original left curb and entered-road centerline visibility",
+            "failure_condition": "Primary overview hides the source curb or entered centerline"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0001 --candidate fallback3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_practicability_grid-0001-fallback3-offline.log",
+            "log_sha256": "c4da658883cb6c82de1e60bbe336660ec782c44b72d20a89693baf7089b519e1",
+            "construction_sha256": "71b8ffedafcd1d20bc4db7b265da90db5eb0e96b5a12bce52630bf0834e25ffa"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_practicability_grid-0001-fallback3.json",
+            "sha256": "e1fb1c57a35aa7c855ff17fa1dbe9c31012daba870131f3bdec5515b836d9c42",
+            "log": "cases/compat-approach_practicability_grid-0001-fallback3-analysis.log",
+            "negative_log": "cases/compat-approach_practicability_grid-0001-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0001 --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/proof-approach_practicability_grid-0001-primary-offline.log",
+        "log_sha256": "c294f9daf18560fb7a75953acf42ca01d2ce5ae58b91bcbeb2301b9955c53841",
+        "construction_sha256": "5695e854a416060ee6b5b5e89df6d381e6e1e811bfaae8035ef4b6ee720b4d27"
+      },
+      "compatibility": {
+        "receipt": "cases/compat-approach_practicability_grid-0001-primary.json",
+        "sha256": "4b4c7c8b9ad16544172f2adfb7b0dbe3ff48ec0835da256bb29e8f0859704720",
+        "log": "cases/compat-approach_practicability_grid-0001-primary-analysis.log",
+        "negative_log": "cases/compat-approach_practicability_grid-0001-primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/compat-approach_practicability_grid-0001-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/execution-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0001 --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "cases/saved-approach_practicability_grid-0001-primary.log",
+        "test_log_sha256": "01e5a5d973f1e5690435cc60730aa56cb89e8fa3d0e5a780d5dfa1a7352b5161",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical/approach_practicability_grid-0001-proof.json",
+        "sha256": "fdcab182921669a50c9151742181b9b1e57915803b710e3a4cdd3923f56ffeea"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0001",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "turn_delivery_audit.py",
+        "script_sha256": "b4cf3206968533b77ac55176b20044b3e5394c5db34d171b13a7b71077230f3c",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0001 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_practicability_grid-0001-primary-compatibility-v4 --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_practicability_grid-0001-primary-compatibility-v4/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "cases/delivery-approach_practicability_grid-0001-positive.log",
+        "test_log_sha256": "05eed48a74b65b5d22278ba0d394e8f32b530241ab3e34bf82b237a0a9a3896a",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0001 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-stale-7fjnp63t --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_practicability_grid-0001-primary-compatibility-v4/analysis-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Turn original source hash differs: road_geometry.json",
+        "negative_log": "cases/delivery-approach_practicability_grid-0001-negative.log",
+        "negative_log_sha256": "9d79e065abda4255a9fadbef82a704809bd6dde41c58decaddc5bb7e948c1213"
+      }
+    },
+    {
+      "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0002",
+      "construction": "construction-approach_practicability_grid-0002.json",
+      "construction_sha256": "af920bc9778af48f6ec64d3befc30eff7508d6674c4f6ca1cfab19ea2441c9fd",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-approach_practicability_grid-0002.json",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/diagnostic-recipe-approach_practicability_grid-0002.json",
+      "acquisition": {
+        "approach_left_curb_distance_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to map left curb",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        },
+        "departure_centerline_signed_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to entered road directed centerline",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route connectivity, turn speed and original curb/centerline camera visibility may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-approach_practicability_grid-0002-fallback1.json",
+          "construction_sha256": "497de3ca2d0add54941da36c0a5f190a16cf7fd2b7baa5359fd7186ad91228b5",
+          "changed_knobs": [
+            "Use one-meter connected route sampling"
+          ],
+          "trigger": {
+            "source": "road.xodr and original route/trace readback",
+            "metric": "connected junction and destination route at one-meter waypoint spacing",
+            "failure_condition": "Two-meter sampling skips the intended connected left-turn route"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0002 --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_practicability_grid-0002-fallback1-offline.log",
+            "log_sha256": "097f03dfdcbda4283cdbc180cc01c26ae030dc9890ea17ebc06cd15118e2378d",
+            "construction_sha256": "497de3ca2d0add54941da36c0a5f190a16cf7fd2b7baa5359fd7186ad91228b5"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_practicability_grid-0002-fallback1.json",
+            "sha256": "5ddfbbfd5f009354e91923c4600070b73fb0e7e22b511b3e7d96fa6f58e14c3b",
+            "log": "cases/compat-approach_practicability_grid-0002-fallback1-analysis.log",
+            "negative_log": "cases/compat-approach_practicability_grid-0002-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-approach_practicability_grid-0002-fallback2.json",
+          "construction_sha256": "d99105d42d18e223c5e7a02b1c57cfece19941beab8652dfc0bbc576fce4878d",
+          "changed_knobs": [
+            "Lower turn throttle to 0.16"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and body_footprints.jsonl",
+            "metric": "original departure completion and body-corner side after turn",
+            "failure_condition": "Primary turn speed overshoots the intended right-of-centerline departure"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0002 --candidate fallback2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_practicability_grid-0002-fallback2-offline.log",
+            "log_sha256": "6c01254f1578abcff2afc398ca7914099c0cbc45befb228472ca2a5a0fcf67b6",
+            "construction_sha256": "d99105d42d18e223c5e7a02b1c57cfece19941beab8652dfc0bbc576fce4878d"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_practicability_grid-0002-fallback2.json",
+            "sha256": "7faf98fd1eec5152deffaee594aa2466b7147dfde18fda9965e103b42ba122e4",
+            "log": "cases/compat-approach_practicability_grid-0002-fallback2-analysis.log",
+            "negative_log": "cases/compat-approach_practicability_grid-0002-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-approach_practicability_grid-0002-fallback3.json",
+          "construction_sha256": "de6615f583355b94ceb88e093eb5dd0032b60a205532922ff3cdb5f72d04d924",
+          "changed_knobs": [
+            "Raise the overview camera by two meters"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "original left curb and entered-road centerline visibility",
+            "failure_condition": "Primary overview hides the source curb or entered centerline"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0002 --candidate fallback3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/proof-approach_practicability_grid-0002-fallback3-offline.log",
+            "log_sha256": "a9f6f84000514e539e762a80dde4cbcbdb84016d9f06d5fc4e90cf3953cfe855",
+            "construction_sha256": "de6615f583355b94ceb88e093eb5dd0032b60a205532922ff3cdb5f72d04d924"
+          },
+          "compatibility": {
+            "receipt": "cases/compat-approach_practicability_grid-0002-fallback3.json",
+            "sha256": "b6eccdca3291d57fa0e94fcb4c3ec80d70510f0c827a86af7fe19fad7a8289f3",
+            "log": "cases/compat-approach_practicability_grid-0002-fallback3-analysis.log",
+            "negative_log": "cases/compat-approach_practicability_grid-0002-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0002 --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/proof-approach_practicability_grid-0002-primary-offline.log",
+        "log_sha256": "02f7797d9f781ff9591922ed980e39fee29409cf9bf25c321d25abb55832ffc0",
+        "construction_sha256": "af920bc9778af48f6ec64d3befc30eff7508d6674c4f6ca1cfab19ea2441c9fd"
+      },
+      "compatibility": {
+        "receipt": "cases/compat-approach_practicability_grid-0002-primary.json",
+        "sha256": "fa71e74e2a7dcbc867db46551b3d22e8f069c2b234cd79bc1df0db132fdf6262",
+        "log": "cases/compat-approach_practicability_grid-0002-primary-analysis.log",
+        "negative_log": "cases/compat-approach_practicability_grid-0002-primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/compat-approach_practicability_grid-0002-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/execution-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0002 --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "cases/saved-approach_practicability_grid-0002-primary.log",
+        "test_log_sha256": "e4b925e6fe41242f9b981ee81a9ff828ad5f60446c591f2e24e1c0378cbfbbc5",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical/approach_practicability_grid-0002-proof.json",
+        "sha256": "17f517834b5cec72c484eb1eeda6d5c594d232f7f5ab5a7860a4713307fd009f"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0002",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "turn_delivery_audit.py",
+        "script_sha256": "b4cf3206968533b77ac55176b20044b3e5394c5db34d171b13a7b71077230f3c",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0002 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_practicability_grid-0002-primary-compatibility-v3 --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_practicability_grid-0002-primary-compatibility-v3/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "cases/delivery-approach_practicability_grid-0002-positive.log",
+        "test_log_sha256": "535080d2997a2069fa17acf8cf3118b10f5d7fffef3613d316d989b2d1dfd5b0",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0002 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-stale-smmublww --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109705-candidate-approach_practicability_grid-0002-primary-compatibility-v3/analysis-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Turn original source hash differs: road_geometry.json",
+        "negative_log": "cases/delivery-approach_practicability_grid-0002-negative.log",
+        "negative_log_sha256": "9d79e065abda4255a9fadbef82a704809bd6dde41c58decaddc5bb7e948c1213"
+      }
+    }
+  ]
+}
