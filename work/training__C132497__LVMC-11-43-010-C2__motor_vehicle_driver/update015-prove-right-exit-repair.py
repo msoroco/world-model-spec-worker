@@ -10,7 +10,8 @@ NATIVE=ROOT/'native'
 PYTHON=sys.executable
 COMMANDS=(NATIVE/'propose_ccw.py',NATIVE/'build.py',NATIVE/'audit_ccw_design.py',
           NATIVE/'build_saved.py',ROOT/'build_offline.py',
-          NATIVE/'prove_camera_calls.py',NATIVE/'prove_roundabout_topology.py',
+          NATIVE/'prove_camera_calls.py',NATIVE/'prove_capture_output.py',
+          NATIVE/'prove_roundabout_topology.py',
           NATIVE/'audit_construction.py',ROOT/'prove_compatibility.py',
           NATIVE/'audit_saved.py',NATIVE/'prove_comparison.py',
           NATIVE/'prove_triggers.py',NATIVE/'audit_triggers.py',

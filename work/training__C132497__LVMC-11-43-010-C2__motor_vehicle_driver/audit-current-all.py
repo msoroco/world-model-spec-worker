@@ -57,6 +57,11 @@ def audit(matrix):
         construction = json.loads(source.read_text())
         files = {f['path']:f['content'] for f in construction['files']}
         config[case,candidate] = json.loads(files['config.json'])
+        require(hashlib.sha256(files['capture.py'].encode()).hexdigest()==
+                sha(ROOT/'native/capture.py') and
+                hashlib.sha256(files['controller-intention.json'].encode()).hexdigest()==
+                config[case,candidate]['controller_intention_sha256'],
+                'Current Native capture or predeclared intention differs')
         logdir = ROOT/'update015-current-all'/case/candidate
         compat_path, negative_path, processing_path = (
             logdir/'compatibility.json',logdir/'negative-analysis.log',logdir/'processing.json')

@@ -42,7 +42,7 @@ def main():
             path.parent.mkdir(parents=True,exist_ok=True)
         logdir = ROOT/'update015-current-all'/case/candidate
         logdir.mkdir(parents=True,exist_ok=True)
-        compat_log = logdir/'compatibility-command.log'
+        compat_log = logdir/'current-command.log'
         run(['compatibility','--manifest',manifest,'--case',item['case_id'],
              '--candidate',candidate,'--output',attempt,'--library',LIBRARY,
              '--validator',VALIDATOR],compat_log)

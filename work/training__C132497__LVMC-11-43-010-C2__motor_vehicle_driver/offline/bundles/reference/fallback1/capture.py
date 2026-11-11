@@ -82,11 +82,27 @@ def control(carla,ego,target,target_speed):
         throttle=max(0,min(1,.22+.22*(target_speed-speed))),
         brake=max(0,min(1,.4*(speed-target_speed))))
 
+def prepare_output(bundle,output):
+    """Accept a fresh materialized runtime attempt or a fresh separate output."""
+    bundle=Path(bundle).resolve();output=Path(output).resolve()
+    if output.exists():
+        if output!=bundle or any((output/name).exists() for name in (
+            'native-map-readback.json','native-raw-actors.jsonl','video_frames.jsonl',
+            'native-capture-report.json','overview.mkv','capture')):
+            raise ValueError('Native output must be a fresh attempt')
+    else:
+        output.mkdir(parents=True)
+    if output!=bundle:
+        with (output/'controller-intention.json').open('xb') as stream:
+            stream.write((bundle/'controller-intention.json').read_bytes())
+    cfg=json.loads((bundle/'config.json').read_text())
+    if sha(output/'controller-intention.json')!=cfg['controller_intention_sha256']:
+        raise ValueError('Predeclared controller intention changed before capture')
+    return bundle,output
+
 def execute(bundle,output,host,port):
     checked=check_capture(bundle)
-    bundle=Path(bundle).resolve();output=Path(output).resolve()
-    if output.exists():raise ValueError('Native output must be a fresh directory')
-    output.mkdir(parents=True)
+    bundle,output=prepare_output(bundle,output)
     root=repository();sys.path.insert(0,str(root/'runtime/pipeline/scenario_pipeline'))
     sys.path.insert(0,str(root/'runtime/pipeline/python'))
     import carla
@@ -95,10 +111,6 @@ def execute(bundle,output,host,port):
     from worker_exchange.world_restore import snapshot,restore
     requests=[json.loads(x) for x in (bundle/'requested-tracks.jsonl').read_text().splitlines()]
     cfg=json.loads((bundle/'config.json').read_text())
-    intention=json.loads((bundle/'controller-intention.json').read_text())
-    write(output/'controller-intention.json',intention)
-    if sha(output/'controller-intention.json')!=cfg['controller_intention_sha256']:
-        raise ValueError('Predeclared controller intention changed before capture')
     client=carla.Client(host,int(port));client.set_timeout(180)
     saved=snapshot(client);old=client.get_world()
     if saved['settings'].synchronous_mode or any(

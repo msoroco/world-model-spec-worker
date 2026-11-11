@@ -56,6 +56,14 @@ def finalize(attempt, output):
         sha(attempt/'right-exit-road.xodr') != cfg['road_sha256'] or
         sha(attempt/'controller-intention.json') != cfg['controller_intention_sha256']):
         raise ValueError('Current case or source identity differs')
+    if (intention.get('case_id') != cfg['case_id'] or
+        intention.get('candidate_id') != cfg['candidate_id'] or
+        intention.get('source_kind') != 'authored_controller_route_before_motion' or
+        intention.get('route_road_ids') != [20,21,22] or
+        intention.get('intended_exit_road_id') != 22 or
+        intention.get('turn_direction') != 'right' or
+        intention.get('actual_exit_observed') is not False):
+        raise ValueError('Predeclared right-exit controller intention differs')
     observed = rows(attempt/'native-raw-actors.jsonl')
     trace, mapping = rows(attempt/'trace.jsonl'), rows(attempt/'video_frames.jsonl')
     if len(observed) != 240 or len(trace) != 240 or len(mapping) != 240:
