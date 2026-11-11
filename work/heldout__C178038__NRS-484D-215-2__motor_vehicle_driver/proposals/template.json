@@ -1,0 +1,68 @@
+{
+  "template_id": "NRS-484D-215-2@motor_vehicle_driver",
+  "law_id": "NRS-484D-215-2",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Whenever a motor vehicle is being operated on the traveled portion of the highway, or shoulder adjacent thereto, during the times specified in NRS 484D.100 [NRS-484D-100-1], the driver shall use a distribution of light, or composite beam, directed high enough and of sufficient intensity to reveal persons and vehicles at a safe distance in advance of the vehicle, subject to the following requirements and limitations: Whenever the driver of a vehicle follows another vehicle within 300 feet to the rear, the driver shall use a distribution of light permissible under this chapter other than the uppermost distribution of light specified in subsection 1 of NRS 484D.210 [DEF-NRS-484D-210-1-2].",
+  "structure": {
+    "law_id": "NRS-484D-215-2",
+    "activation": {
+      "condition": "Motor vehicle operated on the traveled highway or adjacent shoulder during NRS 484D.100 lighting times and following another vehicle to the rear.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "Use a distribution permissible under the chapter other than the uppermost distribution while following within 300 ft; the opening clause also requires illumination to a safe distance.",
+      "numeric_conditions": [
+        {
+          "variable": "headlamp_gap_ft",
+          "operator": "<",
+          "value": 300,
+          "unit": "ft"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Apply throughout the interval of following within 300 ft while the lighting-time and roadway premises hold.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "safe distance in advance of the vehicle",
+        "note": "Safe illumination distance has no numeric value in this assigned subsection."
+      },
+      {
+        "phrase": "permissible under this chapter",
+        "note": "Native high/low beam bits do not independently establish a permissible distribution."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "headlamp_gap_ft",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured nonnegative ground-body distance in ft"
+    },
+    {
+      "name": "requested_gap_ft",
+      "kind": "controller",
+      "range_or_domain": "requested 299, 300 or 301 ft boundary setup"
+    },
+    {
+      "name": "requested_uppermost_distribution",
+      "kind": "controller",
+      "range_or_domain": "requested beam-state setup"
+    },
+    {
+      "name": "lighting_time_premise",
+      "kind": "world_setup",
+      "range_or_domain": "separately sourced NRS 484D.100 time premise"
+    },
+    {
+      "name": "requested_roadway_position",
+      "kind": "world_setup",
+      "range_or_domain": "traveled portion or adjacent shoulder setup"
+    }
+  ]
+}

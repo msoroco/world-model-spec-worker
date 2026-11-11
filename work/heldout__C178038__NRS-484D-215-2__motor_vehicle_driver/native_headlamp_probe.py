@@ -206,7 +206,9 @@ def main():
     args = parser.parse_args()
     config = json.loads(Path(args.config).read_text())
     check_config(config)
-    if args.run:
+    if args.check:
+        return
+    if args.run or args.output:
         if not args.output:
             raise ValueError('Fresh Native following output required')
         run(config, args.output, args.host, args.port)

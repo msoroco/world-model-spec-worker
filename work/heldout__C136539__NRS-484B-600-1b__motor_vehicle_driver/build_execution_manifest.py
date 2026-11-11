@@ -23,7 +23,7 @@ for case in primary['cases']:
     offline_command = (f'.venv-cpu/bin/python runtime.py offline --manifest work/{root.name}/execution-manifest.json '
                        f'--case {ident} --output .runtime-work/c136539-{suffix}-execution-offline-a '
                        f'--python "$PWD/.venv-cpu/bin/python"')
-    saved_log = f'case-{suffix}-saved-command.log'
+    saved_log = f'cases/execution-saved-{suffix}.log'
     positive = f'delivery-audit-{suffix if suffix != "slow_person_exposure" else "slow"}-positive.log'
     negative = f'delivery-audit-{suffix if suffix != "slow_person_exposure" else "slow"}-negative.log'
     entry = {**case,

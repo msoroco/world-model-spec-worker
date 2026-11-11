@@ -15,25 +15,31 @@
       "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python pinned semantic_delivery.validate",
       "exit_code": 0,
       "log": "semantic-validation.log",
-      "sha256": "b048248702a32f93e94b8b76e874b694627f20016eb9c52436fc59ab7b3fd773"
+      "sha256": "7ca2d39227d5bf7cd595bb37d23df68fd7f389391a9a368d45cd6ff774e3f78e"
     },
     {
       "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python pinned execution_manifest.validate",
       "exit_code": 0,
       "log": "execution-validation.log",
-      "sha256": "7e01f85adf540bdc4d7a5a413ffa78255eb03a1b9ac950d50e54e10987b9c8dd"
+      "sha256": "ede9b1cb7933aaa8f629387d904e5de4260d926b88a13548a3c2c2ef08e3f4df"
     },
     {
       "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/prove_yield_sweep_saved.py",
       "exit_code": 0,
       "log": "yield_release_delay-0000-saved-processing.log",
-      "sha256": "b967d3df3fcc0515d19f56732df2b10378054e2fda8aa900944701e88156df6a"
+      "sha256": "6bb60bed326ad2a3db6f2c550fcf89364bcc506d8a2efd71726f49f1659bf5bf"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/qualitative_source_matrix.py --ending .runtime-work/c111294-same_arrival_ending_yields-fallback1-compat-ctrlsrc --official .runtime-work/c111294-official_device_control-fallback1-compat-ctrlsrc --turning .runtime-work/c293604-opposing-left-primary-compat4 --holding .runtime-work/c293604-opposing-left-intent-compat --output work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/qualitative-source-matrix-proof.json",
+      "exit_code": 0,
+      "log": "qualitative-source-matrix.log",
+      "sha256": "1c630ec48eced11b76a6065ea2777b5262325b1215f90b5850b59da9406d3d31"
     }
   ],
   "remaining_gpu_checks": [
     "Actual map suitability, two-vehicle motion and body clearance",
     "Physical camera visibility and capture quality"
   ],
-  "reason": "Seven C111294 exact cases now include a complete three-point physical release-delay sweep for the yielding phrase. All seven primaries, 21 risk fallbacks, saved-only proofs, synthetic physical/lifecycle protocols and independent delivery audits pass. Pinned semantic/execution validators and compatibility receipt checker pass. Five other qualitative phrases remain explicitly incomplete: arrival simultaneity, highway identity, official control and opposite-left categorical/physical point constructions need full cross-cell sweep coverage. No Native or legal outcome is claimed; status remains partial.",
+  "reason": "Seven C111294 exact cases and 21 fallbacks pass offline, compatibility, saved-only, synthetic physical/lifecycle and independent delivery CPU proofs. The three release-delay constructions now capture 320 frames over 16 s, leaving time for their 0/80/160-frame post-clearance controller holds and source-derived entry timing. Pinned execution/semantic validators, receipt checker, held-out handoff, and scoped complete gate pass. A cross-cell audit rejects four altered categorical source conditions. The categorical sweep spec for highway identity, official-device status, opposite approach and left-turn intent remains incomplete; actual Native point realization and legal judgments remain unproven. Status partial; scoped strict gate fails as expected.",
   "readiness_kind": null
 }

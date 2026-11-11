@@ -3,14 +3,39 @@
   "status": "draft",
   "cell_id": "C178038",
   "actor": "motor_vehicle_driver",
-  "sweep_specs": [],
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__illumination_review",
+      "target_law_id": "NRS-484D-215-2",
+      "judgment_refs": [
+        {
+          "phrase": "safe distance in advance of the vehicle",
+          "note": "Safe illumination distance has no numeric value in this assigned subsection."
+        },
+        {
+          "phrase": "permissible under this chapter",
+          "note": "Native high/low beam bits do not independently establish a permissible distribution."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original Native illumination pixels and independent civil-time/beam-permissibility sources are unavailable in CPU diagnostics."
+      ],
+      "rationale": "Physical illumination/permissibility review remains source-dependent; do not invent a judgment threshold."
+    }
+  ],
   "cases": [
     {
-      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_upper",
-      "target_law_id": "NRS-484D-215-2",
-      "target_type": "boundary_probe",
-      "rationale": "NRS 484D.215(2) following within 300 ft during NRS 484D.100 lighting times on traveled highway or adjacent shoulder requires a permissible non-uppermost distribution",
+      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral reference for selected comparison probes; no delivery recording",
       "variable_assignments": {
+        "headlamp_gap_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
         "requested_gap_ft": {
           "kind": "controller",
           "value": 299
@@ -22,10 +47,15 @@
         "lighting_time_premise": {
           "kind": "world_setup",
           "value": true
+        },
+        "requested_roadway_position": {
+          "kind": "world_setup",
+          "value": "driving"
         }
       },
       "unresolved_judgment_calls": [
-        "Civil lighting-time applicability and permissible beam distribution require independent source review."
+        "safe distance in advance of the vehicle",
+        "permissible under this chapter"
       ],
       "recording_description": {
         "channels": [
@@ -46,11 +76,82 @@
       }
     },
     {
-      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_other",
+      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_upper",
       "target_law_id": "NRS-484D-215-2",
-      "target_type": "controlled_comparison",
+      "target_type": "boundary_probe",
       "rationale": "NRS 484D.215(2) following within 300 ft during NRS 484D.100 lighting times on traveled highway or adjacent shoulder requires a permissible non-uppermost distribution",
       "variable_assignments": {
+        "headlamp_gap_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_gap_ft": {
+          "kind": "controller",
+          "value": 299
+        },
+        "requested_uppermost_distribution": {
+          "kind": "controller",
+          "value": true
+        },
+        "lighting_time_premise": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "requested_roadway_position": {
+          "kind": "world_setup",
+          "value": "driving"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "safe distance in advance of the vehicle",
+        "permissible under this chapter"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "headlamp_gap_ft",
+            "unit": "ft",
+            "method": "original Native body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounds and 20 Hz sampling"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Headlamp bits and civil-time context remain separate sourced measurements; no physical or legal acceptance from CPU diagnostics."
+        ]
+      },
+      "paired_probe_id": "headlamp_300ft_boundary",
+      "deliberate_differences": [
+        "requested_gap_ft"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_ft",
+        "comparison_or_standard": "Measured 300 ft statutory boundary or controlled beam/time/roadway context; requested setup is not realized measurement.",
+        "target_value_or_branch": 299,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "test_value": 299,
+        "operator": "<",
+        "unit": "ft"
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "ft",
+        "rationale": "One-foot physical boundary sampling; not a legal tolerance."
+      }
+    },
+    {
+      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_other",
+      "target_law_id": "NRS-484D-215-2",
+      "target_type": "boundary_probe",
+      "rationale": "NRS 484D.215(2) following within 300 ft during NRS 484D.100 lighting times on traveled highway or adjacent shoulder requires a permissible non-uppermost distribution",
+      "variable_assignments": {
+        "headlamp_gap_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
         "requested_gap_ft": {
           "kind": "controller",
           "value": 299
@@ -62,10 +163,15 @@
         "lighting_time_premise": {
           "kind": "world_setup",
           "value": true
+        },
+        "requested_roadway_position": {
+          "kind": "world_setup",
+          "value": "driving"
         }
       },
       "unresolved_judgment_calls": [
-        "Civil lighting-time applicability and permissible beam distribution require independent source review."
+        "safe distance in advance of the vehicle",
+        "permissible under this chapter"
       ],
       "recording_description": {
         "channels": [
@@ -83,6 +189,13 @@
         "limitations": [
           "Headlamp bits and civil-time context remain separate sourced measurements; no physical or legal acceptance from CPU diagnostics."
         ]
+      },
+      "paired_probe_id": "headlamp_night_299_other",
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "requested_gap_ft",
+        "comparison_or_standard": "Measured 300 ft statutory boundary or controlled beam/time/roadway context; requested setup is not realized measurement.",
+        "target_value_or_branch": 299
       }
     },
     {
@@ -91,6 +204,10 @@
       "target_type": "boundary_probe",
       "rationale": "NRS 484D.215(2) following within 300 ft during NRS 484D.100 lighting times on traveled highway or adjacent shoulder requires a permissible non-uppermost distribution",
       "variable_assignments": {
+        "headlamp_gap_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
         "requested_gap_ft": {
           "kind": "controller",
           "value": 300
@@ -102,10 +219,15 @@
         "lighting_time_premise": {
           "kind": "world_setup",
           "value": true
+        },
+        "requested_roadway_position": {
+          "kind": "world_setup",
+          "value": "driving"
         }
       },
       "unresolved_judgment_calls": [
-        "Civil lighting-time applicability and permissible beam distribution require independent source review."
+        "safe distance in advance of the vehicle",
+        "permissible under this chapter"
       ],
       "recording_description": {
         "channels": [
@@ -123,6 +245,24 @@
         "limitations": [
           "Headlamp bits and civil-time context remain separate sourced measurements; no physical or legal acceptance from CPU diagnostics."
         ]
+      },
+      "paired_probe_id": "headlamp_300ft_boundary",
+      "deliberate_differences": [
+        "requested_gap_ft"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_ft",
+        "comparison_or_standard": "Measured 300 ft statutory boundary or controlled beam/time/roadway context; requested setup is not realized measurement.",
+        "target_value_or_branch": 300,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "test_value": 300,
+        "operator": "<",
+        "unit": "ft"
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "ft",
+        "rationale": "One-foot physical boundary sampling; not a legal tolerance."
       }
     },
     {
@@ -131,6 +271,10 @@
       "target_type": "boundary_probe",
       "rationale": "NRS 484D.215(2) following within 300 ft during NRS 484D.100 lighting times on traveled highway or adjacent shoulder requires a permissible non-uppermost distribution",
       "variable_assignments": {
+        "headlamp_gap_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
         "requested_gap_ft": {
           "kind": "controller",
           "value": 301
@@ -142,10 +286,15 @@
         "lighting_time_premise": {
           "kind": "world_setup",
           "value": true
+        },
+        "requested_roadway_position": {
+          "kind": "world_setup",
+          "value": "driving"
         }
       },
       "unresolved_judgment_calls": [
-        "Civil lighting-time applicability and permissible beam distribution require independent source review."
+        "safe distance in advance of the vehicle",
+        "permissible under this chapter"
       ],
       "recording_description": {
         "channels": [
@@ -163,14 +312,36 @@
         "limitations": [
           "Headlamp bits and civil-time context remain separate sourced measurements; no physical or legal acceptance from CPU diagnostics."
         ]
+      },
+      "paired_probe_id": "headlamp_300ft_boundary",
+      "deliberate_differences": [
+        "requested_gap_ft"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_ft",
+        "comparison_or_standard": "Measured 300 ft statutory boundary or controlled beam/time/roadway context; requested setup is not realized measurement.",
+        "target_value_or_branch": 301,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "test_value": 301,
+        "operator": "<",
+        "unit": "ft"
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "ft",
+        "rationale": "One-foot physical boundary sampling; not a legal tolerance."
       }
     },
     {
       "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__day_299_upper",
       "target_law_id": "NRS-484D-215-2",
-      "target_type": "context_comparison",
+      "target_type": "boundary_probe",
       "rationale": "NRS 484D.215(2) following within 300 ft during NRS 484D.100 lighting times on traveled highway or adjacent shoulder requires a permissible non-uppermost distribution",
       "variable_assignments": {
+        "headlamp_gap_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
         "requested_gap_ft": {
           "kind": "controller",
           "value": 299
@@ -189,7 +360,8 @@
         }
       },
       "unresolved_judgment_calls": [
-        "Civil lighting-time applicability and permissible beam distribution require independent source review."
+        "safe distance in advance of the vehicle",
+        "permissible under this chapter"
       ],
       "recording_description": {
         "channels": [
@@ -207,14 +379,25 @@
         "limitations": [
           "Headlamp bits and civil-time context remain separate sourced measurements; no physical or legal acceptance from CPU diagnostics."
         ]
+      },
+      "paired_probe_id": "headlamp_day_299_upper",
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "requested_gap_ft",
+        "comparison_or_standard": "Measured 300 ft statutory boundary or controlled beam/time/roadway context; requested setup is not realized measurement.",
+        "target_value_or_branch": 299
       }
     },
     {
       "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__shoulder_299_upper",
       "target_law_id": "NRS-484D-215-2",
-      "target_type": "context_comparison",
+      "target_type": "boundary_probe",
       "rationale": "NRS 484D.215(2) following within 300 ft during NRS 484D.100 lighting times on traveled highway or adjacent shoulder requires a permissible non-uppermost distribution",
       "variable_assignments": {
+        "headlamp_gap_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
         "requested_gap_ft": {
           "kind": "controller",
           "value": 299
@@ -233,7 +416,8 @@
         }
       },
       "unresolved_judgment_calls": [
-        "Civil lighting-time applicability and permissible beam distribution require independent source review."
+        "safe distance in advance of the vehicle",
+        "permissible under this chapter"
       ],
       "recording_description": {
         "channels": [
@@ -251,6 +435,13 @@
         "limitations": [
           "Headlamp bits and civil-time context remain separate sourced measurements; no physical or legal acceptance from CPU diagnostics."
         ]
+      },
+      "paired_probe_id": "headlamp_shoulder_299_upper",
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "requested_gap_ft",
+        "comparison_or_standard": "Measured 300 ft statutory boundary or controlled beam/time/roadway context; requested setup is not realized measurement.",
+        "target_value_or_branch": 299
       }
     }
   ]

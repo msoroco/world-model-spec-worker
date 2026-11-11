@@ -20,7 +20,27 @@ def check():
     planned = {case['case_id'] for case in plan['cases']}
     assert len(selected) == 3 and len(pending) == 6
     assert selected | pending == planned and not selected & pending
-    assert {case['case_id'] for case in proposal['cases'] if case['target_type'] != 'baseline'} == selected
+    defined = {case['case_id'] for case in proposal['cases'] if case['target_type'] != 'baseline'}
+    assert defined == planned
+    assert set(selection['all_semantic_case_ids']) == defined
+    for case in proposal['cases']:
+        if case['case_id'] in pending:
+            assert case.get('execution_readiness') == 'incomplete' and case.get('missing_inputs')
+    by_case = {case['case_id']: case for case in proposal['cases']}
+    expected_differences = {
+        'single_signal': {'arm_command_schedule'},
+        'continuity_not_required': {'arm_command_schedule'},
+        'electric_bicycle': {'rider_device_class', 'device_blueprint_choice'},
+        'electric_scooter': {'rider_device_class', 'device_blueprint_choice'},
+        'turn_lane_exception': {'lane_route_selector'},
+        'both_hands_exception': {'both_hands_demand_mode'},
+        'reasonable_safety': {'clearance_target_band'},
+    }
+    for comparison in plan['comparisons']:
+        left, right = (by_case[ident]['variable_assignments']
+                       for ident in comparison['case_ids'])
+        changed = {key for key in left if left[key] != right[key]}
+        assert changed == expected_differences[comparison['comparison_id']], comparison['comparison_id']
     validate('cases', copy.deepcopy(proposal), inputs)
     broken = copy.deepcopy(proposal)
     target = next(case for case in broken['cases'] if case['target_type'] != 'baseline')
@@ -33,6 +53,8 @@ def check():
     else:
         raise AssertionError('Missing original time-to-conflict channel was accepted')
     return {'selected_cpu_diagnostic_cases': len(selected), 'pending_physical_cases': len(pending),
+            'semantic_cases_defined': len(defined),
+            'comparison_pairs_checked': len(expected_differences),
             'positive_cases_stage_valid': True, 'missing_recording_channel_rejected': True,
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 

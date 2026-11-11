@@ -103,7 +103,7 @@ def run(config, output, host, port):
         if recorder is not None:
             recorder.close()
         if pipeline is not None:
-            pipeline.close(confirmed=False)
+            pipeline.close(confirmed=completed)
         if cameras is not None:
             cameras.close()
         for sink in sinks.values():
