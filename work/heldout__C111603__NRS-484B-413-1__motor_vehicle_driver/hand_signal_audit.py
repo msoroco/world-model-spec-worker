@@ -64,10 +64,13 @@ def audit(attempt, *, corrupt=False):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--case', required=True)
     parser.add_argument('--attempt', required=True)
     parser.add_argument('--output', required=True)
     parser.add_argument('--corrupt', action='store_true')
     args = parser.parse_args()
+    if args.case != CASE:
+        raise ValueError('Wrong exact hand-signal case')
     receipt = audit(args.attempt, corrupt=args.corrupt)
     Path(args.output).write_text(json.dumps(receipt, indent=2) + '\n')
     print(json.dumps({'joined_frames': receipt['joined_frames'], 'video_decode_count': 4}))

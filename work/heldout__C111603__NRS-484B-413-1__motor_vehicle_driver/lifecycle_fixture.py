@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -64,7 +65,18 @@ def run(case_id):
             raise ValueError("Saved processing did not preserve sealed originals")
         print(" ".join(EVENTS))
         print(case_id, "synthetic_lifecycle_only", "saved_processing_passed")
-        return result
+        return {'case_id': case_id,
+                'manifest_sha256': hashlib.sha256(manifest.read_bytes()).hexdigest(),
+                'construction_sha256': entry['construction_sha256'],
+                'passed': receipt['passed'],
+                'originals_preserved': receipt['originals_preserved'],
+                'missing_evidence': receipt['missing_evidence'],
+                'original_source_hashes': receipt['original_source_hashes'],
+                'lifecycle_events': EVENTS,
+                'diagnostic_fixture': True,
+                'actual_native_capture': False,
+                'physical_acceptance_claimed': False,
+                'legal_acceptance_claimed': False}
 
 
 if __name__ == "__main__":

@@ -4,25 +4,46 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_left_indicator",
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__semantic_baseline",
       "target_law_id": "NRS-484B-413-1",
-      "target_type": "boundary_probe",
-      "rationale": "Other vehicle may be affected by a left turn; Native indicator readback and body clearance are retained while physical and legal findings remain open.",
+      "target_type": "baseline",
+      "rationale": "Neutral semantic comparison anchor only; no additional recording or manifest entry.",
       "variable_assignments": {
-        "turn_indicator_state": {
-          "kind": "controller",
-          "value": "left"
-        },
-        "vehicle_may_be_affected": {
+        "affected_vehicle_exit_offset_m": {
           "kind": "world_setup",
-          "value": true
+          "value": [
+            0,
+            0
+          ]
+        },
+        "hand_signal_pose": {
+          "kind": "controller",
+          "value": "none"
+        },
+        "horn_actuation": {
+          "kind": "controller",
+          "value": "none"
         },
         "pedestrian_may_be_affected": {
           "kind": "world_setup",
           "value": false
+        },
+        "turn_indicator_state": {
+          "kind": "controller",
+          "value": "off"
+        },
+        "vehicle_may_be_affected": {
+          "kind": "world_setup",
+          "value": false
         }
       },
-      "unresolved_judgment_calls": [],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "clearly audible signal",
+        "any pedestrian may be affected",
+        "appropriate signal",
+        "any other vehicle may be affected"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -42,25 +63,46 @@
       }
     },
     {
-      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_no_indicator",
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_left_indicator",
       "target_law_id": "NRS-484B-413-1",
       "target_type": "boundary_probe",
-      "rationale": "Controlled left turn with another vehicle possibly affected and original indicator readback off; physical and legal findings remain open.",
+      "rationale": "Other vehicle may be affected by a left turn; Native indicator readback and body clearance are retained while physical and legal findings remain open.",
       "variable_assignments": {
-        "turn_indicator_state": {
-          "kind": "controller",
-          "value": "off"
-        },
-        "vehicle_may_be_affected": {
+        "affected_vehicle_exit_offset_m": {
           "kind": "world_setup",
-          "value": true
+          "value": [
+            0,
+            0
+          ]
+        },
+        "hand_signal_pose": {
+          "kind": "controller",
+          "value": "none"
+        },
+        "horn_actuation": {
+          "kind": "controller",
+          "value": "none"
         },
         "pedestrian_may_be_affected": {
           "kind": "world_setup",
           "value": false
+        },
+        "turn_indicator_state": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "vehicle_may_be_affected": {
+          "kind": "world_setup",
+          "value": true
         }
       },
-      "unresolved_judgment_calls": [],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "clearly audible signal",
+        "any pedestrian may be affected",
+        "appropriate signal",
+        "any other vehicle may be affected"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -77,6 +119,83 @@
         "limitations": [
           "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
         ]
+      },
+      "paired_probe_id": "vehicle_indicator",
+      "deliberate_differences": [
+        "turn_indicator_state"
+      ],
+      "probe": {
+        "primary_variable": "turn_indicator_state",
+        "comparison_or_standard": "controlled original-source contrast; legal judgment unresolved",
+        "target_value_or_branch": "vehicle_left_indicator"
+      }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_no_indicator",
+      "target_law_id": "NRS-484B-413-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled left turn with another vehicle possibly affected and original indicator readback off; physical and legal findings remain open.",
+      "variable_assignments": {
+        "affected_vehicle_exit_offset_m": {
+          "kind": "world_setup",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "hand_signal_pose": {
+          "kind": "controller",
+          "value": "none"
+        },
+        "horn_actuation": {
+          "kind": "controller",
+          "value": "none"
+        },
+        "pedestrian_may_be_affected": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "turn_indicator_state": {
+          "kind": "controller",
+          "value": "off"
+        },
+        "vehicle_may_be_affected": {
+          "kind": "world_setup",
+          "value": true
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "clearly audible signal",
+        "any pedestrian may be affected",
+        "appropriate signal",
+        "any other vehicle may be affected"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and listener audio status",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "sampled 20 Hz state; lamp pixels and legal appropriateness require later review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      },
+      "paired_probe_id": "vehicle_indicator",
+      "deliberate_differences": [
+        "turn_indicator_state"
+      ],
+      "probe": {
+        "primary_variable": "turn_indicator_state",
+        "comparison_or_standard": "controlled original-source contrast; legal judgment unresolved",
+        "target_value_or_branch": "vehicle_no_indicator"
       }
     },
     {
@@ -92,6 +211,18 @@
             3
           ]
         },
+        "hand_signal_pose": {
+          "kind": "controller",
+          "value": "none"
+        },
+        "horn_actuation": {
+          "kind": "controller",
+          "value": "none"
+        },
+        "pedestrian_may_be_affected": {
+          "kind": "world_setup",
+          "value": false
+        },
         "turn_indicator_state": {
           "kind": "controller",
           "value": "left"
@@ -99,13 +230,15 @@
         "vehicle_may_be_affected": {
           "kind": "world_setup",
           "value": true
-        },
-        "pedestrian_may_be_affected": {
-          "kind": "world_setup",
-          "value": false
         }
       },
-      "unresolved_judgment_calls": [],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "clearly audible signal",
+        "any pedestrian may be affected",
+        "appropriate signal",
+        "any other vehicle may be affected"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -122,6 +255,15 @@
         "limitations": [
           "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
         ]
+      },
+      "paired_probe_id": "reasonable_safety_clearance",
+      "deliberate_differences": [
+        "affected_vehicle_exit_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "affected_vehicle_exit_offset_m",
+        "comparison_or_standard": "controlled original-source contrast; legal judgment unresolved",
+        "target_value_or_branch": "clearance_wide"
       }
     },
     {
@@ -137,6 +279,18 @@
             -1
           ]
         },
+        "hand_signal_pose": {
+          "kind": "controller",
+          "value": "none"
+        },
+        "horn_actuation": {
+          "kind": "controller",
+          "value": "none"
+        },
+        "pedestrian_may_be_affected": {
+          "kind": "world_setup",
+          "value": false
+        },
         "turn_indicator_state": {
           "kind": "controller",
           "value": "left"
@@ -144,13 +298,15 @@
         "vehicle_may_be_affected": {
           "kind": "world_setup",
           "value": true
-        },
-        "pedestrian_may_be_affected": {
-          "kind": "world_setup",
-          "value": false
         }
       },
-      "unresolved_judgment_calls": [],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "clearly audible signal",
+        "any pedestrian may be affected",
+        "appropriate signal",
+        "any other vehicle may be affected"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -167,6 +323,15 @@
         "limitations": [
           "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
         ]
+      },
+      "paired_probe_id": "reasonable_safety_clearance",
+      "deliberate_differences": [
+        "affected_vehicle_exit_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "affected_vehicle_exit_offset_m",
+        "comparison_or_standard": "controlled original-source contrast; legal judgment unresolved",
+        "target_value_or_branch": "clearance_narrow"
       }
     },
     {
@@ -175,6 +340,17 @@
       "target_type": "boundary_probe",
       "rationale": "Potentially affected pedestrian with separately captured listener PCM and no horn actuation; audibility and physical effect remain unresolved.",
       "variable_assignments": {
+        "affected_vehicle_exit_offset_m": {
+          "kind": "world_setup",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "hand_signal_pose": {
+          "kind": "controller",
+          "value": "none"
+        },
         "horn_actuation": {
           "kind": "controller",
           "value": "none"
@@ -183,12 +359,22 @@
           "kind": "world_setup",
           "value": true
         },
+        "turn_indicator_state": {
+          "kind": "controller",
+          "value": "off"
+        },
         "vehicle_may_be_affected": {
           "kind": "world_setup",
           "value": false
         }
       },
-      "unresolved_judgment_calls": [],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "clearly audible signal",
+        "any pedestrian may be affected",
+        "appropriate signal",
+        "any other vehicle may be affected"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -205,6 +391,15 @@
         "limitations": [
           "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
         ]
+      },
+      "paired_probe_id": "pedestrian_horn_audio",
+      "deliberate_differences": [
+        "horn_actuation"
+      ],
+      "probe": {
+        "primary_variable": "horn_actuation",
+        "comparison_or_standard": "controlled original-source contrast; legal judgment unresolved",
+        "target_value_or_branch": "ped_no_horn_audio"
       }
     },
     {
@@ -213,6 +408,17 @@
       "target_type": "boundary_probe",
       "rationale": "Potentially affected pedestrian with relay-requested horn and separately captured listener PCM; audible sound and physical effect remain unresolved.",
       "variable_assignments": {
+        "affected_vehicle_exit_offset_m": {
+          "kind": "world_setup",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "hand_signal_pose": {
+          "kind": "controller",
+          "value": "none"
+        },
         "horn_actuation": {
           "kind": "controller",
           "value": "relay_request"
@@ -221,12 +427,22 @@
           "kind": "world_setup",
           "value": true
         },
+        "turn_indicator_state": {
+          "kind": "controller",
+          "value": "off"
+        },
         "vehicle_may_be_affected": {
           "kind": "world_setup",
           "value": false
         }
       },
-      "unresolved_judgment_calls": [],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "clearly audible signal",
+        "any pedestrian may be affected",
+        "appropriate signal",
+        "any other vehicle may be affected"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -243,6 +459,15 @@
         "limitations": [
           "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
         ]
+      },
+      "paired_probe_id": "pedestrian_horn_audio",
+      "deliberate_differences": [
+        "horn_actuation"
+      ],
+      "probe": {
+        "primary_variable": "horn_actuation",
+        "comparison_or_standard": "controlled original-source contrast; legal judgment unresolved",
+        "target_value_or_branch": "ped_horn_audio"
       }
     },
     {
@@ -251,6 +476,17 @@
       "target_type": "boundary_probe",
       "rationale": "Potentially affected pedestrian and vehicle with indicator and relay-requested horn; both physical signal effects remain unresolved.",
       "variable_assignments": {
+        "affected_vehicle_exit_offset_m": {
+          "kind": "world_setup",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "hand_signal_pose": {
+          "kind": "controller",
+          "value": "none"
+        },
         "horn_actuation": {
           "kind": "controller",
           "value": "relay_request"
@@ -259,16 +495,22 @@
           "kind": "world_setup",
           "value": true
         },
-        "vehicle_may_be_affected": {
-          "kind": "world_setup",
-          "value": true
-        },
         "turn_indicator_state": {
           "kind": "controller",
           "value": "left"
+        },
+        "vehicle_may_be_affected": {
+          "kind": "world_setup",
+          "value": true
         }
       },
-      "unresolved_judgment_calls": [],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "clearly audible signal",
+        "any pedestrian may be affected",
+        "appropriate signal",
+        "any other vehicle may be affected"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -285,6 +527,15 @@
         "limitations": [
           "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
         ]
+      },
+      "paired_probe_id": "both_affected_conjunction",
+      "deliberate_differences": [
+        "horn_actuation"
+      ],
+      "probe": {
+        "primary_variable": "horn_actuation",
+        "comparison_or_standard": "controlled original-source contrast; legal judgment unresolved",
+        "target_value_or_branch": "both_signals"
       }
     },
     {
@@ -293,6 +544,17 @@
       "target_type": "boundary_probe",
       "rationale": "Potentially affected pedestrian and vehicle with left indicator but no horn actuation; physical signal effects remain unresolved.",
       "variable_assignments": {
+        "affected_vehicle_exit_offset_m": {
+          "kind": "world_setup",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "hand_signal_pose": {
+          "kind": "controller",
+          "value": "none"
+        },
         "horn_actuation": {
           "kind": "controller",
           "value": "none"
@@ -301,16 +563,22 @@
           "kind": "world_setup",
           "value": true
         },
-        "vehicle_may_be_affected": {
-          "kind": "world_setup",
-          "value": true
-        },
         "turn_indicator_state": {
           "kind": "controller",
           "value": "left"
+        },
+        "vehicle_may_be_affected": {
+          "kind": "world_setup",
+          "value": true
         }
       },
-      "unresolved_judgment_calls": [],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "clearly audible signal",
+        "any pedestrian may be affected",
+        "appropriate signal",
+        "any other vehicle may be affected"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -327,6 +595,15 @@
         "limitations": [
           "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
         ]
+      },
+      "paired_probe_id": "both_affected_conjunction",
+      "deliberate_differences": [
+        "horn_actuation"
+      ],
+      "probe": {
+        "primary_variable": "horn_actuation",
+        "comparison_or_standard": "controlled original-source contrast; legal judgment unresolved",
+        "target_value_or_branch": "both_indicator_only"
       }
     },
     {
@@ -335,24 +612,41 @@
       "target_type": "boundary_probe",
       "rationale": "Affected vehicle left turn with original attached driver-avatar left-arm bone readback and no Native indicator; physical and legal recognizability remain open.",
       "variable_assignments": {
-        "turn_indicator_state": {
-          "kind": "controller",
-          "value": "off"
+        "affected_vehicle_exit_offset_m": {
+          "kind": "world_setup",
+          "value": [
+            0,
+            0
+          ]
         },
         "hand_signal_pose": {
           "kind": "controller",
           "value": "left_arm_out"
         },
-        "vehicle_may_be_affected": {
-          "kind": "world_setup",
-          "value": true
+        "horn_actuation": {
+          "kind": "controller",
+          "value": "none"
         },
         "pedestrian_may_be_affected": {
           "kind": "world_setup",
           "value": false
+        },
+        "turn_indicator_state": {
+          "kind": "controller",
+          "value": "off"
+        },
+        "vehicle_may_be_affected": {
+          "kind": "world_setup",
+          "value": true
         }
       },
-      "unresolved_judgment_calls": [],
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "clearly audible signal",
+        "any pedestrian may be affected",
+        "appropriate signal",
+        "any other vehicle may be affected"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -379,8 +673,53 @@
           "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness.",
           "Attached avatar pose, hand pixels and signal recognizability require physical review."
         ]
+      },
+      "paired_probe_id": "vehicle_signal_alternative",
+      "deliberate_differences": [
+        "turn_indicator_state",
+        "hand_signal_pose"
+      ],
+      "probe": {
+        "primary_variable": "turn_indicator_state",
+        "comparison_or_standard": "controlled original-source contrast; legal judgment unresolved",
+        "target_value_or_branch": "vehicle_hand_signal"
       }
     }
   ],
-  "sweep_specs": []
+  "sweep_specs": [
+    {
+      "sweep_id": "turn_qualitative_observables",
+      "target_law_id": "NRS-484B-413-1",
+      "judgment_refs": [
+        {
+          "phrase": "reasonable safety",
+          "note": "Original turn/body gap and context are retained; no legal safety cutoff."
+        },
+        {
+          "phrase": "clearly audible signal",
+          "note": "Listener PCM and actuator request are separate observations; audibility requires physical review."
+        },
+        {
+          "phrase": "any pedestrian may be affected",
+          "note": "Retain original pedestrian body path and turn corridor; effect remains a judgment."
+        },
+        {
+          "phrase": "appropriate signal",
+          "note": "Retain Native indicator readback or original hand pose and source pixels; appropriateness remains unresolved."
+        },
+        {
+          "phrase": "any other vehicle may be affected",
+          "note": "Retain original vehicle body path and turn corridor; effect remains a judgment."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The nine selected controlled points do not yet span the five qualitative judgments.",
+      "missing_inputs": [
+        "Verified Native feasible variation across turn clearance, listener audibility and signal visibility",
+        "Source-bound physical affected-party review and no invented legal cutoffs",
+        "Additional exact sweep cases only after a measured feasible range is established"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }

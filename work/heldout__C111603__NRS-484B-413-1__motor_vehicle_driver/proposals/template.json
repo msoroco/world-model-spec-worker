@@ -1,0 +1,78 @@
+{
+  "template_id": "NRS-484B-413-1@motor_vehicle_driver",
+  "law_id": "NRS-484B-413-1",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A driver shall not turn a vehicle from a direct course upon a highway unless and until such movement can be made with reasonable safety, and then only after giving a clearly audible signal by sounding the horn if any pedestrian may be affected by such movement and after giving an appropriate signal if any other vehicle may be affected by such movement.",
+  "structure": {
+    "law_id": "NRS-484B-413-1",
+    "activation": {
+      "condition": "Driver turns vehicle from a direct course on a highway.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Do not turn until reasonable safety; when a pedestrian may be affected sound a clearly audible horn, and when another vehicle may be affected give an appropriate signal.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Safety and conditional signals precede the turn from a direct course.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "reasonable safety",
+        "note": "Original turn/body gap and context are retained; no legal safety cutoff."
+      },
+      {
+        "phrase": "clearly audible signal",
+        "note": "Listener PCM and actuator request are separate observations; audibility requires physical review."
+      },
+      {
+        "phrase": "any pedestrian may be affected",
+        "note": "Retain original pedestrian body path and turn corridor; effect remains a judgment."
+      },
+      {
+        "phrase": "appropriate signal",
+        "note": "Retain Native indicator readback or original hand pose and source pixels; appropriateness remains unresolved."
+      },
+      {
+        "phrase": "any other vehicle may be affected",
+        "note": "Retain original vehicle body path and turn corridor; effect remains a judgment."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "affected_vehicle_exit_offset_m",
+      "kind": "world_setup",
+      "range_or_domain": "source-backed selected affected-vehicle exit placement in meters"
+    },
+    {
+      "name": "hand_signal_pose",
+      "kind": "controller",
+      "range_or_domain": "none or selected left-arm original Native bone pose"
+    },
+    {
+      "name": "horn_actuation",
+      "kind": "controller",
+      "range_or_domain": "none or identified relay request with separate listener PCM"
+    },
+    {
+      "name": "pedestrian_may_be_affected",
+      "kind": "world_setup",
+      "range_or_domain": "planned pedestrian route and measured body proximity; actual effect unresolved"
+    },
+    {
+      "name": "turn_indicator_state",
+      "kind": "controller",
+      "range_or_domain": "off or left with Native readback"
+    },
+    {
+      "name": "vehicle_may_be_affected",
+      "kind": "world_setup",
+      "range_or_domain": "planned other-vehicle route and measured body proximity; actual effect unresolved"
+    }
+  ]
+}
