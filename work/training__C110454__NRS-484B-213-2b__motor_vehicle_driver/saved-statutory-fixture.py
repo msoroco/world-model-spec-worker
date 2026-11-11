@@ -68,14 +68,18 @@ def make_base(destination,suffix,frame_count=4,full_resolution=False):
         trace.append({'frame':frame,'time_s':t,
                       'position':{'x':x,'y':y,'z':0.5},
                       'heading_deg':math.degrees(math.atan2(fy,fx)),
-                      'speed_mps':0.0 if frame_count==480 and i>=450 else 5.0})
-        evidence.append({'original_frame':frame,'recording_time_s':t,'ego':{'body_vertices_m':body}})
+                      'speed_mps':0.0 if frame_count==480 and i>=450 else 5.0,
+                      'synthetic_diagnostic':True,'speed_provenance':'synthetic_native_sample'})
+        evidence.append({'original_frame':frame,'recording_time_s':t,
+                         'synthetic_diagnostic':True,
+                         'ego':{'body_vertices_m':body,'speed_provenance':'synthetic_native_sample'}})
         mapping.append({'video_frame':i,'native_frame':frame,'carla_frame':frame,'time_s':t})
         motion.append({'native_frame':frame,'time_s':t,'native_center_xy_m':[x,y],
                        'native_forward_xy':list(forward),'native_body_xy_m':corners,
                        'video_frame':i,'body_xy_m':corners,
                        'speed_m_s':0.0 if frame_count==480 and i>=450 else 5.0,
-                       'two_way_native_survey':not one_way,'one_way_native_survey':one_way})
+                       'two_way_native_survey':not one_way,'one_way_native_survey':one_way,
+                       'synthetic_diagnostic':True,'speed_provenance':'synthetic_native_sample'})
         history.append({'frame':frame,'time_s':t,'body_vertices_m':body})
     for name,rows in [('trace.jsonl',trace),('capture/evidence.jsonl',evidence),
                       ('video_frames.jsonl',mapping),('native_samples.jsonl',motion),
@@ -89,25 +93,10 @@ def make_base(destination,suffix,frame_count=4,full_resolution=False):
         'original_frames':[row['native_frame'] for row in mapping],
         'road_directions_native':directions,'physical_observation_claimed':False,
         'legal_verdict':None,'synthetic_diagnostic':True}))
-    (destination/'capture/manifest.json').write_text(json.dumps({'extraction_confirmed':True,'frames':frame_count}))
-    (destination/'channels').mkdir()
-    for channel in config['recording_description']['channels']:
-        name=channel['name'];values=[]
-        for index,sample in enumerate(motion):
-            if name in ('drv.approaching','drv.in_intersection'):value={'authored_intent':'approach','native_frame':sample['native_frame']}
-            elif name in ('st.intersection','st.railway_crossing','st.one_way_roadway'):
-                value=geometry
-            elif name=='st.centre_line':value=geometry['approach_centerline_point_native_m']
-            elif name=='rel.occupies':value=sample['native_body_xy_m']
-            elif name=='kin.position':value=sample['native_center_xy_m']
-            elif name=='rel.centre_distance':value={'body_front_x_m':max(p[0] for p in sample['native_body_xy_m']), 'intersection_entry_x_m':spec['boundary_x_m']}
-            elif name=='native_body_pose_control':value=sample
-            elif name=='camera_frame_join':value=mapping[index]
-            else:raise ValueError('Unknown channel '+name)
-            values.append({'time_s':sample['time_s'],'value':value})
-        write_rows(destination/'channels'/(name+'.jsonl'),values)
+    (destination/'capture/manifest.json').write_text(json.dumps({
+        'extraction_confirmed':True,'frames':frame_count,'synthetic_diagnostic':True}))
     camera_sizes={camera['name']:f"{camera['width']}x{camera['height']}" for camera in config['cameras']}
-    for name in ('overview','approach','intersection','parking'):
+    for name in ('overview','approach','reference_corner','driver_reference'):
         size=camera_sizes[name] if full_resolution else '32x32'
         subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
             '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d={frame_count/20}',
