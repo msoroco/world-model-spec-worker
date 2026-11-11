@@ -105,6 +105,21 @@
         "trigger_metric": "connected ending/through lane identities, original entry frames and conflict occupancy",
         "failure_condition": "missing or contradictory topology, incomplete 20 Hz entry trace, or absent governing-device/turn construction"
       }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "subject_continuing_highway"
+      ],
+      "description": "Original Native connected continuing subject, fixed through route and transverse ending route at one uncontrolled junction",
+      "construction_status": "provisional_primary_offline_passed_compatibility_pending",
+      "physical_risk": {
+        "risk": "Native map may not expose a connected continuing subject route with a distinct through route",
+        "trigger_source": "original lane successor inventory and complete 20 Hz body paths",
+        "trigger_metric": "connected route witnesses and both intersection entry observations",
+        "failure_condition": "no eligible junction, changed through route, missing source packets or incomplete intersection motion"
+      }
     }
   ],
   "comparisons": [
@@ -175,6 +190,19 @@
         "governing device commanded Red versus Green; original Native state readback retained at every frame",
         "official legal status and subsection 4 applicability remain unresolved"
       ]
+    },
+    {
+      "comparison_id": "ending_vs_continuing_highway",
+      "case_ids": [
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields",
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway"
+      ],
+      "fixed_conditions": [
+        "same junction class, distinct through route, transverse approach role, no governing device and four source cameras"
+      ],
+      "deliberate_differences": [
+        "subject approach has no continuing successor versus a connected straight successor; original lane graph and entry observations determine realized topology"
+      ]
     }
   ],
   "sources": [
@@ -221,6 +249,12 @@
         "requirement": "opposite-direction left-turn alternative in a compatible connected intersection",
         "source": "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
         "why_existing_insufficient": "No accepted recording is supplied for this assignment."
+      },
+      {
+        "id": "subject_continuing_highway",
+        "requirement": "Subject approach continues through the junction while a distinct through route remains fixed",
+        "source": "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recording is supplied and the existing ending-approach cases do not establish the continuing topology alternative."
       }
     ]
   },
@@ -282,14 +316,16 @@
         "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control",
         "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0000",
         "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0001",
-        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0002"
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0002",
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway"
       ]
     }
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
     "Actual CARLA motion, participant visibility, and physical capture remain unverified.",
-    "Eight selected exact C111294 cases pass CPU proofs; Native realization, legal qualitative judgments and full-law sweep remain unresolved."
+    "Eight selected exact C111294 cases pass CPU proofs; Native realization, legal qualitative judgments and full-law sweep remain unresolved.",
+    "Continuing-highway primary has only a provisional offline proof; its selected compatibility, fallbacks and saved-processing remain pending."
   ],
   "source_observation_mapping": {
     "st.intersection": {
@@ -391,6 +427,15 @@
         "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_green_phase"
       ],
       "evidence_or_gap": "No accepted recording establishes a governing official device. Native signal actor, OpenDRIVE ID, affected lane and original state must be retained; legal official status and subsection 4 require later review."
+    },
+    {
+      "requirement": "Original connected ending/continuing/through route witnesses and both participant intersection entries",
+      "source": "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway"
+      ],
+      "evidence_or_gap": "No accepted recording establishes the continuing subject alternative. Original Native lane successor witnesses, participant bodies, frame map and control inventory must establish this measured point; legal highway identity remains unresolved."
     }
   ],
   "cross_cell_alternatives": [

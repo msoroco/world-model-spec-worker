@@ -7,6 +7,7 @@ approach can be checked from the originals after capture.
 
 import json
 from hashlib import sha256
+from math import isfinite
 from pathlib import Path
 
 from ending_road_source_capture import _body, _linked, _junction_id
@@ -57,8 +58,7 @@ def topology_from_pair(pair, selected_category, subject, other, polygon):
                          if path[0]['road_id'] == road]
         if not witness_exits or any(witness_exits) != expected:
             raise ValueError('Native branch witnesses contradict ' + name + ' category')
-    if len(polygon) < 3:
-        raise ValueError('Comparison conflict polygon is missing')
+    _polygon(polygon, 'comparison conflict zone')
     return {'format': 'worker-highway-continuity-original-topology',
             'junction_id': junction, 'map_name': pair['map_name'],
             'selected_category': selected_category, 'routes': routes,
@@ -143,7 +143,8 @@ def measure_originals(topology_path, participants_path):
     previous = None
     for row in rows:
         frame, time_s = row.get('frame'), row.get('time_s')
-        if type(frame) is not int or type(time_s) not in (int, float):
+        if (type(frame) is not int or type(time_s) not in (int, float) or
+                not isfinite(time_s)):
             raise ValueError('Original highway-comparison frame/time missing')
         if previous is not None and (frame != previous[0] + 1 or
                                       abs(time_s - previous[1] - .05) > 1e-4):

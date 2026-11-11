@@ -73,6 +73,13 @@ class HighwayContinuitySourceTests(unittest.TestCase):
             topology_path.write_text(json.dumps(altered))
             with self.assertRaisesRegex(ValueError, 'branch witnesses contradict ending'):
                 measure_originals(topology_path, participants_path)
+            topology_path.write_text(json.dumps(self.topology('continuing')))
+            rows = participants_path.read_text().splitlines()
+            first = json.loads(rows[0]); first['time_s'] = float('nan')
+            rows[0] = json.dumps(first)
+            participants_path.write_text('\n'.join(rows)+'\n')
+            with self.assertRaisesRegex(ValueError, 'frame/time missing'):
+                measure_originals(topology_path, participants_path)
             topology_path.unlink()
             with self.assertRaisesRegex(ValueError, 'Missing required source'):
                 measure_originals(topology_path, participants_path)

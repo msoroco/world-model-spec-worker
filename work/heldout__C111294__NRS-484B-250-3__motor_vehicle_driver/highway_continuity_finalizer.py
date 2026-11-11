@@ -6,7 +6,12 @@ import json
 from pathlib import Path
 
 from highway_continuity_runner import CASE, check_config
-from highway_continuity_source import measure_originals
+from highway_continuity_source import measure_originals as _measure_originals
+
+
+def measure_originals(topology_path, participants_path):
+    """Measure the retained original topology and body paths for this selected case."""
+    return _measure_originals(topology_path, participants_path)
 
 
 def _source(root, name):
@@ -75,6 +80,10 @@ def build_result(attempt, report):
                   'other_in_conflict': row['other_in_conflict']}}) + '\n'
         for row in observed['observations']))
     rows = observed['observations']
+    context = root / 'highway_pair_context.json'
+    if context.exists():
+        raise ValueError('Retain prior derived highway context')
+    context.write_text(json.dumps({'highway_pair_topology': json.loads((root / 'highway_pair_topology.json').read_text())}, allow_nan=False) + '\n')
     return {'case_id': CASE,
             'measured_values': {'highway_continuity_observation': observed},
             'target_checks': [{'target': 'continuing highway comparison point',
@@ -95,9 +104,9 @@ def build_result(attempt, report):
                 {'name': 'intersection_occupancy', 'unit': 'bool',
                  'reference': channel.name,
                  'sha256': sha256(channel.read_bytes()).hexdigest()},
-                {'name': 'lanes', 'unit': 'structured topology',
-                 'reference': 'highway_pair_topology.json',
-                 'sha256': sha256((root / 'highway_pair_topology.json').read_bytes()).hexdigest()},
+                {'name': 'highway_pair_topology', 'unit': 'structured topology',
+                 'reference': context.name,
+                 'sha256': sha256(context.read_bytes()).hexdigest()},
                 {'name': 'control_inventory', 'unit': 'structured Native control inventory',
                  'reference': 'control_inventory.json',
                  'sha256': sha256((root / 'control_inventory.json').read_bytes()).hexdigest()}],
