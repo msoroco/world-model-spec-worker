@@ -3,7 +3,7 @@
   "input_sha256": "50d03baa533950fa75b7dc6d6876258a273920bb12ea5ed23fe1018414916923",
   "status": "partial",
   "applied_update": 15,
-  "reason": "Two conditional exact right-exit cases and eight selected candidates pass fresh copied, offline, saved-processing and synthetic comparison proofs after adding a source-bound original-motion assessment. Twenty-two CPU mechanics tests pass; original delivery/comparison production rejection proofs pass. Positive original-shaped end-to-end audit, canonical receipt bindings, root runner/configuration/construction and ordered batch queue remain worker-owned CPU work. No original CARLA motion, lane, exit or pixel observation is claimed. Full strict gate separately rejects a frozen runtime output path.",
+  "reason": "Two conditional exact right-exit cases and eight selected candidates pass fresh copied, offline, saved-processing and synthetic comparison proofs. A root runner/config/construction now passes pinned CPU offline for the reference primary and 23 assignment tests. The canonical execution manifest, physical outcome fixtures, delivery acceptance bindings, complete root camera plan and ordered batch queue remain worker-owned CPU work. No original CARLA motion, governed lane, right exit or pixels are claimed. Full strict separately rejects a frozen runtime output path.",
   "readiness_kind": null,
   "cases_planned": 2,
   "cases_selected": 2,
@@ -23,9 +23,9 @@
     "complete_roundabout_authored": true,
     "original_native_observed": false,
     "delivery_ready": false,
-    "assignment_strict_log": "update015-physical-motion-assignment-strict.log",
+    "assignment_strict_log": "update015-root-executable-assignment-strict.log",
     "assignment_strict_log_sha256": "f269c2d5acd89b61494632191e9062f5a604d37a03156e205eac15b87b44e653",
-    "full_strict_log": "work/_shared/strict-gate-update015-c132497-physical-motion.log",
+    "full_strict_log": "work/_shared/strict-gate-update015-c132497-root-executable.log",
     "full_strict_log_sha256": "8d7e8fd1171ae719680b30734c114c2710c02b8b6f271e6d3072b4371c96bdfd",
     "full_strict_error": "Unapproved output: runtime/pipeline/runs/scenario_pipeline/inputs/shared/manifest.json",
     "closed_loop_xml_geometry_authored": true,
@@ -72,7 +72,21 @@
     "original_physical_assessment_script": "native/finalize_current.py",
     "original_physical_assessment_script_sha256": "559ff9a693c341ecadeb5a2b32c84c9f16f10357dd5a50477d122089104a4e99",
     "original_physical_assessment_cpu_tested": true,
-    "original_physical_completion_observed": false
+    "original_physical_completion_observed": false,
+    "root_runner_path": "runner.py",
+    "root_runner_sha256": "7bf69c42e072fd752db3be6698e42dcdceab2bd53a7a338cc9166ae2aadc0361",
+    "root_construction_path": "construction.json",
+    "root_construction_sha256": "6c4f672c463db76ccc199cf21d8f0331145bd3dd5ca5610336b33397eaf901f8",
+    "root_config_path": "config.json",
+    "root_config_sha256": "eca9c58243ae12380f6bccece6f4e39df6171930b024bde4f3e4a037d92937f9",
+    "root_offline_manifest": "root-executable-offline-manifest.json",
+    "root_offline_manifest_sha256": "d8c6e0fd9a09645125505040a18f084616d4a1070880d092aa652c2f42ab2cf4",
+    "root_offline_passed": true,
+    "canonical_manifest_ready": false,
+    "canonical_acceptance_bindings_ready": false,
+    "root_runner_reference_primary_cpu_proven": true,
+    "root_runner_reference_primary_offline_log": "update015-root-executable-offline.log",
+    "root_runner_reference_primary_offline_log_sha256": "1d0f2704d6ad848d1b657f508430f53347593bb5715bb95fa0c86d76aa8b0644"
   },
   "tests": [
     {
@@ -235,6 +249,42 @@
       "command": ".venv-cpu/bin/python worker_check.py --assignment training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver --complete",
       "exit_code": 0,
       "log": "update015-physical-motion-assignment-gate.log",
+      "sha256": "59620a88be59348db00e8f36b814dd9c756ad1e5f240f5f4efb4a25f900217bd"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/build-root-executable.py",
+      "exit_code": 0,
+      "log": "update015-root-executable-build.log",
+      "sha256": "18215e32727c3465d00cac1cf5154fbab11c0a5db4ce813e1e383da2ac21a719"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/runner.py --check",
+      "exit_code": 0,
+      "log": "update015-root-runner-check.log",
+      "sha256": "ae9050c8348ffd363db63d91a8183c4cf7590e94899823a00aa32d6a37c31460"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/root-executable-offline-manifest.json --case training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__reference --output .runtime-work/c132497-root-executable-v1",
+      "exit_code": 0,
+      "log": "update015-root-executable-offline.log",
+      "sha256": "1d0f2704d6ad848d1b657f508430f53347593bb5715bb95fa0c86d76aa8b0644"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/tests",
+      "exit_code": 0,
+      "log": "update015-root-executable-tests.log",
+      "sha256": "0923038e34e3b9588d2006c3a2a60f9e22476436d0b7448a9561c46b3311441a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "update015-root-executable-preflight.log",
+      "sha256": "f7a27257ad4454d21cfffb318887755ad3a785e5f736b1194eeb76bbd57d5489"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "update015-root-executable-assignment-gate.log",
       "sha256": "59620a88be59348db00e8f36b814dd9c756ad1e5f240f5f4efb4a25f900217bd"
     }
   ],
