@@ -7,6 +7,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from ending_road_measurement import measure
+from highway_continuity_source import measure_originals as measure_continuity
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
@@ -22,9 +23,12 @@ def run(case_id,kind):
         raise ValueError('Unknown exact intersection case or fixture kind')
     recipe=json.loads((ROOT/entry['fixture_recipe']).read_text())
     diagnostic=json.loads((ROOT/recipe['generator']['source']).read_text())['files']
+    continuing=case_id.endswith('__continuing_highway')
+    measure_case=measure_continuity if continuing else measure
     with TemporaryDirectory(prefix='ending-road-motion-',dir=ROOT/'.runtime-work') as temp:
         base=Path(temp)
-        names=('intersection_topology.json','intersection_participants.jsonl','trace.jsonl','video_frames.jsonl')
+        names=(('highway_pair_topology.json' if continuing else 'intersection_topology.json'),
+               'intersection_participants.jsonl','trace.jsonl','video_frames.jsonl')
         for name in names:
             (base/name).write_text(diagnostic[name])
         participants=base/'intersection_participants.jsonl'
@@ -39,14 +43,16 @@ def run(case_id,kind):
         sources={name:_sha(base/name) for name in names if (base/name).is_file()}
         observation=None
         if kind=='complete_motion':
-            observation=measure(base/'intersection_topology.json',participants)
+            observation=measure_case(base/names[0],participants)
             status='met' if (observation['subject_entry_frame'] is not None and
                              observation['other_entry_frame'] is not None) else 'not_met'
         else:
-            try:measure(base/'intersection_topology.json',participants)
+            try:measure_case(base/names[0],participants)
             except ValueError as error:
-                expected='Missing required source' if kind=='missing_evidence' else 'Participant never enters'
-                if expected not in str(error):raise
+                if kind=='missing_evidence':
+                    if 'Missing required source' not in str(error):raise
+                elif 'participant never enters conflict zone' not in str(error).lower():
+                    raise
             else:raise ValueError('Incomplete intersection source was accepted')
             status='unverified' if kind=='missing_evidence' else 'not_met'
         expected={'complete_motion':'met','incomplete_motion':'not_met','missing_evidence':'unverified'}[kind]
