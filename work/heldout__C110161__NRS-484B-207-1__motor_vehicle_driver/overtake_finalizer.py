@@ -24,6 +24,11 @@ def _rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def measure_overtake(source):
+    """Bind the selected statutory measurement to the retained body source."""
+    return measure(source)
+
+
 def analyze(attempt):
     root = Path(attempt)
     config_path, _ = _source(root, 'config.json')
@@ -46,10 +51,10 @@ def analyze(attempt):
                 (motion.get('frame'), motion.get('time_s')) != identity or
                 (footprint.get('frame'), footprint.get('time_s')) != identity):
             raise ValueError('Original overtake source/frame-map join failed')
-    observed = measure(footprint_path)
+    observed = measure_overtake(footprint_path)
     return {'format': 'worker-analysis-report', 'case_id': case_id,
             'measurements': {'overtake_observation': {
-                'method': 'measure', 'value': observed,
+                'method': 'measure_overtake', 'value': observed,
                 'sources': {'participant_footprints.jsonl': observed['source_sha256'],
                             'video_frames.jsonl': map_sha, 'trace.jsonl': trace_sha}}},
             'limitations': ['Measured left pass and right return do not establish a legal safe distance or safely clear judgment.'],

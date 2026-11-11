@@ -36,6 +36,23 @@ def sources(root):
 
 
 class SavedOvertakeTests(unittest.TestCase):
+    def test_selected_requirement_contract_joins_original_sources(self):
+        folder = Path(__file__).resolve().parents[1]
+        contract = json.loads((folder / 'first-measurement-contract.json').read_text())
+        plan = json.loads((folder / 'case-plan.json').read_text())
+        sys.path.insert(0, str(folder.parents[1] / 'runtime' / 'scenario_pipeline'))
+        from worker_exchange.measurement_contract import validate, verify_report
+        validate(contract, plan['requirement_dispositions'],
+                 (folder / 'overtake_finalizer.py').read_text(), CASE)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            sources(root)
+            report = analyze(root)
+            self.assertIn('overtake_observation', verify_report(contract, report, root))
+            (root / 'participant_footprints.jsonl').unlink()
+            with self.assertRaisesRegex(ValueError, 'Missing required source'):
+                analyze(root)
+
     def test_original_join_and_canonical_result(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
