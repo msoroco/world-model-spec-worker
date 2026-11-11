@@ -21,17 +21,23 @@ class SignalAdvanceAuditTests(unittest.TestCase):
     def test_observed_below_at_above_100_foot_probe(self):
         for step, expected in ((10, False), (30.48 / 3, True), (12, True)):
             with self.subTest(step=step):
-                result = measure(history([False, True, True, True, True], step_m=step))
+                result = measure(history([False, True, True, True, True, True], step_m=step))
                 self.assertEqual(result['probes']['30.48']['observable_distance_met'], expected)
                 self.assertTrue(result['probes']['30.48']['full_signal_onset_observed'])
                 self.assertFalse(result['legal_verdict_asserted'])
 
     def test_indicator_gap_resets_continuous_distance(self):
-        result = measure(history([True, True, False, True, True], step_m=20))
+        result = measure(history([True, True, False, True, True, True], step_m=20))
         self.assertEqual(result['observed_continuous_approach_distance_m'], 20)
         self.assertFalse(result['probes']['30.48']['observable_distance_met'])
         result = measure(history([True, True, True, True, False], step_m=20))
         self.assertEqual(result['observed_continuous_approach_distance_m'], 0)
+
+    def test_turn_segment_does_not_complete_advance_distance(self):
+        result = measure(history([False, True, True, True, True], step_m=12))
+        self.assertEqual(result['observed_continuous_approach_distance_m'], 24)
+        self.assertEqual(result['last_prechange_frame'], 103)
+        self.assertFalse(result['probes']['30.48']['observable_distance_met'])
 
     def test_active_at_capture_start_is_lower_bound(self):
         result = measure(history([True, True, True, True, True]))

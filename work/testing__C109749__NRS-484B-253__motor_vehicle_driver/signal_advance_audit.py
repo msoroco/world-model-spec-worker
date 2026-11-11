@@ -49,13 +49,17 @@ def measure(history, *, probes_m=PROBES_M):
     if history[turn_index]['ego_left_indicator']:
         while continuous_start > 0 and history[continuous_start - 1]['ego_left_indicator']:
             continuous_start -= 1
+    # The displacement ending at the first detected course-change sample may
+    # include turning. Count only segments whose two endpoints precede it.
     distance = sum(math.dist(positions[i - 1], positions[i])
-                   for i in range(continuous_start + 1, turn_index + 1))
+                   for i in range(continuous_start + 1, turn_index))
     # A true indicator at capture start establishes a lower bound only; the
     # beginning of the signal may have preceded the retained source.
     starts_at_capture = continuous_start == 0 and history[0]['ego_left_indicator']
     return {
         'turn_frame': history[turn_index]['frame'],
+        'last_prechange_frame': history[turn_index - 1]['frame'],
+        'turn_detection_threshold_deg': 15,
         'continuous_start_frame': (history[continuous_start]['frame']
                                    if continuous_start < turn_index else None),
         'observed_continuous_approach_distance_m': distance,

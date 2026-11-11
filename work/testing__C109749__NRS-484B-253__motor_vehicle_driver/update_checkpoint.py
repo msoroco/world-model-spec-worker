@@ -33,6 +33,8 @@ claim(f'.venv-cpu/bin/python -m unittest discover -s work/{result["assignment_id
       '-p test_signal_advance_audit.py -v', 'signal-advance-tests.log')
 claim(f'.venv-cpu/bin/python -m unittest discover -s work/{result["assignment_id"]}/tests '
       '-p test_advance_signal_setup.py -v', 'advance-signal-setup-tests.log')
+claim(f'.venv-cpu/bin/python -m unittest discover -s work/{result["assignment_id"]}/tests '
+      '-p test_signal_advance_native_probe.py -v', 'signal-native-probe-tests.log')
 
 for case in manifest['cases']:
     claim(case['offline']['command'], case['offline']['log'])
@@ -113,11 +115,6 @@ claim(f'.venv-cpu/bin/python -m unittest discover '
       'signal-comparison-negative.log')
 for branch in ('reciprocal_no_yield', 'reciprocal_yield_matched'):
     draft = folder / 'cases' / branch
-    draft_proof = json.loads((draft / 'draft-proof-receipt.json').read_text())
-    for candidate in draft_proof['candidates']:
-        for kind in ('offline', 'compat', 'saved'):
-            proof = candidate['proofs'][kind]
-            claim(proof['command'], f'cases/{branch}/' + proof['log'])
     claim(f'PYTHONPATH=work/{result["assignment_id"]} .venv-cpu/bin/python '
           f'work/{result["assignment_id"]}/cases/{branch}/runner.py --check',
           f'cases/{branch}/runner-check.log')
@@ -125,9 +122,6 @@ for branch in ('reciprocal_no_yield', 'reciprocal_yield_matched'):
           f'cases/{branch}/draft-validation.log')
     delivery_proof = json.loads((draft / 'delivery-proof-receipt.json').read_text())
     claim(delivery_proof['positive']['command'], f'cases/{branch}/delivery-positive.log')
-    physical_proof = json.loads((draft / 'physical-proofs/receipt.json').read_text())
-    for fixture in physical_proof['fixtures']:
-        claim(fixture['command'], f'cases/{branch}/' + fixture['log'])
 for pattern, log in (
     ('test_reciprocal_no_yield_observation.py', 'observation-tests.log'),
     ('test_reciprocal_no_yield_delivery.py', 'delivery-tests.log'),
@@ -139,29 +133,32 @@ claim(comparison_proof['command'], 'reciprocal-matched-comparison-positive.log')
 claim(f'.venv-cpu/bin/python -m unittest discover -s work/{result["assignment_id"]}/tests '
       '-p test_reciprocal_matched_comparison.py -v', 'comparison-tests.log')
 result['tests'] = list(existing.values())
-result['readiness_kind'] = 'seven_case_canonical_partial_cpu_checkpoint'
+result['readiness_kind'] = 'nine_case_canonical_partial_cpu_checkpoint'
 result['reason'] = (
-    'Seven C109749 exact cases (reciprocal yield/continue, subject yield/proceed with an opposing '
-    'complete body inside or approaching outside the junction, and an omitted-signal contrast), '
+    'Nine C109749 exact cases (reciprocal yield/continue, matched reciprocal stop/entry, '
+    'subject yield/proceed with an opposing complete body inside or approaching outside the junction, '
+    'and an omitted-signal contrast), '
     'each with three distinct physical-risk fallbacks, occur in the canonical case plan, semantic proposal '
-    'and execution manifest. All 28 exact constructions '
+    'and execution manifest. All 36 exact constructions '
     'pass current canonical offline, positive/negative compatibility and recorded-only saved processing. '
     'The pinned manifest, semantic, package-compatibility, physical-preparation and delivery-contract '
-    'validators pass. Full-duration 900-frame synthetic delivery audits for all seven and four diagnostic '
+    'validators pass. Full-duration 900-frame synthetic delivery audits for all nine and five diagnostic '
     'comparisons exercise source joins, fixed conditions and negative rejection; their diagnostic '
     'receipts explicitly do not claim physical or legal acceptance. '
-    'A supplemental sealed-history signal-distance audit measures 12.24 m visible before the '
+    'A corrected supplemental sealed-history signal-distance audit excludes the first turning '
+    'segment and measures 10.0 m visible before the '
     'signalled diagnostic turn and 0 m for omitted signal; neither source demonstrates the '
     '30.48 m or 91.44 m advance probe, and capture-start signal onset is unknown. '
-    'A same-lane upstream waypoint selector for below/at/above distance candidates passes two '
-    'construction tests, but is not yet integrated into a selected Native runner or exact proofs. '
-    'Two isolated reciprocal drafts now contrast later-opposing stopped-outside motion with body entry '
+    'A same-lane upstream waypoint selector and Native-lazy delayed-indicator policy for '
+    'below/at/above 30.48 m and 91.44 m candidates pass six construction tests, including actor '
+    'readback and rejection paths, but are not yet integrated into selected Native runners or exact proofs. '
+    'Two canonical reciprocal cases now contrast later-opposing stopped-outside motion with body entry '
     'during the subject turn. Each has a runner, finalizer, three physical-risk fallbacks, four exact '
     'offline/compatibility/saved-processing paths, source-rejection checks, physical classifier/lifecycle '
     'fixtures, and a 900-frame diagnostic delivery audit. Their diagnostic fixed-condition comparison '
     'matches setup, all subject and initial-opposing samples, and preturn reciprocal motion across 900 '
-    'samples, with negative fixed-condition tests. Neither is yet in the canonical semantic plan or '
-    'manifest, so no selected-case readiness is claimed. The three physical judgment sweep specs '
+    'samples, with negative fixed-condition tests. These are software diagnostics only; no physical '
+    'or legal acceptance is claimed. The three physical judgment sweep specs '
     'remain incomplete, and other statutory alternatives still lack complete selected constructions and '
     'CPU proofs. Accepted-original '
     'equivalence, actual Native motion and camera visibility are unverified. This and all other partial '
