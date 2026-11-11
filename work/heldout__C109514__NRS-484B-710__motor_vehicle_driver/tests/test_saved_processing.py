@@ -19,24 +19,35 @@ class SavedProcessingTests(unittest.TestCase):
     def test_selected_intersection_following_source_path(self):
         with tempfile.TemporaryDirectory(prefix='c109514-saved-', dir=repo / '.runtime-work') as temp:
             root = Path(temp)
-            case = folder.name + '__traveling_follow_500ft'
-            fixture, attempt, output = (root / name for name in ('fixture','attempt','processed'))
-            make_fixture(repo, folder / 'diagnostic-recipe.json', fixture)
-            make_attempt(folder / 'execution-manifest.json', case, attempt)
-            copy_sources(fixture, attempt)
-            self.assertFalse((attempt / 'fire_gap_ft.jsonl').exists())
             decoder = repo / '.runtime-work/fire-decoder/.lake/build/bin/adapterCheck'
-            receipt = process_saved(folder / 'execution-manifest.json', case,
-                                    attempt, output, repo / 'runtime/library', decoder)
-            self.assertTrue(receipt['passed'])
-            self.assertTrue(receipt['originals_preserved'])
-            self.assertTrue(receipt['final_video_checks']['passed'])
-            self.assertFalse((attempt / 'fire_gap_ft.jsonl').exists())
-            stage = Path(receipt['analysis_directory'])
-            rows = [json.loads(line) for line in (stage / 'fire_gap_ft.jsonl').read_text().splitlines()]
-            self.assertEqual(len(rows), 9)
-            self.assertTrue(all(abs(row['value'] - 500) < 1e-6 for row in rows))
-            result = json.loads((stage / 'result.json').read_text())
-            self.assertFalse(result['physical_acceptance_claimed'])
+            for target in (499, 500, 501):
+                case = folder.name + f'__traveling_follow_{target}ft'
+                case_root = root / str(target)
+                case_root.mkdir()
+                fixture = case_root / 'fixture'
+                recipe = (folder / 'diagnostic-recipe.json' if target == 500
+                          else folder / 'cases' / f'traveling_follow_{target}ft' / 'diagnostic-recipe.json')
+                make_fixture(repo, recipe, fixture)
+                for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
+                    with self.subTest(target=target, candidate=candidate):
+                        attempt, output = (case_root / (candidate+suffix)
+                                           for suffix in ('-attempt', '-processed'))
+                        make_attempt(folder / 'execution-manifest.json', case, attempt,
+                                     candidate=candidate)
+                        copy_sources(fixture, attempt)
+                        self.assertFalse((attempt / 'fire_gap_ft.jsonl').exists())
+                        receipt = process_saved(folder / 'execution-manifest.json', case,
+                                                attempt, output, repo / 'runtime/library', decoder)
+                        self.assertTrue(receipt['passed'])
+                        self.assertEqual(receipt['candidate_id'], candidate)
+                        self.assertTrue(receipt['originals_preserved'])
+                        self.assertTrue(receipt['final_video_checks']['passed'])
+                        self.assertFalse((attempt / 'fire_gap_ft.jsonl').exists())
+                        stage = Path(receipt['analysis_directory'])
+                        rows = [json.loads(line) for line in (stage / 'fire_gap_ft.jsonl').read_text().splitlines()]
+                        self.assertEqual(len(rows), 9)
+                        self.assertTrue(all(abs(row['value'] - target) < 1e-6 for row in rows))
+                        result = json.loads((stage / 'result.json').read_text())
+                        self.assertFalse(result['physical_acceptance_claimed'])
 
 if __name__ == '__main__': unittest.main()

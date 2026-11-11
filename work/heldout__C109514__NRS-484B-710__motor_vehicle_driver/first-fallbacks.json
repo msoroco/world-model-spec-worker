@@ -1,0 +1,41 @@
+[
+  {
+    "id": "fallback1",
+    "construction": "cases/fallback1-construction.json",
+    "construction_sha256": "ad9be7c23249e02050eee778090bbb3d13810ba7db52436cae5874ca3393cbbf",
+    "trigger": {
+      "source": "Native waypoint route-selection diagnostic",
+      "metric": "count of connected through-intersection spawn routes meeting the original 500 ft construction",
+      "failure_condition": "Primary 5 m sampling finds no verified intersection route; use denser sampling to resolve available geometry."
+    },
+    "changed_knobs": [
+      "native route waypoint sampling step: 5 m to 2.5 m"
+    ]
+  },
+  {
+    "id": "fallback2",
+    "construction": "cases/fallback2-construction.json",
+    "construction_sha256": "86c417a556c2bd2d6c6571afbfe9397da6f64da25d708657453d554a858c38fe",
+    "trigger": {
+      "source": "retained original participant_footprints.jsonl and participant_state.jsonl",
+      "metric": "active-frame full-footprint gap oscillation around the commanded 500 ft target",
+      "failure_condition": "Primary control produces sustained oscillation outside a predeclared \u00b12 ft engineering attainment band; this band is not a legal threshold."
+    },
+    "changed_knobs": [
+      "following controller gap/speed gains: 0.18/0.30 to 0.12/0.22"
+    ]
+  },
+  {
+    "id": "fallback3",
+    "construction": "cases/fallback3-construction.json",
+    "construction_sha256": "020cb8732411a2476d6517b24a845f4ce6af20ce9add6e01ad71e47340c66be3",
+    "trigger": {
+      "source": "complete decoded approach and overview original RGB streams",
+      "metric": "required participant body visibility over all original frames",
+      "failure_condition": "Primary approach view omits a required participant body in any original frame, confirmed by source-bound pixel review."
+    },
+    "changed_knobs": [
+      "approach camera relative mount: 1.2 m forward/2.0 m high to 1.8 m forward/2.3 m high"
+    ]
+  }
+]

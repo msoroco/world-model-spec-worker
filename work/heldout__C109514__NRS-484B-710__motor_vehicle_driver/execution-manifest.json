@@ -12,7 +12,86 @@
         "status": "physical",
         "reason": "Native through-intersection route and actor motion may fail to realize the requested gap"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/fallback1-construction.json",
+          "construction_sha256": "ad9be7c23249e02050eee778090bbb3d13810ba7db52436cae5874ca3393cbbf",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "count of connected through-intersection spawn routes meeting the original 500 ft construction",
+            "failure_condition": "Primary 5 m sampling finds no verified intersection route; use denser sampling to resolve available geometry."
+          },
+          "changed_knobs": [
+            "native route waypoint sampling step: 5 m to 2.5 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_500ft --candidate fallback1 --output .runtime-work/c109514-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "first-fallback1-offline.log",
+            "log_sha256": "836356fe8bee0e36f976d0cb4228e6b33f12eefd23b3e3a21d61f9ec9204ac90",
+            "construction_sha256": "ad9be7c23249e02050eee778090bbb3d13810ba7db52436cae5874ca3393cbbf"
+          },
+          "compatibility": {
+            "receipt": "first-fallback1-compatibility.json",
+            "sha256": "f849f7ec48b1a58a26bf1836cc0021570e872568fc296dd94b7c5539eff1bb64",
+            "log": "first-fallback1-compat.log",
+            "negative_log": "first-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/fallback2-construction.json",
+          "construction_sha256": "86c417a556c2bd2d6c6571afbfe9397da6f64da25d708657453d554a858c38fe",
+          "trigger": {
+            "source": "retained original participant_footprints.jsonl and participant_state.jsonl",
+            "metric": "active-frame full-footprint gap oscillation around the commanded 500 ft target",
+            "failure_condition": "Primary control produces sustained oscillation outside a predeclared \u00b12 ft engineering attainment band; this band is not a legal threshold."
+          },
+          "changed_knobs": [
+            "following controller gap/speed gains: 0.18/0.30 to 0.12/0.22"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_500ft --candidate fallback2 --output .runtime-work/c109514-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "first-fallback2-offline.log",
+            "log_sha256": "b399be656a63014b9094592826d3398982ed28c7432c0fabbc5c3bd832c57e07",
+            "construction_sha256": "86c417a556c2bd2d6c6571afbfe9397da6f64da25d708657453d554a858c38fe"
+          },
+          "compatibility": {
+            "receipt": "first-fallback2-compatibility.json",
+            "sha256": "816b811b2398de84de98adcf30948ac7ddfb3aa2556868a42e43980d82df39b1",
+            "log": "first-fallback2-compat.log",
+            "negative_log": "first-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/fallback3-construction.json",
+          "construction_sha256": "020cb8732411a2476d6517b24a845f4ce6af20ce9add6e01ad71e47340c66be3",
+          "trigger": {
+            "source": "complete decoded approach and overview original RGB streams",
+            "metric": "required participant body visibility over all original frames",
+            "failure_condition": "Primary approach view omits a required participant body in any original frame, confirmed by source-bound pixel review."
+          },
+          "changed_knobs": [
+            "approach camera relative mount: 1.2 m forward/2.0 m high to 1.8 m forward/2.3 m high"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_500ft --candidate fallback3 --output .runtime-work/c109514-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "first-fallback3-offline.log",
+            "log_sha256": "d49de89701705e039851a8e5a662e6d8ed72842774dd094ff240ae8e6092f443",
+            "construction_sha256": "020cb8732411a2476d6517b24a845f4ce6af20ce9add6e01ad71e47340c66be3"
+          },
+          "compatibility": {
+            "receipt": "first-fallback3-compatibility.json",
+            "sha256": "f86fe3e7b78e69b14382ecf6d05c1f2aee93923ec26b673a43648da2f868646e",
+            "log": "first-fallback3-compat.log",
+            "negative_log": "first-fallback3-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "first-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "fire_finalizer.py"
@@ -35,6 +114,286 @@
         "sha256": "be0a1a6d5a9e1b9eca57b80714b11aca5d178961a8824254a046f6e228ade3f3",
         "log": "first-compat.log",
         "negative_log": "first-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_500ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "b8389122b7caa654cb9d74497e54431fc680c6b6e73071cb94df49621ca296f2",
+        "test_exit_code": 0
+      },
+      "negative": {
+        "log": "first-negative.log"
+      },
+      "acquisition": {
+        "fire_gap_ft": {
+          "entrypoint": "fire_finalizer.py",
+          "method": "recompute each frame from retained original participant footprints",
+          "evidence": "FireCaptureSession writes original footprints/state and synchronized frame identities; finalizer derives gap after capture."
+        }
+      }
+    },
+    {
+      "case_id": "heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_499ft",
+      "kind": "delivery",
+      "construction": "cases/traveling_follow_499ft/construction.json",
+      "construction_sha256": "0f94575d555bf0cc39a044d8f65ecb77317257a2a4f93a6bfed9f533ccd106bb",
+      "measurement_contract": "cases/traveling_follow_499ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "fire_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/cases/traveling_follow_499ft/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native through-intersection route and actor motion may fail to realize the requested gap"
+      },
+      "acquisition": {
+        "fire_gap_ft": {
+          "entrypoint": "fire_finalizer.py",
+          "method": "recompute each frame from retained original participant footprints",
+          "evidence": "FireCaptureSession writes original footprints/state and synchronized frame identities; finalizer derives gap after capture."
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/traveling_follow_499ft/fallback1-construction.json",
+          "construction_sha256": "e45a4cc05fefc4eee7fb1dde114a91df7996d7bc522cb13a81de602d393497c2",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "count of connected through-intersection spawn routes meeting the original 500 ft construction",
+            "failure_condition": "Primary 5 m sampling finds no verified intersection route; use denser sampling to resolve available geometry."
+          },
+          "changed_knobs": [
+            "native route waypoint sampling step: 5 m to 2.5 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_499ft --candidate fallback1 --output .runtime-work/c109514-499ft-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/traveling_follow_499ft/fallback1-offline.log",
+            "log_sha256": "4f1a4dae1f4bf79347ee17d463ad57f4bb9b9e6bd79234044742026854315927",
+            "construction_sha256": "e45a4cc05fefc4eee7fb1dde114a91df7996d7bc522cb13a81de602d393497c2"
+          },
+          "compatibility": {
+            "receipt": "cases/traveling_follow_499ft/fallback1-compatibility.json",
+            "sha256": "7430b6fc115d539ed0d506fb282bcda8218ae1af7a158b395ead63e7f84c0374",
+            "log": "cases/traveling_follow_499ft/compat-fallback1.log",
+            "negative_log": "cases/traveling_follow_499ft/negative-fallback1.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/traveling_follow_499ft/fallback2-construction.json",
+          "construction_sha256": "f9ea90acf1bb434ad21158324eb9365b1973f45494e629dfbede603e38a372fe",
+          "trigger": {
+            "source": "retained original participant_footprints.jsonl and participant_state.jsonl",
+            "metric": "active-frame full-footprint gap oscillation around the commanded 500 ft target",
+            "failure_condition": "Primary control produces sustained oscillation outside a predeclared \u00b12 ft engineering attainment band; this band is not a legal threshold."
+          },
+          "changed_knobs": [
+            "following controller gap/speed gains: 0.18/0.30 to 0.12/0.22"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_499ft --candidate fallback2 --output .runtime-work/c109514-499ft-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/traveling_follow_499ft/fallback2-offline.log",
+            "log_sha256": "793ae6d91e0beda3630404a97c8e81dda49f4a17a428757656ea3fd09dd52f99",
+            "construction_sha256": "f9ea90acf1bb434ad21158324eb9365b1973f45494e629dfbede603e38a372fe"
+          },
+          "compatibility": {
+            "receipt": "cases/traveling_follow_499ft/fallback2-compatibility.json",
+            "sha256": "eb4f1d95ee91b37486aa5e3386f7c0ee34bdf08b09096507349edd542c33e2f5",
+            "log": "cases/traveling_follow_499ft/compat-fallback2.log",
+            "negative_log": "cases/traveling_follow_499ft/negative-fallback2.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/traveling_follow_499ft/fallback3-construction.json",
+          "construction_sha256": "11863ee7c27081cc8d80c9e30fe87dc474346fce77d6f49caf7020b4877fa189",
+          "trigger": {
+            "source": "complete decoded approach and overview original RGB streams",
+            "metric": "required participant body visibility over all original frames",
+            "failure_condition": "Primary approach view omits a required participant body in any original frame, confirmed by source-bound pixel review."
+          },
+          "changed_knobs": [
+            "approach camera relative mount: 1.2 m forward/2.0 m high to 1.8 m forward/2.3 m high"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_499ft --candidate fallback3 --output .runtime-work/c109514-499ft-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/traveling_follow_499ft/fallback3-offline.log",
+            "log_sha256": "71dacd384e937f3d33203e7ba11e7d959d75bfc0b12bfdaf2beaa11d3ca8f232",
+            "construction_sha256": "11863ee7c27081cc8d80c9e30fe87dc474346fce77d6f49caf7020b4877fa189"
+          },
+          "compatibility": {
+            "receipt": "cases/traveling_follow_499ft/fallback3-compatibility.json",
+            "sha256": "c5be573de2bd74e65a213c19c099555f60b4b83c7a0cd5f2563c83617ea73546",
+            "log": "cases/traveling_follow_499ft/compat-fallback3.log",
+            "negative_log": "cases/traveling_follow_499ft/negative-fallback3.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_499ft --candidate primary --output .runtime-work/c109514-499ft-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/traveling_follow_499ft/primary-offline.log",
+        "log_sha256": "8ed8419319b9a1a9083cbf53ee3deb236f132793b382f3a2a9e95916a4992f40",
+        "construction_sha256": "0f94575d555bf0cc39a044d8f65ecb77317257a2a4f93a6bfed9f533ccd106bb"
+      },
+      "compatibility": {
+        "receipt": "cases/traveling_follow_499ft/primary-compatibility.json",
+        "sha256": "f88d48ddeefb3934fc720cd0ac07f4f3e90cf6f5cfdbd63f4347e9e5e606596b",
+        "log": "cases/traveling_follow_499ft/compat-primary.log",
+        "negative_log": "cases/traveling_follow_499ft/negative-primary.log"
+      },
+      "negative": {
+        "log": "cases/traveling_follow_499ft/negative-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_499ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "b8389122b7caa654cb9d74497e54431fc680c6b6e73071cb94df49621ca296f2",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_501ft",
+      "kind": "delivery",
+      "construction": "cases/traveling_follow_501ft/construction.json",
+      "construction_sha256": "1ab180379bfa18e8b2ab8260efbf7ecde4570b9a8786c5d66b50d1cd986be2bd",
+      "measurement_contract": "cases/traveling_follow_501ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "fire_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/cases/traveling_follow_501ft/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native through-intersection route and actor motion may fail to realize the requested gap"
+      },
+      "acquisition": {
+        "fire_gap_ft": {
+          "entrypoint": "fire_finalizer.py",
+          "method": "recompute each frame from retained original participant footprints",
+          "evidence": "FireCaptureSession writes original footprints/state and synchronized frame identities; finalizer derives gap after capture."
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/traveling_follow_501ft/fallback1-construction.json",
+          "construction_sha256": "3015abc4404c0d47d1059f3846b37aba2a67673b85b8a56bcf5be44f94da7343",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "count of connected through-intersection spawn routes meeting the original 500 ft construction",
+            "failure_condition": "Primary 5 m sampling finds no verified intersection route; use denser sampling to resolve available geometry."
+          },
+          "changed_knobs": [
+            "native route waypoint sampling step: 5 m to 2.5 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_501ft --candidate fallback1 --output .runtime-work/c109514-501ft-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/traveling_follow_501ft/fallback1-offline.log",
+            "log_sha256": "28caa850ee1bf35ead447289108578903a1d1ffd09880650e1ebb1fc45b46ccf",
+            "construction_sha256": "3015abc4404c0d47d1059f3846b37aba2a67673b85b8a56bcf5be44f94da7343"
+          },
+          "compatibility": {
+            "receipt": "cases/traveling_follow_501ft/fallback1-compatibility.json",
+            "sha256": "f6ec956642906fd1a6e3f8edd9e1295a0ca6ffa77e1be758e6e5adca8458825e",
+            "log": "cases/traveling_follow_501ft/compat-fallback1.log",
+            "negative_log": "cases/traveling_follow_501ft/negative-fallback1.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/traveling_follow_501ft/fallback2-construction.json",
+          "construction_sha256": "f36023d112b64dae76e62acd0d6d95a558f646dc43eb34e9d9a0ff63b924777f",
+          "trigger": {
+            "source": "retained original participant_footprints.jsonl and participant_state.jsonl",
+            "metric": "active-frame full-footprint gap oscillation around the commanded 500 ft target",
+            "failure_condition": "Primary control produces sustained oscillation outside a predeclared \u00b12 ft engineering attainment band; this band is not a legal threshold."
+          },
+          "changed_knobs": [
+            "following controller gap/speed gains: 0.18/0.30 to 0.12/0.22"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_501ft --candidate fallback2 --output .runtime-work/c109514-501ft-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/traveling_follow_501ft/fallback2-offline.log",
+            "log_sha256": "a93db8e42843d4a9cac54b4d1cae47b87432062c7b1905838d7d2b1462f90ad1",
+            "construction_sha256": "f36023d112b64dae76e62acd0d6d95a558f646dc43eb34e9d9a0ff63b924777f"
+          },
+          "compatibility": {
+            "receipt": "cases/traveling_follow_501ft/fallback2-compatibility.json",
+            "sha256": "a4ea1769d5f4d64c5f29abc9cf39ab038ea6ef2165a298de6ca03f9e974d77be",
+            "log": "cases/traveling_follow_501ft/compat-fallback2.log",
+            "negative_log": "cases/traveling_follow_501ft/negative-fallback2.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/traveling_follow_501ft/fallback3-construction.json",
+          "construction_sha256": "c5722d0019660c75a1391046751679fa3815a06214dad486d0bd3d774ae417b1",
+          "trigger": {
+            "source": "complete decoded approach and overview original RGB streams",
+            "metric": "required participant body visibility over all original frames",
+            "failure_condition": "Primary approach view omits a required participant body in any original frame, confirmed by source-bound pixel review."
+          },
+          "changed_knobs": [
+            "approach camera relative mount: 1.2 m forward/2.0 m high to 1.8 m forward/2.3 m high"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_501ft --candidate fallback3 --output .runtime-work/c109514-501ft-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/traveling_follow_501ft/fallback3-offline.log",
+            "log_sha256": "76b6d550d72b0428bcb48f0d006fed8737700b292272018cbf495aa9b80b39fd",
+            "construction_sha256": "c5722d0019660c75a1391046751679fa3815a06214dad486d0bd3d774ae417b1"
+          },
+          "compatibility": {
+            "receipt": "cases/traveling_follow_501ft/fallback3-compatibility.json",
+            "sha256": "e4f4740fd4c74b3cee0af0be3580dfb89b7442526c8a997a1b1da5a3826ce004",
+            "log": "cases/traveling_follow_501ft/compat-fallback3.log",
+            "negative_log": "cases/traveling_follow_501ft/negative-fallback3.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_501ft --candidate primary --output .runtime-work/c109514-501ft-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/traveling_follow_501ft/primary-offline.log",
+        "log_sha256": "e5c400e8d74d87d81db9b831822bd1fda797395e235978d5ed2d9261ae3b15dc",
+        "construction_sha256": "1ab180379bfa18e8b2ab8260efbf7ecde4570b9a8786c5d66b50d1cd986be2bd"
+      },
+      "compatibility": {
+        "receipt": "cases/traveling_follow_501ft/primary-compatibility.json",
+        "sha256": "89fe15f3aa71068d7409aee96a2ce1ef271b031c680e1fd12d0635e196cea39a",
+        "log": "cases/traveling_follow_501ft/compat-primary.log",
+        "negative_log": "cases/traveling_follow_501ft/negative-primary.log"
+      },
+      "negative": {
+        "log": "cases/traveling_follow_501ft/negative-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C109514__NRS-484B-710__motor_vehicle_driver/execution-manifest.json --case heldout__C109514__NRS-484B-710__motor_vehicle_driver__traveling_follow_501ft --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "b8389122b7caa654cb9d74497e54431fc680c6b6e73071cb94df49621ca296f2",
+        "test_exit_code": 0
       }
     }
   ]

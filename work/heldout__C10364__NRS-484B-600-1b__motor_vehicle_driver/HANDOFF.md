@@ -27,3 +27,51 @@ Status is **partial**. No executable case, fallback, source measurement, or save
 Resume gate: `.venv-cpu/bin/python worker_check.py --assignment heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver --complete --require-delivery-ready`.
 
 The external CARLA run is a later operator action; remaining CPU omissions above are not external blockers. No GPU command has been executed.
+
+## 2026-11-11 CPU continuation
+
+The pinned `.venv-cpu/bin/python runtime.py preflight` now passes with the installed
+NumPy/FFmpeg/Lean toolchain. The previous dependency diagnosis is obsolete.
+
+`case-plan.json` now plans six exact cases: `__person_3mps`, `__person_5mps`,
+`__person_7mps`, `__property_3mps`, `__property_5mps`, and `__property_7mps`
+(each prefixed by this assignment ID). Its three comparisons sweep measured speed
+for each protected interest and compare which object is nearer at the 5 m/s
+target. These speeds are engineering probes; no statutory numeric boundary or
+expected endangerment verdict is asserted. The frozen evidence inventory has zero
+recordings, so neither branch claims existing-evidence reuse. Life and limb share
+the same stationary pedestrian exposure; owned property is measured separately.
+
+`alley_geometry.py` constructs a route-relative stationary pedestrian and property
+position and rejects placements outside the alley or overlapping the nominal
+vehicle corridor. Its CPU tests exercise both travel directions and a rotated
+route. `alley_source_capture.py` writes measured original-tick ground footprints
+and ego motion readbacks for three distinct Native actors and rejects missing
+frames or bad geometry. `alley_measurement.py` reads those retained sources with
+trace and frame-map, joins Native identities and times, measures original-frame
+speed and surface gaps, and rejects missing sources and participant changes. It
+also computes a forward-projection time-to-station proxy and a braking-distance
+proxy from the original instantaneous acceleration. The braking proxy is unknown
+when deceleration is absent; neither proxy is a legal cutoff. Nine tests pass:
+
+`.venv-cpu/bin/python -m unittest discover -s work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/tests -v`
+
+The log is `cpu-tests.log` (SHA256
+`2aaf660032db924d72109a5a3c5231fb5982ccf89b2f8f5dde34d0a923a97daa`),
+also recorded in `result.json`. The checkpoint
+command `.venv-cpu/bin/python worker_check.py --assignment heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver --complete`
+passes static checks in `worker-check.log`. This is **partial**: the case plan is
+not yet an executable case package. Next, select and verify a real C10364 alley
+route and participants in a CARLA-lazy runner, retain four named camera sources
+and original footprint/motion sources, then finish the first `__person_3mps` case
+through exact offline, positive/negative compatibility and saved processing before
+expanding its comparisons and risk-triggered fallbacks. Bind the raw-source
+proxies through the finalizer and implement all audits and semantic proposals.
+Rerun this assignment's strict gate after all CPU proofs pass; keep
+physical motion and visibility as later GPU checks.
+
+The rerun of `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready`
+still fails with `Preparation acceptance failed: partial/missing packages remain`;
+see `work/_shared/batch-strict-gate.log`. This package remains partial for the
+CPU tasks above, as do other incomplete assignments. The failure is not a tool
+or package dependency failure.
