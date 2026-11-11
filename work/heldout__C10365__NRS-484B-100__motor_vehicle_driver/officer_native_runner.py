@@ -50,7 +50,7 @@ def command_for(command,responds,frame,direction_frame):
     return {'throttle':0.18,'brake':0.0} if responds else {'throttle':0.0,'brake':0.7}
 
 def _arm_bone(bones):
-    names=[name for name,_ in bones.bone_transforms]
+    names=[row[0] for row in bones.bone_transforms]
     for marker in ('upperarm_r','upper_arm_r','rightupperarm','r_upperarm','r_arm'):
         matches=[name for name in names if marker in name.lower()]
         if len(matches)==1:return matches[0]

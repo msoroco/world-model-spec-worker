@@ -28,7 +28,7 @@ class NativeConstructionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'alley lane'):module.choose_alley_route(world)
     def test_visible_arm_control_uses_walker_bone_api(self):
         class Walker:
-            def get_bones(self):return type('Bones',(),{'bone_transforms':[('root',None),('upperarm_r',None)]})()
+            def get_bones(self):return type('Bones',(),{'bone_transforms':[('root',None,None,None),('upperarm_r',None,None,None)]})()
             def set_bones(self,value):self.bones=value
             def blend_pose(self,value):self.blend=value
         carla=types.SimpleNamespace(Location=lambda *args:None,Rotation=lambda **kw:kw,

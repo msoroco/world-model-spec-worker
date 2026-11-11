@@ -98,5 +98,48 @@ class TestNativeSignal(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'perpendicular'):
             mod.crossing_route(world_map, 18)
 
+    def test_native_construction_spawns_both_directions_and_crossing(self):
+        east, west = pair()
+        north_end = Waypoint(0, 90, junction=17, y=65, road_id=2)
+        north = Waypoint(0, 90, next_waypoints=[north_end],
+                         previous_waypoints=[Waypoint(0, 90, y=-65, road_id=2)], road_id=2)
+        class World:
+            def __init__(self): self.spawns = []
+            def get_actors(self): return NS(filter=lambda pattern: [east, west])
+            def get_map(self): return NS(generate_waypoints=lambda step: [north])
+            def get_blueprint_library(self): return NS(find=lambda name: name)
+            def try_spawn_actor(self, blueprint, transform):
+                actor = NS(transform=transform, destroyed=False)
+                actor.destroy = lambda: setattr(actor, 'destroyed', True)
+                self.spawns.append(actor)
+                return actor
+        for direction in ('east', 'west'):
+            world = World()
+            case = NS(direction=direction, crossing_vehicle=True)
+            scene = mod.construct_native(world, case, 'official-device record')
+            self.assertEqual(len(world.spawns), 2)
+            self.assertEqual(scene['selected'].direction, direction)
+            self.assertEqual(scene['ego'].transform.location.x, -80 if direction=='east' else 80)
+            self.assertEqual(scene['crossing'].transform.location.y, -65)
+
+    def test_partial_native_spawn_is_destroyed(self):
+        east, west = pair()
+        north_end = Waypoint(0, 90, junction=17, y=65, road_id=2)
+        north = Waypoint(0, 90, next_waypoints=[north_end],
+                         previous_waypoints=[Waypoint(0, 90, y=-65, road_id=2)], road_id=2)
+        owned = NS(destroyed=False)
+        owned.destroy = lambda: setattr(owned, 'destroyed', True)
+        count = [0]
+        def spawn(blueprint, transform):
+            count[0] += 1
+            return owned if count[0] == 1 else None
+        world = NS(get_actors=lambda: NS(filter=lambda pattern: [east, west]),
+                   get_map=lambda: NS(generate_waypoints=lambda step: [north]),
+                   get_blueprint_library=lambda: NS(find=lambda name: name),
+                   try_spawn_actor=spawn)
+        with self.assertRaisesRegex(ValueError, 'crossing Native actor spawn failed'):
+            mod.construct_native(world, NS(direction='east', crossing_vehicle=True), 'source')
+        self.assertTrue(owned.destroyed)
+
 
 if __name__ == '__main__': unittest.main()

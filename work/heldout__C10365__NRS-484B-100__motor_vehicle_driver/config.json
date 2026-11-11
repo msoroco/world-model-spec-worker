@@ -1,0 +1,93 @@
+{
+  "cell_id": "C10365",
+  "law_id": "NRS-484B-100",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_responds",
+  "supported_case_ids": [
+    "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_responds",
+    "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_does_not_respond",
+    "heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_responds",
+    "heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_does_not_respond"
+  ],
+  "required_atoms": [],
+  "source_packets": [],
+  "rate_hz": 20,
+  "duration_s": 8,
+  "frames": 160,
+  "direction_frame": 40,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "subject-mounted original officer/subject visibility view",
+      "fov_deg": 95
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original officer/subject visibility view",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original officer/subject visibility view",
+      "fov_deg": 100
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original officer/subject visibility view",
+      "fov_deg": 85
+    }
+  ],
+  "case": {
+    "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_responds",
+    "intended_observed_response": "stopped_after_indication",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "subject_speed_mps",
+          "unit": "m/s",
+          "method": "original subject velocity sampled at each joined Native frame",
+          "sampling_rate_hz": 20,
+          "time_window": "all original frames",
+          "reference_frame": "Native world",
+          "uncertainty": "20 Hz sampled velocity"
+        },
+        {
+          "name": "officer_direction",
+          "unit": "boolean",
+          "method": "walker arm-pose activation joined to original four-view frame",
+          "sampling_rate_hz": 20,
+          "time_window": "all original frames",
+          "reference_frame": "officer actor and addressed subject",
+          "uncertainty": "physical gesture visibility and meaning require original-pixel review"
+        }
+      ],
+      "context_inputs": [
+        "officer_context.json",
+        "officer_direction.json",
+        "subject_motion.json",
+        "subject_motion_history.jsonl"
+      ],
+      "limitations": [
+        "Officer authority, lawful duty and willfulness require independent source/legal review."
+      ]
+    }
+  },
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "subject_motion_history.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 1.0,
+    "context_sources": [
+      "officer_context.json",
+      "officer_direction.json"
+    ]
+  }
+}

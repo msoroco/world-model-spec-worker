@@ -4,10 +4,10 @@ Batch: 51 assignments; 6 ready, 45 partial, 0 blocked. Strict delivery gate has 
 
 ## Environment and gates
 
-- Pinned `.venv-cpu` preflight: passed (`preflight.log`).
-- Repository unit tests: 6 passed (`repository-tests.log`).
-- Last passing batch checkpoint gate: `batch-checkpoint-gate.log`. C136014's disallowed proof names and oversized diagnostics were repaired, and both C136014 and C136529 now pass scoped strict gates. The current concurrent batch scan can race ignored temporary diagnostic directories under `.runtime-work/`; see `batch-check.log` and `batch-strict-gate.log`. Rerun when fixture materialization pauses.
-- Last completed batch strict gate: exit 1, `Preparation acceptance failed: partial/missing packages remain` before the two newer ready assignments; its result remains true for the current 45 partial assignments. The latest retry exited 1 during an ignored temporary directory scan (`batch-strict-gate.log`).
+- Pinned `.venv-cpu` preflight: rerun and passed with numpy 1.26.4, ffmpeg/ffprobe and Lean/Lake 4.28.0 available (`preflight.log`, SHA256 `e607085136fde64b5d223161149ee690740b924253c7fd8e91245a898fccba80`).
+- Repository unit tests: rerun, 6 passed (`repository-tests.log`, SHA256 `9408fccf6c69b927bcc68bdeec11205fe15e99cebba50e25cc7695cb0216cc66`).
+- Latest batch checkpoint gate: passed (`batch-check.log`) after the owners repaired disallowed proof names, compacted diagnostics and cleaned generated runtime scratch.
+- Latest batch strict gate: rerun after the environment update and C111273 code changes; exit 1, `Preparation acceptance failed: partial/missing packages remain` (`batch-strict-gate.log`, SHA256 `89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`). This is the current definitive result with six ready and 45 partial assignments.
 
 ## Partition 01 work
 
@@ -21,9 +21,9 @@ Batch: 51 assignments; 6 ready, 45 partial, 0 blocked. Strict delivery gate has 
 
 ## Other partition owners
 
-- Partition 02: C147331 three Native delivery primaries and nine fallbacks pass exact offline/compatibility; saved processors, four-camera audits, comparison audits, physical/lifecycle receipts and three positive/stale-review delivery acceptance fixtures pass. A passing judgment sweep expands to three more selected cases that still need exact construction/proofs; the C5191 turn proposal remains separate and unallocated. Status partial.
-- Partition 03: C136014 is ready: nine exact cases, 36 primary/fallback bundles, source-bound semantic chain, offline/compatibility/saved processing and physical protocol/delivery audits pass. Its scoped strict gate exits 0; the owner is continuing the next assignment.
-- Partition 04: C136529 is ready with six exact cases, 24 primary/fallback constructions, offline/compatibility/saved processing, six delivery audits, six physical-preparation receipts, five comparison audits and three fixed source-measured speed grids. Its scoped strict gate exits 0; the owner is continuing the next assignment.
+- Partition 02: C147331 has six exact cases and 18 fallbacks, all passing offline, positive/missing-source compatibility, saved processing, source audits, synthetic physical/lifecycle and positive/stale-source delivery fixtures. Twenty-one CPU tests and three comparison audits pass. Its scoped strict gate fails solely because status remains truthfully partial: passing-lawful facts and the separate unallocated C5191 turn branch require further review. C178759 now has original-frame continuous-driver conduct-distance and two-episode measurement with below/at/above one-mile tests; scoped partial gate passes, while Native construction/finalizer and exact proofs remain.
+- Partition 03: C136014 is ready: nine exact cases, 36 primary/fallback bundles, source-bound semantic chain, offline/compatibility/saved processing and physical protocol/delivery audits pass. Its scoped strict gate exits 0. C10365 has an officer direction Native runner, connected alley/sidewalk placement, four post-indication branches, retained direction/motion sources, four cameras, first exact construction and saved-only finalizer; ten CPU tests and scoped partial gate pass, while exact bundle proofs and audits remain.
+- Partition 04: C136529 is ready with six exact cases, 24 primary/fallback constructions, offline/compatibility/saved processing, six delivery audits, six physical-preparation receipts, five comparison audits and three fixed source-measured speed grids. Its scoped strict gate exits 0. C111273 now has source-linked Native traffic-light/lane selection for both approaches, a crossing actor, four-camera synchronized capture, post-tick Yellow/Off readback/restoration, a saved-only source-joined finalizer and a three-comparison fixed-condition audit. Eighteen CPU tests and its scoped checkpoint gate pass. The scoped strict gate exits 1 because exact bundles, fallback and compatibility proofs, semantic proposals and delivery audits remain; its status remains partial. See `work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/HANDOFF.md` for hashes and commands.
 
 ## Exact continuation
 
