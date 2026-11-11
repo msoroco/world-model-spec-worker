@@ -4,9 +4,9 @@ import hashlib
 import json
 from pathlib import Path
 
-from entry_measurements import analyze as measure_entry
-from signal_measurements import analyze as measure_signal
-from stop_measurements import analyze as measure_stop
+from entry_measurements import analyze as _measure_entry
+from signal_measurements import analyze as _measure_signal
+from stop_measurements import analyze as _measure_stop
 
 PREFIX = "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__"
 CASES = {PREFIX + "signal_operative": "Green", PREFIX + "signal_off": "Off"}
@@ -22,6 +22,18 @@ def _sha(path):
 
 def _lines(rows):
     return "".join(json.dumps(row, allow_nan=False) + "\n" for row in rows)
+
+
+def measure_entry(attempt):
+    return _measure_entry(attempt)
+
+
+def measure_signal(attempt, entry):
+    return _measure_signal(attempt, entry)
+
+
+def measure_stop(attempt, entry):
+    return _measure_stop(attempt, entry)
 
 
 def analyze_sources(attempt):
@@ -76,7 +88,9 @@ def finalize(attempt: Path, output: Path):
     measurements = {
         "body_entry_timing": {"method": "measure_entry", "value": {
             "first_body_entry": entry["first_body_entry"],
-            "ego_minus_other_entry_time_s": entry["ego_minus_other_entry_time_s"]},
+            "ego_minus_other_entry_time_s": entry["ego_minus_other_entry_time_s"],
+            "other_is_to_ego_right": entry["other_is_to_ego_right"],
+            "approach_heading_difference_deg": entry["approach_heading_difference_deg"]},
             "sources": entry["sources"]},
         "signal_at_entry": {"method": "measure_signal", "value": {
             "at_body_entry": signal["at_body_entry"], "head_review": signal["head_review"],

@@ -35,8 +35,18 @@ def config(case):
     for key in ("polygon_source", "approach_geometry_source", "device_inventory_source", "camera_plan_source"):
         site[key] = key + ".json"
     return {"selected_case_id": case, "law_id": "NRS-484B-250-2", "cell_id": "C125751",
+            "actor": "motor_vehicle_driver",
             "duration_s": 55, "rate_hz": 20, "target_signal_state": TARGETS[case][0],
-            "required_atoms": [], "recording_description": {},
+            "required_atoms": [], "recording_description": {
+                "channels": [
+                    {"name": name, "unit": "structured record", "method": method,
+                     "time_window": "entire capture", "reference_frame": "original Native frame",
+                     "uncertainty": "synthetic diagnostic only", "sampling_rate_hz": 20}
+                    for name, method in (("signal_state", "original Native signal state by frame"),
+                                         ("stop_state", "original speed and body occupancy by frame"))],
+                "context_inputs": [{"name": "entry_context", "unit": "structured record",
+                                    "method": "saved body entry, signal and stop source join"}],
+                "limitations": ["Synthetic diagnostic site and media; physical and legal acceptance unresolved"]},
             "ego_target_speed_mps": 5, "other_target_speed_mps": 5,
             "other_release_frame": 20, "site": site}
 

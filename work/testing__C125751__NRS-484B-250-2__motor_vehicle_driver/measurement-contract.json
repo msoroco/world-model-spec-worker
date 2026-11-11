@@ -1,0 +1,57 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Both complete vehicle bodies enter one sourced crossing from different highways; original frame/time joins report entry delta and right-hand approach geometry without inventing a legal simultaneity cutoff",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "body_entry_timing",
+      "method": "measure_entry",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "crossing_history.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "A reviewed governing signal inventory and both original Native light states at body entry identify the controlled-device comparison while leaving official status and statutory inoperability unresolved",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "signal_at_entry",
+      "method": "measure_signal",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "signal_history.jsonl",
+        "video_frames.jsonl",
+        "signal_context.json",
+        "head_visibility_review.json",
+        "other_head_visibility_review.json",
+        "approach.mkv",
+        "reference_corner.mkv"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "For the signal-Off branch, source-selected stop references and original zero-speed, entry-order and occupancy histories retain subsection-4 stop and yield evidence without a legal stop/yield verdict",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "stop_order",
+      "method": "measure_stop",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "stop_context.json",
+        "stop_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "signal_history.jsonl"
+    ],
+    "error_contains": "Missing required source: signal_history.jsonl"
+  }
+}

@@ -38,9 +38,6 @@ def build():
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             config = fixture.config(case)
-            config["recording_description"] = {
-                "channels": [], "context_inputs": [],
-                "limitations": ["Synthetic diagnostic site; no Native or legal acceptance"]}
             fixture.write_packet(root, config)
             fixture.validate_config(config, root)
             _dump(root / "config.json", config)
@@ -56,7 +53,10 @@ def build():
             path = HERE / ("diagnostic-construction-" + suffix + ".json")
             _dump(path, construction)
             manifest["cases"].append({"case_id": case, "kind": "delivery",
-                                      "construction": path.name, "construction_sha256": _sha(path)})
+                                      "construction": path.name, "construction_sha256": _sha(path),
+                                      "measurement_procedure": {"entrypoint": "finalizer.py"},
+                                      "measurement_contract": "measurement-contract.json",
+                                      "fixture_recipe": f"work/{ASSIGNMENT}/diagnostic-recipe.json"})
     _dump(HERE / "diagnostic-execution-manifest.json", manifest)
     return manifest
 
