@@ -5,11 +5,13 @@ import math
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from queue import Empty, Queue
+from shapely.geometry import MultiPoint, Polygon
 
 from camera_encoder import FFV1Writer
 from camera_setup import SIZES, source_cameras
 from capture_sources import record_crossing_sample
 from native_crossing import construct_crossing_candidate
+from route_control import steering_command, validate_route
 from site_packet import verify_site_packet
 
 CASE = "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_precedence"
@@ -65,6 +67,13 @@ def validate_config(config, base_dir=Path.cwd()):
         _numbers(point, 2, "crossing vertex")
     for key in POSES:
         _numbers(site.get(key), 4, key + " pose")
+    routes = site.get("routes")
+    if not isinstance(routes, dict) or set(routes) != {"ego", "other"}:
+        raise ValueError("Reviewed ego and other crossing routes required")
+    for role in ("ego", "other"):
+        validate_route(routes[role], site[role + "_approach"],
+                       site[role + "_entry"], role,
+                       site["crossing_polygon_xy_m"])
     cameras = site.get("cameras")
     if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS):
         raise ValueError("All four named camera poses required")
@@ -113,15 +122,33 @@ def _spawn_ego(world, blueprint, transform):
         actor.destroy()
 
 
-def _drive(carla, actor, target_speed, held):
+def _drive(carla, actor, target_speed, held, steer=0.0):
     velocity = actor.get_velocity()
     speed = math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2)
     if not math.isfinite(speed):
         raise ValueError("Nonfinite Native speed feedback")
     control = carla.VehicleControl()
+    control.steer = steer
     control.throttle = 0.0 if held else max(0.0, min(0.65, 0.18 + 0.16 * (target_speed - speed)))
     control.brake = 1.0 if held else (min(0.4, 0.3 * (speed - target_speed)) if speed > target_speed else 0.0)
     actor.apply_control(control)
+
+
+def _body_inside(actor, crossing):
+    vertices = actor.bounding_box.get_world_vertices(actor.get_transform())
+    points = [(float(vertex.x), float(vertex.y)) for vertex in vertices]
+    if len(points) < 4 or any(not math.isfinite(value) for point in points for value in point):
+        raise ValueError("Complete finite Native body required for yield control")
+    body = MultiPoint(points).convex_hull
+    if body.area <= 0:
+        raise ValueError("Nondegenerate Native body required for yield control")
+    return body.intersects(crossing)
+
+
+def precedence_hold(other_inside, other_entered_once):
+    """Hold the approaching ego until the other body has entered and cleared."""
+    entered = other_entered_once or other_inside
+    return not entered or other_inside, entered
 
 
 def capture(args, config):
@@ -175,6 +202,8 @@ def capture(args, config):
                     "statutory_crossing_review_source": site["statutory_crossing_review_source"],
                     "site_review_packet": site_review,
                     "median_spacing_measurement": site_review["median_spacing_measurement"],
+                    "controller_history_source": "controller_history.jsonl",
+                    "authored_routes_xy_m": site["routes"],
                 }
                 (output / "junction_context.json").write_text(json.dumps(context, indent=2) + "\n")
                 camera_transforms = {name: _transform(carla, site["cameras"][name]) for name in CAMERAS}
@@ -187,15 +216,48 @@ def capture(args, config):
                             encoders[name] = stack.enter_context(FFV1Writer(output / (name + ".mkv"), width, height))
                         frame_map = stack.enter_context(FrameMap(output / "video_frames.jsonl"))
                         history = stack.enter_context((output / "crossing_history.jsonl").open("x", buffering=1))
+                        controls = stack.enter_context((output / "controller_history.jsonl").open("x", buffering=1))
                         capture_helper = PipelineCapture(client, ego, output,
                                                          config["selected_case_id"],
                                                          required_observations=config["required_atoms"])
                         try:
+                            crossing = Polygon(site["crossing_polygon_xy_m"])
+                            other_entered_once = False
+                            route_progress = {"ego": 1, "other": 1}
                             for i in range(1100):
-                                _drive(carla, ego, config["ego_target_speed_mps"], i < config["ego_release_frame"])
-                                _drive(carla, other, config["other_target_speed_mps"], i < config["other_release_frame"])
+                                other_inside = _body_inside(other, crossing)
+                                if config["selected_case_id"] == CASE:
+                                    yield_hold, other_entered_once = precedence_hold(
+                                        other_inside, other_entered_once)
+                                else:
+                                    yield_hold = False
+                                ego_held = i < config["ego_release_frame"] or yield_hold
+                                steering = {}
+                                for role, actor in (("ego", ego), ("other", other)):
+                                    actor_transform = actor.get_transform()
+                                    location = actor_transform.location
+                                    steering[role], route_progress[role] = steering_command(
+                                        float(location.x), float(location.y),
+                                        float(actor_transform.rotation.yaw),
+                                        site["routes"][role], route_progress[role])
+                                _drive(carla, ego, config["ego_target_speed_mps"], ego_held,
+                                       steering["ego"])
+                                _drive(carla, other, config["other_target_speed_mps"],
+                                       i < config["other_release_frame"], steering["other"])
                                 world.tick()
                                 snapshot = world.get_snapshot()
+                                controls.write(json.dumps({
+                                    "frame": snapshot.frame,
+                                    "time_s": snapshot.timestamp.elapsed_seconds,
+                                    "selected_case_id": config["selected_case_id"],
+                                    "ego_held": ego_held,
+                                    "other_body_inside_before_tick": other_inside,
+                                    "other_entered_once_before_tick": other_entered_once,
+                                    "precedence_hold": yield_hold,
+                                    "ego_steer": steering["ego"],
+                                    "other_steer": steering["other"],
+                                    "route_target_index": route_progress.copy(),
+                                }) + "\n")
                                 for name in CAMERAS:
                                     image = _sensor_frame(queues[name], snapshot.frame)
                                     encoders[name].write(bytes(image.raw_data))

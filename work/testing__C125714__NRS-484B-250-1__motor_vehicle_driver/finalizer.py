@@ -56,6 +56,43 @@ def measure_turn_exception(report, context):
     return _measurement("measure_turn_exception", value, report["sources"], names)
 
 
+def measure_yield_control(report, attempt, case_id):
+    """Check original controller decisions; physical yielding remains unjudged."""
+    path = Path(attempt) / "controller_history.jsonl"
+    rows = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+    if len(rows) != len(report["samples"]):
+        raise ValueError("Incomplete original yield controller history")
+    entered = False
+    held_count = 0
+    for row, sample in zip(rows, report["samples"]):
+        if (row.get("frame") != sample["frame"] or
+                row.get("time_s") != sample["time_s"] or
+                row.get("selected_case_id") != case_id):
+            raise ValueError("Original yield controller frame or case join failed")
+        for key in ("ego_held", "other_body_inside_before_tick",
+                    "other_entered_once_before_tick", "precedence_hold"):
+            if type(row.get(key)) is not bool:
+                raise ValueError("Missing boolean yield controller state: " + key)
+        entered = entered or row["other_body_inside_before_tick"]
+        if row["other_entered_once_before_tick"] is not entered:
+            raise ValueError("Original other-entry controller state changed")
+        required_hold = (not entered or row["other_body_inside_before_tick"])
+        if case_id.endswith("__source_verified_precedence"):
+            if row["precedence_hold"] is not required_hold or (required_hold and not row["ego_held"]):
+                raise ValueError("Precedence controller released ego before other clearance")
+        elif row["precedence_hold"]:
+            raise ValueError("Nonprecedence case used precedence hold")
+        held_count += row["ego_held"]
+    sources = dict(report["sources"])
+    sources["controller_history.jsonl"] = _sha(path)
+    names = ("crossing_history.jsonl", "video_frames.jsonl", "controller_history.jsonl")
+    value = {"controller_rows": len(rows), "ego_held_frames": held_count,
+             "other_entry_seen_before_tick": entered,
+             "policy": "other-body clearance" if case_id.endswith("__source_verified_precedence") else "scheduled release",
+             "physical_yield_judgment": "unresolved"}
+    return _measurement("measure_yield_control", value, sources, names)
+
+
 def finalize(attempt: Path, output: Path) -> dict:
     from worker_exchange.native_output import physical_result, write_result
 
@@ -63,7 +100,8 @@ def finalize(attempt: Path, output: Path) -> dict:
     if output.exists() or (attempt / "result.json").exists():
         raise ValueError("Retain previous finalization; choose a fresh attempt")
     required = ("config.json", "junction_context.json", "crossing_history.jsonl",
-                "video_frames.jsonl", "trace.jsonl", "capture/evidence.jsonl", *CAMERAS)
+                "video_frames.jsonl", "controller_history.jsonl", "trace.jsonl",
+                "capture/evidence.jsonl", *CAMERAS)
     for name in required:
         if not (attempt / name).is_file():
             raise ValueError("Missing required source: " + name)
@@ -85,7 +123,9 @@ def finalize(attempt: Path, output: Path) -> dict:
     if not isinstance(description, dict):
         raise ValueError("Recording description required")
     report = analyze(attempt)
-    sources = report["sources"]
+    yield_measurement = measure_yield_control(report, attempt, case_id)
+    sources = dict(report["sources"])
+    sources["controller_history.jsonl"] = _sha(attempt / "controller_history.jsonl")
     source_context = json.loads((attempt / "junction_context.json").read_text())
     channels = attempt / "channels"
     if channels.exists():
@@ -135,7 +175,9 @@ def finalize(attempt: Path, output: Path) -> dict:
              "reference": "channels/" + role + "_inside.jsonl"}
             for role in ("ego", "other")
         ] + [{"name": "crossing_context", "unit": "structured record",
-              "reference": "channels/crossing_context.json"}],
+              "reference": "channels/crossing_context.json"},
+             {"name": "yield_control_attempt", "unit": "structured record",
+              "reference": "controller_history.jsonl"}],
         "source_evidence_hashes": sources,
         "capture_evidence_sha256": _sha(attempt / "capture/evidence.jsonl"),
         "realized_observables": {},
@@ -150,6 +192,7 @@ def finalize(attempt: Path, output: Path) -> dict:
                     "body_entry_order": measure_body_entry(report),
                     "device_exclusion_context": measure_device_context(report, source_context),
                     "opposite_left_turn_context": measure_turn_exception(report, source_context),
+                    "yield_control_attempt": yield_measurement,
                 },
                 "physical_acceptance_claimed": False}
     output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + "\n")

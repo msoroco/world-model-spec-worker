@@ -7,8 +7,50 @@ sys.path.insert(0,str(ROOT.parents[1]/'runtime/scenario_pipeline'))
 def load(name):
     spec=importlib.util.spec_from_file_location(name,ROOT/(name+'.py'));mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod);return mod
 measure=load('crossing_precedence');native=load('native_crossing');comparison=load('comparison_audit');geometry=load('median_geometry');spacing=load('median_spacing');capture=load('capture_sources');finalizer=load('finalizer');runner=load('runner');cameras=load('camera_setup');encoder=load('camera_encoder');turns=load('turn_exception_audit');turn_fixture=load('turn_exception_fixture_proof')
+route=load('route_control')
 def body(x,y):return [[x-1,y-1],[x+1,y-1],[x+1,y+1],[x-1,y+1]]
 class Tests(unittest.TestCase):
+    def test_authored_route_steering_and_progress(self):
+        points=[[0,0],[10,0],[10,10],[10,20]]
+        self.assertIs(route.validate_route(points,[0,0,0,0],[10,0,0,0],'ego'),points)
+        steer,index=route.steering_command(8,0,0,points)
+        self.assertLess(steer,0)
+        self.assertEqual(index,2)
+        steer,index=route.steering_command(10,9,90,points,index)
+        self.assertEqual(index,3)
+        self.assertAlmostEqual(steer,0,places=5)
+        with self.assertRaisesRegex(ValueError,'differs from reviewed'):
+            route.validate_route([[6,0],[10,0],[10,10]], [0,0,0,0],[10,0,0,0],'ego')
+        with self.assertRaisesRegex(ValueError,'near-duplicate'):
+            route.validate_route([[0,0],[0.2,0],[10,0],[10,10]], [0,0,0,0],[10,0,0,0],'ego')
+        crossing=[[0,0],[10,0],[10,10],[0,10]]
+        self.assertEqual(route.validate_route([[-5,5],[5,5],[15,5]],
+                                              [-5,5,0,0],[5,5,0,0],
+                                              'ego',crossing)[-1],[15,5])
+        with self.assertRaisesRegex(ValueError,'ends within crossing'):
+            route.validate_route([[-5,5],[5,5],[8,5]],[-5,5,0,0],
+                                 [5,5,0,0],'ego',crossing)
+        with self.assertRaisesRegex(ValueError,'does not traverse crossing interior'):
+            route.validate_route([[-5,-2],[5,-2],[15,-2]],[-5,-2,0,0],
+                                 [5,-2,0,0],'ego',crossing)
+    def test_precedence_controller_holds_until_other_clears(self):
+        held,entered=runner.precedence_hold(False,False)
+        self.assertTrue(held)
+        held,entered=runner.precedence_hold(True,entered)
+        self.assertTrue(held)
+        held,entered=runner.precedence_hold(False,entered)
+        self.assertFalse(held)
+        self.assertTrue(entered)
+        def actor(points):
+            vertices=[NS(x=x,y=y) for x,y in points]
+            return NS(bounding_box=NS(get_world_vertices=lambda transform:vertices),
+                      get_transform=lambda:object())
+        from shapely.geometry import Polygon
+        crossing=Polygon([[0,0],[10,0],[10,10],[0,10]])
+        self.assertFalse(runner._body_inside(actor(body(-4,5)),crossing))
+        self.assertTrue(runner._body_inside(actor(body(5,5)),crossing))
+        with self.assertRaisesRegex(ValueError,'Complete finite Native body'):
+            runner._body_inside(actor([[0,0],[1,0],[1,1]]),crossing)
     def test_median_spacing_boundary_and_selected_crossing(self):
         crossing=[[0,0],[10,0],[10,10],[0,10]]
         def document(gap):
@@ -172,6 +214,11 @@ class Tests(unittest.TestCase):
                                            'body_key':'ego_vertices_m'}}
             (root/'config.json').write_text(json.dumps(config))
             (root/'trace.jsonl').write_text(''.join(json.dumps({'frame':100+i,'time_s':i*.05})+'\n' for i in range(3)))
+            (root/'controller_history.jsonl').write_text(''.join(json.dumps({
+                'frame':100+i,'time_s':i*.05,'selected_case_id':config['selected_case_id'],
+                'ego_held':True,'other_body_inside_before_tick':i>0,
+                'other_entered_once_before_tick':i>0,'precedence_hold':True})+'\n'
+                for i in range(3)))
             (root/'capture').mkdir();(root/'capture/evidence.jsonl').write_text('{}\n')
             for name in finalizer.CAMERAS:(root/name).write_bytes(b'diagnostic placeholder')
             bad=root/'missing-source'
@@ -190,7 +237,7 @@ class Tests(unittest.TestCase):
             contract=json.loads((ROOT/'measurement-contract.json').read_text())
             validate(contract,plan['requirement_dispositions'],
                      (ROOT/'finalizer.py').read_text(),config['selected_case_id'])
-            self.assertEqual(len(verify_report(contract,analysis,root)),4)
+            self.assertEqual(len(verify_report(contract,analysis,root)),5)
             result=json.loads((root/'result.json').read_text())
             entry=analysis['measurements']['body_entry_order']
             self.assertTrue(entry['value']['other_enters_before_ego'])
@@ -200,6 +247,13 @@ class Tests(unittest.TestCase):
                              ['subsection_4_qualification'],'unresolved')
             self.assertEqual(analysis['measurements']['crossing_identity']['value']
                              ['legal_conclusion'],'unresolved')
+            self.assertEqual(analysis['measurements']['yield_control_attempt']['value']
+                             ['ego_held_frames'],3)
+            rows=[json.loads(line) for line in (root/'controller_history.jsonl').read_text().splitlines()]
+            rows[1]['ego_held']=False
+            (root/'controller_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            with self.assertRaisesRegex(ValueError,'released ego before other clearance'):
+                finalizer.measure_yield_control(measure.analyze(root),root,config['selected_case_id'])
             self.assertTrue(result['measured_values']['other_body_inside_at_ego_entry'])
             self.assertFalse(result['physical_acceptance_claimed'])
             self.assertEqual(len((root/'channels/ego_inside.jsonl').read_text().splitlines()),3)
@@ -221,7 +275,10 @@ class Tests(unittest.TestCase):
                         'same_statutory_crossing_reviewed':True,
                         'selected_roadway_index':0,
                         'crossing_polygon_xy_m':[[0,0],[10,0],[10,10],[0,10]],
-                        'ego_approach':pose,'ego_entry':pose,'other_approach':pose,'other_entry':pose,
+                        'ego_approach':[-5,5,2,0],'ego_entry':[1,5,2,0],
+                        'other_approach':[5,-5,2,90],'other_entry':[5,1,2,90],
+                        'routes':{'ego':[[-5,5],[1,5],[15,5]],
+                                  'other':[[5,-5],[5,1],[5,15]]},
                         'cameras':{name:[0,0,5,0,-20,0] for name in runner.CAMERAS}}}
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);documents={}
