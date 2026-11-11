@@ -14,9 +14,9 @@ CAMERA_NAMES=('overview','approach','reference_corner','driver_reference')
 
 def camera_plan(policy):
     height=42 if policy=='elevated_overview' else 35
-    return (('overview',1920,1080,85,(12,-17,height),(45,-65),False),
-            ('approach',1280,720,90,(0,-45,8),(90,-25),False),
-            ('reference_corner',1280,720,90,(26,-7,10),(135,-35),False),
+    return (('overview',1920,1080,85,(22,-18,height),(45,-65),False),
+            ('approach',1280,720,90,(10,-35,8),(90,-25),False),
+            ('reference_corner',1280,720,90,(37,-5,10),(135,-35),False),
             ('driver_reference',1280,720,90,(1,0,1.5),(0,0),True))
 
 def check_capture(bundle):
@@ -116,10 +116,10 @@ def execute(bundle,output,host,port):
         settings.max_substep_delta_time=.01;settings.max_substeps=10
         world.apply_settings(settings);world.set_weather(carla.WeatherParameters.ClearNoon)
         mapping=world.get_map();lane_readback={}
-        for lane,radius in ((-1,20.25),(-2,16.75)):
-            theta=3*math.pi/4
+        for lane,radius in ((-1,16.75),(-2,20.25)):
+            theta=-math.pi/4
             point=carla.Location(x=22+radius*math.cos(theta),
-                y=-22+radius*math.sin(theta),z=1)
+                y=radius*math.sin(theta),z=1)
             waypoint=mapping.get_waypoint(point,project_to_road=False,
                 lane_type=carla.LaneType.Driving)
             lane_readback[str(lane)]=None if waypoint is None else {
@@ -127,10 +127,10 @@ def execute(bundle,output,host,port):
             if waypoint is None or waypoint.road_id!=21 or waypoint.lane_id!=lane:
                 raise RuntimeError('Generated Native right/other arc lanes differ')
         loop_lane_readback={}
-        for lane,radius in ((-1,20.25),(-2,16.75)):
+        for lane,radius in ((-1,16.75),(-2,20.25)):
             theta=math.pi/4
             point=carla.Location(x=22+radius*math.cos(theta),
-                y=-22+radius*math.sin(theta),z=1)
+                y=radius*math.sin(theta),z=1)
             waypoint=mapping.get_waypoint(point,project_to_road=False,
                 lane_type=carla.LaneType.Driving)
             loop_lane_readback[str(lane)]=None if waypoint is None else {

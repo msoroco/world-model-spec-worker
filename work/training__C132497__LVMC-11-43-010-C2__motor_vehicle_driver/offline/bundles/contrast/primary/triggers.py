@@ -42,7 +42,7 @@ def route(bundle,saved=None):
             x,y=row['ego_x_m'],row['ego_y_m']
             if not all(type(v) in (int,float) and math.isfinite(v) for v in (x,y)):
                 raise ValueError('C132497 trigger pose differs')
-            deviation=max(deviation,abs(math.hypot(x-22,y+22)-cfg['requested_arc_radius_m']))
+            deviation=max(deviation,abs(math.hypot(x-22,y)-cfg['requested_arc_radius_m']))
     triggered={'fallback1':deviation>.2,'fallback2':visible<20,
         'fallback3':stopped<20}
     return {'format':'c132497-measured-fallback-triggers-v1',

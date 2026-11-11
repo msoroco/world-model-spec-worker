@@ -21,7 +21,7 @@ def compare(candidate='primary',case=CASE):
         cfg['reference']['camera_policy']!=cfg['contrast']['camera_policy'] or
         cfg['reference']['requested_lane_id']!=-2 or
         cfg['contrast']['requested_lane_id']!=-1 or
-        cfg['contrast']['requested_arc_radius_m']-cfg['reference']['requested_arc_radius_m']!=3.5):
+        cfg['reference']['requested_arc_radius_m']-cfg['contrast']['requested_arc_radius_m']!=3.5):
         raise ValueError('C132497 controlled configuration differs')
     a=rows(bundles['reference']/'saved'/'native-observed.jsonl')
     b=rows(bundles['contrast']/'saved'/'native-observed.jsonl')

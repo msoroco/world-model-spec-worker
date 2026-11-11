@@ -1,13 +1,14 @@
-"""Author a closed two-lane clockwise roundabout with south entry and east exit."""
+"""Author a closed two-lane counterclockwise first-right-exit roundabout."""
 import hashlib
 import json
 import math
 from pathlib import Path
+from propose_ccw import open_drive, position
 
 HERE=Path(__file__).resolve().parent
 CASE=HERE.parent
 ROOT=CASE.parents[1]
-LANES={'reference':(-2,16.75),'contrast':(-1,20.25)}
+LANES={'reference':(-2,20.25,5.25),'contrast':(-1,16.75,1.75)}
 POLICIES={'primary':(8,'standard',0.0),
           'fallback1':(6.5,'standard',0.0),
           'fallback2':(8,'elevated_overview',0.0),
@@ -44,36 +45,16 @@ def connection(ident,incoming,connecting):
             f'connectingRoad="{connecting}" contactPoint="start">{links}</connection>')
 
 def build():
-    xml='<?xml version="1.0" standalone="yes"?>\n<OpenDRIVE>\n'
-    xml+='<header revMajor="1" revMinor="4" name="C132497-closed-roundabout-right-exit" version="1.00" date="2026-11-11" north="50" south="-60" east="60" west="-30" vendor="worker"/>\n'
-    xml+=road(20,'south entry',0,-52,math.pi/2,30,'<line/>',None,('junction',100))+'\n'
-    xml+=road(21,'clockwise right-exit quarter',0,-22,math.pi/2,11*math.pi,
-              '<arc curvature="-0.045454545454545456"/>',('junction',100),('junction',101),100)+'\n'
-    xml+=road(22,'east right exit',22,0,0,30,'<line/>',('junction',101),None,101)+'\n'
-    xml+=road(23,'clockwise remaining three quarters',22,0,0,33*math.pi,
-              '<arc curvature="-0.045454545454545456"/>',('junction',101),('junction',100),101)+'\n'
-    xml+='<junction id="100" name="south-entry-merge">'+connection(0,20,21)+connection(1,23,21)+'</junction>\n'
-    xml+='<junction id="101" name="east-right-exit-split">'+connection(0,21,22)+connection(1,21,23)+'</junction>\n'
-    xml+='</OpenDRIVE>\n'
-    road_path=HERE/'right-exit-road.xodr';road_path.write_text(xml)
+    road_path=HERE/'right-exit-road.xodr';road_path.write_text(open_drive())
     assignment=ROOT/'inputs'/CASE.name/'assignment.json';plan=CASE/'case-plan.json'
     entries=[]
-    for witness,(lane,radius) in LANES.items():
+    for witness,(lane,radius,offset) in LANES.items():
         for candidate,(speed,camera,dwell) in POLICIES.items():
             target=HERE/'drafts'/witness/candidate;target.mkdir(parents=True,exist_ok=True)
             rows=[]
             for i in range(240):
                 t=(i+1)/20;distance=speed*max(0,t-dwell)
-                if distance<30:
-                    phase='entry';road_id=20;x=22-radius;y=-52+distance;heading=90
-                elif distance<30+radius*math.pi/2:
-                    phase='circulation';road_id=21
-                    theta=math.pi-(distance-30)/radius
-                    x=22+radius*math.cos(theta);y=-22+radius*math.sin(theta)
-                    heading=math.degrees(theta-math.pi/2)
-                else:
-                    phase='exit';road_id=22;x=22+distance-30-radius*math.pi/2
-                    y=-22+radius;heading=0
+                road_id,phase,x,y,heading=position(distance,offset)
                 rows.append({'frame':i,'time_s':t,'source_kind':'authored_native_request',
                     'witness':witness,'candidate_id':candidate,'phase':phase,
                     'road_id':road_id,'lane_id':lane,
@@ -104,6 +85,8 @@ def build():
                 'camera_policy':camera,'requested_speed_mps':speed,
                 'pre_entry_dwell_s':dwell,'connected_right_exit_authored':True,
                 'complete_circle_xml_geometry_authored':True,
+                'circulation_direction':'counterclockwise',
+                'right_lane_outer':True,
                 'original_native_observed':False,'actual_exit_observed':False,
                 'physical_roundabout_verified':False,'status':'unselected_native_request'}
             (target/'config.json').write_text(json.dumps(config,indent=2)+'\n')

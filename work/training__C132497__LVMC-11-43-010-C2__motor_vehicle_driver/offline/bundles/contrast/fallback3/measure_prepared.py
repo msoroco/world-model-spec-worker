@@ -80,8 +80,8 @@ def measure(bundle,saved):
             for key in ('x_m','y_m','heading_deg','speed_mps')):
             raise ValueError('C132497 synthetic prepared request differs')
         if phase=='circulation':
-            lower,upper=((15,18.5) if row['lane_id']==-2 else (18.5,22))
-            if all(lower<=math.hypot(p[0]-22,p[1]+22)<=upper for p in body):
+            lower,upper=((18.5,22) if row['lane_id']==-2 else (15,18.5))
+            if all(lower<=math.hypot(p[0]-22,p[1])<=upper for p in body):
                 body_frames+=1
         if frame['right_lane_visible']:visible+=1
     if receipt.get('observed_exit_road_frames')!=counts['exit']:

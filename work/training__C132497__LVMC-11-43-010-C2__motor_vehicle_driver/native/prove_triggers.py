@@ -31,7 +31,7 @@ def prove():
         shutil.rmtree(saved);shutil.copytree(bundle/'saved',saved)
         path=saved/'native-observed.jsonl';observed=rows(path)
         i=next(i for i,row in enumerate(observed) if row['phase']=='circulation')
-        observed[i]['ego_x_m']+=.3
+        observed[i]['ego_y_m']-=.3
         write(path,observed);slow=triggers.route(bundle,saved)
         if not slow['triggered']['fallback1'] or slow['maximum_lane_center_deviation_m']<=.2:
             raise ValueError('C132497 lane deviation trigger differs')

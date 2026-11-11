@@ -34,11 +34,11 @@ def audit():
                 raise ValueError('C132497 saved independent join differs')
             phases.append(row['phase']);checked+=1
             if row['phase']=='circulation':
-                radius=math.hypot(row['ego_x_m']-22,row['ego_y_m']+22)
+                radius=math.hypot(row['ego_x_m']-22,row['ego_y_m'])
                 if abs(radius-cfg['requested_arc_radius_m'])>.5:
                     raise ValueError('C132497 saved lane center differs')
-                lower,upper=(15,18.5) if w=='reference' else (18.5,22)
-                if not all(lower<=math.hypot(p[0]-22,p[1]+22)<=upper
+                lower,upper=(18.5,22) if w=='reference' else (15,18.5)
+                if not all(lower<=math.hypot(p[0]-22,p[1])<=upper
                     for p in row['ego_body_xy_m']):
                     raise ValueError('C132497 saved body outside authored lane')
                 contained+=1

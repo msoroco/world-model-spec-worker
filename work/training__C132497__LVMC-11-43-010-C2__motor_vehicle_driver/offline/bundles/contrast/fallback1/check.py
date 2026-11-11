@@ -31,6 +31,8 @@ def check(bundle):
         cfg.get('status')!='unselected_native_request' or
         cfg.get('connected_right_exit_authored') is not True or
         cfg.get('complete_circle_xml_geometry_authored') is not True or
+        cfg.get('circulation_direction')!='counterclockwise' or
+        cfg.get('right_lane_outer') is not True or
         cfg.get('original_native_observed') is not False or
         cfg.get('actual_exit_observed') is not False or
         cfg.get('physical_roundabout_verified') is not False):
@@ -53,7 +55,7 @@ def check(bundle):
         intention.get('actual_exit_observed') is not False or
         intention.get('legal_verdict') is not None):
         raise ValueError('C132497 predeclared controller intention differs')
-    lane,radius=(-2,16.75) if witness=='reference' else (-1,20.25)
+    lane,radius,offset=(-2,20.25,5.25) if witness=='reference' else (-1,16.75,1.75)
     speed,camera,dwell={'primary':(8,'standard',0.0),
         'fallback1':(6.5,'standard',0.0),
         'fallback2':(8,'elevated_overview',0.0),
@@ -91,12 +93,34 @@ def check(bundle):
                 raise ValueError('C132497 roundabout lane connection differs')
             actual.add(pair)
         if actual!=connections:raise ValueError('C132497 roundabout topology differs')
-    for ident,length in ((21,11*math.pi),(23,33*math.pi)):
+    for ident,length,x,y,heading in ((21,15*math.pi/2,22,-15,0),
+                                      (23,45*math.pi/2,37,0,math.pi/2)):
         geometry=road[ident].find('./planView/geometry')
         arc=geometry.find('arc')
-        if (arc is None or abs(float(arc.attrib['curvature'])+1/22)>1e-9 or
-            abs(float(geometry.attrib['length'])-length)>1e-8):
-            raise ValueError('C132497 clockwise circle arc differs')
+        if (arc is None or abs(float(arc.attrib['curvature'])-1/15)>1e-9 or
+            abs(float(geometry.attrib['length'])-length)>1e-8 or
+            abs(float(geometry.attrib['x'])-x)>1e-8 or
+            abs(float(geometry.attrib['y'])-y)>1e-8 or
+            abs(float(geometry.attrib['hdg'])-heading)>1e-8):
+            raise ValueError('C132497 counterclockwise circle arc differs')
+    for ident,first,second in ((20,(0,10,-46,math.pi/2,19,None),
+                                 (19,10,-27,math.pi/2,12*math.pi/2,-1/12)),
+                               (22,(0,37,0,math.pi/2,12*math.pi/2,-1/12),
+                                 (12*math.pi/2,49,12,0,30,None))):
+        geometries=road[ident].findall('./planView/geometry')
+        if len(geometries)!=2:
+            raise ValueError('C132497 first-exit connector geometry differs')
+        for geometry,values in zip(geometries,(first,second)):
+            expected_s,expected_x,expected_y,expected_h,expected_len,expected_k=values
+            actual=(float(geometry.attrib[k]) for k in ('s','x','y','hdg','length'))
+            if any(abs(a-b)>1e-8 for a,b in zip(actual,
+                    (expected_s,expected_x,expected_y,expected_h,expected_len))):
+                raise ValueError('C132497 first-exit connector coordinates differ')
+            arc=geometry.find('arc')
+            if (expected_k is None and geometry.find('line') is None or
+                expected_k is not None and (arc is None or
+                    abs(float(arc.attrib['curvature'])-expected_k)>1e-9)):
+                raise ValueError('C132497 first-exit connector curvature differs')
     if any(road[ident].attrib['junction']!=str(junction) for ident,junction in
            ((20,-1),(21,100),(22,101),(23,101))):
         raise ValueError('C132497 junction membership differs')
@@ -105,16 +129,27 @@ def check(bundle):
     phases=set()
     for i,row in enumerate(track):
         t=(i+1)/20;distance=speed*max(0,t-dwell)
-        if distance<30:
-            phase='entry';road_id=20;x=22-radius;y=-52+distance;heading=90
-        elif distance<30+radius*math.pi/2:
-            phase='circulation';road_id=21
-            theta=math.pi-(distance-30)/radius
-            x=22+radius*math.cos(theta);y=-22+radius*math.sin(theta)
+        connector=12-offset;first=19+connector*math.pi/2
+        second=first+radius*math.pi/2
+        if distance<19:
+            phase='entry';road_id=20;x=10+offset;y=-46+distance;heading=90
+        elif distance<first:
+            phase='entry';road_id=20;theta=math.pi-(distance-19)/connector
+            x=22+connector*math.cos(theta);y=-27+connector*math.sin(theta)
             heading=math.degrees(theta-math.pi/2)
+        elif distance<second:
+            phase='circulation';road_id=21
+            theta=-math.pi/2+(distance-first)/radius
+            x=22+radius*math.cos(theta);y=radius*math.sin(theta)
+            heading=math.degrees(theta+math.pi/2)
         else:
-            phase='exit';road_id=22;x=22+distance-30-radius*math.pi/2
-            y=-22+radius;heading=0
+            phase='exit';road_id=22;after=distance-second
+            if after<connector*math.pi/2:
+                theta=math.pi-after/connector
+                x=49+connector*math.cos(theta);y=connector*math.sin(theta)
+                heading=math.degrees(theta-math.pi/2)
+            else:
+                x=49+after-connector*math.pi/2;y=connector;heading=0
         if (row.get('frame')!=i or row.get('time_s')!=t or
             row.get('source_kind')!='authored_native_request' or
             row.get('witness')!=witness or row.get('candidate_id')!=candidate or

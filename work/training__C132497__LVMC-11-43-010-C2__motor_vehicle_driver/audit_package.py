@@ -35,17 +35,18 @@ def audit():
     nodes={int(x.attrib['id']):x for x in road.findall('road')}
     if set(nodes)!={20,21,22,23}:raise ValueError('C132497 map roads differ')
     geo={ident:node.find('./planView/geometry') for ident,node in nodes.items()}
-    if (abs(float(geo[20].attrib['x']))>1e-9 or
-        abs(float(geo[20].attrib['y'])+52)>1e-9 or
-        abs(float(geo[21].attrib['y'])+22)>1e-9 or
-        abs(float(geo[22].attrib['x'])-22)>1e-9 or
-        abs(float(geo[23].attrib['x'])-22)>1e-9 or
-        abs(float(geo[23].attrib['y']))>1e-9 or
-        abs(float(geo[21].find('arc').attrib['curvature'])+1/22)>1e-9 or
-        abs(float(geo[23].find('arc').attrib['curvature'])+1/22)>1e-9 or
-        abs(float(geo[21].attrib['length'])+float(geo[23].attrib['length'])-44*math.pi)>1e-8 or
+    if (sha(NATIVE/'right-exit-road.xodr')!=sha(NATIVE/'ccw-right-exit-draft.xodr') or
+        abs(float(geo[20].attrib['x'])-10)>1e-9 or
+        abs(float(geo[20].attrib['y'])+46)>1e-9 or
+        abs(float(geo[21].attrib['x'])-22)>1e-9 or
+        abs(float(geo[21].attrib['y'])+15)>1e-9 or
+        abs(float(geo[22].attrib['x'])-37)>1e-9 or
+        abs(float(geo[23].attrib['x'])-37)>1e-9 or
+        abs(float(geo[21].find('arc').attrib['curvature'])-1/15)>1e-9 or
+        abs(float(geo[23].find('arc').attrib['curvature'])-1/15)>1e-9 or
+        abs(float(geo[21].attrib['length'])+float(geo[23].attrib['length'])-30*math.pi)>1e-8 or
         {int(x.attrib['id']) for x in road.findall('junction')}!={100,101}):
-        raise ValueError('C132497 clockwise route geometry differs')
+        raise ValueError('C132497 counterclockwise route geometry differs')
     seen=set();checks=0;rejections=0;saved_checks=0;saved_rejections=0;frames=0
     for entry in manifest['entries']:
         witness=entry['case_id'].removeprefix(CASE.name+'__');candidate=entry['candidate_id']

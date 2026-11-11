@@ -2,6 +2,8 @@
 import hashlib
 import json
 import math
+import subprocess
+import sys
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
@@ -19,57 +21,18 @@ def audit():
         source['local_snapshot']['memberships']['full-train']):
         raise ValueError('C132497 exact law or accepted membership differs')
     road_path=HERE/'right-exit-road.xodr'
-    document=ET.parse(road_path).getroot()
-    road={int(x.attrib['id']):x for x in document.findall('road')}
-    if set(road)!={20,21,22,23}:raise ValueError('C132497 complete-circle road inventory differs')
-    # Explicit endpoints and tangent continuity of entry, both clockwise arcs, and exit.
-    start=road[20].find('./planView/geometry');arc=road[21].find('./planView/geometry')
-    exit_=road[22].find('./planView/geometry');remainder=road[23].find('./planView/geometry')
-    entry_end=(float(start.attrib['x'])+30*math.cos(float(start.attrib['hdg'])),
-               float(start.attrib['y'])+30*math.sin(float(start.attrib['hdg'])))
-    curvature=float(arc.find('arc').attrib['curvature'])
-    arc_length=float(arc.attrib['length'])
-    center=(float(arc.attrib['x'])-math.sin(float(arc.attrib['hdg']))/curvature,
-            float(arc.attrib['y'])+math.cos(float(arc.attrib['hdg']))/curvature)
-    angle=float(arc.attrib['hdg'])+curvature*arc_length
-    arc_end=(center[0]+math.sin(angle)/curvature,
-             center[1]-math.cos(angle)/curvature)
-    remainder_curvature=float(remainder.find('arc').attrib['curvature'])
-    remainder_length=float(remainder.attrib['length'])
-    remainder_center=(float(remainder.attrib['x'])-
-                      math.sin(float(remainder.attrib['hdg']))/remainder_curvature,
-                      float(remainder.attrib['y'])+
-                      math.cos(float(remainder.attrib['hdg']))/remainder_curvature)
-    remainder_angle=float(remainder.attrib['hdg'])+remainder_curvature*remainder_length
-    remainder_end=(remainder_center[0]+math.sin(remainder_angle)/remainder_curvature,
-                   remainder_center[1]-math.cos(remainder_angle)/remainder_curvature)
-    if (math.hypot(entry_end[0]-float(arc.attrib['x']),
-        entry_end[1]-float(arc.attrib['y']))>1e-7 or
-        math.hypot(arc_end[0]-float(exit_.attrib['x']),
-        arc_end[1]-float(exit_.attrib['y']))>1e-7 or
-        math.hypot(arc_end[0]-float(remainder.attrib['x']),
-        arc_end[1]-float(remainder.attrib['y']))>1e-7 or
-        math.hypot(remainder_end[0]-float(arc.attrib['x']),
-        remainder_end[1]-float(arc.attrib['y']))>1e-7 or
-        abs(angle)>1e-7 or
-        abs(float(exit_.attrib['hdg']))>1e-7 or
-        abs(remainder_angle+3*math.pi/2)>1e-7 or
-        abs(curvature+1/22)>1e-9 or
-        abs(remainder_curvature+1/22)>1e-9 or
-        abs(arc_length+remainder_length-44*math.pi)>1e-8):
-        raise ValueError('C132497 circle closure or route tangent differs')
-    junctions={int(x.attrib['id']):x for x in document.findall('junction')}
-    expected={100:{(20,21),(23,21)},101:{(21,22),(21,23)}}
-    if set(junctions)!=set(expected):raise ValueError('C132497 junction inventory differs')
-    for ident,pairs in expected.items():
-        actual=set()
-        for connection in junctions[ident].findall('connection'):
-            actual.add((int(connection.attrib['incomingRoad']),
-                        int(connection.attrib['connectingRoad'])))
-            if {(int(link.attrib['from']),int(link.attrib['to']))
-                for link in connection.findall('laneLink')}!={(-1,-1),(-2,-2)}:
-                raise ValueError('C132497 junction lane allocation differs')
-        if actual!=pairs:raise ValueError('C132497 junction topology differs')
+    draft=HERE/'ccw-right-exit-draft.xodr'
+    if sha(road_path)!=sha(draft):
+        raise ValueError('C132497 active road differs from independently audited CCW design')
+    audit=subprocess.run([sys.executable,str(HERE/'audit_ccw_design.py')],
+        capture_output=True,text=True)
+    if audit.returncode:
+        raise ValueError('C132497 CCW geometry audit failed: '+audit.stderr[-1000:])
+    audit_receipt=json.loads((HERE/'ccw-design-audit.json').read_text())
+    if (audit_receipt.get('road_sha256')!=sha(road_path) or
+        audit_receipt.get('positive',{}).get('counterclockwise_arc_ids')!=[21,23] or
+        len(audit_receipt.get('negative',{}))!=3):
+        raise ValueError('C132497 CCW geometry receipt differs')
     manifest=json.loads((HERE/'manifest.json').read_text())
     if len(manifest['entries'])!=8 or manifest['road_sha256']!=sha(road_path):
         raise ValueError('C132497 construction manifest differs')
@@ -99,6 +62,7 @@ def audit():
         'road_sha256':sha(road_path),'request_rows_checked':checked,
         'authored_exit_requests':exit_requests,
         'complete_circle_xml_geometry_authored':True,
+        'circulation_direction':'counterclockwise',
         'original_native_observed':False,
         'delivery_ready':False}
     (HERE/'construction-audit.json').write_text(json.dumps(result,indent=2)+'\n')

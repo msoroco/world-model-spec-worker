@@ -27,7 +27,7 @@ def audit():
         not proof['changed_camera_join_rejected'] or
         not proof['synthetic_only'] or proof['delivery_ready']):
         raise ValueError('C132497 trigger proof differs')
-    base_deviation=max(abs(math.hypot(x['ego_x_m']-22,x['ego_y_m']+22)-16.75)
+    base_deviation=max(abs(math.hypot(x['ego_x_m']-22,x['ego_y_m'])-20.25)
         for x in observed if x['phase']=='circulation')
     if abs(base_deviation-proof['base']['maximum_lane_center_deviation_m'])>1e-5:
         raise ValueError('C132497 independent lane deviation differs')

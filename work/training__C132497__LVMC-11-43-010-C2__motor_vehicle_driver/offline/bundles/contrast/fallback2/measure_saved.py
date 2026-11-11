@@ -55,12 +55,12 @@ def measure(bundle):
             raise ValueError('C132497 saved speed differs')
         previous=(x,y);phase_counts[row['phase']]+=1
         if row['phase']=='circulation':
-            radius=math.hypot(x-22,y+22)
+            radius=math.hypot(x-22,y)
             deviation=abs(radius-cfg['requested_arc_radius_m'])
             if deviation>.5:raise ValueError('C132497 saved circulating center differs')
             maximum_deviation=max(maximum_deviation,deviation)
-            lower,upper=((15,18.5) if row['lane_id']==-2 else (18.5,22))
-            if all(lower<=math.hypot(p[0]-22,p[1]+22)<=upper for p in body):body_frames+=1
+            lower,upper=((18.5,22) if row['lane_id']==-2 else (15,18.5))
+            if all(lower<=math.hypot(p[0]-22,p[1])<=upper for p in body):body_frames+=1
         if frame['right_lane_visible']:visible+=1
     if not all(phase_counts.values()) or body_frames!=phase_counts['circulation']:
         raise ValueError('C132497 saved route or body coverage differs')
