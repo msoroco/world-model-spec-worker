@@ -42,3 +42,42 @@ The zero-recording evidence inventory was reviewed in `case-plan.json.evidence_r
 `lane_footprint.py` measures signed body-corner clearance to a supplied native lane polygon and detects segment crossings. It is value-free: it makes no legal cutoff or exception decision. The input must be frame-joined native lane geometry and measured vehicle corners; neither source is yet captured or wired to a saved finalizer. `tests/test_lane_footprint.py` checks containment and boundary crossing for both polygon orientations and rejects invalid geometry. The exact test command is `.venv-cpu/bin/python -m unittest discover -s work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/tests -v`; output is `cpu-tests.log` with SHA256 `3a01caf7416f85ecd3beb2398df0c540e69cb68eebada50b2c3a750760b102c6` and exit code 0. This fixture does not demonstrate CARLA lane markings, visibility, or legal outcome.
 
 The strict gate `.venv-cpu/bin/python worker_check.py --assignment heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver --complete --require-delivery-ready` exited 1; `strict-gate.log` (SHA256 `89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`) ends with `Preparation acceptance failed: partial/missing packages remain`. This is the correct partial status because the CPU deliverables listed above remain open.
+
+## 2026-11-11 retained-source and comparison continuation
+
+The pinned `.venv-cpu/bin/python runtime.py preflight` now passes with NumPy,
+FFmpeg and Lean 4.28.0; earlier missing-tool diagnoses are obsolete.
+`lane_sources.py` now reads an original Native waypoint and actor bounding box
+for each tick, records both marking types, road/lane identity, local lane
+polygon, vehicle footprint and velocity, and optional passing participant
+identity/footprint/velocity to `marked_lane_sources.jsonl`. It rejects absent
+markings, nonfinite geometry, repeated participant IDs and skipped frames.
+`lane_measurement.py` reads that retained file and computes the signed lane
+clearance per frame; it rejects missing sources, frame gaps, changed Native IDs
+and missing passing participants. `lane_comparison_audit.py` checks exact case
+identities, declared fixed map/lane/marking/camera/duration fields, source hash
+fields, observed containment/excursion and passing motion source presence. Its
+inputs are draft saved-measurement packets; promoted byte-hash binding and
+saved-processing integration still need implementation. None of these helpers
+assert legal exception status or realized physical visibility. The local
+waypoint rectangle is a geometry proxy; a complete runner must sample curved
+marking geometry and verify that the slice covers the full vehicle.
+
+Seven CPU tests pass under `.venv-cpu/bin/python -m unittest discover -s
+work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/tests -v`; see
+`cpu-tests.log` and its current SHA256 in `result.json`. The scoped static
+`worker_check.py --assignment heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver
+--complete` passes. The scoped strict gate with
+`--require-delivery-ready` still exits 1 in `strict-gate.log` with
+`Preparation acceptance failed: partial/missing packages remain`, correctly
+reflecting the missing executable delivery package. Next CPU work is the
+CARLA-lazy runner, full four-camera source capture, finalizer and one primary
+case through exact offline, compatibility and saved-processing proofs, followed
+by linked cases, risk-triggered fallbacks, semantic proposals and source-bound
+audits. The lawful-turn exception must be bound to a compatible turn cell.
+
+The frozen candidate-cell catalogue identifies unallocated `C5191` as an
+actor-compatible `adjacent_lanes` / `left_turn` / `lane_marking` cell, with
+LVMC-11-18-030-B in its annotation provenance. `case-plan.json` records this
+as a proposed additional binding for the lawful-turn-preparation branch. It is
+not yet allocated in shared coverage, and no lawful-turn claim is made.

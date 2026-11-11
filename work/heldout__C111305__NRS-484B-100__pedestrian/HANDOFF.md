@@ -14,17 +14,21 @@ Cell C111305: intersection / travel / police_officer; actor pedestrian.
 
 ## Current checkpoint
 
-No accepted recordings are supplied for this assignment. The exact text, selected branch, exceptions, timing and source observations still require a finite controlled case comparison and an executable delivery package.
+Four cases: stop/proceed indications crossed with observed response/nonresponse. Timed indications, role/source context and original motion are checked. Comparison audit rejects changed officer, subject, actor or command; tests reject missing sources and legal/willfulness claims.
 
-The case plan reviews 0 accepted source summaries and records a source-bound gap. This assignment is partial. No physical, legal, Native or delivery readiness is claimed.
+Implemented and CPU-tested: officer_response.py, officer_comparison_audit.py. The `cpu-tests.log` SHA256 is `abb9e14a2af39755f48af49e1992bb3b81624253d33b454303c7f2f167036eec`. These measurements are descriptive engineering observations and do not establish physical visibility or legal compliance. Status remains partial.
 
 ## Exact next CPU work
 
-1. Independently split the original law into all applicable clauses, alternatives, exceptions and any explicit numeric boundaries; map each to source-backed reuses or exact comparison cases without changing frozen cell/actor scope.
-2. Complete canonical semantic proposals, runner/config/construction, controller and four-camera plan, raw source acquisition, finalizer, measurement contracts and three tested risk-triggered fallbacks per selected case.
-3. Run `.venv-cpu/bin/python runtime.py offline` and `.venv-cpu/bin/python runtime.py compatibility` for each exact case and fallback, plus `runtime.py process-saved` on retained synthetic sources. Implement and test rejection paths in independent delivery and comparison audits.
+1. Review the new case plan against exact law and source topics; complete any missing alternatives or exceptions while preserving fixed cell/actor scope.
+2. Exact Native pedestrian constructions, four-camera capture, finalizer integration, three fallback constructions per case, offline/compatibility and saved-processing receipts, semantic proposals and delivery audit remain CPU work.
+3. Run `.venv-cpu/bin/python runtime.py offline` and `.venv-cpu/bin/python runtime.py compatibility` for each exact case and fallback, then `runtime.py process-saved` on retained synthetic sources. Integrate the CPU-tested measurement and comparison audit with exact source bindings, and test independent delivery rejection paths.
 4. Update result.json with hashed logs only after proofs pass, then run `.venv-cpu/bin/python worker_check.py --assignment heldout__C111305__NRS-484B-100__pedestrian --complete --require-delivery-ready`.
 
 ## Dependencies and limits
 
 Use the pinned runtime. CARLA, SQLite and canonical source recordings are unavailable in this CPU repository; those do not block the listed CPU preparation. The accepted summaries are retained as historical source evidence.
+
+## Current CPU proof
+
+Run `.venv-cpu/bin/python -m unittest discover -s work/heldout__C111305__NRS-484B-100__pedestrian/tests -v` and `.venv-cpu/bin/python worker_check.py --assignment heldout__C111305__NRS-484B-100__pedestrian --complete`. The strict readiness gate still fails because this package is partial; do not mark ready until every exact case and fallback passes its source-bound proofs.

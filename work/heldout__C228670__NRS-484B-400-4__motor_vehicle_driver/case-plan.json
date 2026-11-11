@@ -3,8 +3,85 @@
   "law_id": "NRS-484B-400-4",
   "cell_id": "C228670",
   "actor": "motor_vehicle_driver",
-  "cases": [],
-  "comparisons": [],
+  "cases": [
+    {
+      "case_id": "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right",
+      "target_law_id": "NRS-484B-400-4",
+      "branch": "approach_near_depart_right",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "original_footprint_measurement_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Native may not keep measured body footprint on the intended side/position through the turn",
+        "trigger_source": "original map line and body footprint streams",
+        "trigger_metric": "signed departure corner position and approach curb distance",
+        "failure_condition": "original corner samples do not isolate the intended comparison variable"
+      }
+    },
+    {
+      "case_id": "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right",
+      "target_law_id": "NRS-484B-400-4",
+      "branch": "approach_far_depart_right",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "original_footprint_measurement_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Native may not keep measured body footprint on the intended side/position through the turn",
+        "trigger_source": "original map line and body footprint streams",
+        "trigger_metric": "signed departure corner position and approach curb distance",
+        "failure_condition": "original corner samples do not isolate the intended comparison variable"
+      }
+    },
+    {
+      "case_id": "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left",
+      "target_law_id": "NRS-484B-400-4",
+      "branch": "approach_near_depart_left",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "original_footprint_measurement_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Native may not keep measured body footprint on the intended side/position through the turn",
+        "trigger_source": "original map line and body footprint streams",
+        "trigger_metric": "signed departure corner position and approach curb distance",
+        "failure_condition": "original corner samples do not isolate the intended comparison variable"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "approach_left_curb_position",
+      "case_ids": [
+        "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right",
+        "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right"
+      ],
+      "fixed_conditions": [
+        "one-way source and two-directional destination",
+        "left turn",
+        "same intersection, subject, four cameras, duration and departure route"
+      ],
+      "deliberate_differences": [
+        "measured approach ground-body distance from left curb; no legal numeric cutoff"
+      ]
+    },
+    {
+      "comparison_id": "departure_right_of_centerline",
+      "case_ids": [
+        "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right",
+        "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left"
+      ],
+      "fixed_conditions": [
+        "one-way source and two-directional destination",
+        "left turn",
+        "same intersection, subject, four cameras, duration and approach body path"
+      ],
+      "deliberate_differences": [
+        "signed departure ground-body position relative to entered highway centerline"
+      ]
+    }
+  ],
   "observations": [
     {
       "term": "drv.turning",
@@ -47,7 +124,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No exact construction, finalizer, compatibility receipts, saved-only fixture proof, independent delivery/comparison audit, or fallback construction has been prepared. Actual CARLA realization is also unverified."
+    "Original-footprint measurement and comparison audit are CPU-tested. Exact Native construction, source capture, compatibility, saved processing and delivery audit remain worker-owned CPU work. Practicability has no numeric legal cutoff and requires independent source review."
   ],
   "evidence_review": {
     "reviewer": "worker-partition-03",

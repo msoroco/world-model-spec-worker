@@ -40,7 +40,10 @@ def audit_attempt(attempt, report, *, decoder=None, receipt_dir=None):
         if not (root / name).is_file():
             raise ValueError("Missing audited original source: " + name)
     source_hashes = report["measurements"]["fire_boundary_observation"]["sources"]
-    if set(source_hashes) != set(REQUIRED):
+    expected_sources = set(REQUIRED)
+    if report["measurements"]["exception_context"]["value"].get("subject_exception_source") is not None:
+        expected_sources.add("subject_exception_source.json")
+    if set(source_hashes) != expected_sources:
         raise ValueError("Analysis source inventory is incomplete or unexpected")
     if any(_hash(root / name) != expected for name, expected in source_hashes.items()):
         raise ValueError("Analysis source hash differs from retained acquisition")

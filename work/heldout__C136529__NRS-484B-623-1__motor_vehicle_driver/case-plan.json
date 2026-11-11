@@ -3,8 +3,123 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C136529",
   "law_id": "NRS-484B-623-1",
-  "cases": [],
-  "comparisons": [],
+  "cases": [
+    {
+      "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__flowing_reference",
+      "target_law_id": "NRS-484B-623-1",
+      "branch": "flowing_reference",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "cpu_component_draft",
+      "description": "Travel on the narrow road with a following vehicle whose requested speed matches the subject; measure actual speed and separation.",
+      "physical_risk": {
+        "risk": "Requested speed, follower interaction, physical feature visibility and control validity remain unconfirmed until native capture.",
+        "trigger_source": "saved native participant states, prop inventory and four original camera streams",
+        "trigger_metric": "measured speed, full-body spacing, feature geometry and visibility over recorded time",
+        "failure_condition": "Missing synchronized participants, feature, or source camera evidence; requested targets alone are insufficient."
+      }
+    },
+    {
+      "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_with_following_traffic",
+      "target_law_id": "NRS-484B-623-1",
+      "branch": "slow_with_following_traffic",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "cpu_component_draft",
+      "description": "Request lower subject speed while following traffic approaches; measure the full speed and gap histories.",
+      "physical_risk": {
+        "risk": "Requested speed, follower interaction, physical feature visibility and control validity remain unconfirmed until native capture.",
+        "trigger_source": "saved native participant states, prop inventory and four original camera streams",
+        "trigger_metric": "measured speed, full-body spacing, feature geometry and visibility over recorded time",
+        "failure_condition": "Missing synchronized participants, feature, or source camera evidence; requested targets alone are insufficient."
+      }
+    },
+    {
+      "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_for_obstruction",
+      "target_law_id": "NRS-484B-623-1",
+      "branch": "slow_for_obstruction",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "cpu_component_draft",
+      "description": "Request the same reduced speed with a physical fallen-branch obstruction in the lane; record geometry and visibility.",
+      "physical_risk": {
+        "risk": "Requested speed, follower interaction, physical feature visibility and control validity remain unconfirmed until native capture.",
+        "trigger_source": "saved native participant states, prop inventory and four original camera streams",
+        "trigger_metric": "measured speed, full-body spacing, feature geometry and visibility over recorded time",
+        "failure_condition": "Missing synchronized participants, feature, or source camera evidence; requested targets alone are insufficient."
+      }
+    },
+    {
+      "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_under_control",
+      "target_law_id": "NRS-484B-623-1",
+      "branch": "slow_under_control",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "cpu_component_draft",
+      "description": "Request the same reduced speed with a physical temporary speed-control device; source regulatory validity separately.",
+      "physical_risk": {
+        "risk": "Requested speed, follower interaction, physical feature visibility and control validity remain unconfirmed until native capture.",
+        "trigger_source": "saved native participant states, prop inventory and four original camera streams",
+        "trigger_metric": "measured speed, full-body spacing, feature geometry and visibility over recorded time",
+        "failure_condition": "Missing synchronized participants, feature, or source camera evidence; requested targets alone are insufficient."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "traffic_impedance",
+      "case_ids": [
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__flowing_reference",
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_with_following_traffic"
+      ],
+      "fixed_conditions": [
+        "C136529 narrow two-direction road",
+        "dry weather",
+        "same three vehicles and routes",
+        "camera and duration plan",
+        "absence of obstruction or additional control"
+      ],
+      "deliberate_differences": [
+        "subject requested speed; measured subject and follower speed and spacing are reported without a legal cutoff"
+      ]
+    },
+    {
+      "comparison_id": "safety_obstruction",
+      "case_ids": [
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_with_following_traffic",
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_for_obstruction"
+      ],
+      "fixed_conditions": [
+        "C136529 road and three routes",
+        "requested subject and follower speeds",
+        "dry weather",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "physical obstruction and its measured visibility"
+      ]
+    },
+    {
+      "comparison_id": "lawful_control",
+      "case_ids": [
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_with_following_traffic",
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_under_control"
+      ],
+      "fixed_conditions": [
+        "C136529 road and three routes",
+        "requested subject and follower speeds",
+        "dry weather",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "physical temporary control device and separately sourced regulatory premise"
+      ]
+    }
+  ],
   "observations": [],
   "sources": [
     {
@@ -18,7 +133,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No executable construction, finalizer, capture plan or physical observation has yet been produced for this assignment."
+    "Only a CPU construction and measurement component exists. Exact runner, four-camera capture, finalization, canonical semantic proposals, fallback bundles, saved processing and independent delivery audit remain to be authored and proved.",
+    "No legal cutoff is defined for normal and reasonable movement or necessity."
   ],
   "evidence_review": {
     "reviewer": "partition-04 CPU scope review",
@@ -27,7 +143,7 @@
     "gaps": [
       {
         "id": "uncovered-branches",
-        "requirement": "Compare slow travel with measured traffic impedance; separately cover reduced speed necessary for safety and compliance with law. Keep \u201cnormal and reasonable movement\u201d and \u201cnecessary\u201d as judgment phrases, without numeric legal cutoffs.",
+        "requirement": "Compare slow travel with measured traffic impedance; separately cover reduced speed necessary for safety and compliance with law. Keep “normal and reasonable movement” and “necessary” as judgment phrases, without numeric legal cutoffs.",
         "source": {
           "path": "inputs/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/assignment.json",
           "sha256": "069715deef26f235500708a570abb0304660c3655a1a2ffa3498e268dacc0ce3"
@@ -35,5 +151,163 @@
         "why_existing_insufficient": "The frozen evidence inventory lists no accepted recordings for this assignment."
       }
     ]
+  },
+  "review_status": "partial_cpu_construction",
+  "branch_inventory": [
+    {
+      "branch": "traffic_impedance",
+      "case_ids": [
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__flowing_reference",
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_with_following_traffic"
+      ],
+      "status": "construction_draft"
+    },
+    {
+      "branch": "reduced_speed_for_safe_operation",
+      "case_ids": [
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_with_following_traffic",
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_for_obstruction"
+      ],
+      "status": "construction_draft"
+    },
+    {
+      "branch": "reduced_speed_in_compliance_with_law",
+      "case_ids": [
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_with_following_traffic",
+        "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_under_control"
+      ],
+      "status": "construction_draft"
+    }
+  ],
+  "source_observation_mapping": [
+    {
+      "term": "kin.speed",
+      "measurement": "observed native participant states and synchronized speeds",
+      "source_refs": [
+        "native/actors.jsonl",
+        "native/props.jsonl",
+        "camera/chase.mp4"
+      ],
+      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+    },
+    {
+      "term": "drv.speed_below_traffic",
+      "measurement": "observed native participant states and synchronized speeds",
+      "source_refs": [
+        "native/actors.jsonl",
+        "native/props.jsonl",
+        "camera/chase.mp4"
+      ],
+      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+    },
+    {
+      "term": "drv.queue_behind",
+      "measurement": "observed native participant states and synchronized speeds",
+      "source_refs": [
+        "native/actors.jsonl",
+        "native/props.jsonl",
+        "camera/chase.mp4"
+      ],
+      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+    },
+    {
+      "term": "drv.following",
+      "measurement": "observed native participant states and synchronized speeds",
+      "source_refs": [
+        "native/actors.jsonl",
+        "native/props.jsonl",
+        "camera/chase.mp4"
+      ],
+      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+    },
+    {
+      "term": "drv.slower_than_posted",
+      "measurement": "observed native participant states and synchronized speeds",
+      "source_refs": [
+        "native/actors.jsonl",
+        "native/props.jsonl",
+        "camera/chase.mp4"
+      ],
+      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+    },
+    {
+      "term": "dev.speed_limit_sign",
+      "measurement": "observed native prop/weather state and original camera visibility",
+      "source_refs": [
+        "native/actors.jsonl",
+        "native/props.jsonl",
+        "camera/chase.mp4"
+      ],
+      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+    },
+    {
+      "term": "drv.forced_halt",
+      "measurement": "observed native participant states and synchronized speeds",
+      "source_refs": [
+        "native/actors.jsonl",
+        "native/props.jsonl",
+        "camera/chase.mp4"
+      ],
+      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+    },
+    {
+      "term": "env.precipitation",
+      "measurement": "observed native prop/weather state and original camera visibility",
+      "source_refs": [
+        "native/actors.jsonl",
+        "native/props.jsonl",
+        "camera/chase.mp4"
+      ],
+      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+    },
+    {
+      "term": "st.obstruction",
+      "measurement": "observed native prop/weather state and original camera visibility",
+      "source_refs": [
+        "native/actors.jsonl",
+        "native/props.jsonl",
+        "camera/chase.mp4"
+      ],
+      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+    }
+  ],
+  "camera_plan": {
+    "fps": 20,
+    "sources": [
+      {
+        "name": "overview",
+        "size": [
+          1920,
+          1080
+        ],
+        "purpose": "subject, follower, opposing approach and feature context"
+      },
+      {
+        "name": "approach",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "forward route and impending feature"
+      },
+      {
+        "name": "reference_corner",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "rear and side traffic relation"
+      },
+      {
+        "name": "driver_reference",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "driver reference view"
+      }
+    ],
+    "implementation": "slow_camera_capture.py",
+    "limitation": "Camera geometry is prospective; actual bodies and devices must be checked in original pixels."
   }
 }

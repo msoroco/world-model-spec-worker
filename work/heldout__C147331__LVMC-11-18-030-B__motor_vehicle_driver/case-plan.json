@@ -193,6 +193,81 @@
       "Marked traffic lanes activate containment; compare inside-lane travel with an unexcused measured crossing.",
       "The lawful-passing exception needs a recorded overtaken vehicle and external-rule context, compared with the same crossing without passing.",
       "The lawful-turn-preparation exception needs a compatible turn cell or other proof of an actual lawful turn; the fixed travel cell may not support it."
-    ]
+    ],
+    "turn_cell_review": {
+      "candidate_cell_id": "C5191",
+      "candidate_source": "inputs/coverage/candidate-cells.json",
+      "candidate_layout": "adjacent_lanes",
+      "candidate_maneuver": "left_turn",
+      "candidate_control": "lane_marking",
+      "actor_compatibility": "motor_vehicle_driver",
+      "allocation_status": "unallocated",
+      "reason": "Fixed C147331 travel maneuver cannot realize preparatory action for an actual left turn; C5191 explicitly supports lane markings and left turn. This is a proposed additional binding, not an allocated assignment or completed turn case."
+    }
+  },
+  "source_observation_mapping": {
+    "st.lane": {
+      "evidence": "Original Native waypoint road/lane identity, heading, width and local polygon are recorded per ego tick. Local slice remains a geometry proxy.",
+      "channels": [],
+      "source_refs": [
+        "lane_sources.py",
+        "marked_lane_sources.jsonl"
+      ]
+    },
+    "st.lane_marking": {
+      "evidence": "Native left and right marking types are read per tick; unmarked and missing boundaries are rejected. RGB review remains required.",
+      "channels": [],
+      "source_refs": [
+        "lane_sources.py",
+        "marked_lane_sources.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Saved measurement joins ego body corners to original waypoint lane polygon by Native frame and computes containment.",
+      "channels": [],
+      "source_refs": [
+        "lane_measurement.py",
+        "marked_lane_sources.jsonl"
+      ]
+    },
+    "drv.straddles_marking": {
+      "evidence": "Signed corner clearances and segment boundary intersections use retained original body and lane geometry; no legal tolerance.",
+      "channels": [],
+      "source_refs": [
+        "lane_footprint.py",
+        "lane_measurement.py",
+        "marked_lane_sources.jsonl"
+      ]
+    },
+    "drv.overtaking": {
+      "evidence": "Optional overtaken participant identity, body corners and velocity are retained; lawful passing and longitudinal order still need finalizer work.",
+      "channels": [],
+      "source_refs": [
+        "lane_sources.py",
+        "marked_lane_sources.jsonl"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Fixed travel cell cannot establish actual lawful turn. Proposed C5191 turn-cell allocation and turn source remain pending.",
+      "channels": [],
+      "source_refs": [
+        "inputs/coverage/candidate-cells.json"
+      ]
+    },
+    "sig.turn_indicator": {
+      "evidence": "Native light-state readback has not yet been implemented; signaling alone cannot establish lawful-turn exception.",
+      "channels": [],
+      "source_refs": [
+        "lane_sources.py"
+      ]
+    },
+    "drv.lane_change": {
+      "evidence": "Lane identity and body footprint history could establish transition after complete exact runner and finalizer work.",
+      "channels": [],
+      "source_refs": [
+        "lane_measurement.py",
+        "marked_lane_sources.jsonl"
+      ]
+    }
   }
 }

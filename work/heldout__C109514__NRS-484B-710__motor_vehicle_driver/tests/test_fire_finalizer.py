@@ -82,11 +82,41 @@ class FireFinalizerTests(unittest.TestCase):
         self.context["subject_authorized_emergency"] = True
         self.context["subject_official_business"] = True
         (self.root / "fire_context.json").write_text(json.dumps(self.context))
+        (self.root / "subject_exception_source.json").write_text(json.dumps({
+            "ego_id": "ego",
+            "authorized_emergency": {"asserted": True, "source_ref": "synthetic dispatch fixture"},
+            "official_business": {"asserted": True, "source_ref": "synthetic duty fixture"}}))
         report = finalizer.analyze(self.root)
         self.assertTrue(report["measurements"]["exception_context"]["value"]
                         ["subject_official_business"])
         self.assertTrue(report["measurements"]["fire_boundary_observation"]["value"]
                         ["at_500_frames"])
+        self.assertIn("subject_exception_source.json",
+                      report["measurements"]["fire_boundary_observation"]["sources"])
+
+    def test_exception_requires_separate_actor_bound_sources(self):
+        self.context["subject_authorized_emergency"] = True
+        self.context["subject_official_business"] = True
+        (self.root / "fire_context.json").write_text(json.dumps(self.context))
+        with self.assertRaisesRegex(ValueError, "Missing required source: subject_exception_source.json"):
+            finalizer.analyze(self.root)
+        path = self.root / "subject_exception_source.json"
+        source = {"ego_id": "wrong actor",
+                  "authorized_emergency": {"asserted": True, "source_ref": "dispatch fixture"},
+                  "official_business": {"asserted": True, "source_ref": "duty fixture"}}
+        path.write_text(json.dumps(source))
+        with self.assertRaisesRegex(ValueError, "actor identity differs"):
+            finalizer.analyze(self.root)
+        source["ego_id"] = "ego"
+        source["official_business"]["source_ref"] = ""
+        path.write_text(json.dumps(source))
+        with self.assertRaisesRegex(ValueError, "lacks source reference"):
+            finalizer.analyze(self.root)
+        source["official_business"]["source_ref"] = "duty fixture"
+        source["authorized_emergency"]["asserted"] = False
+        path.write_text(json.dumps(source))
+        with self.assertRaisesRegex(ValueError, "conflicts with capture context"):
+            finalizer.analyze(self.root)
 
     def test_saved_result_keeps_physical_status_unverified(self):
         self.config["case"] = {"recording_description": {"channels": []}}

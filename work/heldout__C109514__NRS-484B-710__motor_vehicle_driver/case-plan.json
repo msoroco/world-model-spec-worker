@@ -147,6 +147,40 @@
         "trigger_metric": "parked active frames and measured centre distance",
         "failure_condition": "No stationary handbraked frame at the engineering target"
       }
+    },
+    {
+      "case_id": "heldout__C109514__NRS-484B-710__motor_vehicle_driver__ordinary_police_at500",
+      "target_law_id": "NRS-484B-710",
+      "branch": "traveling_follow",
+      "target_distance_ft": 500,
+      "gap_ids": [
+        "authorized-exception"
+      ],
+      "construction_status": "exact_bundle_pending_proofs",
+      "physical_risk": {
+        "risk": "Police-blueprint subject may not sustain the following gap or be visible",
+        "trigger_source": "original footprint/state and four original RGB streams",
+        "trigger_metric": "active measured gap and participant pixel visibility",
+        "failure_condition": "Missing measured active frames or missing subject pixels"
+      },
+      "exception_premise": "ordinary subject"
+    },
+    {
+      "case_id": "heldout__C109514__NRS-484B-710__motor_vehicle_driver__authorized_police_at500",
+      "target_law_id": "NRS-484B-710",
+      "branch": "traveling_follow",
+      "target_distance_ft": 500,
+      "gap_ids": [
+        "authorized-exception"
+      ],
+      "construction_status": "exact_bundle_pending_proofs",
+      "physical_risk": {
+        "risk": "Police-blueprint subject may not sustain the following gap or be visible",
+        "trigger_source": "original footprint/state and four original RGB streams",
+        "trigger_metric": "active measured gap and participant pixel visibility",
+        "failure_condition": "Missing measured active frames or missing subject pixels"
+      },
+      "exception_premise": "sourced authorization and official business"
     }
   ],
   "comparisons": [
@@ -197,6 +231,21 @@
       ],
       "deliberate_differences": [
         "commanded parking centre distance 499/500/501 ft; actual distance measured from original parked frames"
+      ]
+    },
+    {
+      "comparison_id": "authorized_emergency_exception",
+      "case_ids": [
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__ordinary_police_at500",
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__authorized_police_at500"
+      ],
+      "fixed_conditions": [
+        "same police blueprint and C109514 through-intersection route",
+        "same 500 ft commanded gap and measured original footprints",
+        "same fire apparatus alarm response, cameras, duration and controller"
+      ],
+      "deliberate_differences": [
+        "separately sourced subject emergency authorization and official-business duty"
       ]
     }
   ],
@@ -349,8 +398,12 @@
     {
       "requirement": "authorized emergency vehicle on official business exception",
       "source": "inputs/heldout__C109514__NRS-484B-710__motor_vehicle_driver/assignment.json",
-      "status": "exception_pending",
-      "evidence_or_gap": "No accepted recording; separately sourced authorization and official-business premise with paired comparison pending."
+      "status": "selected_required",
+      "evidence_or_gap": "Matched police-blueprint exception pair with separate retained source packets; exact proofs pending.",
+      "case_ids": [
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__ordinary_police_at500",
+        "heldout__C109514__NRS-484B-710__motor_vehicle_driver__authorized_police_at500"
+      ]
     }
   ],
   "source_observation_mapping": {

@@ -3,8 +3,102 @@
   "law_id": "NRS-484B-100",
   "cell_id": "C111305",
   "actor": "pedestrian",
-  "cases": [],
-  "comparisons": [],
+  "cases": [
+    {
+      "case_id": "heldout__C111305__NRS-484B-100__pedestrian__stop_responds",
+      "target_law_id": "NRS-484B-100",
+      "branch": "stop_indication_responds",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "measurement_and_comparison_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Native pedestrian may not respond to officer indication within the captured span",
+        "trigger_source": "retained timed direction and original subject motion",
+        "trigger_metric": "post-indication motion samples",
+        "failure_condition": "indication or at least two later original motion samples absent"
+      }
+    },
+    {
+      "case_id": "heldout__C111305__NRS-484B-100__pedestrian__stop_does_not_respond",
+      "target_law_id": "NRS-484B-100",
+      "branch": "stop_indication_does_not_respond",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "measurement_and_comparison_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Native pedestrian may not respond to officer indication within the captured span",
+        "trigger_source": "retained timed direction and original subject motion",
+        "trigger_metric": "post-indication motion samples",
+        "failure_condition": "indication or at least two later original motion samples absent"
+      }
+    },
+    {
+      "case_id": "heldout__C111305__NRS-484B-100__pedestrian__proceed_responds",
+      "target_law_id": "NRS-484B-100",
+      "branch": "proceed_indication_responds",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "measurement_and_comparison_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Native pedestrian may not respond to officer indication within the captured span",
+        "trigger_source": "retained timed direction and original subject motion",
+        "trigger_metric": "post-indication motion samples",
+        "failure_condition": "indication or at least two later original motion samples absent"
+      }
+    },
+    {
+      "case_id": "heldout__C111305__NRS-484B-100__pedestrian__proceed_does_not_respond",
+      "target_law_id": "NRS-484B-100",
+      "branch": "proceed_indication_does_not_respond",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "measurement_and_comparison_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Native pedestrian may not respond to officer indication within the captured span",
+        "trigger_source": "retained timed direction and original subject motion",
+        "trigger_metric": "post-indication motion samples",
+        "failure_condition": "indication or at least two later original motion samples absent"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "stop_response",
+      "case_ids": [
+        "heldout__C111305__NRS-484B-100__pedestrian__stop_responds",
+        "heldout__C111305__NRS-484B-100__pedestrian__stop_does_not_respond"
+      ],
+      "fixed_conditions": [
+        "intersection cell",
+        "pedestrian subject",
+        "same sourced police officer and lawful-duty context",
+        "same stop indication, four camera plan and duration"
+      ],
+      "deliberate_differences": [
+        "subject post-indication motion; observed response, without willfulness inference"
+      ]
+    },
+    {
+      "comparison_id": "proceed_response",
+      "case_ids": [
+        "heldout__C111305__NRS-484B-100__pedestrian__proceed_responds",
+        "heldout__C111305__NRS-484B-100__pedestrian__proceed_does_not_respond"
+      ],
+      "fixed_conditions": [
+        "intersection cell",
+        "pedestrian subject",
+        "same sourced police officer and lawful-duty context",
+        "same proceed indication, four camera plan and duration"
+      ],
+      "deliberate_differences": [
+        "subject post-indication motion; observed response, without willfulness inference"
+      ]
+    }
+  ],
   "observations": [
     {
       "term": "dev.human_direction",
@@ -39,7 +133,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No exact construction, finalizer, compatibility receipts, saved-only fixture proof, independent delivery/comparison audit, or fallback construction has been prepared. Actual CARLA realization is also unverified."
+    "Exact Native constructions, capture/finalization, source-bound compatibility, saved processing and independent delivery audit remain CPU work. Officer duty and lawfulness need original-source review; willfulness is never inferred from motion."
   ],
   "evidence_review": {
     "reviewer": "worker-partition-03",
@@ -69,6 +163,83 @@
     {
       "branch": "The statute applies to any person. Keep motor vehicle and pedestrian actor assignments separate while preserving the same text.",
       "status": "planning_pending_exact_cases"
+    }
+  ],
+  "source_observation_mapping": [
+    {
+      "term": "dev.human_direction",
+      "measurement": "officer_response.py timed direction, source context and original subject motion",
+      "channels": [
+        "officer_direction",
+        "subject_motion",
+        "officer_context"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C111305__NRS-484B-100__pedestrian/assignment.json",
+          "sha256": "7b53df79ea4ec1c64d00a23aa0f9e24a8090efd22c59aff43de1cc5c1b3cfccb"
+        }
+      ]
+    },
+    {
+      "term": "dev.governs",
+      "measurement": "officer_response.py timed direction, source context and original subject motion",
+      "channels": [
+        "officer_direction",
+        "subject_motion",
+        "officer_context"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C111305__NRS-484B-100__pedestrian/assignment.json",
+          "sha256": "7b53df79ea4ec1c64d00a23aa0f9e24a8090efd22c59aff43de1cc5c1b3cfccb"
+        }
+      ]
+    },
+    {
+      "term": "ru.subject",
+      "measurement": "officer_response.py timed direction, source context and original subject motion",
+      "channels": [
+        "officer_direction",
+        "subject_motion",
+        "officer_context"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C111305__NRS-484B-100__pedestrian/assignment.json",
+          "sha256": "7b53df79ea4ec1c64d00a23aa0f9e24a8090efd22c59aff43de1cc5c1b3cfccb"
+        }
+      ]
+    },
+    {
+      "term": "kin.velocity",
+      "measurement": "officer_response.py timed direction, source context and original subject motion",
+      "channels": [
+        "officer_direction",
+        "subject_motion",
+        "officer_context"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C111305__NRS-484B-100__pedestrian/assignment.json",
+          "sha256": "7b53df79ea4ec1c64d00a23aa0f9e24a8090efd22c59aff43de1cc5c1b3cfccb"
+        }
+      ]
+    },
+    {
+      "term": "drv.officer_directed",
+      "measurement": "officer_response.py timed direction, source context and original subject motion",
+      "channels": [
+        "officer_direction",
+        "subject_motion",
+        "officer_context"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C111305__NRS-484B-100__pedestrian/assignment.json",
+          "sha256": "7b53df79ea4ec1c64d00a23aa0f9e24a8090efd22c59aff43de1cc5c1b3cfccb"
+        }
+      ]
     }
   ]
 }

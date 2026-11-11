@@ -22,6 +22,7 @@ def _load_sibling(name):
 
 
 branch_measurement = _load_sibling("fire_branch")
+exception_source = _load_sibling("exception_source")
 
 
 def required_source(root, name):
@@ -101,6 +102,11 @@ def analyze(attempt, *, write_channel=True):
     if config.get("law_id") != "NRS-484B-710" or not config.get("selected_case_id"):
         raise ValueError("Wrong fire-law case identity")
     measured, sources = measure_fire_branch(root, config, context)
+    first_footprint = branch_measurement._read_jsonl(
+        root / "participant_footprints.jsonl", "participant footprint")[0][0]
+    exception = exception_source.read_exception_source(root, context, first_footprint["ego_id"])
+    if exception is not None:
+        sources["subject_exception_source.json"] = exception["sha256"]
     # This converter-facing stream is rebuilt from retained original geometry
     # after capture. It is never accepted as an independently acquired source.
     channel = root / "fire_gap_ft.jsonl"
@@ -118,8 +124,11 @@ def analyze(attempt, *, write_channel=True):
                                   "value": measure_alarm_context(context),
                                   "sources": {"fire_context.json": context_hash}},
                 "exception_context": {"method": "measure_exception_context",
-                                      "value": measure_exception_context(context),
-                                      "sources": {"fire_context.json": context_hash}}},
+                                      "value": {**measure_exception_context(context),
+                                                "subject_exception_source": None if exception is None else exception["value"]},
+                                      "sources": {"fire_context.json": context_hash,
+                                                  **({} if exception is None else
+                                                     {"subject_exception_source.json": exception["sha256"]})}}},
             "limitations": ["Original-frame software measurement only; fire-alarm purpose and authorization are sourced premises, and physical visibility requires review."],
             "legal_acceptance_claimed": False, "physical_acceptance_claimed": False}
 

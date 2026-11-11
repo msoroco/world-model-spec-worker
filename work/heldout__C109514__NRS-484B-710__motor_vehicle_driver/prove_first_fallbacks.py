@@ -19,7 +19,7 @@ def sha(path):
 
 for candidate in entry['candidates']:
     ident = candidate['id']
-    offline_output = repo / '.runtime-work' / ('c109514-'+ident+'-offline')
+    offline_output = repo / '.runtime-work' / ('c109514-exception-source-'+ident+'-offline')
     command = ['.venv-cpu/bin/python','runtime.py','offline','--manifest',str(manifest_path.relative_to(repo)),
                '--case',case,'--candidate',ident,'--output',str(offline_output.relative_to(repo)),
                '--python',str(repo / '.venv-cpu/bin/python')]
@@ -31,7 +31,7 @@ for candidate in entry['candidates']:
         raise ValueError(ident+' offline failed: '+completed.stdout[-800:])
     candidate['offline'] = {'command':' '.join(command),'exit_code':0,'log':log.name,
                             'log_sha256':sha(log),'construction_sha256':candidate['construction_sha256']}
-    compat_output = repo / '.runtime-work' / ('c109514-'+ident+'-compat')
+    compat_output = repo / '.runtime-work' / ('c109514-exception-source-'+ident+'-compat')
     command = ['.venv-cpu/bin/python','runtime.py','compatibility','--manifest',str(manifest_path.relative_to(repo)),
                '--case',case,'--candidate',ident,'--output',str(compat_output.relative_to(repo)),
                '--library','runtime/library','--validator','.runtime-work/fire-decoder/.lake/build/bin/adapterCheck']
