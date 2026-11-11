@@ -321,3 +321,41 @@ The full non-strict `.venv-cpu/bin/python worker_check.py --complete` passed sta
 ### Stable shared strict gate after C10365 rebind
 
 The rerun `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` reached the readiness acceptance check and failed with `Preparation acceptance failed: partial/missing packages remain` (log SHA-256 `89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`). At this checkpoint 53 result files are present, with status counts `{'partial': 43, 'ready': 10}`. This supersedes the transient inline mismatch in the preceding section. The goal and all incomplete assignment work remain active; no partial package was promoted to ready.
+## 2026-11-11 hand-signal CPU proof and strict rerun
+
+The environment update is verified: `.venv-cpu/bin/python runtime.py preflight`
+passes with the pinned NumPy, FFmpeg and Lean toolchain, and the six base unit
+tests pass. No earlier missing-dependency or missing-tool diagnosis remains a
+current blocker.
+
+C111603/NRS-484B-413-1 now has all nine planned selected cases represented by
+exact constructions. The previously unproved `__vehicle_hand_signal` primary and
+three physical-risk fallbacks pass pinned offline and positive/deleted-original
+compatibility. Fresh synthetic saved processing preserves the original hand
+source. A new independent audit recomputes hand and turn measurements, binds all
+original hashes, joins frames and decodes four source cameras; its stale-hand-hash
+negative rejects as intended. The corrected hand manifest SHA-256 is
+`61154e1452823303aa6c3780ff295e0eb1d55360879b8e9cfe7d72565292b0fb`.
+The assignment's 18-test suite and scoped complete check pass. Its HANDOFF and
+result give exact files, commands, receipts and remaining CPU work. C111603 stays
+**partial** pending canonical nine-case manifest, semantic and cross-case audits,
+and scoped strict proof. No hand visibility or legal signal result is claimed.
+
+The full `.venv-cpu/bin/python worker_check.py --complete
+--require-delivery-ready` rerun traversed current packages and exited 1 at
+`Preparation acceptance failed: partial/missing packages remain`;
+`work/_shared/batch-strict-gate.log` SHA-256 is
+`89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`.
+The inventory remains **10 ready, 43 partial, 0 blocked** across 53 result
+files, including the authorized supplemental packages. Construction and proof
+work remains worker-owned; the next C111603 CPU action is canonical assembly and
+reproof, followed by other incomplete assignments in batch order. No frozen
+input, runtime or batch file was edited, and no Git command was run.
+
+## 2026-11-11 resumed CPU construction and strict delivery gate
+
+The updated environment passed `.venv-cpu/bin/python runtime.py preflight` with the pinned CPU packages, FFmpeg/ffprobe, and Lean 4.28.0; `.venv-cpu/bin/python -m unittest discover -s tests` passed six tests. `worker_check.py --updates` reported version 0 with no notices or paused assignments. The full `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` ran through current static package checks and exited 1 at `Preparation acceptance failed: partial/missing packages remain`. Current result inventory is **53 packages: 10 ready, 43 partial, 0 blocked**. The strict delivery gate has not passed; the goal remains active.
+
+C111294/NRS-484B-250-3 now has a Native connected-route selector for an ending and continuing subject-highway comparison at one junction with an identical through-route waypoint sequence and a qualifying-control predicate. Its 38-test CPU suite and scoped `worker_check.py --complete` pass. This selector is a construction component only; it has not been bound to an exact selected case, fallbacks, source-hashed compatibility, saved processing or a controlled comparison audit. The assignment HANDOFF records the exact next CPU steps and hashes. Its `result.json` remains truthful `partial`. Existing eight exact case proof bindings were not changed by this standalone component.
+
+The disjoint held-out-02, held-out-03 and held-out-04 owners are continuing construction on their first incomplete assignments. C10365 in held-out-03 has fresh offline and positive/missing-source compatibility for 16 exact candidate variants and four synthetic saved primary paths; binding the canonical manifest/audits remains. C104538 in held-out-04 has four planned exact cases, three comparisons and a tested fire-station entrance geometry module; Native runner, finalizer and proofs remain. None of these checkpoints is promoted to ready. No frozen input, runtime or batch file was edited; no Git, CARLA, NERSC or SQLite command was run.

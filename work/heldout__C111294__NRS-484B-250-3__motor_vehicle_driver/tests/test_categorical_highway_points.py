@@ -4,7 +4,8 @@ from types import SimpleNamespace as NS
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from categorical_highway_points import select_point
+from categorical_highway_points import select_point, select_controlled_pair
+from ending_road_control_inventory import ungoverned_route_pair
 
 
 class Point:
@@ -13,12 +14,16 @@ class Point:
         self.transform = NS(location=NS(x=x, y=y),
                             get_forward_vector=lambda: NS(x=dx, y=dy))
         self.successors = []
+        self.landmarks = []
 
     def next(self, distance):
         return self.successors
 
     def get_junction(self):
         return NS(id=42) if self.is_junction else None
+
+    def get_landmarks(self, distance, stop_at_junction=True):
+        return self.landmarks
 
 
 def native_map(*, subject_continues):
@@ -39,6 +44,36 @@ def native_map(*, subject_continues):
 
 
 class CategoricalHighwayPointsTests(unittest.TestCase):
+    def test_controlled_pair_fixes_through_route_and_rejects_changed_control(self):
+        world, ending, through = native_map(subject_continues=False)
+        continuing = [Point(-8, 4, 1, 0, 7),
+                      Point(0, 4, 1, 0, 8, True),
+                      Point(6, 4, 1, 0, 7)]
+        for first, second in zip(continuing, continuing[1:]):
+            first.successors = [second]
+        starts = {id(path[0].transform.location): path[0]
+                  for path in (ending, through, continuing)}
+        world.get_spawn_points = lambda: [NS(location=path[0].transform.location)
+                                          for path in (ending, through, continuing)]
+        world.get_waypoint = lambda location: starts[id(location)]
+        selected = select_controlled_pair(world)
+        self.assertIs(selected['ending'][0], ending[0])
+        self.assertIs(selected['continuing'][0], continuing[0])
+        self.assertIs(selected['other'][0], through[0])
+        self.assertFalse(selected['legal_highway_status_claimed'])
+        with self.assertRaisesRegex(ValueError, 'No controlled'):
+            select_controlled_pair(world, route_accept=lambda subject, other:
+                                   subject['road_id'] != 7)
+        selected = select_controlled_pair(
+            world, route_accept=lambda subject, other:
+            ungoverned_route_pair(subject, other, []))
+        self.assertIs(selected['other'][0], through[0])
+        continuing[0].landmarks = [NS(id='control-1', type='206')]
+        with self.assertRaisesRegex(ValueError, 'No controlled'):
+            select_controlled_pair(
+                world, route_accept=lambda subject, other:
+                ungoverned_route_pair(subject, other, []))
+
     def test_ending_and_continuing_native_successor_categories(self):
         for continuing in (False, True):
             with self.subTest(continuing=continuing):

@@ -102,3 +102,36 @@ Three exact cases remain: the hand-signal alternative and the two both-affected 
 Each exact selected case has one primary and three distinct physical-risk fallbacks. All eight constructions passed offline and positive/missing-original compatibility. Fresh saved processing passed for both primaries with original packets preserved. `both_signals_audit.py` and `both_indicator_only_audit.py` independently rejoined the source hashes, listener packets, indicator observations and decoded all four videos; the signals audit additionally checks fixed paired sources, the preturn relay ACK, and higher diagnostic PCM RMS. Stale horn-event and listener-source hashes were each rejected. The two package checks passed candidate, saved, compatibility and delivery-handoff contracts; their logs and exact commands are bound in `result.json`.
 
 Eight exact cases now have CPU proof chains. The remaining hand-signal case needs an original Native hand/arm source, three fallback constructions, saved and comparison proofs. Canonical package execution manifest/index, all case proposals and package-wide semantic/delivery audits then remain. Physical horn sound, microphone alignment, lamp/hand visibility, participant effect, safe completion and all legal judgments remain unclaimed. `result.json` stays partial until the strict scoped gate passes.
+## 2026-11-11 hand-signal exact CPU proof continuation
+
+`__vehicle_hand_signal` now has a corrected exact construction description and a
+source-shaped derived hand channel (`frame`, `time_s`, `value`). Its single
+selected measurement contract binds the original hand-bone source alongside the
+turn, participant, trace and four camera sources. `prove_hand_signal.py` ran the
+current primary and all three distinct fallback constructions through pinned
+offline and positive/deleted-`hand_signal_original.jsonl` negative compatibility;
+all eight commands passed. Fresh pinned `process-saved` passed with original
+sources preserved and no missing evidence. The current hand manifest SHA-256 is
+`61154e1452823303aa6c3780ff295e0eb1d55360879b8e9cfe7d72565292b0fb`;
+the primary construction SHA-256 is
+`4b9e05609401bac26d37bea4acb3682b8a3c085cda0aec3144ff387ac1129ce8`.
+The saved receipt SHA-256 is
+`fdd95ccaf51918d82dd36d4f4630a9fab6679bab0f7a9fa3159190b1196f2c1e`.
+
+`hand_signal_audit.py` independently checks all original-source hashes, recomputes
+the hand and turn measurements, joins all nine original video/trace frames and
+fully decodes all four source cameras. Its positive audit passes; a corrupted
+hand-source hash is rejected with `Stale or missing original hand-signal source`.
+The audit receipt SHA-256 is
+`5802a38ae15d6de4e8660dd959255cbddecc8e7082a3b594608d9a7bfd237f14`.
+The 18-test assignment suite and scoped `worker_check.py --assignment
+heldout__C111603__NRS-484B-413-1__motor_vehicle_driver --complete` both pass.
+These are synthetic software proofs; hand pixels, signal recognizability,
+affected-user status and physical/legal outcomes remain unverified.
+
+Status remains **partial**. Next CPU action is to assemble all nine selected
+cases into one canonical `execution-manifest.json` with current candidate,
+saved, physical protocol and delivery audit bindings; complete the canonical
+semantic proposal chain and independent cross-case comparison audits; rerun
+every changed exact proof and the scoped strict gate. Do not infer a physical
+hand signal from the diagnostic bone coordinates or black source videos.

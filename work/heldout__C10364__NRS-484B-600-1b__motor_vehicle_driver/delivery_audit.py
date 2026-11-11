@@ -10,12 +10,17 @@ from hashlib import sha256
 import json
 from pathlib import Path
 import subprocess
+import sys
 
 
 PREFIX = 'heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__'
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 SOURCES = ('config.json', 'participant_footprints.jsonl', 'ego_motion.jsonl',
            'trace.jsonl', 'video_frames.jsonl')
+
+# The exported runtime owns the full-frame decoder and exact-file receipt format.
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'runtime'))
+from scenario_pipeline.worker_exchange import media
 
 
 def digest(path):
@@ -41,6 +46,25 @@ def _camera(path, expected_frames):
         raise ValueError('Original camera full decode failed: ' + path.name)
     return {'sha256': digest(path), 'frames': expected_frames,
             'width': int(streams[0]['width']), 'height': int(streams[0]['height'])}
+
+
+def _visibility(root, case_id, frame_count, cameras):
+    path = root / 'participant-visibility-review.json'
+    if not path.is_file():
+        raise ValueError('Independent participant pixel visibility review is missing')
+    review = json.loads(path.read_text())
+    if review.get('case_id') != case_id or not review.get('reviewer'):
+        raise ValueError('Participant visibility review identity is incomplete')
+    marks = review.get('visible_participants', {})
+    for participant in ('ego', 'pedestrian', 'property'):
+        mark = marks.get(participant, {})
+        camera = mark.get('camera')
+        frame = mark.get('video_frame')
+        if (camera not in cameras or mark.get('camera_sha256') != cameras[camera]['sha256']
+                or not isinstance(frame, int) or not 0 <= frame < frame_count
+                or mark.get('visible') is not True):
+            raise ValueError('Participant pixel visibility is unverified: ' + participant)
+    return {'path': path.name, 'sha256': digest(path), 'reviewer': review['reviewer']}
 
 
 def audit(case_id, attempt, *, report_path=None, diagnostic_fixture=False):
@@ -75,6 +99,13 @@ def audit(case_id, attempt, *, report_path=None, diagnostic_fixture=False):
             or frame_ids != [row['frame'] for row in trace]):
         raise ValueError('Original participant/time join differs')
     decoded = {name: _camera(root / (name + '.mkv'), len(frame_map)) for name in CAMERAS}
+    primary = root / 'raw.mkv'
+    if not primary.is_file():
+        raise ValueError('Composed original source video is missing')
+    receipt_path = root / 'source-decode-receipt.json'
+    decode = media.audit(primary, len(frame_map), mapping_sha256=digest(root / 'video_frames.jsonl'),
+                         receipt=receipt_path)
+    visibility = None
     if diagnostic_fixture:
         if not (root / 'fixture-provenance.json').is_file() or (root / 'capture-seal.json').exists():
             raise ValueError('Diagnostic audit needs an explicitly marked unsealed fixture')
@@ -97,14 +128,22 @@ def audit(case_id, attempt, *, report_path=None, diagnostic_fixture=False):
             raise ValueError('Native original duration is incomplete')
         if result.get('physical_checks', {}).get('maneuver', {}).get('status') != 'met':
             raise ValueError('Physical alley passage is unverified')
+        visibility = _visibility(root, case_id, len(frame_map), decoded)
         scope = 'source-verified Native alley delivery; legal judgment separate'
     return {'format': 'worker-delivery-audit', 'case_id': case_id,
             'scope': scope, 'report_sha256': digest(report_path),
             'result_sha256': digest(result_path), 'original_sha256':
             {name: digest(root / name) for name in SOURCES},
             'cameras': decoded, 'frames': len(frame_map),
-            'checks': ['native_source', 'all_participants', 'time_join',
-                       'full_video_decode', 'actual_pixels', 'physical_completion'],
+            'source_decode_receipt_path': str(receipt_path),
+            'source_decode_receipt_sha256': digest(receipt_path),
+            'source_decode_auditor_sha256': decode['auditor_sha256'],
+            'pixel_visibility_review': visibility,
+            'checks': {'native_source': not diagnostic_fixture,
+                       'all_participants': visibility is not None,
+                       'time_join': True, 'full_video_decode': True,
+                       'actual_pixels': visibility is not None,
+                       'physical_completion': not diagnostic_fixture},
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 
 

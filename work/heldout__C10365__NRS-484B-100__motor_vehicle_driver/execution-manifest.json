@@ -1,0 +1,551 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_responds",
+      "construction": "cases/construction-stop_responds.json",
+      "construction_sha256": "7d036b91a6d3a0d2adac76b7f28c0f1d05d2dd32df5983ca2d0f218e2090c9bf",
+      "kind": "delivery",
+      "measurement_contract": "cases/measurement-contract-stop_responds.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/diagnostic-recipe-stop_responds.json",
+      "acquisition": {
+        "subject_speed_mps": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "post-indication original subject velocity sampled at each joined frame",
+          "evidence": "subject_motion_history.jsonl and original frame map"
+        },
+        "officer_direction": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "timed officer pose event joined to original subject motion",
+          "evidence": "officer_direction.json, officer_context.json and video_frames.jsonl"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native alley connectivity, actual officer gesture visibility and original overview coverage may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-stop_responds-fallback1.json",
+          "construction_sha256": "82ae6628b278b4e17bf0696984934aeccf7857ca3849c1d13429c4f9f4f3d4e2",
+          "changed_knobs": [
+            "Use a 12 m connected alley segment"
+          ],
+          "trigger": {
+            "source": "road.xodr and original trace.jsonl",
+            "metric": "connected nonjunction alley segment length and subject route",
+            "failure_condition": "The selected 18 m segment cannot be connected inside the Native alley"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_responds --candidate fallback1 --output .runtime-work/c10365-stop_responds-fallback1-offline-next --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/case-offline-stop_responds-fallback1.log",
+            "log_sha256": "a7a1ac1562890dfb946b00ee87bd64ce113ec3f3560c455ffc6a047a4ee541be",
+            "construction_sha256": "82ae6628b278b4e17bf0696984934aeccf7857ca3849c1d13429c4f9f4f3d4e2"
+          },
+          "compatibility": {
+            "receipt": "cases/receipt-compat-stop_responds-fallback1.json",
+            "sha256": "0b0645dab36311dcc3be8f1be097a21f27aabf168a19d113215da62c0ad54e59",
+            "log": "cases/analysis-stop_responds-fallback1.log",
+            "negative_log": "cases/negative-stop_responds-fallback1.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-stop_responds-fallback2.json",
+          "construction_sha256": "f90acdf23f32c0bf30847066df951f15a602fd432deb4c60c0a29115406ee13c",
+          "changed_knobs": [
+            "Raise the original officer arm pose by 20 degrees"
+          ],
+          "trigger": {
+            "source": "officer_direction.json and all four original camera streams",
+            "metric": "officer arm visibility and command distinction in actual pixels",
+            "failure_condition": "The primary arm pose is obscured or indistinct at the captured frame"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_responds --candidate fallback2 --output .runtime-work/c10365-stop_responds-fallback2-offline-next --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/case-offline-stop_responds-fallback2.log",
+            "log_sha256": "e2f5460889d7772924adeedf284b91da834dce5758101d6cc3a942166a2dedf3",
+            "construction_sha256": "f90acdf23f32c0bf30847066df951f15a602fd432deb4c60c0a29115406ee13c"
+          },
+          "compatibility": {
+            "receipt": "cases/receipt-compat-stop_responds-fallback2.json",
+            "sha256": "c66c409886213aadcde9c234dd89e489b06a6441d9b6cf4eb69a42eeac15298b",
+            "log": "cases/analysis-stop_responds-fallback2.log",
+            "negative_log": "cases/negative-stop_responds-fallback2.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-stop_responds-fallback3.json",
+          "construction_sha256": "0e6e43381739e6ebbfc039691cc1b46d259ceee507f4aa1d7d85079b449378c5",
+          "changed_knobs": [
+            "Raise the overview camera mount by 2 m"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "officer and subject visibility in original overview frames",
+            "failure_condition": "The officer or subject is occluded or outside the original overview field"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_responds --candidate fallback3 --output .runtime-work/c10365-stop_responds-fallback3-offline-next --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/case-offline-stop_responds-fallback3.log",
+            "log_sha256": "ee90d68f4f54dca2fca5a72f918476ff3437a988ed753782c7c8cb9d9d81e31d",
+            "construction_sha256": "0e6e43381739e6ebbfc039691cc1b46d259ceee507f4aa1d7d85079b449378c5"
+          },
+          "compatibility": {
+            "receipt": "cases/receipt-compat-stop_responds-fallback3.json",
+            "sha256": "89e2f7330e723a428fc190c08b97ec93d4dbceebd3c560c0dc0bf4421e28644d",
+            "log": "cases/analysis-stop_responds-fallback3.log",
+            "negative_log": "cases/negative-stop_responds-fallback3.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_responds --output .runtime-work/c10365-stop_responds-primary-offline-next --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/case-offline-stop_responds-primary.log",
+        "log_sha256": "9596afd10258cafb1f1d6a21e98a53d80bfb24e3df5342a2feda26c28d28bb1b",
+        "construction_sha256": "7d036b91a6d3a0d2adac76b7f28c0f1d05d2dd32df5983ca2d0f218e2090c9bf"
+      },
+      "compatibility": {
+        "receipt": "cases/receipt-compat-stop_responds-primary.json",
+        "sha256": "437b53482c3c442ff82f9706798c685c0d38ed219f8e2f70f72f943c3832ba9f",
+        "log": "cases/analysis-stop_responds-primary.log",
+        "negative_log": "cases/negative-stop_responds-primary.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "cases/negative-stop_responds-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_responds --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cases/case-saved-stop_responds.log",
+        "test_log_sha256": "40e2c4fd68286c353d6242cb29a4da406c7200edb4e7f06d4db12be67d4a13b3",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_does_not_respond",
+      "construction": "cases/construction-stop_does_not_respond.json",
+      "construction_sha256": "feb0c5dc06a74828b7b7ad966db2dc3eb8a764efc185eb21d4b67d1f7b98bdd1",
+      "kind": "delivery",
+      "measurement_contract": "cases/measurement-contract-stop_does_not_respond.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/diagnostic-recipe-stop_does_not_respond.json",
+      "acquisition": {
+        "subject_speed_mps": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "post-indication original subject velocity sampled at each joined frame",
+          "evidence": "subject_motion_history.jsonl and original frame map"
+        },
+        "officer_direction": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "timed officer pose event joined to original subject motion",
+          "evidence": "officer_direction.json, officer_context.json and video_frames.jsonl"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native alley connectivity, actual officer gesture visibility and original overview coverage may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-stop_does_not_respond-fallback1.json",
+          "construction_sha256": "9073962bd99791e24a27c1ca8afcf3c7d675a1655afba23a84524c7db944393c",
+          "changed_knobs": [
+            "Use a 12 m connected alley segment"
+          ],
+          "trigger": {
+            "source": "road.xodr and original trace.jsonl",
+            "metric": "connected nonjunction alley segment length and subject route",
+            "failure_condition": "The selected 18 m segment cannot be connected inside the Native alley"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_does_not_respond --candidate fallback1 --output .runtime-work/c10365-stop_does_not_respond-fallback1-offline-next --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/case-offline-stop_does_not_respond-fallback1.log",
+            "log_sha256": "8d9565a1c20f45e9fc050d345737a9474dccdbbf2fcebe4fa98ffad633ab6ad9",
+            "construction_sha256": "9073962bd99791e24a27c1ca8afcf3c7d675a1655afba23a84524c7db944393c"
+          },
+          "compatibility": {
+            "receipt": "cases/receipt-compat-stop_does_not_respond-fallback1.json",
+            "sha256": "8bd10ef84e4ce65fced8283b4cadabd689144e46e55c494be4da4366fb90ba56",
+            "log": "cases/analysis-stop_does_not_respond-fallback1.log",
+            "negative_log": "cases/negative-stop_does_not_respond-fallback1.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-stop_does_not_respond-fallback2.json",
+          "construction_sha256": "4d954b685d4507210d04fde21cd8755c651c3d5a6647456bd2f7122c97b6f8e9",
+          "changed_knobs": [
+            "Raise the original officer arm pose by 20 degrees"
+          ],
+          "trigger": {
+            "source": "officer_direction.json and all four original camera streams",
+            "metric": "officer arm visibility and command distinction in actual pixels",
+            "failure_condition": "The primary arm pose is obscured or indistinct at the captured frame"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_does_not_respond --candidate fallback2 --output .runtime-work/c10365-stop_does_not_respond-fallback2-offline-next --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/case-offline-stop_does_not_respond-fallback2.log",
+            "log_sha256": "126b92c6290b2b40b6f20b02ed9f67657c57082daa5d961618ec459884a55c72",
+            "construction_sha256": "4d954b685d4507210d04fde21cd8755c651c3d5a6647456bd2f7122c97b6f8e9"
+          },
+          "compatibility": {
+            "receipt": "cases/receipt-compat-stop_does_not_respond-fallback2.json",
+            "sha256": "15851eb1d3caa84483948d2540a262dc952d4ff947cfb89438d723fbb431e998",
+            "log": "cases/analysis-stop_does_not_respond-fallback2.log",
+            "negative_log": "cases/negative-stop_does_not_respond-fallback2.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-stop_does_not_respond-fallback3.json",
+          "construction_sha256": "c5fc1e632f0799392d749705219ffbe4386d113d95d4a663177cf8d987269c22",
+          "changed_knobs": [
+            "Raise the overview camera mount by 2 m"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "officer and subject visibility in original overview frames",
+            "failure_condition": "The officer or subject is occluded or outside the original overview field"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_does_not_respond --candidate fallback3 --output .runtime-work/c10365-stop_does_not_respond-fallback3-offline-next --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/case-offline-stop_does_not_respond-fallback3.log",
+            "log_sha256": "d4f05e4a0f7650c9f038a812fa7ad87b2354ffb1b4e81703997bd53bc1c03aba",
+            "construction_sha256": "c5fc1e632f0799392d749705219ffbe4386d113d95d4a663177cf8d987269c22"
+          },
+          "compatibility": {
+            "receipt": "cases/receipt-compat-stop_does_not_respond-fallback3.json",
+            "sha256": "8e5c718d0ed5d79a63d7b26020eea9accc2b40ca58b987e62262d11096e26115",
+            "log": "cases/analysis-stop_does_not_respond-fallback3.log",
+            "negative_log": "cases/negative-stop_does_not_respond-fallback3.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_does_not_respond --output .runtime-work/c10365-stop_does_not_respond-primary-offline-next --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/case-offline-stop_does_not_respond-primary.log",
+        "log_sha256": "98b57d6fbf6c7e1ddfb4abaa53172abfeb104f39aff6a608ca0b953c6af273d6",
+        "construction_sha256": "feb0c5dc06a74828b7b7ad966db2dc3eb8a764efc185eb21d4b67d1f7b98bdd1"
+      },
+      "compatibility": {
+        "receipt": "cases/receipt-compat-stop_does_not_respond-primary.json",
+        "sha256": "dc32d7aa23c4e138874dc55318b7fe0350e02701ea4d9c8457aa7e40cbd9e352",
+        "log": "cases/analysis-stop_does_not_respond-primary.log",
+        "negative_log": "cases/negative-stop_does_not_respond-primary.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "cases/negative-stop_does_not_respond-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_does_not_respond --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cases/case-saved-stop_does_not_respond.log",
+        "test_log_sha256": "3429daceed1a656e9900d66b687ae2c5ceda17f42b73ec161f1e23079117cf9d",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_responds",
+      "construction": "cases/construction-proceed_responds.json",
+      "construction_sha256": "a23d1c9780745fbeaf93de957b9b927a928ae7d3f62d961f070070760f455566",
+      "kind": "delivery",
+      "measurement_contract": "cases/measurement-contract-proceed_responds.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/diagnostic-recipe-proceed_responds.json",
+      "acquisition": {
+        "subject_speed_mps": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "post-indication original subject velocity sampled at each joined frame",
+          "evidence": "subject_motion_history.jsonl and original frame map"
+        },
+        "officer_direction": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "timed officer pose event joined to original subject motion",
+          "evidence": "officer_direction.json, officer_context.json and video_frames.jsonl"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native alley connectivity, actual officer gesture visibility and original overview coverage may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-proceed_responds-fallback1.json",
+          "construction_sha256": "7bda8a4c2932fce9d1df69d09fc56b68e69009040ea6513dc9ed4cf166e96d06",
+          "changed_knobs": [
+            "Use a 12 m connected alley segment"
+          ],
+          "trigger": {
+            "source": "road.xodr and original trace.jsonl",
+            "metric": "connected nonjunction alley segment length and subject route",
+            "failure_condition": "The selected 18 m segment cannot be connected inside the Native alley"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_responds --candidate fallback1 --output .runtime-work/c10365-proceed_responds-fallback1-offline-next --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/case-offline-proceed_responds-fallback1.log",
+            "log_sha256": "cde75bd12a1c1fa507582bc58b40b4b19f618c68fb285c62b21a039ee3a4cba5",
+            "construction_sha256": "7bda8a4c2932fce9d1df69d09fc56b68e69009040ea6513dc9ed4cf166e96d06"
+          },
+          "compatibility": {
+            "receipt": "cases/receipt-compat-proceed_responds-fallback1.json",
+            "sha256": "84b26443ca049add4c4a8bc2bdbc8c631849ae98ad614f9033ed6754a2394023",
+            "log": "cases/analysis-proceed_responds-fallback1.log",
+            "negative_log": "cases/negative-proceed_responds-fallback1.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-proceed_responds-fallback2.json",
+          "construction_sha256": "328c8d9430b1d261a762625531d01a9ff5497bf4a94f76c8e4be1e19233ec469",
+          "changed_knobs": [
+            "Raise the original officer arm pose by 20 degrees"
+          ],
+          "trigger": {
+            "source": "officer_direction.json and all four original camera streams",
+            "metric": "officer arm visibility and command distinction in actual pixels",
+            "failure_condition": "The primary arm pose is obscured or indistinct at the captured frame"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_responds --candidate fallback2 --output .runtime-work/c10365-proceed_responds-fallback2-offline-next --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/case-offline-proceed_responds-fallback2.log",
+            "log_sha256": "d3ccf8acc08dea4ead79ca2258ba3905b9e34a58a86a9c92de6e57383118c770",
+            "construction_sha256": "328c8d9430b1d261a762625531d01a9ff5497bf4a94f76c8e4be1e19233ec469"
+          },
+          "compatibility": {
+            "receipt": "cases/receipt-compat-proceed_responds-fallback2.json",
+            "sha256": "8d7e02496d0f7448ba63601191ffad73945993413a5034b7bdf583a8617162d0",
+            "log": "cases/analysis-proceed_responds-fallback2.log",
+            "negative_log": "cases/negative-proceed_responds-fallback2.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-proceed_responds-fallback3.json",
+          "construction_sha256": "23142b1b6bc13072ca5871a11b38a83c7825a0938137d1de9ce0dcc76bdc4ce1",
+          "changed_knobs": [
+            "Raise the overview camera mount by 2 m"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "officer and subject visibility in original overview frames",
+            "failure_condition": "The officer or subject is occluded or outside the original overview field"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_responds --candidate fallback3 --output .runtime-work/c10365-proceed_responds-fallback3-offline-next --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/case-offline-proceed_responds-fallback3.log",
+            "log_sha256": "45add8faa7325c355dd832b74afca678c25273b590cdfa8604d9c36cd411f651",
+            "construction_sha256": "23142b1b6bc13072ca5871a11b38a83c7825a0938137d1de9ce0dcc76bdc4ce1"
+          },
+          "compatibility": {
+            "receipt": "cases/receipt-compat-proceed_responds-fallback3.json",
+            "sha256": "c525b5e6110493c8a9b840446bdc4f34379f4937d7f622f0490a2b68e222545d",
+            "log": "cases/analysis-proceed_responds-fallback3.log",
+            "negative_log": "cases/negative-proceed_responds-fallback3.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_responds --output .runtime-work/c10365-proceed_responds-primary-offline-next --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/case-offline-proceed_responds-primary.log",
+        "log_sha256": "ce9aad7795a39fc1174bd0a423901daee795cea6450fb8697c4772476c364199",
+        "construction_sha256": "a23d1c9780745fbeaf93de957b9b927a928ae7d3f62d961f070070760f455566"
+      },
+      "compatibility": {
+        "receipt": "cases/receipt-compat-proceed_responds-primary.json",
+        "sha256": "71d374053ac170fd00c4fa8ec8287a8dac63a2e6574ef6fb8db18890ee231c18",
+        "log": "cases/analysis-proceed_responds-primary.log",
+        "negative_log": "cases/negative-proceed_responds-primary.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "cases/negative-proceed_responds-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_responds --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cases/case-saved-proceed_responds.log",
+        "test_log_sha256": "961ebec3ee7371a7c22870bda6bf33871cf75887844bc07d08f902cdb7ebbe13",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_does_not_respond",
+      "construction": "cases/construction-proceed_does_not_respond.json",
+      "construction_sha256": "ba5d27b9fabd818da33c28be882c1147ed51789045c0820baf62115907902f8a",
+      "kind": "delivery",
+      "measurement_contract": "cases/measurement-contract-proceed_does_not_respond.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/diagnostic-recipe-proceed_does_not_respond.json",
+      "acquisition": {
+        "subject_speed_mps": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "post-indication original subject velocity sampled at each joined frame",
+          "evidence": "subject_motion_history.jsonl and original frame map"
+        },
+        "officer_direction": {
+          "entrypoint": "officer_finalizer.py",
+          "method": "timed officer pose event joined to original subject motion",
+          "evidence": "officer_direction.json, officer_context.json and video_frames.jsonl"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native alley connectivity, actual officer gesture visibility and original overview coverage may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-proceed_does_not_respond-fallback1.json",
+          "construction_sha256": "99380ec1e30b0d95f42c44551ddf3634e475de3ac57bcb40efe74ad172e88a66",
+          "changed_knobs": [
+            "Use a 12 m connected alley segment"
+          ],
+          "trigger": {
+            "source": "road.xodr and original trace.jsonl",
+            "metric": "connected nonjunction alley segment length and subject route",
+            "failure_condition": "The selected 18 m segment cannot be connected inside the Native alley"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_does_not_respond --candidate fallback1 --output .runtime-work/c10365-proceed_does_not_respond-fallback1-offline-next --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/case-offline-proceed_does_not_respond-fallback1.log",
+            "log_sha256": "7881380d134a3fd719d252e05ac48242545be30ae011815853f81e3184ec42f8",
+            "construction_sha256": "99380ec1e30b0d95f42c44551ddf3634e475de3ac57bcb40efe74ad172e88a66"
+          },
+          "compatibility": {
+            "receipt": "cases/receipt-compat-proceed_does_not_respond-fallback1.json",
+            "sha256": "5ab8e5a73e63faffeff55aff91336729f8b3b36676d73f74a8f76839f2576a07",
+            "log": "cases/analysis-proceed_does_not_respond-fallback1.log",
+            "negative_log": "cases/negative-proceed_does_not_respond-fallback1.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-proceed_does_not_respond-fallback2.json",
+          "construction_sha256": "bfc45a525a91083aa3ffb48a16686c77cd26d1ce7592f8ba80d8bb18cd13192a",
+          "changed_knobs": [
+            "Raise the original officer arm pose by 20 degrees"
+          ],
+          "trigger": {
+            "source": "officer_direction.json and all four original camera streams",
+            "metric": "officer arm visibility and command distinction in actual pixels",
+            "failure_condition": "The primary arm pose is obscured or indistinct at the captured frame"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_does_not_respond --candidate fallback2 --output .runtime-work/c10365-proceed_does_not_respond-fallback2-offline-next --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/case-offline-proceed_does_not_respond-fallback2.log",
+            "log_sha256": "0a773cd838f099aeb9e3f11bed292bef4bb2edcdce75961d06641742c55e810a",
+            "construction_sha256": "bfc45a525a91083aa3ffb48a16686c77cd26d1ce7592f8ba80d8bb18cd13192a"
+          },
+          "compatibility": {
+            "receipt": "cases/receipt-compat-proceed_does_not_respond-fallback2.json",
+            "sha256": "812be96c0fd5c198096722b12f7a8f0acccd0caee220198f60698a56558b901c",
+            "log": "cases/analysis-proceed_does_not_respond-fallback2.log",
+            "negative_log": "cases/negative-proceed_does_not_respond-fallback2.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-proceed_does_not_respond-fallback3.json",
+          "construction_sha256": "75ec4a4ec005ad18fe45f940f11280ee5241627bc56b558f19ee3a6dfa9d4903",
+          "changed_knobs": [
+            "Raise the overview camera mount by 2 m"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "officer and subject visibility in original overview frames",
+            "failure_condition": "The officer or subject is occluded or outside the original overview field"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_does_not_respond --candidate fallback3 --output .runtime-work/c10365-proceed_does_not_respond-fallback3-offline-next --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/case-offline-proceed_does_not_respond-fallback3.log",
+            "log_sha256": "a3d04b842a0b54357d5b93a7a040fd61b53dca207df436296edba69c22406ed1",
+            "construction_sha256": "75ec4a4ec005ad18fe45f940f11280ee5241627bc56b558f19ee3a6dfa9d4903"
+          },
+          "compatibility": {
+            "receipt": "cases/receipt-compat-proceed_does_not_respond-fallback3.json",
+            "sha256": "5170a10dabee8e407ce2669e5a2b4bffc28cb36a1a033ae6224c8f1a2103b7ea",
+            "log": "cases/analysis-proceed_does_not_respond-fallback3.log",
+            "negative_log": "cases/negative-proceed_does_not_respond-fallback3.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_does_not_respond --output .runtime-work/c10365-proceed_does_not_respond-primary-offline-next --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/case-offline-proceed_does_not_respond-primary.log",
+        "log_sha256": "f5389609cc7b0d172903a931e8b45a2bf40378af434bebd4e6b43db59d5a0404",
+        "construction_sha256": "ba5d27b9fabd818da33c28be882c1147ed51789045c0820baf62115907902f8a"
+      },
+      "compatibility": {
+        "receipt": "cases/receipt-compat-proceed_does_not_respond-primary.json",
+        "sha256": "e0fe4da966221c88ac73fc69809bda81fedda718fd0a05153e058b95481b43b6",
+        "log": "cases/analysis-proceed_does_not_respond-primary.log",
+        "negative_log": "cases/negative-proceed_does_not_respond-primary.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "cases/negative-proceed_does_not_respond-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C10365__NRS-484B-100__motor_vehicle_driver/execution-manifest.json --case heldout__C10365__NRS-484B-100__motor_vehicle_driver__proceed_does_not_respond --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cases/case-saved-proceed_does_not_respond.log",
+        "test_log_sha256": "4c2c08960581d6c6a219f1d059e52b55c61583cb7bc4e83ab17c2003d345c0a1",
+        "test_exit_code": 0
+      }
+    }
+  ]
+}

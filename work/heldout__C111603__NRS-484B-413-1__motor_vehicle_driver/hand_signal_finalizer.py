@@ -63,10 +63,13 @@ def analyze(attempt, *, write_channel=True):
         hand_channel = root / 'hand_signal_observation.jsonl'
         if hand_channel.exists():
             raise ValueError('Derived hand channel already exists')
-        hand_channel.write_text(''.join(json.dumps(row, allow_nan=False) + '\n'
+        hand_channel.write_text(''.join(json.dumps({
+            'frame': row['frame'], 'time_s': row['time_s'],
+            'value': {'hand_world_m': row['hand_world_m']}}, allow_nan=False) + '\n'
                                         for row in hand_measurement['observations']))
     sources = {name: required(root, name)[1] for name in
                (*SOURCES, 'video_frames.jsonl', 'trace.jsonl', *VIDEOS)}
+    sources['hand_signal_original.jsonl'] = hand_sha
     return {'format': 'worker-analysis-report', 'case_id': CASE,
             'measurements': {'hand_signal_observation': {'method': 'measure_hand',
                                                        'value': hand_measurement,

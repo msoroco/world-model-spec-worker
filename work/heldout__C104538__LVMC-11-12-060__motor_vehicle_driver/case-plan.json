@@ -3,9 +3,154 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C104538",
   "law_id": "LVMC-11-12-060",
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_entrance",
+      "target_law_id": "LVMC-11-12-060",
+      "branch": "front_of_entrance",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "geometry_contract_cpu_tested_runner_pending",
+      "description": "Reverse in the public carriageway directly across the surveyed station entrance without entering the driveway.",
+      "physical_risk": {
+        "risk": "Turn radius may carry the body into the driveway or out of the original cameras.",
+        "trigger_source": "original map survey, vehicle body poses and four named original camera streams",
+        "trigger_metric": "full-body overlap with surveyed entrance/approach polygons, route completion and source image coverage",
+        "failure_condition": "Subject fails the intended path or exits the mapped region or camera view."
+      }
+    },
+    {
+      "case_id": "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_approach",
+      "target_law_id": "LVMC-11-12-060",
+      "branch": "front_of_approach",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "geometry_contract_cpu_tested_runner_pending",
+      "description": "Reverse on the public station approach immediately before the surveyed entrance without entering the driveway.",
+      "physical_risk": {
+        "risk": "Map approach boundary and vehicle footprint may overlap the entrance itself.",
+        "trigger_source": "original map survey, vehicle body poses and four named original camera streams",
+        "trigger_metric": "full-body overlap with surveyed entrance/approach polygons, route completion and source image coverage",
+        "failure_condition": "Subject fails the intended path or exits the mapped region or camera view."
+      }
+    },
+    {
+      "case_id": "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__through_driveway",
+      "target_law_id": "LVMC-11-12-060",
+      "branch": "through_driveway",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "geometry_contract_cpu_tested_runner_pending",
+      "description": "Enter the surveyed station driveway, reverse there, and exit to the opposite public travel direction.",
+      "physical_risk": {
+        "risk": "The mapped branch may be too narrow for a three-point turn or not render as a station driveway.",
+        "trigger_source": "original map survey, vehicle body poses and four named original camera streams",
+        "trigger_metric": "full-body overlap with surveyed entrance/approach polygons, route completion and source image coverage",
+        "failure_condition": "Subject fails the intended path or exits the mapped region or camera view."
+      }
+    },
+    {
+      "case_id": "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__remote_reference",
+      "target_law_id": "LVMC-11-12-060",
+      "branch": "remote_reference",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "geometry_contract_cpu_tested_runner_pending",
+      "description": "Reverse on the same public road outside the mapped station entrance and approach region.",
+      "physical_risk": {
+        "risk": "The reference may inadvertently intersect the station approach due to body width or map curvature.",
+        "trigger_source": "original map survey, vehicle body poses and four named original camera streams",
+        "trigger_metric": "full-body overlap with surveyed entrance/approach polygons, route completion and source image coverage",
+        "failure_condition": "Subject fails the intended path or exits the mapped region or camera view."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "entrance_position",
+      "case_ids": [
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_entrance",
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__remote_reference"
+      ],
+      "fixed_conditions": [
+        "C104538 hill-crest U-turn cell",
+        "same mapped fire station, public road and actor",
+        "same dry weather, control device, camera and 20 Hz duration plan",
+        "same reversal target and vehicle footprint"
+      ],
+      "deliberate_differences": [
+        "measured reversal footprint directly in front of the entrance versus outside the mapped station region"
+      ]
+    },
+    {
+      "comparison_id": "approach_position",
+      "case_ids": [
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_approach",
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__remote_reference"
+      ],
+      "fixed_conditions": [
+        "C104538 hill-crest U-turn cell",
+        "same mapped fire station, public road and actor",
+        "same dry weather, control device, camera and 20 Hz duration plan",
+        "same reversal target and vehicle footprint"
+      ],
+      "deliberate_differences": [
+        "measured reversal footprint in the approach versus outside the mapped station region"
+      ]
+    },
+    {
+      "comparison_id": "driveway_use",
+      "case_ids": [
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_entrance",
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__through_driveway"
+      ],
+      "fixed_conditions": [
+        "C104538 hill-crest U-turn cell",
+        "same mapped fire station, public road and actor",
+        "same dry weather, control device, camera and 20 Hz duration plan",
+        "same reversal target and vehicle footprint"
+      ],
+      "deliberate_differences": [
+        "measured vehicle entry and reversal path through the driveway versus public-carriageway-only reversal"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "fire_station_entrance_source",
+      "mandatory": true,
+      "source": "original surveyed map geometry and original-frame Native vehicle pose/lane trace",
+      "method": "fire_station_geometry.py computes path classification; a saved finalizer remains to be implemented"
+    },
+    {
+      "name": "heading_change_deg",
+      "mandatory": true,
+      "source": "original surveyed map geometry and original-frame Native vehicle pose/lane trace",
+      "method": "fire_station_geometry.py computes path classification; a saved finalizer remains to be implemented"
+    },
+    {
+      "name": "in_front_of_entrance_observed",
+      "mandatory": true,
+      "source": "original surveyed map geometry and original-frame Native vehicle pose/lane trace",
+      "method": "fire_station_geometry.py computes path classification; a saved finalizer remains to be implemented"
+    },
+    {
+      "name": "entered_driveway",
+      "mandatory": true,
+      "source": "original surveyed map geometry and original-frame Native vehicle pose/lane trace",
+      "method": "fire_station_geometry.py computes path classification; a saved finalizer remains to be implemented"
+    },
+    {
+      "name": "vehicle_footprint_intersection",
+      "mandatory": true,
+      "source": "original surveyed map geometry and original-frame Native vehicle pose/lane trace",
+      "method": "fire_station_geometry.py computes path classification; a saved finalizer remains to be implemented"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/assignment.json",
@@ -18,7 +163,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No executable construction, finalizer, capture plan or physical observation has yet been produced for this assignment."
+    "Station identity and entrance/approach boundary require source-backed local map survey.",
+    "Native motion, body overlap, four source camera visibility and reversal remain unverified.",
+    "Purpose of turning is a contextual legal question; measured path is evidence, not a legal determination."
   ],
   "evidence_review": {
     "reviewer": "partition-04 CPU scope review",
@@ -35,5 +182,170 @@
         "why_existing_insufficient": "The frozen evidence inventory lists no accepted recordings for this assignment."
       }
     ]
-  }
+  },
+  "branch_inventory": [
+    {
+      "branch_id": "front_of_station_entrance",
+      "source": "first sentence of exact LVMC 11.12.060",
+      "case_ids": [
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_entrance",
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__remote_reference"
+      ],
+      "comparison_ids": [
+        "entrance_position"
+      ]
+    },
+    {
+      "branch_id": "front_of_station_approach",
+      "source": "first sentence of exact LVMC 11.12.060",
+      "case_ids": [
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_approach",
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__remote_reference"
+      ],
+      "comparison_ids": [
+        "approach_position"
+      ]
+    },
+    {
+      "branch_id": "driveway_used_for_reversal",
+      "source": "second sentence of exact LVMC 11.12.060",
+      "case_ids": [
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_entrance",
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__through_driveway"
+      ],
+      "comparison_ids": [
+        "driveway_use"
+      ]
+    }
+  ],
+  "source_observation_mapping": {
+    "st.fire_station_entrance": {
+      "measurement": "surveyed entrance geometry and station asset identity",
+      "evidence": "original map survey and Native capture required; currently CPU geometry contract only",
+      "channels": [
+        "map_survey.json",
+        "participant_state.jsonl",
+        "video_frames.jsonl"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/assignment.json",
+          "sha256": "621baf1f96568e3184c5e4a6a57689cde9f7b5a43ff664f58aeb357f1dc7228b"
+        }
+      ]
+    },
+    "drv.u_turn": {
+      "measurement": "observed original-frame heading reversal and path",
+      "evidence": "original map survey and Native capture required; currently CPU geometry contract only",
+      "channels": [
+        "map_survey.json",
+        "participant_state.jsonl",
+        "video_frames.jsonl"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/assignment.json",
+          "sha256": "621baf1f96568e3184c5e4a6a57689cde9f7b5a43ff664f58aeb357f1dc7228b"
+        }
+      ]
+    },
+    "kin.heading": {
+      "measurement": "original subject heading per frame",
+      "evidence": "original map survey and Native capture required; currently CPU geometry contract only",
+      "channels": [
+        "map_survey.json",
+        "participant_state.jsonl",
+        "video_frames.jsonl"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/assignment.json",
+          "sha256": "621baf1f96568e3184c5e4a6a57689cde9f7b5a43ff664f58aeb357f1dc7228b"
+        }
+      ]
+    },
+    "rel.occupies": {
+      "measurement": "full-body polygon intersection with surveyed entrance and approach",
+      "evidence": "original map survey and Native capture required; currently CPU geometry contract only",
+      "channels": [
+        "map_survey.json",
+        "participant_state.jsonl",
+        "video_frames.jsonl"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/assignment.json",
+          "sha256": "621baf1f96568e3184c5e4a6a57689cde9f7b5a43ff664f58aeb357f1dc7228b"
+        }
+      ]
+    },
+    "kin.position": {
+      "measurement": "original subject center and body footprint per frame",
+      "evidence": "original map survey and Native capture required; currently CPU geometry contract only",
+      "channels": [
+        "map_survey.json",
+        "participant_state.jsonl",
+        "video_frames.jsonl"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/assignment.json",
+          "sha256": "621baf1f96568e3184c5e4a6a57689cde9f7b5a43ff664f58aeb357f1dc7228b"
+        }
+      ]
+    },
+    "st.driveway_or_alley_entrance": {
+      "measurement": "surveyed separate driveway branch",
+      "evidence": "original map survey and Native capture required; currently CPU geometry contract only",
+      "channels": [
+        "map_survey.json",
+        "participant_state.jsonl",
+        "video_frames.jsonl"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/assignment.json",
+          "sha256": "621baf1f96568e3184c5e4a6a57689cde9f7b5a43ff664f58aeb357f1dc7228b"
+        }
+      ]
+    },
+    "kin.path_length": {
+      "measurement": "integrated original-frame subject path length",
+      "evidence": "original map survey and Native capture required; currently CPU geometry contract only",
+      "channels": [
+        "map_survey.json",
+        "participant_state.jsonl",
+        "video_frames.jsonl"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/assignment.json",
+          "sha256": "621baf1f96568e3184c5e4a6a57689cde9f7b5a43ff664f58aeb357f1dc7228b"
+        }
+      ]
+    }
+  },
+  "requirement_dispositions": [
+    {
+      "requirement": "reversal in front of fire-station driveway, entrance or approaches",
+      "source": "first sentence, LVMC 11.12.060 in frozen assignment",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_entrance",
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_approach",
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__remote_reference"
+      ],
+      "evidence_or_gap": "No accepted recordings; original source and observed footprint needed."
+    },
+    {
+      "requirement": "use of driveway entrance or approaches for purpose of opposite-direction turn",
+      "source": "second sentence, LVMC 11.12.060 in frozen assignment",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__through_driveway",
+        "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_entrance"
+      ],
+      "evidence_or_gap": "No accepted recordings; path entry, reversal and exit plus purpose context needed."
+    }
+  ]
 }

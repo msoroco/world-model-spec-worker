@@ -24,7 +24,7 @@ def main():
     for case in manifest['cases']:
         suffix = case['case_id'].split('__')[-1]
         source_attempt = REPO / '.runtime-work' / f'c10364-{suffix}-attempt-sourcepoint'
-        attempt = REPO / '.runtime-work' / f'c10364-{suffix}-execution-attempt-proof'
+        attempt = REPO / '.runtime-work' / f'c10364-{suffix}-execution-attempt-proof-v3'
         if json.loads((source_attempt / 'fixture-provenance.json').read_text()).get(
                 'provenance_kind') != 'synthetic_fixture':
             raise ValueError('Execution saved reproof requires marked synthetic original')
@@ -36,7 +36,7 @@ def main():
                     'construction_sha256': case['construction_sha256'],
                     'manifest_sha256': digest(MANIFEST)}
         (attempt / 'candidate-selection.json').write_text(json.dumps(selected, indent=2) + '\n')
-        output = REPO / '.runtime-work' / f'c10364-{suffix}-execution-saved-proof-v2'
+        output = REPO / '.runtime-work' / f'c10364-{suffix}-execution-saved-proof-v3'
         log = ROOT / 'cases' / f'execution-saved-{suffix}.log'
         command = [sys.executable, str(REPO / 'runtime.py'), 'process-saved',
                    '--manifest', str(MANIFEST), '--case', case['case_id'],

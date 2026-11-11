@@ -39,6 +39,7 @@ for item in construction['files']:
         item['content'] = (ROOT / 'hand_signal_finalizer.py').read_text()
 construction['files'].append({'path': 'turn_hand_signal.py',
                               'content': (ROOT / 'turn_hand_signal.py').read_text()})
+construction['recording_description'] = cfg['case']['recording_description']
 construction_path = ROOT / f'{PREFIX}-construction.json'
 save(construction_path, construction)
 
