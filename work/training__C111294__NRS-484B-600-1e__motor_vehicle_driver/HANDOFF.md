@@ -1,6 +1,6 @@
 # training__C111294__NRS-484B-600-1e__motor_vehicle_driver
 
-Status: blocked. No delivery recording is selected or claimed.
+Status: partial. No delivery recording is selected or claimed.
 
 ## Source review
 
@@ -8,9 +8,9 @@ Law: NRS 484B.600(1)(e). Exact text and topic inventory are referenced by hashes
 
 ## Planned controlled comparison
 
-measured speed around the strict 80 mph ceiling. Compare only `observed_speed` (mph) while fixing cell, actor, legal context, traffic controls, weather, other controller settings, and capture plan. The 3 case definitions are unselected and have no observed values.
+Measured speed around the strict 80 mph ceiling. Compare only `observed_speed` (mph) while fixing cell, actor, legal context, traffic controls, weather, other controller settings, and capture plan. The four case definitions are unselected and have no original Native observed values.
 
-## Blocker and resumption
+## Historical pre-update-015 preparation
 
 An authored long-road OpenDRIVE and separate opposing vehicle route cover the three 24 s/20 Hz planned speed settings. The pinned CPU map parser accepts 19 regions. Three source-hashed 480-frame synthetic saved fixtures derive 75, 79.5 and 85 mph from velocity, and an independent reader verifies the controlled comparison. The 80 mph uncertainty probe is unresolved. Twelve unselected exact candidate bundles now materialize primary plus three distinct fallbacks for each case; their source-measured speed shortfall, lane error and speed overshoot gates have positive and negative CPU tests. All twelve pinned offline commands pass fifteen tests apiece, and an independent audit checks source hashes and controlled knob differences. These are software diagnostics, not physical Native speed observations or a legal verdict.
 
@@ -18,4 +18,12 @@ The proposed original Native runner passes all twelve CPU preflights. It surveys
 
 All twelve exact unselected candidate bundles now pass pinned offline and synthetic `worker-package-compatibility-v1` positives plus removed-Native-source negatives. An independent audit verifies exact construction hashes, source-backed four-topic reports, Native validation, four source-video decodes, Core/Lean, render, final decode and negative logs. Separate 480-frame synthetic saved attempts for all three cases pass the Native result validator, Core/Lean/render/final decode, missing-source and changed-frame negatives; independent audit recomputes the speed and joins. A full-resolution synthetic four-camera composition also passes the pinned composer and complete decode. These are diagnostic software proofs; no CARLA, original pixels, physical speed or accepted recording is claimed.
 
-Complete strict selected v2 compatibility, independent selected delivery audit, semantic stages and statutory runnable coverage. Preserve the unconditional 80 mph clause without adding a highway-only or posted-limit condition; resolve territorial and definition context from sources. Keep result blocked until all CPU proofs pass, then add ordered GPU queue commands. Historical equivalence remains unverified.
+The preceding three-case and twelve-bundle statements are historical. Current source-bound proof and remaining work follow below. Preserve the unconditional 80 mph clause without adding a highway-only or posted-limit condition; resolve territorial and definition context from sources. Historical equivalence remains unverified.
+
+## Current exact boundary CPU proof, 2026-11-11
+
+`case-plan.json` now includes `__at_80_mph` alongside `__below_80_mph`, `__inside_80_mph` and `__above_80_mph`; all four selected-required source topics and the controlled comparison include this case. The strict statute says **greater than 80 mph**. The diagnostic peak measurements are 75, 79.5, 80 and 85 mph. With the stated ±0.2 mph measurement interval, the exact-80 diagnostic is explicitly `unresolved_at_80_mph`, not a legal verdict. `native/measure_speed.py` derives speed from the retained three-axis Native velocity, and `native/finalize.py` now rebuilds four recording channels from those raw rows. Diagnostic rows carry `synthetic_cpu_fixture` and `synthetic_native_sample` provenance; fixture-provided derived channels are rejected. The runner uses the current `overview`, `approach`, `reference_corner`, `driver_reference` source cameras and leaves derived channels for saved finalization.
+
+Four source-hashed 480-frame recipes and sixteen unselected primary/fallback construction bundles are materialized in `draft-execution-manifest.json`. All **16/16** current pinned `runtime.py offline`, **16/16** exact `runtime.py compatibility` positive/negative Core/Lean/render proofs, and **16/16** actual `runtime.py process-saved` diagnostics pass. Direct saved integration passes all four cases and rejects missing Native samples and a changed frame per case (log SHA-256 `4a0b2aeb26bf04edf22f78f37b022251a5d2698bdbdf1b520260bcf11caab53c`). `audit-update015-boundary.py` independently recomputes raw peak speeds, verifies the same road, case coverage, fallback knob isolation, exact construction/receipt hashes, negative-source rejection, preserved originals and final video decode. It passes (audit log SHA-256 `a44a485838e541dedd6a01bc647e97e98c644134fc384e0846791f16f8716dc3`). The detailed receipt matrix is `update015-boundary-cpu-proof.json` (SHA-256 `55a28bffba11579866926c87f7ce26823710ab4749c1d72a9a5ee6d61d81d4f5`). The assignment-scoped ordinary gate passes (log SHA-256 `b7db587ca9e9fb2f3edfd6ab8140351c67aa7d50515a02b9c4b9c1171b249e1a`).
+
+All four cases and sixteen candidate bundles remain **unselected synthetic diagnostics**. Remaining worker-owned CPU work is the canonical semantic proposals, independent selected delivery audit with missing/stale-evidence negatives, selected comparison audit, exact delivery manifest and queue commands, plus source review of territorial/definition context. Original Native motion, speed causation and camera visibility are later physical checks; their absence does not close the CPU work. No accepted membership or equivalence reuse was established, and no legal acceptance is claimed.
