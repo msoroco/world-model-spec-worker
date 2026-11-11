@@ -64,7 +64,7 @@ def audit(case,attempt,*,diagnostic_fixture=False):
             raise ValueError('Native C111706 acquisition provenance differs')
         station_source=config.get('station_source',{})
         if (station_source!=config.get('station_survey',{}).get('station_source') or
-                station_source!=original['station_source']):
+                station_source!=original['geometry']['source']):
             raise ValueError('Native C111706 station source binding differs')
         if station_source.get('kind')=='authored_diagnostic':
             raise ValueError('Native C111706 audit rejects diagnostic station source')

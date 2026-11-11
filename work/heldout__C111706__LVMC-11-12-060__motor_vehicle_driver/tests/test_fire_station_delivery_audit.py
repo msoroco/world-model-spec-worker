@@ -62,6 +62,9 @@ class DeliveryAuditTests(unittest.TestCase):
         config['station_source']=source;config['station_survey']['station_source']=source
         survey['station_source']=source
         config_path.write_text(json.dumps(config));survey_path.write_text(json.dumps(survey))
+        (self.root/'fixture-provenance.json').unlink()
+        (self.root/'acquisition-provenance.json').write_text(json.dumps({
+            'provenance_kind':'native','diagnostic_fixture':False}))
         for name in ('analysis-report.json','result.json','station_context-recorded.json'):
             (self.root/name).unlink()
         for channel in config['case']['recording_description']['channels']:
@@ -88,6 +91,11 @@ class DeliveryAuditTests(unittest.TestCase):
         with patch.object(delivery.media,'audit',self.fake_decode):
             observed=delivery.audit(self.case,self.root)
         self.assertTrue(observed['checks']['physical_completion'])
+        (self.root/'fixture-provenance.json').write_text('{"kind":"synthetic_diagnostic"}')
+        with patch.object(delivery.media,'audit',self.fake_decode):
+            with self.assertRaisesRegex(ValueError,'rejects fixture provenance'):
+                delivery.audit(self.case,self.root)
+        (self.root/'fixture-provenance.json').unlink()
         review['visible']['station_entrance']['camera_sha256']='stale'
         review_path.write_text(json.dumps(review))
         with patch.object(delivery.media,'audit',self.fake_decode):
