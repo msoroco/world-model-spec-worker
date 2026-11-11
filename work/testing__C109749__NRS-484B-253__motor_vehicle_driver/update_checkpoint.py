@@ -76,19 +76,27 @@ claim(f'.venv-cpu/bin/python work/{result["assignment_id"]}/cases/approaching_no
 claim(f'PYTHONPATH=work/{result["assignment_id"]} .venv-cpu/bin/python '
       f'work/{result["assignment_id"]}/cases/approaching_no_yield/runner.py --check',
       'cases/approaching_no_yield/runner-check.log')
+claim(f'.venv-cpu/bin/python work/{result["assignment_id"]}/validate_approaching_delivery.py',
+      'approaching-delivery-validation.log')
+claim(f'.venv-cpu/bin/python work/{result["assignment_id"]}/approaching_comparison_audit.py '
+      '--yield-recipe .runtime-work/c109749-approaching-yield-delivery-v1/attempt '
+      '--no-yield-recipe .runtime-work/c109749-approaching-no-yield-delivery-v1/attempt '
+      f'--output work/{result["assignment_id"]}/approaching-comparison-receipt.json',
+      'approaching-comparison-positive.log')
+claim(f'.venv-cpu/bin/python -m unittest discover '
+      f'-s work/{result["assignment_id"]}/tests -p test_approaching_comparison.py -v',
+      'approaching-comparison-negative.log')
 result['tests'] = list(existing.values())
-result['readiness_kind'] = 'four_case_canonical_partial_cpu_checkpoint'
+result['readiness_kind'] = 'six_case_canonical_partial_cpu_checkpoint'
 result['reason'] = (
-    'Four C109749 exact cases (reciprocal yield/continue and subject yield/proceed with an opposing '
-    'complete body inside the junction), each with three distinct physical-risk fallbacks, now occur '
-    'in the canonical case plan, semantic proposal and execution manifest. All 16 exact constructions '
+    'Six C109749 exact cases (reciprocal yield/continue and subject yield/proceed with an opposing '
+    'complete body inside or approaching outside the junction), each with three distinct physical-risk '
+    'fallbacks, now occur in the canonical case plan, semantic proposal and execution manifest. All 24 exact constructions '
     'pass current canonical offline, positive/negative compatibility and recorded-only saved processing. '
     'The pinned manifest, semantic, package-compatibility, physical-preparation and delivery-contract '
-    'validators pass. Full-duration 900-frame synthetic delivery audits for all four and two diagnostic '
+    'validators pass. Full-duration 900-frame synthetic delivery audits for all six and three diagnostic '
     'comparisons exercise source joins, fixed conditions and negative rejection; their diagnostic '
-    'receipts explicitly do not claim physical or legal acceptance. An isolated approaching yield/proceed '
-    'pair (fifth and sixth case drafts) each passes four offline, positive/negative compatibility and recorded-only '
-    'saved-processing paths, but is not yet in the canonical plan or manifest and has no delivery/comparison proof. '
+    'receipts explicitly do not claim physical or legal acceptance. '
     'The three physical judgment sweep specs remain incomplete, and omitted-signal and other '
     'statutory alternatives have no complete selected constructions and CPU proofs. Accepted-original '
     'equivalence, actual Native motion and camera visibility are unverified. This and all other partial '
