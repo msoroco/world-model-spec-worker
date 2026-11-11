@@ -38,6 +38,8 @@ def main():
             assert config['case_id']==case['case_id']==config['selected_case_id']
             assert config['candidate_id']==ident and config['duration_s']==12 and config['rate_hz']==20
             assert config['required_atoms']==['ru.pedestrian','kin.position','kin.heading','st.crosswalk','rel.occupies']
+            assert [camera['name'] for camera in config['cameras']]==[
+                'overview','approach','reference_corner','driver_reference']
             assert config['actor']=='pedestrian' and config['law_id']=='NRS-484B-293'
             configs.append(config)
             receipt=json.loads((path.parent/'draft-receipt.json').read_text())
@@ -47,7 +49,7 @@ def main():
             assert sha(HERE/receipt['command_log'])==receipt['command_log_sha256']
             assert sha(HERE/receipt['unit_log'])==receipt['unit_log_sha256']
             log=(HERE/receipt['unit_log']).read_text()
-            assert 'Ran 5 tests' in log and '\nOK' in log
+            assert 'Ran 6 tests' in log and '\nOK' in log
             assert 'simulation_started' in (HERE/receipt['command_log']).read_text()
             assert receipt in summary['results']
             seen.add((case['case_id'],ident))

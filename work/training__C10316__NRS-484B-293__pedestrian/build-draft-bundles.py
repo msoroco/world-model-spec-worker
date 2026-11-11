@@ -55,6 +55,7 @@ def build():
                'measurement_procedure':{'entrypoint':'finalize.py',
                                         'output_schema':'c10316-saved-crosswalk-analysis-v1'},
                'candidates':[]}
+        entry['fixture_recipe']='work/'+HERE.name+'/diagnostic-'+suffix+'-recipe.json'
         for ident in NAMES:
             source_plan=json.loads((HERE/'draft-candidates'/suffix/ident/'construction.json').read_text())
             config={'case_id':case_id,'selected_case_id':case_id,'case_suffix':suffix,
@@ -65,7 +66,7 @@ def build():
                     'source_packets':[],
                     'cameras':[{'name':name,'width':width,'height':height} for name,width,height in (
                         ('overview',1920,1080),('approach',1280,720),
-                        ('reference_corner',1280,720),('pedestrian_reference',1280,720))],
+                        ('reference_corner',1280,720),('driver_reference',1280,720))],
                     'recording_description':description,'status':'unselected_native_runner_proposal'}
             files=[{'path':name,'content':content} for name,content in common.items()]
             files.append({'path':'config.json','content':json.dumps(config,indent=2)+'\n'})

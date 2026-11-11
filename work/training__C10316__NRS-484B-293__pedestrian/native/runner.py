@@ -25,7 +25,7 @@ def cameras(plan):
          'xyz_m':[-5,-4,3],'yaw_deg':40,'pitch_deg':-20},
         {'name':'reference_corner','width':1280,'height':720,'fov_deg':90,
          'xyz_m':[0,5,3],'yaw_deg':-90,'pitch_deg':-25},
-        {'name':'pedestrian_reference','width':1280,'height':720,'fov_deg':90,
+        {'name':'driver_reference','width':1280,'height':720,'fov_deg':90,
          'xyz_m':[5,-3,3],'yaw_deg':150,'pitch_deg':-20}]
 
 

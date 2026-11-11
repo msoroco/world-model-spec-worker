@@ -18,7 +18,7 @@ def main():
         case_id=f'training__C10316__NRS-484B-293__pedestrian__{label}'
         fixture=ROOT/'.runtime-work/c10316-crosswalk-synthetic'/label
         contract={
-            'format':'worker-measurement-contract-v1','case_id':case_id,
+            'format':'worker-measurement-contract','case_id':case_id,
             'requirements':[
                 {'disposition_index':i,'requirement':item['requirement'],'source':item['source'],
                  'output_key':('right_half_passage' if i==0 else 'marked_crosswalk_passage'),

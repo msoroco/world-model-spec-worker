@@ -88,6 +88,39 @@ def video_info(path):
     return (int(streams[0]['nb_read_frames']),int(streams[0]['width']),int(streams[0]['height']))
 
 
+def derive_channels(folder,config,count):
+    """Rebuild derived observations from retained Native rows and frame mapping."""
+    folder=Path(folder)
+    samples=rows(folder,'native_samples.jsonl')
+    mapping=rows(folder,'video_frames.jsonl')
+    if len(samples)!=count or len(mapping)!=count:
+        raise ValueError('Raw source counts differ before channel derivation')
+    expected={'kin.position','kin.heading','rel.occupies',
+              'native_pedestrian_pose','camera_frame_join'}
+    declared={item['name'] for item in config['recording_description']['channels']}
+    if declared!=expected:
+        raise ValueError('Declared pedestrian channels differ from raw derivation')
+    output={name:[] for name in expected}
+    for sample,frame in zip(samples,mapping):
+        if sample['native_frame']!=frame['native_frame'] or abs(sample['time_s']-frame['time_s'])>1e-4:
+            raise ValueError('Channel source frame/time join differs')
+        time=frame['time_s']
+        values={
+            'kin.position':sample['pedestrian_xy_m'],
+            'kin.heading':sample['pedestrian_forward_xy'],
+            'rel.occupies':{'crosswalk_id':sample['crosswalk_id'],
+                            'original_footprint_xy_m':sample['pedestrian_footprint_xy_m']},
+            'native_pedestrian_pose':sample,
+            'camera_frame_join':{key:frame[key] for key in
+                                 ('video_frame','native_frame','carla_frame','time_s')},
+        }
+        for name,value in values.items():
+            output[name].append(json.dumps({'time_s':time,'value':value},allow_nan=False)+'\n')
+    channels=folder/'channels';channels.mkdir(exist_ok=True)
+    for name,lines in output.items():
+        (channels/(name+'.jsonl')).write_text(''.join(lines))
+
+
 def finalize(attempt,output):
     from worker_exchange.native_output import validate_result
     attempt,output=Path(attempt).resolve(),Path(output).resolve()
@@ -97,6 +130,7 @@ def finalize(attempt,output):
     count=config['duration_s']*config['rate_hz']
     if count!=240:raise ValueError('Full 12-second pedestrian window changed')
     joins=verify_original_joins(attempt,count)
+    derive_channels(attempt,config,count)
     report=analysis_report(attempt)
     observed=report['measurements']['right_half_passage']['value']
     context=json.loads(required(attempt,'crosswalk-context.json').read_text())
