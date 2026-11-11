@@ -7,7 +7,6 @@ HERE=Path(__file__).resolve().parent
 NATIVE=HERE/'native'
 ASSIGNMENT=HERE.name
 NAMES=('primary','fallback1','fallback2','fallback3')
-RUNTIME_MANIFEST='391baee19ccece687c5632aa2cc64ba3b958c8b492045b30e4bfc4caa131c235'
 SOURCES=('runner.py','geometry.py','controller.py','engineering.py',
          'cameras.py','measure_entrance.py','finalize.py')
 
@@ -33,7 +32,8 @@ def build():
     shared={name:(NATIVE/name).read_text() for name in SOURCES}
     test=(HERE/'tests/test_native_draft.py').read_text().replace("parents[1]/'native'","parents[1]")
     manifest={'format':'worker-unselected-draft-construction-manifest-v1',
-              'assignment_id':ASSIGNMENT,'runtime_manifest_sha256':RUNTIME_MANIFEST,
+              'assignment_id':ASSIGNMENT,
+              'runtime_manifest_sha256':sha(HERE.parents[1]/'runtime/pipeline/SOURCE-MANIFEST.json'),
               'status':'draft_not_selected','cases':[]}
     for draft in plan['cases']:
         suffix=draft['case_id'].rsplit('__',1)[-1]

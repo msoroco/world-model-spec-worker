@@ -33,6 +33,8 @@ def audit():
         assert set(report['video_frames'].values())=={480}
         assert set(entry['source_videos'].values())=={480}
         assert not result['accepted'] and not result['legal_verdict_claimed']
+        assert result['provenance_kind']=='synthetic_local_diagnostic'
+        assert result['maneuver_completed'] is False and result['behavior_attempted'] is False
         assert result['setup_confirmed'] is False
         assert all(check['matched'] and check['physical_cause_confirmed'] is False
                    for check in result['target_checks'])

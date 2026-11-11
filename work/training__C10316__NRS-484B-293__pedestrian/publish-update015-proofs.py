@@ -42,14 +42,16 @@ def publish():
                             'construction_sha256':proof['construction_sha256'],
                             'files':files})
     saved=[]
-    for suffix,candidate,directory in (
-            ('reference','primary','c10316-v15-reference-saved-final'),
-            ('contrast','primary','c10316-v15-contrast-saved'),
-            ('reference','fallback1','c10316-v15-reference-fallback1-saved')):
+    for suffix in ('reference','contrast'):
+      for candidate in ('primary','fallback1','fallback2','fallback3'):
+        directory = ('c10316-v15-reference-saved-final' if suffix=='reference' and candidate=='primary'
+                     else 'c10316-v15-contrast-saved' if suffix=='contrast' and candidate=='primary'
+                     else f'c10316-v15-{suffix}-{candidate}-saved')
         origin=ROOT/'.runtime-work'/directory/'v0001'
         target=HERE/'update015-proofs'/suffix/candidate
         receipt=json.loads((origin/'processing.json').read_text())
-        if receipt['passed'] is not True or receipt['candidate_id']!=candidate:
+        if (receipt['passed'] is not True or receipt['candidate_id']!=candidate
+                or receipt['originals_preserved'] is not True or receipt['missing_evidence'] is not False):
             raise ValueError('Current saved-processing proof missing or mismatched')
         files=[]
         for name in ('processing.json','analysis.log'):

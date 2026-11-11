@@ -38,6 +38,7 @@ def build():
                             'native_body_xy_m':body,
                             'native_road_id':ALLEY_ROAD_ID,'native_lane_id':ALLEY_LANE_ID,
                             'speed_mps':(x-previous)*20,
+                            'speed_provenance':'synthetic_native_sample',
                             'synthetic_diagnostic':True})
         source=folder/'native_samples.jsonl';write_rows(source,samples)
         receipt=measure(source,folder/'road_geometry.json')

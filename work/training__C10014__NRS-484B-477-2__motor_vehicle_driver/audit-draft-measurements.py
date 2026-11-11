@@ -57,6 +57,7 @@ def audit():
                        for k in (0,1))
             expected_speed=(x-data[i-1]['native_center_xy_m'][0])*20 if i else 0
             assert abs(row['speed_mps']-expected_speed)<1e-10
+            assert row['speed_provenance']=='synthetic_native_sample'
         stop=-12 if suffix=='reference' else 0
         assert data[-1]['native_center_xy_m'][0]==stop
         stationary=[i for i,row in enumerate(data) if row['speed_mps']<=.1]

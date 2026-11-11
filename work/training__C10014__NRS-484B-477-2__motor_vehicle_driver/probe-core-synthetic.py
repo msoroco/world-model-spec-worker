@@ -7,6 +7,7 @@ import pickle
 from pathlib import Path
 import sys
 import tempfile
+import networkx as nx
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
@@ -16,7 +17,6 @@ spec=importlib.util.spec_from_file_location('saved_fixture',HERE/'saved-fixture-
 fixture=importlib.util.module_from_spec(spec);spec.loader.exec_module(fixture)
 from geometry import open_drive
 from finalize import finalize
-from traffic_spec_adapter.adapter import load_graph
 from worker_exchange.runtime_cli import process,render
 from worker_exchange.media import audit
 
@@ -36,20 +36,26 @@ def enrich(attempt):
     samples=rows(attempt/'native_samples.jsonl')
     if len(trace)!=len(evidence) or len(trace)!=len(samples) or len(trace)!=480:
         raise ValueError('Expected 480 joined synthetic samples')
-    graph=load_graph(ROOT/'runtime/pipeline/fixtures/retained-speed/capture/native/graphs/base/00021714.pkl')
     graph_dir=attempt/'capture/native/graphs/base';graph_dir.mkdir(parents=True)
     frames=[]
     for index,(t,e,n) in enumerate(zip(trace,evidence,samples)):
         frame=t['frame'];time=t['time_s'];x,y=n['native_center_xy_m']
-        graph.graph['frame']=frame
+        graph=nx.DiGraph()
+        graph.graph.update(frame=frame,simulation_time_s=time,synthetic_diagnostic=True,
+                           source='C10014 synthetic saved vehicle rows')
+        graph.add_node('ego',sem_class='ego',entity_id=107,vertex=[x,y,.5],
+                       forward=[1.0,0.0,0.0],threedbbox=e['ego']['body_vertices_m'])
         (graph_dir/f'{frame:08d}.pkl').write_bytes(pickle.dumps(graph,protocol=4))
         t['position_m']=[x,y,.5]
         t['speed_mph']=t['speed_mps']/.44704
+        t['speed_provenance']='synthetic_native_sample'
+        t['synthetic_diagnostic']=True
         t['control']={'throttle':0,'brake':0,'hand_brake':False}
         e.update(replay_frame=frame,replay_simulation_time_s=time,actor_id=107)
         e['ego'].update(position_m=[x,y,.5],heading_deg=t['heading_deg'],
                         speed_mps=t['speed_mps'],
-                        speed_provenance='original_trace_actor_get_velocity')
+                        speed_provenance='synthetic_native_sample')
+        e['synthetic_diagnostic']=True
         road=n['native_road_id']
         e['world']={'weather':{'cloudiness':0,'precipitation':0,'wetness':0,'fog_density':0},
                     'road_projection':{'road_id':road,'section_id':0,
@@ -84,7 +90,7 @@ def main():
     print('scratch',scratch,flush=True)
     finalize(attempt,attempt/'analysis-report.json')
     core=process(attempt,attempt/'converted',ROOT/'runtime/pipeline/library',
-                 ROOT/'.runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck')
+                 ROOT/'.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck')
     config=json.loads((attempt/'config.json').read_text())
     video=render(attempt,attempt/'converted',config['case'])
     decoded=audit(video['video'],480,mapping_sha256=video['frame_map_sha256'],

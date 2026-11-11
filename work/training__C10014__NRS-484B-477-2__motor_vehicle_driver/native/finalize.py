@@ -78,6 +78,45 @@ def entrance_overlap_observation(attempt):
             'sources':result['source_sha256']}
 
 
+def derive_channels(attempt,config,count):
+    """Rebuild every declared channel from retained raw rows and map context."""
+    attempt=Path(attempt)
+    motion=rows(attempt/'native_samples.jsonl')
+    mapping=rows(attempt/'video_frames.jsonl')
+    if len(motion)!=count or len(mapping)!=count:
+        raise ValueError('Raw channel source counts differ')
+    geometry=json.loads((attempt/'road_geometry.json').read_text())
+    expected={'st.alley','st.driveway_or_alley_entrance','rel.occupies',
+              'kin.extent','kin.position','ego_speed','native_body_pose_control',
+              'camera_frame_join'}
+    declared={item['name'] for item in config['recording_description']['channels']}
+    if declared!=expected:
+        raise ValueError('Declared channels differ from raw derivation')
+    output={name:[] for name in expected}
+    for sample,frame in zip(motion,mapping):
+        if sample['native_frame']!=frame['native_frame'] or abs(sample['time_s']-frame['time_s'])>1e-4:
+            raise ValueError('Channel source frame/time join differs')
+        values={'st.alley':{'road_id':sample['native_road_id'],
+                            'lane_id':sample['native_lane_id'],
+                            'alley_road_id':geometry['alley_native_road_id'],
+                            'alley_lane_id':geometry['alley_native_lane_id']},
+                'st.driveway_or_alley_entrance':geometry,
+                'rel.occupies':{'body_xy_m':sample['native_body_xy_m'],
+                                'road_id':sample['native_road_id'],
+                                'lane_id':sample['native_lane_id']},
+                'kin.extent':{'body_xy_m':sample['native_body_xy_m']},
+                'kin.position':sample['native_center_xy_m'],
+                'ego_speed':sample['speed_mps'],
+                'native_body_pose_control':sample,
+                'camera_frame_join':{key:frame[key] for key in
+                                     ('video_frame','native_frame','carla_frame','time_s')}}
+        for name,value in values.items():
+            output[name].append(json.dumps({'time_s':sample['time_s'],'value':value},allow_nan=False)+'\n')
+    directory=attempt/'channels';directory.mkdir(exist_ok=True)
+    for name,records in output.items():
+        (directory/(name+'.jsonl')).write_text(''.join(records))
+
+
 def alley_stop_context(attempt):
     attempt=Path(attempt)
     result=measure(attempt/'native_samples.jsonl',attempt/'road_geometry.json')
@@ -98,6 +137,7 @@ def finalize(attempt,output):
     count=round(config['duration_s']*config['rate_hz'])
     if count!=480:raise ValueError('Expected original 480-frame attempt')
     original=verify_original_joins(attempt,count)
+    derive_channels(attempt,config,count)
     observed=measure(attempt/'native_samples.jsonl',attempt/'road_geometry.json')
     measurements={'entrance_overlap_observation':entrance_overlap_observation(attempt),
                   'alley_stop_context':alley_stop_context(attempt)}
@@ -117,6 +157,18 @@ def finalize(attempt,output):
     requested={'reference':0.0,'contrast':5.2}[config['case_suffix']]
     overlap=observed['max_entrance_overlap_m']
     matched=abs(overlap-requested)<=.25
+    synthetic=json.loads((attempt/'capture/manifest.json').read_text()).get('synthetic_diagnostic') is True
+    if synthetic:
+        evidence=rows(attempt/'capture/evidence.jsonl')
+        trace=rows(attempt/'trace.jsonl')
+        motion=rows(attempt/'native_samples.jsonl')
+        if not all(row.get('synthetic_diagnostic') is True and
+                   row.get('ego',{}).get('speed_provenance')=='synthetic_native_sample'
+                   for row in evidence) or not all(
+                       row.get('synthetic_diagnostic') is True and
+                       row.get('speed_provenance')=='synthetic_native_sample'
+                       for source in (trace,motion) for row in source):
+            raise ValueError('Synthetic speed must retain diagnostic provenance')
     result={'case_id':config['case_id'],
       'measured_values':{'max_entrance_overlap_m':overlap,
                          'stop_duration_s':observed['stop_duration_s']},
@@ -126,8 +178,8 @@ def finalize(attempt,output):
         'tolerance':'absolute overlap difference <= 0.25 m, with at least 2 s sampled stop',
         'matched':matched,'physical_cause_confirmed':False,
         'cause_evidence':['road_geometry.json','native_samples.jsonl']}],
-      'setup_confirmed':observed['native_design_verified'],
-      'behavior_attempted':True,'maneuver_completed':True,
+      'setup_confirmed':not synthetic and observed['native_design_verified'],
+      'behavior_attempted':not synthetic,'maneuver_completed':not synthetic and matched,
       'termination_reason':'full original duration retained',
       'physical_failure_flags':['alley_access_design_and_pixels_unverified']+
           ([] if matched else ['requested_stop_overlap_not_measured']),
@@ -139,7 +191,8 @@ def finalize(attempt,output):
           'time_window':'observed stationary alley interval','statistic':'maximum',
           'reference':'native_samples.jsonl',
           'sample_window_s':[observed['stop_first_frame']/20,observed['stop_last_frame']/20]}},
-      'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
+      'provenance_kind':('synthetic_local_diagnostic' if synthetic else 'native'),
+      'accepted':False,'legal_verdict_claimed':False}
     from worker_exchange.native_output import validate_result
     validate_result(result)
     report={'format':'c10014-alley-entrance-saved-analysis-v1',

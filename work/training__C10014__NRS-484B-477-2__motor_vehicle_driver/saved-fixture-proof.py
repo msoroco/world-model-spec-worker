@@ -30,7 +30,8 @@ def write_rows(path,values):
 
 def source_hashes(folder):
     return {str(p.relative_to(folder)):sha(p) for p in folder.rglob('*')
-            if p.is_file() and p.name not in ('analysis-report.json','result.json')}
+            if p.is_file() and p.name not in ('analysis-report.json','result.json')
+            and 'channels' not in p.relative_to(folder).parts}
 
 
 def make_base(destination,suffix,full_resolution=False):
@@ -49,9 +50,13 @@ def make_base(destination,suffix,full_resolution=False):
         frame=sample['native_frame'];time=sample['time_s'];x,y=sample['native_center_xy_m']
         body=[[a,b,z] for a,b in sample['native_body_xy_m'] for z in (0,1.5)]
         trace.append({'frame':frame,'time_s':time,'position':{'x':x,'y':y,'z':.5},
-                      'heading_deg':0,'speed_mps':sample['speed_mps']})
+                      'heading_deg':0,'speed_mps':sample['speed_mps'],
+                      'speed_provenance':'synthetic_native_sample',
+                      'synthetic_diagnostic':True})
         evidence.append({'original_frame':frame,'recording_time_s':time,
-                         'ego':{'body_vertices_m':body}})
+                         'synthetic_diagnostic':True,
+                         'ego':{'body_vertices_m':body,
+                                'speed_provenance':'synthetic_native_sample'}})
         mapping.append({'video_frame':i,'native_frame':frame,
                         'carla_frame':frame,'time_s':time})
         body_history.append({'frame':frame,'time_s':time,'body_vertices_m':body})
@@ -73,6 +78,8 @@ def make_base(destination,suffix,full_resolution=False):
             else:raise ValueError('Unknown channel '+name)
             values.append({'time_s':sample['time_s'],'value':value})
         write_rows(destination/'channels'/(name+'.jsonl'),values)
+    (destination/'channels/kin.position.jsonl').write_text(
+        '{"time_s": 0, "value": "stale_fixture_channel"}\n')
     camera_sizes={c['name']:f"{c['width']}x{c['height']}" for c in config['cameras']}
     for name in ('overview','approach','entrance','driver_reference'):
         size=camera_sizes[name] if full_resolution else '32x32'
@@ -101,8 +108,14 @@ def run():
                                      stderr=subprocess.STDOUT,timeout=300)
             if completed.returncode:raise RuntimeError('Positive saved finalizer failed: '+completed.stdout)
             if source_hashes(positive)!=before:raise RuntimeError('Saved finalizer rewrote acquisition')
+            position=rows(positive/'channels/kin.position.jsonl')
+            if len(position)!=480 or position[0]['value']!=rows(positive/'native_samples.jsonl')[0]['native_center_xy_m']:
+                raise ValueError('Saved finalizer did not rebuild stale derived channel')
             report=json.loads((positive/'analysis-report.json').read_text())
             result=json.loads((positive/'result.json').read_text())
+            if (result['provenance_kind']!='synthetic_local_diagnostic' or
+                    result['maneuver_completed'] or result['behavior_attempted']):
+                raise ValueError('Synthetic fixture claimed original Native motion')
             contract=json.loads((HERE/'draft-measurements'/suffix/'measurement-contract.json').read_text())
             verify_report(contract,report,positive)
             config=json.loads((positive/'config.json').read_text())
