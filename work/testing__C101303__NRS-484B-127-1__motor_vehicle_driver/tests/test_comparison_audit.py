@@ -50,7 +50,11 @@ class ComparisonAuditTest(unittest.TestCase):
                 target.write_text(json.loads(source.read_text())['files']['vehicle_history.jsonl'])
                 files.append(target)
             with self.assertRaisesRegex(ValueError, 'comparison construction changes undeclared'):
-                audit.audit_pair(FOLDER, 'body_gap', *files, candidate='fallback2')
+                audit.audit_pair(FOLDER, 'body_gap', *files, candidate='fallback1')
+            isolated = audit.audit_pair(FOLDER, 'body_gap', *files,
+                                        right_candidate='fallback1')
+            self.assertEqual(isolated['left_candidate'], 'primary')
+            self.assertEqual(isolated['right_candidate'], 'fallback1')
 
 
 if __name__ == '__main__':

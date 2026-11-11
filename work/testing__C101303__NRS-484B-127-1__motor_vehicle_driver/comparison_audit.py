@@ -4,6 +4,7 @@ Diagnostic specifications exercise this code, but do not establish physical acce
 On Native output pass each case's original vehicle_history.jsonl to audit_pair.
 """
 import argparse
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -23,7 +24,10 @@ IDENTITY = {'selected_case_id', 'supported_case_ids'}
 def _construction_config(folder, entry, candidate=None):
     row = entry if candidate is None else next(
         c for c in entry['candidates'] if c['id'] == candidate)
-    construction = json.loads((folder / row['construction']).read_text())
+    path = folder / row['construction']
+    if hashlib.sha256(path.read_bytes()).hexdigest() != row['construction_sha256']:
+        raise ValueError('comparison construction hash changed')
+    construction = json.loads(path.read_text())
     config = next((f for f in construction['files'] if f['path'] == 'config.json'), None)
     if config is None:
         raise ValueError('missing embedded config.json')
@@ -71,7 +75,8 @@ def _metric(rows, kind):
     raise ValueError(kind)
 
 
-def audit_pair(folder, comparison_id, left_source, right_source, candidate=None):
+def audit_pair(folder, comparison_id, left_source, right_source, candidate=None,
+               left_candidate=None, right_candidate=None):
     folder = Path(folder)
     plan = json.loads((folder / 'case-plan.json').read_text())
     manifest = json.loads((folder / 'execution-manifest.json').read_text())
@@ -80,7 +85,12 @@ def audit_pair(folder, comparison_id, left_source, right_source, candidate=None)
         raise ValueError('unsupported comparison')
     entries = [next(e for e in manifest['cases'] if e['case_id'] == case_id)
                for case_id in pair['case_ids']]
-    configs = [_construction_config(folder, e, candidate) for e in entries]
+    if candidate and (left_candidate or right_candidate):
+        raise ValueError('select shared candidate or explicit side candidates')
+    left_candidate = left_candidate or candidate
+    right_candidate = right_candidate or candidate
+    configs = [_construction_config(folder, entries[0], left_candidate),
+               _construction_config(folder, entries[1], right_candidate)]
     allowed, kind = DIMENSIONS[comparison_id]
     changed = {k for k in configs[0].keys() | configs[1].keys()
                if configs[0].get(k) != configs[1].get(k)} - IDENTITY
@@ -105,7 +115,10 @@ def audit_pair(folder, comparison_id, left_source, right_source, candidate=None)
                                  math.isclose(values[0], values[1], abs_tol=1e-6)):
         raise ValueError('declared comparison difference absent in original source')
     return {'comparison_id': comparison_id, 'case_ids': pair['case_ids'],
-            'candidate': candidate or 'primary', 'frames': len(left),
+            'left_candidate': left_candidate or 'primary',
+            'right_candidate': right_candidate or 'primary', 'frames': len(left),
+            'left_source_sha256': hashlib.sha256(Path(left_source).read_bytes()).hexdigest(),
+            'right_source_sha256': hashlib.sha256(Path(right_source).read_bytes()).hexdigest(),
             'changed_config_keys': sorted(changed), 'observed_values': values}
 
 
@@ -116,9 +129,12 @@ def main():
     parser.add_argument('--left-source', type=Path, required=True)
     parser.add_argument('--right-source', type=Path, required=True)
     parser.add_argument('--candidate', choices=('fallback1', 'fallback2', 'fallback3'))
+    parser.add_argument('--left-candidate', choices=('fallback1', 'fallback2', 'fallback3'))
+    parser.add_argument('--right-candidate', choices=('fallback1', 'fallback2', 'fallback3'))
     args = parser.parse_args()
     print(json.dumps(audit_pair(args.folder, args.comparison, args.left_source,
-                                args.right_source, args.candidate), sort_keys=True))
+                                args.right_source, args.candidate,
+                                args.left_candidate, args.right_candidate), sort_keys=True))
 
 
 if __name__ == '__main__':
