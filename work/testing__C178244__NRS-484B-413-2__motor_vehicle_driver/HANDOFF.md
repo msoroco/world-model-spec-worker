@@ -17,3 +17,5 @@ Resume commands:
 Pinned CPU preflight passes. No frozen input, runtime or batch file was edited. Assignment and full-gate output are retained in `assignment-check.log` and `strict-gate.log` after this checkpoint.
 
 Checkpoint: assignment-scoped `worker_check.py --complete` passed. The full strict gate now reports missing result `testing__C24811__NRS-484B-250-4__motor_vehicle_driver` in `strict-gate.log`. This is unfinished worker preparation, not an external dependency. Resume that assignment next, then complete the saved-processing work and proofs listed above.
+
+Batch return state at this checkpoint: 43 assigned, 20 `partial` results, 23 missing results, zero `ready`. The new C136559, C149752, C158190/NRS-484B-257-2, C158208/NRS-484B-257-1 and C178244 component tests and assignment-scoped static checks pass. No assignment has passed offline, compatibility, saved-processing and assignment-scoped delivery-ready proof; these are the exact remaining CPU gates. The first strict-gate failure above is a missing package, not a missing tool or package dependency.

@@ -1,0 +1,98 @@
+{
+  "assignment_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C125745",
+  "law_id": "NRS-484B-250-2",
+  "selected_branch": "Measured crossing-entry timing at median opening in a stop-sign cell.",
+  "binding_note": "Frozen witness moves governing stop-sign branch from other_vehicle C125714 to same-layout C125745.",
+  "cases": [
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time",
+      "target_law_id": "NRS-484B-250-2",
+      "purpose": "Official stop sign governs ego; two different-highway vehicles enter same median crossing close in measured time, ego spatially left",
+      "physical_risk": "sign governance or entry timing drifts"
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_right_near_time",
+      "target_law_id": "NRS-484B-250-2",
+      "purpose": "Same sign and crossing with ego spatially right",
+      "physical_risk": "approach changes may alter other fixed conditions"
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated",
+      "target_law_id": "NRS-484B-250-2",
+      "purpose": "Same left-side geometry, separated measured body entries",
+      "physical_risk": "controller braking may compress entry separation"
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn",
+      "target_law_id": "NRS-484B-250-2",
+      "purpose": "Same sign and crossing with opposite-direction left-turn intention/action",
+      "physical_risk": "median opening may not support safe opposite turn"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "stop_sign_relative_side",
+      "case_ids": [
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time",
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_right_near_time"
+      ],
+      "fixed_conditions": [
+        "same sourced stop-sign-governed median crossing, actor classes, original-frame cameras and timing method"
+      ],
+      "deliberate_differences": [
+        "which approach is spatially left/right"
+      ]
+    },
+    {
+      "comparison_id": "stop_sign_entry_timing",
+      "case_ids": [
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time",
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated"
+      ],
+      "fixed_conditions": [
+        "same sign, junction and left-side ego approach"
+      ],
+      "deliberate_differences": [
+        "measured absolute entry-time difference without legal cutoff"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "recordings_reviewed": [],
+    "accepted_recording_count": 0,
+    "supported_reuses": [],
+    "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
+  },
+  "observations": [
+    "source-backed same statutory median-opening crossing and two different highways",
+    "Native stop-sign trigger/face, official status and governed entrance",
+    "complete original-frame body entry times and ego/right-side approach geometry",
+    "other traffic and any stop/yield response",
+    "official-device exclusion and opposite-direction left-turn exception"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "sha256": "3224fb7a806efe9274e0b0722e953661d1c9783cd1607ffc9ba3e976d2d54ccc"
+    },
+    {
+      "path": "inputs/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/witnesses.json",
+      "sha256": "6dffad63c7c84a2124f9feb1ccb5d63d2daf4a2f4559d7680b44366167338107"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "An official stop sign ordinarily activates the statutory official-device exclusion; measured near-time entry is not a NRS 484B.250(2) violation finding.",
+    "Native trigger and camera view alone do not establish official status or properly erected governance.",
+    "Approximately same time has no invented legal numeric cutoff.",
+    "Median opening needs source-backed one-crossing and spacing determination.",
+    "Exact runner, cameras, finalizer, fallbacks and proofs remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; Native stop-sign governance and original-frame entry timing/right-side geometry CPU-tested"
+}

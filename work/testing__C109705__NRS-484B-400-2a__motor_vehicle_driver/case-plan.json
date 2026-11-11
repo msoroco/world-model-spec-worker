@@ -1,0 +1,209 @@
+{
+  "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C109705",
+  "law_id": "NRS-484B-400-2a",
+  "selected_branch": "Two-directional intersection constructed within general intersection/left_turn/centerline cell.",
+  "cases": [
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline",
+      "target_law_id": "NRS-484B-400-2a",
+      "purpose": "Two two-directional roads; complete ego body near sourced marked centerline through left-turn approach",
+      "gap_ids": [
+        "two_way_and_centerline",
+        "physical_lateral_position",
+        "comparison_isolation"
+      ],
+      "physical_risk": "Native body offset can drift and crowd centerline"
+    },
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_farther_from_centerline",
+      "target_law_id": "NRS-484B-400-2a",
+      "purpose": "Same junction/route with body farther within right half",
+      "gap_ids": [
+        "physical_lateral_position",
+        "comparison_isolation"
+      ],
+      "physical_risk": "lane width may not permit distinct safe offset"
+    },
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_imaginary_near_centerline",
+      "target_law_id": "NRS-484B-400-2a",
+      "purpose": "Same two-way layout without marked centerline; source-reviewed imaginary centerline and near body",
+      "gap_ids": [
+        "two_way_and_centerline",
+        "physical_lateral_position",
+        "comparison_isolation"
+      ],
+      "physical_risk": "imaginary reference may be geometrically ambiguous"
+    },
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline",
+      "target_law_id": "NRS-484B-400-2a",
+      "purpose": "Same unmarked layout, farther body within right half",
+      "gap_ids": [
+        "physical_lateral_position",
+        "comparison_isolation"
+      ],
+      "physical_risk": "lane width and unmarked geometry may obscure comparison"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "marked_centerline_lateral_position",
+      "case_ids": [
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_farther_from_centerline"
+      ],
+      "fixed_conditions": [
+        "same both-two-directional junction, road references, left route, camera plan and traffic"
+      ],
+      "deliberate_differences": [
+        "measured complete-body lateral offset from sourced centerline"
+      ]
+    },
+    {
+      "comparison_id": "imaginary_centerline_lateral_position",
+      "case_ids": [
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_imaginary_near_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline"
+      ],
+      "fixed_conditions": [
+        "same two-directional unmarked junction, inferred centerline geometry, left route and cameras"
+      ],
+      "deliberate_differences": [
+        "measured complete-body lateral offset from imaginary centerline"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Read all four frozen accepted metadata files and their evidence source hashes; compared law/cell/actor, named case IDs, frame counts, decoder status and common manifest hash. Raw traces, video and delivery-audit contents are not present in this export, so physical equivalence remains unverified. Conditional source-verified cases are proposed only for gaps unresolved after local original-source review.",
+    "facts": [
+      {
+        "recording_id": "be08a5430356379c8432d0cd78486db8fac49c131afb33f69ce2620388512827",
+        "demonstrated_fact": "Metadata identifies accepted testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline with 900 frames and decoder_passed=True; law/cell/actor match assignment.",
+        "limitations": "Export contains metadata and original trace/video hashes, but not raw sources or measured centerline/right-half/body positions. Case label and accepted status do not prove exact statutory approach or comparison equivalence.",
+        "sources": [
+          {
+            "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/accepted/be08a5430356379c8432d0cd78486db8fac49c131afb33f69ce2620388512827/metadata.json",
+            "sha256": "37d1de4818fa45b6c6f5829222300aad6f88f7b8f08bc95b3a4bf1b6f04a8618"
+          }
+        ]
+      },
+      {
+        "recording_id": "7b7f8556f9973fd45c7d880535b06a6f57a9c24c05363a141777e4904985a7cd",
+        "demonstrated_fact": "Metadata identifies accepted testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline with 900 frames and decoder_passed=True; law/cell/actor match assignment.",
+        "limitations": "Export contains metadata and original trace/video hashes, but not raw sources or measured centerline/right-half/body positions. Case label and accepted status do not prove exact statutory approach or comparison equivalence.",
+        "sources": [
+          {
+            "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/accepted/7b7f8556f9973fd45c7d880535b06a6f57a9c24c05363a141777e4904985a7cd/metadata.json",
+            "sha256": "c141288fff151bdba40aba004d83f301afc39a6e94f7b9e1b89ac804edbd710c"
+          }
+        ]
+      },
+      {
+        "recording_id": "c895e566d28995a5bf903e8c4c13c07a008ee4ce0606aa2ba55bc3113e492f18",
+        "demonstrated_fact": "Metadata identifies accepted testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline with 900 frames and decoder_passed=True; law/cell/actor match assignment.",
+        "limitations": "Export contains metadata and original trace/video hashes, but not raw sources or measured centerline/right-half/body positions. Case label and accepted status do not prove exact statutory approach or comparison equivalence.",
+        "sources": [
+          {
+            "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/accepted/c895e566d28995a5bf903e8c4c13c07a008ee4ce0606aa2ba55bc3113e492f18/metadata.json",
+            "sha256": "37e7824688581126174dee365589d483c809c1b3f8c5bce34d1dceb0afee049f"
+          }
+        ]
+      },
+      {
+        "recording_id": "d93cd6cb5b5e229977d329ad544e1dfe4fd091263a8118fade06ad4ca169e7b9",
+        "demonstrated_fact": "Metadata identifies accepted testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline with 900 frames and decoder_passed=True; law/cell/actor match assignment.",
+        "limitations": "Export contains metadata and original trace/video hashes, but not raw sources or measured centerline/right-half/body positions. Case label and accepted status do not prove exact statutory approach or comparison equivalence.",
+        "sources": [
+          {
+            "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/accepted/d93cd6cb5b5e229977d329ad544e1dfe4fd091263a8118fade06ad4ca169e7b9/metadata.json",
+            "sha256": "0a05cfed180bc92473eea95d394ea7889ff1fadcbc671455e26639146f8b32f6"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      {
+        "id": "two_way_and_centerline",
+        "requirement": "Both intersecting highways two-directional, centerline and right-half boundary sourced.",
+        "source": {
+          "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/assignment.json",
+          "sha256": "0ac247bed937ce79b42c4a7457a3259c763d8adbab13beb5c6c0a8d3a84a73f0"
+        },
+        "why_existing_insufficient": "Accepted metadata has no Native lane directions or measured road reference geometry."
+      },
+      {
+        "id": "physical_lateral_position",
+        "requirement": "Complete ego body remains in right half nearest centerline before left-turn entry, compared with farther lateral body.",
+        "source": {
+          "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/evidence.json",
+          "sha256": "ee065510032918383f29d8248251c37495f2f6911a5a79640f34470c0e13fa08"
+        },
+        "why_existing_insufficient": "Raw frame/body positions and approach history are absent from export."
+      },
+      {
+        "id": "comparison_isolation",
+        "requirement": "Near/far and marked/imaginary-centerline comparisons hold junction, route and conditions fixed.",
+        "source": {
+          "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/evidence.json",
+          "sha256": "ee065510032918383f29d8248251c37495f2f6911a5a79640f34470c0e13fa08"
+        },
+        "why_existing_insufficient": "Metadata binds case names and one manifest hash but does not expose exact construction knobs or raw conditions."
+      }
+    ],
+    "supported_reuses": []
+  },
+  "observations": [
+    "two-directional lane evidence for both intersecting highways",
+    "source-reviewed marked or imaginary centerline and right-half polygon",
+    "complete vehicle body within right half and measured body distance to centerline over approach",
+    "left-turn intent, route and before-entry timing",
+    "controlled comparison of near versus farther with no invented legal lateral cutoff"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/assignment.json",
+      "sha256": "0ac247bed937ce79b42c4a7457a3259c763d8adbab13beb5c6c0a8d3a84a73f0"
+    },
+    {
+      "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/evidence.json",
+      "sha256": "ee065510032918383f29d8248251c37495f2f6911a5a79640f34470c0e13fa08"
+    },
+    {
+      "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/witnesses.json",
+      "sha256": "9388f7d5ba4cccd1b5e333e86fd958f3d47d1a3d22fea65acc5c310243e86f1c"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "recording_id": "be08a5430356379c8432d0cd78486db8fac49c131afb33f69ce2620388512827",
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline",
+      "status": "accepted_metadata_reviewed_physical_equivalence_unresolved"
+    },
+    {
+      "recording_id": "7b7f8556f9973fd45c7d880535b06a6f57a9c24c05363a141777e4904985a7cd",
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline",
+      "status": "accepted_metadata_reviewed_physical_equivalence_unresolved"
+    },
+    {
+      "recording_id": "c895e566d28995a5bf903e8c4c13c07a008ee4ce0606aa2ba55bc3113e492f18",
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline",
+      "status": "accepted_metadata_reviewed_physical_equivalence_unresolved"
+    },
+    {
+      "recording_id": "d93cd6cb5b5e229977d329ad544e1dfe4fd091263a8118fade06ad4ca169e7b9",
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline",
+      "status": "accepted_metadata_reviewed_physical_equivalence_unresolved"
+    }
+  ],
+  "runtime_uncertainties": [
+    "All four accepted recordings are preserved; no originals are replayed or claimed sufficient from membership alone.",
+    "The CPU geometry reports distance and containment but does not set a legal nearest-centerline threshold.",
+    "Opposite lane IDs are an engineering Native preflight; legal two-directional highway status needs source review.",
+    "Exact runner/camera/finalizer, fallbacks, semantic proposals, full proofs and audits remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; four accepted metadata inventories reviewed and source-bound lateral geometry/Native lane checks CPU-tested"
+}

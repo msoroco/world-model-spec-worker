@@ -1,0 +1,119 @@
+{
+  "assignment_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C24811",
+  "law_id": "NRS-484B-250-4",
+  "selected_branch": "Blind-intersection post-stop interactions under complete signal inoperability.",
+  "binding_note": "Frozen witness relocates this comparison to blind_intersection/travel/traffic_light; original C24757 has fixed inoperative_signal control and cannot realize operative-signal contrast.",
+  "cases": [
+    {
+      "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_and_occupied",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "Installed/uncovered signals wholly inoperative at ego entry; ego stops at marked line, distinct earlier-stopped and occupying vehicles",
+      "physical_risk": "Native Off may not appear fully inoperative in camera; three vehicles may not retain timing"
+    },
+    {
+      "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_only",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "Same junction and stop, earlier-stopped vehicle not occupying at ego entry",
+      "physical_risk": "earlier vehicle may remain in junction"
+    },
+    {
+      "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_occupant_only",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "Same junction and stop, occupant inside without another earlier-stopped vehicle",
+      "physical_risk": "occupant may clear before ego entry"
+    },
+    {
+      "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_no_full_halt",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "Same junction and signal, rolling ego response before entry",
+      "physical_risk": "route/controller may force a halt for safety"
+    },
+    {
+      "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__operative_signal",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "Same governing installed uncovered heads, operative indication at entry",
+      "physical_risk": "signal phase may change before ego enters"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "post_stop_priority",
+      "case_ids": [
+        "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_and_occupied",
+        "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_only",
+        "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_occupant_only"
+      ],
+      "fixed_conditions": [
+        "same blind junction, installed uncovered signal heads, all entrances Off at entry",
+        "same ego approach, marked stop line, cameras and frame timing"
+      ],
+      "deliberate_differences": [
+        "earlier completed stop and occupying-body status of distinct others"
+      ]
+    },
+    {
+      "comparison_id": "full_halt",
+      "case_ids": [
+        "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_and_occupied",
+        "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_no_full_halt"
+      ],
+      "fixed_conditions": [
+        "same junction, signal state, earlier and occupying vehicles"
+      ],
+      "deliberate_differences": [
+        "observed full halt before entry"
+      ]
+    },
+    {
+      "comparison_id": "inoperative_activation",
+      "case_ids": [
+        "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_and_occupied",
+        "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__operative_signal"
+      ],
+      "fixed_conditions": [
+        "same installed uncovered heads and routes"
+      ],
+      "deliberate_differences": [
+        "all governing heads inoperative versus operative indication at ego entry"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "recordings_reviewed": [],
+    "accepted_recording_count": 0,
+    "supported_reuses": [],
+    "uncovered": "All exact cases; frozen evidence.json has zero accepted recordings."
+  },
+  "observations": [
+    "Native and original-camera installed uncovered vehicular heads governing every entrance",
+    "complete inoperative state of all relevant heads at ego entry, distinct from malfunction or failed detection",
+    "clearly marked stop line and original-frame full halt before body entry",
+    "separate earlier completed stop and occupied-intersection histories with complete bodies",
+    "blind-intersection occluder geometry and both approach sight rays",
+    "cautious proceeding and yield context retained without invented legal numeric standard"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "sha256": "87f2e2a4be86e119fbff7478909a0ca5be07d5519867aec7624fe7a6a065299a"
+    },
+    {
+      "path": "inputs/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/witnesses.json",
+      "sha256": "f4b43fbe99e6a1b8c659290136ec6b504bc27ca08cf9481c766e95c4d463eb1d"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native Off is an engineering command/readback, not physical proof of installed uncovered and wholly inoperative heads.",
+    "The planar occluder ray test does not prove actual eye viewpoint, vertical occlusion or camera quality.",
+    "Cautious proceeding and yielding remain unresolved legal judgments.",
+    "Exact scene runner, four source cameras, saved finalizer and all delivery proofs remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; signal-control, realized occluder geometry and three-vehicle original-frame measurements CPU-tested"
+}
