@@ -34,8 +34,11 @@ def main():
     if "requirement_dispositions" not in plan:
         plan["requirement_dispositions"] = [disposition]
         put(plan_path, plan)
-    elif plan["requirement_dispositions"][0] != disposition:
-        raise ValueError("Existing requirement disposition changed")
+    else:
+        prior = plan["requirement_dispositions"][0]
+        if any(prior.get(key) != disposition[key] for key in
+               ("requirement", "source", "status", "evidence_or_gap")) or CASE not in prior.get("case_ids", []):
+            raise ValueError("Existing requirement disposition changed")
     inputs = ["video_frames.jsonl", "trace.jsonl",
               "participant_footprints.jsonl", "participant_state.jsonl",
               "fire_context.json"]
@@ -59,7 +62,18 @@ def main():
                     "unresolved_judgment_calls": [],
                     "recording_description": construction["recording_description"],
                 }]}
-    put(HERE / "proposals/cases.json", proposal)
+    proposal_path = HERE / "proposals/cases.json"
+    if proposal_path.is_file():
+        existing_proposal = json.loads(proposal_path.read_text())
+        original_case = next((case for case in existing_proposal.get("cases", [])
+                              if case.get("case_id") == CASE), None)
+        if original_case:
+            merged = dict(original_case)
+            merged.update(proposal["cases"][0])
+            proposal["cases"][0] = merged
+        proposal["cases"].extend(case for case in existing_proposal.get("cases", [])
+                                 if case.get("case_id") != CASE)
+    put(proposal_path, proposal)
     runtime = ROOT / "runtime/SOURCE-MANIFEST.json"
     entry = {"case_id": CASE, "kind": "delivery",
              "construction": "construction.json",
@@ -117,9 +131,15 @@ def main():
             "feedback_command": "cat $OUTPUT/v0001/feedback.json",
             "test_log": tests.name, "test_log_sha256": digest(tests),
             "test_exit_code": 0}
-    put(HERE / "execution-manifest.json",
+    manifest_path = HERE / "execution-manifest.json"
+    other_entries = []
+    if manifest_path.is_file():
+        existing_manifest = json.loads(manifest_path.read_text())
+        other_entries = [case for case in existing_manifest.get("cases", [])
+                         if case.get("case_id") != CASE]
+    put(manifest_path,
         {"format": "worker-execution-manifest", "assignment_id": HERE.name,
-         "runtime_manifest_sha256": digest(runtime), "cases": [entry]})
+         "runtime_manifest_sha256": digest(runtime), "cases": [entry, *other_entries]})
 
 
 if __name__ == "__main__":
