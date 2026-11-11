@@ -81,6 +81,8 @@ def build():
         for candidate in CANDIDATES:
             construction = json.loads(source(case,candidate).read_text())
             files = construction['files']
+            road_name = 'divided-highway.xodr' if case.startswith('divided_') else 'district-crossroads.xodr'
+            files.append({'path':'road.xodr', 'content':next(item['content'] for item in files if item['path']==road_name)})
             cfg_entry = next(item for item in files if item['path']=='config.json')
             config = json.loads(cfg_entry['content'])
             if original is None: original = config

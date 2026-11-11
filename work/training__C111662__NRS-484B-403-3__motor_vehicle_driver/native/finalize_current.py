@@ -91,6 +91,14 @@ def finalize(attempt, output):
                          'u_turn_at_intersection_or_opening': bool(measure_exception_location(saved))}[name]
                 stream.write(json.dumps({'time_s': item['time_s'], 'value': value}, allow_nan=False)+'\n')
         evidence.append({'name': name, 'unit': channel['unit'], 'reference': 'channels/'+path.name})
+    road_name = 'road.xodr'
+    for name, source_name, output_name in (
+        ('authored_road', road_name, 'road-context.json'),
+        ('authored_request', 'requested-tracks.jsonl', 'request-context.json')):
+        require(attempt/source_name)
+        (attempt/output_name).write_text(json.dumps({name:{'source':source_name,
+            'sha256':sha(attempt/source_name)}},indent=2)+'\n')
+        evidence.append({'name':name,'unit':'structured','reference':output_name})
     crossing = measure_turn_crossing(saved)
     expected = config['case_suffix'] in ('contrast', 'divided_opening')
     measured = bool(measure_exception_location(saved))

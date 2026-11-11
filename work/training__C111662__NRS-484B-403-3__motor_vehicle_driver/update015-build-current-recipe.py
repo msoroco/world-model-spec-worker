@@ -2,14 +2,17 @@
 import hashlib
 import json
 import math
+import sys
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
 REPO=ROOT.parents[1]
-CASE='reference'
-SOURCE=ROOT/'native/synthetic/reference/primary/raw.json'
-SPEC=ROOT/'update015-current-reference-diagnostic.json'
-RECIPE=ROOT/'update015-current-reference-recipe.json'
+CASE=sys.argv[1] if len(sys.argv)>1 else 'reference'
+if CASE not in ('reference','contrast','divided_reference','divided_opening'):
+    raise ValueError('Unknown authored case')
+SOURCE=ROOT/'native'/('divided-opening' if CASE.startswith('divided_') else '')/'synthetic'/CASE/'primary/raw.json'
+SPEC=ROOT/f'update015-current-{CASE}-diagnostic.json'
+RECIPE=ROOT/f'update015-current-{CASE}-recipe.json'
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -58,9 +61,9 @@ def build():
                                                       'native_executed':False})+'\n'}
     files['capture/manifest.json']=json.dumps({'extraction_confirmed':True,'frames':800,
         'acquisition':'synthetic_cpu_fixture','observation_contract_version':2,
-        'required_observations':['kin.position','kin.heading','drv.u_turn','st.intersection',
-                                 'st.median_or_divider','rel.occupies'],
-        'sources':{'district-crossroads.xodr':sha(ROOT/'native/drafts/reference/primary/district-crossroads.xodr'),
+        'required_observations':(['kin.position','kin.heading','rel.occupies'] if CASE.startswith('divided_')
+                                 else ['kin.position','kin.heading','st.intersection','rel.occupies']),
+        'sources':{'road.xodr':sha(ROOT/'native'/('divided-opening' if CASE.startswith('divided_') else '')/'drafts'/CASE/'primary'/('divided-highway.xodr' if CASE.startswith('divided_') else 'district-crossroads.xodr')),
                    'trace.jsonl':hashlib.sha256(files['trace.jsonl'].encode()).hexdigest()}},indent=2)+'\n'
     videos=[{'path':name+'.mkv','frames':800,'width':width,'height':height,
              'fps':20,'color':color} for name,width,height,color in (
