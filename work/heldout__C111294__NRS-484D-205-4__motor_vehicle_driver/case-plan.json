@@ -1,0 +1,151 @@
+{
+  "assignment_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C111294",
+  "law_id": "NRS-484D-205-4",
+  "cases": [
+    {
+      "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__no_backup_lamp_installed",
+      "target_law_id": "NRS-484D-205-4",
+      "gap_ids": [
+        "actual-forward-lamp-state"
+      ],
+      "construction_state": "planned",
+      "purpose": "Optional-equipment absence context under the same forward route; confirm equipment inventory rather than assuming a disabled lamp."
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_off",
+      "target_law_id": "NRS-484D-205-4",
+      "gap_ids": [
+        "actual-forward-lamp-state"
+      ],
+      "construction_state": "planned",
+      "purpose": "Backup lamps installed but unlighted during measured forward motion."
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_on",
+      "target_law_id": "NRS-484D-205-4",
+      "gap_ids": [
+        "actual-forward-lamp-state"
+      ],
+      "construction_state": "planned",
+      "purpose": "Backup lamps installed and intentionally illuminated during measured forward motion; actual emission must be checked independently from a commanded light-state bit."
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "optional_equipment",
+      "case_ids": [
+        "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__no_backup_lamp_installed",
+        "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_off"
+      ],
+      "fixed_conditions": [
+        "intersection route and other vehicle position/motion/purpose",
+        "motor vehicle type, controller and forward-motion profile",
+        "four-camera profile and duration"
+      ],
+      "deliberate_differences": [
+        "installed backup-lamp equipment inventory"
+      ]
+    },
+    {
+      "comparison_id": "forward_illumination",
+      "case_ids": [
+        "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_off",
+        "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_on"
+      ],
+      "fixed_conditions": [
+        "installed backup-lamp equipment",
+        "intersection route and other vehicle position/motion/purpose",
+        "motor vehicle and forward-motion controller",
+        "four-camera profile and duration"
+      ],
+      "deliberate_differences": [
+        "commanded and measured backup-lamp illumination during actual forward motion"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "installed_backup_lamps",
+      "unit": "count and location",
+      "mandatory": true,
+      "method": "Inspect and record actual blueprint equipment configuration; retain source identity."
+    },
+    {
+      "name": "ego_forward_motion",
+      "unit": "m/s",
+      "mandatory": true,
+      "method": "Project velocity onto measured forward body heading per synchronized frame, preserving raw velocity and orientation."
+    },
+    {
+      "name": "backup_lamp_emission",
+      "unit": "state and pixels",
+      "mandatory": true,
+      "method": "Join Native vehicle light state to full decoded rear-facing source pixels for all forward-motion frames; preserve uncertainty."
+    },
+    {
+      "name": "other_vehicle_context",
+      "unit": "pose and motion",
+      "mandatory": true,
+      "method": "Record separate vehicle position, speed, priority and scene purpose."
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/assignment.json",
+      "sha256": "46b011125b6f55d2eaa0ba343af53f19b8fe307e0f44de6dae25b38ff6a0481c"
+    },
+    {
+      "path": "inputs/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/witnesses.json",
+      "sha256": "df9a0956ee5fb0b70beedfcb3625b2503ccab73bfb237e17a65f64de8395a96e"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Source-hashed conditional review in inputs/planning/law-split-demo-overlap-v2/reviews/NRS-484D-205-4.json has source_audit_status pending; do not promote it to physical/legal acceptance.",
+    "CARLA backup-lamp control and actual emissive pixels need a pinned-runtime capability check and implementation; a commanded bit does not prove illumination.",
+    "No exact runner, raw-source finalizer, four-camera acquisition, compatibility or saved audit exists yet."
+  ],
+  "status": "draft",
+  "law_text": "Any motor vehicle may be equipped with one or more backup lamps either separately or in combination with other lamps. Backup lamps shall not be lighted when the vehicle is in forward motion.",
+  "fixed_cell": {
+    "layout": "intersection",
+    "maneuver": "travel",
+    "control": "other_vehicle"
+  },
+  "source_observation_terms": [
+    "sig.reverse_lamp",
+    "kin.velocity",
+    "drv.backing",
+    "kin.heading",
+    "kin.speed"
+  ],
+  "branch_analysis": {
+    "source": "inputs/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/assignment.json",
+    "status": "planning_only",
+    "alternatives_and_boundaries": [
+      "The statute permits optional backup lamps; presence/absence and separate/combined equipment are context alternatives.",
+      "Forward motion with backup lamps unlighted versus lighted is the operative controlled comparison.",
+      "Verify actual lamp emission and motion direction from Native state plus pixels; a boolean declared in authored context cannot establish illumination.",
+      "Conditional source-hashed C111294 review remains pending audit; retain its conditions without claiming physical facts."
+    ]
+  },
+  "evidence_review": {
+    "reviewer": "partition-02 CPU preparer",
+    "method": "Read frozen evidence.json (zero recordings) and the source-hashed conditional review in witnesses.json. The review addresses applicability only and has source_audit_status pending, human_review_status unreviewed, physical_feasibility unverified.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "actual-forward-lamp-state",
+        "requirement": "Synchronized measured forward-motion interval and actual backup-lamp illumination, with installed equipment inventory and original pixels",
+        "source": "inputs/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/witnesses.json",
+        "why_existing_insufficient": "No accepted recordings; conditional review explicitly has physical_feasibility unverified."
+      }
+    ]
+  }
+}

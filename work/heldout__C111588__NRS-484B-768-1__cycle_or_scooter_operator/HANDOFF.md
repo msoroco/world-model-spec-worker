@@ -1,0 +1,9 @@
+# C111588 / NRS-484B-768-1 — partial CPU checkpoint
+
+Exact law: Except as otherwise provided in subsection 2, an operator of a bicycle, an electric bicycle or an electric scooter upon a roadway shall not turn from a direct course unless the movement may be made with reasonable safety and the operator gives an appropriate signal. The operator shall give the appropriate signal at least one time but is not required to give the signal continuously. An operator of a bicycle, an electric bicycle or an electric scooter is not required to give a signal if: (a) The bicycle, electric bicycle or electric scooter is in a designated turn lane; or (b) Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands on the bicycle, electric bicycle or electric scooter.
+
+Uncovered branch plan: Cover bicycle, electric bicycle and electric scooter turning from a direct roadway course; signal at least once, turn-lane exception, and both-hands-needed exception. Keep “reasonable safety” unresolved with observable sweep dimensions and a real signal mechanism.
+
+Frozen evidence.json lists no accepted recordings for this assignment. The source-backed scope review is in `case-plan.json`; no physical or legal conclusion is asserted.
+
+Next CPU action: define exact cases and controlled comparisons for every branch above, then implement and test construction, source cameras, measurement/finalization, three distinct fallbacks for each selected case, semantic proposals, saved processing and independent audits. Run exact `runtime.py offline` and `runtime.py compatibility` for each construction, then `.venv-cpu/bin/python worker_check.py --assignment heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator --complete --require-delivery-ready`. The current missing work is CPU work, not a GPU blocker.

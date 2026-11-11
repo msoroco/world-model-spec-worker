@@ -1,0 +1,198 @@
+{
+  "assignment_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C147331",
+  "law_id": "LVMC-11-18-030-B",
+  "cases": [
+    {
+      "case_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__within_marked_lane",
+      "target_law_id": "LVMC-11-18-030-B",
+      "gap_ids": [
+        "marked-lane-footprint"
+      ],
+      "construction_state": "planned",
+      "purpose": "Vehicle footprint remains inside one continuously marked one-way traffic lane during straight travel; measures ordinary application without assigning a legal verdict."
+    },
+    {
+      "case_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__unexcused_boundary_crossing",
+      "target_law_id": "LVMC-11-18-030-B",
+      "gap_ids": [
+        "marked-lane-footprint"
+      ],
+      "construction_state": "planned",
+      "purpose": "Vehicle footprint crosses a recorded lane boundary during straight travel, with no passing participant or turn preparation; measure the raw spatial and time history, with no invented tolerance."
+    },
+    {
+      "case_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_boundary_crossing",
+      "target_law_id": "LVMC-11-18-030-B",
+      "gap_ids": [
+        "marked-lane-footprint",
+        "passing-exception"
+      ],
+      "construction_state": "planned",
+      "purpose": "An otherwise comparable boundary crossing occurs while overtaking a separately recorded vehicle; independent review must establish whether the passing is lawful under applicable rules."
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "ordinary_lane_containment",
+      "case_ids": [
+        "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__within_marked_lane",
+        "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__unexcused_boundary_crossing"
+      ],
+      "fixed_conditions": [
+        "one-way multilane geometry and boundary markings",
+        "motor vehicle and operator",
+        "straight travel route, camera profile and duration",
+        "no passing participant and no turn preparation"
+      ],
+      "deliberate_differences": [
+        "controller lateral path and measured footprint overlap with the marked boundary"
+      ]
+    },
+    {
+      "comparison_id": "passing_exception_context",
+      "case_ids": [
+        "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__unexcused_boundary_crossing",
+        "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_boundary_crossing"
+      ],
+      "fixed_conditions": [
+        "one-way multilane geometry and boundary markings",
+        "motor vehicle and operator",
+        "same boundary crossing path, camera profile and duration",
+        "no turn preparation"
+      ],
+      "deliberate_differences": [
+        "presence and recorded motion of overtaken vehicle",
+        "passing context and externally sourced lawful-passing facts"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "native_lane_boundaries",
+      "unit": "m",
+      "mandatory": true,
+      "method": "Sample native lane boundary geometry and marking type/direction for every ego frame."
+    },
+    {
+      "name": "ego_vehicle_footprint",
+      "unit": "m",
+      "mandatory": true,
+      "method": "Sample all vehicle body corners in world coordinates and join to the marked lane boundary by frame."
+    },
+    {
+      "name": "lane_boundary_overlap",
+      "unit": "m",
+      "mandatory": true,
+      "method": "Compute signed distances of the ego footprint to each marked boundary; preserve raw time history and geometric uncertainty."
+    },
+    {
+      "name": "passing_context",
+      "unit": "descriptive",
+      "mandatory": true,
+      "method": "Retain other vehicle pose, identity, overtaking order, and source-backed external passing facts."
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/assignment.json",
+      "sha256": "92dfd9b7e7f6909014b19bef360d5d4de6fc48ebf7cff0941102b507f6e14f83"
+    },
+    {
+      "path": "inputs/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/witnesses.json",
+      "sha256": "9d6053cfc41141e7d1ae15428d080b16aa4fb7e8d38d645bf946718aa6aa15d8"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "The fixed C147331 travel cell may not support an actual lawful-turn exception; inspect candidate-cells.json and propose a compatible same-role binding to the lead.",
+    "Constructed lane marking visibility, direction and full vehicle footprint must be checked in actual CARLA and saved footage.",
+    "No exact runner, finalizer, four-camera capture or saved-only audit exists; these are unfinished CPU work."
+  ],
+  "status": "draft",
+  "law_text": "Where such traffic lanes have been marked, it shall be unlawful for the operator of any vehicle to fail or refuse to keep such vehicle within the boundaries of any such lane except when lawfully passing another vehicle or preparatory to making a lawful turning movement.",
+  "fixed_cell": {
+    "layout": "one_way_multilane",
+    "maneuver": "travel",
+    "control": "lane_marking"
+  },
+  "source_observation_terms": [
+    "st.lane",
+    "st.lane_marking",
+    "rel.occupies",
+    "drv.straddles_marking",
+    "drv.overtaking",
+    "drv.turning",
+    "sig.turn_indicator",
+    "drv.lane_change"
+  ],
+  "evidence_review": {
+    "reviewer": "partition-02 CPU preparer",
+    "method": "Read the frozen evidence inventory; it lists zero accepted recordings, so no source-backed equivalence or reuse can be claimed. Compare only newly planned exact cases after capture.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "marked-lane-footprint",
+        "requirement": "Native marked traffic-lane boundaries, direction, ego full footprint and movement for the whole trace",
+        "source": "inputs/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are listed."
+      },
+      {
+        "id": "passing-exception",
+        "requirement": "Passing participant, maneuver and separate lawful-passing facts tied to the same marked-lane crossing",
+        "source": "inputs/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/witnesses.json",
+        "why_existing_insufficient": "No accepted recordings are listed; signaling alone cannot establish lawfulness."
+      },
+      {
+        "id": "turn-exception",
+        "requirement": "Preparatory action for an actual lawful turn, including applicable external rules and turn destination",
+        "source": "inputs/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/witnesses.json",
+        "why_existing_insufficient": "No accepted recordings are listed; fixed travel cell may not support the turn maneuver."
+      }
+    ]
+  },
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "Marked-lane ordinary containment and unexcused crossing",
+      "source": "LVMC 11.18.030(B)",
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted recordings; planned exact within-lane and crossing comparison, without a legal geometric cutoff.",
+      "case_ids": [
+        "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__within_marked_lane",
+        "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__unexcused_boundary_crossing"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Exception while lawfully passing another vehicle",
+      "source": "LVMC 11.18.030(B)",
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted recordings; planned passing-context comparison requires external law and measured motion.",
+      "case_ids": [
+        "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_boundary_crossing"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Exception preparatory to making a lawful turning movement",
+      "source": "LVMC 11.18.030(B)",
+      "status": "exception_pending",
+      "evidence_or_gap": "Fixed cell C147331 has maneuver travel; a compatible turn cell and externally sourced lawful-turn context have not been selected."
+    }
+  ],
+  "branch_analysis": {
+    "source": "inputs/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/assignment.json",
+    "status": "planning_only",
+    "alternatives_and_boundaries": [
+      "Marked traffic lanes activate containment; compare inside-lane travel with an unexcused measured crossing.",
+      "The lawful-passing exception needs a recorded overtaken vehicle and external-rule context, compared with the same crossing without passing.",
+      "The lawful-turn-preparation exception needs a compatible turn cell or other proof of an actual lawful turn; the fixed travel cell may not support it."
+    ]
+  }
+}

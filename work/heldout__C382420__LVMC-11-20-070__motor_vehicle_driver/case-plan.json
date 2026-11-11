@@ -1,0 +1,175 @@
+{
+  "assignment_id": "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C382420",
+  "law_id": "LVMC-11-20-070",
+  "cases": [
+    {
+      "case_id": "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__crosswalk_clear_downstream",
+      "target_law_id": "LVMC-11-20-070",
+      "gap_ids": [
+        "space-at-entry",
+        "obstruction-after-entry"
+      ],
+      "construction_state": "planned",
+      "purpose": "Marked-crosswalk approach with measured full-vehicle accommodation downstream at entry."
+    },
+    {
+      "case_id": "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__crosswalk_blocked_downstream",
+      "target_law_id": "LVMC-11-20-070",
+      "gap_ids": [
+        "space-at-entry",
+        "obstruction-after-entry"
+      ],
+      "construction_state": "planned",
+      "purpose": "Same crosswalk and proceed indication with insufficient downstream accommodation; actual pedestrian/vehicle passage obstruction must be measured."
+    },
+    {
+      "case_id": "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__intersection_clear_downstream",
+      "target_law_id": "LVMC-11-20-070",
+      "gap_ids": [
+        "space-at-entry",
+        "obstruction-after-entry"
+      ],
+      "construction_state": "planned",
+      "purpose": "Intersection entry alternative with full-vehicle accommodation downstream."
+    },
+    {
+      "case_id": "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__intersection_blocked_downstream",
+      "target_law_id": "LVMC-11-20-070",
+      "gap_ids": [
+        "space-at-entry",
+        "obstruction-after-entry"
+      ],
+      "construction_state": "planned",
+      "purpose": "Intersection entry alternative with blocked downstream accommodation; actual passage obstruction remains measured, not assumed."
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "marked_crosswalk_space",
+      "case_ids": [
+        "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__crosswalk_clear_downstream",
+        "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__crosswalk_blocked_downstream"
+      ],
+      "fixed_conditions": [
+        "same marked crosswalk and ego approach",
+        "same proceed indication, ego vehicle, cameras and duration",
+        "same other-road-user route and timing"
+      ],
+      "deliberate_differences": [
+        "downstream physical blocking vehicle/space and measured accommodation at entry"
+      ]
+    },
+    {
+      "comparison_id": "intersection_space",
+      "case_ids": [
+        "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__intersection_clear_downstream",
+        "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__intersection_blocked_downstream"
+      ],
+      "fixed_conditions": [
+        "same intersection geometry and ego approach",
+        "same proceed indication, ego vehicle, cameras and duration",
+        "same other-road-user route and timing"
+      ],
+      "deliberate_differences": [
+        "downstream physical blocking vehicle/space and measured accommodation at entry"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "entry_frame_and_region",
+      "unit": "frame and polygon",
+      "mandatory": true,
+      "method": "Record actual full body crossing of Native marked-crosswalk or intersection entry boundary."
+    },
+    {
+      "name": "downstream_available_length",
+      "unit": "m",
+      "mandatory": true,
+      "method": "At entry frame, measure contiguous free receiving space along ego path and compare with measured full vehicle length as physical data only."
+    },
+    {
+      "name": "passage_obstruction",
+      "unit": "frame history",
+      "mandatory": true,
+      "method": "Retain other vehicles/pedestrians, their intended path and actual blocking by ego footprint after entry."
+    },
+    {
+      "name": "signal_indication",
+      "unit": "state",
+      "mandatory": true,
+      "method": "Record actual traffic-control signal state and synchronization at each entry frame."
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json",
+      "sha256": "8fd739d5c2594831a03f483da5b8406abe72ac37d7f52392f6eb150525282c57"
+    },
+    {
+      "path": "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/witnesses.json",
+      "sha256": "4b0f1c316dce44d2ae3b3231964430b6a5db186ad90e6bbe067cbf9c1fc844ad"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "The fixed marked_crosswalk control can support crosswalk alternatives; intersection alternative requires connected native intersection geometry in the same cell.",
+    "Sufficient space and obstructing passage have no supplied numeric legal cutoff; raw geometry and motion do not alone resolve judgment.",
+    "No physical blocker, exact runner, finalizer, source-bound compatibility or saved audit has yet been implemented."
+  ],
+  "status": "draft",
+  "law_text": "No driver shall enter an intersection or a marked crosswalk unless there is sufficient space on the other side of the intersection or crosswalk to accommodate the vehicle he is operating without obstructing the passage of other vehicles or pedestrians, notwithstanding any traffic-control signal indication to proceed.",
+  "fixed_cell": {
+    "layout": "intersection",
+    "maneuver": "travel",
+    "control": "marked_crosswalk"
+  },
+  "source_observation_terms": [
+    "st.intersection",
+    "st.lane_enters",
+    "st.crosswalk",
+    "drv.entering_intersection",
+    "rel.surface_gap",
+    "kin.extent",
+    "drv.following",
+    "drv.stopped",
+    "dev.traffic_signal",
+    "ru.pedestrian",
+    "rel.occupies"
+  ],
+  "branch_analysis": {
+    "source": "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json",
+    "status": "planning_only",
+    "alternatives_and_boundaries": [
+      "Intersection entry and marked-crosswalk entry are alternatives; fixed marked_crosswalk control may support both if geometry is present.",
+      "Compare enough downstream accommodation versus blocked downstream space, measuring full vehicle body, actual passage obstruction and upstream stop/entry.",
+      "Proceed signal does not waive the space condition; include a proceed indication while varying downstream clearance.",
+      "Sufficient space and obstruction are judgment phrases without supplied numeric cutoffs."
+    ]
+  },
+  "evidence_review": {
+    "reviewer": "partition-02 CPU preparer",
+    "method": "Read the frozen evidence inventory; zero accepted recordings are listed, so no accommodation or obstruction fact can be reused.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "space-at-entry",
+        "requirement": "Downstream free space to accommodate full vehicle body before entry, measured at the actual entry frame",
+        "source": "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are listed."
+      },
+      {
+        "id": "obstruction-after-entry",
+        "requirement": "Whether the vehicle actually obstructs passage of other vehicles or pedestrians",
+        "source": "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are listed."
+      }
+    ]
+  }
+}

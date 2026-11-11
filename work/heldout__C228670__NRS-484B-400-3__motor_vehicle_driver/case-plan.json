@@ -1,0 +1,161 @@
+{
+  "assignment_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C228670",
+  "law_id": "NRS-484B-400-3",
+  "cases": [
+    {
+      "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
+      "target_law_id": "NRS-484B-400-3",
+      "gap_ids": [
+        "approach-position",
+        "departure-position"
+      ],
+      "construction_state": "planned",
+      "purpose": "Shared reference; actual body position must be measured."
+    },
+    {
+      "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure",
+      "target_law_id": "NRS-484B-400-3",
+      "gap_ids": [
+        "approach-position"
+      ],
+      "construction_state": "planned",
+      "purpose": "Vary measured approach lateral position only, preserving departure target and geometry."
+    },
+    {
+      "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure",
+      "target_law_id": "NRS-484B-400-3",
+      "gap_ids": [
+        "departure-position"
+      ],
+      "construction_state": "planned",
+      "purpose": "Vary measured departure lateral position only, preserving approach target and geometry."
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "approach_position",
+      "case_ids": [
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure"
+      ],
+      "fixed_conditions": [
+        "same two-directional approach and one-way departure geometry",
+        "same left-turn intention and maneuver",
+        "same departure controller target, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "measured approach full-body lateral distance from the centerline within the right half"
+      ]
+    },
+    {
+      "comparison_id": "departure_position",
+      "case_ids": [
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure"
+      ],
+      "fixed_conditions": [
+        "same two-directional approach and one-way departure geometry",
+        "same left-turn intention and maneuver",
+        "same approach controller target, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "measured departure full-body lateral distance from the left-hand curb"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "approach_body_to_centerline",
+      "unit": "m",
+      "mandatory": true,
+      "method": "Frame-joined full body footprint relative to recorded native centerline and travel direction through the approach."
+    },
+    {
+      "name": "entry_body_right_of_centerline",
+      "unit": "boolean and m",
+      "mandatory": true,
+      "method": "Record body corners and centerline at intersection entry; preserve raw geometry."
+    },
+    {
+      "name": "departure_body_to_left_curb",
+      "unit": "m",
+      "mandatory": true,
+      "method": "Frame-joined body footprint relative to native left curb on one-way departure."
+    },
+    {
+      "name": "highway_directions",
+      "unit": "lane directions",
+      "mandatory": true,
+      "method": "Source Native connected lanes and signs; verify two-directional approach and one-way departure."
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json",
+      "sha256": "07292f25767eb2beba740317e07cf852a96a888818ffcf0b9424f0d1165bf30e"
+    },
+    {
+      "path": "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/witnesses.json",
+      "sha256": "d3c1deaf92255965d46e43ebf74ff246d851c88a627314ac8385df740abec2ab"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Fixed catalog layout is generic road rather than intersection; verify compatible intersection geometry or propose an additional same-role cell binding; do not infer it.",
+    "The law supplies no numeric \"as close as practicable\" cutoff; positions are measured without legal interpretation.",
+    "Actual connected two-directional approach and one-way departure map geometry, full body containment and camera visibility remain unverified.",
+    "No exact construction, four-camera capture, source-bound finalizer or saved-processing proof exists yet."
+  ],
+  "status": "draft",
+  "law_text": "If the driver of a vehicle intends to turn at an intersection and: The turn is a left turn from a two-directional highway onto a one-way highway, the approach for the left turn must be made in that portion of the right half of the highway nearest the centerline thereof, and the turn must be made by turning from the right of the centerline where it enters the intersection as close as practicable to the left-hand curb of the one-way highway.",
+  "fixed_cell": {
+    "layout": "road",
+    "maneuver": "left_turn",
+    "control": "centerline"
+  },
+  "source_observation_terms": [
+    "drv.turning",
+    "st.centre_line",
+    "rel.occupies",
+    "st.one_way_roadway",
+    "st.road_edge",
+    "kin.position",
+    "st.intersection",
+    "st.lane_enters",
+    "st.lane_direction"
+  ],
+  "branch_analysis": {
+    "source": "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json",
+    "status": "planning_only",
+    "alternatives_and_boundaries": [
+      "Fixed road cell needs proof it is a two-directional approach and one-way departure intersection despite generic layout label.",
+      "Compare measured approach full-body lateral position in right half near centerline with departure held fixed.",
+      "Compare measured departure position near left-hand curb with approach held fixed; no legal cutoff is supplied."
+    ]
+  },
+  "evidence_review": {
+    "reviewer": "partition-02 CPU preparer",
+    "method": "Read frozen evidence.json; it contains zero accepted recordings, so no approach/departure equivalence or reuse is claimed.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "approach-position",
+        "requirement": "Full vehicle-body position in the right half nearest the centerline throughout the approach",
+        "source": "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are listed."
+      },
+      {
+        "id": "departure-position",
+        "requirement": "Full vehicle-body position relative to one-way departure left curb after turning from the right of the centerline at entry",
+        "source": "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are listed."
+      }
+    ]
+  }
+}
