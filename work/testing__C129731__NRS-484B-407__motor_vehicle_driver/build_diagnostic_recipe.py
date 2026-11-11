@@ -6,13 +6,11 @@ No physical visibility or legal outcome is inferred from this fixture.
 import hashlib
 import json
 import xml.etree.ElementTree as ET
+import argparse
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-CASE = json.loads((HERE/"config.json").read_text())["selected_case_id"]
-SITE = json.loads((HERE/"diagnostic-site.json").read_text())
-SITE_SHA = hashlib.sha256((HERE/"diagnostic-site.json").read_bytes()).hexdigest()
 
 
 def sha(path):
@@ -27,7 +25,15 @@ def body(x, y):
     return [[x+dx, y+dy, z] for dx in (-1, 1) for dy in (-.8, .8) for z in (0, 1.5)]
 
 
-def visibility(x, y):
+def visibility(x, y, probe):
+    if probe == "short_of_500ft":
+        bracket, clear = [150., 150.125], False
+    elif probe == "at_500ft":
+        bracket, clear = [152.4, 152.4], True
+    elif probe == "beyond_500ft":
+        bracket, clear = [160., 160.125], True
+    else:
+        raise ValueError("Unknown exact visibility probe")
     return {"visibility_criterion": "any_of_nine_body_samples",
             "distance_convention": "incoming driving-lane waypoint arc length to actor projected station",
             "eye_height_m": 1.4, "scan_step_m": 10., "horizon_tolerance_m": .25,
@@ -38,14 +44,27 @@ def visibility(x, y):
             "ego_projection":{"road_id":10,"section_id":0,"lane_id":-1},
             "required_lane_ids": [-1, 1],
             "approaches": [
-                {"lane_id": -1, "any_sample_clear_at_probe": False,
-                 "any_body_sight_horizon": {"bound": "first_sampled_occlusion", "bracket_m": [150., 150.125]}},
+                {"lane_id": -1, "any_sample_clear_at_probe": clear,
+                 "any_body_sight_horizon": {"bound": "first_sampled_occlusion", "bracket_m": bracket}},
                 {"lane_id": 1, "any_sample_clear_at_probe": True,
                  "any_body_sight_horizon": {"bound": "at_least", "distance_m": 160.}}]}
 
 
-def build():
-    target = HERE/"diagnostic-sources"
+def build(variant="short_of_500ft"):
+    if variant == "short_of_500ft":
+        suffix = ""
+    elif variant == "at_500ft":
+        suffix = "-at"
+    else:
+        raise ValueError("Fixture source variant is not yet constructed")
+    config = json.loads((HERE/("config"+suffix+".json")).read_text())
+    case = config["selected_case_id"]
+    site_path = HERE/("diagnostic-site"+suffix+".json")
+    site = json.loads(site_path.read_text())
+    site_sha = sha(site_path)
+    if site["probe"] != variant or not case.endswith("__curve__"+variant):
+        raise ValueError("Fixture case/site probe differs")
+    target = HERE/("diagnostic-sources"+suffix)
     target.mkdir(exist_ok=True)
     motion, turns, maps, traces, evidence, frames = [], [], [], [], [], []
     graphs = []
@@ -62,7 +81,7 @@ def build():
                               "road_lane": [10,lane]}
                       for name,lane in (("approach_a",-1),("approach_b",1))}
         maps.append({"video_frame":i,"carla_frame":frame,"native_frame":frame,"time_s":time})
-        motion.append({"video_frame":i,"native_frame":frame,"site_source_sha256":SITE_SHA,
+        motion.append({"video_frame":i,"native_frame":frame,"site_source_sha256":site_sha,
                        "ego":ego,"approaches":approaches})
         turns.append({"frame":frame,"time_s":time,"body_vertices_m":vertices,"heading_deg":yaw})
         traces.append({"frame":frame,"time_s":time,"position_m":[x,y,0],
@@ -87,7 +106,7 @@ def build():
                                 "speed_provenance":"synthetic_native_sample",
                                 "body_vertices_m":vertices},
                          "world":{},
-                         "original_observations":original,"visibility":visibility(x,y)})
+                         "original_observations":original,"visibility":visibility(x,y,variant)})
         base, abstract = (f"graphs/{kind}/{frame:08d}.pkl" for kind in ("base","abstract"))
         frames.append({"frame":frame,"simulation_time":time,"base":base,"abstract":abstract,
                        "nodes":0,"edges":0,"extraction_seconds":0,"capture_seconds":0})
@@ -109,14 +128,14 @@ def build():
                "video_frames.jsonl":lines(maps),"trace.jsonl":lines(traces),
                "capture/evidence.jsonl":lines(evidence),
                "capture/native/frames.jsonl":lines(frames),
-               "curve_context.json":json.dumps({"site_source_sha256":SITE_SHA,"feature":SITE["feature"],
-                                                "turn_site_xyz_m":SITE["turn_site_xyz_m"],
-                                                "incoming_lanes":SITE["incoming_lanes"],
+               "curve_context.json":json.dumps({"site_source_sha256":site_sha,"feature":site["feature"],
+                                                "turn_site_xyz_m":site["turn_site_xyz_m"],
+                                                "incoming_lanes":site["incoming_lanes"],
                                                 "visibility_proxy_only":True}),
                "capture/recorder_info.txt":"Create 101: vehicle.tesla.model3 (0) at (0, 0, 0)\nsynthetic diagnostic only\n",
                "road.xodr":ET.tostring(road, encoding="unicode")}
     sources["capture/manifest.json"] = json.dumps({"status":"draft","acquisition":"synthetic_diagnostic",
-        "case_id":CASE,"map":"Carla/Maps/OpenDriveMap","frames":1100,
+        "case_id":case,"map":"Carla/Maps/OpenDriveMap","frames":1100,
         "required_observations":["st.sight_distance"],"extraction_confirmed":True,
         "sources":{"road.xodr":hashlib.sha256(sources["road.xodr"].encode()).hexdigest(),
                    "trace.jsonl":hashlib.sha256(sources["trace.jsonl"].encode()).hexdigest()}})
@@ -129,16 +148,18 @@ def build():
             for name,w,h in (("overview",1920,1080),("approach",1280,720),
                              ("reference_corner",1280,720),("driver_reference",1280,720))]
     spec={"files":{},"graphs":graphs,"videos":videos}
-    path=HERE/"diagnostic.json";path.write_text(json.dumps(spec,separators=(",", ":"))+"\n")
+    path=HERE/("diagnostic"+suffix+".json");path.write_text(json.dumps(spec,separators=(",", ":"))+"\n")
     if path.stat().st_size>2*1024*1024:raise ValueError("Returned fixture spec exceeds 2 MiB")
     relative=str(path.relative_to(ROOT))
     recipe={"format":"worker-fixture-recipe",
             "sources":items+[{"path":"diagnostic-input.json","source":relative,"sha256":sha(path)}],
             "generator":{"source":relative,"sha256":sha(path)}}
-    (HERE/"diagnostic-recipe.json").write_text(json.dumps(recipe,indent=2)+"\n")
+    (HERE/("diagnostic-recipe"+suffix+".json")).write_text(json.dumps(recipe,indent=2)+"\n")
     return {"spec_bytes":path.stat().st_size,
             "source_bytes":{name:len(content.encode()) for name,content in sources.items()}}
 
 
 if __name__=="__main__":
-    print(json.dumps(build(),indent=2))
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--variant",choices=("short_of_500ft","at_500ft"),default="short_of_500ft")
+    print(json.dumps(build(parser.parse_args().variant),indent=2))

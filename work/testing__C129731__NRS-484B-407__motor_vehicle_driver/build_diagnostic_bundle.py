@@ -18,6 +18,7 @@ def _sha(path):
 def build():
     config = json.loads((HERE / "config.json").read_text())
     case = config["selected_case_id"]
+    at_case = case.replace("short_of_500ft", "at_500ft")
     files = [HERE / name for name in ("runner.py", "finalizer.py", "site_construction.py", "u_turn_control.py",
               "visibility_measure.py", "camera_encoder.py", "camera_setup.py",
               "config.json", "diagnostic-site.json")]
@@ -44,12 +45,13 @@ def build():
     law_source = "NRS 484B.407; inputs/" + HERE.name + "/assignment.json"
     dispositions = [
         {"requirement": "At the U-turn site, retain both original incoming approach rays and their brackets against 500 feet (152.4 m), without a driver-eye or legal-visibility inference",
-         "source": law_source, "status": "selected_required", "case_ids": [case],
+         "source": law_source, "status": "selected_required", "case_ids": [case, at_case],
          "evidence_or_gap": "Original capture/evidence.jsonl visibility, motion_history.jsonl and video_frames.jsonl; actual driver sight remains unverified."},
         {"requirement": "Retain original vehicle body and heading reversal at a sourced curve, together with the maneuver site and both approach lanes",
-         "source": law_source, "status": "selected_required", "case_ids": [case],
+         "source": law_source, "status": "selected_required", "case_ids": [case, at_case],
          "evidence_or_gap": "Original turn_history.jsonl, curve_context.json and motion/frame join; physical location and motion await Native capture."}]
-    plan["requirement_dispositions"] = dispositions
+    plan["requirement_dispositions"] = dispositions + [row for row in plan.get("requirement_dispositions", [])
+        if case not in row.get("case_ids", [])]
     _dump(plan_path, plan)
     contract = {"format": "worker-measurement-contract", "requirements": [
         {"disposition_index": 0, "requirement": dispositions[0]["requirement"],
@@ -72,7 +74,9 @@ def build():
                                          "probe": {"kind": "world_setup", "value": "short_of_500ft", "unit": "categorical"}},
                 "unresolved_judgment_calls": ["actual driver visibility", "legal turning circumstance"],
                 "recording_description": config["recording_description"]}
-    _dump(proposal_dir / "cases.json", {"cases": [proposal]})
+    proposal_path = proposal_dir / "cases.json"
+    prior_cases = json.loads(proposal_path.read_text()).get("cases", []) if proposal_path.is_file() else []
+    _dump(proposal_path, {"cases": [proposal] + [row for row in prior_cases if row.get("case_id") != case]})
     manifest = {"format": "worker-execution-manifest", "assignment_id": HERE.name,
                 "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
                 "status": "diagnostic_incomplete", "cases": [{"case_id": case, "kind": "delivery",

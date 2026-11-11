@@ -2,24 +2,54 @@
   "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
   "input_sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b",
   "status": "partial",
-  "readiness_kind": "diagnostic_construction_checkpoint",
+  "readiness_kind": "two_curve_cases_diagnostic_compatibility_checkpoint",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C129731__NRS-484B-407__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "b2668342615a1ea3711c31cb7b09d5238076f4e65a4f0f65e86c961e8a00581a"
+      "sha256": "25341d63a1b6deb8ecceec752403fb435a8fef8456039acb84e39fb0bb8e6a3c"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --output .runtime-work/c129731-curve-offline-v4",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --output .runtime-work/c129731-curve-offline-v6",
       "exit_code": 0,
-      "log": "curve-short-offline-v4.log",
-      "sha256": "9aa8231439dab5cc0391dcd73b76c05adb0ddeb9f842bedcfb617a1151956ae5"
+      "log": "curve-short-offline-v6.log",
+      "sha256": "a67b427c98fe878f4675c898592f69d562131a41908a4bac506725deb1f1972c"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --output .runtime-work/c129731-curve-compat-v4 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "compatibility.json",
+      "sha256": "8c98a369be0501425dc97459f24e40ec1630ce40852da792dd1efadfa20d1a2e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --attempt .runtime-work/c129731-curve-compat-v4 --output .runtime-work/c129731-curve-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "processing.json",
+      "sha256": "f2242817ad72550a9276847fd6e4d552cbf95ea76f4ab9467db6f6b99f31e123"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-at-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__at_500ft --output .runtime-work/c129731-at-offline-v3",
+      "exit_code": 0,
+      "log": "curve-at-offline-v3.log",
+      "sha256": "1f80c6d7ad10939ec2d580c55b99564b2cf250ff3539bf6f4f106b58950ac9bb"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-at-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__at_500ft --output .runtime-work/c129731-at-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "curve-at-compatibility.json",
+      "sha256": "b66459a597ad2d7137a683596e15520dd6be5be69996fbfa058c8c56304ab2ad"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-at-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__at_500ft --attempt .runtime-work/c129731-at-compat-v1 --output .runtime-work/c129731-at-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "curve-at-processing.json",
+      "sha256": "6f8c3d264316d90a90cfe5b750667a030702ac19e30468a8c9362ebdfd8256da"
     }
   ],
   "remaining_gpu_checks": [
     "Actual U-turn motion, realized curve/crest geometry, two-direction visibility and four-camera coverage."
   ],
-  "reason": "The first curve short-of-500ft synthetic diagnostic construction, lazy Native runner, four-camera setup, two-direction approach controls, source-bound saved analyzer and 13 CPU tests pass exact offline materialization; the full finalizer path is not yet proven. The site remains diagnostic and Native capture is refused. Full positive/negative compatibility and recorded-only processing are unproven; five more cases, three tested fallbacks per selected case, semantic proposals, independent audits and batch handoff remain worker-owned CPU work. Strict delivery gate remains failing; see HANDOFF.md."
+  "reason": "Curve short-of-500ft and at-500ft diagnostic cases pass exact offline, positive/negative full compatibility and recorded-only process-saved. Both use synthetic sources, not physical/legal acceptance. Four selected cases, three distinct tested fallbacks per selected case, reviewed Native site, canonical semantic proposals, independent audits and strict readiness remain worker-owned CPU work; see HANDOFF.md."
 }
