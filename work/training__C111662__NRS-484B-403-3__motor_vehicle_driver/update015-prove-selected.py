@@ -49,7 +49,7 @@ def proof(case, candidate):
         path.parent.mkdir(parents=True, exist_ok=True)
     common = ["--manifest", str(manifest), "--case", case_id, "--candidate", candidate]
     command(["offline", *common, "--output", str(output / "offline")],
-            folder / "offline-command.log")
+            folder / "command-offline.log")
     shutil.copyfile(output / "offline/offline.log", folder / "offline.log")
     require = lambda value, message: value if value else (_ for _ in ()).throw(ValueError(message))
     require(sha(output / "offline/construction.json") == construction,
