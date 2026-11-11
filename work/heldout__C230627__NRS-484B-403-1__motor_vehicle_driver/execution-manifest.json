@@ -1,0 +1,54 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C230627__NRS-484B-403-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C230627__NRS-484B-403-1__motor_vehicle_driver__safety_clear",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "cb527e4faa2ea1d610b815761fb4b346b595b79c228d8e87ec1a828095b4b63d",
+      "measurement_procedure": {
+        "entrypoint": "u_turn_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "U-turn completion, participant motion and camera visibility may fail in Native execution"
+      },
+      "candidates": [],
+      "fixture_recipe": "work/heldout__C230627__NRS-484B-403-1__motor_vehicle_driver/diagnostic-recipe-safety_clear.json",
+      "measurement_contract": "measurement-contract-safety_clear.json",
+      "acquisition": {
+        "u_turn_observation": {
+          "entrypoint": "u_turn_finalizer.py",
+          "method": "joined original Native ego and surrounding actor bodies/yaw/speeds",
+          "evidence": "u_turn_motion.jsonl, u_turn_context.json, trace.jsonl, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230627__NRS-484B-403-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230627__NRS-484B-403-1__motor_vehicle_driver__safety_clear --output .runtime-work/c230627-safety-clear-offline-2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "safety-clear-primary-offline-tests.log",
+        "log_sha256": "8d792d81c28f14e81434cb2a175feb8a800363e60faf05e9aa008104cb37a9c2",
+        "construction_sha256": "cb527e4faa2ea1d610b815761fb4b346b595b79c228d8e87ec1a828095b4b63d"
+      },
+      "compatibility": {
+        "receipt": "safety-clear-primary-compatibility.json",
+        "sha256": "858bb5db76ebc4ae93ec33824bfd8957d6bc5b7eecf9837aa6d0106050f44a08",
+        "log": "safety-clear-primary-compat-analysis.log",
+        "negative_log": "safety-clear-primary-negative.log"
+      },
+      "negative": {
+        "log": "safety-clear-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C230627__NRS-484B-403-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230627__NRS-484B-403-1__motor_vehicle_driver__safety_clear --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C230627__NRS-484B-403-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230627__NRS-484B-403-1__motor_vehicle_driver__safety_clear --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "test_log": "safety_clear-saved-processing-gate.log",
+        "test_log_sha256": "dcc6845365277b7a06db28d3547356c1e7d20c764fa694b6633e2062be43340d",
+        "test_exit_code": 0
+      }
+    }
+  ]
+}

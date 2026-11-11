@@ -78,6 +78,9 @@ def main():
         report['measurements']['turn_signal_observation']['sources']['ego_signal_audio.jsonl'] = '0' * 64
     receipt = audit(root, report, receipt_dir=None if args.negative else Path(args.output).parent / 'video-decodes')
     Path(args.output).write_text(json.dumps(receipt, indent=2) + '\n')
+    print(json.dumps({'case_id': CASE, 'source_integrity_passed': True,
+                      'joined_frames': receipt['joined_frames'],
+                      'physical_visibility_verified': False}))
 
 
 if __name__ == '__main__':

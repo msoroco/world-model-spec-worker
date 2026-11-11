@@ -8,7 +8,7 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "8d68036ee0818eaf2e86b00a684212437ba7ecc80f88b236fc357ac7c9c4ad27",
+      "sha256": "10f4716999da18e13779bb05bb16032cbffe8e539ecdf5f3e698b1de4cef8b49",
       "passed": 20
     },
     {
@@ -112,12 +112,18 @@
       "exit_code": 0,
       "log": "probe-excursion-comparison-receipt-v2.json",
       "sha256": "c29af8923f75642ef2b0f08342e2e8de39e8068fbc50916109038d5a2f0a7cee"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/construction-probe-median-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_east --output .runtime-work/c125714-median-probe-offline-20261111d --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "probe-median-offline.log",
+      "sha256": "0b0673d07043d2fa6a52f0f713a9d984b71b630ff5c0ab6839b6f50eb1de77ff"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA route and body motion in the selected median-opening cell",
     "Original camera pixels, complete participant visibility, and physical case completion"
   ],
-  "reason": "Partial: east/west and unexcepted-left probes pass exact offline, positive/missing-original diagnostic compatibility, synthetic process-saved and independent four-camera source audits. East/west and baseline/left source comparisons pass on CPU fixtures. Left Native acquisition now pins the original selected travel lane at the actor longitudinal position, avoiding opposing-lane reclassification after a crossing. These probes do not establish actual crossing or median-opening geometry. Five exception cases, delivery runners, fallbacks and full semantic proposals remain CPU work. Median-opening route selection now requires an authored map/road/lane/polygon reference and checks multiple original mapped centerline samples in both directions; no cell-specific physical opening source is asserted yet. A CARLA-lazy median-opening map preflight now binds a future authored reference to exact case/direction and emits a route/source-hash receipt, but no selected-map source or Native run is claimed.",
+  "reason": "Partial: east/west and unexcepted-left probes pass exact offline, positive/missing-original diagnostic compatibility, synthetic process-saved and independent four-camera source audits. East/west and baseline/left source comparisons pass on CPU fixtures. Left Native acquisition now pins the original selected travel lane at the actor longitudinal position, avoiding opposing-lane reclassification after a crossing. These probes do not establish actual crossing or median-opening geometry. Five exception cases, delivery runners, fallbacks and full semantic proposals remain CPU work. Median-opening route selection now requires an authored map/road/lane/polygon reference and checks multiple original mapped centerline samples in both directions; no cell-specific physical opening source is asserted yet. A CARLA-lazy median-opening map preflight now binds a future authored reference to exact case/direction and emits a route/source-hash receipt, but no selected-map source or Native run is claimed. A separate CARLA-lazy Native median-opening baseline probe now calls the selected-map opening route validator before spawning and retains four-camera and source acquisition; it has only CPU config/geometry tests and no selected-map execution. Exact median-opening construction-only offline validation passes with a visibly synthetic CPU map reference; no selected-map, compatibility or saved claim follows. Median-opening Native construction now requires two consecutive observed source-bound opening frames; an independent CPU audit rejects changed frame/source/reference/readiness evidence.",
   "readiness_kind": "delivery_prepared"
 }
