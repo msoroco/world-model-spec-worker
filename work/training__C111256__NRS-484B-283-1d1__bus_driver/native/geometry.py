@@ -1,4 +1,4 @@
-"""Authored C111256 intersection with an ego-facing pedestrian Walk device.
+"""Authored C111256 through movement and pedestrian-facing Walk device.
 
 The OpenDRIVE signal is a placement and identity contract. Its illumination and
 legibility still require frame-bound original pixels from a later Native run.
@@ -84,12 +84,17 @@ def route() -> list[list[float]]:
     return [[1.75,round(-40+i*.1,5)] for i in range(801)]
 
 
+def pedestrian_route() -> list[list[float]]:
+    """West-to-east crossing on the marked y=-11 m crosswalk."""
+    return [[round(-6.5+i*.1,5), CROSSWALK_NEAR_Y_M] for i in range(131)]
+
+
 def check() -> dict:
     root = ET.fromstring(open_drive())
     if {r.attrib['id'] for r in root.findall('road')} != {'1','2','3','4','13'}:
         raise ValueError('Two-way intersection roads missing')
     if len(root.findall('junction/connection/laneLink')) != 1:
-        raise ValueError('Right-turn lane link missing')
+        raise ValueError('Through lane link missing')
     if len(root.findall(".//object[@type='crosswalk']")) != 1 or len(root.findall(".//object[@name='stop-line']")) != 1:
         raise ValueError('Marked ego-half crosswalk missing')
     signals=root.findall('.//signal')
@@ -102,8 +107,12 @@ def check() -> dict:
         raise ValueError('Route discontinuity')
     if points[0] != [1.75,-40.0] or points[-1] != [1.75,40.0]:
         raise ValueError('Wrong lane endpoints')
+    pedestrian = pedestrian_route()
+    if pedestrian[0] != [-6.5,-11.0] or pedestrian[-1] != [6.5,-11.0] or not any(abs(x-1.75)<.051 for x,_ in pedestrian):
+        raise ValueError('Pedestrian route does not cross bus lane at marked crosswalk')
     return {'passed': True, 'source_scope':'authored OpenDRIVE and sampled proposed route',
             'cell_id':'C111256', 'law_id':'NRS-484B-283-1d1', 'route_samples':len(points),
+            'pedestrian_route_samples':len(pedestrian), 'routes_intersect_at_xy_m':[1.75,-11.0],
             'stop_line_y_m':STOP_LINE_Y_M, 'crosswalk_near_y_m':CROSSWALK_NEAR_Y_M,
             'intersection_near_y_m':INTERSECTION_NEAR_Y_M,
             'walk_signal_id':WALK_SIGNAL_ID,
@@ -121,5 +130,6 @@ if __name__ == '__main__':
         args.output.mkdir(parents=True,exist_ok=True)
         (args.output/'road.xodr').write_text(open_drive())
         (args.output/'route.json').write_text(json.dumps(route())+'\n')
+        (args.output/'pedestrian-route.json').write_text(json.dumps(pedestrian_route())+'\n')
         (args.output/'geometry-check.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result))

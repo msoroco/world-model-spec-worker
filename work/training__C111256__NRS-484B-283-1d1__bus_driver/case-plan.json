@@ -7,24 +7,21 @@
   "scope_branches": [
     "Bus-driver duty during Walk."
   ],
-  "source_law_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place, such signals indicate as follows: While the “Walk” indication or walking person symbol is illuminated, pedestrians facing the signal may proceed across the highway in the direction of the signal and must be given the right-of-way by the drivers of all vehicles.",
+  "source_law_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words \u201cWalk,\u201d \u201cDon\u2019t Walk,\u201d \u201cWait\u201d or similar symbols are in place, such signals indicate as follows: While the \u201cWalk\u201d indication or walking person symbol is illuminated, pedestrians facing the signal may proceed across the highway in the direction of the signal and must be given the right-of-way by the drivers of all vehicles.",
   "source_law_citation": "NRS 484B.283(1)(d)(1)",
   "requirement_dispositions": [
     {
       "requirement": "text-0",
       "source": "inputs/coverage/branch-sources.json",
-      "status": "selected_required",
-      "evidence_or_gap": "Exact statute: Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]:; no measured Native evidence or source-hashed equivalence receipt yet.",
-      "case_ids": [
-        "training__C111256__NRS-484B-283-1d1__bus_driver__reference",
-        "training__C111256__NRS-484B-283-1d1__bus_driver__contrast"
-      ]
+      "status": "exception_pending",
+      "evidence_or_gap": "Exact introductory exception references require independent source-backed applicability review before selected delivery; this two-case Walk comparison does not close them.",
+      "case_ids": []
     },
     {
       "requirement": "text-1",
       "source": "inputs/coverage/branch-sources.json",
       "status": "selected_required",
-      "evidence_or_gap": "Exact statute: Whenever signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place, such signals indicate as follows:; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "evidence_or_gap": "Exact statute: Whenever signals exhibiting the words \u201cWalk,\u201d \u201cDon\u2019t Walk,\u201d \u201cWait\u201d or similar symbols are in place, such signals indicate as follows:; no measured Native evidence or source-hashed equivalence receipt yet.",
       "case_ids": [
         "training__C111256__NRS-484B-283-1d1__bus_driver__reference",
         "training__C111256__NRS-484B-283-1d1__bus_driver__contrast"
@@ -34,7 +31,7 @@
       "requirement": "text-2",
       "source": "inputs/coverage/branch-sources.json",
       "status": "selected_required",
-      "evidence_or_gap": "Exact statute: While the “Walk” indication or walking person symbol is illuminated, pedestrians facing the signal may proceed across the highway in the direction of the signal and must be given the right-of-way by the drivers of all vehicles.; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "evidence_or_gap": "Exact statute: While the \u201cWalk\u201d indication or walking person symbol is illuminated, pedestrians facing the signal may proceed across the highway in the direction of the signal and must be given the right-of-way by the drivers of all vehicles.; no measured Native evidence or source-hashed equivalence receipt yet.",
       "case_ids": [
         "training__C111256__NRS-484B-283-1d1__bus_driver__reference",
         "training__C111256__NRS-484B-283-1d1__bus_driver__contrast"
@@ -67,7 +64,25 @@
         "text-0",
         "text-1",
         "text-2"
-      ]
+      ],
+      "gap_ids": [
+        "walk_signal_governance",
+        "bus_pedestrian_original_motion",
+        "introductory_exceptions",
+        "exact_selected_delivery"
+      ],
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risks": [
+          "bus through-lane tracking and crosswalk stop margin",
+          "pedestrian-facing Walk display pixel coverage and governance"
+        ],
+        "source_trigger_requirements": [
+          "original bus pose/body",
+          "original source camera pixels",
+          "Native signal identity and map readback"
+        ]
+      }
     },
     {
       "case_id": "training__C111256__NRS-484B-283-1d1__bus_driver__contrast",
@@ -84,7 +99,25 @@
         "text-0",
         "text-1",
         "text-2"
-      ]
+      ],
+      "gap_ids": [
+        "walk_signal_governance",
+        "bus_pedestrian_original_motion",
+        "introductory_exceptions",
+        "exact_selected_delivery"
+      ],
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risks": [
+          "bus through-lane tracking and crosswalk stop margin",
+          "pedestrian-facing Walk display pixel coverage and governance"
+        ],
+        "source_trigger_requirements": [
+          "original bus pose/body",
+          "original source camera pixels",
+          "Native signal identity and map readback"
+        ]
+      }
     }
   ],
   "comparisons": [
@@ -131,75 +164,94 @@
   ],
   "source_observation_mapping": {
     "dev.pedestrian_signal": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Authored device exists; original illuminated Walk pixels and governing direction are still unverified",
       "channels": [
-        "driver_yield_to_walk_pedestrian"
+        "walk_signal_display_observed",
+        "walk_signal_actor_id"
       ],
       "source_refs": [
-        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json"
+        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json",
+        "work/training__C111256__NRS-484B-283-1d1__bus_driver/native/measure_walk.py"
       ]
     },
     "dev.governs": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Native device identity can be read back; independent governance and pedestrian-facing pixel audit are still required",
       "channels": [
-        "driver_yield_to_walk_pedestrian"
+        "walk_signal_actor_id",
+        "road_geometry.json"
       ],
       "source_refs": [
-        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json"
+        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json",
+        "work/training__C111256__NRS-484B-283-1d1__bus_driver/native/measure_walk.py"
       ]
     },
     "ru.pedestrian": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Separate pedestrian actor and full footprint are planned source channels",
       "channels": [
-        "driver_yield_to_walk_pedestrian"
+        "pedestrian_actor_id",
+        "pedestrian_body_xy_m"
       ],
       "source_refs": [
-        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json"
+        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json",
+        "work/training__C111256__NRS-484B-283-1d1__bus_driver/native/measure_walk.py"
       ]
     },
     "st.crosswalk": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Authored crosswalk intersects both routes; Native map readback remains unverified",
       "channels": [
-        "driver_yield_to_walk_pedestrian"
+        "road_geometry.json",
+        "pedestrian_body_xy_m"
       ],
       "source_refs": [
-        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json"
+        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json",
+        "work/training__C111256__NRS-484B-283-1d1__bus_driver/native/measure_walk.py"
       ]
     },
     "rel.occupies": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved analyzer computes footprint overlap with the marked conflict strip",
       "channels": [
-        "driver_yield_to_walk_pedestrian"
+        "pedestrian_body_xy_m",
+        "road_geometry.json"
       ],
       "source_refs": [
-        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json"
+        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json",
+        "work/training__C111256__NRS-484B-283-1d1__bus_driver/native/measure_walk.py"
       ]
     },
     "drv.yields_to": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved analyzer computes synchronized simultaneous occupancy; no legal right-of-way verdict follows from a universal timing cutoff",
       "channels": [
-        "driver_yield_to_walk_pedestrian"
+        "bus_body_xy_m",
+        "pedestrian_body_xy_m",
+        "walk_signal_display_observed"
       ],
       "source_refs": [
-        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json"
+        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json",
+        "work/training__C111256__NRS-484B-283-1d1__bus_driver/native/measure_walk.py"
       ]
     },
     "ru.subject": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Bus blueprint and Native actor identity are proposed; actual driver control remains unverified",
       "channels": [
-        "driver_yield_to_walk_pedestrian"
+        "bus_actor_id",
+        "bus_body_xy_m"
       ],
       "source_refs": [
-        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json"
+        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json",
+        "work/training__C111256__NRS-484B-283-1d1__bus_driver/native/measure_walk.py"
       ]
     },
     "drv.time_to_conflict": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original-shaped 20 Hz frame joins and body overlap support timing brackets, not a statutory threshold",
       "channels": [
-        "driver_yield_to_walk_pedestrian"
+        "native_frame",
+        "time_s",
+        "bus_body_xy_m",
+        "pedestrian_body_xy_m"
       ],
       "source_refs": [
-        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json"
+        "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json",
+        "work/training__C111256__NRS-484B-283-1d1__bus_driver/native/measure_walk.py"
       ]
     }
   },
@@ -226,12 +278,52 @@
     }
   ],
   "runtime_uncertainties": [
-    "No exact CARLA construction, four candidate variants, or offline feasibility proof exists for these case definitions.",
-    "No positive/negative saved fixture, semantic stage validation, independent saved audit, or comparison audit exists.",
-    "Historical membership is context only; no source-hashed accepted equivalence receipt was verified.",
-    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified."
+    "Authored through-road, pedestrian route, current four cameras, source-fed bus yield controller and 480-frame synthetic saved measurement pass local CPU proofs, but exact runtime package and saved processor are incomplete.",
+    "No original Walk display pixels, native governance readback, bus/pedestrian body motion or driver attribution have been captured.",
+    "Cited NRS 484B.287, 484B.290 and 484B.350 exceptions need independent branch treatment.",
+    "Both planned cases remain unselected; selected acceptance, comparison and GPU queue proofs are unfinished worker-owned CPU work."
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "evidence_review": {
+    "reviewer": "worker CPU preparation",
+    "method": "Read frozen law, assignment and conditional witness; confirmed zero accepted full-train membership rows and no evidence.json. Compared exact Walk setup requirements with authored construction and synthetic diagnostic sources.",
+    "facts": [
+      {
+        "source": "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/witnesses.json",
+        "claim": "Witness index 120 is conditional, low confidence and readiness zero. It requires an illuminated pedestrian-facing Walk display, bus/driver identity, highway and crossing geometry, pedestrian direction, synchronized motion and introductory exception review."
+      },
+      {
+        "source": "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json",
+        "claim": "The assignment has zero accepted full-train membership rows; no accepted equivalence receipt is supplied."
+      }
+    ],
+    "gaps": [
+      {
+        "id": "walk_signal_governance",
+        "requirement": "text-1,text-2",
+        "source": "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/witnesses.json",
+        "why_existing_insufficient": "Authored OpenDRIVE pedestrian signal placement and requested display are not original illuminated Walk pixels or verified governance/facing direction."
+      },
+      {
+        "id": "bus_pedestrian_original_motion",
+        "requirement": "text-2",
+        "source": "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/witnesses.json",
+        "why_existing_insufficient": "Synthetic bus hold and saved body overlap are CPU diagnostics. Original bus driver control, pedestrian route and synchronized participant bodies are unrecorded."
+      },
+      {
+        "id": "introductory_exceptions",
+        "requirement": "text-0",
+        "source": "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json",
+        "why_existing_insufficient": "The cited NRS 484B.287, 484B.290 and 484B.350 exceptions have not been independently decomposed into this case plan."
+      },
+      {
+        "id": "exact_selected_delivery",
+        "requirement": "reviewed-scope-0",
+        "source": "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json",
+        "why_existing_insufficient": "Exact materialized construction, runtime offline/compatibility/process-saved receipts, selected source-bound audit, comparison audit and queue remain to be authored and tested."
+      }
+    ]
+  }
 }

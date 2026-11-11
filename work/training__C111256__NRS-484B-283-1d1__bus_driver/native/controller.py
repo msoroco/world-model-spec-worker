@@ -1,4 +1,4 @@
-"""Observed-pose path controller for the proposed C111256 right turn.
+"""Observed-pose path and Walk crossing controller for the proposed C111256 bus.
 
 The route and target speed are requests. Completion is determined separately
 from saved Native body/heading evidence; this controller never asserts it.
@@ -103,3 +103,78 @@ class PathController:
                 "observed_native_xy_m": list(position_xy_m),
                 "observed_native_yaw_rad": yaw_rad,
                 "controller_integral_mps_s": self.speed_integral}
+
+
+@dataclass(frozen=True)
+class WalkFrame:
+    """One joined source observation; this is not a legal right-of-way decision."""
+
+    native_frame: int
+    signal_actor_id: int
+    pedestrian_actor_id: int
+    display: str
+    pedestrian_facing_signal: bool
+    pedestrian_in_crosswalk: bool
+    pedestrian_xy_m: tuple[float, float]
+    bus_front_y_m: float
+    provenance: str
+
+    def validate(self) -> None:
+        if self.native_frame < 0 or self.signal_actor_id <= 0 or self.pedestrian_actor_id <= 0:
+            raise ValueError('Walk frame lacks distinct original actor identities')
+        if self.signal_actor_id == self.pedestrian_actor_id or self.display not in ('Walk', 'DontWalk', 'Wait', 'Unknown'):
+            raise ValueError('Walk frame signal or actors invalid')
+        if self.provenance not in ('native_measured', 'synthetic_native_sample',
+                                   'authored_display_request'):
+            raise ValueError('Walk frame provenance is not identified')
+        if not all(math.isfinite(v) for v in (*self.pedestrian_xy_m, self.bus_front_y_m)):
+            raise ValueError('Walk frame geometry invalid')
+
+
+class WalkYieldController:
+    """Request a bus hold for a source-observed Walk crossing.
+
+    The contrast policy omits this hold for a controlled diagnostic. Neither
+    request proves the bus stopped, the display was physically visible, or a
+    statutory outcome. Those need saved body, signal, pedestrian and pixel data.
+    """
+
+    def __init__(self, path: PathController, *, policy: str,
+                 crosswalk_y_m: float = -11.0, hold_margin_m: float = 1.0):
+        if policy not in ('yield_request', 'no_yield_request'):
+            raise ValueError('Unknown controlled comparison policy')
+        if not math.isfinite(crosswalk_y_m) or not 0 < hold_margin_m <= 5:
+            raise ValueError('Invalid authored crosswalk hold geometry')
+        self.path = path
+        self.policy = policy
+        self.crosswalk_y_m = crosswalk_y_m
+        self.hold_margin_m = hold_margin_m
+
+    def step(self, *, observation: WalkFrame, position_xy_m: tuple[float, float],
+             yaw_rad: float, speed_mps: float, dt_s: float) -> dict:
+        observation.validate()
+        drive = self.path.step(position_xy_m=position_xy_m, yaw_rad=yaw_rad,
+                               speed_mps=speed_mps, dt_s=dt_s)
+        walk_crossing = (observation.display == 'Walk' and
+                         observation.pedestrian_facing_signal and
+                         observation.pedestrian_in_crosswalk and
+                         abs(observation.pedestrian_xy_m[1]-self.crosswalk_y_m) <= 1.5)
+        before_crosswalk = observation.bus_front_y_m < self.crosswalk_y_m-self.hold_margin_m
+        hold = self.policy == 'yield_request' and walk_crossing and before_crosswalk
+        if hold:
+            drive.update(throttle=0.0, brake=1.0, hand_brake=speed_mps < .05,
+                         requested_speed_mps=0.0)
+        drive.update(walk_crossing_source_observed=(walk_crossing and
+                     observation.provenance!='authored_display_request'),
+                     walk_crossing_authored_request=(walk_crossing and
+                     observation.provenance=='authored_display_request'),
+                     hold_requested=hold,
+                     before_crosswalk_source_observed=before_crosswalk,
+                     walk_signal_actor_id=observation.signal_actor_id,
+                     pedestrian_actor_id=observation.pedestrian_actor_id,
+                     source_native_frame=observation.native_frame,
+                     source_provenance=observation.provenance,
+                     policy=self.policy,
+                     physical_yield_observed=False,
+                     legal_outcome_claimed=False)
+        return drive
