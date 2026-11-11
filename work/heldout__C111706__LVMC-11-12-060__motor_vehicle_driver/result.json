@@ -3,7 +3,96 @@
   "input_sha256": "c3d66e20cee068ce6607a7ac2bb702724c3e88bdd8775f7bc42b8644655d8ccc",
   "status": "partial",
   "applied_update": 0,
-  "tests": [],
-  "remaining_gpu_checks": [],
-  "reason": "CPU work incomplete: Construct and compare opposite-direction turns in front of the fire-station driveway/entrance/approaches and use of the driveway/approaches for that purpose. Resolve entrance geometry and intent from source-backed setup, rather than a generic U-turn flag. Exact cases, controlled comparisons, construction/controllers, four source cameras, finalizer, measurements, three tested fallbacks per selected case, semantic proposals, saved-processing and independent audits remain to implement."
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "93b1647e38648308950b15e3c0189b29ea571f7c60255e116644bdad4210fd85",
+      "passed": 10
+    },
+    {
+      "command": "PYTHONPATH=runtime .venv-cpu/bin/python pinned candidate_constructions.validate(root, entry, law, cell, required=True, require_alternate=True, candidate_count=4)",
+      "exit_code": 0,
+      "log": "front-candidate-validation.log",
+      "sha256": "6aab22cd8c5327e9943a4d12478da85716fce563ae349a763b3e5aa186c88390"
+    },
+    {
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/first-provisional-manifest.json --case heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111706-front-primary-offline-1794438839423912973 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "front-primary-offline.log",
+      "sha256": "da7577e0fa4ffc06f55182861962f2c6736add898f52f6956424a235a10d40c1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/first-provisional-manifest.json --case heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn --candidate primary --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "front-primary-compatibility-command.log",
+      "sha256": "d03c6971260f07aac2086884493c304a1b2a2fe4b9d9480a0db232b6681b26d5"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/prove_all_saved.py [primary]",
+      "exit_code": 0,
+      "log": "front-primary-saved-processing.log",
+      "sha256": "9ddbfdfcbb7efc7d1f979c00ab7e1675e595df6840899e6e2d976e5bcb62c860"
+    },
+    {
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/first-provisional-manifest.json --case heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111706-front-fallback1-offline-1794438840211118637 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "front-fallback1-offline.log",
+      "sha256": "47852d9c478a85974621ff4ac2e5a9f9ca71a3cd828a9ee51d4ef380059515ed"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/first-provisional-manifest.json --case heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn --candidate fallback1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "front-fallback1-compatibility-command.log",
+      "sha256": "bfdf4d8eff55c536b6a72d31b5e0e9ead59c765b5eacebd6e372f5b72dade6fd"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/prove_all_saved.py [fallback1]",
+      "exit_code": 0,
+      "log": "front-fallback1-saved-processing.log",
+      "sha256": "334f093e93039c8c5410f57559147a3515988906ed602d1a30d6275c2b373ba4"
+    },
+    {
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/first-provisional-manifest.json --case heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111706-front-fallback2-offline-1794438840636053350 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "front-fallback2-offline.log",
+      "sha256": "935f37b3959626e137de8c84eb347f6491b201b67837f53fe1786327975af852"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/first-provisional-manifest.json --case heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn --candidate fallback2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "front-fallback2-compatibility-command.log",
+      "sha256": "b23236c3c8260c833e23ca7404b3569a1089d52cdfe1bf38f96f0563667e717f"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/prove_all_saved.py [fallback2]",
+      "exit_code": 0,
+      "log": "front-fallback2-saved-processing.log",
+      "sha256": "921793e50a4dc4c2d72f976c90c40018538ed738cd7f0b25df13ab56e7310f4c"
+    },
+    {
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/first-provisional-manifest.json --case heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111706-front-fallback3-offline-1794438841298355349 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "front-fallback3-offline.log",
+      "sha256": "7cfcfc37c09ddf735f38de85e3b3dc99cdbfd50389ed74e3fbb0defda4492dd6"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/first-provisional-manifest.json --case heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn --candidate fallback3 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "front-fallback3-compatibility-command.log",
+      "sha256": "f8e092206b9e2201c2d5401db10763a40e0410e6f2df165b9d4d846772f62b29"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/prove_all_saved.py [fallback3]",
+      "exit_code": 0,
+      "log": "front-fallback3-saved-processing.log",
+      "sha256": "9fa273515604a72bade321ab1b3237cbe3559585c4b03bf9be13f6341d49fcc5"
+    }
+  ],
+  "remaining_gpu_checks": [
+    "Real station asset/map suitability, two-vehicle Native motion and full-body driveway relation",
+    "Actual four-camera pixels and independent station/purpose review"
+  ],
+  "reason": "Four exact fire-station/driveway intents and three comparisons are planned. The first __front_entrance_turn has a two-vehicle CARLA-lazy runner, four source cameras, original-source recorder/finalizer and three distinct risk-triggered fallbacks. Its primary and all fallbacks pass exact offline, positive/missing-other compatibility and saved-only CPU processing; pinned candidate validation and ten local tests pass. The authored diagnostic station schematic is refused by Native execution. A real source-bound station scene/map survey, the other three exact cases and fallbacks, semantic proposals, physical/lifecycle and independent delivery/comparison audits, aggregate saved proofs, queue and integration proof remain worker-owned CPU work. No physical or legal acceptance is claimed."
 }

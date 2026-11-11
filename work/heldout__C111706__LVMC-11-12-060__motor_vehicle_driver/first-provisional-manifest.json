@@ -1,0 +1,155 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn",
+      "construction": "construction-front_entrance_turn.json",
+      "construction_sha256": "10ccd6ef8db8024318d77c0b548279afa2b7d269593f159bdd576ec491e28d11",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "fire_station_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A real station asset, mapped driveway route, opposing actor clearance or four source camera visibility may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-front_entrance_turn-fallback1.json",
+          "construction_sha256": "7d8c64c3da697a6c5c17cc7af4534c09ec9d6e8bf8950e8a723ebf1467540c28",
+          "changed_knobs": [
+            "spawn_height_m=0.45"
+          ],
+          "trigger": {
+            "source": "Native spawn/readback and original body source",
+            "metric": "spawn success and ground-body clearance",
+            "failure_condition": "Primary spawn overlaps mapped surface or fails to create both vehicles"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/first-provisional-manifest.json --case heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111706-front-fallback1-offline-1794438840211118637 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "front-fallback1-offline.log",
+            "log_sha256": "47852d9c478a85974621ff4ac2e5a9f9ca71a3cd828a9ee51d4ef380059515ed",
+            "construction_sha256": "7d8c64c3da697a6c5c17cc7af4534c09ec9d6e8bf8950e8a723ebf1467540c28"
+          },
+          "compatibility": {
+            "receipt": "front-fallback1-compatibility.json",
+            "sha256": "bfdf4d8eff55c536b6a72d31b5e0e9ead59c765b5eacebd6e372f5b72dade6fd",
+            "log": "front-fallback1-compatibility.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "front-fallback1-negative.log",
+            "negative_log_sha256": "570340bfc9ad7ad1456d21d93666095d10676ef3051de3068b9244e9de9ce997"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-front_entrance_turn-fallback2.json",
+          "construction_sha256": "34c53f07b5bc2dfda7e13438c6f3d8917992e9416b4f1eb851cda1d1bc8b586a",
+          "changed_knobs": [
+            "waypoint_arrival_m=3.0"
+          ],
+          "trigger": {
+            "source": "original 20 Hz subject route progress",
+            "metric": "reached final connected route waypoint",
+            "failure_condition": "Primary 2 m arrival radius stalls before station reversal exit"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/first-provisional-manifest.json --case heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111706-front-fallback2-offline-1794438840636053350 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "front-fallback2-offline.log",
+            "log_sha256": "935f37b3959626e137de8c84eb347f6491b201b67837f53fe1786327975af852",
+            "construction_sha256": "34c53f07b5bc2dfda7e13438c6f3d8917992e9416b4f1eb851cda1d1bc8b586a"
+          },
+          "compatibility": {
+            "receipt": "front-fallback2-compatibility.json",
+            "sha256": "b23236c3c8260c833e23ca7404b3569a1089d52cdfe1bf38f96f0563667e717f",
+            "log": "front-fallback2-compatibility.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "front-fallback2-negative.log",
+            "negative_log_sha256": "ea8099b7c164f5010f650ae808274fb538021313a4bb1f4a5a2235090f6fddcd"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-front_entrance_turn-fallback3.json",
+          "construction_sha256": "2859e0d7521028f14d573c5ab6b0f3d96c3b785b9f40f9e49e291093eeffb8a4",
+          "changed_knobs": [
+            "overview_height_delta_m=2.0"
+          ],
+          "trigger": {
+            "source": "overview.mkv and original frame map",
+            "metric": "both actor bodies and entrance pixels visible",
+            "failure_condition": "Primary overview mount occludes a vehicle body or station entrance"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/first-provisional-manifest.json --case heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111706-front-fallback3-offline-1794438841298355349 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "front-fallback3-offline.log",
+            "log_sha256": "7cfcfc37c09ddf735f38de85e3b3dc99cdbfd50389ed74e3fbb0defda4492dd6",
+            "construction_sha256": "2859e0d7521028f14d573c5ab6b0f3d96c3b785b9f40f9e49e291093eeffb8a4"
+          },
+          "compatibility": {
+            "receipt": "front-fallback3-compatibility.json",
+            "sha256": "f8e092206b9e2201c2d5401db10763a40e0410e6f2df165b9d4d846772f62b29",
+            "log": "front-fallback3-compatibility.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "front-fallback3-negative.log",
+            "negative_log_sha256": "268e2d28eb764d1f01646526a8fe85cbc9caa29999936203b7bfe95e47485f4f"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract-front_entrance_turn.json",
+      "fixture_recipe": "work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/diagnostic-recipe-front_entrance_turn.json",
+      "acquisition": {
+        "reversal_heading_deg": {
+          "entrypoint": "fire_station_finalizer.py",
+          "method": "original subject/other body, map survey and frame join",
+          "evidence": "station_survey.json, subject_original.jsonl, other_original.jsonl, video_frames.jsonl and trace.jsonl"
+        },
+        "entrance_overlap_frames": {
+          "entrypoint": "fire_station_finalizer.py",
+          "method": "original subject/other body, map survey and frame join",
+          "evidence": "station_survey.json, subject_original.jsonl, other_original.jsonl, video_frames.jsonl and trace.jsonl"
+        },
+        "approach_overlap_frames": {
+          "entrypoint": "fire_station_finalizer.py",
+          "method": "original subject/other body, map survey and frame join",
+          "evidence": "station_survey.json, subject_original.jsonl, other_original.jsonl, video_frames.jsonl and trace.jsonl"
+        },
+        "driveway_lane_frames": {
+          "entrypoint": "fire_station_finalizer.py",
+          "method": "original subject/other body, map survey and frame join",
+          "evidence": "station_survey.json, subject_original.jsonl, other_original.jsonl, video_frames.jsonl and trace.jsonl"
+        },
+        "other_body_clearance_m": {
+          "entrypoint": "fire_station_finalizer.py",
+          "method": "original subject/other body, map survey and frame join",
+          "evidence": "station_survey.json, subject_original.jsonl, other_original.jsonl, video_frames.jsonl and trace.jsonl"
+        },
+        "subject_path_length_m": {
+          "entrypoint": "fire_station_finalizer.py",
+          "method": "original subject/other body, map survey and frame join",
+          "evidence": "station_survey.json, subject_original.jsonl, other_original.jsonl, video_frames.jsonl and trace.jsonl"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/first-provisional-manifest.json --case heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111706-front-primary-offline-1794438839423912973 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "front-primary-offline.log",
+        "log_sha256": "da7577e0fa4ffc06f55182861962f2c6736add898f52f6956424a235a10d40c1",
+        "construction_sha256": "10ccd6ef8db8024318d77c0b548279afa2b7d269593f159bdd576ec491e28d11"
+      },
+      "compatibility": {
+        "receipt": "front-primary-compatibility.json",
+        "sha256": "d03c6971260f07aac2086884493c304a1b2a2fe4b9d9480a0db232b6681b26d5",
+        "log": "front-primary-compatibility.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_log": "front-primary-negative.log",
+        "negative_log_sha256": "aaba3084bbe6f7aa6a3fba494dd1b3f9e642290fbbc77350276775e9b5c4be7a"
+      }
+    }
+  ]
+}

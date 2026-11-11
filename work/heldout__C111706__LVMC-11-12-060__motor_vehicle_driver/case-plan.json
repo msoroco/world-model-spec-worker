@@ -3,9 +3,154 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C111706",
   "law_id": "LVMC-11-12-060",
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn",
+      "target_law_id": "LVMC-11-12-060",
+      "branch": "front_entrance_turn",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "provisional_exact_cpu_proven",
+      "physical_risk": {
+        "risk": "The authored body sweep may miss the mapped entrance footprint or the other vehicle may obstruct the reversal",
+        "trigger_source": "original 20 Hz subject/other body and map station survey",
+        "trigger_metric": "mapped footprint overlap, driveway lane occupancy, heading reversal and other-vehicle clearance",
+        "failure_condition": "missing original frames, unintended footprint, collision or incomplete reversal"
+      },
+      "provisional_manifest": "first-provisional-manifest.json"
+    },
+    {
+      "case_id": "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_approach_turn",
+      "target_law_id": "LVMC-11-12-060",
+      "branch": "front_approach_turn",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "planned_cpu_construction_pending",
+      "physical_risk": {
+        "risk": "The approach footprint or opposing-vehicle clearance may be lost under Native route selection",
+        "trigger_source": "original 20 Hz subject/other body and map station survey",
+        "trigger_metric": "mapped footprint overlap, driveway lane occupancy, heading reversal and other-vehicle clearance",
+        "failure_condition": "missing original frames, unintended footprint, collision or incomplete reversal"
+      }
+    },
+    {
+      "case_id": "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__driveway_use_turn",
+      "target_law_id": "LVMC-11-12-060",
+      "branch": "driveway_use_turn",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "planned_cpu_construction_pending",
+      "physical_risk": {
+        "risk": "The selected driveway branch may be disconnected or too narrow for a complete turn",
+        "trigger_source": "original 20 Hz subject/other body and map station survey",
+        "trigger_metric": "mapped footprint overlap, driveway lane occupancy, heading reversal and other-vehicle clearance",
+        "failure_condition": "missing original frames, unintended footprint, collision or incomplete reversal"
+      }
+    },
+    {
+      "case_id": "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__remote_reference",
+      "target_law_id": "LVMC-11-12-060",
+      "branch": "remote_reference",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "construction_status": "planned_cpu_construction_pending",
+      "physical_risk": {
+        "risk": "The comparison route may drift onto a station approach or fail to complete a reversal",
+        "trigger_source": "original 20 Hz subject/other body and map station survey",
+        "trigger_metric": "mapped footprint overlap, driveway lane occupancy, heading reversal and other-vehicle clearance",
+        "failure_condition": "missing original frames, unintended footprint, collision or incomplete reversal"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "entrance_vs_remote",
+      "case_ids": [
+        "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn",
+        "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__remote_reference"
+      ],
+      "fixed_conditions": [
+        "same surveyed fire-station asset, public road and driveway geometry",
+        "same motor-vehicle actor and independently retained other vehicle",
+        "same 20 Hz four-camera duration and original body measurement"
+      ],
+      "deliberate_differences": [
+        "original full-body overlap with mapped entrance front versus remote public-road reversal"
+      ]
+    },
+    {
+      "comparison_id": "approach_vs_remote",
+      "case_ids": [
+        "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_approach_turn",
+        "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__remote_reference"
+      ],
+      "fixed_conditions": [
+        "same surveyed fire-station asset, public road and driveway geometry",
+        "same motor-vehicle actor and independently retained other vehicle",
+        "same 20 Hz four-camera duration and original body measurement"
+      ],
+      "deliberate_differences": [
+        "original full-body overlap with mapped approach versus remote public-road reversal"
+      ]
+    },
+    {
+      "comparison_id": "driveway_use_vs_front",
+      "case_ids": [
+        "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__driveway_use_turn",
+        "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn"
+      ],
+      "fixed_conditions": [
+        "same surveyed fire-station asset, public road and driveway geometry",
+        "same motor-vehicle actor and independently retained other vehicle",
+        "same 20 Hz four-camera duration and original body measurement"
+      ],
+      "deliberate_differences": [
+        "original distinct driveway-lane entry and path use versus public-road-only reversal"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "fire_station_identity",
+      "unit": "source-backed context",
+      "mandatory": true,
+      "source": "original station asset/map survey with hash"
+    },
+    {
+      "name": "subject_reversal_deg",
+      "unit": "degrees",
+      "mandatory": true,
+      "source": "original 20 Hz subject heading and body track"
+    },
+    {
+      "name": "entrance_body_overlap",
+      "unit": "frames",
+      "mandatory": true,
+      "source": "original subject body corners and mapped entrance polygon"
+    },
+    {
+      "name": "approach_body_overlap",
+      "unit": "frames",
+      "mandatory": true,
+      "source": "original subject body corners and mapped approach polygon"
+    },
+    {
+      "name": "driveway_path_use",
+      "unit": "frames",
+      "mandatory": true,
+      "source": "original subject lane identity and driveway branch"
+    },
+    {
+      "name": "other_vehicle_clearance_m",
+      "unit": "m",
+      "mandatory": true,
+      "source": "original other vehicle body corners on joined frames"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/assignment.json",
@@ -35,5 +180,126 @@
         "why_existing_insufficient": "The frozen evidence inventory lists no accepted recordings for this assignment."
       }
     ]
+  },
+  "requirement_dispositions": [
+    {
+      "requirement": "Compare reversal in front of the driveway, entrance or approaches and use of those surfaces for opposite-direction turning without a numeric legal cutoff",
+      "source": "inputs/heldout__C111706__LVMC-11-12-060__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn",
+        "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_approach_turn",
+        "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__driveway_use_turn",
+        "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__remote_reference"
+      ],
+      "evidence_or_gap": "No accepted recordings; uncovered-branches is the source-backed gap."
+    }
+  ],
+  "source_observation_mapping": {
+    "st.fire_station_entrance": {
+      "measurement": "fire_station_identity",
+      "evidence": [
+        "original station survey",
+        "subject and other 20 Hz body source"
+      ],
+      "channels": [
+        "fire_station_identity"
+      ],
+      "source_refs": [
+        "station_survey.json",
+        "subject_original.jsonl",
+        "other_original.jsonl"
+      ]
+    },
+    "drv.u_turn": {
+      "measurement": "subject_reversal_deg",
+      "evidence": [
+        "original station survey",
+        "subject and other 20 Hz body source"
+      ],
+      "channels": [
+        "subject_reversal_deg"
+      ],
+      "source_refs": [
+        "station_survey.json",
+        "subject_original.jsonl",
+        "other_original.jsonl"
+      ]
+    },
+    "kin.heading": {
+      "measurement": "subject_reversal_deg",
+      "evidence": [
+        "original station survey",
+        "subject and other 20 Hz body source"
+      ],
+      "channels": [
+        "subject_reversal_deg"
+      ],
+      "source_refs": [
+        "station_survey.json",
+        "subject_original.jsonl",
+        "other_original.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "measurement": "entrance_body_overlap",
+      "evidence": [
+        "original station survey",
+        "subject and other 20 Hz body source"
+      ],
+      "channels": [
+        "entrance_body_overlap"
+      ],
+      "source_refs": [
+        "station_survey.json",
+        "subject_original.jsonl",
+        "other_original.jsonl"
+      ]
+    },
+    "kin.position": {
+      "measurement": "approach_body_overlap",
+      "evidence": [
+        "original station survey",
+        "subject and other 20 Hz body source"
+      ],
+      "channels": [
+        "approach_body_overlap"
+      ],
+      "source_refs": [
+        "station_survey.json",
+        "subject_original.jsonl",
+        "other_original.jsonl"
+      ]
+    },
+    "st.driveway_or_alley_entrance": {
+      "measurement": "driveway_path_use",
+      "evidence": [
+        "original station survey",
+        "subject and other 20 Hz body source"
+      ],
+      "channels": [
+        "driveway_path_use"
+      ],
+      "source_refs": [
+        "station_survey.json",
+        "subject_original.jsonl",
+        "other_original.jsonl"
+      ]
+    },
+    "kin.path_length": {
+      "measurement": "subject_path_length_m",
+      "evidence": [
+        "original station survey",
+        "subject and other 20 Hz body source"
+      ],
+      "channels": [
+        "subject_path_length_m"
+      ],
+      "source_refs": [
+        "station_survey.json",
+        "subject_original.jsonl",
+        "other_original.jsonl"
+      ]
+    }
   }
 }

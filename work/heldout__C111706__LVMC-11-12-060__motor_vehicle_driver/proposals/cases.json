@@ -1,0 +1,99 @@
+{
+  "status": "draft",
+  "cell_id": "C111706",
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "heldout__C111706__LVMC-11-12-060__motor_vehicle_driver__front_entrance_turn",
+      "target_law_id": "LVMC-11-12-060",
+      "target_type": "boundary_probe",
+      "rationale": "Original full-body station-front turn with a separately retained other vehicle; synthetic station geometry does not establish a real station or legal turning purpose.",
+      "variable_assignments": {
+        "station_front_entrance": {
+          "kind": "world_setup",
+          "value": "source-hashed mapped entrance polygon"
+        },
+        "other_vehicle": {
+          "kind": "world_setup",
+          "value": "separate Native actor with original body source"
+        },
+        "opposite_direction_turn": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whether the asset is legally a fire station",
+        "whether the subject used the driveway for the purpose of turning"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "reversal_heading_deg",
+            "unit": "deg",
+            "method": "original first-to-last heading",
+            "sampling_rate_hz": 20,
+            "time_window": "original station reversal capture",
+            "reference_frame": "Native map XY and original frame",
+            "uncertainty": "20 Hz sampling, body bounds and source station identity"
+          },
+          {
+            "name": "entrance_overlap_frames",
+            "unit": "frames",
+            "method": "original full-body entrance overlap",
+            "sampling_rate_hz": 20,
+            "time_window": "original station reversal capture",
+            "reference_frame": "Native map XY and original frame",
+            "uncertainty": "20 Hz sampling, body bounds and source station identity"
+          },
+          {
+            "name": "approach_overlap_frames",
+            "unit": "frames",
+            "method": "original full-body approach overlap",
+            "sampling_rate_hz": 20,
+            "time_window": "original station reversal capture",
+            "reference_frame": "Native map XY and original frame",
+            "uncertainty": "20 Hz sampling, body bounds and source station identity"
+          },
+          {
+            "name": "driveway_lane_frames",
+            "unit": "frames",
+            "method": "original mapped driveway lane occupancy",
+            "sampling_rate_hz": 20,
+            "time_window": "original station reversal capture",
+            "reference_frame": "Native map XY and original frame",
+            "uncertainty": "20 Hz sampling, body bounds and source station identity"
+          },
+          {
+            "name": "other_body_clearance_m",
+            "unit": "m",
+            "method": "original two-body ground clearance",
+            "sampling_rate_hz": 20,
+            "time_window": "original station reversal capture",
+            "reference_frame": "Native map XY and original frame",
+            "uncertainty": "20 Hz sampling, body bounds and source station identity"
+          },
+          {
+            "name": "subject_path_length_m",
+            "unit": "m",
+            "method": "original center-path length",
+            "sampling_rate_hz": 20,
+            "time_window": "original station reversal capture",
+            "reference_frame": "Native map XY and original frame",
+            "uncertainty": "20 Hz sampling, body bounds and source station identity"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "station_context",
+            "unit": "structured record",
+            "method": "original source-hashed station survey"
+          }
+        ],
+        "limitations": [
+          "Real fire-station identity, actual pixels, motion and turning purpose require independent review."
+        ]
+      }
+    }
+  ]
+}
