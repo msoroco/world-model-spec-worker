@@ -10,6 +10,7 @@ import traceback
 from build import RATE
 from capture import actor_row, control, sha, xyz
 from divided_opening import BRANCH, CASE, check
+from frontage import authored_plan, spawn_and_measure
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
@@ -78,6 +79,12 @@ def capture(bundle, output, host, port):
             lanes[name] = {"road_id": road_id, "lane_id": lane_id,
                            "lane_type": str(wp.lane_type),
                            "native_xyz_m": xyz(wp.transform.location)}
+        frontage_plan = json.loads((bundle / 'frontage-plan.json').read_text())
+        if frontage_plan != authored_plan():
+            raise RuntimeError('Source-pinned frontage plan differs')
+        frontage_readback = spawn_and_measure(world, carla, frontage_plan, owned)
+        (output / 'native-frontage-readback.json').write_text(
+            json.dumps(frontage_readback, indent=2) + '\n')
         ego = world.try_spawn_actor(
             world.get_blueprint_library().find(cfg["ego_blueprint"]),
             carla.Transform(carla.Location(x=-80, y=-6, z=1.5),

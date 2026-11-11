@@ -55,7 +55,7 @@ def run():
         proof_dir=ROOT/'update015-current-primary'/case
         proof_dir.mkdir(parents=True,exist_ok=True)
         for name,source in [('compatibility.json',attempt/'compatibility.json'),
-                            ('compatibility-analysis.log',attempt/'compatibility-analysis.log'),
+                            ('analysis.log',attempt/'compatibility-analysis.log'),
                             ('negative-analysis.log',attempt/'negative-analysis.log'),
                             ('processing.json',processing),
                             ('saved-analysis.log',saved/'v0001/analysis.log')]:

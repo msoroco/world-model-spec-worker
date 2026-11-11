@@ -38,7 +38,8 @@ def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt/'result.json').exists() or (attempt/'channels').exists():
         raise ValueError('Retain prior finalization; choose a fresh attempt')
-    for name in ('construction.json', 'config.json', 'raw.json', 'trace.jsonl', 'video_frames.jsonl'):
+    for name in ('construction.json', 'config.json', 'raw.json', 'trace.jsonl', 'video_frames.jsonl',
+                 'frontage-plan.json'):
         require(attempt/name)
     config = json.loads((attempt/'config.json').read_text())
     construction = json.loads((attempt/'construction.json').read_text())
@@ -94,7 +95,8 @@ def finalize(attempt, output):
     road_name = 'road.xodr'
     for name, source_name, output_name in (
         ('authored_road', road_name, 'road-context.json'),
-        ('authored_request', 'requested-tracks.jsonl', 'request-context.json')):
+        ('authored_request', 'requested-tracks.jsonl', 'request-context.json'),
+        ('authored_frontage', 'frontage-plan.json', 'frontage-context.json')):
         require(attempt/source_name)
         (attempt/output_name).write_text(json.dumps({name:{'source':source_name,
             'sha256':sha(attempt/source_name)}},indent=2)+'\n')

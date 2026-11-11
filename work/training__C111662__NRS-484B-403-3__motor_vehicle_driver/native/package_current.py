@@ -43,7 +43,8 @@ def build():
                                    ('u_turn_at_intersection_or_opening','bool'))]
     recording = {'channels': channels, 'context_inputs': [
         {'name': 'authored_road', 'unit': 'structured', 'method': 'source-hashed OpenDRIVE'},
-        {'name': 'authored_request', 'unit': 'structured', 'method': 'source-hashed requested-tracks.jsonl'}],
+        {'name': 'authored_request', 'unit': 'structured', 'method': 'source-hashed requested-tracks.jsonl'},
+        {'name': 'authored_frontage', 'unit': 'structured', 'method': 'source-hashed frontage plan and Native geometry readback pending'}],
         'limitations': ['Original district designation, physical U-turn, and exception status unverified']}
     code = (HERE/'finalize_current.py').read_text()
     for case in CASES:
@@ -81,6 +82,17 @@ def build():
         for candidate in CANDIDATES:
             construction = json.loads(source(case,candidate).read_text())
             files = construction['files']
+            capture_paths = {f'work/{AID}/native/capture.py', f'work/{AID}/native/capture_divided.py'}
+            for item in files:
+                if item['path'] in capture_paths:
+                    item['content'] = (HERE/Path(item['path']).name).read_text()
+            frontage_code = (HERE/'frontage.py').read_text()
+            files.extend([
+                {'path':'frontage.py','content':frontage_code},
+                {'path':f'work/{AID}/native/frontage.py','content':frontage_code},
+                {'path':'frontage-plan.json','content':(HERE/'frontage-plan.json').read_text()},
+                {'path':'tests/test_frontage.py','content':(HERE/'tests/test_frontage.py').read_text()},
+            ])
             road_name = 'divided-highway.xodr' if case.startswith('divided_') else 'district-crossroads.xodr'
             files.append({'path':'road.xodr', 'content':next(item['content'] for item in files if item['path']==road_name)})
             cfg_entry = next(item for item in files if item['path']=='config.json')

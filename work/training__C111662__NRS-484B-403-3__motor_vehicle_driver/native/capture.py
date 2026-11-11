@@ -10,6 +10,7 @@ import traceback
 
 from build import FRAMES, RATE
 from check import check
+from frontage import authored_plan, spawn_and_measure
 
 
 def sha(path):
@@ -91,6 +92,11 @@ def capture(bundle,output,host,port):
         if lanes['junction_eastbound_outer']['road_id']!=404 or \
                 mapping.get_waypoint_xodr(404,-3,20).get_junction().id!=1:
             raise RuntimeError('Generated intersection missing')
+        frontage_plan=json.loads((bundle/'frontage-plan.json').read_text())
+        if frontage_plan!=authored_plan():
+            raise RuntimeError('Source-pinned frontage plan differs')
+        frontage_readback=spawn_and_measure(world,carla,frontage_plan,owned)
+        (output/'native-frontage-readback.json').write_text(json.dumps(frontage_readback,indent=2)+'\n')
         ego=world.try_spawn_actor(world.get_blueprint_library().find(cfg['ego_blueprint']),
                                   carla.Transform(carla.Location(x=-80,y=-6,z=1.5),carla.Rotation(yaw=0)))
         if ego is None:raise RuntimeError('Physical ego vehicle did not spawn')

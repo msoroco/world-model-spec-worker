@@ -35,7 +35,7 @@ def prove(case,candidate):
         if result.returncode:raise ValueError(f'{case}/{candidate} {name}: '+result.stderr[-1300:])
     run(['compatibility','--manifest',str(manifest),'--case',case_id,
          '--candidate',candidate,'--output',str(attempt),
-         '--library',str(LIBRARY),'--validator',str(VALIDATOR)],'compatibility-command.log')
+         '--library',str(LIBRARY),'--validator',str(VALIDATOR)],'compat-command.log')
     compatibility=json.loads((attempt/'compatibility.json').read_text())
     if compatibility.get('passed') is not True or compatibility.get('candidate_id')!=candidate:
         raise ValueError('Fallback compatibility receipt incomplete')
@@ -47,7 +47,7 @@ def prove(case,candidate):
     if receipt.get('passed') is not True or receipt.get('candidate_id')!=candidate:
         raise ValueError('Fallback saved-processing receipt incomplete')
     for name,source in [('compatibility.json',attempt/'compatibility.json'),
-                        ('compatibility-analysis.log',attempt/'compatibility-analysis.log'),
+                        ('analysis.log',attempt/'compatibility-analysis.log'),
                         ('negative-analysis.log',attempt/'negative-analysis.log'),
                         ('processing.json',processing),('saved-analysis.log',saved/'v0001/analysis.log')]:
         shutil.copyfile(source,proof_dir/name)
