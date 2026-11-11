@@ -1,11 +1,39 @@
 {
+  "cell_id": "C10014",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C10014__NRS-484B-477-2__motor_vehicle_driver__reference",
-      "target_law_id": "NRS-484B-477-2",
-      "target_type": "attempt",
-      "cell_id": "C10014",
-      "actor": "motor_vehicle_driver",
+      "case_id": "training__C10014__NRS-484B-477-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral reference setup definition; no baseline recording is selected.",
+      "variable_assignments": {
+        "alley_geometry": {
+          "kind": "world_setup",
+          "value": "authored alley with Native survey pending"
+        },
+        "abutting_property_access": {
+          "kind": "world_setup",
+          "value": "authored entrance; property access pending verification"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_stop_station_m": {
+          "kind": "controller",
+          "value": -12.0
+        },
+        "commanded_approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_nominal"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -94,19 +122,172 @@
           "Physical stopping and original camera coverage remain unverified"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "stopped_footprint_at_abutting_entrance",
-      "requested_setting": {
-        "stationary_entrance_overlap_target_m": 0.0
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C10014__NRS-484B-477-2__motor_vehicle_driver__reference",
+      "target_law_id": "NRS-484B-477-2",
+      "target_type": "boundary_probe",
+      "rationale": "Selected descriptive entrance-footprint comparison; no legal blocking label or numeric cutoff is inferred.",
+      "variable_assignments": {
+        "alley_geometry": {
+          "kind": "world_setup",
+          "value": "authored alley with Native survey pending"
+        },
+        "abutting_property_access": {
+          "kind": "world_setup",
+          "value": "authored entrance; property access pending verification"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_stop_station_m": {
+          "kind": "controller",
+          "value": -12.0
+        },
+        "commanded_approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_nominal"
+        }
       },
-      "status": "draft_not_selected"
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.alley",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native road/lane ID and source-backed alley designation",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+          },
+          {
+            "name": "st.driveway_or_alley_entrance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native map readback and independent abutting property access boundary source",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Full ordered original Native vehicle footprint in alley and entrance corridor",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native vehicle body footprint dimensions and vertices",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor pose and center",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity and sampled stationary interval",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, lane, velocity, body and applied controller request",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Each original source camera frame joined to Native frame and time",
+            "time_window": "entire original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms sampling, body/map precision, unresolved legal blocking judgment"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surveyed_alley_entrance",
+            "unit": "structured",
+            "method": "Native alley/driveway lane readback and independent property access designation"
+          }
+        ],
+        "limitations": [
+          "Authored map and waypoint IDs do not establish legal abutting-property access",
+          "Entrance footprint overlap is descriptive and does not itself decide legal blocking",
+          "Physical stopping and original camera coverage remain unverified"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "block the driveway or entrance to any abutting property"
+      ],
+      "paired_probe_id": "alley_entrance_position_pair",
+      "deliberate_differences": [
+        "commanded_stop_station_m"
+      ],
+      "probe": {
+        "primary_variable": "commanded_stop_station_m",
+        "comparison_or_standard": "paired observed footprint at the same authored entrance",
+        "target_value_or_branch": -12.0,
+        "descriptive_overlap_target_m": 0.0
+      }
     },
     {
       "case_id": "training__C10014__NRS-484B-477-2__motor_vehicle_driver__contrast",
       "target_law_id": "NRS-484B-477-2",
-      "target_type": "attempt",
-      "cell_id": "C10014",
-      "actor": "motor_vehicle_driver",
+      "target_type": "boundary_probe",
+      "rationale": "Selected descriptive entrance-footprint comparison; no legal blocking label or numeric cutoff is inferred.",
+      "variable_assignments": {
+        "alley_geometry": {
+          "kind": "world_setup",
+          "value": "authored alley with Native survey pending"
+        },
+        "abutting_property_access": {
+          "kind": "world_setup",
+          "value": "authored entrance; property access pending verification"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_stop_station_m": {
+          "kind": "controller",
+          "value": 0.0
+        },
+        "commanded_approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_nominal"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -195,12 +376,86 @@
           "Physical stopping and original camera coverage remain unverified"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "stopped_footprint_at_abutting_entrance",
-      "requested_setting": {
-        "stationary_entrance_overlap_target_m": 5.2
-      },
-      "status": "draft_not_selected"
+      "unresolved_judgment_calls": [
+        "block the driveway or entrance to any abutting property"
+      ],
+      "paired_probe_id": "alley_entrance_position_pair",
+      "deliberate_differences": [
+        "commanded_stop_station_m"
+      ],
+      "probe": {
+        "primary_variable": "commanded_stop_station_m",
+        "comparison_or_standard": "paired observed footprint at the same authored entrance",
+        "target_value_or_branch": 0.0,
+        "descriptive_overlap_target_m": 5.2
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "alley_access_obstruction_judgment",
+      "target_law_id": "NRS-484B-477-2",
+      "judgment_refs": [
+        {
+          "phrase": "block the driveway or entrance to any abutting property",
+          "note": "Qualitative access obstruction; overlap alone does not decide legal blocking.",
+          "observable_requirements": {
+            "observables": [
+              {
+                "name": "st.alley",
+                "unit": "structured",
+                "description": "Original road and lane identity throughout the stop interval."
+              },
+              {
+                "name": "rel.occupies",
+                "unit": "structured",
+                "description": "Original full vehicle footprint and lane relation."
+              },
+              {
+                "name": "ego_speed",
+                "unit": "structured",
+                "description": "Measured original velocity and stationary interval."
+              }
+            ],
+            "context_inputs": [
+              {
+                "name": "surveyed_alley_entrance",
+                "unit": "structured",
+                "description": "Source-hashed Native lane survey, entrance boundary and property-access review context."
+              }
+            ],
+            "sweep_dimensions": [],
+            "landmarks": [],
+            "recording_needs": [
+              {
+                "name": "st.driveway_or_alley_entrance",
+                "unit": "structured",
+                "description": "Source-backed entrance and abutting-property access designation."
+              },
+              {
+                "name": "kin.position",
+                "unit": "structured",
+                "description": "Frame-joined original actor center and heading."
+              },
+              {
+                "name": "kin.extent",
+                "unit": "structured",
+                "description": "Frame-joined original full body footprint."
+              }
+            ],
+            "limitations": [
+              "The statute supplies no numeric overlap threshold for blocking.",
+              "Authored alley geometry and synthetic pixels do not establish actual access or legal obstruction."
+            ]
+          }
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The selected pair samples footprint position only; legal access obstruction needs a source-backed physical range and separate judgment review.",
+      "missing_inputs": [
+        "Source-backed Native abutting-property access boundary and usable passage geometry",
+        "Measured feasible stop-station range and resolution for an independent fixed physical sweep"
+      ]
     }
   ]
 }

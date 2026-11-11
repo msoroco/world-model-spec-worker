@@ -1,0 +1,81 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C10014__NRS-484B-477-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "cases": [
+    {
+      "case_id": "training__C10014__NRS-484B-477-2__motor_vehicle_driver__reference",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native abutting-property access, precise stop, route tracking and source-camera framing require original evidence"
+      },
+      "measurement_contract": "draft-measurements/reference/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10014-alley-entrance-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/update015-diagnostic-reference-recipe.json",
+      "kind": "delivery",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_offline_compat_saved_proven_physical_unverified",
+      "construction": "construction.json",
+      "construction_sha256": "f5c36eac1dbb90be005cf74586a53c136c1e2a6e1cd451acc11f7a554c532e63",
+      "acquisition": {
+        "st.alley": {
+          "entrypoint": "runner.py",
+          "method": "original Native road and lane waypoint readback",
+          "evidence": "road_geometry.json, native_samples.jsonl"
+        },
+        "st.driveway_or_alley_entrance": {
+          "entrypoint": "runner.py",
+          "method": "surveyed Native driveway lane and authored entrance bounds",
+          "evidence": "road_geometry.json, native_samples.jsonl; property designation pending review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "ordered original Native body footprint per frame",
+          "evidence": "native_samples.jsonl, body_history.jsonl"
+        },
+        "kin.extent": {
+          "entrypoint": "runner.py",
+          "method": "original actor bounding box vertices per frame",
+          "evidence": "body_history.jsonl, native_samples.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original actor pose and center per frame",
+          "evidence": "native_samples.jsonl, trace.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "measured original actor velocity norm",
+          "evidence": "native_samples.jsonl"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "method": "joined original pose, body, lane and controller request",
+          "evidence": "native_samples.jsonl"
+        },
+        "camera_frame_join": {
+          "entrypoint": "runner.py",
+          "method": "four source-camera frames joined to original Native frame",
+          "evidence": "video_frames.jsonl, four source .mkv files"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/execution-manifest.json --case training__C10014__NRS-484B-477-2__motor_vehicle_driver__reference --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10014-update017-reference-primary-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10014-update017-reference-primary-saved",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/execution-manifest.json --case training__C10014__NRS-484B-477-2__motor_vehicle_driver__reference --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10014-update017-reference-primary-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10014-update017-reference-primary-saved",
+        "test_log": "update017-reference-primary-saved.log",
+        "test_log_sha256": "2b16b4fcaf45016f11820b7240a4f6d827b558f4964fb199795255127ed3be88",
+        "test_exit_code": 0,
+        "scope": "synthetic saved-processing proof; actual Native feedback unverified"
+      },
+      "candidates": []
+    }
+  ]
+}
