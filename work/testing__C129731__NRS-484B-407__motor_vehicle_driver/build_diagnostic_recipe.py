@@ -21,11 +21,11 @@ def lines(rows):
     return "".join(json.dumps(row, separators=(",", ":"), allow_nan=False)+"\n" for row in rows)
 
 
-def body(x, y):
-    return [[x+dx, y+dy, z] for dx in (-1, 1) for dy in (-.8, .8) for z in (0, 1.5)]
+def body(x, y, height=0.):
+    return [[x+dx, y+dy, height+z] for dx in (-1, 1) for dy in (-.8, .8) for z in (0, 1.5)]
 
 
-def visibility(x, y, probe):
+def visibility(x, y, probe, height=0.):
     if probe == "short_of_500ft":
         bracket, clear = [150., 150.125], False
     elif probe == "at_500ft":
@@ -38,7 +38,7 @@ def visibility(x, y, probe):
             "distance_convention": "incoming driving-lane waypoint arc length to actor projected station",
             "eye_height_m": 1.4, "scan_step_m": 10., "horizon_tolerance_m": .25,
             "probe_distance_m": 152.4,
-            "ego_body_samples_m": [[x+dx,y+dy,1.] for dx,dy in
+            "ego_body_samples_m": [[x+dx,y+dy,height+1.] for dx,dy in
                                    ((0,0),(-1,-.8),(-1,.8),(1,-.8),(1,.8),
                                     (-1,0),(1,0),(0,-.8),(0,.8))],
             "ego_projection":{"road_id":10,"section_id":0,"lane_id":-1},
@@ -50,11 +50,15 @@ def visibility(x, y, probe):
                  "any_body_sight_horizon": {"bound": "at_least", "distance_m": 160.}}]}
 
 
-def build(variant="short_of_500ft"):
-    if variant == "short_of_500ft":
+def build(variant="short_of_500ft", feature="curve"):
+    if feature == "crest":
+        suffix = "-crest-" + {"short_of_500ft": "short", "at_500ft": "at", "beyond_500ft": "beyond"}[variant]
+    elif variant == "short_of_500ft":
         suffix = ""
     elif variant == "at_500ft":
         suffix = "-at"
+    elif variant == "beyond_500ft":
+        suffix = "-beyond"
     else:
         raise ValueError("Fixture source variant is not yet constructed")
     config = json.loads((HERE/("config"+suffix+".json")).read_text())
@@ -62,7 +66,7 @@ def build(variant="short_of_500ft"):
     site_path = HERE/("diagnostic-site"+suffix+".json")
     site = json.loads(site_path.read_text())
     site_sha = sha(site_path)
-    if site["probe"] != variant or not case.endswith("__curve__"+variant):
+    if site["probe"] != variant or site["feature"] != feature or not case.endswith("__"+feature+"__"+variant):
         raise ValueError("Fixture case/site probe differs")
     target = HERE/("diagnostic-sources"+suffix)
     target.mkdir(exist_ok=True)
@@ -72,10 +76,13 @@ def build(variant="short_of_500ft"):
         frame, time = i+1000, i/20
         fraction = min(1., i/400)
         x, y, yaw = -10+10*fraction, 2*min(1., max(0., (i-100)/300)), 180*fraction
-        vertices = body(x, y)
-        ego = {"location_xyz_m": [x,y,0], "yaw_deg": yaw,
+        height = 8*(1-abs(x)/160) if feature == "crest" else 0.
+        vertices = body(x, y, height)
+        ego = {"location_xyz_m": [x,y,height], "yaw_deg": yaw,
                "velocity_xyz_mps": [0 if i>=400 else .5,0,0], "road_lane": [10,-1]}
-        approaches = {name: {"location_xyz_m": [(-160+i*.05 if name=="approach_a" else 160-i*.05),0,0],
+        approaches = {name: {"location_xyz_m": [(-160+i*.05 if name=="approach_a" else 160-i*.05),0,
+                                              (8*(1-abs(-160+i*.05 if name=="approach_a" else 160-i*.05)/160)
+                                               if feature=="crest" else 0)],
                               "yaw_deg": 0 if name=="approach_a" else 180,
                               "velocity_xyz_mps": [1 if name=="approach_a" else -1,0,0],
                               "road_lane": [10,lane]}
@@ -84,15 +91,15 @@ def build(variant="short_of_500ft"):
         motion.append({"video_frame":i,"native_frame":frame,"site_source_sha256":site_sha,
                        "ego":ego,"approaches":approaches})
         turns.append({"frame":frame,"time_s":time,"body_vertices_m":vertices,"heading_deg":yaw})
-        traces.append({"frame":frame,"time_s":time,"position_m":[x,y,0],
-                       "position":{"x":x,"y":y,"z":0},
+        traces.append({"frame":frame,"time_s":time,"position_m":[x,y,height],
+                       "position":{"x":x,"y":y,"z":height},
                        "heading_deg":yaw,"speed_mps":ego["velocity_xyz_mps"][0],
                        "speed_mph":ego["velocity_xyz_mps"][0]/.44704,
                        "velocity_mps":ego["velocity_xyz_mps"],
                        "control":{"throttle":0,"steer":0,"brake":0 if i<400 else 1,
                                   "hand_brake":False,"reverse":False}})
         participant = {"actor_id":101,"blueprint":"vehicle.tesla.model3",
-                       "position_m":[x,y,0],"heading_deg":yaw,
+                       "position_m":[x,y,height],"heading_deg":yaw,
                        "velocity_mps":ego["velocity_xyz_mps"],
                        "speed_mps":ego["velocity_xyz_mps"][0],
                        "accel_longitudinal_mps2":0,
@@ -101,12 +108,12 @@ def build(variant="short_of_500ft"):
                     "map_context":{"declared_public_way_road_ids":[10]}}
         evidence.append({"original_frame":frame,"replay_frame":frame,"actor_id":101,
                          "recording_time_s":time,"replay_simulation_time_s":time,
-                         "ego":{"position_m":[x,y,0],"heading_deg":yaw,
+                         "ego":{"position_m":[x,y,height],"heading_deg":yaw,
                                 "speed_mps":ego["velocity_xyz_mps"][0],
                                 "speed_provenance":"synthetic_native_sample",
                                 "body_vertices_m":vertices},
                          "world":{},
-                         "original_observations":original,"visibility":visibility(x,y,variant)})
+                         "original_observations":original,"visibility":visibility(x,y,variant,height)})
         base, abstract = (f"graphs/{kind}/{frame:08d}.pkl" for kind in ("base","abstract"))
         frames.append({"frame":frame,"simulation_time":time,"base":base,"abstract":abstract,
                        "nodes":0,"edges":0,"extraction_seconds":0,"capture_seconds":0})
@@ -124,6 +131,13 @@ def build(variant="short_of_500ft"):
             for lane in list(lane_group.findall("lane")):
                 if lane.get("id") not in ("-1","0","1"):
                     lane_group.remove(lane)
+        if feature == "crest":
+            elevation = source_road.find("elevationProfile")
+            for old in list(elevation):
+                elevation.remove(old)
+            for distance, a, b in ((0,0,0),(40,0,.05),(200,8,-.05),(360,0,0)):
+                ET.SubElement(elevation,"elevation",{"s":str(distance),"a":str(a),
+                         "b":str(b),"c":"0","d":"0"})
     sources = {"motion_history.jsonl":lines(motion),"turn_history.jsonl":lines(turns),
                "video_frames.jsonl":lines(maps),"trace.jsonl":lines(traces),
                "capture/evidence.jsonl":lines(evidence),
@@ -161,5 +175,7 @@ def build(variant="short_of_500ft"):
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser()
-    parser.add_argument("--variant",choices=("short_of_500ft","at_500ft"),default="short_of_500ft")
-    print(json.dumps(build(parser.parse_args().variant),indent=2))
+    parser.add_argument("--feature",choices=("curve","crest"),default="curve")
+    parser.add_argument("--variant",choices=("short_of_500ft","at_500ft","beyond_500ft"),default="short_of_500ft")
+    args=parser.parse_args()
+    print(json.dumps(build(args.variant,args.feature),indent=2))

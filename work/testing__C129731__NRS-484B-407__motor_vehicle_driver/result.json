@@ -2,7 +2,7 @@
   "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
   "input_sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b",
   "status": "partial",
-  "readiness_kind": "two_curve_cases_diagnostic_compatibility_checkpoint",
+  "readiness_kind": "four_selected_cases_diagnostic_compatibility_checkpoint",
   "applied_update": 0,
   "tests": [
     {
@@ -46,10 +46,46 @@
       "exit_code": 0,
       "log": "curve-at-processing.json",
       "sha256": "6f8c3d264316d90a90cfe5b750667a030702ac19e30468a8c9362ebdfd8256da"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-beyond-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__beyond_500ft --output .runtime-work/c129731-beyond-offline-v1",
+      "exit_code": 0,
+      "log": "curve-beyond-offline-v1.log",
+      "sha256": "80617d922f643b2c85dc424ceafdb7600c85e124c16b7e0fe911d4a7bd67e898"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-beyond-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__beyond_500ft --output .runtime-work/c129731-beyond-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "curve-beyond-compatibility.json",
+      "sha256": "40ff2acee67e5ab542fea211d5671be4cee94b42cccd983b01c6d19a344db773"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-beyond-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__beyond_500ft --attempt .runtime-work/c129731-beyond-compat-v2 --output .runtime-work/c129731-beyond-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "curve-beyond-processing.json",
+      "sha256": "1167a9e410b27b4b6f62915537a82e5a10f15e2621f140ecd2a679e2b305a7c6"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-crest-short-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --output .runtime-work/c129731-crest-short-offline-v1",
+      "exit_code": 0,
+      "log": "crest-short-offline-v1.log",
+      "sha256": "6f729c071717b9f5cbb339c1e756351fb6309d9b7f0fe2327cdb9bfd36b20af9"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-crest-short-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --output .runtime-work/c129731-crest-short-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "crest-short-compatibility.json",
+      "sha256": "9790fa8c1a3108cf1c3f8fe1baad418e1754ed2cb4ec748563c89341d8dd1623"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-crest-short-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --attempt .runtime-work/c129731-crest-short-compat-v1 --output .runtime-work/c129731-crest-short-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "crest-short-processing.json",
+      "sha256": "1beb12d855d91862a302f033a43b62b6e98b7001d71d24b45da2a7b1e2243c39"
     }
   ],
   "remaining_gpu_checks": [
     "Actual U-turn motion, realized curve/crest geometry, two-direction visibility and four-camera coverage."
   ],
-  "reason": "Curve short-of-500ft and at-500ft diagnostic cases pass exact offline, positive/negative full compatibility and recorded-only process-saved. Both use synthetic sources, not physical/legal acceptance. Four selected cases, three distinct tested fallbacks per selected case, reviewed Native site, canonical semantic proposals, independent audits and strict readiness remain worker-owned CPU work; see HANDOFF.md."
+  "reason": "Three curve cases and first crest short-of-500ft diagnostic case pass exact offline, positive/negative compatibility, and recorded-only process-saved. Two crest cases, three tested fallbacks per selected case, reviewed Native site, full proposals and independent audits remain worker-owned CPU work; no physical/legal acceptance. See HANDOFF.md."
 }

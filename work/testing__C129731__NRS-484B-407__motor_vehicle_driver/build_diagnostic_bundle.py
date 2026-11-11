@@ -19,6 +19,7 @@ def build():
     config = json.loads((HERE / "config.json").read_text())
     case = config["selected_case_id"]
     at_case = case.replace("short_of_500ft", "at_500ft")
+    beyond_case = case.replace("short_of_500ft", "beyond_500ft")
     files = [HERE / name for name in ("runner.py", "finalizer.py", "site_construction.py", "u_turn_control.py",
               "visibility_measure.py", "camera_encoder.py", "camera_setup.py",
               "config.json", "diagnostic-site.json")]
@@ -45,10 +46,10 @@ def build():
     law_source = "NRS 484B.407; inputs/" + HERE.name + "/assignment.json"
     dispositions = [
         {"requirement": "At the U-turn site, retain both original incoming approach rays and their brackets against 500 feet (152.4 m), without a driver-eye or legal-visibility inference",
-         "source": law_source, "status": "selected_required", "case_ids": [case, at_case],
+         "source": law_source, "status": "selected_required", "case_ids": [case, at_case, beyond_case],
          "evidence_or_gap": "Original capture/evidence.jsonl visibility, motion_history.jsonl and video_frames.jsonl; actual driver sight remains unverified."},
         {"requirement": "Retain original vehicle body and heading reversal at a sourced curve, together with the maneuver site and both approach lanes",
-         "source": law_source, "status": "selected_required", "case_ids": [case, at_case],
+         "source": law_source, "status": "selected_required", "case_ids": [case, at_case, beyond_case],
          "evidence_or_gap": "Original turn_history.jsonl, curve_context.json and motion/frame join; physical location and motion await Native capture."}]
     plan["requirement_dispositions"] = dispositions + [row for row in plan.get("requirement_dispositions", [])
         if case not in row.get("case_ids", [])]
