@@ -18,12 +18,22 @@ native=root/'work'/'NAME'/'native'
 sys.path.insert(0,str(native))
 from check import check
 from saved import make_raw,process
-from capture import control
+from capture import control,camera_specs
 from prove_original_processing import prove
 
 class ExactTurn(unittest.TestCase):
     def setUp(self):
         self.bundle=native/'drafts'/'SUFFIX'/'CANDIDATE'
+
+    def test_current_four_camera_profile(self):
+        config=json.loads((self.bundle/'config.json').read_text())
+        specs=camera_specs(config['camera_policy'])
+        self.assertEqual([(row[0],row[1],row[2]) for row in specs],
+                         [('overview',1920,1080),('approach',1280,720),
+                          ('reference_corner',1280,720),('driver_reference',1280,720)])
+        self.assertEqual(camera_specs('elevated_overview')[0][3][2],55)
+        with self.assertRaisesRegex(ValueError,'Unknown camera policy'):
+            camera_specs('unknown')
 
     def test_source_bound_request(self):
         result=check(self.bundle)

@@ -43,6 +43,17 @@ def control(actor,target,carla):
     return carla.VehicleControl(throttle=max(.08,min(.7,.25+.11*(desired-speed))),brake=0,steer=steer)
 
 
+def camera_specs(policy):
+    """Exact current four-source capability profile for a U-turn attempt."""
+    if policy not in ('standard', 'elevated_overview'):
+        raise ValueError('Unknown camera policy')
+    height=55 if policy=='elevated_overview' else 38
+    return (('overview',1920,1080,(-20,0,height),-45,-90),
+            ('approach',1280,720,(-65,-10,4),0,-8),
+            ('reference_corner',1280,720,(10,15,12),-135,-35),
+            ('driver_reference',1280,720,(18,-10,9),145,-24))
+
+
 def capture(bundle,output,host,port):
     import carla
     import numpy as np
@@ -84,10 +95,7 @@ def capture(bundle,output,host,port):
                                   carla.Transform(carla.Location(x=-80,y=-6,z=1.5),carla.Rotation(yaw=0)))
         if ego is None:raise RuntimeError('Physical ego vehicle did not spawn')
         owned.append(ego)
-        height=55 if cfg['camera_policy']=='elevated_overview' else 38
-        specs=(('ego_view',1280,720,(-65,-10,4),0,-8),
-               ('turn_view',1280,720,(10,15,12),-135,-35),
-               ('overview',1280,720,(-20,0,height),-45,-90))
+        specs=camera_specs(cfg['camera_policy'])
         for name,width,pixels,position,yaw,pitch in specs:
             bp=world.get_blueprint_library().find('sensor.camera.rgb')
             for key,value in (('image_size_x',width),('image_size_y',pixels),('fov',80),('sensor_tick',0)):

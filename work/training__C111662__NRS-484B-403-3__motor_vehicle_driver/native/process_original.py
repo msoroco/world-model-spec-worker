@@ -8,7 +8,9 @@ import subprocess
 from build import FRAMES, RATE
 from check import check
 
-CAMERAS = ("ego_view", "turn_view", "overview")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+CAMERA_SIZES = {"overview": (1920, 1080), "approach": (1280, 720),
+                "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 LANES = {
     "west_eastbound_outer": (403, -3),
     "west_westbound_outer": (403, 3),
@@ -43,15 +45,19 @@ def media_hash(path, synthetic_fixture):
         try:
             result = subprocess.run(
                 ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
-                 "-show_entries", "stream=codec_name,nb_read_frames", "-of", "json", str(path)],
+                 "-show_entries", "stream=codec_name,nb_read_frames,width,height,r_frame_rate", "-of", "json", str(path)],
                 capture_output=True, text=True, timeout=120)
         except FileNotFoundError as exc:
             raise ValueError("ffprobe unavailable") from exc
         if result.returncode:
             raise ValueError("Original camera media unreadable")
         streams = json.loads(result.stdout).get("streams", [])
-        if len(streams) != 1 or streams[0].get("codec_name") != "ffv1" or \
-                streams[0].get("nb_read_frames") != str(FRAMES):
+        size = CAMERA_SIZES.get(path.stem)
+        if (len(streams) != 1 or size is None or
+                streams[0].get("codec_name") != "ffv1" or
+                streams[0].get("nb_read_frames") != str(FRAMES) or
+                (streams[0].get("width"), streams[0].get("height")) != size or
+                streams[0].get("r_frame_rate") != "20/1"):
             raise ValueError("Original FFV1 frame contract")
     return sha(path)
 

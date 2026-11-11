@@ -1,6 +1,6 @@
 # training__C111331__NRS-484B-307-6a__motor_vehicle_driver
 
-Status: blocked. No delivery recording is selected or claimed.
+Status: partial. Eight unselected current CPU bundles pass; no delivery recording is selected or claimed.
 
 ## Source review
 
@@ -10,9 +10,9 @@ Law: NRS 484B.307(6)(a). Exact text and topic inventory are referenced by hashes
 
 entry before versus after observed red exhibition. Compare only `intersection_entry_signal_phase` (yellow_or_red) while fixing cell, actor, legal context, traffic controls, weather, other controller settings, and capture plan. The 2 case definitions are unselected and have no observed values.
 
-## Blocker and resumption
+## Current gaps and resumption
 
-Executable Native package and all four candidate offline/compatibility proofs absent; exact statutory exceptions and historical equivalence remain unverified. Build and validate semantic stages, exact Native construction, four distinct candidates per selected case, full mandatory capture, saved positive/negative fixtures, independent audits, and comparison audit. Keep unsupported exception branches explicit. Only then set `ready`/`delivery_prepared` and add the exact GPU queue commands. Do not infer legal verdicts from CPU fixtures.
+The eight unselected packages pass current pinned offline, exact positive/negative compatibility and actual saved processing. The independent CPU audit passes. Selection still needs source-reviewed accepted-evidence equivalence and exact delivery case decisions; then author and CPU-test the selected semantic stage proposals, independent delivery/physical acceptance and comparison audits, and queue. Original Native signal/body behavior and camera pixels require later capture review. Do not infer a legal verdict from synthetic fixtures. The batch strict gate also rejects the existing `runtime/pipeline/runs/scenario_pipeline/inputs/shared/manifest.json` as an unapproved output; this runtime file is outside the permitted edit scope.
 
 ## 2026-11-07 CPU request construction
 
@@ -27,3 +27,13 @@ The original runner saved pre-tick controller speed beside post-tick pose/body/s
 ## 2026-11-07 statutory CPU branch closure
 
 The frozen NRS 484B.307(6)(a) source has five topic IDs and one branch covering yellow warning followed by red exhibition and the prohibition on entry during red. The two existing controlled cases and four constructions per case now satisfy the CPU executable branch contract. `work/_shared/branch-coverage.json` marks this branch `runnable` and binds current manifest, offline, saved-finalizer and portable-audit hashes; `native/statutory-source-audit.json` independently rechecks the frozen topics, controlled pair, exact receipts and adversarial request mutations. Its SHA-256 is `89737a96f226df69297fd91c08dd935adde4bac2e32b237de3d47f20ca82a946`. This is statutory CPU planning closure only. The assignment remains blocked and unselected because physical signal/pixel observation, strict selected v2 and delivery acceptance are unproved.
+
+## 2026-11-11 current pinned CPU continuation
+
+`draft-execution-manifest.json` binds the eight current unselected primary/fallback constructions and two source-hashed 480-frame text recipes. All **8/8** current `.venv-cpu` offline checks, **8/8** exact `runtime.py compatibility` positive/removed-Native-source negative paths, and **8/8** actual `runtime.py process-saved` paths pass. Each compatibility path executes the saved finalizer, Native validator, four-camera check, Core/Lean converter, render and final decode. The diagnostic source explicitly uses synthetic Native speed provenance. Current proof matrix SHA-256: `8460b3cc782d20f58e32f222188d87ba16399cd7c4c76203cf7407ea418e2a31`; manifest SHA-256: `d4c307f6e21c26490ad107888ec0092f9862da3bfef1233d01ca02fd6a0eba74`.
+
+`update015-audit-cpu.py` independently binds the source/recipe/construction/receipt hashes, recomputes the controlled same-body-path yellow-at-entry versus red-at-entry pair, checks fallback knob isolation, and rejects changed receipt hash, missing bundle and unpassed bundle mutations. It passes (audit SHA-256 `8f6567bd173aca07a7e37f8e15535152f91431ce94a2a5f0ddfe14a06ba4d5c2`; log SHA-256 `75ba59c1f08ee3175fe3a61fc8b057171595b4021ab2881c69762a777e54f488`). The reference reports entry frame 203, yellow at entry and red onset 240; contrast reports entry frame 203, red at entry and red onset 190. These are synthetic saved-row measurements; original pixels and physical causation remain unverified. The text recipe builder reproduces the retained recipe hashes.
+
+Resume with the accepted-evidence source review and exact selected-case decision, then selected stage proposals and independent delivery/comparison audits. Rerun affected CPU receipts after any construction, finalizer or recipe change. No physical or legal acceptance is claimed.
+
+Current assignment-scoped `.venv-cpu/bin/python worker_check.py --complete --assignment training__C111331__NRS-484B-307-6a__motor_vehicle_driver` passes (log SHA-256 `9036884324b80c0764a90120cea976ed68de986c6cca3feae4f01cda35b2f79c`). The complete strict gate exits 1 at `Unapproved output: runtime/pipeline/runs/scenario_pipeline/inputs/shared/manifest.json` (log SHA-256 `8d7e8fd1171ae719680b30734c114c2710c02b8b6f271e6d3072b4371c96bdfd`). The file is under runtime, which the worker is forbidden to edit. Even after that gate artifact is resolved by the runtime owner, the batch has partial/missing packages; this assignment still needs worker-owned selected-case and delivery audit construction.
