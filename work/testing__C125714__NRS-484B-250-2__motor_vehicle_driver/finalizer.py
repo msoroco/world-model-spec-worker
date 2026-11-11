@@ -113,8 +113,12 @@ def finalize(attempt: Path, output: Path):
     channels = attempt / "channels"
     channels.mkdir()
     payload = measurement(report)
-    (channels / "entry_context.json").write_text(json.dumps(payload, indent=2, allow_nan=False) + "\n")
+    (channels / "entry_context.json").write_text(json.dumps({"entry_context": payload}, indent=2, allow_nan=False) + "\n")
     (channels / "yield_control.json").write_text(json.dumps(control, indent=2, allow_nan=False) + "\n")
+    (channels / "yield_control.jsonl").write_text("".join(json.dumps({"time_s": row["time_s"],
+        "value": {"frame": row["frame"], "hold": row["ego_control"]["hold"]}},
+        allow_nan=False) + "\n" for row in
+        (json.loads(line) for line in (attempt / "controller_history.jsonl").read_text().splitlines() if line.strip())))
     measurements = {
         "body_entry_timing": measure_body_entry_timing(report),
         "approach_side": measure_approach_side(report),
@@ -141,7 +145,7 @@ def finalize(attempt: Path, output: Path):
         "recording_evidence": [{"name": "entry_context", "unit": "structured record",
                                 "reference": "channels/entry_context.json"},
                                {"name": "yield_control", "unit": "structured record",
-                                "reference": "channels/yield_control.json"}],
+                                "reference": "channels/yield_control.jsonl"}],
         "source_evidence_hashes": {**report["sources"],
                                    "controller_history.jsonl": _sha(attempt / "controller_history.jsonl")},
         "capture_evidence_sha256": _sha(attempt / "capture/evidence.jsonl"),

@@ -7,12 +7,69 @@
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_near_time",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "7225c5ea1b6d38d03eac25c703b1c7e4b4908140d9faa5df216ceaa01e9e9506",
+      "construction_sha256": "a92aaed5d495fec7614ee2d3e1be1b24e3a9d01658090fdc64d5901c0d998638",
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
       "measurement_contract": "measurement-contract.json",
       "fixture_recipe": "work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/diagnostic-recipe.json",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "a92aaed5d495fec7614ee2d3e1be1b24e3a9d01658090fdc64d5901c0d998638",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_near_time --output .runtime-work/c125714-250-2-primary-offline-v8",
+        "log": "primary-offline.log",
+        "log_sha256": "b0dafbad2c32deabfa6fdc76dcc83b76f1a2fb8e4fc39af5cd2050043f908a2b"
+      },
+      "compatibility": {
+        "receipt": "primary-compatibility-receipt.json",
+        "sha256": "2712f84f9a12db825e2cef3b78881afc56cdb7073391d39b3e8c9e84848f0d3c",
+        "log": "primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "capture_sources.py",
+          "method": "source actor identity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native vehicle blueprint",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "capture_sources.py",
+          "method": "original body and pose",
+          "evidence": "trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor velocity",
+          "evidence": "trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor velocity magnitude",
+          "evidence": "trace.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "site_packet.py",
+          "method": "source-bound crossing polygon and Native junction",
+          "evidence": "road_geometry.json"
+        },
+        "rel.bearing": {
+          "entrypoint": "entry_measurements.py",
+          "method": "sourced approach projection",
+          "evidence": "road_geometry.json"
+        },
+        "yield_control": {
+          "entrypoint": "finalizer.py",
+          "method": "original controller-frame join",
+          "evidence": "controller_history.jsonl"
+        }
+      },
       "candidate_risk": {
         "status": "physical",
         "reason": "Native approach timing or camera coverage may fail"

@@ -26,6 +26,10 @@ def sha(data):
     return hashlib.sha256(data.encode()).hexdigest()
 
 
+def file_sha(path):
+    return hashlib.sha256((PACKAGE / path).read_bytes()).hexdigest()
+
+
 def build():
     site = {"native_map_name": "SyntheticFixtureTown", "crossing_id": 7,
             "ego_highway_id": 1, "other_highway_id": 2,
@@ -89,8 +93,13 @@ def build():
               "required_atoms": ["ru.subject", "ru.motor_vehicle", "kin.position",
                                  "kin.velocity", "kin.speed", "st.intersection", "rel.bearing"],
               "source_packets": [], "case": {"diagnostic_only": True},
-              "recording_description": {"purpose": "synthetic CPU median-entry diagnostic",
-                                        "physical_acceptance_claimed": False},
+              "recording_description": {"channels": [{"name": "yield_control", "unit": "structured record",
+                  "method": "Original controller frame joined to body history", "time_window": "entire capture",
+                  "reference_frame": "original Native frame", "uncertainty": "synthetic fixture only",
+                  "sampling_rate_hz": 20}],
+                  "context_inputs": [{"name": "entry_context", "unit": "structured record",
+                      "method": "Saved body entry and sourced crossing geometry"}],
+                  "limitations": ["Diagnostic media and site have no physical or legal acceptance"]},
               "physical_completion": {"criterion": "intersection_clearance",
                                       "motion_source": "crossing_history.jsonl",
                                       "body_key": "ego_vertices_m",
@@ -126,6 +135,24 @@ def build():
                            "measurement_procedure": {"entrypoint": "finalizer.py"},
                            "measurement_contract": "measurement-contract.json",
                            "fixture_recipe": "work/" + PACKAGE.name + "/diagnostic-recipe.json",
+                           "offline": {"exit_code": 0,
+                                       "construction_sha256": sha(construction),
+                                       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/" + PACKAGE.name + "/execution-manifest.json --case " + CASE + " --output .runtime-work/c125714-250-2-primary-offline-v8",
+                                       "log": "primary-offline.log",
+                                       "log_sha256": file_sha("primary-offline.log")},
+                           "compatibility": {"receipt": "primary-compatibility-receipt.json",
+                                             "sha256": file_sha("primary-compatibility-receipt.json"),
+                                             "log": "primary-compatibility-analysis.log"},
+                           "negative": {"log": "primary-negative-analysis.log"},
+                           "acquisition": {
+                               "ru.subject": {"entrypoint": "capture_sources.py", "method": "source actor identity", "evidence": "capture/evidence.jsonl"},
+                               "ru.motor_vehicle": {"entrypoint": "capture_sources.py", "method": "Native vehicle blueprint", "evidence": "capture/evidence.jsonl"},
+                               "kin.position": {"entrypoint": "capture_sources.py", "method": "original body and pose", "evidence": "trace.jsonl"},
+                               "kin.velocity": {"entrypoint": "capture_sources.py", "method": "original actor velocity", "evidence": "trace.jsonl"},
+                               "kin.speed": {"entrypoint": "capture_sources.py", "method": "original actor velocity magnitude", "evidence": "trace.jsonl"},
+                               "st.intersection": {"entrypoint": "site_packet.py", "method": "source-bound crossing polygon and Native junction", "evidence": "road_geometry.json"},
+                               "rel.bearing": {"entrypoint": "entry_measurements.py", "method": "sourced approach projection", "evidence": "road_geometry.json"},
+                               "yield_control": {"entrypoint": "finalizer.py", "method": "original controller-frame join", "evidence": "controller_history.jsonl"}},
                            "candidate_risk": {"status": "physical",
                                               "reason": "Native approach timing or camera coverage may fail"},
                            "candidates": []}]}
