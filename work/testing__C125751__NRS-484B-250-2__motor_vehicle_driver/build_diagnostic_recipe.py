@@ -5,6 +5,7 @@ are included; the finalizer must recreate them from the retained sources.
 """
 import hashlib
 import copy
+import argparse
 import json
 import sys
 import tempfile
@@ -16,7 +17,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "runtime/scenario_pipeline"))
 from worker_exchange.fixture_generator import generate, inspect
 
-ATTEMPT = ROOT / ".runtime-work/c125751-two-signal-saved-source-55s-v3/operative"
+SOURCE_ROOT = ROOT / ".runtime-work/c125751-two-signal-saved-source-55s-v4"
 SOURCE_NAMES = ("road_geometry.json", "crossing_history.jsonl", "signal_context.json",
                 "signal_history.jsonl", "stop_context.json", "stop_history.jsonl",
                 "video_frames.jsonl", "trace.jsonl",
@@ -41,7 +42,7 @@ def _body3(vertices):
     return [[x, y, z] for x, y in vertices for z in (0, 1.5)]
 
 
-def converter_envelope(sources, trace, stops):
+def converter_envelope(sources, trace, stops, case_id):
     """Make original-frame diagnostic converter inputs for every saved frame."""
     reference = json.loads((ROOT / "work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/diagnostic.json").read_text())
     reference_files = reference["files"]
@@ -91,7 +92,7 @@ def converter_envelope(sources, trace, stops):
     sources["capture/recorder_info.txt"] = reference_files["capture/recorder_info.txt"]
     sources["road.xodr"] = reference_files["road.xodr"]
     manifest = {"status": "draft", "acquisition": "synthetic_diagnostic",
-                "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
+                "case_id": case_id,
                 "map": "Carla/Maps/OpenDriveMap", "frames": len(frames),
                 "required_observations": [], "extraction_confirmed": True,
                 "sources": {"road.xodr": hashlib.sha256(sources["road.xodr"].encode()).hexdigest(),
@@ -100,8 +101,12 @@ def converter_envelope(sources, trace, stops):
     return graphs
 
 
-def build():
-    sources = {name: (ATTEMPT / name).read_text() for name in SOURCE_NAMES}
+def build(label="operative"):
+    if label not in ("operative", "off"):
+        raise ValueError("Choose an exact signal case")
+    attempt = SOURCE_ROOT / label
+    case_id = "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_" + label
+    sources = {name: (attempt / name).read_text() for name in SOURCE_NAMES}
     trace = [json.loads(line) for line in sources["trace.jsonl"].splitlines() if line.strip()]
     stops = [json.loads(line) for line in sources["stop_history.jsonl"].splitlines() if line.strip()]
     if len(trace) != len(stops):
@@ -111,7 +116,7 @@ def build():
         row["position"] = {"x": x, "y": y, "z": z}
         row["heading_deg"] = 0
         row["speed_mps"] = stop["ego"]["speed_mps"]
-    graphs = converter_envelope(sources, trace, stops)
+    graphs = converter_envelope(sources, trace, stops, case_id)
     spec = {"files": {}, "graphs": graphs,
             "videos": [{"path": name, "frames": 1100, "width": size[0],
                         "height": size[1], "fps": 20, "color": "black"}
@@ -125,7 +130,8 @@ def build():
             review = json.loads(sources[role])
             review["source_video_sha256"] = sha(generated / camera)
             sources[role] = json.dumps(review, indent=2) + "\n"
-    source_dir = HERE / "diagnostic-sources"
+    name_suffix = "" if label == "operative" else "-off"
+    source_dir = HERE / ("diagnostic" + name_suffix + "-sources")
     source_dir.mkdir(exist_ok=True)
     items = []
     for name, content in sorted(sources.items()):
@@ -133,7 +139,7 @@ def build():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content)
         items.append({"path": name, "source": str(path.relative_to(ROOT)), "sha256": sha(path)})
-    path = HERE / "diagnostic.json"
+    path = HERE / ("diagnostic" + name_suffix + ".json")
     path.write_text(json.dumps(spec, separators=(",", ":")) + "\n")
     if path.stat().st_size > 2 * 1024 * 1024:
         raise ValueError("Diagnostic source spec exceeds worker file size limit")
@@ -141,10 +147,13 @@ def build():
     recipe = {"format": "worker-fixture-recipe",
               "sources": items + [{"path": "diagnostic-input.json", "source": relative, "sha256": sha(path)}],
               "generator": {"source": relative, "sha256": sha(path)}}
-    (HERE / "diagnostic-recipe.json").write_text(json.dumps(recipe, indent=2) + "\n")
+    recipe_path = HERE / ("diagnostic" + name_suffix + "-recipe.json")
+    recipe_path.write_text(json.dumps(recipe, indent=2) + "\n")
     return {"source_spec": relative, "size_bytes": path.stat().st_size,
-            "source_sha256": sha(path), "recipe_sha256": sha(HERE / "diagnostic-recipe.json")}
+            "source_sha256": sha(path), "recipe_sha256": sha(recipe_path)}
 
 
 if __name__ == "__main__":
-    print(json.dumps(build(), indent=2))
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--case", choices=("operative", "off"), default="operative")
+    print(json.dumps(build(parser.parse_args().case), indent=2))

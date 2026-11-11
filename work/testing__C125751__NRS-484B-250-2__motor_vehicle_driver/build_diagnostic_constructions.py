@@ -56,7 +56,7 @@ def build():
                                       "construction": path.name, "construction_sha256": _sha(path),
                                       "measurement_procedure": {"entrypoint": "finalizer.py"},
                                       "measurement_contract": "measurement-contract.json",
-                                      "fixture_recipe": f"work/{ASSIGNMENT}/diagnostic-recipe.json"})
+                                      "fixture_recipe": f"work/{ASSIGNMENT}/diagnostic{'-off' if suffix == 'signal_off' else ''}-recipe.json"})
     _dump(HERE / "diagnostic-execution-manifest.json", manifest)
     return manifest
 
