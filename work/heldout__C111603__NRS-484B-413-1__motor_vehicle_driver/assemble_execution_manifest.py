@@ -51,7 +51,8 @@ def assemble(folder):
             raise ValueError('Exact construction source changed: ' + name)
         prior = previous.get(entry['case_id'], {})
         if prior.get('construction_sha256') == entry['construction_sha256']:
-            for key in ('physical_preparation', 'native_handoff', 'delivery_acceptance'):
+            for key in ('physical_preparation', 'native_handoff', 'delivery_acceptance',
+                        'post_capture', 'saved_processing'):
                 if key in prior:
                     entry[key] = prior[key]
         entries.append(entry)

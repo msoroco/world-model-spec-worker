@@ -309,84 +309,93 @@
   ],
   "source_observation_mapping": {
     "drv.turning": {
-      "evidence": "20 Hz original turn/signal/audio source and separately cited actor context; hand signal and actual body clearance need exact Native construction",
+      "evidence": "Original ego turn motion, yaw and frame joins",
       "channels": [
         "turn_signal_observation"
       ],
       "source_refs": [
-        "inputs/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/assignment.json"
+        "ego_turn_motion.jsonl",
+        "turn_originals.jsonl"
       ]
     },
     "drv.lane_change": {
-      "evidence": "20 Hz original turn/signal/audio source and separately cited actor context; hand signal and actual body clearance need exact Native construction",
+      "evidence": "Original direct-course departure trajectory; no separate lane-change claim",
       "channels": [
         "turn_signal_observation"
       ],
       "source_refs": [
-        "inputs/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/assignment.json"
+        "ego_turn_motion.jsonl",
+        "turn_scene_context.json"
       ]
     },
     "drv.time_to_conflict": {
-      "evidence": "CPU-tested original-frame ego/participant body positions and radii yield signed sampled surface gap, turn-onset gap and constant-velocity closest-approach proxy; Native acquisition and exact saved finalization remain pending. The proxy is not a legal reasonable-safety threshold.",
+      "evidence": "Original body clearance and relative motion proxy; no legal safety cutoff",
       "channels": [
         "turn_signal_observation"
       ],
       "source_refs": [
-        "inputs/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/assignment.json"
+        "ego_turn_motion.jsonl",
+        "participant_bodies.jsonl"
       ]
     },
     "ru.pedestrian": {
-      "evidence": "20 Hz original turn/signal/audio source and separately cited actor context; hand signal and actual body clearance need exact Native construction",
+      "evidence": "Original affected pedestrian route/body context",
       "channels": [
         "turn_signal_observation"
       ],
       "source_refs": [
-        "inputs/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/assignment.json"
+        "affected_participants.json",
+        "participant_bodies.jsonl"
       ]
     },
     "sig.horn": {
-      "evidence": "20 Hz original turn/signal/audio source and separately cited actor context; hand signal and actual body clearance need exact Native construction",
+      "evidence": "Identified relay request and independently captured listener PCM in selected horn cases; actual sound unverified",
       "channels": [
         "turn_signal_observation"
       ],
       "source_refs": [
-        "inputs/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/assignment.json"
+        "horn_actuation.jsonl",
+        "listener_audio_original.jsonl"
       ]
     },
     "sig.turn_indicator": {
-      "evidence": "20 Hz original turn/signal/audio source and separately cited actor context; hand signal and actual body clearance need exact Native construction",
+      "evidence": "Native original indicator readback and four camera streams",
       "channels": [
         "turn_signal_observation"
       ],
       "source_refs": [
-        "inputs/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/assignment.json"
+        "ego_signal_audio.jsonl",
+        "overview.mkv"
       ]
     },
     "sig.hand_signal": {
-      "evidence": "20 Hz original turn/signal/audio source and separately cited actor context; hand signal and actual body clearance need exact Native construction",
+      "evidence": "Attached driver-avatar original hand-bone readback in hand alternative; visible pose unverified",
       "channels": [
         "turn_signal_observation"
       ],
       "source_refs": [
-        "inputs/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/assignment.json"
+        "hand_signal_original.jsonl",
+        "reference_corner.mkv"
       ]
     },
     "drv.following": {
-      "evidence": "20 Hz original turn/signal/audio source and separately cited actor context; hand signal and actual body clearance need exact Native construction",
+      "evidence": "Original affected vehicle body path and turn-relative context",
       "channels": [
         "turn_signal_observation"
       ],
       "source_refs": [
-        "inputs/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/assignment.json"
+        "affected_participants.json",
+        "participant_bodies.jsonl"
       ]
     },
     "rel.surface_gap": {
-      "evidence": "CPU-tested original-frame ego/participant body positions and radii yield signed sampled surface gap, turn-onset gap and constant-velocity closest-approach proxy; Native acquisition and exact saved finalization remain pending. The proxy is not a legal reasonable-safety threshold.",
+      "evidence": "Original ego/participant body radii and sampled gap",
       "channels": [
         "turn_signal_observation"
       ],
       "source_refs": [
-        "inputs/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/assignment.json"
+        "ego_turn_motion.jsonl",
+        "participant_bodies.jsonl"
       ]
     }
   },
@@ -440,5 +449,69 @@
       ],
       "evidence_or_gap": "Wider and narrower exact Native constructions selected; physical source review remains pending."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "fps": 20,
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "sources": [
+      {
+        "name": "overview",
+        "size": [
+          1920,
+          1080
+        ],
+        "purpose": "subject-mounted provisional turn and indicator visibility"
+      },
+      {
+        "name": "approach",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "subject-mounted provisional turn and indicator visibility"
+      },
+      {
+        "name": "reference_corner",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "subject-mounted provisional turn and indicator visibility"
+      },
+      {
+        "name": "driver_reference",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "subject-mounted provisional turn and indicator visibility"
+      }
+    ],
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "turning ego, pedestrian and affected vehicle",
+        "interval": "startup through final observation"
+      },
+      {
+        "view": "approach",
+        "subject": "approach path, governing turn region and signal",
+        "interval": "approach through turn"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "pedestrian and affected vehicle body clearance",
+        "interval": "all original frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-side signal and turn path",
+        "interval": "approach through clearance"
+      }
+    ],
+    "implementation": "turn_camera_capture.py",
+    "limitation": "Native pixels, horn audibility and physical turn/participant completion require local review."
+  }
 }

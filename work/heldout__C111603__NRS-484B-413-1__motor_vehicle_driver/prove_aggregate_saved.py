@@ -1,6 +1,8 @@
 """Reprocess all exact cases against the stable aggregate manifest."""
 
 import hashlib
+from contextlib import redirect_stdout
+from io import StringIO
 import json
 from pathlib import Path
 
@@ -22,13 +24,18 @@ def main():
     proofs = []
     for entry in entries:
         case = entry['case_id']
-        proof = run(case)
+        captured = StringIO()
+        with redirect_stdout(captured):
+            proof = run(case)
         if proof['manifest_sha256'] != before or not proof['passed'] or not proof['originals_preserved'] or proof['missing_evidence']:
             raise ValueError('Aggregate saved processing did not bind current manifest and originals: ' + case)
         path = output / (case.rsplit('__', 1)[-1] + '.json')
+        log = output / (case.rsplit('__', 1)[-1] + '.log')
+        log.write_text(captured.getvalue() + case + ' aggregate_manifest_saved_processing_passed\n')
         path.write_text(json.dumps(proof, indent=2) + '\n')
         proofs.append({'case_id': case, 'receipt': str(path.relative_to(HERE)),
-                       'sha256': sha(path)})
+                       'sha256': sha(path), 'log': str(log.relative_to(HERE)),
+                       'log_sha256': sha(log)})
         print(case, 'aggregate_manifest_saved_processing_passed', flush=True)
     if sha(manifest) != before:
         raise ValueError('Aggregate execution manifest changed during saved reproof')
