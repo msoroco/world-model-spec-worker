@@ -142,6 +142,173 @@
       "physical_preparation": {
         "receipt": "physical-proofs/primary/receipt.json",
         "sha256": "4cda99482ec98acd18fd35517beb29ed6172a0ad721c26291b9fe140ef588e90"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn",
+        "sets": [
+          "demo-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f2d2a349497a95f3c3c7d4e551079fb026a649cbab84e2f843572c22612479ca",
+        "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --output-root .runtime-work/c109749-delivery-positive-v2",
+        "test_exit_code": 0,
+        "test_log": "delivery-positive.log",
+        "test_log_sha256": "1474f27258893df25ca0cb4a8d7858098a62d0044586ca3774f9cc3d215af1f5",
+        "negative_command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --output-root .runtime-work/c109749-delivery-negative-v3 --negative-source-root .runtime-work/c109749-delivery-positive-v2",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed original source changed: interaction_history.jsonl",
+        "negative_log": "delivery-negative.log",
+        "negative_log_sha256": "e56515abfd6c49430e6def307cb0328a727c9d434afa113ddee471f7358c4a69",
+        "scope": "900-frame synthetic CPU software proof only; audit passed=false, physical acceptance unclaimed",
+        "diagnostic_audit": "delivery-proofs/primary/diagnostic-audit.json",
+        "diagnostic_audit_sha256": "7e6ee1a39dde47c61fa4dc6efa19b621a0571dd071e6f774c0b79e507def832f",
+        "diagnostic_decode_receipt": "delivery-proofs/primary/source-decode.json",
+        "diagnostic_decode_receipt_sha256": "073ad921ed3771cac7665ce0bd81136e5c2ea7f00ab0188ac3a5466afc79ef21"
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_continues_after_turn",
+      "kind": "delivery",
+      "construction": "cases/reciprocal_continues/construction.json",
+      "construction_sha256": "3422d4b2d9fd735cc391ef9a296085b0c143dd89524e96a50ac09ed0d92c48d1",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "later opposing actor may not enter the junction during subject turn or may be obscured by geometry"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/reciprocal_continues/diagnostic-recipe.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/reciprocal_continues/fallback1-construction.json",
+          "construction_sha256": "fa079ccd79c7ecfa88a25858c2061c4b6296b8260c27e1f7035c292660e0b080",
+          "trigger": {
+            "source": "interaction_history.jsonl",
+            "metric": "initial opposing occupancy persists as ego turn begins",
+            "failure_condition": "original initial opposing body overlaps junction at ego turn onset"
+          },
+          "changed_knobs": [
+            "controller_release_ttc_s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_continues_after_turn --candidate fallback1 --output .runtime-work/c109749-continues-fallback1-offline-v1",
+            "exit_code": 0,
+            "log": "cases/reciprocal_continues/fallback1-offline.log",
+            "log_sha256": "c392524bbf37b42fdae7d7761e135ae395fefd2cc44f5b155c1ea58be88d135c",
+            "construction_sha256": "fa079ccd79c7ecfa88a25858c2061c4b6296b8260c27e1f7035c292660e0b080"
+          },
+          "compatibility": {
+            "receipt": "cases/reciprocal_continues/fallback1-compatibility.json",
+            "sha256": "ee122a55a784cfe9727bab872c72801bc79f60f1f1b3043ac7ad71286cc09e38",
+            "log": "cases/reciprocal_continues/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/reciprocal_continues/fallback1-negative-analysis.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_continues_after_turn --attempt .runtime-work/c109749-continues-fallback1-compat-v1 --output .runtime-work/c109749-continues-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "cases/reciprocal_continues/fallback1-saved.log",
+            "test_log_sha256": "b8f41eda5516c47825c06fa4e32014b84f569227c7508ae6dafbe69004f9aea4",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/reciprocal_continues/fallback2-construction.json",
+          "construction_sha256": "4285ffbde3b9d4d3cd60bbe93a1dafaf5bd72d76d29c17889291df3f53a56f62",
+          "trigger": {
+            "source": "interaction_history.jsonl",
+            "metric": "subject does not finish left turn before the later opposing approach",
+            "failure_condition": "original ego body remains in junction after later opposing actor reaches approach"
+          },
+          "changed_knobs": [
+            "approach_speed_mps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_continues_after_turn --candidate fallback2 --output .runtime-work/c109749-continues-fallback2-offline-v1",
+            "exit_code": 0,
+            "log": "cases/reciprocal_continues/fallback2-offline.log",
+            "log_sha256": "fbbfe11273fc78314964027831b08a78043cabb436616b1e46ef8485105a2eab",
+            "construction_sha256": "4285ffbde3b9d4d3cd60bbe93a1dafaf5bd72d76d29c17889291df3f53a56f62"
+          },
+          "compatibility": {
+            "receipt": "cases/reciprocal_continues/fallback2-compatibility.json",
+            "sha256": "e272fafa23816c46c9e5f3578662a7424f8250b35fa6616c39e370bfe02e9392",
+            "log": "cases/reciprocal_continues/fallback2-compatibility-analysis.log",
+            "negative_log": "cases/reciprocal_continues/fallback2-negative-analysis.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_continues_after_turn --attempt .runtime-work/c109749-continues-fallback2-compat-v1 --output .runtime-work/c109749-continues-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "cases/reciprocal_continues/fallback2-saved.log",
+            "test_log_sha256": "52ef48d25e0152a8643a697534c86c4f4367b21da968d5778b2f0d51676cfd48",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/reciprocal_continues/fallback3-construction.json",
+          "construction_sha256": "794b4eaab5be5e67ddcc5b85e7b0ffd3510dcf22e42ef5321ef429d4e0b32a22",
+          "trigger": {
+            "source": "interaction_history.jsonl",
+            "metric": "later opposing actor arrives before the subject clears the junction",
+            "failure_condition": "original later opposing actor reaches junction while ego body still overlaps"
+          },
+          "changed_knobs": [
+            "reciprocal_approach_speed_mps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_continues_after_turn --candidate fallback3 --output .runtime-work/c109749-continues-fallback3-offline-v1",
+            "exit_code": 0,
+            "log": "cases/reciprocal_continues/fallback3-offline.log",
+            "log_sha256": "661e59e1307d982398c763e248023db16f425bd6ae0d99308305a0e20c2ca3ef",
+            "construction_sha256": "794b4eaab5be5e67ddcc5b85e7b0ffd3510dcf22e42ef5321ef429d4e0b32a22"
+          },
+          "compatibility": {
+            "receipt": "cases/reciprocal_continues/fallback3-compatibility.json",
+            "sha256": "77963687dcd8f29722049adfc3361bbf7c2d22b6258eec082f1daf23a2c25b66",
+            "log": "cases/reciprocal_continues/fallback3-compatibility-analysis.log",
+            "negative_log": "cases/reciprocal_continues/fallback3-negative-analysis.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_continues_after_turn --attempt .runtime-work/c109749-continues-fallback3-compat-v1 --output .runtime-work/c109749-continues-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "cases/reciprocal_continues/fallback3-saved.log",
+            "test_log_sha256": "9facc8960a649871f194682d567c05c0881e8d562ee6ecbb751f747f8e61319a",
+            "test_exit_code": 0
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_continues_after_turn --output .runtime-work/c109749-continues-offline-v1",
+        "exit_code": 0,
+        "log": "cases/reciprocal_continues/offline.log",
+        "log_sha256": "0208571b88a5e5feff6df8cb3893da0c927d9eac55b48d31330b342cdb2d8f81",
+        "construction_sha256": "3422d4b2d9fd735cc391ef9a296085b0c143dd89524e96a50ac09ed0d92c48d1"
+      },
+      "compatibility": {
+        "receipt": "cases/reciprocal_continues/primary-compatibility.json",
+        "sha256": "51e6bead71c02df0a1315360c0160d1aa1999cd600162757cb2d3c426f3b50bd",
+        "log": "cases/reciprocal_continues/primary-compatibility-analysis.log",
+        "negative_log": "cases/reciprocal_continues/primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_continues_after_turn --attempt .runtime-work/c109749-continues-compat-v1 --output .runtime-work/c109749-continues-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "cases/reciprocal_continues/saved.log",
+        "test_log_sha256": "6229b0e734d7957c339ca83b076a978161763fc5482660de3e15e48cbec61ed9",
+        "test_exit_code": 0,
+        "feedback_command": "cat .runtime-work/c109749-continues-saved-v1/v0001/feedback.json"
       }
     }
   ]

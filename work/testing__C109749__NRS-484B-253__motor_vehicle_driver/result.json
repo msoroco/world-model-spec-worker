@@ -2,14 +2,14 @@
   "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
   "input_sha256": "912e2ac429853e443ff83b2d323134aca9fc59f31fecef23b322dcc620d3aef4",
   "status": "partial",
-  "readiness_kind": "primary_and_fallback_saved_processing_checkpoint",
+  "readiness_kind": "primary_fallback_physical_and_delivery_audit_checkpoint",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-253__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "23f5865628394f225eacae92d896b225d78a43854450c1c2debc3422fd393797"
+      "sha256": "1047d537cade1b541b0a590319351a4e04c54d0d196910c38bd5b68407468fcd"
     },
     {
       "command": "PYTHONPATH=runtime/scenario_pipeline:runtime/python .venv-cpu/bin/python -m worker_exchange.atom_preflight --runtime runtime --config work/testing__C109749__NRS-484B-253__motor_vehicle_driver/config.json",
@@ -27,7 +27,7 @@
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "preflight.log",
-      "sha256": "a4b7f448faca332e62e426e9d8f96a7c7745bf305850a2d5a3e58365562e59cb"
+      "sha256": "b9fecb21d9d3e749a0ad3bb3de5d623b9eaa7b5887cfe29a3fa6413889c01fa0"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --output .runtime-work/c109749-primary-compat-v9 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
@@ -94,10 +94,40 @@
       "exit_code": 0,
       "log": "cases/fallback3-saved.log",
       "sha256": "bec0a041cec0b580a45a4689aec1f9444f5b02fe1286bfb1f9c39343e14c3d31"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/physical_fixture_proof.py --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --kind complete_motion --output work/testing__C109749__NRS-484B-253__motor_vehicle_driver/physical-proofs/primary/complete_motion.json",
+      "exit_code": 0,
+      "log": "physical-proofs/primary/complete_motion.log",
+      "sha256": "73e722b665fdb770dd34813a79a67c9d906f1d8ffd5f3082d7b0428945c18d1e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/physical_fixture_proof.py --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --kind incomplete_motion --output work/testing__C109749__NRS-484B-253__motor_vehicle_driver/physical-proofs/primary/incomplete_motion.json",
+      "exit_code": 0,
+      "log": "physical-proofs/primary/incomplete_motion.log",
+      "sha256": "be7a59c54e8350b0198c4bb817ba8e6420c7160f051b5d001308615d86a2ce4b"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/physical_fixture_proof.py --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --kind missing_evidence --output work/testing__C109749__NRS-484B-253__motor_vehicle_driver/physical-proofs/primary/missing_evidence.json",
+      "exit_code": 0,
+      "log": "physical-proofs/primary/missing_evidence.log",
+      "sha256": "5fc4cb8c09f760df052d05cb770d3cb80c7ffff92266bbb9e611f17eb86e754e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/physical_fixture_proof.py --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --kind lifecycle --output work/testing__C109749__NRS-484B-253__motor_vehicle_driver/physical-proofs/primary/lifecycle.json",
+      "exit_code": 0,
+      "log": "physical-proofs/primary/lifecycle.log",
+      "sha256": "e7e7d27e69402cc0d79150a51e08b6d6ad10b2e4b2ec9903f673d0f117da93dd"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --output-root .runtime-work/c109749-delivery-positive-v2",
+      "exit_code": 0,
+      "log": "delivery-positive.log",
+      "sha256": "1474f27258893df25ca0cb4a8d7858098a62d0044586ca3774f9cc3d215af1f5"
     }
   ],
   "remaining_gpu_checks": [
     "Actual opposing approach and subject motion, signal pixels and four-camera visibility."
   ],
-  "reason": "Exact selected C109749 primary and three physical-risk fallbacks have offline, positive/negative compatibility, and recorded-only process-saved CPU proofs. These use an explicitly synthetic diagnostic and do not prove physical or legal acceptance. Other exact cases, controlled comparisons, complete semantic proposals, physical fixture checks, and independent delivery/comparison audits remain unfinished worker-owned CPU preparation. Accepted-original equivalence is unverified; see HANDOFF.md."
+  "reason": "Selected C109749 primary and three fallbacks pass exact offline, compatibility and saved processing; physical classifier/lifecycle CPU fixtures pass. The independent delivery audit now has a 900-frame synthetic positive software proof with four source videos and full decode, plus a missing sealed-history negative proof; diagnostic receipt passed=false and claims no physical acceptance. Remaining exact cases, controlled comparisons, complete semantic proposals and independent comparison audits are unfinished worker-owned CPU work. Accepted-original equivalence and physical/legal acceptance remain unverified; see HANDOFF.md."
 }
