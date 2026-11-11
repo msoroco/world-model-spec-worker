@@ -54,7 +54,7 @@ for proof in signal_exact['proofs']:
                f'--case {signal_exact["case_id"]} --output {signal_stage}/.runtime-work/signal-advance-{label}-compat '
                '--library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck'
                + candidate)
-    claim(command, f'cases/signal_advance_100_at/proofs/{label}/compatibility-command.log')
+    claim(command, f'cases/signal_advance_100_at/proofs/{label}/exact-compatibility-command.log')
     command = (f'.venv-cpu/bin/python runtime.py process-saved --manifest {signal_stage_manifest} '
                f'--case {signal_exact["case_id"]} '
                f'--attempt {signal_stage}/.runtime-work/signal-advance-{label}-compat '
@@ -164,49 +164,32 @@ comparison_proof = json.loads((folder / 'reciprocal-matched-comparison-receipt.j
 claim(comparison_proof['command'], 'reciprocal-matched-comparison-positive.log')
 claim(f'.venv-cpu/bin/python -m unittest discover -s work/{result["assignment_id"]}/tests '
       '-p test_reciprocal_matched_comparison.py -v', 'comparison-tests.log')
+for suffix in ('signal_advance_100_at', 'signal_advance_100_omitted'):
+    draft = folder / 'cases' / suffix
+    delivery = json.loads((draft / 'delivery-proof-receipt.json').read_text())
+    claim(delivery['positive']['command'], f'cases/{suffix}/delivery-positive.log')
+    claim(f'PYTHONPATH=work/{result["assignment_id"]} .venv-cpu/bin/python '
+          f'work/{result["assignment_id"]}/cases/{suffix}/runner.py --check',
+          f'cases/{suffix}/runner-check.log')
+signal_comparison = json.loads((folder / 'signal-advance-comparison-receipt.json').read_text())
+claim(signal_comparison['command'], signal_comparison['log'])
+claim(signal_comparison['negative_test_command'], signal_comparison['negative_log'])
 result['tests'] = list(existing.values())
-result['readiness_kind'] = 'nine_case_canonical_partial_cpu_checkpoint'
+result['readiness_kind'] = 'eleven_case_canonical_partial_cpu_checkpoint'
 result['reason'] = (
-    'Nine C109749 exact cases (reciprocal yield/continue, matched reciprocal stop/entry, '
-    'subject yield/proceed with an opposing complete body inside or approaching outside the junction, '
-    'and an omitted-signal contrast), '
-    'each with three distinct physical-risk fallbacks, occur in the canonical case plan, semantic proposal '
-    'and execution manifest. All 36 exact constructions '
-    'pass current canonical offline, positive/negative compatibility and recorded-only saved processing. '
-    'The pinned manifest, semantic, package-compatibility, physical-preparation and delivery-contract '
-    'validators pass. Full-duration 900-frame synthetic delivery audits for all nine and five diagnostic '
-    'comparisons exercise source joins, fixed conditions and negative rejection; their diagnostic '
-    'receipts explicitly do not claim physical or legal acceptance. '
-    'A corrected supplemental sealed-history signal-distance audit excludes the first turning '
-    'segment and measures 10.0 m visible before the '
-    'signalled diagnostic turn and 0 m for omitted signal; neither source demonstrates the '
-    '30.48 m or 91.44 m advance probe, and capture-start signal onset is unknown. '
-    'A same-lane upstream waypoint selector and Native-lazy delayed-indicator policy for '
-    'below/at/above 30.48 m and 91.44 m candidates pass six construction tests, including actor '
-    'readback and rejection paths. An isolated signal_advance_100_at Native runner now uses that '
-    'policy; its primary and three risk fallbacks pass exact offline construction, and a sealed '
-    '900-frame source-only fixture proves below/at/above both signal distances plus interruption '
-    'and stale-source rejection. Its case-specific finalizer and measurement contract now measure '
-    '30.48 m from original positions and indicator readback; below/at/above validation passes. '
-    'A compact 210-frame Native-shaped diagnostic now observes 30.4800001 m of continuous '
-    'preturn signalling with complete onset and occupied-junction yield. All four exact '
-    'positive/negative compatibility and recorded-only saved-processing paths pass from '
-    'current source-bound constructions. An independent 900-frame four-camera diagnostic '
-    'delivery audit and missing sealed-source rejection pass as software checks only; '
-    'the receipt explicitly says delivery passed false and no physical acceptance. '
-    'The controlled omitted-signal comparison and canonical integration proofs remain. '
-    'Two canonical reciprocal cases now contrast later-opposing stopped-outside motion with body entry '
-    'during the subject turn. Each has a runner, finalizer, three physical-risk fallbacks, four exact '
-    'offline/compatibility/saved-processing paths, source-rejection checks, physical classifier/lifecycle '
-    'fixtures, and a 900-frame diagnostic delivery audit. Their diagnostic fixed-condition comparison '
-    'matches setup, all subject and initial-opposing samples, and preturn reciprocal motion across 900 '
-    'samples, with negative fixed-condition tests. These are software diagnostics only; no physical '
-    'or legal acceptance is claimed. The three physical judgment sweep specs '
-    'remain incomplete, and other statutory alternatives still lack complete selected constructions and '
-    'CPU proofs. Accepted-original '
-    'equivalence, actual Native motion and camera visibility are unverified. This and all other partial '
-    'assignment packages are unfinished worker-owned CPU work, with no dependency or tool blocker. '
-    'Strict assignment and batch gates fail with Preparation acceptance failed: partial/missing packages remain. '
-    'See HANDOFF.md for exact sources and resume actions.'
+    'Eleven C109749 exact cases, each with three physical-risk fallbacks, are in the canonical '
+    'case plan, semantic proposal and execution manifest. All 44 exact constructions pass current '
+    'canonical offline, positive/negative compatibility and recorded-only saved processing. '
+    'The new 30.48 m signalled case measures 30.4800001 m from a sealed source; its matched '
+    'omitted-signal companion differs only in indicator state across 900 diagnostic samples. '
+    'Both new cases pass independent 900-frame four-camera CPU delivery audits and missing '
+    'sealed-source rejection, and the controlled comparison passes positive and negative tests. '
+    'Physical classifier and lifecycle CPU fixtures pass for all eleven cases. All diagnostic '
+    'delivery receipts explicitly say passed false and claim no physical or legal acceptance. '
+    'The three physical-judgment sweep specs and other statutory alternatives still lack '
+    'complete selected constructions and CPU proofs. Accepted-original equivalence, actual '
+    'Native motion and camera visibility remain unverified. This and the other partial '
+    'assignments are unfinished worker-owned CPU work, with no dependency or tool blocker. '
+    'See HANDOFF.md for exact sources, commands and resume actions.'
 )
 result_path.write_text(json.dumps(result, indent=2) + '\n')
