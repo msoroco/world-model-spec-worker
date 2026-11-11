@@ -7,7 +7,7 @@
       "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "fa63601682e75190a6cafb4de121fb26b6d11dbdfd412b25215009ea274fa158",
+      "construction_sha256": "dd936d3c89bb77738e13e56031414294d07bff1de84f772fee4e7154d54714d4",
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
@@ -16,11 +16,132 @@
         "reason": "later opposing actor may reach junction before subject turn or be hidden by geometry"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --output .runtime-work/c109749-primary-offline-v1",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --output .runtime-work/c109749-primary-offline-v4",
         "exit_code": 0,
         "log": "primary-offline.log",
-        "log_sha256": "ef0d33ab78d37d1167ab546b62abdf64255cdb086e53ada16a707b35bbee0a65",
-        "construction_sha256": "fa63601682e75190a6cafb4de121fb26b6d11dbdfd412b25215009ea274fa158"
+        "log_sha256": "7837cf5a4b7e8aa03b3343920b442303ebc7dfa3029e7ecfde77e8129d3fdad1",
+        "construction_sha256": "dd936d3c89bb77738e13e56031414294d07bff1de84f772fee4e7154d54714d4"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C109749__NRS-484B-253__motor_vehicle_driver/diagnostic-recipe.json",
+      "compatibility": {
+        "receipt": "primary-compatibility.json",
+        "sha256": "1214d17395beb92e8f30677fafd496f972cd471aaffa89b343ca54bd5a527254",
+        "log": "primary-compatibility-analysis.log",
+        "negative_log": "primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --attempt .runtime-work/c109749-primary-compat-v9 --output .runtime-work/c109749-primary-saved-v3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c109749-primary-saved-v3/v0001/feedback.json",
+        "test_log": "primary-saved.log",
+        "test_log_sha256": "c1ab0196f2e808ac4496817d618074b15b14d47310f713f1a37d0da94b37aef1",
+        "test_exit_code": 0
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/fallback1-construction.json",
+          "construction_sha256": "4b7270d90245221e647ea3a76c6662d5ed7683d60fd86f8a8840dca9bc4bbcf4",
+          "trigger": {
+            "source": "interaction_history.jsonl",
+            "metric": "initial opposing occupancy persists as ego turn begins",
+            "failure_condition": "original initial opposing body overlaps junction at ego turn onset"
+          },
+          "changed_knobs": [
+            "controller_release_ttc_s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --candidate fallback1 --output .runtime-work/c109749-fallback1-offline-v1",
+            "exit_code": 0,
+            "log": "cases/fallback1-offline.log",
+            "log_sha256": "e20a80ef9f606194d8a84a438793cbd4b6cc6307d88a0273607c0ee1982ec563",
+            "construction_sha256": "4b7270d90245221e647ea3a76c6662d5ed7683d60fd86f8a8840dca9bc4bbcf4"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback1-compatibility.json",
+            "sha256": "57ee062902dfa605ae85095f933f3f99f817016c8e2cc6786ff9b5b3c873f81f",
+            "log": "cases/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/fallback1-negative-analysis.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --attempt .runtime-work/c109749-fallback1-compat-v1 --output .runtime-work/c109749-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "cases/fallback1-saved.log",
+            "test_log_sha256": "bdfe57a77dad7c2ee862831379c0168440b40b0d022e8b6b3eb275f8205de737",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/fallback2-construction.json",
+          "construction_sha256": "138a2a11312ef487053155779ab91c88f5b3a8e3d9d12566388aad84cdf98e06",
+          "trigger": {
+            "source": "interaction_history.jsonl",
+            "metric": "subject does not finish left turn before the later opposing approach",
+            "failure_condition": "original ego body remains in junction after later opposing actor reaches approach"
+          },
+          "changed_knobs": [
+            "approach_speed_mps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --candidate fallback2 --output .runtime-work/c109749-fallback2-offline-v1",
+            "exit_code": 0,
+            "log": "cases/fallback2-offline.log",
+            "log_sha256": "664413fc8e3d546d4bab1b40cb7f342e71c7bad168fcdd7bd53f222fb678aa2a",
+            "construction_sha256": "138a2a11312ef487053155779ab91c88f5b3a8e3d9d12566388aad84cdf98e06"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback2-compatibility.json",
+            "sha256": "6838f4318948d38a43607cf7390f2672779c002bc3cd59b8a3f7ba790260ca94",
+            "log": "cases/fallback2-compatibility-analysis.log",
+            "negative_log": "cases/fallback2-negative-analysis.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --attempt .runtime-work/c109749-fallback2-compat-v1 --output .runtime-work/c109749-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "cases/fallback2-saved.log",
+            "test_log_sha256": "d42c8e70e63ef8f5e957dc64e4e597003613a1de4a6d63e1703dc2a79e3a96e4",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/fallback3-construction.json",
+          "construction_sha256": "0d447b31140834779e6cce7deda41dfeefd063ffd85104b839ea9794063ed87d",
+          "trigger": {
+            "source": "interaction_history.jsonl",
+            "metric": "later opposing actor arrives before the subject clears the junction",
+            "failure_condition": "original later opposing actor reaches junction while ego body still overlaps"
+          },
+          "changed_knobs": [
+            "reciprocal_approach_speed_mps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --candidate fallback3 --output .runtime-work/c109749-fallback3-offline-v1",
+            "exit_code": 0,
+            "log": "cases/fallback3-offline.log",
+            "log_sha256": "df96061d02ed094388002bbf01cc5af8ffced55d1e1e711b1de187b5bf403b2f",
+            "construction_sha256": "0d447b31140834779e6cce7deda41dfeefd063ffd85104b839ea9794063ed87d"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback3-compatibility.json",
+            "sha256": "0157c4e8b93fd14f098533c3cdd4424e50703f35e74d2570473700bf415b17a2",
+            "log": "cases/fallback3-compatibility-analysis.log",
+            "negative_log": "cases/fallback3-negative-analysis.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --attempt .runtime-work/c109749-fallback3-compat-v1 --output .runtime-work/c109749-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "cases/fallback3-saved.log",
+            "test_log_sha256": "bec0a041cec0b580a45a4689aec1f9444f5b02fe1286bfb1f9c39343e14c3d31",
+            "test_exit_code": 0
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-proofs/primary/receipt.json",
+        "sha256": "4cda99482ec98acd18fd35517beb29ed6172a0ad721c26291b9fe140ef588e90"
       }
     }
   ]

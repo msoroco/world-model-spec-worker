@@ -68,11 +68,11 @@ def finalize(attempt, output):
             for row in raw:
                 stream.write(json.dumps({'time_s':row['time_s'],'original_frame':row['frame'],
                                          'value':extract(row)},allow_nan=False)+'\n')
-    (channel_root/'junction_context.json').write_text(json.dumps({
+    (channel_root/'junction_context.json').write_text(json.dumps({'junction_context':{
       'native_junction_id':geometry.get('native_junction_id'),
       'intersection_polygon_xy_m':polygon,
       'boundary_limit':geometry.get('boundary_limit'),
-      'legal_immediate_hazard':'unresolved'},indent=2)+'\n')
+      'legal_immediate_hazard':'unresolved'}},indent=2)+'\n')
     units = {'ego_speed':'m/s','oncoming_speed':'m/s','reciprocal_speed':'m/s',
              'ego_heading':'deg','ego_left_indicator':'boolean',
              'ego_in_intersection':'boolean','initial_oncoming_in_intersection':'boolean',

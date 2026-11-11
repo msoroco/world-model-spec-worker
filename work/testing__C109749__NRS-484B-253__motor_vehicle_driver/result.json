@@ -2,14 +2,14 @@
   "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
   "input_sha256": "912e2ac429853e443ff83b2d323134aca9fc59f31fecef23b322dcc620d3aef4",
   "status": "partial",
-  "readiness_kind": "primary_construction_and_saved_analysis_checkpoint",
+  "readiness_kind": "primary_and_fallback_saved_processing_checkpoint",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-253__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "1bf3b48ce3b3db47de977f7656c9f87677fac771d4ba34e81af07dd433f0cdc5"
+      "sha256": "23f5865628394f225eacae92d896b225d78a43854450c1c2debc3422fd393797"
     },
     {
       "command": "PYTHONPATH=runtime/scenario_pipeline:runtime/python .venv-cpu/bin/python -m worker_exchange.atom_preflight --runtime runtime --config work/testing__C109749__NRS-484B-253__motor_vehicle_driver/config.json",
@@ -18,20 +18,86 @@
       "sha256": "72a0e68eb841f3c1a9c67410a82d1f63db4bcf634fd20495d228a98b508c2232"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --output .runtime-work/c109749-primary-offline-v1",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --output .runtime-work/c109749-primary-offline-v4",
       "exit_code": 0,
       "log": "primary-offline.log",
-      "sha256": "ef0d33ab78d37d1167ab546b62abdf64255cdb086e53ada16a707b35bbee0a65"
+      "sha256": "7837cf5a4b7e8aa03b3343920b442303ebc7dfa3029e7ecfde77e8129d3fdad1"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "preflight.log",
-      "sha256": "affb790ba0131c61b1ea9db9adba49a1f3f6095fa9c3067838f20b29187d3b50"
+      "sha256": "a4b7f448faca332e62e426e9d8f96a7c7745bf305850a2d5a3e58365562e59cb"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --output .runtime-work/c109749-primary-compat-v9 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "primary-compatibility.log",
+      "sha256": "1214d17395beb92e8f30677fafd496f972cd471aaffa89b343ca54bd5a527254"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --attempt .runtime-work/c109749-primary-compat-v9 --output .runtime-work/c109749-primary-saved-v3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "primary-saved.log",
+      "sha256": "c1ab0196f2e808ac4496817d618074b15b14d47310f713f1a37d0da94b37aef1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --candidate fallback1 --output .runtime-work/c109749-fallback1-offline-v1",
+      "exit_code": 0,
+      "log": "cases/fallback1-offline.log",
+      "sha256": "e20a80ef9f606194d8a84a438793cbd4b6cc6307d88a0273607c0ee1982ec563"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --candidate fallback1 --output .runtime-work/c109749-fallback1-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/fallback1-compatibility.log",
+      "sha256": "57ee062902dfa605ae85095f933f3f99f817016c8e2cc6786ff9b5b3c873f81f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --attempt .runtime-work/c109749-fallback1-compat-v1 --output .runtime-work/c109749-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/fallback1-saved.log",
+      "sha256": "bdfe57a77dad7c2ee862831379c0168440b40b0d022e8b6b3eb275f8205de737"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --candidate fallback2 --output .runtime-work/c109749-fallback2-offline-v1",
+      "exit_code": 0,
+      "log": "cases/fallback2-offline.log",
+      "sha256": "664413fc8e3d546d4bab1b40cb7f342e71c7bad168fcdd7bd53f222fb678aa2a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --candidate fallback2 --output .runtime-work/c109749-fallback2-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/fallback2-compatibility.log",
+      "sha256": "6838f4318948d38a43607cf7390f2672779c002bc3cd59b8a3f7ba790260ca94"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --attempt .runtime-work/c109749-fallback2-compat-v1 --output .runtime-work/c109749-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/fallback2-saved.log",
+      "sha256": "d42c8e70e63ef8f5e957dc64e4e597003613a1de4a6d63e1703dc2a79e3a96e4"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --candidate fallback3 --output .runtime-work/c109749-fallback3-offline-v1",
+      "exit_code": 0,
+      "log": "cases/fallback3-offline.log",
+      "sha256": "df96061d02ed094388002bbf01cc5af8ffced55d1e1e711b1de187b5bf403b2f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --candidate fallback3 --output .runtime-work/c109749-fallback3-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/fallback3-compatibility.log",
+      "sha256": "0157c4e8b93fd14f098533c3cdd4424e50703f35e74d2570473700bf415b17a2"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --attempt .runtime-work/c109749-fallback3-compat-v1 --output .runtime-work/c109749-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/fallback3-saved.log",
+      "sha256": "bec0a041cec0b580a45a4689aec1f9444f5b02fe1286bfb1f9c39343e14c3d31"
     }
   ],
   "remaining_gpu_checks": [
     "Actual opposing approach and subject motion, signal pixels and four-camera visibility."
   ],
-  "reason": "The tentative reciprocal-yield positive case now has a materialized CARLA-lazy three-vehicle Native runner, four named source-camera constructors, synchronized original three-actor histories, and saved-only finalizer. Exact primary runtime.py offline and 27 CPU tests pass; pinned preflight and atom preflight pass. Full case-specific diagnostic recipe, measurement contract, positive/negative compatibility, saved processing, physical fixture proofs, three fallback constructions, semantic proposals, remaining comparisons and independent delivery/comparison audits remain unfinished worker-owned CPU work. Accepted original source bytes are absent from this export, so reuse remains unresolved. No external blocker asserted; see HANDOFF.md."
+  "reason": "Exact selected C109749 primary and three physical-risk fallbacks have offline, positive/negative compatibility, and recorded-only process-saved CPU proofs. These use an explicitly synthetic diagnostic and do not prove physical or legal acceptance. Other exact cases, controlled comparisons, complete semantic proposals, physical fixture checks, and independent delivery/comparison audits remain unfinished worker-owned CPU preparation. Accepted-original equivalence is unverified; see HANDOFF.md."
 }
