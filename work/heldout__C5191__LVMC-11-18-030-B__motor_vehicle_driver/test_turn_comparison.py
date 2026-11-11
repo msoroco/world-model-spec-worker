@@ -8,7 +8,7 @@ from turn_comparison_audit import audit
 ROOT = Path(__file__).resolve().parents[2]
 PREFIX = ROOT / '.runtime-work'
 NAMES = ('left_turn_lane_contained_approach', 'left_turn_early_boundary_crossing_no_signal', 'left_turn_early_boundary_crossing_signaled')
-ROOTS = [PREFIX / f'c5191-{name}-primary-compat' for name in NAMES]
+ROOTS = [PREFIX / f'c5191-v2-{name}-primary-compat' for name in NAMES]
 
 def altered_signaled(original, change):
     with TemporaryDirectory(prefix='c5191-contrast-') as path:

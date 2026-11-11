@@ -1,0 +1,104 @@
+{
+  "selected_case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach",
+  "law_id": "LVMC-11-18-030-B",
+  "cell_id": "C5191",
+  "actor": "motor_vehicle_driver",
+  "rate_hz": 20,
+  "frames": 160,
+  "required_atoms": [],
+  "source_packets": [],
+  "duration_s": 8,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "subject-mounted provisional marked-lane visibility view",
+      "fov_deg": 95
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted provisional marked-lane visibility view",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted provisional marked-lane visibility view",
+      "fov_deg": 100
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted provisional marked-lane visibility view",
+      "fov_deg": 85
+    }
+  ],
+  "case": {
+    "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "lane_clearance_m",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "signed original body-corner clearance from marked approach lane slice",
+          "time_window": "marked approach original frames only",
+          "reference_frame": "world ground plane",
+          "uncertainty": "Native corners and local waypoint marking slice"
+        },
+        {
+          "name": "turn_indicator_state",
+          "unit": "categorical",
+          "sampling_rate_hz": 20,
+          "method": "original Native ego light-state readback",
+          "time_window": "all 8 s original frames",
+          "reference_frame": "ego vehicle",
+          "uncertainty": "Native 20 Hz sampling"
+        },
+        {
+          "name": "ego_turn_motion",
+          "unit": "structured pose",
+          "sampling_rate_hz": 20,
+          "method": "original Native ego position and heading readback",
+          "time_window": "all 8 s original frames",
+          "reference_frame": "world ground plane",
+          "uncertainty": "Native 20 Hz sampling"
+        },
+        {
+          "name": "marked_approach_context",
+          "unit": "structured lane",
+          "sampling_rate_hz": 20,
+          "method": "original connected marked approach waypoint lane slice, null beyond approach",
+          "time_window": "marked approach original frames only",
+          "reference_frame": "world ground plane",
+          "uncertainty": "local lane slice approximation"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Source-shaped CPU media does not establish actual connected turn, physical crossing, pixel visibility or lawful-turn status."
+      ]
+    }
+  },
+  "engineering": {
+    "route_spacing_m": 2.0,
+    "approach_steps": 12,
+    "route_candidate_index": 0,
+    "target_speed_mps": 6.0,
+    "speed_gain": 0.25,
+    "crossing_fraction": 0.6
+  },
+  "supported_case_ids": [
+    "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach",
+    "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal",
+    "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled",
+    "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0000",
+    "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0001",
+    "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0002"
+  ]
+}

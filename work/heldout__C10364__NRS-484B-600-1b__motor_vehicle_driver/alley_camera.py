@@ -46,9 +46,11 @@ class LosslessSourceSink:
 
 
 class AlleyCameraCapture:
-    def __init__(self, world, carla_module, ego, sinks):
+    def __init__(self, world, carla_module, ego, sinks, *, overview_height_delta_m=0):
         if set(sinks) != set(CAMERAS):
             raise ValueError("Exactly four named alley source sinks required")
+        if overview_height_delta_m not in (0, 2):
+            raise ValueError("Unsupported overview camera height change")
         self.sinks = sinks
         self.frames = {name: set() for name in CAMERAS}
         self.condition = Condition()
@@ -57,6 +59,8 @@ class AlleyCameraCapture:
         self.closed = False
         try:
             for name, (loc, rot, size, fov) in CAMERAS.items():
+                if name == 'overview':
+                    loc = (loc[0], loc[1], loc[2] + overview_height_delta_m)
                 blueprint = world.get_blueprint_library().find("sensor.camera.rgb")
                 for key, value in (("image_size_x", size[0]), ("image_size_y", size[1]),
                                    ("fov", fov), ("sensor_tick", 0.05)):

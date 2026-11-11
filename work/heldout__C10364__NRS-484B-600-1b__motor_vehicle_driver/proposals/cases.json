@@ -4,7 +4,7 @@
   "actor": "motor_vehicle_driver",
   "sweep_specs": [
     {
-      "sweep_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_speed_judgment_sweep",
+      "sweep_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_gap_judgment_sweep",
       "target_law_id": "NRS-484B-600-1b",
       "judgment_refs": [
         {
@@ -12,36 +12,40 @@
           "note": "Measure original speed, pedestrian/property body gaps, contact, forward-time and braking proxies; no numeric legal endangerment threshold is inferred."
         }
       ],
-      "status": "incomplete",
+      "status": "complete",
       "mode": "one_dimensional",
       "axes": [
         {
-          "variable": "target_speed_mps",
-          "observable": "target_speed_mps",
-          "unit": "m/s",
-          "min": 3,
-          "max": 7,
-          "spacing": 2,
+          "variable": "pedestrian_offset_m",
+          "observable": "pedestrian_offset_m",
+          "unit": "m",
+          "min": 1.5,
+          "max": 2.4,
+          "spacing": 0.45,
           "measurement": {
-            "method": "authored controller target; original realized speed measured separately",
+            "method": "authored selected pedestrian lateral placement",
             "time_window": "selected setup",
             "statistic": "first"
           },
-          "range_rationale": "The three planned 3/5/7 m/s engineering contrasts bracket a moderate alley speed without creating a legal cutoff.",
-          "spacing_rationale": "Two m/s spacing gives low, middle and high requested-speed points.",
-          "feasibility_evidence": "alley_route.control_step and alley_geometry.plan_alley pass CPU tests; selected source-backed alley geometry remains unconstructed."
+          "range_rationale": "A 6 m authored alley, 1.8 m subject width, 0.3 m pedestrian radius and 0.2 m margin allow tested lateral positions from 1.5 to 2.4 m; actual body gaps are retained separately.",
+          "spacing_rationale": "Three nonduplicate positions at 1.5, 1.95 and 2.4 m span the interior geometric range at fixed requested speed.",
+          "feasibility_evidence": "alley_geometry.plan_alley validates these offsets in the sourced-polygon CPU model; actual Native alley geometry remains for physical review."
         }
       ],
       "landmarks": [],
-      "rationale": "Finite requested-speed judgment sampling must be bound to a selected source-backed alley route and original measured motion.",
+      "rationale": "Finite pedestrian lateral-placement judgment sampling at fixed 5 m/s requested travel complements the existing 3/5/7 m/s speed comparisons without deciding endangerment.",
       "variable_assignments": {
         "target_speed_mps": {
           "kind": "controller",
-          "value": 3.0
+          "value": 5.0
         },
         "protected_interest": {
           "kind": "world_setup",
           "value": "person"
+        },
+        "pedestrian_offset_m": {
+          "kind": "world_setup",
+          "value": 1.5
         },
         "alley_direction": {
           "kind": "world_setup",
@@ -78,17 +82,27 @@
             "uncertainty": "Native body bounding-box precision"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "pedestrian_offset_m",
+            "unit": "m",
+            "method": "authored selected pedestrian lateral placement; physical body gap measured from original polygons"
+          }
+        ],
         "limitations": [
           "Engineering speed targets and alley placements do not establish legal endangerment, visibility or completion."
         ]
       },
-      "missing_inputs": [
-        "Selected original alley polygon and exact Native route source are absent; generated cases and physical feasibility proofs remain CPU construction work."
+      "spec_version": "3713a07be16a7212109231cc8685cfe2e1a2aa295a60f1478d98273424d08601",
+      "planned_case_count": 3,
+      "selection_order": [
+        "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_gap_judgment_sweep-0000",
+        "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_gap_judgment_sweep-0001",
+        "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_gap_judgment_sweep-0002"
       ]
     }
   ],
-  "sweeps_expanded": false,
+  "sweeps_expanded": true,
   "cases": [
     {
       "case_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__baseline",
@@ -103,6 +117,10 @@
         "protected_interest": {
           "kind": "world_setup",
           "value": "person"
+        },
+        "pedestrian_offset_m": {
+          "kind": "world_setup",
+          "value": 1.8
         },
         "alley_direction": {
           "kind": "world_setup",
@@ -171,6 +189,10 @@
           "kind": "world_setup",
           "value": "person"
         },
+        "pedestrian_offset_m": {
+          "kind": "world_setup",
+          "value": 1.8
+        },
         "alley_direction": {
           "kind": "world_setup",
           "value": "east"
@@ -237,6 +259,10 @@
         "protected_interest": {
           "kind": "world_setup",
           "value": "person"
+        },
+        "pedestrian_offset_m": {
+          "kind": "world_setup",
+          "value": 1.8
         },
         "alley_direction": {
           "kind": "world_setup",
@@ -305,6 +331,10 @@
           "kind": "world_setup",
           "value": "person"
         },
+        "pedestrian_offset_m": {
+          "kind": "world_setup",
+          "value": 1.8
+        },
         "alley_direction": {
           "kind": "world_setup",
           "value": "east"
@@ -371,6 +401,10 @@
         "protected_interest": {
           "kind": "world_setup",
           "value": "property"
+        },
+        "pedestrian_offset_m": {
+          "kind": "world_setup",
+          "value": 1.8
         },
         "alley_direction": {
           "kind": "world_setup",
@@ -439,6 +473,10 @@
           "kind": "world_setup",
           "value": "property"
         },
+        "pedestrian_offset_m": {
+          "kind": "world_setup",
+          "value": 1.8
+        },
         "alley_direction": {
           "kind": "world_setup",
           "value": "east"
@@ -506,6 +544,10 @@
           "kind": "world_setup",
           "value": "property"
         },
+        "pedestrian_offset_m": {
+          "kind": "world_setup",
+          "value": 1.8
+        },
         "alley_direction": {
           "kind": "world_setup",
           "value": "east"
@@ -558,6 +600,297 @@
         "comparison_or_standard": "controlled engineering contrast without legal cutoff",
         "target_value_or_branch": 7.0
       }
+    },
+    {
+      "case_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_gap_judgment_sweep-0000",
+      "target_law_id": "NRS-484B-600-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "Finite pedestrian lateral-placement judgment sampling at fixed 5 m/s requested travel complements the existing 3/5/7 m/s speed comparisons without deciding endangerment.",
+      "paired_probe_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_gap_judgment_sweep",
+      "deliberate_differences": [
+        "pedestrian_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_offset_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "pedestrian_offset_m": 1.5
+        }
+      },
+      "sweep_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_gap_judgment_sweep",
+      "sweep_spec_version": "3713a07be16a7212109231cc8685cfe2e1a2aa295a60f1478d98273424d08601",
+      "sweep_point": {
+        "pedestrian_offset_m": 1.5
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "target_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "protected_interest": {
+          "kind": "world_setup",
+          "value": "person"
+        },
+        "pedestrian_offset_m": {
+          "kind": "world_setup",
+          "value": 1.5,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "alley_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_footprints",
+            "unit": "structured record",
+            "method": "original Native ego, pedestrian and owned-property body polygons",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native actor bounding-box precision"
+          },
+          {
+            "name": "pedestrian_gap_m",
+            "unit": "m",
+            "method": "original Native subject/pedestrian body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          },
+          {
+            "name": "property_gap_m",
+            "unit": "m",
+            "method": "original Native subject/property body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "pedestrian_offset_m",
+            "unit": "m",
+            "method": "authored selected pedestrian lateral placement; physical body gap measured from original polygons"
+          }
+        ],
+        "limitations": [
+          "Engineering speed targets and alley placements do not establish legal endangerment, visibility or completion."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "pedestrian_offset_m",
+          "unit": "m",
+          "measurement": {
+            "method": "authored selected pedestrian lateral placement",
+            "time_window": "selected setup",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "Such a rate of speed as to endanger the life, limb or property of any person"
+      ]
+    },
+    {
+      "case_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_gap_judgment_sweep-0001",
+      "target_law_id": "NRS-484B-600-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "Finite pedestrian lateral-placement judgment sampling at fixed 5 m/s requested travel complements the existing 3/5/7 m/s speed comparisons without deciding endangerment.",
+      "paired_probe_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_gap_judgment_sweep",
+      "deliberate_differences": [
+        "pedestrian_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_offset_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "pedestrian_offset_m": 2.4
+        }
+      },
+      "sweep_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_gap_judgment_sweep",
+      "sweep_spec_version": "3713a07be16a7212109231cc8685cfe2e1a2aa295a60f1478d98273424d08601",
+      "sweep_point": {
+        "pedestrian_offset_m": 2.4
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "target_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "protected_interest": {
+          "kind": "world_setup",
+          "value": "person"
+        },
+        "pedestrian_offset_m": {
+          "kind": "world_setup",
+          "value": 2.4,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "alley_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_footprints",
+            "unit": "structured record",
+            "method": "original Native ego, pedestrian and owned-property body polygons",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native actor bounding-box precision"
+          },
+          {
+            "name": "pedestrian_gap_m",
+            "unit": "m",
+            "method": "original Native subject/pedestrian body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          },
+          {
+            "name": "property_gap_m",
+            "unit": "m",
+            "method": "original Native subject/property body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "pedestrian_offset_m",
+            "unit": "m",
+            "method": "authored selected pedestrian lateral placement; physical body gap measured from original polygons"
+          }
+        ],
+        "limitations": [
+          "Engineering speed targets and alley placements do not establish legal endangerment, visibility or completion."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "pedestrian_offset_m",
+          "unit": "m",
+          "measurement": {
+            "method": "authored selected pedestrian lateral placement",
+            "time_window": "selected setup",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "Such a rate of speed as to endanger the life, limb or property of any person"
+      ]
+    },
+    {
+      "case_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_gap_judgment_sweep-0002",
+      "target_law_id": "NRS-484B-600-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "Finite pedestrian lateral-placement judgment sampling at fixed 5 m/s requested travel complements the existing 3/5/7 m/s speed comparisons without deciding endangerment.",
+      "paired_probe_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_gap_judgment_sweep",
+      "deliberate_differences": [
+        "pedestrian_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_offset_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "pedestrian_offset_m": 1.95
+        }
+      },
+      "sweep_id": "heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__alley_gap_judgment_sweep",
+      "sweep_spec_version": "3713a07be16a7212109231cc8685cfe2e1a2aa295a60f1478d98273424d08601",
+      "sweep_point": {
+        "pedestrian_offset_m": 1.95
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "target_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "protected_interest": {
+          "kind": "world_setup",
+          "value": "person"
+        },
+        "pedestrian_offset_m": {
+          "kind": "world_setup",
+          "value": 1.95,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "alley_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_footprints",
+            "unit": "structured record",
+            "method": "original Native ego, pedestrian and owned-property body polygons",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native actor bounding-box precision"
+          },
+          {
+            "name": "pedestrian_gap_m",
+            "unit": "m",
+            "method": "original Native subject/pedestrian body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          },
+          {
+            "name": "property_gap_m",
+            "unit": "m",
+            "method": "original Native subject/property body polygon distance",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native body bounding-box precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "pedestrian_offset_m",
+            "unit": "m",
+            "method": "authored selected pedestrian lateral placement; physical body gap measured from original polygons"
+          }
+        ],
+        "limitations": [
+          "Engineering speed targets and alley placements do not establish legal endangerment, visibility or completion."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "pedestrian_offset_m",
+          "unit": "m",
+          "measurement": {
+            "method": "authored selected pedestrian lateral placement",
+            "time_window": "selected setup",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "Such a rate of speed as to endanger the life, limb or property of any person"
+      ]
     }
   ]
 }

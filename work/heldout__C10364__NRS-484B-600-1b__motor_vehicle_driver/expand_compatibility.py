@@ -28,4 +28,4 @@ for construction in primary['cases']:
         'acquisition': first['acquisition']}
 manifest['cases'] = [entries[construction['case_id']] for construction in primary['cases']]
 write(manifest_path, manifest)
-print('Bound six exact alley compatibility cases')
+print('Bound ' + str(len(manifest['cases'])) + ' exact alley compatibility cases')

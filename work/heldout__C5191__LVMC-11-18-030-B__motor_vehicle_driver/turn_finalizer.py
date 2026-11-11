@@ -11,6 +11,15 @@ def required(root,name):
 def rows(p):return [json.loads(x) for x in p.read_text().splitlines() if x.strip()]
 def signed_heading(first,last):
     a=atan2(first[1],first[0]);b=atan2(last[1],last[0]);return degrees((b-a+pi)%(2*pi)-pi)
+def original_approach_fraction(original):
+    lane=original.get('original_approach_lane')
+    if not original.get('approach_active') or not lane:return None
+    polygon=lane['polygon_xy_m'];corners=original['ego_corners_xy_m'];width=lane['lane_width_m']
+    if width<=0 or len(polygon)<4 or len(corners)<4:raise ValueError('Original turn fraction geometry incomplete')
+    center=[sum(point[i] for point in polygon)/len(polygon) for i in (0,1)]
+    ego=[sum(point[i] for point in corners)/len(corners) for i in (0,1)]
+    heading=lane['lane_heading_xy'];normal=(-heading[1],heading[0])
+    return abs(sum((ego[i]-center[i])*normal[i] for i in (0,1)))/width
 def measure_marked_turn(root):
     root=Path(root);context=json.loads(required(root,'turn_scene_context.json')[0].read_text())
     if not (context.get('connected_native_waypoints') is True and 45<=context['requested_heading_change_deg']<=135 and context.get('lawful_turn_facts') is None):
@@ -65,6 +74,8 @@ def analyze(attempt,*,write_channel=True):
                   'turn_indicator_state':[(o['frame'],o['time_s'],o['ego_light_state']) for o in original],
                   'ego_turn_motion':[(o['frame'],o['time_s'],{'position_xy_m':o['position_xy_m'],'heading_xy':o['heading_xy']}) for o in original],
                   'marked_approach_context':[(o['frame'],o['time_s'],o['original_approach_lane']) for o in original if o['approach_active']]}
+        if '__turn_excursion-' in case:
+            channels['lane_crossing_fraction']=[(o['frame'],o['time_s'],original_approach_fraction(o)) for o in original if o['approach_active']]
         for name,values in channels.items():
             path=root/(name+'.jsonl')
             if path.exists():raise ValueError('Derived turn channel already exists: '+name)
@@ -75,6 +86,10 @@ def analyze(attempt,*,write_channel=True):
 def build_result(attempt,report):
     root=Path(attempt);config=json.loads((root/'config.json').read_text());description=config['case']['recording_description'];value=report['measurements']['marked_turn_observation']['value']
     evidence=[{'name':item['name'],'unit':item['unit'],'reference':item['name']+'.jsonl','sha256':required(root,item['name']+'.jsonl')[1]} for item in description['channels']]
+    realized={'lane_clearance_m':{'unit':'m','method':'signed original body-corner clearance','time_window':'marked approach frames','statistic':'min','reference':'lane_clearance_m.jsonl','value':value['minimum_approach_clearance_m'],'sample_window_s':[value['approach_clearance'][0]['time_s'],value['approach_clearance'][-1]['time_s']]}}
+    if '__turn_excursion-' in report['case_id']:
+        fraction=rows(root/'lane_crossing_fraction.jsonl')
+        realized['lane_crossing_fraction']={'unit':'fraction','method':'maximum absolute original ego-center displacement from marked approach lane center divided by original lane width','time_window':'marked approach original frames','statistic':'max','reference':'lane_crossing_fraction.jsonl','value':max(row['value'] for row in fraction),'sample_window_s':[fraction[0]['time_s'],fraction[-1]['time_s']]}
     return {'case_id':report['case_id'],'measured_values':{k:v['value'] for k,v in report['measurements'].items()},
             'target_checks':[{'target':'original marked approach and connected left turn','requested':'retained physical boundary and heading history','measured':value['minimum_approach_clearance_m'],'method':'original Native corners, waypoint lane slice and heading','tolerance':None,'matched':False,'physical_cause_confirmed':False,'cause_evidence':'Original source joined; Native physical and lawful review pending'}],
             'setup_confirmed':False,'behavior_attempted':True,'maneuver_completed':False,
@@ -82,7 +97,7 @@ def build_result(attempt,report):
             'physical_failure_flags':{'detection_validated':False},'trace_reference':'trace.jsonl',
             'video_references':['overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv'],
             'video_frame_map_reference':'video_frames.jsonl','recording_description':description,
-            'recording_evidence':evidence,'realized_observables':{'lane_clearance_m':{'unit':'m','method':'signed original body-corner clearance','time_window':'marked approach frames','statistic':'min','reference':'lane_clearance_m.jsonl','value':value['minimum_approach_clearance_m'],'sample_window_s':[value['approach_clearance'][0]['time_s'],value['approach_clearance'][-1]['time_s']]}},
+            'recording_evidence':evidence,'realized_observables':realized,
             'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--attempt',required=True);parser.add_argument('--output',required=True);args=parser.parse_args();report=analyze(args.attempt);out=Path(args.output)

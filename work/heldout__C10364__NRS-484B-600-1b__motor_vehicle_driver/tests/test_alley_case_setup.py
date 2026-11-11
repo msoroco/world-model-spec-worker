@@ -7,7 +7,7 @@ import unittest
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from alley_case_setup import CASES, PREFIX, case_settings, verify_polygon_source
+from alley_case_setup import CASES, PREFIX, SWEEP_OFFSETS, case_settings, verify_polygon_source
 from native_alley_cases import check_config
 
 
@@ -28,11 +28,12 @@ class ExactCaseSetupTest(unittest.TestCase):
             'alley_polygon_source': {'path': source.name,
                                      'sha256': sha256(source.read_bytes()).hexdigest()}}
 
-    def test_six_exact_cases_and_hashed_polygon_source(self):
-        self.assertEqual(len(CASES), 6)
+    def test_nine_exact_cases_and_hashed_polygon_source(self):
+        self.assertEqual(len(CASES), 9)
         for suffix, (interest, speed) in CASES.items():
             config = dict(self.config, selected_case_id=PREFIX + suffix,
-                          protected_interest=interest, target_speed_mps=speed)
+                          protected_interest=interest, target_speed_mps=speed,
+                          pedestrian_offset_m=SWEEP_OFFSETS.get(suffix, 1.8))
             settings = check_config(config)
             self.assertEqual(settings['speed_mps'], speed)
             self.assertEqual(verify_polygon_source(settings, self.root).name,
@@ -54,6 +55,19 @@ class ExactCaseSetupTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'inside the attempt'):
             case_settings(dict(self.config, alley_polygon_source={
                 'path': '../frozen.json', 'sha256': '0'*64}))
+
+    def test_three_distinct_fallback_controls_are_bounded(self):
+        self.assertEqual(case_settings(dict(self.config, alley_direction='west'))['direction'], 'west')
+        self.assertEqual(case_settings(dict(self.config, route_lookahead_steps=3))['route_lookahead_steps'], 3)
+        self.assertEqual(case_settings(dict(self.config, overview_height_delta_m=2))['overview_height_delta_m'], 2)
+        with self.assertRaisesRegex(ValueError, 'lookahead'):
+            case_settings(dict(self.config, route_lookahead_steps=9))
+        with self.assertRaisesRegex(ValueError, 'overview'):
+            case_settings(dict(self.config, overview_height_delta_m=15))
+        with self.assertRaisesRegex(ValueError, 'lateral placement'):
+            case_settings(dict(self.config,
+                selected_case_id=PREFIX+'alley_gap_judgment_sweep-0000',
+                target_speed_mps=5.0, pedestrian_offset_m=1.8))
 
 
 if __name__ == '__main__':

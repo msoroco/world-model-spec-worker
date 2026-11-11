@@ -349,3 +349,26 @@ The independent saved-source sweep audit measures diagnostic observed lateral fr
 - `proposals/semantic-index.json` SHA-256 `ce156c043f212fa86fcdae0128097357b896acee4e18e39574d89221b47e1e13`
 - `delivery-passing-sweep-audit.json` SHA-256 `fd81e8596f698e25bfe0a3bb26b2dfe4ec795e91b54399a74ccc53ccea7a9922`
 - `delivery-comparison-audit-v3.json` SHA-256 `98fc04f05f78a33c78d05b3d326f452dbd0e2322c22c21660b77e8e6d9ad8bd3`
+
+## 2026-11-11 retained fraction channel and complete CPU passing grid
+
+This supersedes the preceding incomplete diagnostic sweep notes. `lane_finalizer.py` now writes `lane_crossing_fraction.jsonl` from original ego body corners and retained lane center, heading and width; the saved result summarizes its max over the original frame window. The three case-specific diagnostic originals and controller targets follow the canonical grid order: `passing_excursion-0000` 0.4, `0001` 0.8, `0002` 0.6. The canonical passing sweep spec is `complete`, has a dimensionless fraction axis and matches the three selected judgment sweep cases. Frozen `recording_evidence` validation recomputes all three saved summaries from the raw channel. Independent source audit reports diagnostic 0.4/0.8/0.6 and body clearances -0.5/-2.1/-1.3 m. Actual Native realization, physical completion and legal passing remain unverified.
+
+All six primary and 18 fallback exact offline/positive-negative compatibility receipts, six saved-only proofs, six original-source/four-camera audits, synthetic physical/lifecycle and delivery acceptance protocols were rerun after runner/finalizer/config/fixture changes. `delivery-comparison-audit-v4.json` is the current saved comparison proof. Canonical first `construction.json` source content was rebound; scoped `worker_check --complete` and seven-stage semantic validation pass. Scoped strict gate still fails truthful `partial`, because the separate turn-preparation sweep and Native/legal facts remain unresolved.
+
+- `construction.json` SHA-256 `5c3931ef9a791d70cfc00876f06dc78ec99923a1f142f46618959f3598e55b8d`
+- `delivery-construction-manifest.json` SHA-256 `9ec49c6e555eac78e4e469352f9d2c98aab8c029be71f71eab6b52f028696d2a`
+- `execution-manifest.json` SHA-256 `7e2f3c362b0cf1173f88ffb4a750af7180524f11f898916a7d953997325f514c`
+- `proposals/semantic-index.json` SHA-256 `8f72a61ca1f571deab89e27ada09b01bc9f069161c7a7bf6f18001b051aecd8b`
+- `delivery-passing-sweep-audit.json` SHA-256 `16c23de0f304439d5cb76a4a7bd6971327c66126a5b2a0c86ef4b7432843b114`
+- `delivery-comparison-audit-v4.json` SHA-256 `98fc04f05f78a33c78d05b3d326f452dbd0e2322c22c21660b77e8e6d9ad8bd3`
+- `strict-gate.log` SHA-256 `89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`
+
+## 2026-11-11 compatible turn-cell cross-reference
+
+The C147331 fixed travel cell cannot locally construct the lawful-turn-preparation exception. Supplemental C5191 is now allocated and has six selected exact connected-left-turn cases, 18 fallbacks and a complete source-derived .2/.6/.4 turn excursion CPU grid. `case-plan.json.cross_cell_alternatives` cites its manifest and semantic index; C147331 keeps its local turn sweep and requirement disposition pending rather than inventing a travel-cell turn case. Its passing grid remains complete. Both scoped complete checks pass; strict checks remain partial.
+
+- C5191 execution manifest SHA-256 `ff9b56869ad6bd94ff1af7d8ab9065832b29fc118f8a70d9cee92c2904c40b26`
+- C5191 semantic index SHA-256 `669f28cedaae643cf505606fceef31006209f205ce815b82faad98fefd329b98`
+- C147331 case-plan SHA-256 `8942bc3e83a31667dc474ce52a35b98a3e360b964c354f67abdfcec355a67cb4`
+- C147331 semantic index SHA-256 `5d8ecbe5dee705fdc76192a1132710656e22b1b449591d596cd7d635220b2536`

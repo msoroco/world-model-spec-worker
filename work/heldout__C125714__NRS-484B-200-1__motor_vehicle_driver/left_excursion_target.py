@@ -32,3 +32,21 @@ def target_xy(waypoint, *, frame_index, onset_frame=12, ramp_frames=24,
     phase = max(0.0, min(1.0, (frame_index - onset_frame) / ramp_frames))
     offset = requested_fraction * width * phase
     return [location.x + ty * offset, location.y - tx * offset]
+
+
+def pinned_subject_waypoint(world_map, location, route_start):
+    """Use the selected travel lane for body/centerline measurement.
+
+    A nearest-waypoint lookup can switch to the opposite lane after a lateral
+    excursion. Its longitudinal `s` is retained, but the reference road and
+    lane remain those of the selected route.
+    """
+    nearest = world_map.get_waypoint(location)
+    if nearest is None or nearest.road_id != route_start.road_id:
+        raise ValueError('Excursion left the selected road source')
+    reference = world_map.get_waypoint_xodr(route_start.road_id,
+                                            route_start.lane_id, nearest.s)
+    if reference is None or reference.road_id != route_start.road_id or (
+            reference.lane_id != route_start.lane_id):
+        raise ValueError('Selected travel lane reference unavailable')
+    return reference

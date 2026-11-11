@@ -34,6 +34,8 @@ stages.validate('cases', cases,
     {'request': request, 'dependencies': [binding], 'templates': [template],
      'canonical_parameter_rules': rules, 'judgment_completion_policy': {}})
 selected = [case for case in cases['cases'] if case['target_type'] != 'baseline']
-if len(selected) != 6:
-    raise ValueError('All six planned alley cases need canonical semantic selection')
-print('Six canonical alley cases validate across six stage outputs; judgment sweep remains incomplete')
+if len(selected) != 9:
+    raise ValueError('All nine planned and generated alley cases need canonical semantic selection')
+if len(cases['sweep_specs']) != 1 or cases['sweep_specs'][0]['status'] != 'complete':
+    raise ValueError('Finite qualitative alley sweep must be complete')
+print('Nine canonical alley cases validate across six stage outputs and a finite judgment sweep')

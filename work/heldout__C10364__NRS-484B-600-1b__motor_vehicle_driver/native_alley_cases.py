@@ -46,7 +46,8 @@ def run(config, output, host, port):
             direction=exact['direction'],
             polygon_source=exact['polygon_source']['path'],
             minimum_steps=12)
-        placement = participant_positions(route, alley_width_m=exact['alley_width_m'])
+        placement = participant_positions(route, alley_width_m=exact['alley_width_m'],
+                                          pedestrian_offset_m=exact['pedestrian_offset_m'])
         library = world.get_blueprint_library()
         person = world.try_spawn_actor(library.find('walker.pedestrian.0001'),
             carla.Transform(carla.Location(x=placement.pedestrian.x,
@@ -76,7 +77,8 @@ def run(config, output, host, port):
         frame_map = FrameMap(output / 'video_frames.jsonl')
         for name in CAMERAS:
             sinks[name] = LosslessSourceSink(output, name)
-        cameras = AlleyCameraCapture(world, carla, ego, sinks)
+        cameras = AlleyCameraCapture(world, carla, ego, sinks,
+            overview_height_delta_m=exact['overview_height_delta_m'])
         route_identity = {'map_name': world.get_map().name,
                           'road_id': route[0].road_id,
                           'lane_id': route[0].lane_id,
@@ -88,7 +90,8 @@ def run(config, output, host, port):
             position = transform.location
             heading = transform.get_forward_vector()
             velocity = ego.get_velocity()
-            target = route[min(4 + index // 4, len(route)-1)].transform.location
+            target = route[min(exact['route_lookahead_steps'] + index // 4,
+                               len(route)-1)].transform.location
             command = control_step((position.x, position.y),
                 (heading.x, heading.y), (velocity.x, velocity.y),
                 (target.x, target.y), target_speed_mps=exact['speed_mps'])

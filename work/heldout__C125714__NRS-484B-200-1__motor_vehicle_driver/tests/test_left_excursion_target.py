@@ -4,7 +4,7 @@ import unittest
 from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from left_excursion_target import target_xy
+from left_excursion_target import pinned_subject_waypoint, target_xy
 
 
 def waypoint(x_direction):
@@ -33,6 +33,23 @@ class ExcursionTargets(unittest.TestCase):
         route.lane_width = 3.5
         with self.assertRaisesRegex(ValueError, 'fraction'):
             target_xy(route, frame_index=40, requested_fraction=1.0)
+
+    def test_original_reference_stays_on_selected_lane_after_crossing(self):
+        start = SimpleNamespace(road_id=9, lane_id=-1)
+        nearest = SimpleNamespace(road_id=9, lane_id=1, s=25.0)
+        selected = SimpleNamespace(road_id=9, lane_id=-1, s=25.0)
+        class Map:
+            def get_waypoint(self, _location):
+                return nearest
+            def get_waypoint_xodr(self, road_id, lane_id, s):
+                self.request = (road_id, lane_id, s)
+                return selected
+        road_map = Map()
+        self.assertIs(pinned_subject_waypoint(road_map, object(), start), selected)
+        self.assertEqual(road_map.request, (9, -1, 25.0))
+        road_map.get_waypoint_xodr = lambda *_args: None
+        with self.assertRaisesRegex(ValueError, 'travel lane reference'):
+            pinned_subject_waypoint(road_map, object(), start)
 
 
 if __name__ == '__main__':

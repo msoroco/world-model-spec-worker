@@ -79,6 +79,13 @@ class TurnSignalMeasurementTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Listener identity differs'):
             self.result()
 
+    def test_pedestrian_affected_rejects_explicitly_missing_audio(self):
+        self.signals[1]['listener_audio_samples'] = None
+        self.signals[1]['listener_audio_status'] = 'not_collected_no_affected_pedestrian'
+        self.write()
+        with self.assertRaisesRegex(ValueError, 'audio required'):
+            self.result()
+
     def test_rejects_missing_potential_effect_source_and_frame_join(self):
         self.context['pedestrian_may_be_affected_source'] = ''
         self.write()

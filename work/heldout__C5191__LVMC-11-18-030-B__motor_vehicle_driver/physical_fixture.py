@@ -8,7 +8,7 @@ sys.path.insert(0,str(ROOT/'runtime/scenario_pipeline'))
 from worker_exchange.fixture_recipe import materialize as make_fixture
 from worker_exchange.runtime_cli import materialize as make_attempt
 from worker_exchange.saved_processing import copy_sources
-from turn_finalizer import analyze
+from turn_finalizer import analyze,original_approach_fraction
 
 def rows(path):return [json.loads(x) for x in Path(path).read_text().splitlines() if x.strip()]
 def put(path,values):Path(path).write_text(''.join(json.dumps(v,allow_nan=False)+'\n' for v in values))
@@ -33,13 +33,18 @@ def run(case_id,kind):
         else:
             value=analyze(attempt,write_channel=False)['measurements']['marked_turn_observation']['value'];suffix=case_id.rsplit('__',1)[-1]
             crossing=value['minimum_approach_clearance_m']<0;indicator=value['left_indicator_readback_frames']>0
-            behavior=(not crossing if suffix=='left_turn_lane_contained_approach' else crossing and (indicator==suffix.endswith('_signaled')))
+            sweep={'turn_excursion-0000':.2,'turn_excursion-0001':.6,'turn_excursion-0002':.4}
+            if suffix in sweep:
+                fraction=max(original_approach_fraction(row) for row in samples if row['approach_active'])
+                behavior=abs(fraction-sweep[suffix])<1e-6 and not indicator
+            else:
+                behavior=(not crossing if suffix=='left_turn_lane_contained_approach' else crossing and (indicator==suffix.endswith('_signaled')))
             status='met' if behavior and value['observed_heading_change_deg']>=45 else 'not_met'
         expected={'complete_motion':'met','incomplete_motion':'not_met','missing_evidence':'unverified'}[kind]
         if status!=expected:raise ValueError(f'Turn physical fixture {kind} yielded {status}, expected {expected}')
         return {'case_id':case_id,'fixture_kind':kind,'fixture_only':True,'diagnostic_fixture':True,'actual_native_capture':False,
                 'physical_checks':{'maneuver':{'status':status,'method':'source-joined marked approach footprint, indicator and original heading protocol','sources':sources,'missing_evidence':['turn_originals.jsonl'] if kind=='missing_evidence' else []}},
-                'maneuver_completed':status=='met','realized_observables':{'original_frame_count':value['frames'],'minimum_clearance_m':value['minimum_approach_clearance_m'],'observed_heading_change_deg':value['observed_heading_change_deg']} if value else {},
+                'maneuver_completed':status=='met','realized_observables':{'original_frame_count':value['frames'],'minimum_clearance_m':value['minimum_approach_clearance_m'],'observed_heading_change_deg':value['observed_heading_change_deg'],'observed_approach_fraction':max(original_approach_fraction(row) for row in samples if row['approach_active']) if '__turn_excursion-' in case_id else None} if value else {},
                 'provenance_kind':'native','provenance_note':'Synthetic Native-shaped protocol only; no actual CARLA capture','physical_acceptance_claimed':False}
 if __name__=='__main__':
  parser=argparse.ArgumentParser();parser.add_argument('--case',required=True);parser.add_argument('--kind',required=True,choices=('complete_motion','incomplete_motion','missing_evidence'));parser.add_argument('--output',required=True);args=parser.parse_args();Path(args.output).write_text(json.dumps(run(args.case,args.kind),indent=2)+'\n')

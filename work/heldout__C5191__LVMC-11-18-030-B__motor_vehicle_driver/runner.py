@@ -28,7 +28,8 @@ def check_config(config):
     if e.get('route_candidate_index',0) not in (0,1):raise ValueError('Unsupported turn candidate index')
     if (e.get('target_speed_mps',6.),e.get('speed_gain',.25)) not in ((6.,.25),(4.5,.2)):
         raise ValueError('Unsupported turn controller tuning')
-    if e.get('crossing_fraction',.6)!=.6:raise ValueError('Turn comparison crossing request differs')
+    expected={'turn_excursion-0000':.2,'turn_excursion-0001':.6,'turn_excursion-0002':.4}.get(suffix,.6)
+    if e.get('crossing_fraction',.6)!=expected:raise ValueError('Turn comparison crossing request differs')
     return suffix
 
 def run(output_dir,host,port):

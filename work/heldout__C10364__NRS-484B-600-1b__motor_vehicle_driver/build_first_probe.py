@@ -24,6 +24,7 @@ config = {'selected_case_id': case_id,
           'actor': 'motor_vehicle_driver',
           'rate_hz': 20, 'frames': 160, 'duration_s': 8,
           'target_speed_mps': 3.0, 'protected_interest': 'person',
+          'pedestrian_offset_m': 1.8,
           'alley_direction': 'east', 'alley_width_m': 6.0,
           'alley_polygon_xy': polygon['polygon_xy'],
           'alley_polygon_source': {'path': 'diagnostic-alley-polygon.json',
@@ -78,6 +79,7 @@ for planned in semantic['cases']:
     next_config['selected_case_id'] = next_id
     next_config['target_speed_mps'] = planned['variable_assignments']['target_speed_mps']['value']
     next_config['protected_interest'] = planned['variable_assignments']['protected_interest']['value']
+    next_config['pedestrian_offset_m'] = planned['variable_assignments']['pedestrian_offset_m']['value']
     next_config['case']['recording_description'] = planned['recording_description']
     next_construction['files'][0]['content'] = json.dumps(next_config, indent=2) + '\n'
     next_path = cases_dir / ('construction-' + suffix + '.json')

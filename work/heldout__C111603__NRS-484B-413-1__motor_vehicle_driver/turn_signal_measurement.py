@@ -120,10 +120,18 @@ def measure(motion_path, signal_path, context_path, participant_path):
         if not isfinite(yaw):
             raise ValueError('Original turn yaw is not finite')
         delta = atan2(sin(radians(yaw - initial_yaw)), cos(radians(yaw - initial_yaw)))
+        samples = signal.get('listener_audio_samples')
+        if samples is None:
+            if (context['pedestrian_may_be_affected'] or
+                    signal.get('listener_audio_status') != 'not_collected_no_affected_pedestrian'):
+                raise ValueError('Original listener audio required when a pedestrian may be affected')
+            audio_rms = None
+        else:
+            audio_rms = _rms(samples)
         observations.append({'frame': frame, 'time_s': time_s,
                              'yaw_change_deg': delta * 180 / 3.141592653589793,
                              'indicator_readback': indicator,
-                             'listener_audio_rms': _rms(signal.get('listener_audio_samples'))})
+                             'listener_audio_rms': audio_rms})
     onset = next((i for i, row in enumerate(observations)
                   if abs(row['yaw_change_deg']) > .5), None)
     if onset is None or onset == 0:
@@ -150,7 +158,8 @@ def measure(motion_path, signal_path, context_path, participant_path):
             'frame_count': len(observations), 'turn_onset_frame': observations[onset]['frame'],
             'turn_direction': direction, 'pedestrian_may_be_affected': context['pedestrian_may_be_affected'],
             'vehicle_may_be_affected': context['vehicle_may_be_affected'],
-            'max_pre_turn_listener_audio_rms': max(row['listener_audio_rms'] for row in before),
+            'max_pre_turn_listener_audio_rms': max((row['listener_audio_rms'] for row in before
+                                                   if row['listener_audio_rms'] is not None), default=None),
             'pre_turn_indicator_frames': [row['frame'] for row in before if row['indicator_readback'] == direction],
             'participant_clearance': clearance,
             'observations': observations, 'clearly_audible_legal_judgment': None,

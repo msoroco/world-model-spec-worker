@@ -11,7 +11,7 @@
         "lawful_turn_preparation"
       ],
       "description": "connected left turn while keeping full body within marked approach before junction",
-      "construction_status": "exact_cpu_diagnostic_proven_physical_native_pending"
+      "construction_status": "exact_cpu_diagnostic_proven_native_physical_pending"
     },
     {
       "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal",
@@ -20,7 +20,7 @@
         "lawful_turn_preparation"
       ],
       "description": "connected left turn with early approach boundary crossing and original indicator off readback",
-      "construction_status": "exact_cpu_diagnostic_proven_physical_native_pending"
+      "construction_status": "exact_cpu_diagnostic_proven_native_physical_pending"
     },
     {
       "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled",
@@ -29,7 +29,34 @@
         "lawful_turn_preparation"
       ],
       "description": "same connected left turn and early crossing with original left indicator readback",
-      "construction_status": "exact_cpu_diagnostic_proven_physical_native_pending"
+      "construction_status": "exact_cpu_diagnostic_proven_native_physical_pending"
+    },
+    {
+      "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0000",
+      "target_law_id": "LVMC-11-18-030-B",
+      "gap_ids": [
+        "lawful_turn_preparation"
+      ],
+      "description": "connected left turn with requested marked-approach lateral fraction 0.2; original footprint and turn trajectory measured",
+      "construction_status": "exact_cpu_diagnostic_proven_native_physical_pending"
+    },
+    {
+      "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0001",
+      "target_law_id": "LVMC-11-18-030-B",
+      "gap_ids": [
+        "lawful_turn_preparation"
+      ],
+      "description": "connected left turn with requested marked-approach lateral fraction 0.6; original footprint and turn trajectory measured",
+      "construction_status": "exact_cpu_diagnostic_proven_native_physical_pending"
+    },
+    {
+      "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0002",
+      "target_law_id": "LVMC-11-18-030-B",
+      "gap_ids": [
+        "lawful_turn_preparation"
+      ],
+      "description": "connected left turn with requested marked-approach lateral fraction 0.4; original footprint and turn trajectory measured",
+      "construction_status": "exact_cpu_diagnostic_proven_native_physical_pending"
     }
   ],
   "comparisons": [
@@ -58,6 +85,20 @@
       ],
       "deliberate_differences": [
         "left turn indicator commanded off versus on before boundary crossing; original Native light-state readback retained, lawful turn status not inferred"
+      ]
+    },
+    {
+      "comparison_id": "turn_excursion_sweep",
+      "case_ids": [
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0000",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0001",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0002"
+      ],
+      "fixed_conditions": [
+        "same marked approach and connected left exit, ego role and blueprint, requested 90 degree turn, indicator off, four camera profile and 20 Hz duration"
+      ],
+      "deliberate_differences": [
+        "dimensionless approach crossing fraction setpoints 0.2, 0.6, 0.4 in canonical grid order; original ego body and lane source derive realized fraction"
       ]
     }
   ],
@@ -96,7 +137,10 @@
       "case_ids": [
         "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach",
         "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal",
-        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled"
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0000",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0001",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0002"
       ],
       "evidence_or_gap": "No accepted original marked-lane turning capture supplied."
     },
@@ -106,7 +150,10 @@
       "status": "selected_required",
       "case_ids": [
         "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal",
-        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled"
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0000",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0001",
+        "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__turn_excursion-0002"
       ],
       "evidence_or_gap": "Indicator and turn trajectory can be recorded; independent lawful-turn rules and physical realization remain unresolved."
     }
@@ -220,8 +267,36 @@
         "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion-0001",
         "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_excursion-0002"
       ],
-      "manifest_sha256": "dc469d7afef7a90b9d16dbc909f5b2853ae470605f916a66e4b7b62033a064d7",
+      "manifest_sha256": "7e2f3c362b0cf1173f88ffb4a750af7180524f11f898916a7d953997325f514c",
       "disposition": "C147331 travel cell owns passing-context source construction; C5191 selected turn-preparation cases do not claim passing lawfulness."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego body, marked approach boundaries and connected left turn",
+        "interval": "entire 8 s original-frame interval"
+      },
+      {
+        "view": "approach",
+        "subject": "marked approach and ego boundary excursion",
+        "interval": "marked approach before junction"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "ego body corners against original marked approach boundary",
+        "interval": "marked approach before junction"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego turn trajectory and left indicator when visible",
+        "interval": "entire 8 s original-frame interval"
+      }
+    ],
+    "source_review": "Fully decode four original streams, join to retained frame map and review marked approach, ego body, left turn and indicator visibility."
+  }
 }

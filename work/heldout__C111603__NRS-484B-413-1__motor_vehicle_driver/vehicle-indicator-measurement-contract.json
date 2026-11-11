@@ -1,0 +1,33 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_left_indicator",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Direct-course left turn with another vehicle potentially affected: original indicator readback, participant clearance and unresolved reasonable-safety judgment",
+      "source": "inputs/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/assignment.json",
+      "output_key": "turn_signal_observation",
+      "method": "measure_turn_indicator",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "ego_turn_motion.jsonl",
+        "ego_signal_audio.jsonl",
+        "affected_participants.json",
+        "participant_bodies.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "ego_signal_audio.jsonl"
+    ],
+    "error_contains": "Missing required source: ego_signal_audio.jsonl"
+  }
+}

@@ -90,9 +90,22 @@ manifest = {'format': 'worker-compatibility-manifest',
                 'measurement_contract': str(contract_path.relative_to(root)),
                 'measurement_procedure': {'entrypoint': 'alley_finalizer.py'},
                 'fixture_recipe': str(recipe_path.relative_to(repo)),
-                'acquisition': {'pedestrian_gap_m': {
-                    'entrypoint': 'alley_finalizer.py',
-                    'method': 'original Native subject/pedestrian polygon distance at saved frames',
-                    'evidence': 'participant_footprints.jsonl joined to ego_motion.jsonl, trace and frame map'}}}]}
+                'acquisition': {
+                    'participant_footprints': {
+                        'entrypoint': 'alley_finalizer.py',
+                        'method': 'original Native actor polygons preserved and projected to a saved structured channel',
+                        'evidence': 'participant_footprints.jsonl joined to trace and frame map'},
+                    'pedestrian_gap_m': {
+                        'entrypoint': 'alley_finalizer.py',
+                        'method': 'original Native subject/pedestrian polygon distance at saved frames',
+                        'evidence': 'participant_footprints.jsonl joined to ego_motion.jsonl, trace and frame map'},
+                    'property_gap_m': {
+                        'entrypoint': 'alley_finalizer.py',
+                        'method': 'original Native subject/property polygon distance at saved frames',
+                        'evidence': 'participant_footprints.jsonl joined to ego_motion.jsonl, trace and frame map'},
+                    'pedestrian_offset_m': {
+                        'entrypoint': 'alley_finalizer.py',
+                        'method': 'authored selected pedestrian lateral placement, distinct from original body gap',
+                        'evidence': 'config.json fixed selected setup'}}}]}
 write(root / 'probe-compatibility-manifest.json', manifest)
 print('Bound first exact C10364 diagnostic fixture and source contract')

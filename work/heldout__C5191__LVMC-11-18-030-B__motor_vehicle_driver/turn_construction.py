@@ -3,7 +3,8 @@ from math import atan2, degrees, hypot, isfinite, pi
 
 CASES = ('left_turn_lane_contained_approach',
          'left_turn_early_boundary_crossing_no_signal',
-         'left_turn_early_boundary_crossing_signaled')
+         'left_turn_early_boundary_crossing_signaled',
+         'turn_excursion-0000','turn_excursion-0001','turn_excursion-0002')
 
 def _xy(waypoint):
     location = waypoint.transform.location

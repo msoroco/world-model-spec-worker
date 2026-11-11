@@ -37,6 +37,8 @@ params = [
      'range_or_domain': '3, 5 and 7 m/s engineering targets; no legal speed boundary'},
     {'name': 'protected_interest', 'kind': 'world_setup',
      'range_or_domain': 'stationary pedestrian life/limb or that person’s owned property'},
+    {'name': 'pedestrian_offset_m', 'kind': 'world_setup',
+     'range_or_domain': '1.5, 1.8, 1.95 and 2.4 m authored lateral positions; original body gap measured separately'},
     {'name': 'alley_direction', 'kind': 'world_setup',
      'range_or_domain': 'east selected route; west is a construction fallback'},
 ]
@@ -62,8 +64,8 @@ judgment = {'template_id': template_id, 'phrase': phrase, 'note': note,
             {'name': 'property_gap_m', 'unit': 'm', 'description': 'Original subject/owned-property body polygon surface gap.'},
             {'name': 'contact', 'unit': 'boolean', 'description': 'Original body polygon intersection; no legal verdict.'}],
         'context_inputs': [],
-        'sweep_dimensions': [{'name': 'target_speed_mps', 'unit': 'm/s',
-            'description': 'Engineering requested-speed contrast; original realized speed is measured separately.'}],
+        'sweep_dimensions': [{'name': 'pedestrian_offset_m', 'unit': 'm',
+            'description': 'Authored pedestrian lateral placement; original realized body clearance is measured separately.'}],
         'landmarks': [],
         'recording_needs': [{'name': 'participant_footprints', 'unit': 'structured record',
             'description': 'Original 20 Hz ego, pedestrian and property body polygons with Native motion and camera frame map.'}],
@@ -98,11 +100,14 @@ cases = {'status': 'draft', 'cell_id': cell_id, 'actor': actor,
          'sweep_specs': [], 'sweeps_expanded': False, 'cases': []}
 for planned in plan['cases']:
     case_id = planned['case_id']
+    if '__alley_gap_judgment_sweep-' in case_id:
+        continue
     case = planned['construction']
     speed = case['target_speed_mps']
     interest = case['protected_interest']
     assignments = {'target_speed_mps': {'kind': 'controller', 'value': speed},
                    'protected_interest': {'kind': 'world_setup', 'value': interest},
+                   'pedestrian_offset_m': {'kind': 'world_setup', 'value': 1.8},
                    'alley_direction': {'kind': 'world_setup', 'value': 'east'}}
     cases['cases'].append({'case_id': case_id, 'target_law_id': law_id,
         'target_type': 'boundary_probe',
@@ -119,23 +124,32 @@ baseline = dict(cases['cases'][0], case_id=aid + '__baseline',
                 target_law_id=None, target_type='baseline',
                 rationale='Shared planned alley setup; no baseline delivery or legal result.')
 cases['cases'].insert(0, baseline)
+from copy import deepcopy
+sweep_description = deepcopy(description)
+sweep_description['context_inputs'].append({
+    'name': 'pedestrian_offset_m', 'unit': 'm',
+    'method': 'authored selected pedestrian lateral placement; physical body gap measured from original polygons'})
+sweep_assignments = deepcopy(next(case for case in cases['cases']
+    if case['case_id'].endswith('__person_5mps'))['variable_assignments'])
+sweep_assignments['pedestrian_offset_m']['value'] = 1.5
 cases['sweep_specs'] = [{
-    'sweep_id': aid + '__alley_speed_judgment_sweep',
+    'sweep_id': aid + '__alley_gap_judgment_sweep',
     'target_law_id': law_id, 'judgment_refs': [{'phrase': phrase, 'note': note}],
-    'status': 'incomplete', 'mode': 'one_dimensional',
-    'axes': [{'variable': 'target_speed_mps', 'observable': 'target_speed_mps',
-        'unit': 'm/s', 'min': 3, 'max': 7, 'spacing': 2,
-        'measurement': {'method': 'authored controller target; original realized speed measured separately',
+    'status': 'complete', 'mode': 'one_dimensional',
+    'axes': [{'variable': 'pedestrian_offset_m', 'observable': 'pedestrian_offset_m',
+        'unit': 'm', 'min': 1.5, 'max': 2.4, 'spacing': 0.45,
+        'measurement': {'method': 'authored selected pedestrian lateral placement',
                         'time_window': 'selected setup', 'statistic': 'first'},
-        'range_rationale': 'The three planned 3/5/7 m/s engineering contrasts bracket a moderate alley speed without creating a legal cutoff.',
-        'spacing_rationale': 'Two m/s spacing gives low, middle and high requested-speed points.',
-        'feasibility_evidence': 'alley_route.control_step and alley_geometry.plan_alley pass CPU tests; selected source-backed alley geometry remains unconstructed.'}],
+        'range_rationale': 'A 6 m authored alley, 1.8 m subject width, 0.3 m pedestrian radius and 0.2 m margin allow tested lateral positions from 1.5 to 2.4 m; actual body gaps are retained separately.',
+        'spacing_rationale': 'Three nonduplicate positions at 1.5, 1.95 and 2.4 m span the interior geometric range at fixed requested speed.',
+        'feasibility_evidence': 'alley_geometry.plan_alley validates these offsets in the sourced-polygon CPU model; actual Native alley geometry remains for physical review.'}],
     'landmarks': [],
-    'rationale': 'Finite requested-speed judgment sampling must be bound to a selected source-backed alley route and original measured motion.',
-    'variable_assignments': dict(cases['cases'][1]['variable_assignments']),
-    'recording_description': description,
-    'missing_inputs': ['Selected original alley polygon and exact Native route source are absent; generated cases and physical feasibility proofs remain CPU construction work.']}]
+    'rationale': 'Finite pedestrian lateral-placement judgment sampling at fixed 5 m/s requested travel complements the existing 3/5/7 m/s speed comparisons without deciding endangerment.',
+    'variable_assignments': sweep_assignments,
+    'recording_description': sweep_description}]
+from batch_pipeline.sweeps import expand_sweeps
+expand_sweeps(cases, [template], binding)
 refs['cases'] = write('cases', cases)
 write('semantic-index', {'format': 'worker-semantic-delivery',
                          'assignment_id': aid, 'stages': refs})
-print('Authored six selected alley semantic cases and one planning baseline')
+print('Authored six ordinary and three generated alley semantic cases')

@@ -12,6 +12,9 @@ from alley_measurement import measure
 PREFIX = 'heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver__'
 SUFFIXES = {f'{interest}_{speed}mps' for interest in ('person', 'property')
             for speed in (3, 5, 7)}
+SUFFIXES.update({'alley_gap_judgment_sweep-0000',
+                 'alley_gap_judgment_sweep-0001',
+                 'alley_gap_judgment_sweep-0002'})
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
@@ -131,8 +134,24 @@ def build_result(attempt, report):
             'reference': channel.name,
             'value': min(row[key] for row in frames),
             'sample_window_s': [frames[0]['time_s'], frames[-1]['time_s']]}
+    if any(item.get('name') == 'pedestrian_offset_m'
+           for item in description.get('context_inputs', [])):
+        placement = config.get('pedestrian_offset_m')
+        if type(placement) not in (int, float):
+            raise ValueError('Selected pedestrian lateral placement missing')
+        context = root / 'pedestrian_offset_m.json'
+        if context.exists():
+            raise ValueError('Retain prior selected placement context')
+        context.write_text(json.dumps({'pedestrian_offset_m': placement}) + '\n')
+        evidence.append({'name': 'pedestrian_offset_m', 'unit': 'm',
+                         'reference': context.name, 'sha256': digest(context)})
+        observables['pedestrian_offset_m'] = {
+            'unit': 'm', 'method': 'authored selected pedestrian lateral placement',
+            'time_window': 'selected setup', 'statistic': 'first',
+            'reference': context.name, 'value': placement}
     from worker_exchange.native_output import physical_result
-    selected = 'pedestrian' if case[len(PREFIX):].startswith('person_') else 'property'
+    selected = ('pedestrian' if case[len(PREFIX):].startswith(('person_', 'alley_gap_judgment_sweep-'))
+                else 'property')
     result = {'case_id': case,
         'measured_values': {'alley_original_exposure': observed},
         'target_checks': [{'target': 'measured original ' + selected + ' exposure',

@@ -10,51 +10,89 @@
       "exit_code": 0
     },
     {
-      "name": "exact_offline_and_compatibility",
-      "cases": 3,
+      "name": "native_selector",
+      "command": "C5191 turn sweep controller geometry test",
+      "exit_code": 0,
+      "log": "turn-sweep-controller-test.log",
+      "sha256": "3b1002d93a3b2c8eb07feceaafea1cb9c625f0e3cb9459a7341d2a3216e3e6e7"
+    },
+    {
+      "name": "exact_offline_compatibility",
+      "cases": 6,
       "candidates_per_case": 4,
       "passed": true,
-      "manifest_sha256": "e59a75192169baf1e17931d3bd6ca3b0879c5668ee528baf7f9a6deb7525bf4a"
+      "manifest_sha256": "ff9b56869ad6bd94ff1af7d8ab9065832b29fc118f8a70d9cee92c2904c40b26"
     },
     {
       "name": "saved_only_processing",
-      "cases": 3,
+      "cases": 6,
       "passed": true,
       "proofs_sha256": {
-        "left_turn_early_boundary_crossing_no_signal-saved-proof.json": "cbb7b775efa0510500b2c9a99ef1c408a9924bdc311fb4edd09e1df973606529",
-        "left_turn_early_boundary_crossing_signaled-saved-proof.json": "04a238ac6a168a353f1e97167b9e88d2bc44c4ac0d211c4007a7d5894912b1a8",
-        "left_turn_lane_contained_approach-saved-proof.json": "e97d981816df3438f7cbe6deadcab6615992c87a6c3187ea83c0df5e0c8e6906"
+        "left_turn_early_boundary_crossing_no_signal-saved-proof.json": "1419ce39750f38e6f99c414592d0a1ae56ad191719d710ad229af92c18a9ceba",
+        "left_turn_early_boundary_crossing_signaled-saved-proof.json": "b52ac4b817174ec979665c47477385add4d594452134c6756b7ec8d8492b38f9",
+        "left_turn_lane_contained_approach-saved-proof.json": "48f6ccd9a7f2e35b3bb0c00dcaf72a9536ba35b857341d8895af955e46464aff",
+        "turn_excursion-0000-saved-proof.json": "da6d2f05db70972ea5527f15643760ba323d139231791e33c6492bb7928ea6d8",
+        "turn_excursion-0001-saved-proof.json": "1b8a5a98fe823d95d4b24d386c58b61e6f6f1e5ca1e584918a2196c13e44e595",
+        "turn_excursion-0002-saved-proof.json": "f724f667f74afdd95734a2863ba98a0fe84446a2cfb15d227db8978ad39345cf"
       }
     },
     {
-      "name": "synthetic_physical_protocol_and_lifecycle",
-      "cases": 3,
+      "name": "synthetic_physical_lifecycle",
+      "cases": 6,
       "outcomes_per_case": 3,
       "passed": true
     },
     {
       "name": "independent_delivery_audit",
-      "cases": 3,
+      "cases": 6,
       "positive_and_negative_passed": true
     },
     {
-      "name": "controlled_comparison_audit",
-      "comparison_ids": [
-        "left_turn_approach_containment",
-        "left_turn_signal_evidence"
-      ],
-      "positive_and_two_negative_controls_passed": true,
-      "proof_sha256": "32dc5c686ae4a8451589418ef031a5d6668a1b70dc57af62b56e04b71023f084"
+      "name": "controlled_path_signal_comparison",
+      "passed": true,
+      "proof_sha256": "32dc5c686ae4a8451589418ef031a5d6668a1b70dc57af62b56e04b71023f084",
+      "negative_controls_sha256": "df966937493fc2be09e91c9608fb9c34227e93671206d16c03c493f26684751d"
     },
     {
-      "name": "semantic_stage_validation",
-      "stages": 7,
+      "name": "turn_judgment_sweep",
+      "points": [
+        0.2,
+        0.6,
+        0.4
+      ],
       "passed": true,
-      "index_sha256": "804d4a48253e68ac0c9b046ac87f8fac48c34f1d58aba55f450a4b68e99c0a25"
+      "proof_sha256": "aa6ac62e2239b16b4f984ae2fe730bb8ba82677d0d7e8cacde440f2c3146f4f2",
+      "frozen_recording_evidence_passed": true
+    },
+    {
+      "name": "seven_stage_semantic",
+      "passed": true,
+      "index_sha256": "669f28cedaae643cf505606fceef31006209f205ce815b82faad98fefd329b98"
+    },
+    {
+      "name": "execution_handoff_compatibility",
+      "cases": 6,
+      "passed": true
+    },
+    {
+      "name": "supplemental_ready_import_preflight",
+      "exit_code": 1,
+      "log": "supplemental-ready-import-preflight.log",
+      "sha256": "0247d6d92e87487449d81a9635237daa98886a0b1e8eba280f5067fda4eb6328",
+      "expected_error": "inputs/<supplemental assignment>/assignment.json missing in frozen portable.validate_imports"
+    },
+    {
+      "name": "scoped_strict",
+      "exit_code": 1,
+      "log": "strict-gate.log",
+      "sha256": "89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual marked approach, full-body boundary crossing, indicator, connected left turn and camera visibility"
+    "Actual marked approach and connected left turn, full-body boundary excursion, indicator readback and four-camera visibility",
+    "Applicable lawful-turn rules and factual legal predicates require independent review after Native capture"
   ],
-  "reason": "Three exact C5191 connected-left-turn diagnostic cases, nine distinct fallbacks, saved-only processing, source/camera delivery, controlled comparisons and canonical semantic stages pass CPU checks. Physical Native turn and lawful-turn facts are unverified; judgment sweep specs remain incomplete."
+  "reason": "Six C5191 exact connected-left-turn cases and 18 fallbacks pass offline/compatibility, saved-only processing, physical protocol fixtures, independent delivery, controlled comparison and complete source-derived three-point turn sweep CPU proofs. Scoped strict gate fails before package validation because frozen portable.validate_imports hardcodes inputs/<supplemental C5191>/assignment.json although the authorized supplemental assignment is under work/<id>/assignment.json. No safe work-owned compatibility shim can change that path. Native physical/pixel and lawful-turn facts remain pending.",
+  "readiness_kind": "delivery_prepared",
+  "first_gpu_delivery_command": "python scenario_pipeline/pipeline.py execute-delivery --assignment heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\""
 }
