@@ -1,0 +1,122 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C111256__NRS-484B-283-1d1__bus_driver",
+  "status": "draft_not_selected",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "cases": [
+    {
+      "case_id": "training__C111256__NRS-484B-283-1d1__bus_driver__reference",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Bus stopping, pedestrian Walk display and original camera framing require Native/pixel source review"
+      },
+      "measurement_contract": "draft-candidates/reference/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111256-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/reference/fallback1/construction.json",
+          "construction_sha256": "33777d2af3acf5162b6f63868ccb9c6e766dc01e148514978ca84eae5339c453",
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "observed_bus_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/reference/fallback2/construction.json",
+          "construction_sha256": "f5f1a6112a21058b69f0c85de55138e6c3f7abce4ff4c119e17b3250d53f9df4",
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "bus_front_margin_before_walk_crosswalk_m",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "crosswalk_hold_margin_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/reference/fallback3/construction.json",
+          "construction_sha256": "a68f8e9acf7b6d0883f6209cadbedd20179658b591c6c0c005a850e37df1d18b",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "walk_display_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C111256__NRS-484B-283-1d1__bus_driver/update015-reference-recipe.json",
+      "construction": "draft-candidates/reference/primary/construction.json",
+      "construction_sha256": "81dfe319405ce1e4f58668ec2454f7115359b583892d296e1b75ffde97daedcc"
+    },
+    {
+      "case_id": "training__C111256__NRS-484B-283-1d1__bus_driver__contrast",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Bus stopping, pedestrian Walk display and original camera framing require Native/pixel source review"
+      },
+      "measurement_contract": "draft-candidates/contrast/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111256-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/contrast/fallback1/construction.json",
+          "construction_sha256": "9af5adfd3dbe4a1c41592f220b52b8d33970203452fdc1a7563b73520053b576",
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "observed_bus_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/contrast/fallback2/construction.json",
+          "construction_sha256": "aa30ad92f6d97ddfb73eff4684d9252b1c2cb200a6b8eed8ea44591295ecda0a",
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "bus_front_margin_before_walk_crosswalk_m",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "crosswalk_hold_margin_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/contrast/fallback3/construction.json",
+          "construction_sha256": "923e6e2a78382606014c7c53a796901cd8e3a5b9722b0e0c153e11e97ce73a77",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "walk_display_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C111256__NRS-484B-283-1d1__bus_driver/update015-contrast-recipe.json",
+      "construction": "draft-candidates/contrast/primary/construction.json",
+      "construction_sha256": "d76d31a5719533ed5dfbfee8fbeef497057e15de684fa0a11984ce66fd97f261"
+    }
+  ]
+}
