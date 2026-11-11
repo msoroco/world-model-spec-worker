@@ -34,6 +34,29 @@ class Map:
 
 
 class ConstructionTest(unittest.TestCase):
+    def test_later_opposing_actor_uses_same_lane_and_separation(self):
+        first = Waypoint(40,0,180,road=2,lane=-1)
+        wrong = Waypoint(66,0,180,road=2,lane=-2)
+        later = Waypoint(65,0,180,road=2,lane=-1)
+        first.previous = lambda distance: [wrong,later]
+        roles = []
+        class Blueprint:
+            def set_attribute(self,key,value):roles.append((key,value))
+        class Library:
+            def find(self,name):return Blueprint()
+        class World:
+            def get_blueprint_library(self):return Library()
+            def try_spawn_actor(self,blueprint,transform):return SimpleNamespace(transform=transform)
+        actor=MODULE.spawn_reciprocal_vehicle(World(),{'oncoming':{'outside':first}})
+        self.assertIs(actor.transform,later.transform)
+        self.assertIn(('role_name','later_opposing_vehicle'),roles)
+
+    def test_later_opposing_actor_rejects_other_lane(self):
+        first=Waypoint(40,0,180,road=2,lane=-1)
+        first.previous=lambda distance:[Waypoint(65,0,180,road=2,lane=-2)]
+        with self.assertRaisesRegex(ValueError,'same-lane'):
+            MODULE.spawn_reciprocal_vehicle(None,{'oncoming':{'outside':first}})
+
     def test_selects_opposing_routes_and_connected_left_exit(self):
         west = Waypoint(-40, 0, 0, station=10)
         west_near = Waypoint(-4, 0, 0, station=11)

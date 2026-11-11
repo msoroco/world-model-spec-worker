@@ -95,18 +95,42 @@ def analyze(root: Path) -> dict:
         mapping = frame_map[index]
         if mapping.get("video_frame") != index or mapping.get("carla_frame") != frame or abs(mapping.get("time_s", -math.inf) - time) > 1e-4:
             raise ValueError("Original frame/time join failed")
-        for who in ("ego", "oncoming"):
+        for who in ("ego", "oncoming", "reciprocal"):
             actor = row.get(who)
             if not isinstance(actor, dict):
                 raise ValueError("Missing participant: " + who)
             _finite_pair(actor.get("position_xy_m"), who + " position")
             _finite_pair(actor.get("velocity_xy_mps"), who + " velocity")
             _body_intersects(actor.get("body_vertices_xy_m"), polygon)
+        ids = [row[who].get('actor_id') for who in ('ego','oncoming','reciprocal')]
+        if any(type(ident) is not int for ident in ids) or len(set(ids)) != 3:
+            raise ValueError('Missing distinct original participant identities')
+        heading = row.get('ego_heading_deg')
+        if type(heading) not in (int,float) or not math.isfinite(heading):
+            raise ValueError('Missing original ego heading')
         if type(row.get("ego_left_indicator")) is not bool:
             raise ValueError("Missing measured left-indicator state")
 
     ego_inside = [r["frame"] for r in rows if _body_intersects(r["ego"]["body_vertices_xy_m"], polygon)]
     oncoming_inside = [r["frame"] for r in rows if _body_intersects(r["oncoming"]["body_vertices_xy_m"], polygon)]
+    initial_clearance = next((row['frame'] for row in rows
+        if oncoming_inside and row['frame'] > oncoming_inside[0]
+        and not _body_intersects(row['oncoming']['body_vertices_xy_m'],polygon)
+        and sum((conflict[i]-row['oncoming']['position_xy_m'][i])*approaching[i]
+                for i in (0,1)) < 0),None)
+    reciprocal_inside = [r['frame'] for r in rows if _body_intersects(r['reciprocal']['body_vertices_xy_m'],polygon)]
+    initial_heading = rows[0]['ego_heading_deg']
+    turn_start = next((row['frame'] for row in rows
+                       if abs((row['ego_heading_deg']-initial_heading+180)%360-180) >= 15),None)
+    reciprocal_low_speed = [row['frame'] for row in rows
+                            if math.hypot(*row['reciprocal']['velocity_xy_mps']) < 0.1]
+    reciprocal_approach_observed = any(math.hypot(*row['reciprocal']['velocity_xy_mps']) > 0.5
+                                       and (turn_start is None or row['frame'] < turn_start)
+                                       for row in rows)
+    reciprocal_yield_observed = (turn_start is not None and initial_clearance is not None
+        and initial_clearance < turn_start and reciprocal_approach_observed and
+        any(frame >= turn_start and frame not in reciprocal_inside
+            for frame in reciprocal_low_speed))
     conflict_samples = []
     for row in rows:
         position = row["oncoming"]["position_xy_m"]
@@ -125,6 +149,11 @@ def analyze(root: Path) -> dict:
         "ego_first_in_intersection_frame": ego_inside[0] if ego_inside else None,
         "oncoming_first_in_intersection_frame": oncoming_inside[0] if oncoming_inside else None,
         "oncoming_presence_frames": oncoming_inside,
+        "initial_oncoming_clearance_frame":initial_clearance,
+        "reciprocal_first_in_intersection_frame": reciprocal_inside[0] if reciprocal_inside else None,
+        "ego_turn_start_frame":turn_start,
+        "reciprocal_low_speed_frames":reciprocal_low_speed,
+        "reciprocal_stopped_outside_during_turn":reciprocal_yield_observed,
         "ego_low_speed_frames": [r["frame"] for r in rows if math.hypot(*r["ego"]["velocity_xy_mps"]) < 0.1],
         "ego_left_indicator_frames": [r["frame"] for r in rows if r["ego_left_indicator"]],
         "opposing_conflict_samples": conflict_samples,

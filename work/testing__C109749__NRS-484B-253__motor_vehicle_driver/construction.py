@@ -126,3 +126,30 @@ def spawn_pair(world, selected, *, ego_blueprint="vehicle.tesla.model3",
         for actor in reversed(actors):
             actor.destroy()
         raise
+
+
+def spawn_reciprocal_vehicle(world, selected, *, behind_m=25.0,
+                             blueprint_id='vehicle.audi.tt'):
+    """Spawn a later opposing approach on the same Native lane.
+
+    The first opposing actor can clear the initial yield conflict. A distinct
+    later actor is then needed to observe the reciprocal yield after the turn
+    starts. This function never silently places it on another lane.
+    """
+    if type(behind_m) not in (int,float) or not math.isfinite(behind_m) or behind_m < 15:
+        raise ValueError('Positive later-opposing separation required')
+    first = selected['oncoming']['outside']
+    previous = _previous(first,behind_m)
+    matching = [waypoint for waypoint in previous
+                if waypoint.road_id == first.road_id and waypoint.lane_id == first.lane_id
+                and abs(_delta(_yaw(waypoint),_yaw(first))) <= 15
+                and _distance(waypoint,first) >= behind_m-2]
+    if not matching:
+        raise ValueError('No same-lane later opposing spawn waypoint')
+    waypoint = min(matching,key=lambda item:abs(_distance(item,first)-behind_m))
+    blueprint = world.get_blueprint_library().find(blueprint_id)
+    blueprint.set_attribute('role_name','later_opposing_vehicle')
+    actor = world.try_spawn_actor(blueprint,waypoint.transform)
+    if actor is None:
+        raise ValueError('Native later opposing spawn failed')
+    return actor

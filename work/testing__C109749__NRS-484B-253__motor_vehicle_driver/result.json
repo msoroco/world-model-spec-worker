@@ -2,24 +2,36 @@
   "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
   "input_sha256": "912e2ac429853e443ff83b2d323134aca9fc59f31fecef23b322dcc620d3aef4",
   "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
+  "readiness_kind": "primary_construction_and_saved_analysis_checkpoint",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-253__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "846d10a68ea839420b6afa365f14d1d7316b427047c40aedf77e4445c8df8fde"
+      "sha256": "1bf3b48ce3b3db47de977f7656c9f87677fac771d4ba34e81af07dd433f0cdc5"
     },
     {
       "command": "PYTHONPATH=runtime/scenario_pipeline:runtime/python .venv-cpu/bin/python -m worker_exchange.atom_preflight --runtime runtime --config work/testing__C109749__NRS-484B-253__motor_vehicle_driver/config.json",
       "exit_code": 0,
       "log": "atom-preflight.log",
       "sha256": "72a0e68eb841f3c1a9c67410a82d1f63db4bcf634fd20495d228a98b508c2232"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --output .runtime-work/c109749-primary-offline-v1",
+      "exit_code": 0,
+      "log": "primary-offline.log",
+      "sha256": "ef0d33ab78d37d1167ab546b62abdf64255cdb086e53ada16a707b35bbee0a65"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight.log",
+      "sha256": "affb790ba0131c61b1ea9db9adba49a1f3f6095fa9c3067838f20b29187d3b50"
     }
   ],
   "remaining_gpu_checks": [
     "Actual opposing approach and subject motion, signal pixels and four-camera visibility."
   ],
-  "reason": "A tentative post-yield reciprocal-yield case, four-view plan, pinned-atom config and CPU-tested map, controller and measurement components exist. The exact selected capture runner, source cameras, saved finalizer, three fallback plans, semantic proposals, saved-processing proofs and independent audits remain unfinished CPU work. Accepted source bytes are absent from this export, so reuse is unresolved. See HANDOFF.md."
+  "reason": "The tentative reciprocal-yield positive case now has a materialized CARLA-lazy three-vehicle Native runner, four named source-camera constructors, synchronized original three-actor histories, and saved-only finalizer. Exact primary runtime.py offline and 27 CPU tests pass; pinned preflight and atom preflight pass. Full case-specific diagnostic recipe, measurement contract, positive/negative compatibility, saved processing, physical fixture proofs, three fallback constructions, semantic proposals, remaining comparisons and independent delivery/comparison audits remain unfinished worker-owned CPU work. Accepted original source bytes are absent from this export, so reuse remains unresolved. No external blocker asserted; see HANDOFF.md."
 }
