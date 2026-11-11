@@ -25,7 +25,7 @@ def _body(actor):
     if body.area<=0:raise ValueError("Degenerate body")
     return body
 
-def analyze(root:Path)->dict:
+def analyze(root:Path, *, allow_exceptions=False)->dict:
     root=Path(root);hashes={}
     for name in REQUIRED:
         path=root/name
@@ -40,7 +40,10 @@ def analyze(root:Path)->dict:
         raise ValueError("Different-highway same-crossing activation not sourced")
     if ctx.get("official_device_controls_crossing") is not False:
         raise ValueError("Official-device exclusion unresolved")
-    if ctx.get("opposite_approach_with_left_turn") is not False:
+    exception=ctx.get("opposite_approach_with_left_turn")
+    if type(exception) is not bool:
+        raise ValueError("Opposite-direction left-turn exclusion unresolved")
+    if exception and not allow_exceptions:
         raise ValueError("Opposite-direction left-turn exclusion unresolved")
     crossing=Polygon(ctx.get("intersection_polygon_xy_m",[]))
     if not crossing.is_valid or crossing.area<=0:raise ValueError("Invalid crossing polygon")
@@ -70,6 +73,8 @@ def analyze(root:Path)->dict:
     other_at_ego=next(s["other_inside"] for s in samples if s["frame"]==first["ego"]["frame"])
     return {"format":"worker-median-crossing-other-precedence","sources":hashes,"first_body_entry":first,
             "other_enters_before_ego":other_before,"other_body_inside_at_ego_entry":other_at_ego,
+            "opposite_approach_with_left_turn":exception,
+            "subsection_1_applicable_on_declared_exception":not exception,
             "entry_time_difference_s":first["ego"]["time_s"]-first["other"]["time_s"],
             "samples":samples,"yield_judgment":"unresolved; body entry alone does not establish yielding",
             "legal_conclusion":"unresolved"}

@@ -13,6 +13,11 @@ from native_crossing import construct_crossing_candidate
 from site_packet import verify_site_packet
 
 CASE = "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_precedence"
+ENTRY_ORDER_CASES = {
+    CASE: True,
+    "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_advance": True,
+    "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_other_later": False,
+}
 CAMERAS = tuple(SIZES)
 POSES = ("ego_approach", "ego_entry", "other_approach", "other_entry")
 
@@ -25,12 +30,13 @@ def _numbers(values, size, label):
 
 
 def validate_config(config, base_dir=Path.cwd()):
-    if config.get("selected_case_id") != CASE or config.get("law_id") != "NRS-484B-250-1" or config.get("cell_id") != "C125714":
-        raise ValueError("Exact median precedence case required")
+    case_id = config.get("selected_case_id")
+    if case_id not in ENTRY_ORDER_CASES or config.get("law_id") != "NRS-484B-250-1" or config.get("cell_id") != "C125714":
+        raise ValueError("Exact median entry-order case required")
     if config.get("rate_hz") != 20 or config.get("duration_s") != 55:
         raise ValueError("Planned 20 Hz, 55-second capture required")
-    if config.get("expected_other_enters_before_ego") is not True:
-        raise ValueError("Other-first construction target required")
+    if config.get("expected_other_enters_before_ego") is not ENTRY_ORDER_CASES[case_id]:
+        raise ValueError("Selected case entry-order target required")
     if not isinstance(config.get("required_atoms"), list):
         raise ValueError("Pinned Core required_atoms list required")
     if not isinstance(config.get("recording_description"), dict):
@@ -168,6 +174,7 @@ def capture(args, config):
                     "native_candidate": plan,
                     "statutory_crossing_review_source": site["statutory_crossing_review_source"],
                     "site_review_packet": site_review,
+                    "median_spacing_measurement": site_review["median_spacing_measurement"],
                 }
                 (output / "junction_context.json").write_text(json.dumps(context, indent=2) + "\n")
                 camera_transforms = {name: _transform(carla, site["cameras"][name]) for name in CAMERAS}
@@ -180,7 +187,8 @@ def capture(args, config):
                             encoders[name] = stack.enter_context(FFV1Writer(output / (name + ".mkv"), width, height))
                         frame_map = stack.enter_context(FrameMap(output / "video_frames.jsonl"))
                         history = stack.enter_context((output / "crossing_history.jsonl").open("x", buffering=1))
-                        capture_helper = PipelineCapture(client, ego, output, CASE,
+                        capture_helper = PipelineCapture(client, ego, output,
+                                                         config["selected_case_id"],
                                                          required_observations=config["required_atoms"])
                         try:
                             for i in range(1100):
@@ -222,7 +230,7 @@ def main():
     args = parser.parse_args()
     config = validate_config(json.loads(Path(args.config).read_text()), Path(args.config).parent)
     if args.check:
-        print(json.dumps({"case_id": CASE, "planned_frames": 1100,
+        print(json.dumps({"case_id": config["selected_case_id"], "planned_frames": 1100,
                           "named_source_cameras": list(CAMERAS),
                           "cpu_check_passed": True, "carla_started": False,
                           "physical_acceptance_claimed": False}))

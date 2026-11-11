@@ -2,6 +2,7 @@
 import hashlib
 import json
 from pathlib import Path
+from median_spacing import check_roadway_pair
 
 SOURCE_KEYS = ("polygon_source", "entrance_source", "median_spacing_source",
                "device_review_source", "statutory_crossing_review_source")
@@ -41,6 +42,11 @@ def verify_site_packet(config, base_dir: Path) -> dict:
         if not source_path.is_file() or _sha(source_path) != source["sha256"]:
             raise ValueError("Site source missing or changed: " + key)
         verified[key] = {"path": str(source_path), "sha256": source["sha256"]}
+    spacing_path = Path(verified["median_spacing_source"]["path"])
+    spacing = check_roadway_pair(json.loads(spacing_path.read_text()),
+                                 config["site"].get("crossing_polygon_xy_m"),
+                                 config["site"].get("selected_roadway_index"))
     return {"packet_path": str(path), "packet_sha256": reference["sha256"],
             "source_documents": verified,
+            "median_spacing_measurement": spacing,
             "physical_site_verified": False, "statutory_identity_verified": False}

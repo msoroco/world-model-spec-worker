@@ -1,0 +1,61 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Same sourced crossing and different-highway approaches",
+      "source": "NRS 484B.250(1); inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+      "output_key": "crossing_identity",
+      "method": "measure_crossing_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "junction_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Other vehicle original complete-body entry precedes ego and occupancy at ego entry is observed",
+      "source": "NRS 484B.250(1); inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+      "output_key": "body_entry_order",
+      "method": "measure_body_entry",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "junction_context.json",
+        "crossing_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Official traffic-control device exclusion and subsection-4 qualification are preserved",
+      "source": "NRS 484B.250(1); inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+      "output_key": "device_exclusion_context",
+      "method": "measure_device_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "junction_context.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Opposite-direction intending or making left-turn exclusion is preserved",
+      "source": "NRS 484B.250(1); inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+      "output_key": "opposite_left_turn_context",
+      "method": "measure_turn_exception",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "junction_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "crossing_history.jsonl"
+    ],
+    "error_contains": "Missing required source: crossing_history.jsonl"
+  }
+}

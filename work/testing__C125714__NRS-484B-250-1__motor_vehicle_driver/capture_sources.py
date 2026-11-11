@@ -29,6 +29,7 @@ def _actor_row(actor, waypoint, approach_road_id, intersection_id):
         "native_road_id": waypoint.road_id,
         "native_lane_id": waypoint.lane_id,
         "native_junction_id": waypoint.get_junction().id if waypoint.is_junction else None,
+        "heading_deg": _finite(transform.rotation.yaw, "heading"),
         "body_vertices_xy_m": body,
         "velocity_mps": [_finite(velocity.x, "velocity x"),
                           _finite(velocity.y, "velocity y"),

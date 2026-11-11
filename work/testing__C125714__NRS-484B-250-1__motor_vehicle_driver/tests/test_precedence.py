@@ -1,4 +1,4 @@
-import hashlib,importlib.util,io,json,subprocess,sys,tempfile,unittest
+import hashlib,importlib.util,io,json,shutil,subprocess,sys,tempfile,unittest
 from pathlib import Path
 from types import SimpleNamespace as NS
 ROOT=Path(__file__).resolve().parents[1]
@@ -6,9 +6,28 @@ sys.path.insert(0,str(ROOT))
 sys.path.insert(0,str(ROOT.parents[1]/'runtime/scenario_pipeline'))
 def load(name):
     spec=importlib.util.spec_from_file_location(name,ROOT/(name+'.py'));mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod);return mod
-measure=load('crossing_precedence');native=load('native_crossing');comparison=load('comparison_audit');geometry=load('median_geometry');capture=load('capture_sources');finalizer=load('finalizer');runner=load('runner');cameras=load('camera_setup');encoder=load('camera_encoder')
+measure=load('crossing_precedence');native=load('native_crossing');comparison=load('comparison_audit');geometry=load('median_geometry');spacing=load('median_spacing');capture=load('capture_sources');finalizer=load('finalizer');runner=load('runner');cameras=load('camera_setup');encoder=load('camera_encoder');turns=load('turn_exception_audit');turn_fixture=load('turn_exception_fixture_proof')
 def body(x,y):return [[x-1,y-1],[x+1,y-1],[x+1,y+1],[x-1,y+1]]
 class Tests(unittest.TestCase):
+    def test_median_spacing_boundary_and_selected_crossing(self):
+        crossing=[[0,0],[10,0],[10,10],[0,10]]
+        def document(gap):
+            return {'format':'worker-median-roadway-geometry','units':'m',
+                    'source_description':'synthetic boundary probe',
+                    'roadway_polygons_xy_m':[crossing,
+                        [[0,10+gap],[10,10+gap],[10,20+gap],[0,20+gap]]]}
+        self.assertEqual(spacing.check_roadway_pair(document(9.143),crossing,0)
+                         ['boundary_relation'],'below')
+        at=spacing.check_roadway_pair(document(9.144),crossing,0)
+        self.assertEqual(at['boundary_relation'],'at')
+        self.assertTrue(at['separate_roadway_crossings_geometry_candidate'])
+        self.assertEqual(spacing.check_roadway_pair(document(9.145),crossing,0)
+                         ['boundary_relation'],'above')
+        with self.assertRaisesRegex(ValueError,'Selected roadway misses'):
+            spacing.check_roadway_pair(document(9.144),crossing,1)
+        with self.assertRaisesRegex(ValueError,'spans both'):
+            spacing.check_roadway_pair(document(9.144),
+                                      [[0,0],[10,0],[10,30],[0,30]],0)
     def fixture(self,root,other_first=True):
         ctx={'native_map_id':'TownX','intersection_id':5,'ego_highway_id':1,'other_highway_id':2,'ego_road_id':11,'other_road_id':22,'crossing_geometry_source':'native-junction','all_entrances_source':'native-road-inventory','official_device_inventory_source':'native-and-camera','median_spacing_source':'native-map','same_statutory_crossing':True,'official_device_controls_crossing':False,'opposite_approach_with_left_turn':False,'intersection_polygon_xy_m':[[0,0],[10,0],[10,10],[0,10]]}
         (root/'junction_context.json').write_text(json.dumps(ctx))
@@ -117,7 +136,7 @@ class Tests(unittest.TestCase):
             location=NS(x=x,y=y)
             corners=[NS(x=a,y=b) for a,b in body(x,y)]
             return NS(id=actor_id,get_location=lambda:location,
-                      get_transform=lambda:NS(location=location),
+                      get_transform=lambda:NS(location=location,rotation=NS(yaw=0.0)),
                       get_velocity=lambda:NS(x=1.0,y=0.0,z=0.0),
                       bounding_box=NS(get_world_vertices=lambda transform:corners))
         plan={'candidate_same_native_junction':True,'native_junction_id':5,
@@ -132,6 +151,7 @@ class Tests(unittest.TestCase):
         row=json.loads(stream.getvalue())
         self.assertEqual(recorded['video_frame'],7)
         self.assertEqual(row['ego']['actor_id'],1)
+        self.assertEqual(row['ego']['heading_deg'],0.0)
         self.assertEqual(row['other']['road_id'],22)
         self.assertEqual(row['ego']['body_vertices_xy_m'],body(-4,5))
         self.assertEqual(row['ego_vertices_m'],row['ego']['body_vertices_xy_m'])
@@ -154,10 +174,32 @@ class Tests(unittest.TestCase):
             (root/'trace.jsonl').write_text(''.join(json.dumps({'frame':100+i,'time_s':i*.05})+'\n' for i in range(3)))
             (root/'capture').mkdir();(root/'capture/evidence.jsonl').write_text('{}\n')
             for name in finalizer.CAMERAS:(root/name).write_bytes(b'diagnostic placeholder')
+            bad=root/'missing-source'
+            bad.mkdir()
+            for name in ('config.json','junction_context.json','video_frames.jsonl',
+                         'trace.jsonl',*finalizer.CAMERAS):
+                shutil.copy2(root/name,bad/name)
+            (bad/'capture').mkdir()
+            shutil.copy2(root/'capture/evidence.jsonl',bad/'capture/evidence.jsonl')
+            with self.assertRaisesRegex(ValueError,'Missing required source: crossing_history.jsonl'):
+                finalizer.finalize(bad,bad/'analysis.json')
             output=root/'analysis.json'
             analysis=finalizer.finalize(root,output)
+            from worker_exchange.measurement_contract import validate,verify_report
+            plan=json.loads((ROOT/'case-plan.json').read_text())
+            contract=json.loads((ROOT/'measurement-contract.json').read_text())
+            validate(contract,plan['requirement_dispositions'],
+                     (ROOT/'finalizer.py').read_text(),config['selected_case_id'])
+            self.assertEqual(len(verify_report(contract,analysis,root)),4)
             result=json.loads((root/'result.json').read_text())
-            self.assertTrue(analysis['measurements']['other_enters_before_ego'])
+            entry=analysis['measurements']['body_entry_order']
+            self.assertTrue(entry['value']['other_enters_before_ego'])
+            self.assertEqual(entry['sources']['crossing_history.jsonl'],
+                             hashlib.sha256((root/'crossing_history.jsonl').read_bytes()).hexdigest())
+            self.assertEqual(analysis['measurements']['device_exclusion_context']['value']
+                             ['subsection_4_qualification'],'unresolved')
+            self.assertEqual(analysis['measurements']['crossing_identity']['value']
+                             ['legal_conclusion'],'unresolved')
             self.assertTrue(result['measured_values']['other_body_inside_at_ego_entry'])
             self.assertFalse(result['physical_acceptance_claimed'])
             self.assertEqual(len((root/'channels/ego_inside.jsonl').read_text().splitlines()),3)
@@ -177,6 +219,7 @@ class Tests(unittest.TestCase):
                         'median_spacing_source':'median.txt','device_review_source':'devices.txt',
                         'statutory_crossing_review_source':'statutory.txt',
                         'same_statutory_crossing_reviewed':True,
+                        'selected_roadway_index':0,
                         'crossing_polygon_xy_m':[[0,0],[10,0],[10,10],[0,10]],
                         'ego_approach':pose,'ego_entry':pose,'other_approach':pose,'other_entry':pose,
                         'cameras':{name:[0,0,5,0,-20,0] for name in runner.CAMERAS}}}
@@ -184,7 +227,13 @@ class Tests(unittest.TestCase):
             root=Path(tmp);documents={}
             for key in ('polygon_source','entrance_source','median_spacing_source',
                         'device_review_source','statutory_crossing_review_source'):
-                name=config['site'][key];content='synthetic '+key+'\n'
+                name=config['site'][key]
+                content=('synthetic '+key+'\n') if key!='median_spacing_source' else json.dumps({
+                    'format':'worker-median-roadway-geometry','units':'m',
+                    'source_description':'synthetic two-roadway fixture',
+                    'roadway_polygons_xy_m':[
+                        [[0,0],[10,0],[10,10],[0,10]],
+                        [[0,20],[10,20],[10,30],[0,30]]]})+'\n'
                 (root/name).write_text(content)
                 documents[key]={'path':name,'sha256':hashlib.sha256(content.encode()).hexdigest()}
             packet={'format':'worker-median-site-review','review_status':'reviewed_candidate',
@@ -192,12 +241,28 @@ class Tests(unittest.TestCase):
             packet_path=root/'site-review.json';packet_path.write_text(json.dumps(packet))
             config['site_review']={'path':packet_path.name,'sha256':hashlib.sha256(packet_path.read_bytes()).hexdigest()}
             self.assertIs(runner.validate_config(config,root),config)
+            self.assertEqual(runner.verify_site_packet(config,root)
+                             ['median_spacing_measurement']['roadway_edge_gap_m'],10.0)
             source=root/'config.json';source.write_text(json.dumps(config))
             check=subprocess.run([sys.executable,str(ROOT/'runner.py'),'--config',str(source),'--check'],
                                  check=True,capture_output=True,text=True)
             checked=json.loads(check.stdout)
             self.assertEqual(checked['planned_frames'],1100)
             self.assertFalse(checked['carla_started'])
+            for case_id, expected_other_first in runner.ENTRY_ORDER_CASES.items():
+                variant=json.loads(json.dumps(config))
+                variant['selected_case_id']=case_id
+                variant['expected_other_enters_before_ego']=expected_other_first
+                self.assertIs(runner.validate_config(variant,root),variant)
+                source.write_text(json.dumps(variant))
+                checked=json.loads(subprocess.run(
+                    [sys.executable,str(ROOT/'runner.py'),'--config',str(source),'--check'],
+                    check=True,capture_output=True,text=True).stdout)
+                self.assertEqual(checked['case_id'],case_id)
+                self.assertFalse(checked['carla_started'])
+                variant['expected_other_enters_before_ego']=not expected_other_first
+                with self.assertRaisesRegex(ValueError,'entry-order target'):
+                    runner.validate_config(variant,root)
             (root/'polygon.txt').write_text('changed source\n')
             with self.assertRaisesRegex(ValueError,'Site source missing or changed: polygon_source'):
                 runner.validate_config(config,root)
@@ -254,4 +319,14 @@ class Tests(unittest.TestCase):
             streams=json.loads(probe.stdout)['streams']
             self.assertEqual(streams[0]['codec_name'],'ffv1')
             self.assertEqual(int(streams[0]['nb_read_frames']),2)
+    def test_opposite_turn_comparison_rejects_changed_fixed_camera(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            roots={mode:Path(tmp)/mode for mode in turns.MODES}
+            for mode in turns.MODES:turn_fixture.make_source(roots[mode],mode)
+            self.assertTrue(turns.audit_trio(roots,1100)['software_comparison_passed'])
+            path=roots['makes_left']/'junction_context.json'
+            ctx=json.loads(path.read_text());ctx['camera_plan_sha256']='different-camera-plan'
+            path.write_text(json.dumps(ctx))
+            with self.assertRaisesRegex(ValueError,'Fixed opposite-turn condition changed: camera_plan_sha256'):
+                turns.audit_trio(roots,1100)
 if __name__=='__main__':unittest.main()

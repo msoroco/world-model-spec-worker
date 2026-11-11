@@ -14,6 +14,48 @@ def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def _measurement(method, value, sources, names):
+    return {"method": method, "value": value,
+            "sources": {name: sources[name] for name in names}}
+
+
+def measure_crossing_context(report, context):
+    """Expose the declared site identities without deciding statutory identity."""
+    names = ("junction_context.json",)
+    value = {key: context[key] for key in (
+        "native_map_id", "intersection_id", "ego_highway_id", "other_highway_id",
+        "ego_road_id", "other_road_id", "same_statutory_crossing",
+        "crossing_geometry_source", "median_spacing_source")}
+    value["legal_conclusion"] = "unresolved"
+    return _measurement("measure_crossing_context", value, report["sources"], names)
+
+
+def measure_body_entry(report):
+    names = ("junction_context.json", "crossing_history.jsonl", "video_frames.jsonl")
+    value = {key: report[key] for key in (
+        "first_body_entry", "other_enters_before_ego",
+        "other_body_inside_at_ego_entry", "entry_time_difference_s")}
+    value["yield_judgment"] = "unresolved"
+    return _measurement("measure_body_entry", value, report["sources"], names)
+
+
+def measure_device_context(report, context):
+    names = ("junction_context.json",)
+    value = {"official_device_controls_crossing":
+             context["official_device_controls_crossing"],
+             "inventory_source": context["official_device_inventory_source"],
+             "subsection_4_qualification": "unresolved"}
+    return _measurement("measure_device_context", value, report["sources"], names)
+
+
+def measure_turn_exception(report, context):
+    names = ("junction_context.json",)
+    value = {"opposite_approach_with_left_turn":
+             context["opposite_approach_with_left_turn"],
+             "exception_source_status": "declared; independent turn audit required"}
+    return _measurement("measure_turn_exception", value, report["sources"], names)
+
+
 def finalize(attempt: Path, output: Path) -> dict:
     from worker_exchange.native_output import physical_result, write_result
 
@@ -24,7 +66,7 @@ def finalize(attempt: Path, output: Path) -> dict:
                 "video_frames.jsonl", "trace.jsonl", "capture/evidence.jsonl", *CAMERAS)
     for name in required:
         if not (attempt / name).is_file():
-            raise ValueError("Missing original source: " + name)
+            raise ValueError("Missing required source: " + name)
     config = json.loads((attempt / "config.json").read_text())
     case_id = config.get("selected_case_id", "")
     if not case_id.startswith("testing__C125714__NRS-484B-250-1__motor_vehicle_driver__"):
@@ -44,6 +86,7 @@ def finalize(attempt: Path, output: Path) -> dict:
         raise ValueError("Recording description required")
     report = analyze(attempt)
     sources = report["sources"]
+    source_context = json.loads((attempt / "junction_context.json").read_text())
     channels = attempt / "channels"
     if channels.exists():
         raise ValueError("Retain prior derived channels; choose a fresh attempt")
@@ -101,7 +144,13 @@ def finalize(attempt: Path, output: Path) -> dict:
     write_result(attempt, result)
     analysis = {"format": "worker-median-crossing-saved-analysis",
                 "case_id": case_id, "source_report": report,
-                "measurements": context,
+                "crossing_context": context,
+                "measurements": {
+                    "crossing_identity": measure_crossing_context(report, source_context),
+                    "body_entry_order": measure_body_entry(report),
+                    "device_exclusion_context": measure_device_context(report, source_context),
+                    "opposite_left_turn_context": measure_turn_exception(report, source_context),
+                },
                 "physical_acceptance_claimed": False}
     output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + "\n")
     return analysis
