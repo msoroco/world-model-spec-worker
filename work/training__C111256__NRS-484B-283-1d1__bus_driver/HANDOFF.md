@@ -1,6 +1,6 @@
 # training__C111256__NRS-484B-283-1d1__bus_driver
 
-Status: blocked. No delivery recording is selected or claimed.
+Status: partial. No delivery recording is selected or claimed.
 
 ## Source review
 
@@ -12,7 +12,7 @@ bus yields versus fails to yield during recorded Walk indication. Compare only `
 
 ## Blocker and resumption
 
-Executable Native package and all four candidate offline/compatibility proofs absent; exact statutory exceptions and historical equivalence remain unverified. Build and validate semantic stages, exact Native construction, four distinct candidates per selected case, full mandatory capture, saved positive/negative fixtures, independent audits, and comparison audit. Keep unsupported exception branches explicit. Only then set `ready`/`delivery_prepared` and add the exact GPU queue commands. Do not infer legal verdicts from CPU fixtures.
+The exact eight-bundle CPU diagnostic proofs now pass, as detailed in the current section below. Original physical Native capture, official Walk source verification, exception applicability, independent selected comparison/acceptance and queue proof remain unverified. Keep unsupported exception branches explicit. Set `ready`/`delivery_prepared` only after the selected CPU delivery gate passes; do not infer legal verdicts from CPU fixtures.
 
 ## Current update 015 construction checkpoint, 2026-11-11
 
@@ -31,3 +31,9 @@ The assignment-scoped ordinary `worker_check.py --complete` passes; `result.json
 The offline runner construction check passes all eight reference/contrast and primary/fallback parameter combinations and rejects four invalid configurations; log SHA-256 `69ce1a7395ba0ee87077df84c2343b8108a395f62e05e719dd55babf982ff119`. `native/runner.py --check` passes, log SHA-256 `d145936645f573b45885c5ce7b47c9784511a0fe3ec5b61644ab6bc6e88f8319`. Two unselected measurement contracts now name raw body, Walk display, frame map and geometry inputs. `statutory-review.json` retains supplied and official Nevada Legislature exception text while leaving scene applicability unresolved; no legal conclusion is inferred from LVMC analogs. `case-plan.json` maps source observation terms to the authored raw channels, marks the introduction exception pending, and records each case's physical risk.
 
 The earlier paragraph's “Next CPU construction steps are a Native runner” is superseded by this runner checkpoint. Remaining worker-owned CPU work starts with an original-display pixel/governance auditor and saved finalizer, then materialized exact primary/fallback packages with current offline, compatibility and actual process-saved proofs, exception branch closure, independent selected delivery/comparison audits and queue. The ordinary scoped gate was rerun after these edits and exits 0; no readiness claim is made.
+
+### Current exact CPU construction proof, 2026-11-11
+
+`native/finalize.py` now verifies 480 saved Native/frame/time/full-body joins, source provenance, original four-video decode, and raw-derived channels. It emits three distinct source-hashed measurements for signal presence, directed pedestrian crossing and sampled bus conflict. `proposals/cases.json`, the two measurement contracts, 480-frame fixture recipes and eight materialized construction bundles are work-owned and unselected. `update015-cpu-proof-matrix.json` records each exact receipt and hash (matrix SHA-256 `8d435a9bf99db752c9e50ac718f8f262bde05b3f8c38f74137eac4f69252d8ec`). All **8/8** current `runtime.py offline`, **8/8** current `runtime.py compatibility` (including selected-measurement and missing-geometry negative checks), and **8/8** actual `runtime.py process-saved` diagnostic runs pass. The two direct saved-finalizer positives and four damaged-source negatives pass (log SHA-256 `2be1e8b96a2a62b438c8e57ddd03326ffe9da951ecf2c1452a33b48c623e9880`). The reference has zero simultaneous sampled conflict frames and the contrast has 19. The assignment-scoped `worker_check.py --complete` passes (log SHA-256 `2be3f5a8feb4d56e8428be8bd576ac367d7f73a26c75450dadeba43e24645705`).
+
+The proof fixture is expressly synthetic. The runner still emits `Unknown` for original pedestrian signal observation and has no physical CARLA capture or verified signal-governance/pixel receipt. The NRS 484B.287/.290/.350 introductory exceptions remain pending scene applicability. Consequently, there are zero selected cases, zero proven delivery candidates, zero independent selected comparison/acceptance audits, and zero accepted recordings. Next worker-owned work: source-bound official Walk and pedestrian-heading audit, Native execution and measured bus/pedestrian evidence, exception applicability closure, independent selected comparison and acceptance, then delivery queue proof. No legal verdict follows from the sampled diagnostic conflict count.

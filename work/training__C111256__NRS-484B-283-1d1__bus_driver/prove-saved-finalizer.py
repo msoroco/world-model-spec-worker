@@ -108,7 +108,7 @@ def run():
         if source_digest(positive)!=before:raise ValueError('Saved original source changed')
         report=json.loads((positive/'analysis-report.json').read_text())
         result=json.loads((positive/'result.json').read_text())
-        observed=report['measurements']['walk_crossing_observation']['value']
+        observed=report['measurements']['bus_yield_observation']['value']
         if observed['simultaneous_conflict_frames']!=(0 if suffix=='reference' else 19) or \
            result['target_checks'][0]['matched'] is not True or \
            report['original_joins']['frames']!=480 or any(v!=480 for v in report['video_frames'].values()) or \
