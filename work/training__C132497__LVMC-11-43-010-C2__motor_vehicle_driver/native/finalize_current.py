@@ -73,7 +73,7 @@ def finalize(attempt, output):
         raise ValueError('Unknown saved actor provenance')
     for i, (row, point, frame) in enumerate(zip(observed, trace, mapping)):
         ego = row['ego']
-        if (row['frame'] != i or point['frame'] != frame['carla_frame'] or
+        if (row['frame'] != i or point['frame'] != frame['video_frame'] or
             row['native_frame'] != frame['native_frame'] or
             abs(row['time_s']-point['time_s']) > 1e-6 or
             abs(frame['time_s']-point['time_s']) > 1e-6 or

@@ -69,6 +69,19 @@ def pose(actor):
         'velocity_native_xyz_mps':[velocity.x,velocity.y,velocity.z],
         'speed_mps':math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2),
         'body_native_xyz_m':[[p.x,p.y,p.z] for p in body]}
+
+def trace_point(index,time_s,ego,applied_control):
+    """Retain a Native-measured trace row; requested tracks are never substituted."""
+    x,y,z=ego['center_native_xyz_m']
+    vx,vy,vz=ego['velocity_native_xyz_mps']
+    return {'frame':index,'time_s':time_s,
+        'position':{'x':x,'y':y,'z':z},'position_m':[x,y,z],
+        'heading_deg':ego['yaw_deg'],'speed_mps':ego['speed_mps'],
+        'speed_mph':ego['speed_mps']*2.2369362921,
+        'velocity_mps':[vx,vy,vz],
+        'control':{'throttle':applied_control.throttle,
+                   'brake':applied_control.brake,
+                   'hand_brake':applied_control.hand_brake}}
 def control(carla,ego,target,target_speed):
     transform=ego.get_transform();velocity=ego.get_velocity()
     speed=math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
@@ -193,7 +206,8 @@ def execute(bundle,output,host,port):
             visibility=False,required_observations=[])
         start=world.get_snapshot().timestamp.elapsed_seconds
         with (output/'native-raw-actors.jsonl').open('x') as observed, \
-             (output/'video_frames.jsonl').open('x') as frame_map:
+             (output/'video_frames.jsonl').open('x') as frame_map, \
+             (output/'trace.jsonl').open('x') as retained_trace:
             for i,request in enumerate(requests):
                 target=requests[min(239,i+12)]
                 ego.apply_control(control(carla,ego,target,request['ego_speed_mps']))
@@ -202,16 +216,19 @@ def execute(bundle,output,host,port):
                 transform=ego.get_transform()
                 waypoint=mapping.get_waypoint(transform.location,project_to_road=False,
                     lane_type=carla.LaneType.Driving)
+                measured_ego=pose(ego)
                 row={'frame':i,'native_frame':frame,'time_s':time_s,
                     'source_kind':'original_native','requested_phase':request['phase'],
                     'requested_road_id':request['road_id'],
                     'requested_lane_id':request['lane_id'],
                     'observed_road_id':None if waypoint is None else waypoint.road_id,
                     'observed_lane_id':None if waypoint is None else waypoint.lane_id,
-                    'ego':pose(ego),'physical_roundabout_verified':False,
+                    'ego':measured_ego,'physical_roundabout_verified':False,
                     'actual_right_exit_verified':False,'legal_verdict':None}
                 capture.capture(frame,time_s,extra={'c132497_right_exit':row})
                 observed.write(json.dumps(row,allow_nan=False)+'\n')
+                retained_trace.write(json.dumps(trace_point(i,time_s,measured_ego,
+                    ego.get_control()),allow_nan=False)+'\n')
                 for name,width,height,_,_,_,_ in cameras:
                     image=camera_queues[name].get(timeout=30)
                     while image.frame<frame:image=camera_queues[name].get(timeout=30)
