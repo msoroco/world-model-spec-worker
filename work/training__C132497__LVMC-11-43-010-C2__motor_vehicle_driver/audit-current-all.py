@@ -31,18 +31,32 @@ def pair(reference, contrast):
 
 def audit(matrix):
     index = json.loads((ROOT/'update015-current-candidate-index.json').read_text())
+    offline_path = ROOT/'update015-selected-offline-matrix.json'
+    offline = json.loads(offline_path.read_text())
     require(matrix['candidate_index_sha256']==sha(ROOT/'update015-current-candidate-index.json'),
             'Current candidate index changed')
+    require(offline['candidate_index_sha256']==matrix['candidate_index_sha256'],
+            'Selected offline candidate index changed')
     items = {(x['case_id'].rsplit('__',1)[-1],x['candidate_id']):x
              for x in index['results']}
     rows = {(x['case_id'].rsplit('__',1)[-1],x['candidate_id']):x
             for x in matrix['results']}
+    offline_rows = {(x['case_id'].rsplit('__',1)[-1],x['candidate_id']):x
+                    for x in offline['results']}
     expected = {(case,candidate) for case in ('reference','contrast') for candidate in CANDIDATES}
-    require(set(items)==expected and set(rows)==expected and len(matrix['results'])==8,
+    require(set(items)==expected and set(rows)==expected and set(offline_rows)==expected and
+            len(matrix['results'])==len(offline['results'])==8,
             'Current candidate coverage differs')
     config = {}
     for (case,candidate), item in items.items():
         row = rows[case,candidate]
+        off = offline_rows[case,candidate]
+        require(off['case_id']==item['case_id'] and
+                off['manifest_sha256']==item['manifest_sha256'] and
+                off['construction_sha256']==item['construction_sha256'] and
+                off['offline_passed'] is True and off['simulation_started'] is False and
+                sha(ROOT/off['log'])==off['log_sha256'],
+                'Selected offline receipt changed: '+case+'/'+candidate)
         manifest = ROOT/item['manifest']
         require(sha(manifest)==item['manifest_sha256']==row['manifest_sha256'],
                 'Current manifest changed')
@@ -114,6 +128,7 @@ def audit(matrix):
     return {'format':'c132497-independent-current-cpu-audit-v1',
             'passed':True,'candidates':8,'controlled_pairs':4,
             'negative_rejections':negatives,'matrix_sha256':sha(ROOT/'update015-current-all-matrix.json'),
+            'selected_offline_matrix_sha256':sha(offline_path),
             'original_native_observed':False,'delivery_ready':False}
 
 

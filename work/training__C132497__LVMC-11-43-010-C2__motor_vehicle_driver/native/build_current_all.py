@@ -19,8 +19,7 @@ def package(case, candidate, recording):
     cfg.update({'selected_case_id':case_id,'duration_s':12,'required_atoms':[],
                 'source_packets':[], 'cameras':['overview','approach',
                 'reference_corner','driver_reference'], 'case':{'case_id':case_id},
-                'physical_success_claimed':False,
-                'status':'selected_cpu_preparation_original_unverified'})
+                'physical_success_claimed':False})
     next(item for item in files if item['path']=='config.json')['content'] = json.dumps(cfg,indent=2)+'\n'
     road = next(item['content'] for item in files if item['path']=='right-exit-road.xodr')
     files.extend([{'path':'road.xodr','content':road},
