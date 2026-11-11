@@ -13,7 +13,9 @@ def check():
     checks = []
     for manifest_name in ('first-execution-manifest.json', 'no-signal-manifest.json',
                           'continuous-manifest.json', 'electric-bicycle-manifest.json',
-                          'electric-scooter-manifest.json'):
+                          'electric-scooter-manifest.json', 'safety-wide-manifest.json',
+                          'safety-narrow-manifest.json', 'turn-lane-manifest.json',
+                          'both-hands-manifest.json'):
         entry = json.loads((FOLDER / manifest_name).read_text())['cases'][0]
         verified = validate(FOLDER, entry, 'NRS-484B-768-1', 'C111588',
                             required=True, require_alternate=True, candidate_count=4)

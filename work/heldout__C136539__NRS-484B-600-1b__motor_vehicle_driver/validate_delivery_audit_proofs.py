@@ -10,8 +10,8 @@ index = json.loads((root / 'delivery-audit-proofs.json').read_text())
 sha = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
 if sha(root / index['script']) != index['script_sha256']:
     raise ValueError('Independent audit script changed')
-if len(index['cases']) != 6:
-    raise ValueError('Six exact delivery audit cases required')
+if len(index['cases']) != 9:
+    raise ValueError('Nine exact delivery audit cases required')
 for case in index['cases']:
     for name in ('positive', 'negative'):
         if sha(root / case[name]['log']) != case[name]['sha256']:

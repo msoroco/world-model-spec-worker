@@ -80,7 +80,7 @@
       "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep-0000",
       "requirement": "Continuous speed and exposure of a person on a narrow road",
       "requested_engineering_setup": "5 m/s requested pedestrian passage at 0.6 m exterior placement, 10 m downroute",
-      "status": "exact_sweep_construction_pending_cpu_proofs",
+      "status": "source_bound_synthetic_software_proved_physical_unverified",
       "source_refs": [
         {
           "path": "inputs/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/assignment.json",
@@ -92,7 +92,7 @@
       "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep-0001",
       "requirement": "Continuous speed and exposure of a person on a narrow road",
       "requested_engineering_setup": "5 m/s requested pedestrian passage at 1.8 m exterior placement, 10 m downroute",
-      "status": "exact_sweep_construction_pending_cpu_proofs",
+      "status": "source_bound_synthetic_software_proved_physical_unverified",
       "source_refs": [
         {
           "path": "inputs/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/assignment.json",
@@ -104,7 +104,7 @@
       "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__exposure_clearance_sweep-0002",
       "requirement": "Continuous speed and exposure of a person on a narrow road",
       "requested_engineering_setup": "5 m/s requested pedestrian passage at 1.2 m exterior placement, 10 m downroute",
-      "status": "exact_sweep_construction_pending_cpu_proofs",
+      "status": "source_bound_synthetic_software_proved_physical_unverified",
       "source_refs": [
         {
           "path": "inputs/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/assignment.json",
@@ -187,7 +187,7 @@
       ],
       "fixed_conditions": "same narrow road, 10 m pedestrian point, 5 m/s requested speed, cameras and measurement",
       "deliberate_differences": "frozen 0.6/1.2/1.8 m exterior placement; actual original body clearance measured separately",
-      "status": "exact_sweep_construction_pending_cpu_proofs",
+      "status": "source_bound_synthetic_software_proved_physical_unverified",
       "source_refs": [
         {
           "path": "inputs/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/assignment.json",
@@ -217,7 +217,7 @@
       "Original exposed-person trajectories, body clearance, collision and physical visibility are unsupplied."
     ]
   },
-  "review_status": "partial: six person/property constructions, primary software proofs and eighteen fallback software proofs; Native exposure and legal judgment pending",
+  "review_status": "CPU prepared nine exact cases and source-bound comparisons; Native speed, clearance, visibility and legal endangerment remain unreviewed.",
   "branch_inventory": [
     {
       "source": {
@@ -237,20 +237,22 @@
     }
   ],
   "observations": [
-    "endangerment_measurement.py measures original 20 Hz speed, polygon surface gap, contact and radial closing time; legal endangerment and stopping-distance judgments remain null."
+    {
+      "name": "exposure_gap_m",
+      "unit": "m",
+      "mandatory": true,
+      "method": "Original 20 Hz subject and exposed-body polygons; original velocity, contact and time-to-conflict observations remain separately retained in exposed_actor_footprints.jsonl."
+    }
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
     "Native source acquisition, requested-speed realization, physical visibility, emergency response and all delivery proofs remain unverified."
   ],
-  "source_observation_mapping": [
-    {
-      "term": "kin.speed",
+  "source_observation_mapping": {
+    "kin.speed": {
       "measurement": "subject velocity magnitude",
       "evidence": "original 20 Hz exposed actor footprints and separately captured Native context",
-      "channels": [
-        "exposed_actor_footprints.jsonl"
-      ],
+      "channels": [],
       "source_refs": [
         {
           "path": "inputs/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/assignment.json",
@@ -258,13 +260,10 @@
         }
       ]
     },
-    {
-      "term": "drv.time_to_conflict",
+    "drv.time_to_conflict": {
       "measurement": "radial gap closing time proxy",
       "evidence": "original 20 Hz exposed actor footprints and separately captured Native context",
-      "channels": [
-        "exposed_actor_footprints.jsonl"
-      ],
+      "channels": [],
       "source_refs": [
         {
           "path": "inputs/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/assignment.json",
@@ -272,12 +271,11 @@
         }
       ]
     },
-    {
-      "term": "rel.surface_gap",
+    "rel.surface_gap": {
       "measurement": "body polygon distance",
       "evidence": "original 20 Hz exposed actor footprints and separately captured Native context",
       "channels": [
-        "exposed_actor_footprints.jsonl"
+        "exposure_gap_m"
       ],
       "source_refs": [
         {
@@ -286,13 +284,10 @@
         }
       ]
     },
-    {
-      "term": "ru.pedestrian",
+    "ru.pedestrian": {
       "measurement": "exposed actor identity/kind",
       "evidence": "original 20 Hz exposed actor footprints and separately captured Native context",
-      "channels": [
-        "exposed_actor_footprints.jsonl"
-      ],
+      "channels": [],
       "source_refs": [
         {
           "path": "inputs/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/assignment.json",
@@ -300,13 +295,10 @@
         }
       ]
     },
-    {
-      "term": "drv.vulnerable_road_user",
+    "drv.vulnerable_road_user": {
       "measurement": "exposed actor kind",
       "evidence": "original 20 Hz exposed actor footprints and separately captured Native context",
-      "channels": [
-        "exposed_actor_footprints.jsonl"
-      ],
+      "channels": [],
       "source_refs": [
         {
           "path": "inputs/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/assignment.json",
@@ -314,13 +306,10 @@
         }
       ]
     },
-    {
-      "term": "drv.stopping_distance",
+    "drv.stopping_distance": {
       "measurement": "source-backed stopping response history pending",
       "evidence": "original 20 Hz exposed actor footprints and separately captured Native context",
-      "channels": [
-        "exposed_actor_footprints.jsonl"
-      ],
+      "channels": [],
       "source_refs": [
         {
           "path": "inputs/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/assignment.json",
@@ -328,13 +317,10 @@
         }
       ]
     },
-    {
-      "term": "rel.contact",
+    "rel.contact": {
       "measurement": "body polygon intersection",
       "evidence": "original 20 Hz exposed actor footprints and separately captured Native context",
-      "channels": [
-        "exposed_actor_footprints.jsonl"
-      ],
+      "channels": [],
       "source_refs": [
         {
           "path": "inputs/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/assignment.json",
@@ -342,13 +328,10 @@
         }
       ]
     },
-    {
-      "term": "st.obstruction",
+    "st.obstruction": {
       "measurement": "source-backed property body pending",
       "evidence": "original 20 Hz exposed actor footprints and separately captured Native context",
-      "channels": [
-        "exposed_actor_footprints.jsonl"
-      ],
+      "channels": [],
       "source_refs": [
         {
           "path": "inputs/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/assignment.json",
@@ -356,7 +339,7 @@
         }
       ]
     }
-  ],
+  },
   "requirement_dispositions": [
     {
       "requirement": "Driving speed in continuous person or property exposure, with endangerment left to review",
@@ -375,5 +358,32 @@
       ],
       "evidence_or_gap": "No accepted recording; original speed, person/property body clearance and contact are needed. No statutory numeric endangerment threshold is supplied."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "complete subject and exposed body, narrow roadway and verge",
+        "interval": "entire eight-second original-frame exposure"
+      },
+      {
+        "view": "approach",
+        "subject": "subject approach, exposed person or property and potential contact",
+        "interval": "entire eight-second original-frame exposure"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "both body edges and outside lane edge",
+        "interval": "entire eight-second original-frame exposure"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "forward route and exposed body presentation",
+        "interval": "entire eight-second original-frame exposure"
+      }
+    ]
+  }
 }

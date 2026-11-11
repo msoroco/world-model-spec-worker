@@ -8,7 +8,9 @@ folder = Path(__file__).resolve().parent
 repo = folder.parents[1]
 for name in ('first-execution-manifest.json', 'no-signal-manifest.json',
              'continuous-manifest.json', 'electric-bicycle-manifest.json',
-             'electric-scooter-manifest.json'):
+             'electric-scooter-manifest.json', 'safety-wide-manifest.json',
+             'safety-narrow-manifest.json', 'turn-lane-manifest.json',
+             'both-hands-manifest.json'):
     entry = json.loads((folder / name).read_text())['cases'][0]
     validate(repo, folder, entry)
-print('five physical preparation proofs pass')
+print('nine physical preparation proofs pass')

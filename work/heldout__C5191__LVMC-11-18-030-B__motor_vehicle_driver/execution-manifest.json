@@ -1,0 +1,532 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach",
+      "kind": "delivery",
+      "construction": "construction-left_turn_lane_contained_approach.json",
+      "construction_sha256": "77899e450fef7f87a4e3af57bb18541bfc66b5cc0c3cbe2ba47511696ed34771",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-left_turn_lane_contained_approach.json",
+      "fixture_recipe": "work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/diagnostic-recipe-left_turn_lane_contained_approach.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native marked left-turn route availability, approach speed and camera visibility may fail"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-left_turn_lane_contained_approach-fallback1.json",
+          "construction_sha256": "1e20379da1e1a3fe9937e12ad170f4a4f58fd7a2ff3d5c09f65a70569887d571",
+          "trigger": {
+            "source": "Native connected marked route inventory",
+            "metric": "eligible approach plus left exit count",
+            "failure_condition": "primary 2 m route sampling finds no admissible marked left turn"
+          },
+          "changed_knobs": [
+            "route sampling 2 m/12 to 1 m/24"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach --candidate fallback1 --output .runtime-work/c5191-left_turn_lane_contained_approach-fallback1-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "left_turn_lane_contained_approach-fallback1-offline.log",
+            "log_sha256": "b34fb1c8dd3b80ca594f1954900f440ab9925d285674c96437dcaff31f0d6c28",
+            "construction_sha256": "1e20379da1e1a3fe9937e12ad170f4a4f58fd7a2ff3d5c09f65a70569887d571"
+          },
+          "compatibility": {
+            "receipt": "left_turn_lane_contained_approach-fallback1-compatibility.json",
+            "sha256": "579366150866e7e7861f3f1b083721d86bac3125a1254e6f281cbf0f3c0da612",
+            "log": "left_turn_lane_contained_approach-fallback1-compat-analysis.log",
+            "negative_log": "left_turn_lane_contained_approach-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-left_turn_lane_contained_approach-fallback2.json",
+          "construction_sha256": "7aa8cc8dbb6947e698a5b53da9926097383101573f12b0868f0b28a4cecbdd0f",
+          "trigger": {
+            "source": "Original Native speed and heading trace",
+            "metric": "turn approach settling and frame acceleration",
+            "failure_condition": "primary speed gain causes unstable approach timing"
+          },
+          "changed_knobs": [
+            "target speed 6 to 4.5 m/s and gain .25 to .2"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach --candidate fallback2 --output .runtime-work/c5191-left_turn_lane_contained_approach-fallback2-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "left_turn_lane_contained_approach-fallback2-offline.log",
+            "log_sha256": "19a3f8bcd472b6b2e411dc1f38cd719df24b7dd556d460cc12e8ea78644787cb",
+            "construction_sha256": "7aa8cc8dbb6947e698a5b53da9926097383101573f12b0868f0b28a4cecbdd0f"
+          },
+          "compatibility": {
+            "receipt": "left_turn_lane_contained_approach-fallback2-compatibility.json",
+            "sha256": "41c3764f9b45c26be309c9af41a39263bd2d9db6c474e0a04e36f7e3440dd9f0",
+            "log": "left_turn_lane_contained_approach-fallback2-compat-analysis.log",
+            "negative_log": "left_turn_lane_contained_approach-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-left_turn_lane_contained_approach-fallback3.json",
+          "construction_sha256": "559ee60edb638597f2d76e2c515300804d88dd939315553f9249f60676b843a2",
+          "trigger": {
+            "source": "Original overview camera source decode",
+            "metric": "marked boundary and vehicle visibility",
+            "failure_condition": "primary mount crops marked boundary or ego body"
+          },
+          "changed_knobs": [
+            "overview mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach --candidate fallback3 --output .runtime-work/c5191-left_turn_lane_contained_approach-fallback3-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "left_turn_lane_contained_approach-fallback3-offline.log",
+            "log_sha256": "632c34d968c1975bfc1768a91d16729554adfeb2e89d396332b0af54c827cdfa",
+            "construction_sha256": "559ee60edb638597f2d76e2c515300804d88dd939315553f9249f60676b843a2"
+          },
+          "compatibility": {
+            "receipt": "left_turn_lane_contained_approach-fallback3-compatibility.json",
+            "sha256": "1dc813fa8eb30b51907b9e8f09ebbdf85a10e220161011f8408580cd725de8bb",
+            "log": "left_turn_lane_contained_approach-fallback3-compat-analysis.log",
+            "negative_log": "left_turn_lane_contained_approach-fallback3-negative.log"
+          }
+        }
+      ],
+      "acquisition": {
+        "lane_clearance_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "signed original body-corner clearance from marked approach lane slice",
+          "evidence": "turn_originals.jsonl, turn_scene_context.json, trace.jsonl, video_frames.jsonl"
+        },
+        "turn_indicator_state": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native ego light-state readback",
+          "evidence": "turn_originals.jsonl, turn_scene_context.json, trace.jsonl, video_frames.jsonl"
+        },
+        "ego_turn_motion": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native ego position and heading readback",
+          "evidence": "turn_originals.jsonl, turn_scene_context.json, trace.jsonl, video_frames.jsonl"
+        },
+        "marked_approach_context": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original connected marked approach waypoint lane slice, null beyond approach",
+          "evidence": "turn_originals.jsonl, turn_scene_context.json, trace.jsonl, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach --output .runtime-work/c5191-left_turn_lane_contained_approach-primary-offline --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "left_turn_lane_contained_approach-primary-offline.log",
+        "log_sha256": "44d109cccbd3d98b0f0c4eb9b787819749868fadb2ed527c323914577a72c36f",
+        "construction_sha256": "77899e450fef7f87a4e3af57bb18541bfc66b5cc0c3cbe2ba47511696ed34771"
+      },
+      "compatibility": {
+        "receipt": "left_turn_lane_contained_approach-primary-compatibility.json",
+        "sha256": "36143adf7e9fcce682e469919130c13a719c58950d92dafc2176314fd61710d3",
+        "log": "left_turn_lane_contained_approach-primary-compat-analysis.log",
+        "negative_log": "left_turn_lane_contained_approach-primary-negative.log"
+      },
+      "negative": {
+        "log": "left_turn_lane_contained_approach-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical/left_turn_lane_contained_approach-proof.json",
+        "sha256": "e910485e5953679f0d703cd8f778b6b8755a9853e0e1f1308bd795dd33f216b4"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "left_turn_lane_contained_approach-saved-processing-gate.log",
+        "test_log_sha256": "208de6136ec09fac68868173059c2976fd3b79cf462c0bf62f2f217ec7e9be64",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/delivery_audit.py",
+        "script_sha256": "a43e1bf7aaf86e6232949a8619947b64ccbc3097cc79525b2cc1d68189ffa64e",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/delivery_audit.py --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c5191-left_turn_lane_contained_approach-primary-compat --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c5191-left_turn_lane_contained_approach-primary-compat/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "left_turn_lane_contained_approach-delivery-positive.log",
+        "test_log_sha256": "f79ccdc9cb39d8290a177768ccab674537b4b72f892c54bc5b3768f54139e6d3",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/delivery_audit.py --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c5191-left_turn_lane_contained_approach-primary-compat --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c5191-left_turn_lane_contained_approach-delivery-negative-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "C5191 original source hash differs",
+        "negative_log": "left_turn_lane_contained_approach-delivery-negative.log",
+        "negative_log_sha256": "9c530f141eac5cb396d4e147d02d8c78af5a3b6a4b4582cf691b5aa0b69233c0"
+      }
+    },
+    {
+      "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal",
+      "kind": "delivery",
+      "construction": "construction-left_turn_early_boundary_crossing_no_signal.json",
+      "construction_sha256": "a0385ecf9389e6837cd34dc7c3f3f8461e3d44256fd044c52a3829627a73d554",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-left_turn_early_boundary_crossing_no_signal.json",
+      "fixture_recipe": "work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/diagnostic-recipe-left_turn_early_boundary_crossing_no_signal.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native marked left-turn route availability, approach speed and camera visibility may fail"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-left_turn_early_boundary_crossing_no_signal-fallback1.json",
+          "construction_sha256": "6005e1d5cb2be3d7ba9b64875e7d2426046a9ba52b708b80dc1e3c4a236401f5",
+          "trigger": {
+            "source": "Native connected marked route inventory",
+            "metric": "eligible approach plus left exit count",
+            "failure_condition": "primary 2 m route sampling finds no admissible marked left turn"
+          },
+          "changed_knobs": [
+            "route sampling 2 m/12 to 1 m/24"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal --candidate fallback1 --output .runtime-work/c5191-left_turn_early_boundary_crossing_no_signal-fallback1-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "left_turn_early_boundary_crossing_no_signal-fallback1-offline.log",
+            "log_sha256": "bec673581e4b611a32ff8cd2d178806eb26e567ef645f2e2e3682294cd9ea671",
+            "construction_sha256": "6005e1d5cb2be3d7ba9b64875e7d2426046a9ba52b708b80dc1e3c4a236401f5"
+          },
+          "compatibility": {
+            "receipt": "left_turn_early_boundary_crossing_no_signal-fallback1-compatibility.json",
+            "sha256": "9073009d50254fb0dda02dd0a116b06be5dbc6c9e7cbf9a02ce7462ad6d3252b",
+            "log": "left_turn_early_boundary_crossing_no_signal-fallback1-compat-analysis.log",
+            "negative_log": "left_turn_early_boundary_crossing_no_signal-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-left_turn_early_boundary_crossing_no_signal-fallback2.json",
+          "construction_sha256": "8204f148f61dda55df18d3349571c6d0c85ca46909f7b28197c043e67b766c9f",
+          "trigger": {
+            "source": "Original Native speed and heading trace",
+            "metric": "turn approach settling and frame acceleration",
+            "failure_condition": "primary speed gain causes unstable approach timing"
+          },
+          "changed_knobs": [
+            "target speed 6 to 4.5 m/s and gain .25 to .2"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal --candidate fallback2 --output .runtime-work/c5191-left_turn_early_boundary_crossing_no_signal-fallback2-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "left_turn_early_boundary_crossing_no_signal-fallback2-offline.log",
+            "log_sha256": "f7951c680548514b70e73b68047c6a0af6e557575d7c24f0cbdbb741387abdc6",
+            "construction_sha256": "8204f148f61dda55df18d3349571c6d0c85ca46909f7b28197c043e67b766c9f"
+          },
+          "compatibility": {
+            "receipt": "left_turn_early_boundary_crossing_no_signal-fallback2-compatibility.json",
+            "sha256": "538c40efec4ffdebcb7ac685344655847d72e341c9846e00e63bde5b0f69fecf",
+            "log": "left_turn_early_boundary_crossing_no_signal-fallback2-compat-analysis.log",
+            "negative_log": "left_turn_early_boundary_crossing_no_signal-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-left_turn_early_boundary_crossing_no_signal-fallback3.json",
+          "construction_sha256": "276b2d7ef6cc47638317d0a430c4aad0715adcc28f3eb9a6bdc56e08d7a1583d",
+          "trigger": {
+            "source": "Original overview camera source decode",
+            "metric": "marked boundary and vehicle visibility",
+            "failure_condition": "primary mount crops marked boundary or ego body"
+          },
+          "changed_knobs": [
+            "overview mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal --candidate fallback3 --output .runtime-work/c5191-left_turn_early_boundary_crossing_no_signal-fallback3-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "left_turn_early_boundary_crossing_no_signal-fallback3-offline.log",
+            "log_sha256": "dbcf9bbb3b3ddd56084080dbd6c1c770d07068511070603053417efd4a8217cc",
+            "construction_sha256": "276b2d7ef6cc47638317d0a430c4aad0715adcc28f3eb9a6bdc56e08d7a1583d"
+          },
+          "compatibility": {
+            "receipt": "left_turn_early_boundary_crossing_no_signal-fallback3-compatibility.json",
+            "sha256": "53be85d6ad621be7f98c70ef34318efbfe01ad03a840bbc91afc0b004ce38890",
+            "log": "left_turn_early_boundary_crossing_no_signal-fallback3-compat-analysis.log",
+            "negative_log": "left_turn_early_boundary_crossing_no_signal-fallback3-negative.log"
+          }
+        }
+      ],
+      "acquisition": {
+        "lane_clearance_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "signed original body-corner clearance from marked approach lane slice",
+          "evidence": "turn_originals.jsonl, turn_scene_context.json, trace.jsonl, video_frames.jsonl"
+        },
+        "turn_indicator_state": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native ego light-state readback",
+          "evidence": "turn_originals.jsonl, turn_scene_context.json, trace.jsonl, video_frames.jsonl"
+        },
+        "ego_turn_motion": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native ego position and heading readback",
+          "evidence": "turn_originals.jsonl, turn_scene_context.json, trace.jsonl, video_frames.jsonl"
+        },
+        "marked_approach_context": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original connected marked approach waypoint lane slice, null beyond approach",
+          "evidence": "turn_originals.jsonl, turn_scene_context.json, trace.jsonl, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal --output .runtime-work/c5191-left_turn_early_boundary_crossing_no_signal-primary-offline --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "left_turn_early_boundary_crossing_no_signal-primary-offline.log",
+        "log_sha256": "7ff01e35ef471fab234a1050b6db2406665b13c9d524b87f90bfe72f7f34ebef",
+        "construction_sha256": "a0385ecf9389e6837cd34dc7c3f3f8461e3d44256fd044c52a3829627a73d554"
+      },
+      "compatibility": {
+        "receipt": "left_turn_early_boundary_crossing_no_signal-primary-compatibility.json",
+        "sha256": "91f96d7ff5d1f5e25cd011dd9c450db4a160da9153fbe7e1926ee9a1b334bf23",
+        "log": "left_turn_early_boundary_crossing_no_signal-primary-compat-analysis.log",
+        "negative_log": "left_turn_early_boundary_crossing_no_signal-primary-negative.log"
+      },
+      "negative": {
+        "log": "left_turn_early_boundary_crossing_no_signal-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical/left_turn_early_boundary_crossing_no_signal-proof.json",
+        "sha256": "bff1e95530378d7b1f2499b0d84998c40c3881ee36058c6919608fff1d761731"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "left_turn_early_boundary_crossing_no_signal-saved-processing-gate.log",
+        "test_log_sha256": "208de6136ec09fac68868173059c2976fd3b79cf462c0bf62f2f217ec7e9be64",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/delivery_audit.py",
+        "script_sha256": "a43e1bf7aaf86e6232949a8619947b64ccbc3097cc79525b2cc1d68189ffa64e",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/delivery_audit.py --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c5191-left_turn_early_boundary_crossing_no_signal-primary-compat --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c5191-left_turn_early_boundary_crossing_no_signal-primary-compat/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "left_turn_early_boundary_crossing_no_signal-delivery-positive.log",
+        "test_log_sha256": "f42d5f4bac43850ab8443ceec6ffe483d70c4d75547c8ff3f2bbb7bffee8e90e",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/delivery_audit.py --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c5191-left_turn_early_boundary_crossing_no_signal-primary-compat --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c5191-left_turn_early_boundary_crossing_no_signal-delivery-negative-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "C5191 original source hash differs",
+        "negative_log": "left_turn_early_boundary_crossing_no_signal-delivery-negative.log",
+        "negative_log_sha256": "9c530f141eac5cb396d4e147d02d8c78af5a3b6a4b4582cf691b5aa0b69233c0"
+      }
+    },
+    {
+      "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled",
+      "kind": "delivery",
+      "construction": "construction-left_turn_early_boundary_crossing_signaled.json",
+      "construction_sha256": "7d90a131dea0df622a5445294df1517b684032d7a2e743ff7b97d164553e54cf",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-left_turn_early_boundary_crossing_signaled.json",
+      "fixture_recipe": "work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/diagnostic-recipe-left_turn_early_boundary_crossing_signaled.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native marked left-turn route availability, approach speed and camera visibility may fail"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-left_turn_early_boundary_crossing_signaled-fallback1.json",
+          "construction_sha256": "afb7e719fb79ca55fb3b2e38dcb314ef5151e8a81994436288efd300ee6ebe8c",
+          "trigger": {
+            "source": "Native connected marked route inventory",
+            "metric": "eligible approach plus left exit count",
+            "failure_condition": "primary 2 m route sampling finds no admissible marked left turn"
+          },
+          "changed_knobs": [
+            "route sampling 2 m/12 to 1 m/24"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled --candidate fallback1 --output .runtime-work/c5191-left_turn_early_boundary_crossing_signaled-fallback1-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "left_turn_early_boundary_crossing_signaled-fallback1-offline.log",
+            "log_sha256": "e0780caca776735456a376223026a92e41626e5cf03b5b661caed6bc30e84189",
+            "construction_sha256": "afb7e719fb79ca55fb3b2e38dcb314ef5151e8a81994436288efd300ee6ebe8c"
+          },
+          "compatibility": {
+            "receipt": "left_turn_early_boundary_crossing_signaled-fallback1-compatibility.json",
+            "sha256": "c1b02cdce87b18a63bef5fe7dce7b1bed72512f389625284750f02ca757443ca",
+            "log": "left_turn_early_boundary_crossing_signaled-fallback1-compat-analysis.log",
+            "negative_log": "left_turn_early_boundary_crossing_signaled-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-left_turn_early_boundary_crossing_signaled-fallback2.json",
+          "construction_sha256": "6c8468aec1c21d4cb7a93f0c78cbc13c258f121f9fbb09da585fb8c9ba82d009",
+          "trigger": {
+            "source": "Original Native speed and heading trace",
+            "metric": "turn approach settling and frame acceleration",
+            "failure_condition": "primary speed gain causes unstable approach timing"
+          },
+          "changed_knobs": [
+            "target speed 6 to 4.5 m/s and gain .25 to .2"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled --candidate fallback2 --output .runtime-work/c5191-left_turn_early_boundary_crossing_signaled-fallback2-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "left_turn_early_boundary_crossing_signaled-fallback2-offline.log",
+            "log_sha256": "c115425416dfc58a795e43212fb1729adfbb6f06627a4050c20178185515e7d8",
+            "construction_sha256": "6c8468aec1c21d4cb7a93f0c78cbc13c258f121f9fbb09da585fb8c9ba82d009"
+          },
+          "compatibility": {
+            "receipt": "left_turn_early_boundary_crossing_signaled-fallback2-compatibility.json",
+            "sha256": "8882d557547541cf2869557fcde70b3ba0b2601a780d04f079cde3c61a86cc3b",
+            "log": "left_turn_early_boundary_crossing_signaled-fallback2-compat-analysis.log",
+            "negative_log": "left_turn_early_boundary_crossing_signaled-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-left_turn_early_boundary_crossing_signaled-fallback3.json",
+          "construction_sha256": "95546a7d2868d5938996f5ee941a2b4eb10e8766c4a9a023b3e511cd6711fa27",
+          "trigger": {
+            "source": "Original overview camera source decode",
+            "metric": "marked boundary and vehicle visibility",
+            "failure_condition": "primary mount crops marked boundary or ego body"
+          },
+          "changed_knobs": [
+            "overview mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled --candidate fallback3 --output .runtime-work/c5191-left_turn_early_boundary_crossing_signaled-fallback3-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "left_turn_early_boundary_crossing_signaled-fallback3-offline.log",
+            "log_sha256": "09f7e152dd094aa47c2e4546ea3bc509aaadaeb446640cde589614e7c04489e1",
+            "construction_sha256": "95546a7d2868d5938996f5ee941a2b4eb10e8766c4a9a023b3e511cd6711fa27"
+          },
+          "compatibility": {
+            "receipt": "left_turn_early_boundary_crossing_signaled-fallback3-compatibility.json",
+            "sha256": "6c4f73c34a84cddc322f70a3c6bdea2bbdbef47a66551b86ca962cd5112bc6b9",
+            "log": "left_turn_early_boundary_crossing_signaled-fallback3-compat-analysis.log",
+            "negative_log": "left_turn_early_boundary_crossing_signaled-fallback3-negative.log"
+          }
+        }
+      ],
+      "acquisition": {
+        "lane_clearance_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "signed original body-corner clearance from marked approach lane slice",
+          "evidence": "turn_originals.jsonl, turn_scene_context.json, trace.jsonl, video_frames.jsonl"
+        },
+        "turn_indicator_state": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native ego light-state readback",
+          "evidence": "turn_originals.jsonl, turn_scene_context.json, trace.jsonl, video_frames.jsonl"
+        },
+        "ego_turn_motion": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native ego position and heading readback",
+          "evidence": "turn_originals.jsonl, turn_scene_context.json, trace.jsonl, video_frames.jsonl"
+        },
+        "marked_approach_context": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original connected marked approach waypoint lane slice, null beyond approach",
+          "evidence": "turn_originals.jsonl, turn_scene_context.json, trace.jsonl, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled --output .runtime-work/c5191-left_turn_early_boundary_crossing_signaled-primary-offline --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "left_turn_early_boundary_crossing_signaled-primary-offline.log",
+        "log_sha256": "dfbfd4073a382aa9920b92ffdeea858b337d028cfe69c36e4718047db467ee2f",
+        "construction_sha256": "7d90a131dea0df622a5445294df1517b684032d7a2e743ff7b97d164553e54cf"
+      },
+      "compatibility": {
+        "receipt": "left_turn_early_boundary_crossing_signaled-primary-compatibility.json",
+        "sha256": "51b714e45fc617364debbf40ab48d578a6649694a96abcdcbb5075b097002a27",
+        "log": "left_turn_early_boundary_crossing_signaled-primary-compat-analysis.log",
+        "negative_log": "left_turn_early_boundary_crossing_signaled-primary-negative.log"
+      },
+      "negative": {
+        "log": "left_turn_early_boundary_crossing_signaled-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical/left_turn_early_boundary_crossing_signaled-proof.json",
+        "sha256": "32e3ca3b70a964f1e0abb7cd1356172f2fb646734cd4abb1d741675aceff75f1"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/execution-manifest.json --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "left_turn_early_boundary_crossing_signaled-saved-processing-gate.log",
+        "test_log_sha256": "208de6136ec09fac68868173059c2976fd3b79cf462c0bf62f2f217ec7e9be64",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/delivery_audit.py",
+        "script_sha256": "a43e1bf7aaf86e6232949a8619947b64ccbc3097cc79525b2cc1d68189ffa64e",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/delivery_audit.py --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c5191-left_turn_early_boundary_crossing_signaled-primary-compat --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c5191-left_turn_early_boundary_crossing_signaled-primary-compat/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "left_turn_early_boundary_crossing_signaled-delivery-positive.log",
+        "test_log_sha256": "72afea95c173a1c961f71a9090fb6d09dbe2750d9a999404534897870fa2666c",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver/delivery_audit.py --case heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c5191-left_turn_early_boundary_crossing_signaled-primary-compat --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c5191-left_turn_early_boundary_crossing_signaled-delivery-negative-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "C5191 original source hash differs",
+        "negative_log": "left_turn_early_boundary_crossing_signaled-delivery-negative.log",
+        "negative_log_sha256": "9c530f141eac5cb396d4e147d02d8c78af5a3b6a4b4582cf691b5aa0b69233c0"
+      }
+    }
+  ]
+}

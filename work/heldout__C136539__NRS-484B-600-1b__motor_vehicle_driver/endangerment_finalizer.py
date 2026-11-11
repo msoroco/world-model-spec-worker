@@ -118,8 +118,11 @@ def build_result(attempt, report):
             'reference': context_path.name, 'value': placement}
     from worker_exchange.native_output import physical_result
     exposure_observable = result['realized_observables']['exposure_gap_m']
+    placement_observable = result['realized_observables'].get('outside_edge_m')
     result = physical_result(root, result)
     result['realized_observables']['exposure_gap_m'] = exposure_observable
+    if placement_observable is not None:
+        result['realized_observables']['outside_edge_m'] = placement_observable
     passage = assess_exposure_passage(root)
     result['physical_checks']['maneuver'] = passage
     result['maneuver_completed'] = passage['status'] == 'met'

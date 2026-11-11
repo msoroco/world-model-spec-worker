@@ -132,7 +132,7 @@
         "device-and-exceptions"
       ],
       "description": "signaled bicycle turn with wider measured traffic clearance",
-      "construction_status": "primary_offline_compatibility_saved_cpu_passed_physical_unverified",
+      "construction_status": "primary_and_three_fallbacks_offline_compatibility_saved_cpu_passed_physical_unverified",
       "physical_risk": {
         "risk": "rider arm articulation may not create an observable signal; turn-lane marking or hands-needed condition may lack original evidence",
         "trigger_source": "original rider motion, four RGB source cameras, rider articulation and lane/control context",
@@ -149,7 +149,7 @@
         "device-and-exceptions"
       ],
       "description": "same signaled bicycle turn with narrower measured traffic clearance",
-      "construction_status": "primary_offline_compatibility_saved_cpu_passed_physical_unverified",
+      "construction_status": "primary_and_three_fallbacks_offline_compatibility_saved_cpu_passed_physical_unverified",
       "physical_risk": {
         "risk": "rider arm articulation may not create an observable signal; turn-lane marking or hands-needed condition may lack original evidence",
         "trigger_source": "original rider motion, four RGB source cameras, rider articulation and lane/control context",
@@ -390,5 +390,116 @@
       "reason": "source-bound electric-device software diagnostic; Native asset and physical/legal confirmation unresolved",
       "evidence_or_gap": "Synthetic black pixels and candidate blueprint tokens do not prove electric drive or device form."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 10,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "rider, device, participant and turn path",
+        "view": "overview",
+        "interval": "startup through clearance"
+      },
+      {
+        "subject": "approach roadway and arm signal",
+        "view": "approach",
+        "interval": "approach through turn"
+      },
+      {
+        "subject": "lane designation and rider/participant relation",
+        "view": "reference_corner",
+        "interval": "approach through turn"
+      },
+      {
+        "subject": "rider hands, device form and signal",
+        "view": "driver_reference",
+        "interval": "startup through clearance"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "ru.subject": {
+      "evidence": "Original rider_context and rider_motion identify the subject; physical rider visibility pending.",
+      "channels": [],
+      "source_refs": [
+        "rider_context.json",
+        "rider_motion.jsonl"
+      ]
+    },
+    "ru.bicycle": {
+      "evidence": "Native bicycle blueprint and original video review required.",
+      "channels": [],
+      "source_refs": [
+        "rider_context.json",
+        "driver_reference.mkv"
+      ]
+    },
+    "ru.electric_bicycle": {
+      "evidence": "Electric bicycle candidate blueprint and original video review required; drive unverified.",
+      "channels": [],
+      "source_refs": [
+        "device_blueprint_readback.json",
+        "device_visual_review.jsonl"
+      ]
+    },
+    "ru.electric_scooter": {
+      "evidence": "Electric scooter candidate blueprint and original video review required; standing form unverified.",
+      "channels": [],
+      "source_refs": [
+        "device_blueprint_readback.json",
+        "device_visual_review.jsonl"
+      ]
+    },
+    "st.roadway": {
+      "evidence": "Connected Native roadway waypoints and occupancy pixels require review.",
+      "channels": [],
+      "source_refs": [
+        "rider_context.json",
+        "road.xodr"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Original rider yaw, trace and four-camera frame map measure turn attempt.",
+      "channels": [],
+      "source_refs": [
+        "rider_motion.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "sig.hand_signal": {
+      "evidence": "Reviewed source-video arm signal joined to original frame.",
+      "channels": [
+        "rider_signal_event"
+      ],
+      "source_refs": [
+        "rider_signal_review.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Participant relative motion and conflict-zone geometry still require acquisition.",
+      "channels": [],
+      "source_refs": [
+        "participant_motion.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "st.turn_lane": {
+      "evidence": "Lane waypoint and original pixel review needed for designated lane.",
+      "channels": [],
+      "source_refs": [
+        "lane_waypoint_readback.jsonl",
+        "lane_designation_review.jsonl"
+      ]
+    },
+    "ru.rider_posture": {
+      "evidence": "Hand-bone readback and original pixel review needed for both-hands exception.",
+      "channels": [],
+      "source_refs": [
+        "hand_contact_readback.jsonl",
+        "hand_contact_review.jsonl"
+      ]
+    }
+  }
 }

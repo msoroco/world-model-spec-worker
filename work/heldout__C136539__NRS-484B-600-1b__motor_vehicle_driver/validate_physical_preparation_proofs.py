@@ -13,7 +13,7 @@ manifest = json.loads((root / 'probe-compatibility-manifest.json').read_text())
 sha = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
 if sha(root / index['probe_script']) != index['probe_script_sha256']:
     raise ValueError('Physical fixture generator changed')
-if len(index['cases']) != len(manifest['cases']) != 6:
+if len(index['cases']) != len(manifest['cases']) != 9:
     raise ValueError('Six exact case physical fixtures required')
 lookup = {entry['case_id']: entry for entry in manifest['cases']}
 for item in index['cases']:

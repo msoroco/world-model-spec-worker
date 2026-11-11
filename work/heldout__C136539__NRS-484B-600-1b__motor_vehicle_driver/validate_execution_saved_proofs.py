@@ -12,8 +12,8 @@ if sha(root / index['manifest']) != index['manifest_sha256']:
     raise ValueError('Execution manifest changed after saved processing proof')
 manifest = json.loads((root / index['manifest']).read_text())
 entries = {entry['case_id']: entry for entry in manifest['cases']}
-if len(index['cases']) != len(entries) or len(entries) != 6:
-    raise ValueError('Six exact saved execution proofs required')
+if len(index['cases']) != len(entries) or len(entries) != 9:
+    raise ValueError('Nine exact saved execution proofs required')
 for item in index['cases']:
     entry = entries[item['case_id']]
     if (sha(root / entry['construction']) != item['construction_sha256'] or

@@ -9,8 +9,8 @@ root = Path(__file__).resolve().parent
 proof = json.loads((root / 'primary-saved-proofs.json').read_text())
 manifest = json.loads((root / proof['manifest']).read_text())
 sha = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
-if len(proof['cases']) != len(manifest['cases']) != 6:
-    raise ValueError('Six exact primary cases required')
+if len(proof['cases']) != len(manifest['cases']) != 9:
+    raise ValueError('Nine exact primary cases required')
 if sha(root / proof['manifest']) != proof['manifest_sha256']:
     raise ValueError('Primary manifest changed')
 entries = {entry['case_id']: entry for entry in manifest['cases']}

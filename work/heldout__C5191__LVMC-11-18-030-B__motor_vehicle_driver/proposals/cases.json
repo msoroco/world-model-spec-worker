@@ -1,0 +1,416 @@
+{
+  "cell_id": "C5191",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Connected left exit and marked approach; original behavior measurements and lawful-turn judgment remain unresolved.",
+      "variable_assignments": {
+        "lane_boundary_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "passing_participant_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "passing_order_reversal": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "turn_preparation_path": {
+          "kind": "controller",
+          "value": "connected_left_exit"
+        },
+        "turn_indicator_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_path": {
+          "kind": "controller",
+          "value": "within_marked_lane"
+        },
+        "lane_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_crossing_fraction": {
+          "kind": "controller",
+          "value": 0.0
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "lane_clearance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "signed original body-corner clearance from marked approach lane slice",
+            "time_window": "marked approach original frames only",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native corners and local waypoint marking slice"
+          },
+          {
+            "name": "turn_indicator_state",
+            "unit": "categorical",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego light-state readback",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "ego vehicle",
+            "uncertainty": "Native 20 Hz sampling"
+          },
+          {
+            "name": "ego_turn_motion",
+            "unit": "structured pose",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego position and heading readback",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native 20 Hz sampling"
+          },
+          {
+            "name": "marked_approach_context",
+            "unit": "structured lane",
+            "sampling_rate_hz": 20,
+            "method": "original connected marked approach waypoint lane slice, null beyond approach",
+            "time_window": "marked approach original frames only",
+            "reference_frame": "world ground plane",
+            "uncertainty": "local lane slice approximation"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU media does not establish actual connected turn, physical crossing, pixel visibility or lawful-turn status."
+        ]
+      }
+    },
+    {
+      "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_lane_contained_approach",
+      "target_law_id": "LVMC-11-18-030-B",
+      "target_type": "boundary_probe",
+      "rationale": "Original marked approach, connected left exit, source-measured body clearance and indicator readback; no legal exception verdict.",
+      "variable_assignments": {
+        "lane_boundary_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "passing_participant_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "passing_order_reversal": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "turn_preparation_path": {
+          "kind": "controller",
+          "value": "connected_left_exit"
+        },
+        "turn_indicator_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_path": {
+          "kind": "controller",
+          "value": "contained_approach"
+        },
+        "lane_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_crossing_fraction": {
+          "kind": "controller",
+          "value": 0.0
+        }
+      },
+      "unresolved_judgment_calls": [
+        "lawfully passing another vehicle",
+        "preparatory to making a lawful turning movement"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "lane_clearance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "signed original body-corner clearance from marked approach lane slice",
+            "time_window": "marked approach original frames only",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native corners and local waypoint marking slice"
+          },
+          {
+            "name": "turn_indicator_state",
+            "unit": "categorical",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego light-state readback",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "ego vehicle",
+            "uncertainty": "Native 20 Hz sampling"
+          },
+          {
+            "name": "ego_turn_motion",
+            "unit": "structured pose",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego position and heading readback",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native 20 Hz sampling"
+          },
+          {
+            "name": "marked_approach_context",
+            "unit": "structured lane",
+            "sampling_rate_hz": 20,
+            "method": "original connected marked approach waypoint lane slice, null beyond approach",
+            "time_window": "marked approach original frames only",
+            "reference_frame": "world ground plane",
+            "uncertainty": "local lane slice approximation"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU media does not establish actual connected turn, physical crossing, pixel visibility or lawful-turn status."
+        ]
+      },
+      "paired_probe_id": "left_turn_approach_containment",
+      "deliberate_differences": [
+        "lane_path"
+      ],
+      "probe": {
+        "primary_variable": "lane_path",
+        "comparison_or_standard": "source-backed fixed-condition comparison without legal cutoff",
+        "target_value_or_branch": "contained"
+      }
+    },
+    {
+      "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_no_signal",
+      "target_law_id": "LVMC-11-18-030-B",
+      "target_type": "boundary_probe",
+      "rationale": "Original marked approach, connected left exit, source-measured body clearance and indicator readback; no legal exception verdict.",
+      "variable_assignments": {
+        "lane_boundary_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "passing_participant_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "passing_order_reversal": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "turn_preparation_path": {
+          "kind": "controller",
+          "value": "connected_left_exit"
+        },
+        "turn_indicator_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_path": {
+          "kind": "controller",
+          "value": "early_boundary_crossing"
+        },
+        "lane_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_crossing_fraction": {
+          "kind": "controller",
+          "value": 0.6
+        }
+      },
+      "unresolved_judgment_calls": [
+        "lawfully passing another vehicle",
+        "preparatory to making a lawful turning movement"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "lane_clearance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "signed original body-corner clearance from marked approach lane slice",
+            "time_window": "marked approach original frames only",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native corners and local waypoint marking slice"
+          },
+          {
+            "name": "turn_indicator_state",
+            "unit": "categorical",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego light-state readback",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "ego vehicle",
+            "uncertainty": "Native 20 Hz sampling"
+          },
+          {
+            "name": "ego_turn_motion",
+            "unit": "structured pose",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego position and heading readback",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native 20 Hz sampling"
+          },
+          {
+            "name": "marked_approach_context",
+            "unit": "structured lane",
+            "sampling_rate_hz": 20,
+            "method": "original connected marked approach waypoint lane slice, null beyond approach",
+            "time_window": "marked approach original frames only",
+            "reference_frame": "world ground plane",
+            "uncertainty": "local lane slice approximation"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU media does not establish actual connected turn, physical crossing, pixel visibility or lawful-turn status."
+        ]
+      },
+      "paired_probe_id": "left_turn_signal_evidence",
+      "deliberate_differences": [
+        "turn_indicator_state"
+      ],
+      "probe": {
+        "primary_variable": "turn_indicator_state",
+        "comparison_or_standard": "source-backed fixed-condition comparison without legal cutoff",
+        "target_value_or_branch": "indicator_off"
+      }
+    },
+    {
+      "case_id": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver__left_turn_early_boundary_crossing_signaled",
+      "target_law_id": "LVMC-11-18-030-B",
+      "target_type": "boundary_probe",
+      "rationale": "Original marked approach, connected left exit, source-measured body clearance and indicator readback; no legal exception verdict.",
+      "variable_assignments": {
+        "lane_boundary_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "passing_participant_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "passing_order_reversal": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "turn_preparation_path": {
+          "kind": "controller",
+          "value": "connected_left_exit"
+        },
+        "turn_indicator_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_path": {
+          "kind": "controller",
+          "value": "early_boundary_crossing"
+        },
+        "lane_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lane_crossing_fraction": {
+          "kind": "controller",
+          "value": 0.6
+        }
+      },
+      "unresolved_judgment_calls": [
+        "lawfully passing another vehicle",
+        "preparatory to making a lawful turning movement"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "lane_clearance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "signed original body-corner clearance from marked approach lane slice",
+            "time_window": "marked approach original frames only",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native corners and local waypoint marking slice"
+          },
+          {
+            "name": "turn_indicator_state",
+            "unit": "categorical",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego light-state readback",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "ego vehicle",
+            "uncertainty": "Native 20 Hz sampling"
+          },
+          {
+            "name": "ego_turn_motion",
+            "unit": "structured pose",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego position and heading readback",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native 20 Hz sampling"
+          },
+          {
+            "name": "marked_approach_context",
+            "unit": "structured lane",
+            "sampling_rate_hz": 20,
+            "method": "original connected marked approach waypoint lane slice, null beyond approach",
+            "time_window": "marked approach original frames only",
+            "reference_frame": "world ground plane",
+            "uncertainty": "local lane slice approximation"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU media does not establish actual connected turn, physical crossing, pixel visibility or lawful-turn status."
+        ]
+      },
+      "paired_probe_id": "left_turn_signal_evidence",
+      "deliberate_differences": [
+        "turn_indicator_state"
+      ],
+      "probe": {
+        "primary_variable": "turn_indicator_state",
+        "comparison_or_standard": "source-backed fixed-condition comparison without legal cutoff",
+        "target_value_or_branch": "indicator_on"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "passing_context_lawfulness_sweep",
+      "target_law_id": "LVMC-11-18-030-B",
+      "judgment_refs": [
+        {
+          "phrase": "lawfully passing another vehicle",
+          "note": "Passing lawfulness depends on separate applicable rules and the observed participant/maneuver facts."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "C5191 left-turn preparation cases do not supply a passing participant or legal passing premises.",
+      "missing_inputs": [
+        "Source-backed passing participant, passing-order reversal and applicable passing rules are required."
+      ]
+    },
+    {
+      "sweep_id": "turn_preparation_lawfulness_sweep",
+      "target_law_id": "LVMC-11-18-030-B",
+      "judgment_refs": [
+        {
+          "phrase": "preparatory to making a lawful turning movement",
+          "note": "Preparation and turn lawfulness depend on route intent evidence, movement and separate applicable rules."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Connected left route, early approach crossing and indicator contrast have exact CPU diagnostics; lawful preparation still requires a completed Native turn and legal premise review.",
+      "missing_inputs": [
+        "Native captured connected turn with physical lane crossing and four-camera review.",
+        "Applicable turn rules and facts establishing lawful turning movement."
+      ]
+    }
+  ]
+}
