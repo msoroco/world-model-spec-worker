@@ -1,0 +1,33 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal",
+  "requirements": [
+    {
+      "disposition_index": 1,
+      "requirement": "bicycle roadway direct-course turn with no commanded pre-turn arm signal and source-reviewed exception context",
+      "source": "inputs/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/assignment.json",
+      "output_key": "rider_turn_signal_observation",
+      "method": "measure_rider_signal",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "rider_motion.jsonl",
+        "rider_arm_bones.jsonl",
+        "rider_signal_review.jsonl",
+        "rider_context.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "rider_arm_bones.jsonl"
+    ],
+    "error_contains": "Missing required source: rider_arm_bones.jsonl"
+  }
+}

@@ -24,6 +24,18 @@
         "official_device_state": {
           "kind": "world_setup",
           "value": "no governing Native control inventory"
+        },
+        "subject_release_delay_frames": {
+          "kind": "controller",
+          "value": 0
+        },
+        "subject_displacement_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "subject_entry_elapsed_s": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
@@ -76,6 +88,18 @@
         "official_device_state": {
           "kind": "world_setup",
           "value": "no governing Native control inventory"
+        },
+        "subject_release_delay_frames": {
+          "kind": "controller",
+          "value": 0
+        },
+        "subject_displacement_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "subject_entry_elapsed_s": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
@@ -140,6 +164,18 @@
         "official_device_state": {
           "kind": "world_setup",
           "value": "no governing Native control inventory"
+        },
+        "subject_release_delay_frames": {
+          "kind": "controller",
+          "value": 0
+        },
+        "subject_displacement_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "subject_entry_elapsed_s": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
@@ -204,6 +240,18 @@
         "official_device_state": {
           "kind": "world_setup",
           "value": "no governing Native control inventory"
+        },
+        "subject_release_delay_frames": {
+          "kind": "controller",
+          "value": 6
+        },
+        "subject_displacement_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "subject_entry_elapsed_s": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
@@ -268,6 +316,18 @@
         "official_device_state": {
           "kind": "world_setup",
           "value": "governing Native device"
+        },
+        "subject_release_delay_frames": {
+          "kind": "controller",
+          "value": 0
+        },
+        "subject_displacement_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "subject_entry_elapsed_s": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
@@ -324,24 +384,358 @@
         "comparison_or_standard": "original-source controlled comparison without a legal cutoff",
         "target_value_or_branch": "official_device_control"
       }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0000",
+      "target_law_id": "NRS-484B-250-3",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample a fixed physical release delay after through clearance while measuring subject entry time and original occupancy; both timing and yielding legal judgments remain unresolved.",
+      "paired_probe_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay",
+      "deliberate_differences": [
+        "subject_release_delay_frames"
+      ],
+      "probe": {
+        "primary_variable": "subject_release_delay_frames",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "subject_release_delay_frames": 0.0
+        }
+      },
+      "sweep_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay",
+      "sweep_spec_version": "7a0abb60b4250a8559c9cfdac1baef39eb504b2b1a4cf2d02300ceeeca453090",
+      "sweep_point": {
+        "subject_release_delay_frames": 0.0
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "entry_delta_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ending_through_topology": {
+          "kind": "world_setup",
+          "value": "connected ending and through Native route plan"
+        },
+        "intersection_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_device_state": {
+          "kind": "world_setup",
+          "value": "no governing Native control inventory"
+        },
+        "subject_release_delay_frames": {
+          "kind": "controller",
+          "value": 0.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "subject_displacement_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "subject_entry_elapsed_s": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "intersection_occupancy",
+            "unit": "bool",
+            "sampling_rate_hz": 20,
+            "method": "original Native body polygons against retained conflict polygon for both participants",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native bounding-box precision"
+          },
+          {
+            "name": "subject_displacement_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "body-center distance from original first frame",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native body geometry"
+          },
+          {
+            "name": "subject_entry_elapsed_s",
+            "unit": "s",
+            "sampling_rate_hz": 20,
+            "method": "saved original body conflict entry latch",
+            "time_window": "full 8 s trace",
+            "reference_frame": "original frame elapsed time",
+            "uncertainty": "20 Hz entry sampling and Native body geometry"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "lanes",
+            "method": "Native OpenDRIVE road/lane and successor readback",
+            "unit": "structured topology"
+          }
+        ],
+        "limitations": [
+          "No legal approximately-same-time or yield judgment follows from a CPU fixture."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "subject_entry_elapsed_s",
+          "unit": "s",
+          "measurement": {
+            "method": "original body conflict entry latch",
+            "time_window": "full original trace",
+            "statistic": "last"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "approaching each other from opposite directions",
+        "approximately the same time",
+        "highway which ends at the intersection",
+        "intending to or is making a left turn",
+        "official traffic-control devices",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0001",
+      "target_law_id": "NRS-484B-250-3",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample a fixed physical release delay after through clearance while measuring subject entry time and original occupancy; both timing and yielding legal judgments remain unresolved.",
+      "paired_probe_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay",
+      "deliberate_differences": [
+        "subject_release_delay_frames"
+      ],
+      "probe": {
+        "primary_variable": "subject_release_delay_frames",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "subject_release_delay_frames": 160.0
+        }
+      },
+      "sweep_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay",
+      "sweep_spec_version": "7a0abb60b4250a8559c9cfdac1baef39eb504b2b1a4cf2d02300ceeeca453090",
+      "sweep_point": {
+        "subject_release_delay_frames": 160.0
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "entry_delta_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ending_through_topology": {
+          "kind": "world_setup",
+          "value": "connected ending and through Native route plan"
+        },
+        "intersection_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_device_state": {
+          "kind": "world_setup",
+          "value": "no governing Native control inventory"
+        },
+        "subject_release_delay_frames": {
+          "kind": "controller",
+          "value": 160.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "subject_displacement_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "subject_entry_elapsed_s": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "intersection_occupancy",
+            "unit": "bool",
+            "sampling_rate_hz": 20,
+            "method": "original Native body polygons against retained conflict polygon for both participants",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native bounding-box precision"
+          },
+          {
+            "name": "subject_displacement_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "body-center distance from original first frame",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native body geometry"
+          },
+          {
+            "name": "subject_entry_elapsed_s",
+            "unit": "s",
+            "sampling_rate_hz": 20,
+            "method": "saved original body conflict entry latch",
+            "time_window": "full 8 s trace",
+            "reference_frame": "original frame elapsed time",
+            "uncertainty": "20 Hz entry sampling and Native body geometry"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "lanes",
+            "method": "Native OpenDRIVE road/lane and successor readback",
+            "unit": "structured topology"
+          }
+        ],
+        "limitations": [
+          "No legal approximately-same-time or yield judgment follows from a CPU fixture."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "subject_entry_elapsed_s",
+          "unit": "s",
+          "measurement": {
+            "method": "original body conflict entry latch",
+            "time_window": "full original trace",
+            "statistic": "last"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "approaching each other from opposite directions",
+        "approximately the same time",
+        "highway which ends at the intersection",
+        "intending to or is making a left turn",
+        "official traffic-control devices",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0002",
+      "target_law_id": "NRS-484B-250-3",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample a fixed physical release delay after through clearance while measuring subject entry time and original occupancy; both timing and yielding legal judgments remain unresolved.",
+      "paired_probe_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay",
+      "deliberate_differences": [
+        "subject_release_delay_frames"
+      ],
+      "probe": {
+        "primary_variable": "subject_release_delay_frames",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "subject_release_delay_frames": 80.0
+        }
+      },
+      "sweep_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay",
+      "sweep_spec_version": "7a0abb60b4250a8559c9cfdac1baef39eb504b2b1a4cf2d02300ceeeca453090",
+      "sweep_point": {
+        "subject_release_delay_frames": 80.0
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "entry_delta_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ending_through_topology": {
+          "kind": "world_setup",
+          "value": "connected ending and through Native route plan"
+        },
+        "intersection_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_device_state": {
+          "kind": "world_setup",
+          "value": "no governing Native control inventory"
+        },
+        "subject_release_delay_frames": {
+          "kind": "controller",
+          "value": 80.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "subject_displacement_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "subject_entry_elapsed_s": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "intersection_occupancy",
+            "unit": "bool",
+            "sampling_rate_hz": 20,
+            "method": "original Native body polygons against retained conflict polygon for both participants",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native bounding-box precision"
+          },
+          {
+            "name": "subject_displacement_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "body-center distance from original first frame",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native body geometry"
+          },
+          {
+            "name": "subject_entry_elapsed_s",
+            "unit": "s",
+            "sampling_rate_hz": 20,
+            "method": "saved original body conflict entry latch",
+            "time_window": "full 8 s trace",
+            "reference_frame": "original frame elapsed time",
+            "uncertainty": "20 Hz entry sampling and Native body geometry"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "lanes",
+            "method": "Native OpenDRIVE road/lane and successor readback",
+            "unit": "structured topology"
+          }
+        ],
+        "limitations": [
+          "No legal approximately-same-time or yield judgment follows from a CPU fixture."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "subject_entry_elapsed_s",
+          "unit": "s",
+          "measurement": {
+            "method": "original body conflict entry latch",
+            "time_window": "full original trace",
+            "statistic": "last"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "approaching each other from opposite directions",
+        "approximately the same time",
+        "highway which ends at the intersection",
+        "intending to or is making a left turn",
+        "official traffic-control devices",
+        "yield the right-of-way"
+      ]
     }
   ],
   "sweep_specs": [
     {
-      "sweep_id": "ending_road_qualitative_judgments",
+      "sweep_id": "ending_road_other_qualitative_judgments",
       "target_law_id": "NRS-484B-250-3",
       "judgment_refs": [
         {
-          "phrase": "approximately the same time",
-          "note": "Compare original intersection entry frames without assigning a numeric legal cutoff."
-        },
-        {
           "phrase": "highway which ends at the intersection",
           "note": "Retain connected Native lane successor identity; legal highway status remains unresolved."
-        },
-        {
-          "phrase": "yield the right-of-way",
-          "note": "Retain original body occupancy and entry order without a legal finding."
         },
         {
           "phrase": "official traffic-control devices",
@@ -356,11 +750,124 @@
           "note": "Retain selected Native left branch and original heading/trajectory for the separately bound left-turn cell."
         }
       ],
-      "rationale": "Qualitative timing, highway classification, control and opposite-left exceptions require source-backed comparisons without numeric legal thresholds.",
+      "rationale": "Arrival simultaneity, legal highway identity, official control and opposite-left conditions require separate physical or categorical source-backed comparisons.",
       "status": "incomplete",
       "missing_inputs": [
-        "C293604 opposite-left binding and exact original-source package not yet allocated",
-        "Official-control and opposite-left physical variations cannot be represented by one shared numeric sweep axis without changing statutory conditions; retain separate controlled comparisons and source-specific contracts."
+        "Connected categorical route and official-device alternatives need exact physical point constructions and independent original-source audits; one scalar release delay cannot vary those conditions."
+      ]
+    },
+    {
+      "sweep_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay",
+      "target_law_id": "NRS-484B-250-3",
+      "judgment_refs": [
+        {
+          "phrase": "approximately the same time",
+          "note": "Compare original intersection entry frames without assigning a numeric legal cutoff."
+        },
+        {
+          "phrase": "yield the right-of-way",
+          "note": "Retain original body occupancy and entry order without a legal finding."
+        }
+      ],
+      "rationale": "Sample a fixed physical release delay after through clearance while measuring subject entry time and original occupancy; both timing and yielding legal judgments remain unresolved.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "subject_release_delay_frames",
+          "observable": "subject_entry_elapsed_s",
+          "unit": "s",
+          "min": 0,
+          "max": 160,
+          "spacing": 80,
+          "measurement": {
+            "method": "original body conflict entry latch",
+            "time_window": "full original trace",
+            "statistic": "last"
+          },
+          "range_rationale": "0 to 160 frames spans immediate release to the full 8 s capture at 20 Hz.",
+          "spacing_rationale": "80-frame spacing samples endpoints and a 4 s interior engineering delay, not a legal interval.",
+          "feasibility_evidence": "The Native runner applies speed control every 20 Hz frame and can hold the ending-road actor after through clearance."
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "entry_delta_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ending_through_topology": {
+          "kind": "world_setup",
+          "value": "connected ending and through Native route plan"
+        },
+        "intersection_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_device_state": {
+          "kind": "world_setup",
+          "value": "no governing Native control inventory"
+        },
+        "subject_release_delay_frames": {
+          "kind": "controller",
+          "value": 0
+        },
+        "subject_displacement_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "subject_entry_elapsed_s": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "intersection_occupancy",
+            "unit": "bool",
+            "sampling_rate_hz": 20,
+            "method": "original Native body polygons against retained conflict polygon for both participants",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native bounding-box precision"
+          },
+          {
+            "name": "subject_displacement_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "body-center distance from original first frame",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native body geometry"
+          },
+          {
+            "name": "subject_entry_elapsed_s",
+            "unit": "s",
+            "sampling_rate_hz": 20,
+            "method": "saved original body conflict entry latch",
+            "time_window": "full 8 s trace",
+            "reference_frame": "original frame elapsed time",
+            "uncertainty": "20 Hz entry sampling and Native body geometry"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "lanes",
+            "method": "Native OpenDRIVE road/lane and successor readback",
+            "unit": "structured topology"
+          }
+        ],
+        "limitations": [
+          "No legal approximately-same-time or yield judgment follows from a CPU fixture."
+        ]
+      },
+      "spec_version": "7a0abb60b4250a8559c9cfdac1baef39eb504b2b1a4cf2d02300ceeeca453090",
+      "planned_case_count": 3,
+      "selection_order": [
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0000",
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0001",
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0002"
       ]
     }
   ],

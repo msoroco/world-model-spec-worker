@@ -16,7 +16,8 @@ def write_saved(root, suffix):
                 'exposed_kind': kind, 'outside_edge_m': lateral}
     config = {'selected_case_id': settings['case_id'], 'law_id': 'NRS-484B-600-1b',
               'cell_id': 'C136539', 'actor': 'motor_vehicle_driver',
-              'rate_hz': 20, 'frames': 160, 'requested_speed_mps': speed,
+              'rate_hz': 20, 'frames': 160, 'duration_s': 8,
+              'requested_speed_mps': speed,
               'exposed_kind': kind, 'outside_edge_m': lateral,
               'construction_probe_only': True}
     root.mkdir()

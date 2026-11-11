@@ -13,7 +13,8 @@ class ExposureCaseSetupTests(unittest.TestCase):
         speed, kind, lateral = CASES[suffix]
         return {'selected_case_id': PREFIX + suffix, 'law_id': 'NRS-484B-600-1b',
                 'cell_id': 'C136539', 'actor': 'motor_vehicle_driver',
-                'rate_hz': 20, 'frames': 160, 'requested_speed_mps': speed,
+                'rate_hz': 20, 'frames': 160, 'duration_s': 8,
+                'requested_speed_mps': speed,
                 'exposed_kind': kind, 'outside_edge_m': lateral,
                 'construction_probe_only': True}
 

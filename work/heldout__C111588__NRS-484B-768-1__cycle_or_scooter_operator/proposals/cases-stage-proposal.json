@@ -1,0 +1,1714 @@
+{
+  "format": "worker-cases-proposal",
+  "status": "draft",
+  "cell_id": "C111588",
+  "actor": "cycle_or_scooter_operator",
+  "cases": [
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral bicycle roadway turn setup definition; not selected for capture",
+      "variable_assignments": {
+        "rider_device_class": {
+          "kind": "world_setup",
+          "value": "bicycle"
+        },
+        "rider_roadway_status": {
+          "kind": "world_setup",
+          "value": "roadway turn setup; Native occupancy pending"
+        },
+        "designated_turn_lane": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "both_hands_safety_condition": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "turn_from_direct_course": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "pre_turn_visible_signal_count": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "arm_command_schedule": {
+          "kind": "controller",
+          "value": []
+        },
+        "participant_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "time_to_conflict_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_hand_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_control_stability": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "device_blueprint_choice": {
+          "kind": "controller",
+          "value": "vehicle.bh.crossbike"
+        },
+        "lane_route_selector": {
+          "kind": "controller",
+          "value": "ordinary_lane"
+        },
+        "both_hands_demand_mode": {
+          "kind": "controller",
+          "value": "ordinary"
+        },
+        "clearance_target_band": {
+          "kind": "controller",
+          "value": "reference"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "appropriate signal",
+        "Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "rider_signal_event",
+            "unit": "count",
+            "method": "reviewed visible arm-signal event per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_turn_heading_deg",
+            "unit": "deg",
+            "method": "original bicycle transform yaw",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "participant_clearance_m",
+            "unit": "m",
+            "method": "original participant body-footprint minimum separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "time_to_conflict_s",
+            "unit": "s",
+            "method": "original relative motion and conflict-zone geometry",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_hand_contact",
+            "unit": "categorical",
+            "method": "framewise source-video hand-to-control review",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_control_stability",
+            "unit": "structured_record",
+            "method": "original steering and control response",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "rider_device_class",
+            "unit": "categorical",
+            "method": "Native blueprint and original device review"
+          },
+          {
+            "name": "rider_roadway_status",
+            "unit": "categorical",
+            "method": "Native map/roadway geometry and original occupancy review"
+          },
+          {
+            "name": "turn_path_geometry",
+            "unit": "structured_record",
+            "method": "retained Native route/lane geometry with participant identities"
+          }
+        ],
+        "limitations": [
+          "Source-video visibility, physical completion, reasonable safety, signal appropriateness and both-hands necessity are unresolved."
+        ]
+      }
+    },
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once",
+      "target_law_id": "NRS-484B-768-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled signal-schedule construction: one commanded arm frame; physical and legal judgments remain open",
+      "variable_assignments": {
+        "rider_device_class": {
+          "kind": "world_setup",
+          "value": "bicycle"
+        },
+        "rider_roadway_status": {
+          "kind": "world_setup",
+          "value": "roadway turn setup; Native occupancy pending"
+        },
+        "designated_turn_lane": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "both_hands_safety_condition": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "turn_from_direct_course": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "pre_turn_visible_signal_count": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "arm_command_schedule": {
+          "kind": "controller",
+          "value": [
+            35
+          ]
+        },
+        "participant_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "time_to_conflict_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_hand_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_control_stability": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "device_blueprint_choice": {
+          "kind": "controller",
+          "value": "vehicle.bh.crossbike"
+        },
+        "lane_route_selector": {
+          "kind": "controller",
+          "value": "ordinary_lane"
+        },
+        "both_hands_demand_mode": {
+          "kind": "controller",
+          "value": "ordinary"
+        },
+        "clearance_target_band": {
+          "kind": "controller",
+          "value": "reference"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "appropriate signal",
+        "Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "rider_signal_event",
+            "unit": "count",
+            "method": "reviewed visible arm-signal event per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_turn_heading_deg",
+            "unit": "deg",
+            "method": "original bicycle transform yaw",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "participant_clearance_m",
+            "unit": "m",
+            "method": "original participant body-footprint minimum separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "time_to_conflict_s",
+            "unit": "s",
+            "method": "original relative motion and conflict-zone geometry",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_hand_contact",
+            "unit": "categorical",
+            "method": "framewise source-video hand-to-control review",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_control_stability",
+            "unit": "structured_record",
+            "method": "original steering and control response",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "rider_device_class",
+            "unit": "categorical",
+            "method": "Native blueprint and original device review"
+          },
+          {
+            "name": "rider_roadway_status",
+            "unit": "categorical",
+            "method": "Native map/roadway geometry and original occupancy review"
+          },
+          {
+            "name": "turn_path_geometry",
+            "unit": "structured_record",
+            "method": "retained Native route/lane geometry with participant identities"
+          }
+        ],
+        "limitations": [
+          "Source-video visibility, physical completion, reasonable safety, signal appropriateness and both-hands necessity are unresolved."
+        ]
+      },
+      "paired_probe_id": "bicycle_signal_schedule",
+      "deliberate_differences": [
+        "arm_command_schedule"
+      ],
+      "epsilon_used": 1,
+      "probe": {
+        "primary_variable": "arm_command_schedule",
+        "comparison_or_standard": "one pre-turn command versus no command or sustained command",
+        "target_value_or_branch": "one commanded arm frame"
+      }
+    },
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal",
+      "target_law_id": "NRS-484B-768-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled signal-schedule construction: no commanded arm frame; physical and legal judgments remain open",
+      "variable_assignments": {
+        "rider_device_class": {
+          "kind": "world_setup",
+          "value": "bicycle"
+        },
+        "rider_roadway_status": {
+          "kind": "world_setup",
+          "value": "roadway turn setup; Native occupancy pending"
+        },
+        "designated_turn_lane": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "both_hands_safety_condition": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "turn_from_direct_course": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "pre_turn_visible_signal_count": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "arm_command_schedule": {
+          "kind": "controller",
+          "value": []
+        },
+        "participant_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "time_to_conflict_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_hand_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_control_stability": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "device_blueprint_choice": {
+          "kind": "controller",
+          "value": "vehicle.bh.crossbike"
+        },
+        "lane_route_selector": {
+          "kind": "controller",
+          "value": "ordinary_lane"
+        },
+        "both_hands_demand_mode": {
+          "kind": "controller",
+          "value": "ordinary"
+        },
+        "clearance_target_band": {
+          "kind": "controller",
+          "value": "reference"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "appropriate signal",
+        "Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "rider_signal_event",
+            "unit": "count",
+            "method": "reviewed visible arm-signal event per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_turn_heading_deg",
+            "unit": "deg",
+            "method": "original bicycle transform yaw",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "participant_clearance_m",
+            "unit": "m",
+            "method": "original participant body-footprint minimum separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "time_to_conflict_s",
+            "unit": "s",
+            "method": "original relative motion and conflict-zone geometry",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_hand_contact",
+            "unit": "categorical",
+            "method": "framewise source-video hand-to-control review",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_control_stability",
+            "unit": "structured_record",
+            "method": "original steering and control response",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "rider_device_class",
+            "unit": "categorical",
+            "method": "Native blueprint and original device review"
+          },
+          {
+            "name": "rider_roadway_status",
+            "unit": "categorical",
+            "method": "Native map/roadway geometry and original occupancy review"
+          },
+          {
+            "name": "turn_path_geometry",
+            "unit": "structured_record",
+            "method": "retained Native route/lane geometry with participant identities"
+          }
+        ],
+        "limitations": [
+          "Source-video visibility, physical completion, reasonable safety, signal appropriateness and both-hands necessity are unresolved."
+        ]
+      },
+      "paired_probe_id": "bicycle_signal_schedule",
+      "deliberate_differences": [
+        "arm_command_schedule"
+      ],
+      "epsilon_used": 1,
+      "probe": {
+        "primary_variable": "arm_command_schedule",
+        "comparison_or_standard": "one pre-turn command versus no command or sustained command",
+        "target_value_or_branch": "no commanded arm frame"
+      }
+    },
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_continuous",
+      "target_law_id": "NRS-484B-768-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled signal-schedule construction: sustained commanded arm frames; physical and legal judgments remain open",
+      "variable_assignments": {
+        "rider_device_class": {
+          "kind": "world_setup",
+          "value": "bicycle"
+        },
+        "rider_roadway_status": {
+          "kind": "world_setup",
+          "value": "roadway turn setup; Native occupancy pending"
+        },
+        "designated_turn_lane": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "both_hands_safety_condition": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "turn_from_direct_course": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "pre_turn_visible_signal_count": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "arm_command_schedule": {
+          "kind": "controller",
+          "value": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35
+          ]
+        },
+        "participant_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "time_to_conflict_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_hand_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_control_stability": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "device_blueprint_choice": {
+          "kind": "controller",
+          "value": "vehicle.bh.crossbike"
+        },
+        "lane_route_selector": {
+          "kind": "controller",
+          "value": "ordinary_lane"
+        },
+        "both_hands_demand_mode": {
+          "kind": "controller",
+          "value": "ordinary"
+        },
+        "clearance_target_band": {
+          "kind": "controller",
+          "value": "reference"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "appropriate signal",
+        "Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "rider_signal_event",
+            "unit": "count",
+            "method": "reviewed visible arm-signal event per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_turn_heading_deg",
+            "unit": "deg",
+            "method": "original bicycle transform yaw",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "participant_clearance_m",
+            "unit": "m",
+            "method": "original participant body-footprint minimum separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "time_to_conflict_s",
+            "unit": "s",
+            "method": "original relative motion and conflict-zone geometry",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_hand_contact",
+            "unit": "categorical",
+            "method": "framewise source-video hand-to-control review",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_control_stability",
+            "unit": "structured_record",
+            "method": "original steering and control response",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "rider_device_class",
+            "unit": "categorical",
+            "method": "Native blueprint and original device review"
+          },
+          {
+            "name": "rider_roadway_status",
+            "unit": "categorical",
+            "method": "Native map/roadway geometry and original occupancy review"
+          },
+          {
+            "name": "turn_path_geometry",
+            "unit": "structured_record",
+            "method": "retained Native route/lane geometry with participant identities"
+          }
+        ],
+        "limitations": [
+          "Source-video visibility, physical completion, reasonable safety, signal appropriateness and both-hands necessity are unresolved."
+        ]
+      },
+      "paired_probe_id": "bicycle_signal_schedule",
+      "deliberate_differences": [
+        "arm_command_schedule"
+      ],
+      "epsilon_used": 1,
+      "probe": {
+        "primary_variable": "arm_command_schedule",
+        "comparison_or_standard": "one pre-turn command versus no command or sustained command",
+        "target_value_or_branch": "sustained commanded arm frames"
+      }
+    },
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_bicycle_signal_once",
+      "target_law_id": "NRS-484B-768-1",
+      "target_type": "boundary_probe",
+      "rationale": "Electric bicycle versus scooter: same turn and one-frame command; Native class identity remains unverified",
+      "variable_assignments": {
+        "rider_device_class": {
+          "kind": "world_setup",
+          "value": "electric_bicycle"
+        },
+        "rider_roadway_status": {
+          "kind": "world_setup",
+          "value": "roadway turn setup; Native occupancy pending"
+        },
+        "designated_turn_lane": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "both_hands_safety_condition": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "turn_from_direct_course": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "pre_turn_visible_signal_count": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "arm_command_schedule": {
+          "kind": "controller",
+          "value": [
+            35
+          ]
+        },
+        "participant_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "time_to_conflict_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_hand_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_control_stability": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "device_blueprint_choice": {
+          "kind": "controller",
+          "value": "electric_bicycle_blueprint_pending"
+        },
+        "lane_route_selector": {
+          "kind": "controller",
+          "value": "ordinary_lane"
+        },
+        "both_hands_demand_mode": {
+          "kind": "controller",
+          "value": "ordinary"
+        },
+        "clearance_target_band": {
+          "kind": "controller",
+          "value": "reference"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "appropriate signal",
+        "Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "rider_signal_event",
+            "unit": "count",
+            "method": "reviewed visible arm-signal event per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_turn_heading_deg",
+            "unit": "deg",
+            "method": "original bicycle transform yaw",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "participant_clearance_m",
+            "unit": "m",
+            "method": "original participant body-footprint minimum separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "time_to_conflict_s",
+            "unit": "s",
+            "method": "original relative motion and conflict-zone geometry",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_hand_contact",
+            "unit": "categorical",
+            "method": "framewise source-video hand-to-control review",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_control_stability",
+            "unit": "structured_record",
+            "method": "original steering and control response",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "rider_device_class",
+            "unit": "categorical",
+            "method": "Native blueprint and original device review"
+          },
+          {
+            "name": "rider_roadway_status",
+            "unit": "categorical",
+            "method": "Native map/roadway geometry and original occupancy review"
+          },
+          {
+            "name": "turn_path_geometry",
+            "unit": "structured_record",
+            "method": "retained Native route/lane geometry with participant identities"
+          }
+        ],
+        "limitations": [
+          "Source-video visibility, physical completion, reasonable safety, signal appropriateness and both-hands necessity are unresolved."
+        ]
+      },
+      "paired_probe_id": "powered_device",
+      "deliberate_differences": [
+        "rider_device_class",
+        "device_blueprint_choice"
+      ],
+      "epsilon_used": 1,
+      "probe": {
+        "primary_variable": "rider_device_class",
+        "comparison_or_standard": "Electric bicycle versus scooter: same turn and one-frame command; Native class identity remains unverified",
+        "target_value_or_branch": "authored construction target; physical outcome pending"
+      },
+      "execution_readiness": "incomplete",
+      "missing_inputs": [
+        "Native electric bicycle blueprint or sourced equivalent",
+        "original device identity and rider geometry readback"
+      ]
+    },
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__electric_scooter_signal_once",
+      "target_law_id": "NRS-484B-768-1",
+      "target_type": "boundary_probe",
+      "rationale": "Electric scooter versus electric bicycle: same turn and one-frame command; Native class identity remains unverified",
+      "variable_assignments": {
+        "rider_device_class": {
+          "kind": "world_setup",
+          "value": "electric_scooter"
+        },
+        "rider_roadway_status": {
+          "kind": "world_setup",
+          "value": "roadway turn setup; Native occupancy pending"
+        },
+        "designated_turn_lane": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "both_hands_safety_condition": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "turn_from_direct_course": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "pre_turn_visible_signal_count": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "arm_command_schedule": {
+          "kind": "controller",
+          "value": [
+            35
+          ]
+        },
+        "participant_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "time_to_conflict_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_hand_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_control_stability": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "device_blueprint_choice": {
+          "kind": "controller",
+          "value": "electric_scooter_blueprint_pending"
+        },
+        "lane_route_selector": {
+          "kind": "controller",
+          "value": "ordinary_lane"
+        },
+        "both_hands_demand_mode": {
+          "kind": "controller",
+          "value": "ordinary"
+        },
+        "clearance_target_band": {
+          "kind": "controller",
+          "value": "reference"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "appropriate signal",
+        "Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "rider_signal_event",
+            "unit": "count",
+            "method": "reviewed visible arm-signal event per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_turn_heading_deg",
+            "unit": "deg",
+            "method": "original bicycle transform yaw",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "participant_clearance_m",
+            "unit": "m",
+            "method": "original participant body-footprint minimum separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "time_to_conflict_s",
+            "unit": "s",
+            "method": "original relative motion and conflict-zone geometry",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_hand_contact",
+            "unit": "categorical",
+            "method": "framewise source-video hand-to-control review",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_control_stability",
+            "unit": "structured_record",
+            "method": "original steering and control response",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "rider_device_class",
+            "unit": "categorical",
+            "method": "Native blueprint and original device review"
+          },
+          {
+            "name": "rider_roadway_status",
+            "unit": "categorical",
+            "method": "Native map/roadway geometry and original occupancy review"
+          },
+          {
+            "name": "turn_path_geometry",
+            "unit": "structured_record",
+            "method": "retained Native route/lane geometry with participant identities"
+          }
+        ],
+        "limitations": [
+          "Source-video visibility, physical completion, reasonable safety, signal appropriateness and both-hands necessity are unresolved."
+        ]
+      },
+      "paired_probe_id": "powered_device",
+      "deliberate_differences": [
+        "rider_device_class",
+        "device_blueprint_choice"
+      ],
+      "epsilon_used": 1,
+      "probe": {
+        "primary_variable": "rider_device_class",
+        "comparison_or_standard": "Electric scooter versus electric bicycle: same turn and one-frame command; Native class identity remains unverified",
+        "target_value_or_branch": "authored construction target; physical outcome pending"
+      },
+      "execution_readiness": "incomplete",
+      "missing_inputs": [
+        "Native electric scooter blueprint or sourced equivalent",
+        "original device identity and rider geometry readback"
+      ]
+    },
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__turn_lane_no_signal",
+      "target_law_id": "NRS-484B-768-1",
+      "target_type": "boundary_probe",
+      "rationale": "No-signal turn from a designated turn-lane construction target; actual designation needs source geometry and markings",
+      "variable_assignments": {
+        "rider_device_class": {
+          "kind": "world_setup",
+          "value": "bicycle"
+        },
+        "rider_roadway_status": {
+          "kind": "world_setup",
+          "value": "roadway turn setup; Native occupancy pending"
+        },
+        "designated_turn_lane": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "both_hands_safety_condition": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "turn_from_direct_course": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "pre_turn_visible_signal_count": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "arm_command_schedule": {
+          "kind": "controller",
+          "value": []
+        },
+        "participant_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "time_to_conflict_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_hand_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_control_stability": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "device_blueprint_choice": {
+          "kind": "controller",
+          "value": "vehicle.bh.crossbike"
+        },
+        "lane_route_selector": {
+          "kind": "controller",
+          "value": "designated_turn_lane"
+        },
+        "both_hands_demand_mode": {
+          "kind": "controller",
+          "value": "ordinary"
+        },
+        "clearance_target_band": {
+          "kind": "controller",
+          "value": "reference"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "appropriate signal",
+        "Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "rider_signal_event",
+            "unit": "count",
+            "method": "reviewed visible arm-signal event per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_turn_heading_deg",
+            "unit": "deg",
+            "method": "original bicycle transform yaw",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "participant_clearance_m",
+            "unit": "m",
+            "method": "original participant body-footprint minimum separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "time_to_conflict_s",
+            "unit": "s",
+            "method": "original relative motion and conflict-zone geometry",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_hand_contact",
+            "unit": "categorical",
+            "method": "framewise source-video hand-to-control review",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_control_stability",
+            "unit": "structured_record",
+            "method": "original steering and control response",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "rider_device_class",
+            "unit": "categorical",
+            "method": "Native blueprint and original device review"
+          },
+          {
+            "name": "rider_roadway_status",
+            "unit": "categorical",
+            "method": "Native map/roadway geometry and original occupancy review"
+          },
+          {
+            "name": "turn_path_geometry",
+            "unit": "structured_record",
+            "method": "retained Native route/lane geometry with participant identities"
+          }
+        ],
+        "limitations": [
+          "Source-video visibility, physical completion, reasonable safety, signal appropriateness and both-hands necessity are unresolved."
+        ]
+      },
+      "paired_probe_id": "signal_exception",
+      "deliberate_differences": [
+        "lane_route_selector",
+        "both_hands_demand_mode"
+      ],
+      "epsilon_used": 1,
+      "probe": {
+        "primary_variable": "lane_route_selector",
+        "comparison_or_standard": "No-signal turn from a designated turn-lane construction target; actual designation needs source geometry and markings",
+        "target_value_or_branch": "authored construction target; physical outcome pending"
+      },
+      "execution_readiness": "incomplete",
+      "missing_inputs": [
+        "Native lane designation with source map semantics",
+        "original turn-lane marking/sign pixels and occupancy"
+      ]
+    },
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__both_hands_no_signal",
+      "target_law_id": "NRS-484B-768-1",
+      "target_type": "boundary_probe",
+      "rationale": "No-signal turn with a two-hand control-demand task; whether safety requires both hands remains unresolved",
+      "variable_assignments": {
+        "rider_device_class": {
+          "kind": "world_setup",
+          "value": "bicycle"
+        },
+        "rider_roadway_status": {
+          "kind": "world_setup",
+          "value": "roadway turn setup; Native occupancy pending"
+        },
+        "designated_turn_lane": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "both_hands_safety_condition": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "turn_from_direct_course": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "pre_turn_visible_signal_count": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "arm_command_schedule": {
+          "kind": "controller",
+          "value": []
+        },
+        "participant_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "time_to_conflict_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_hand_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_control_stability": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "device_blueprint_choice": {
+          "kind": "controller",
+          "value": "vehicle.bh.crossbike"
+        },
+        "lane_route_selector": {
+          "kind": "controller",
+          "value": "ordinary_lane"
+        },
+        "both_hands_demand_mode": {
+          "kind": "controller",
+          "value": "two_hand_control_task"
+        },
+        "clearance_target_band": {
+          "kind": "controller",
+          "value": "reference"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "appropriate signal",
+        "Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "rider_signal_event",
+            "unit": "count",
+            "method": "reviewed visible arm-signal event per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_turn_heading_deg",
+            "unit": "deg",
+            "method": "original bicycle transform yaw",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "participant_clearance_m",
+            "unit": "m",
+            "method": "original participant body-footprint minimum separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "time_to_conflict_s",
+            "unit": "s",
+            "method": "original relative motion and conflict-zone geometry",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_hand_contact",
+            "unit": "categorical",
+            "method": "framewise source-video hand-to-control review",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_control_stability",
+            "unit": "structured_record",
+            "method": "original steering and control response",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "rider_device_class",
+            "unit": "categorical",
+            "method": "Native blueprint and original device review"
+          },
+          {
+            "name": "rider_roadway_status",
+            "unit": "categorical",
+            "method": "Native map/roadway geometry and original occupancy review"
+          },
+          {
+            "name": "turn_path_geometry",
+            "unit": "structured_record",
+            "method": "retained Native route/lane geometry with participant identities"
+          }
+        ],
+        "limitations": [
+          "Source-video visibility, physical completion, reasonable safety, signal appropriateness and both-hands necessity are unresolved."
+        ]
+      },
+      "paired_probe_id": "signal_exception",
+      "deliberate_differences": [
+        "lane_route_selector",
+        "both_hands_demand_mode"
+      ],
+      "epsilon_used": 1,
+      "probe": {
+        "primary_variable": "both_hands_demand_mode",
+        "comparison_or_standard": "No-signal turn with a two-hand control-demand task; whether safety requires both hands remains unresolved",
+        "target_value_or_branch": "authored construction target; physical outcome pending"
+      },
+      "execution_readiness": "incomplete",
+      "missing_inputs": [
+        "physical two-hand control task and device controls",
+        "original hand-contact and steering stability source frames"
+      ]
+    },
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_wide",
+      "target_law_id": "NRS-484B-768-1",
+      "target_type": "boundary_probe",
+      "rationale": "Wider participant-clearance construction target; physical range and safety judgment remain unresolved",
+      "variable_assignments": {
+        "rider_device_class": {
+          "kind": "world_setup",
+          "value": "bicycle"
+        },
+        "rider_roadway_status": {
+          "kind": "world_setup",
+          "value": "roadway turn setup; Native occupancy pending"
+        },
+        "designated_turn_lane": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "both_hands_safety_condition": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "turn_from_direct_course": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "pre_turn_visible_signal_count": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "arm_command_schedule": {
+          "kind": "controller",
+          "value": [
+            35
+          ]
+        },
+        "participant_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "time_to_conflict_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_hand_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_control_stability": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "device_blueprint_choice": {
+          "kind": "controller",
+          "value": "vehicle.bh.crossbike"
+        },
+        "lane_route_selector": {
+          "kind": "controller",
+          "value": "ordinary_lane"
+        },
+        "both_hands_demand_mode": {
+          "kind": "controller",
+          "value": "ordinary"
+        },
+        "clearance_target_band": {
+          "kind": "controller",
+          "value": "wider"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "appropriate signal",
+        "Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "rider_signal_event",
+            "unit": "count",
+            "method": "reviewed visible arm-signal event per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_turn_heading_deg",
+            "unit": "deg",
+            "method": "original bicycle transform yaw",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "participant_clearance_m",
+            "unit": "m",
+            "method": "original participant body-footprint minimum separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "time_to_conflict_s",
+            "unit": "s",
+            "method": "original relative motion and conflict-zone geometry",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_hand_contact",
+            "unit": "categorical",
+            "method": "framewise source-video hand-to-control review",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_control_stability",
+            "unit": "structured_record",
+            "method": "original steering and control response",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "rider_device_class",
+            "unit": "categorical",
+            "method": "Native blueprint and original device review"
+          },
+          {
+            "name": "rider_roadway_status",
+            "unit": "categorical",
+            "method": "Native map/roadway geometry and original occupancy review"
+          },
+          {
+            "name": "turn_path_geometry",
+            "unit": "structured_record",
+            "method": "retained Native route/lane geometry with participant identities"
+          }
+        ],
+        "limitations": [
+          "Source-video visibility, physical completion, reasonable safety, signal appropriateness and both-hands necessity are unresolved."
+        ]
+      },
+      "paired_probe_id": "clearance_pair",
+      "deliberate_differences": [
+        "clearance_target_band"
+      ],
+      "epsilon_used": 1,
+      "probe": {
+        "primary_variable": "clearance_target_band",
+        "comparison_or_standard": "Wider participant-clearance construction target; physical range and safety judgment remain unresolved",
+        "target_value_or_branch": "authored construction target; physical outcome pending"
+      },
+      "execution_readiness": "incomplete",
+      "missing_inputs": [
+        "Native participant geometry and route feasibility",
+        "original full-body clearance and time-to-conflict measurement"
+      ]
+    },
+    {
+      "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__safety_narrow",
+      "target_law_id": "NRS-484B-768-1",
+      "target_type": "boundary_probe",
+      "rationale": "Narrower participant-clearance construction target; physical range and safety judgment remain unresolved",
+      "variable_assignments": {
+        "rider_device_class": {
+          "kind": "world_setup",
+          "value": "bicycle"
+        },
+        "rider_roadway_status": {
+          "kind": "world_setup",
+          "value": "roadway turn setup; Native occupancy pending"
+        },
+        "designated_turn_lane": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "both_hands_safety_condition": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "turn_from_direct_course": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "pre_turn_visible_signal_count": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "arm_command_schedule": {
+          "kind": "controller",
+          "value": [
+            35
+          ]
+        },
+        "participant_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "time_to_conflict_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_hand_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "rider_control_stability": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "device_blueprint_choice": {
+          "kind": "controller",
+          "value": "vehicle.bh.crossbike"
+        },
+        "lane_route_selector": {
+          "kind": "controller",
+          "value": "ordinary_lane"
+        },
+        "both_hands_demand_mode": {
+          "kind": "controller",
+          "value": "ordinary"
+        },
+        "clearance_target_band": {
+          "kind": "controller",
+          "value": "narrower"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "appropriate signal",
+        "Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "rider_signal_event",
+            "unit": "count",
+            "method": "reviewed visible arm-signal event per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_turn_heading_deg",
+            "unit": "deg",
+            "method": "original bicycle transform yaw",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "participant_clearance_m",
+            "unit": "m",
+            "method": "original participant body-footprint minimum separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "time_to_conflict_s",
+            "unit": "s",
+            "method": "original relative motion and conflict-zone geometry",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_hand_contact",
+            "unit": "categorical",
+            "method": "framewise source-video hand-to-control review",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          },
+          {
+            "name": "rider_control_stability",
+            "unit": "structured_record",
+            "method": "original steering and control response",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native frame joined to four source RGB streams",
+            "uncertainty": "physical actor visibility and source completeness require Native review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "rider_device_class",
+            "unit": "categorical",
+            "method": "Native blueprint and original device review"
+          },
+          {
+            "name": "rider_roadway_status",
+            "unit": "categorical",
+            "method": "Native map/roadway geometry and original occupancy review"
+          },
+          {
+            "name": "turn_path_geometry",
+            "unit": "structured_record",
+            "method": "retained Native route/lane geometry with participant identities"
+          }
+        ],
+        "limitations": [
+          "Source-video visibility, physical completion, reasonable safety, signal appropriateness and both-hands necessity are unresolved."
+        ]
+      },
+      "paired_probe_id": "clearance_pair",
+      "deliberate_differences": [
+        "clearance_target_band"
+      ],
+      "epsilon_used": 1,
+      "probe": {
+        "primary_variable": "clearance_target_band",
+        "comparison_or_standard": "Narrower participant-clearance construction target; physical range and safety judgment remain unresolved",
+        "target_value_or_branch": "authored construction target; physical outcome pending"
+      },
+      "execution_readiness": "incomplete",
+      "missing_inputs": [
+        "Native participant geometry and route feasibility",
+        "original full-body clearance and time-to-conflict measurement"
+      ]
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c111588-judgment-1",
+      "target_law_id": "NRS-484B-768-1",
+      "judgment_refs": [
+        {
+          "phrase": "reasonable safety",
+          "note": "Turn safety remains unresolved"
+        }
+      ],
+      "rationale": "Unresolved judgment requires original physical source streams before a fixed feasible sweep can be frozen.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Native source and calibration for participant_clearance_m",
+        "Native source and calibration for time_to_conflict_s"
+      ]
+    },
+    {
+      "sweep_id": "c111588-judgment-2",
+      "target_law_id": "NRS-484B-768-1",
+      "judgment_refs": [
+        {
+          "phrase": "appropriate signal",
+          "note": "Signal appropriateness remains unresolved"
+        }
+      ],
+      "rationale": "Unresolved judgment requires original physical source streams before a fixed feasible sweep can be frozen.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Native source and calibration for rider_signal_event",
+        "Native source and calibration for rider_turn_heading_deg"
+      ]
+    },
+    {
+      "sweep_id": "c111588-judgment-3",
+      "target_law_id": "NRS-484B-768-1",
+      "judgment_refs": [
+        {
+          "phrase": "Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands",
+          "note": "Both-hands safety need remains unresolved"
+        }
+      ],
+      "rationale": "Unresolved judgment requires original physical source streams before a fixed feasible sweep can be frozen.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Native source and calibration for rider_hand_contact",
+        "Native source and calibration for rider_control_stability"
+      ]
+    }
+  ]
+}

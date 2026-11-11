@@ -60,6 +60,25 @@ class NativeProbeTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'config differs'):
                 prepare_output(root, {**config, 'requested_gap_ft': 300})
 
+    def test_day_and_shoulder_case_identity(self):
+        base = {'law_id': 'NRS-484D-215-2', 'cell_id': 'C178038',
+                'actor': 'motor_vehicle_driver', 'rate_hz': 20, 'frames': 80,
+                'requested_gap_ft': 299,
+                'requested_uppermost_distribution': True,
+                'construction_probe_only': True}
+        day = {**base, 'selected_case_id': CASE_ID.replace('night', 'day'),
+               'requested_lighting_time_applies': False,
+               'requested_roadway_position': 'driving'}
+        shoulder = {**base, 'selected_case_id': CASE_ID.replace('night', 'shoulder'),
+                    'requested_lighting_time_applies': True,
+                    'requested_roadway_position': 'shoulder'}
+        check_config(day)
+        check_config(shoulder)
+        with self.assertRaisesRegex(ValueError, 'lighting-time or roadway'):
+            check_config({**day, 'requested_lighting_time_applies': True})
+        with self.assertRaisesRegex(ValueError, 'lighting-time or roadway'):
+            check_config({**shoulder, 'requested_roadway_position': 'driving'})
+
 
 if __name__ == '__main__':
     unittest.main()

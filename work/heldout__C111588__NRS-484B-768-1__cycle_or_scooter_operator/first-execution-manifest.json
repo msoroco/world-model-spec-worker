@@ -28,7 +28,87 @@
           "method": "join retained source video review to Native motion and frame map",
           "evidence": "rider_signal_review.jsonl plus four RGB original streams and rider motion"
         }
-      }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/bicycle_signal_once/fallback1-construction.json",
+          "construction_sha256": "de6e0b5614dea068a702acc82f6a989fc7d30436fca137cff3e0990b4a30dc8e",
+          "trigger": {
+            "source": "Native map waypoint topology and route-selector failure record",
+            "metric": "count of connected left-turn candidates at 2.5 m sampling",
+            "failure_condition": "No connected route survives primary waypoint sampling"
+          },
+          "changed_knobs": [
+            "route waypoint sampling step 2.5 m to 1.5 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/first-execution-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --candidate fallback1 --output .runtime-work/c111588-once-fb1-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/bicycle_signal_once/fallback1-tests.log",
+            "log_sha256": "1a902fd4c537c33c9c15041b84a9ad5661cfe31a3f4d21f81c9f7ae7a631eec6",
+            "construction_sha256": "de6e0b5614dea068a702acc82f6a989fc7d30436fca137cff3e0990b4a30dc8e"
+          },
+          "compatibility": {
+            "receipt": "cases/bicycle_signal_once/fallback1-receipt.json",
+            "sha256": "cabfcc6ca5ee25c4222c11a996d257d9de59f30b4cf3e4ca01be9bf8ed37a5a3",
+            "log": "cases/bicycle_signal_once/fallback1-analysis.log",
+            "negative_log": "cases/bicycle_signal_once/fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/bicycle_signal_once/fallback2-construction.json",
+          "construction_sha256": "a8432d3b8ec6a8ec6f9bd157c3f0697fd45cd745ea52bf43f141c3ea3f90cbdf",
+          "trigger": {
+            "source": "original rider/seat pixels from four synchronized RGB streams",
+            "metric": "rider-to-bicycle seat alignment and body overlap across frames",
+            "failure_condition": "Attached rider is too low, overlaps the bicycle body, or hides the arm"
+          },
+          "changed_knobs": [
+            "attached walker relative height 0.65 m to 0.85 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/first-execution-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --candidate fallback2 --output .runtime-work/c111588-once-fb2-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/bicycle_signal_once/fallback2-tests.log",
+            "log_sha256": "1a902fd4c537c33c9c15041b84a9ad5661cfe31a3f4d21f81c9f7ae7a631eec6",
+            "construction_sha256": "a8432d3b8ec6a8ec6f9bd157c3f0697fd45cd745ea52bf43f141c3ea3f90cbdf"
+          },
+          "compatibility": {
+            "receipt": "cases/bicycle_signal_once/fallback2-receipt.json",
+            "sha256": "394ea1e4555d695a7405a18aabd936dfead2d8467e909f4f4fd4149a6816dfc5",
+            "log": "cases/bicycle_signal_once/fallback2-analysis.log",
+            "negative_log": "cases/bicycle_signal_once/fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/bicycle_signal_once/fallback3-construction.json",
+          "construction_sha256": "dea50ec6565b9f971370477849efdadbcef000859c2343668d98724eb864a0f4",
+          "trigger": {
+            "source": "original driver_reference and side RGB frame review",
+            "metric": "count of frames in which the rider and left arm can be resolved",
+            "failure_condition": "Primary camera height hides rider/arm visibility or prevents a defensible no-signal review"
+          },
+          "changed_knobs": [
+            "driver_reference camera relative height 1.8 m to 2.2 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator/first-execution-manifest.json --case heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_signal_once --candidate fallback3 --output .runtime-work/c111588-once-fb3-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/bicycle_signal_once/fallback3-tests.log",
+            "log_sha256": "1a902fd4c537c33c9c15041b84a9ad5661cfe31a3f4d21f81c9f7ae7a631eec6",
+            "construction_sha256": "dea50ec6565b9f971370477849efdadbcef000859c2343668d98724eb864a0f4"
+          },
+          "compatibility": {
+            "receipt": "cases/bicycle_signal_once/fallback3-receipt.json",
+            "sha256": "104e27890af9bfc9dc31473acdf4e7b45cfbd6ba09ebaff265db050af97efaca",
+            "log": "cases/bicycle_signal_once/fallback3-analysis.log",
+            "negative_log": "cases/bicycle_signal_once/fallback3-negative.log"
+          }
+        }
+      ]
     }
   ]
 }

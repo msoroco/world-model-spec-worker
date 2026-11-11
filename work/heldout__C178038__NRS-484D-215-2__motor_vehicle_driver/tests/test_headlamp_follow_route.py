@@ -41,6 +41,26 @@ class FollowRouteTests(unittest.TestCase):
         self.assertEqual(fast['throttle'], 0)
         self.assertGreater(fast['brake'], 0)
 
+    def test_adjacent_connected_shoulder_only(self):
+        world_map, driving = road()
+        shoulder = []
+        for i, point in enumerate(driving):
+            neighbour = NS(road_id=point.road_id, lane_id=2, is_junction=False,
+                           lane_type='Shoulder',
+                           transform=NS(location=NS(x=point.transform.location.x, y=4)))
+            shoulder.append(neighbour)
+        for i, point in enumerate(shoulder):
+            point.next = lambda step, i=i: [shoulder[i + 1]] if i + 1 < len(shoulder) else []
+        for i, point in enumerate(driving):
+            point.get_right_lane = lambda i=i: shoulder[i]
+        chosen = select_follow_route(world_map, surface='shoulder')
+        self.assertIs(chosen['ego'], shoulder[0])
+        self.assertIs(chosen['lead'], shoulder[chosen['lead_index']])
+        for point in driving:
+            point.get_right_lane = lambda: None
+        with self.assertRaisesRegex(ValueError, 'shoulder'):
+            select_follow_route(world_map, surface='shoulder')
+
 
 if __name__ == '__main__':
     unittest.main()

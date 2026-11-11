@@ -113,6 +113,8 @@ cases['sweep_specs'] = [{
     'status': 'incomplete',
     'rationale': 'Finite speed and placement engineering points exist, but Native physical feasibility, contact/visibility and legal endangerment range cannot be inferred from textual fixtures.',
     'missing_inputs': ['Native measured speed and actor visibility across each planned point; source-backed range and spacing feasibility for a complete physical judgment sweep.']}]
+from batch_pipeline.sweeps import expand_sweeps
+expand_sweeps(cases, [template], binding)
 refs['cases'] = write('cases', cases)
 write('semantic-index', {'format': 'worker-semantic-delivery',
                          'assignment_id': assignment['assignment_id'], 'stages': refs})

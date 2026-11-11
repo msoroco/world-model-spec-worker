@@ -1,0 +1,129 @@
+{
+  "template_id": "NRS-484B-768-1@cycle_or_scooter_operator",
+  "law_id": "NRS-484B-768-1",
+  "actor": "cycle_or_scooter_operator",
+  "status": "draft",
+  "quote": "Except as otherwise provided in subsection 2, an operator of a bicycle, an electric bicycle or an electric scooter upon a roadway shall not turn from a direct course unless the movement may be made with reasonable safety and the operator gives an appropriate signal. The operator shall give the appropriate signal at least one time but is not required to give the signal continuously. An operator of a bicycle, an electric bicycle or an electric scooter is not required to give a signal if: (a) The bicycle, electric bicycle or electric scooter is in a designated turn lane; or (b) Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands on the bicycle, electric bicycle or electric scooter.",
+  "structure": {
+    "law_id": "NRS-484B-768-1",
+    "activation": {
+      "condition": "The operator of a bicycle, electric bicycle or electric scooter is upon a roadway and turns from a direct course.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "conditional_turn",
+      "description": "Movement may be made with reasonable safety and an appropriate signal is given at least once before turning; continuous signaling is not required.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Designated turn lane",
+        "effect": "Signal not required",
+        "replacement_obligation": "Reasonable safety still unresolved",
+        "source_clause": "The bicycle, electric bicycle or electric scooter is in a designated turn lane"
+      },
+      {
+        "trigger": "Safe operation requires both hands",
+        "effect": "Signal not required",
+        "replacement_obligation": "Reasonable safety still unresolved",
+        "source_clause": "Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands on the bicycle, electric bicycle or electric scooter"
+      }
+    ],
+    "timing": {
+      "description": "Appropriate signal at least once before departure from direct course; no continuous duration required.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "reasonable safety",
+        "note": "Turn safety remains unresolved"
+      },
+      {
+        "phrase": "appropriate signal",
+        "note": "Signal appropriateness remains unresolved"
+      },
+      {
+        "phrase": "Safe operation of the bicycle, electric bicycle or electric scooter requires the operator to keep both hands",
+        "note": "Both-hands safety need remains unresolved"
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "rider_device_class",
+      "kind": "world_setup",
+      "range_or_domain": "bicycle|electric_bicycle|electric_scooter"
+    },
+    {
+      "name": "rider_roadway_status",
+      "kind": "world_setup",
+      "range_or_domain": "source-verified roadway occupancy"
+    },
+    {
+      "name": "designated_turn_lane",
+      "kind": "world_setup",
+      "range_or_domain": "source-verified turn lane designation"
+    },
+    {
+      "name": "both_hands_safety_condition",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed qualitative context"
+    },
+    {
+      "name": "turn_from_direct_course",
+      "kind": "subject_behavior",
+      "range_or_domain": "original heading and path change"
+    },
+    {
+      "name": "pre_turn_visible_signal_count",
+      "kind": "subject_behavior",
+      "range_or_domain": "original source-video review count"
+    },
+    {
+      "name": "arm_command_schedule",
+      "kind": "controller",
+      "range_or_domain": "original-frame command indices"
+    },
+    {
+      "name": "participant_clearance_m",
+      "kind": "subject_behavior",
+      "range_or_domain": "original-frame participant separation"
+    },
+    {
+      "name": "time_to_conflict_s",
+      "kind": "subject_behavior",
+      "range_or_domain": "original relative motion"
+    },
+    {
+      "name": "rider_hand_contact",
+      "kind": "subject_behavior",
+      "range_or_domain": "source-reviewed contact"
+    },
+    {
+      "name": "rider_control_stability",
+      "kind": "subject_behavior",
+      "range_or_domain": "original control telemetry"
+    },
+    {
+      "name": "device_blueprint_choice",
+      "kind": "controller",
+      "range_or_domain": "device blueprint target; Native electric cycle/scooter capability unverified"
+    },
+    {
+      "name": "lane_route_selector",
+      "kind": "controller",
+      "range_or_domain": "ordinary lane or source-verified designated turn lane target"
+    },
+    {
+      "name": "both_hands_demand_mode",
+      "kind": "controller",
+      "range_or_domain": "ordinary or demanding two-hand-control physical task"
+    },
+    {
+      "name": "clearance_target_band",
+      "kind": "controller",
+      "range_or_domain": "reference, wider or narrower participant clearance construction target"
+    }
+  ],
+  "boundary_note": "Subsection 2 is outside this frozen excerpt; the legal impact remains unresolved. No diagnostic fixture establishes a legal outcome."
+}

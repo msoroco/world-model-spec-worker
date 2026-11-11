@@ -3,16 +3,32 @@
 from math import atan2, hypot
 
 
+def _adjacent_shoulder(waypoint):
+    for direction in ('get_right_lane', 'get_left_lane'):
+        neighbour = getattr(waypoint, direction, lambda: None)()
+        if (neighbour is not None and not neighbour.is_junction and
+                neighbour.road_id == waypoint.road_id and
+                'Shoulder' in str(getattr(neighbour, 'lane_type', ''))):
+            return neighbour
+    return None
+
+
 def select_follow_route(world_map, *, target_gap_ft=299, step_m=2.5,
-                        extra_steps=12):
+                        extra_steps=12, surface='driving'):
     if target_gap_ft <= 0 or step_m <= 0:
         raise ValueError('Following route distance invalid')
+    if surface not in ('driving', 'shoulder'):
+        raise ValueError('Unknown following roadway surface')
     lead_index = round((target_gap_ft * .3048 + 4.5) / step_m)
     required_steps = lead_index + extra_steps
     for transform in world_map.get_spawn_points():
         start = world_map.get_waypoint(transform.location)
         if start is None or start.is_junction:
             continue
+        if surface == 'shoulder':
+            start = _adjacent_shoulder(start)
+            if start is None:
+                continue
         chain = [start]
         for _ in range(required_steps):
             options = [candidate for candidate in chain[-1].next(step_m)
@@ -26,7 +42,7 @@ def select_follow_route(world_map, *, target_gap_ft=299, step_m=2.5,
             return {'ego': chain[0], 'lead': chain[lead_index],
                     'chain': chain, 'requested_gap_ft': target_gap_ft,
                     'lead_index': lead_index}
-    raise ValueError('No connected same-lane route for 300-foot following probe')
+    raise ValueError('No connected same-lane route for following probe on ' + surface)
 
 
 def cruise_control(position_xy, heading_xy, velocity_xy, target_xy,

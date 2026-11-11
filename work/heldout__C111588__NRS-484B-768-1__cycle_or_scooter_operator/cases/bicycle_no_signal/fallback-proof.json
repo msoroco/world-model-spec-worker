@@ -1,0 +1,54 @@
+{
+  "case_id": "heldout__C111588__NRS-484B-768-1__cycle_or_scooter_operator__bicycle_no_signal",
+  "scope": "diagnostic software compatibility only; physical fallback effect unverified",
+  "fallbacks": [
+    {
+      "candidate_id": "fallback1",
+      "construction_sha256": "35f9abbf287ab0d0c359ae4eb4be690e2ada0c4fdaa95a0e176f305a916e6eb7",
+      "offline_tests_sha256": "1d83585b97486319bb9c2fff2996c7435fd78e26e63e611aae2ad6791d35db6b",
+      "compatibility_receipt_sha256": "6a0ef23cdcf757a34e8f2fd3cff949552fd2f9e61439a84eac7fca5c94b69086",
+      "negative_log_sha256": "9c87bc29fa13bb6b5976cf96faab376541d8b4a5aba3b12842418d1f6071916b",
+      "changed_knobs": [
+        "route waypoint sampling step 2.5 m to 1.5 m"
+      ],
+      "trigger": {
+        "source": "Native map waypoint topology and route-selector failure record",
+        "metric": "count of connected left-turn candidates at 2.5 m sampling",
+        "failure_condition": "No connected route survives primary waypoint sampling"
+      }
+    },
+    {
+      "candidate_id": "fallback2",
+      "construction_sha256": "d8ba89b5121de97f362e586441346d84a6511c97a900a8e1cbf05a299693e45c",
+      "offline_tests_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc",
+      "compatibility_receipt_sha256": "99d7c006dbcb1938385192dfd9c436f3d7250f781db97ae70230ffcbac8db2a7",
+      "negative_log_sha256": "3a8356fcd9c488a27706d0c82615be5cd53a2633cc3388de4c305ec3c264aa51",
+      "changed_knobs": [
+        "attached walker relative height 0.65 m to 0.85 m"
+      ],
+      "trigger": {
+        "source": "original rider/seat pixels from four synchronized RGB streams",
+        "metric": "rider-to-bicycle seat alignment and body overlap across frames",
+        "failure_condition": "Attached rider is too low, overlaps the bicycle body, or hides the arm"
+      }
+    },
+    {
+      "candidate_id": "fallback3",
+      "construction_sha256": "00dfb1b8d1c31d3853562ed1198de1e0022baeb4c3be9800c83a9a9792d87497",
+      "offline_tests_sha256": "1d83585b97486319bb9c2fff2996c7435fd78e26e63e611aae2ad6791d35db6b",
+      "compatibility_receipt_sha256": "110d088f3250d66d2badbd826066d09e6b4f02de9411d24625881ddacf6c25e9",
+      "negative_log_sha256": "b37a4fd3dd2ff566b9e7c0442bc64a1521e07168eeae3709d52f3d28cafefa57",
+      "changed_knobs": [
+        "driver_reference camera relative height 1.8 m to 2.2 m"
+      ],
+      "trigger": {
+        "source": "original driver_reference and side RGB frame review",
+        "metric": "count of frames in which the rider and left arm can be resolved",
+        "failure_condition": "Primary camera height hides rider/arm visibility or prevents a defensible no-signal review"
+      }
+    }
+  ],
+  "physical_acceptance_claimed": false,
+  "legal_acceptance_claimed": false,
+  "manifest_sha256": "3e571c500d486d6f15553cea98d61468e2a78564f7eda6500555458ce242e52a"
+}

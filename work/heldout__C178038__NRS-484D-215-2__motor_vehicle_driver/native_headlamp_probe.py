@@ -21,20 +21,30 @@ NIGHT_CASES = {
     CASE_PREFIX + 'night_300_upper': (300, True),
     CASE_PREFIX + 'night_301_upper': (301, True),
 }
+CONTEXT_CASES = {
+    CASE_PREFIX + 'day_299_upper': (299, True, False, 'driving'),
+    CASE_PREFIX + 'shoulder_299_upper': (299, True, True, 'shoulder'),
+}
 
 
 def check_config(config):
     case_id = config.get('selected_case_id')
-    if case_id not in NIGHT_CASES:
+    if case_id not in NIGHT_CASES and case_id not in CONTEXT_CASES:
         raise ValueError('Unknown exact following probe case')
     if (config.get('law_id'), config.get('cell_id'), config.get('actor')) != (
             'NRS-484D-215-2', 'C178038', 'motor_vehicle_driver'):
         raise ValueError('Following probe identity differs')
-    gap_ft, uppermost = NIGHT_CASES[case_id]
+    gap_ft, uppermost = (NIGHT_CASES[case_id] if case_id in NIGHT_CASES
+                         else CONTEXT_CASES[case_id][:2])
     if (config.get('rate_hz'), config.get('frames'), config.get('requested_gap_ft')) != (20, 80, gap_ft):
         raise ValueError('Following probe rate, duration or gap differs')
     if config.get('requested_uppermost_distribution') is not uppermost:
         raise ValueError('Following probe beam setup differs')
+    expected_time, expected_surface = ((True, 'driving') if case_id in NIGHT_CASES
+                                       else CONTEXT_CASES[case_id][2:])
+    if (config.get('requested_lighting_time_applies', True) is not expected_time or
+            config.get('requested_roadway_position', 'driving') != expected_surface):
+        raise ValueError('Following probe lighting-time or roadway setup differs')
     if config.get('construction_probe_only') is not True:
         raise ValueError('Following probe may not masquerade as delivery')
 
@@ -78,6 +88,7 @@ def run(config, output, host, port):
     client.set_timeout(30.)
     world = client.get_world()
     original = world.get_settings()
+    original_weather = world.get_weather()
     actors = []
     recorder = roadway = pipeline = frame_map = cameras = None
     sinks = {}
@@ -86,7 +97,13 @@ def run(config, output, host, port):
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
-        route = select_follow_route(world.get_map(), target_gap_ft=config['requested_gap_ft'])
+        weather = world.get_weather()
+        weather.sun_altitude_angle = (45 if config.get('requested_lighting_time_applies', True) is False else -10)
+        world.set_weather(weather)
+        if config.get('requested_roadway_position', 'driving') == 'shoulder':
+            route = select_follow_route(world.get_map(), target_gap_ft=config['requested_gap_ft'], surface='shoulder')
+        else:
+            route = select_follow_route(world.get_map(), target_gap_ft=config['requested_gap_ft'])
         library = world.get_blueprint_library()
         lead = world.try_spawn_actor(library.find('vehicle.tesla.model3'),
                                      route['lead'].transform)
@@ -109,6 +126,11 @@ def run(config, output, host, port):
             raise ValueError('Native beam setup readback failed')
         recorder = HeadlampSourceRecorder(output, ego, lead)
         roadway = RoadwaySourceRecorder(output, world, ego, carla)
+        (output / 'lighting_context.json').write_text(json.dumps({
+            'lighting_time_applies': config.get('requested_lighting_time_applies', True),
+            'time_source': 'authored Native scenario lighting-time premise; CARLA sun angle and civil clock need independent source review',
+            'physical_civil_time_verified': False,
+        }, indent=2) + '\n')
         pipeline = PipelineCapture(client, ego, output, config['selected_case_id'],
                                    required_observations=config.get('required_atoms', []))
         frame_map = FrameMap(output / 'video_frames.jsonl')
@@ -166,6 +188,7 @@ def run(config, output, host, port):
         for actor in reversed(actors):
             actor.destroy()
         world.apply_settings(original)
+        world.set_weather(original_weather)
         restored = world.get_settings()
         if (restored.synchronous_mode != original.synchronous_mode or
                 restored.fixed_delta_seconds != original.fixed_delta_seconds):

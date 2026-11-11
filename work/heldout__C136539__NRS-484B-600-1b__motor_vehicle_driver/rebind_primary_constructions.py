@@ -16,6 +16,8 @@ runner = (root / 'native_exposure_cases.py').read_text().replace(
     "default='cases/slow_person_exposure.json'", "default='config.json'")
 finalizer = (root / 'endangerment_finalizer.py').read_text()
 finalizer_test = (root / 'tests/test_endangerment_finalizer.py').read_text()
+case_setup = (root / 'exposure_case_setup.py').read_text()
+case_setup_test = (root / 'tests/test_exposure_case_setup.py').read_text()
 for entry in cases['cases']:
     path = root / entry['construction']
     construction = json.loads(path.read_text())
@@ -23,6 +25,14 @@ for entry in cases['cases']:
     files['native_exposure_cases.py']['content'] = runner
     files['endangerment_finalizer.py']['content'] = finalizer
     files['tests/test_endangerment_finalizer.py']['content'] = finalizer_test
+    files['exposure_case_setup.py']['content'] = case_setup
+    files['tests/test_exposure_case_setup.py']['content'] = case_setup_test
+    suffix = entry['case_id'].rsplit('__', 1)[-1]
+    config_path = root / 'cases' / (suffix + '.json')
+    config = json.loads(config_path.read_text())
+    config['duration_s'] = 8
+    config_path.write_text(json.dumps(config, indent=2) + '\n')
+    files['config.json']['content'] = config_path.read_text()
     if 'runner.py' not in files:
         construction['files'].append({'path': 'runner.py', 'content': runner})
     else:
