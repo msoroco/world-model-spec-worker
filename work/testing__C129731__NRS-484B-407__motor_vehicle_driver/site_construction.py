@@ -75,6 +75,8 @@ def validate_site(site):
     feature = site.get("feature")
     if feature not in ("curve", "crest"):
         raise ValueError("Curve or crest feature required")
+    if site.get("probe") not in ("short_of_500ft", "at_500ft", "beyond_500ft"):
+        raise ValueError("Exact 500-foot probe required")
     site_point = _point(site.get("turn_site_xyz_m"), 3, "turn site")
     centerline = [_point(p, 3, "centerline point") for p in site.get("centerline_xyz_m", [])]
     if len(centerline) < 3:
@@ -122,6 +124,10 @@ def validate_site(site):
     cosine = (va[0]*vb[0]+va[1]*vb[1])/(math.hypot(*va)*math.hypot(*vb))
     if cosine > -0.5:
         raise ValueError("Inventoried lanes do not approach from opposite directions")
+    if len({road for road, lane in lanes}) != 1:
+        raise ValueError("Pinned subject-road sight proxy requires one sourced road")
+    if site.get("ego_road_lane") not in ([road, lane] for road, lane in lanes):
+        raise ValueError("Ego spawn road/lane is not in approach inventory")
     route = [_point(p, 3, "U-turn route point") for p in site.get("u_turn_route_xyz_m", [])]
     if len(route) < 4 or _distance(route[0], site_point) > 30:
         raise ValueError("Continuous U-turn route through site required")

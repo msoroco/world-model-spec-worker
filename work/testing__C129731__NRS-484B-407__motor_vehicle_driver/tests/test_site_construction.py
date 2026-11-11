@@ -18,7 +18,8 @@ def site():
                              for d in (5, 80, 160)]}
     return {"law_id": "NRS-484B-407", "cell_id": "C129731",
             "actor": "motor_vehicle_driver", "source_status": "diagnostic_fixture",
-            "map_name": "SyntheticCurveFixture", "feature": "curve",
+            "map_name": "SyntheticCurveFixture", "feature": "curve", "probe": "short_of_500ft",
+            "ego_road_lane": [10, -1],
             "turn_site_xyz_m": [0, 0, 0],
             "centerline_xyz_m": [[-160, 0, 0], [0, 0, 0], [160, 10, 0]],
             "incoming_lanes": {"approach_a": lane(-1, 10), "approach_b": lane(1, 10)},
@@ -43,6 +44,9 @@ class SiteConstructionTests(unittest.TestCase):
         same = site(); same["incoming_lanes"]["approach_b"]["lane_id"] = -1
         with self.assertRaisesRegex(ValueError, "Distinct surveyed road/lane"):
             validate_site(same)
+        other_road = site(); other_road["incoming_lanes"]["approach_b"]["road_id"] = 20
+        with self.assertRaisesRegex(ValueError, "one sourced road"):
+            validate_site(other_road)
 
     def test_occluder_intersects_planned_line_and_u_turn_reverses(self):
         alternate = site(); alternate["occluder"]["center_xyz_m"][1] = 15
