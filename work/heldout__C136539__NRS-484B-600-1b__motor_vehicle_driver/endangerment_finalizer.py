@@ -71,7 +71,7 @@ def build_result(attempt, report):
         'frame': frame['frame'], 'time_s': frame['time_s'],
         'value': frame['surface_gap_m']}) + '\n' for frame in frames))
     minimum = observed['minimum_surface_gap_m']
-    return {'case_id': report['case_id'],
+    result = {'case_id': report['case_id'],
             'measured_values': {'person_or_property_exposure': observed},
             'target_checks': [{'target': 'measured original participant/property exposure',
                                'requested': 'retained subject/exposed body motion',
@@ -99,6 +99,11 @@ def build_result(attempt, report):
                 'sample_window_s': [frames[0]['time_s'], frames[-1]['time_s']]}},
             'physical_acceptance_claimed': False,
             'legal_acceptance_claimed': False}
+    from worker_exchange.native_output import physical_result
+    exposure_observable = result['realized_observables']['exposure_gap_m']
+    result = physical_result(root, result)
+    result['realized_observables']['exposure_gap_m'] = exposure_observable
+    return result
 
 
 def main():

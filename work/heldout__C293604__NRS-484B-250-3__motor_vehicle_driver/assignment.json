@@ -1,0 +1,237 @@
+{
+  "law_id": "NRS-484B-250-3",
+  "actor": "motor_vehicle_driver",
+  "role": "heldout",
+  "set_ids": [
+    "held-out"
+  ],
+  "law_record_source": {
+    "path": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/inputs/catalog/vocabulary_catalog.json",
+    "sha256": "3065b94298c33a344da5b4fa78dbf2dd1bdd7a2c286d7bbd8b269b74a0eaece9"
+  },
+  "objective": "Prepare source-grounded opposite-direction left-turn exception coverage for NRS-484B-250-3 at C293604 with motor_vehicle_driver.",
+  "remaining_requirement": "Retain original opposite-direction approach, left-turn intent and trajectory sources, then prepare exact CPU proofs and physical review.",
+  "dependency_review": "Use the frozen exact law text, reviewed binding and witness, scope, catalog cell, existing selections and accepted-evidence inventory. Verify authority, Native capability and Core representation before claiming a branch ready; do not infer them from appearance or a diagnostic fixture.",
+  "external_imports": [
+    "carla"
+  ],
+  "law": {
+    "id": "NRS-484B-250-3",
+    "title": "Vehicle approaching or entering intersection (3)",
+    "text": "When two vehicles enter an intersection at approximately the same time, one vehicle traveling on a highway which ends at the intersection and the other vehicle traveling on a through highway, the driver of the vehicle on the highway which ends at the intersection shall yield the right-of-way to the other vehicle. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+    "source": "NRS 484B.250(3); with 484B.250(5)"
+  },
+  "summary": {
+    "activation_conditions": [
+      "two vehicles enter the intersection at approximately the same time",
+      "one travels on a highway that ends at the intersection, the other on a through highway",
+      "the intersection is uncontrolled"
+    ],
+    "exceptions": [
+      "intersections controlled by official traffic-control devices, unless the signal is inoperative",
+      "vehicles approaching from opposite directions where one is making or intending a left turn"
+    ],
+    "id": "NRS-484B-250-3",
+    "residue": [
+      "whether the highway 'ends at the intersection' is a concept over the lane graph (st.lane_enters with st.lane_connectivity), available where the source's road graph carries lane successors"
+    ],
+    "source": "NRS 484B.250(3); with 484B.250(5)",
+    "subject": "driver",
+    "theme": "intersections_and_right_of_way",
+    "tier": "C",
+    "timing_requirements": [
+      {
+        "kind": "ordering",
+        "requirement": "arrival order within the simultaneity tolerance"
+      },
+      {
+        "kind": "continuous",
+        "requirement": "the yield holds until the through vehicle has cleared the conflict"
+      }
+    ],
+    "title": "Vehicle approaching or entering intersection (3)"
+  },
+  "summary_status": "provided_planning_context_full_text_remains_authoritative",
+  "selection_targets": [
+    "held-out"
+  ],
+  "observation_terms_contract": "Summary required_observations are law-planning terms, not Core IDs. Map every term to measured evidence; put only supported pinned ontology IDs in config.required_atoms.",
+  "source_observation_terms": [
+    {
+      "term": "st.intersection",
+      "note": "the intersection"
+    },
+    {
+      "term": "st.lane_enters",
+      "note": "the subject's lane enters the intersection; with st.lane_connectivity, whether any lane continues the highway beyond it"
+    },
+    {
+      "term": "drv.entering_intersection",
+      "note": "both vehicles entering"
+    },
+    {
+      "term": "drv.arrival_order",
+      "note": "approximately the same time"
+    },
+    {
+      "term": "st.lane_connectivity",
+      "note": "whether the subject's highway continues beyond the intersection: no lane entering it from that highway leads into a lane that carries on"
+    },
+    {
+      "term": "drv.priority_roadway",
+      "note": "the through highway"
+    },
+    {
+      "term": "drv.yields_to",
+      "note": "the vehicle on the ending highway gives way"
+    },
+    {
+      "term": "dev.traffic_signal",
+      "note": "the control exception"
+    }
+  ],
+  "assignment_id": "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver",
+  "cell_id": "C293604",
+  "cell": {
+    "cell_id": "C293604",
+    "layout": "t_intersection",
+    "maneuver": "left_turn",
+    "control": "other_vehicle",
+    "grounding": "plausible_ungrounded",
+    "source_laws": [],
+    "formation_basis": [
+      "general_domain"
+    ],
+    "candidate_ego_parties": [
+      "bus_driver",
+      "cycle_or_scooter_operator",
+      "emergency_vehicle_driver",
+      "motor_vehicle_driver",
+      "motorcycle_or_moped_operator"
+    ],
+    "actor_status": "compatible",
+    "provenance": {
+      "annotation_refs": [
+        "LVMC-11-12-070-B",
+        "LVMC-11-12-080-A",
+        "LVMC-11-12-100-C",
+        "LVMC-11-20-060",
+        "LVMC-11-20-070",
+        "LVMC-11-30-030",
+        "LVMC-11-30-060-A",
+        "LVMC-11-30-060-B",
+        "LVMC-11-40-080",
+        "LVMC-11-43-010-B",
+        "LVMC-11-43-010-C1",
+        "LVMC-11-60-030-A4",
+        "NRS-484B-113-1",
+        "NRS-484B-113-3",
+        "NRS-484B-127-3",
+        "NRS-484B-153-2",
+        "NRS-484B-153-3",
+        "NRS-484B-200-1",
+        "NRS-484B-203-1",
+        "NRS-484B-207-1",
+        "NRS-484B-207-2",
+        "NRS-484B-208-1",
+        "NRS-484B-210-1",
+        "NRS-484B-210-2",
+        "NRS-484B-213-1",
+        "NRS-484B-213-2a",
+        "NRS-484B-217-2",
+        "NRS-484B-223-2",
+        "NRS-484B-223-3a",
+        "NRS-484B-223-3b",
+        "NRS-484B-223-3c",
+        "NRS-484B-227-1",
+        "NRS-484B-250-1",
+        "NRS-484B-250-2",
+        "NRS-484B-250-3",
+        "NRS-484B-250-4",
+        "NRS-484B-253",
+        "NRS-484B-257-1",
+        "NRS-484B-257-2",
+        "NRS-484B-260",
+        "NRS-484B-263",
+        "NRS-484B-270-7a",
+        "NRS-484B-270-7b",
+        "NRS-484B-283-1b",
+        "NRS-484B-297-2",
+        "NRS-484B-307-2a",
+        "NRS-484B-307-3a",
+        "NRS-484B-307-4a",
+        "NRS-484B-307-5a",
+        "NRS-484B-307-7a",
+        "NRS-484B-307-8a",
+        "NRS-484B-307-8c",
+        "NRS-484B-307-8d",
+        "NRS-484B-307-9a",
+        "NRS-484B-307-9b",
+        "NRS-484B-363-4",
+        "NRS-484B-400-2a",
+        "NRS-484B-400-2b",
+        "NRS-484B-400-2c",
+        "NRS-484B-400-3",
+        "NRS-484B-400-4",
+        "NRS-484B-400-5",
+        "NRS-484B-407",
+        "NRS-484B-413-1",
+        "NRS-484B-413-2",
+        "NRS-484B-413-3",
+        "NRS-484B-440-1",
+        "NRS-484B-450-1l",
+        "NRS-484B-477-1b",
+        "NRS-484B-507-1",
+        "NRS-484B-510",
+        "NRS-484B-517",
+        "NRS-484B-600-1a",
+        "NRS-484B-603-1",
+        "NRS-484B-623-1",
+        "NRS-484B-627-1a",
+        "NRS-484B-627-1b",
+        "NRS-484B-627-1c",
+        "NRS-484B-627-2",
+        "NRS-484B-630-1",
+        "NRS-484B-650-1",
+        "NRS-484B-777-1",
+        "NRS-484B-787-2c",
+        "NRS-484B-790-2c",
+        "NRS-484D-215-1",
+        "NRS-484D-215-2",
+        "NRS-484D-400-5",
+        "NRS-486-351-1",
+        "NRS-486-351-2",
+        "NRS-486-351-4"
+      ]
+    },
+    "allocated_sets": []
+  },
+  "branches": [
+    {
+      "law_id": "NRS-484B-250-3",
+      "cell_id": "C293604",
+      "actor": "motor_vehicle_driver",
+      "requirement": "NRS-484B-250-3",
+      "branch": "Opposite-direction approaching vehicles with one intending or making a left turn.",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 92,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+      "coverage_status": "pending_review",
+      "recording_ids": [],
+      "law_partition": "heldout",
+      "scenario_partition": "heldout"
+    }
+  ],
+  "local_snapshot": {
+    "scope_hashes": {
+      "held-out": "064ecf8ffcd6e47eb50c29c4037adcc0e4e410555546032596179d4f0e735b35"
+    },
+    "memberships": {
+      "held-out": []
+    },
+    "guidance": {},
+    "law_sha256": "3da551bb2ef301652334fa857366033126bcb4c5e10bea2919e73456e5daa8c6",
+    "cell_sha256": "12152708371a348facef66f8738ab4ce9a2c2e6a8bbce0a23852f2c6f7797326",
+    "law_policy_sha256": "77d7da97a21300aff4fc6560b6ea06defe41b5c9d4c4f5567f77571c94d9e5f6"
+  }
+}

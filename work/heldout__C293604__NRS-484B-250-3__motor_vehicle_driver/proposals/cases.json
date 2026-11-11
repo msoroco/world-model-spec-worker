@@ -1,0 +1,101 @@
+{
+  "cell_id": "C293604",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn",
+      "target_law_id": "NRS-484B-250-3",
+      "target_type": "boundary_probe",
+      "rationale": "Record original opposing approach and leftward trajectory for the statutory exception without legal classification.",
+      "variable_assignments": {
+        "opposing_approach": {
+          "kind": "world_setup",
+          "value": "connected Native opposite routes"
+        },
+        "turn_heading_change": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approaching each other from opposite directions",
+        "intending to or is making a left turn"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "opposing_left_participants",
+            "unit": "m and rad",
+            "sampling_rate_hz": 20,
+            "method": "original Native body corners and heading readbacks for both participants",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native body geometry"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The software fixture does not establish physical turn completion or legal exception applicability."
+        ]
+      },
+      "paired_probe_id": "opposing_left_turn_exception",
+      "deliberate_differences": [
+        "turn intent and observed turn heading"
+      ],
+      "probe": {
+        "primary_variable": "turn_heading_change",
+        "comparison_or_standard": "original source controlled comparison without legal cutoff",
+        "target_value_or_branch": "left_turn"
+      }
+    },
+    {
+      "case_id": "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_intent_hold",
+      "target_law_id": "NRS-484B-250-3",
+      "target_type": "boundary_probe",
+      "rationale": "Observe left-turn intent from fixed planned route with the turning actor held; compare with realized leftward motion without a legal threshold.",
+      "variable_assignments": {
+        "opposing_approach": {
+          "kind": "world_setup",
+          "value": "connected Native opposite routes"
+        },
+        "turn_heading_change": {
+          "kind": "subject_behavior",
+          "value": 0
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approaching each other from opposite directions",
+        "intending to or is making a left turn"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "opposing_left_participants",
+            "unit": "m and rad",
+            "sampling_rate_hz": 20,
+            "method": "original Native body corners and heading readbacks for both participants",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native body geometry"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The software fixture does not establish physical turn completion or legal exception applicability."
+        ]
+      },
+      "paired_probe_id": "opposing_left_turn_exception",
+      "deliberate_differences": [
+        "turn intent and observed turn heading"
+      ],
+      "probe": {
+        "primary_variable": "turn_heading_change",
+        "comparison_or_standard": "original source controlled comparison without legal cutoff",
+        "target_value_or_branch": "left_turn_intent_hold"
+      }
+    }
+  ],
+  "sweep_specs": [],
+  "sweeps_expanded": false
+}

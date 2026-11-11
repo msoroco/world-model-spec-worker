@@ -20,7 +20,7 @@ def check_config(config):
 def run(config, output, host, port):
     import carla  # Native-only dependency.
     from pipeline_capture import PipelineCapture
-    from worker_exchange.native_output import FrameMap
+    from worker_exchange.native_output import FrameMap, seal_capture
 
     exact = check_config(config)
     output = Path(output)
@@ -35,6 +35,9 @@ def run(config, output, host, port):
     actors = []
     recorder = pipeline = frame_map = cameras = None
     sinks = {}
+    frames = []
+    completed = False
+    route_identity = None
     try:
         settings = world.get_settings()
         settings.synchronous_mode = True
@@ -56,7 +59,8 @@ def run(config, output, host, port):
         for name in CAMERAS:
             sinks[name] = LosslessSourceSink(output, name)
         cameras = ExposureCameraCapture(world, carla, ego, sinks)
-        frames = []
+        route_identity = {'map_name': world.get_map().name,
+                          'road_id': route[0].road_id, 'lane_id': route[0].lane_id}
         start = None
         for index in range(config['frames']):
             if exact['exposed_kind'] == 'pedestrian':
@@ -92,6 +96,7 @@ def run(config, output, host, port):
             'map_name': world.get_map().name,
             'road_id': route[0].road_id, 'lane_id': route[0].lane_id,
             'frames': frames, 'exact_settings': exact, 'delivery_ready': False}, indent=2) + '\n')
+        completed = True
     finally:
         if frame_map is not None:
             frame_map.close()
@@ -110,6 +115,15 @@ def run(config, output, host, port):
         if (restored.synchronous_mode != original.synchronous_mode or
                 restored.fixed_delta_seconds != original.fixed_delta_seconds):
             raise ValueError('Native exposure world settings restore failed')
+        if completed:
+            seal_capture(output, frames=frames,
+                         restoration={'restored': True,
+                                      'synchronous_mode': original.synchronous_mode,
+                                      'fixed_delta_seconds': original.fixed_delta_seconds},
+                         errors=[], encoder_exit_codes={name: 0 for name in sinks},
+                         context={'route': route_identity,
+                                  'exact_settings': exact,
+                                  'source': 'original Native construction observation'})
 
 
 def main():

@@ -55,7 +55,7 @@ def analyze(attempt):
     observed = measure(footprint_path, lamp_path, context_path)
     return {'format': 'worker-analysis-report', 'case_id': case_id,
             'measurements': {'headlamp_following_observation': {
-                'method': 'measure', 'value': observed,
+                'method': 'analyze', 'value': observed,
                 'sources': {**observed['sources'], 'video_frames.jsonl': map_sha,
                             'trace.jsonl': trace_sha,
                             'roadway_environment.jsonl': roadway_sha}}},
@@ -82,7 +82,7 @@ def build_result(attempt, report):
     return {'case_id': report['case_id'],
             'measured_values': {'headlamp_following_observation': observed},
             'target_checks': [{'target': 'measured following separation in feet',
-                               'requested': config.get('target_gap_ft'),
+                               'requested': config.get('requested_gap_ft'),
                                'measured': minimum,
                                'method': 'original Native ground-body polygon distance',
                                'tolerance': None, 'matched': False,

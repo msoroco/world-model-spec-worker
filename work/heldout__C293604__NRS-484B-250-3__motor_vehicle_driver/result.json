@@ -1,0 +1,49 @@
+{
+  "assignment_id": "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver",
+  "input_sha256": "d6958ea392e0aa36aeb7f0fc372143de25028fa0d58a16ae92873887b266c7f3",
+  "status": "partial",
+  "applied_update": 0,
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn --output .runtime-work/c293604-opposing-left-primary-offline2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "opposing-left-offline.log",
+      "sha256": "1f4a99f807d3f26234222b8cd78686d4dbeb5b7de60cf007ab93c9a0fbdc3a61"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn --output .runtime-work/c293604-opposing-left-turn-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "opposing-left-compat.log",
+      "sha256": "ac1fd1082979fea67e402eb9210428285591507f25487c29dae892dd426fa2d2"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/prove_saved.py",
+      "exit_code": 0,
+      "log": "turn-saved-processing.log",
+      "sha256": "bb8994bf9851ad6a3a2517a7aa70ff68729907861ce458aae75dcb98741f52e1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_intent_hold --output .runtime-work/c293604-opposing-left-intent-offline --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "opposing-left-intent-offline.log",
+      "sha256": "52d5459b42e6f4942378d6b0990cbb6c8c9d89f15ab8ab04b2c73c96a8e1952d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_intent_hold --output .runtime-work/c293604-opposing-left-intent-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "opposing-left-intent-compat.log",
+      "sha256": "b9697be01e777628ed643d34804df5a5d52677acf2fe9e75d964a9bde4e0aa9d"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/prove_saved.py",
+      "exit_code": 0,
+      "log": "intent-saved-processing.log",
+      "sha256": "584a6632f55df872213ad6007675d6e8cdc667a9c4f5668a87319785f9548f0e"
+    }
+  ],
+  "remaining_gpu_checks": [
+    "Physical opposite-direction left turn, body clearance and camera visibility"
+  ],
+  "reason": "Two C293604 controlled opposing-left cases pass exact offline, positive/missing-source compatibility and saved-only processing; six risk-triggered fallbacks pass exact offline and compatibility. The pinned candidate validator and receipt checker pass. Physical preparation, independent delivery/comparison audits, full canonical semantic judgment sweep and strict scoped delivery gate remain incomplete; no physical or legal outcome is claimed.",
+  "readiness_kind": null
+}

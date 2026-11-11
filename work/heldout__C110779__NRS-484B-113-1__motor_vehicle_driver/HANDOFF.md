@@ -29,3 +29,15 @@ Status is **partial**. No executable case, fallback, source measurement, or save
 Resume gate: `.venv-cpu/bin/python worker_check.py --assignment heldout__C110779__NRS-484B-113-1__motor_vehicle_driver --complete --require-delivery-ready`.
 
 The external CARLA run is a later operator action; remaining CPU omissions above are not external blockers. No GPU command has been executed.
+
+## 2026-11-11 backing source measurement checkpoint
+
+The frozen accepted-evidence inventory contains zero recordings. `case-plan.json` now plans six exact cases and five controlled comparisons for wider/narrower traffic clearance, observed other-vehicle braking, contact, pedestrian proximity and a forward-only activation control. All exact cases remain unconstructed; the conditional witness remains only a planning lead.
+
+`backing_safety_measurement.py` joins original 20 Hz ego and surrounding-user motion to original contact packets, with independently cited actor position, motion, purpose and highway use. It measures negative longitudinal ego speed relative to actual heading, the continuous backing interval, participant surface gaps and relative bearings, participant acceleration during backing, and contact frames during backing. A forward-only trace returns a null backing interval for the activation control. A backing interval with an interruption is rejected for separate review. Reasonable safety and interference judgments remain null; no gap, braking or contact cutoff is treated as law. Native source acquisition, actual other-vehicle purpose, four cameras and saved finalizer remain CPU work.
+
+`.venv-cpu/bin/python runtime.py preflight` passes (`preflight.log`, SHA256 `57b007d9ed610f0eb62a59bd93915c811343fae28526b476261efa74e5fbbc9a`). `.venv-cpu/bin/python -m unittest discover -s work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/tests -v` passes four CPU tests (`cpu-tests.log`, SHA256 `524ec85fd5f2cf8f482fe7a8d31d29c36faf6d1a097f41ff990479d464e1efec`). They check measured reverse geometry/contact and reject uncited traffic context, frame mismatch, changed actor IDs, missing original contact source and interrupted backing. These fixtures do not establish physical safety or traffic interference.
+
+Next CPU work: construct a primary Native backing corridor with reverse control and a separately motivated other vehicle, acquire source packets and four cameras, add the saved finalizer, and run exact offline, positive/negative compatibility and saved processing. Then implement the linked cases, risk-based fallbacks, semantic proposals and independent audits. Keep `result.json` partial until its scoped strict gate passes.
+
+The scoped `.venv-cpu/bin/python worker_check.py --assignment heldout__C110779__NRS-484B-113-1__motor_vehicle_driver --complete` check passes (`worker-check.log`). Adding `--require-delivery-ready` fails because the result remains partial (`strict-gate.log`).

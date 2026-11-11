@@ -1,0 +1,44 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_upper",
+      "kind": "delivery",
+      "construction": "night-probes/night_299_upper-construction.json",
+      "construction_sha256": "b59e15c10244fd1236d2db39561dc81cb861b41582fdffb6b2ad89766908bbf1",
+      "measurement_contract": "night-probes/night_299_upper-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "headlamp_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C178038__NRS-484D-215-2__motor_vehicle_driver/night-probes/night_299_upper-diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual body gap or lamp readback may differ from requested setup."
+      },
+      "candidates": [],
+      "negative": {
+        "log": "night-probes/night_299_upper-compat-negative.log"
+      },
+      "acquisition": {
+        "headlamp_gap_ft": {
+          "entrypoint": "headlamp_finalizer.py",
+          "method": "recompute each frame from retained original Native body polygons",
+          "evidence": "headlamp_source_capture.py records original actor bodies and light readbacks with Native frame identities; finalizer derives gap after capture."
+        }
+      },
+      "compatibility": {
+        "receipt": "night-probes/night_299_upper-compatibility.json",
+        "sha256": "cbad6388099082e9554b698025220ea779f554c8a76d9274e61cb22270e4ec2c",
+        "log": "night-probes/night_299_upper-compat-analysis.log",
+        "negative_log": "night-probes/night_299_upper-compat-negative.log"
+      }
+    }
+  ]
+}

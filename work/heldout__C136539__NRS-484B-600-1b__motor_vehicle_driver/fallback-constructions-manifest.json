@@ -1,0 +1,673 @@
+{
+  "format": "worker-compatibility-probe-manifest",
+  "assignment_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__slow_person_exposure",
+      "kind": "diagnostic_probe",
+      "construction": "cases/construction-slow_person_exposure.json",
+      "construction_sha256": "31825f3852e096197a9c881eadf0383fc97ebefab217f6d9210e5930c4b4bd1f",
+      "measurement_contract": "cases/measurement-contract-slow_person_exposure.json",
+      "measurement_procedure": {
+        "entrypoint": "endangerment_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/diagnostic-recipe-slow.json",
+      "compatibility": {
+        "receipt": "slow-compatibility.json",
+        "sha256": "8b418de01b47d42b26b8e70a5aac5393d5991df6b79a90c5353d5aea0a06f829",
+        "log": "slow-compat.log",
+        "negative_log": "slow-negative.log"
+      },
+      "negative": {
+        "log": "slow-negative.log"
+      },
+      "acquisition": {
+        "exposure_gap_m": {
+          "entrypoint": "endangerment_finalizer.py",
+          "method": "original Native subject/exposed body polygon distance at each saved frame",
+          "evidence": "exposed_actor_footprints.jsonl joined to trace.jsonl and video_frames.jsonl; derived only after saved acquisition"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Connected narrow-road spawn, subject tracking and original camera visibility can fail in Native simulation."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-slow_person_exposure-fallback1.json",
+          "construction_sha256": "dc0ecffcbd77846ce0fc19affdf6b4e1e0ad108a7cc75a1b66b6b4d609c2667a",
+          "changed_knobs": [
+            "shorten connected route search to 90 m"
+          ],
+          "trigger": {
+            "source": "construction-probe.json",
+            "metric": "connected route selection",
+            "failure_condition": "No connected 100 m narrow-road route at the selected spawn point"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__slow_person_exposure --candidate fallback1 --output .runtime-work/c136539-slow_person_exposure-fallback1-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "dc0ecffcbd77846ce0fc19affdf6b4e1e0ad108a7cc75a1b66b6b4d609c2667a",
+            "log": "cases/fallback-offline-slow_person_exposure-fallback1.log",
+            "log_sha256": "7c1d259c3b348d0c6d114bee35ce551c402e0380cc0f0b400a48ea4484a24cf3"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-slow_person_exposure-fallback1.json",
+            "sha256": "d2556a760058157f7c00c0b4a9d0dbe445280adcca5ee9158b09b95633622507",
+            "log": "cases/fallback-compat-slow_person_exposure-fallback1.log",
+            "negative_log": "cases/fallback-negative-slow_person_exposure-fallback1.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-slow_person_exposure-fallback2.json",
+          "construction_sha256": "26b0e2dc1574336011e5aee9a62f70bf516b9a84153f517a645382148fa81e53",
+          "changed_knobs": [
+            "reduce controller lookahead by one 2.5 m waypoint"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and exposed_actor_footprints.jsonl",
+            "metric": "original subject path tracking error",
+            "failure_condition": "Subject drifts from the selected driving lane before the exposure window"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__slow_person_exposure --candidate fallback2 --output .runtime-work/c136539-slow_person_exposure-fallback2-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "26b0e2dc1574336011e5aee9a62f70bf516b9a84153f517a645382148fa81e53",
+            "log": "cases/fallback-offline-slow_person_exposure-fallback2.log",
+            "log_sha256": "5dcadb1b589af2ac81aac3f4ff89f4295468c2282bb1feebfff4914977059371"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-slow_person_exposure-fallback2.json",
+            "sha256": "c6750fe09578d67aa3080d4863e3b3568e1d2d3d9887731b13c5c30ff5b27ff9",
+            "log": "cases/fallback-compat-slow_person_exposure-fallback2.log",
+            "negative_log": "cases/fallback-negative-slow_person_exposure-fallback2.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-slow_person_exposure-fallback3.json",
+          "construction_sha256": "69f33ad182d7b078f974ab21725ce1fe12d5b38c869d636d698b49f7684e345e",
+          "changed_knobs": [
+            "raise overview mount by 2 m"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "exposed actor visibility in original overview frames",
+            "failure_condition": "Exposed actor is occluded or outside the original overview camera field"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__slow_person_exposure --candidate fallback3 --output .runtime-work/c136539-slow_person_exposure-fallback3-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "69f33ad182d7b078f974ab21725ce1fe12d5b38c869d636d698b49f7684e345e",
+            "log": "cases/fallback-offline-slow_person_exposure-fallback3.log",
+            "log_sha256": "e5722aad377a19c9b1ed3e78faa5f57d87c77fafe6a50b0cc4f509ef0ee06199"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-slow_person_exposure-fallback3.json",
+            "sha256": "c2c4a6cfbd841b168d7d6e1d93de45eb56cc0f5aec879e2da219dea72ca73203",
+            "log": "cases/fallback-compat-slow_person_exposure-fallback3.log",
+            "negative_log": "cases/fallback-negative-slow_person_exposure-fallback3.log"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__moderate_person_exposure",
+      "kind": "diagnostic_probe",
+      "construction": "cases/construction-moderate_person_exposure.json",
+      "construction_sha256": "9f9192a5636ea12f9cd1ceb3be2b3d76b0a5d63ce1b03c614edf38e59481d7ab",
+      "measurement_contract": "cases/measurement-contract-moderate_person_exposure.json",
+      "measurement_procedure": {
+        "entrypoint": "endangerment_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/diagnostic-recipe-moderate_person_exposure.json",
+      "acquisition": {
+        "exposure_gap_m": {
+          "entrypoint": "endangerment_finalizer.py",
+          "method": "original Native subject/exposed body polygon distance at each saved frame",
+          "evidence": "exposed_actor_footprints.jsonl joined to trace.jsonl and video_frames.jsonl; derived only after saved acquisition"
+        }
+      },
+      "compatibility": {
+        "receipt": "case-moderate_person_exposure-compatibility.json",
+        "sha256": "361ad9e0bae0158913001e0ac4f211243f58b2a3c3cbeec152f52c24d4b636d7",
+        "log": "case-moderate_person_exposure-compat.log",
+        "negative_log": "case-moderate_person_exposure-negative.log"
+      },
+      "negative": {
+        "log": "case-moderate_person_exposure-negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Connected narrow-road spawn, subject tracking and original camera visibility can fail in Native simulation."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-moderate_person_exposure-fallback1.json",
+          "construction_sha256": "7f0053e0a52abeed5f8e4f77492c94fd501a8ea6db7bb88b8c53a074a9f69b4d",
+          "changed_knobs": [
+            "shorten connected route search to 90 m"
+          ],
+          "trigger": {
+            "source": "construction-probe.json",
+            "metric": "connected route selection",
+            "failure_condition": "No connected 100 m narrow-road route at the selected spawn point"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__moderate_person_exposure --candidate fallback1 --output .runtime-work/c136539-moderate_person_exposure-fallback1-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "7f0053e0a52abeed5f8e4f77492c94fd501a8ea6db7bb88b8c53a074a9f69b4d",
+            "log": "cases/fallback-offline-moderate_person_exposure-fallback1.log",
+            "log_sha256": "b852e5b3ae2f05e0c74a58cbd1dad5972266dd6aeda63d83f1bfe56fdfbef3f9"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-moderate_person_exposure-fallback1.json",
+            "sha256": "c7dab9035524505af4433b3576e7c22b830aa3813723a1418189fe90c7bf70d3",
+            "log": "cases/fallback-compat-moderate_person_exposure-fallback1.log",
+            "negative_log": "cases/fallback-negative-moderate_person_exposure-fallback1.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-moderate_person_exposure-fallback2.json",
+          "construction_sha256": "3356c974cc894feb658efcb93061dd84acc3b68a0f2e69512d28f34ec5a82eaf",
+          "changed_knobs": [
+            "reduce controller lookahead by one 2.5 m waypoint"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and exposed_actor_footprints.jsonl",
+            "metric": "original subject path tracking error",
+            "failure_condition": "Subject drifts from the selected driving lane before the exposure window"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__moderate_person_exposure --candidate fallback2 --output .runtime-work/c136539-moderate_person_exposure-fallback2-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "3356c974cc894feb658efcb93061dd84acc3b68a0f2e69512d28f34ec5a82eaf",
+            "log": "cases/fallback-offline-moderate_person_exposure-fallback2.log",
+            "log_sha256": "a993664ebace07d145dadc645b77c2ab153163e1b18a612144b6751d11c6d5fa"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-moderate_person_exposure-fallback2.json",
+            "sha256": "8606e8dd7ca44f972fdd899164c8e74f305d40507ab576237a189e6618822e71",
+            "log": "cases/fallback-compat-moderate_person_exposure-fallback2.log",
+            "negative_log": "cases/fallback-negative-moderate_person_exposure-fallback2.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-moderate_person_exposure-fallback3.json",
+          "construction_sha256": "b8de3dbd3eeda90eaa22638431adf9083e0d9076c4d245b5c69377c18afb2159",
+          "changed_knobs": [
+            "raise overview mount by 2 m"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "exposed actor visibility in original overview frames",
+            "failure_condition": "Exposed actor is occluded or outside the original overview camera field"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__moderate_person_exposure --candidate fallback3 --output .runtime-work/c136539-moderate_person_exposure-fallback3-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "b8de3dbd3eeda90eaa22638431adf9083e0d9076c4d245b5c69377c18afb2159",
+            "log": "cases/fallback-offline-moderate_person_exposure-fallback3.log",
+            "log_sha256": "407dcba9c93a543dac886625a59bbd17ea40775b1612eae53c34efdfd9b257a5"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-moderate_person_exposure-fallback3.json",
+            "sha256": "28528cde14577ed2eaedd6b7d77cdf44f6089c5a6f67900e2985f79847141b3d",
+            "log": "cases/fallback-compat-moderate_person_exposure-fallback3.log",
+            "negative_log": "cases/fallback-negative-moderate_person_exposure-fallback3.log"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__fast_person_exposure",
+      "kind": "diagnostic_probe",
+      "construction": "cases/construction-fast_person_exposure.json",
+      "construction_sha256": "57a6e8ebfbafc9c996cb1e6e2811552f979d8d83ec15e2ad363d3aa52b116ee7",
+      "measurement_contract": "cases/measurement-contract-fast_person_exposure.json",
+      "measurement_procedure": {
+        "entrypoint": "endangerment_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/diagnostic-recipe-fast_person_exposure.json",
+      "acquisition": {
+        "exposure_gap_m": {
+          "entrypoint": "endangerment_finalizer.py",
+          "method": "original Native subject/exposed body polygon distance at each saved frame",
+          "evidence": "exposed_actor_footprints.jsonl joined to trace.jsonl and video_frames.jsonl; derived only after saved acquisition"
+        }
+      },
+      "compatibility": {
+        "receipt": "case-fast_person_exposure-compatibility.json",
+        "sha256": "c44a291f0a55727a183a8a9943481ed5e91e372e45750308dcf65000521aba39",
+        "log": "case-fast_person_exposure-compat.log",
+        "negative_log": "case-fast_person_exposure-negative.log"
+      },
+      "negative": {
+        "log": "case-fast_person_exposure-negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Connected narrow-road spawn, subject tracking and original camera visibility can fail in Native simulation."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-fast_person_exposure-fallback1.json",
+          "construction_sha256": "efab9a20f79fc55306fca6fab9007425d38e5ac5e16ee2516f11ac642e2ec3b2",
+          "changed_knobs": [
+            "shorten connected route search to 90 m"
+          ],
+          "trigger": {
+            "source": "construction-probe.json",
+            "metric": "connected route selection",
+            "failure_condition": "No connected 100 m narrow-road route at the selected spawn point"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__fast_person_exposure --candidate fallback1 --output .runtime-work/c136539-fast_person_exposure-fallback1-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "efab9a20f79fc55306fca6fab9007425d38e5ac5e16ee2516f11ac642e2ec3b2",
+            "log": "cases/fallback-offline-fast_person_exposure-fallback1.log",
+            "log_sha256": "5fdd7fdc736053d56197bce55e77927bac24d27e5f60b9b042588be8e96f66a1"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-fast_person_exposure-fallback1.json",
+            "sha256": "2b91fc25f0588b1f964da8e99dcbc38f48004059c9662313aa3c038b8fc4f408",
+            "log": "cases/fallback-compat-fast_person_exposure-fallback1.log",
+            "negative_log": "cases/fallback-negative-fast_person_exposure-fallback1.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-fast_person_exposure-fallback2.json",
+          "construction_sha256": "80b0554798ab44ef0db87f5f63057d7386f28d0546e57ac81c2d5fdb2b84f2ba",
+          "changed_knobs": [
+            "reduce controller lookahead by one 2.5 m waypoint"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and exposed_actor_footprints.jsonl",
+            "metric": "original subject path tracking error",
+            "failure_condition": "Subject drifts from the selected driving lane before the exposure window"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__fast_person_exposure --candidate fallback2 --output .runtime-work/c136539-fast_person_exposure-fallback2-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "80b0554798ab44ef0db87f5f63057d7386f28d0546e57ac81c2d5fdb2b84f2ba",
+            "log": "cases/fallback-offline-fast_person_exposure-fallback2.log",
+            "log_sha256": "7853e5905ab87adf7e8049050a121d18f1756f426f7dab14c76a6d2be2e31390"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-fast_person_exposure-fallback2.json",
+            "sha256": "f207bf4306a67719fc1e8ea92166377e08eccf79d56cf3ad87d9658e204fd98f",
+            "log": "cases/fallback-compat-fast_person_exposure-fallback2.log",
+            "negative_log": "cases/fallback-negative-fast_person_exposure-fallback2.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-fast_person_exposure-fallback3.json",
+          "construction_sha256": "a4d7ef703d3fe08640f238f37192d63e0362d04a2dfefa3ea000be5aa9ffd855",
+          "changed_knobs": [
+            "raise overview mount by 2 m"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "exposed actor visibility in original overview frames",
+            "failure_condition": "Exposed actor is occluded or outside the original overview camera field"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__fast_person_exposure --candidate fallback3 --output .runtime-work/c136539-fast_person_exposure-fallback3-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "a4d7ef703d3fe08640f238f37192d63e0362d04a2dfefa3ea000be5aa9ffd855",
+            "log": "cases/fallback-offline-fast_person_exposure-fallback3.log",
+            "log_sha256": "18aead60547462a9e5455815e9396a6e1d3ba89139ff10c97f79374c9b81dbff"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-fast_person_exposure-fallback3.json",
+            "sha256": "abbcce8d7c6cab2225eb3e0f53741831c5fe3dc89b62f6f9204aa9b8ff177f26",
+            "log": "cases/fallback-compat-fast_person_exposure-fallback3.log",
+            "negative_log": "cases/fallback-negative-fast_person_exposure-fallback3.log"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__clearance_reference",
+      "kind": "diagnostic_probe",
+      "construction": "cases/construction-clearance_reference.json",
+      "construction_sha256": "f45ef847f6f6cf08829f9c22dd2283651d723efb1cde9b8c9d21bd39c9d55e94",
+      "measurement_contract": "cases/measurement-contract-clearance_reference.json",
+      "measurement_procedure": {
+        "entrypoint": "endangerment_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/diagnostic-recipe-clearance_reference.json",
+      "acquisition": {
+        "exposure_gap_m": {
+          "entrypoint": "endangerment_finalizer.py",
+          "method": "original Native subject/exposed body polygon distance at each saved frame",
+          "evidence": "exposed_actor_footprints.jsonl joined to trace.jsonl and video_frames.jsonl; derived only after saved acquisition"
+        }
+      },
+      "compatibility": {
+        "receipt": "case-clearance_reference-compatibility.json",
+        "sha256": "71df70bf5ea8ccd2d351400187971b6b2ee424d2c76363c40d26a35c4b28d4a6",
+        "log": "case-clearance_reference-compat.log",
+        "negative_log": "case-clearance_reference-negative.log"
+      },
+      "negative": {
+        "log": "case-clearance_reference-negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Connected narrow-road spawn, subject tracking and original camera visibility can fail in Native simulation."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-clearance_reference-fallback1.json",
+          "construction_sha256": "6fda318c801325b004bdb183a316036f28eb048f13c31dfb10af802070a2959a",
+          "changed_knobs": [
+            "shorten connected route search to 90 m"
+          ],
+          "trigger": {
+            "source": "construction-probe.json",
+            "metric": "connected route selection",
+            "failure_condition": "No connected 100 m narrow-road route at the selected spawn point"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__clearance_reference --candidate fallback1 --output .runtime-work/c136539-clearance_reference-fallback1-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "6fda318c801325b004bdb183a316036f28eb048f13c31dfb10af802070a2959a",
+            "log": "cases/fallback-offline-clearance_reference-fallback1.log",
+            "log_sha256": "f6eed7dec2c66ec55f6a7db00034a017e443664b69b10112a4b971f1dc61a699"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-clearance_reference-fallback1.json",
+            "sha256": "81aa30de70cecdaa5f6faa7a93d71565bc66d74039a0d385da8671f5f5b176a3",
+            "log": "cases/fallback-compat-clearance_reference-fallback1.log",
+            "negative_log": "cases/fallback-negative-clearance_reference-fallback1.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-clearance_reference-fallback2.json",
+          "construction_sha256": "62b02a09f4b91d2905fdaf58578721ee209989af5206c022efe620bf608c8ba8",
+          "changed_knobs": [
+            "reduce controller lookahead by one 2.5 m waypoint"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and exposed_actor_footprints.jsonl",
+            "metric": "original subject path tracking error",
+            "failure_condition": "Subject drifts from the selected driving lane before the exposure window"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__clearance_reference --candidate fallback2 --output .runtime-work/c136539-clearance_reference-fallback2-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "62b02a09f4b91d2905fdaf58578721ee209989af5206c022efe620bf608c8ba8",
+            "log": "cases/fallback-offline-clearance_reference-fallback2.log",
+            "log_sha256": "e8d61524887d4c40048a1af41d1b06156b5c915fd39fe886e2ddd4b29c1f0c82"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-clearance_reference-fallback2.json",
+            "sha256": "7c18f07a1eabe3924919e0893411bb5f9dad4828fe512a0797c5951b84bccf70",
+            "log": "cases/fallback-compat-clearance_reference-fallback2.log",
+            "negative_log": "cases/fallback-negative-clearance_reference-fallback2.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-clearance_reference-fallback3.json",
+          "construction_sha256": "b80a0ffd72f0d04ae9fefb1b9d9ae854b8d9ccf137f3628109917a67bf5ac095",
+          "changed_knobs": [
+            "raise overview mount by 2 m"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "exposed actor visibility in original overview frames",
+            "failure_condition": "Exposed actor is occluded or outside the original overview camera field"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__clearance_reference --candidate fallback3 --output .runtime-work/c136539-clearance_reference-fallback3-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "b80a0ffd72f0d04ae9fefb1b9d9ae854b8d9ccf137f3628109917a67bf5ac095",
+            "log": "cases/fallback-offline-clearance_reference-fallback3.log",
+            "log_sha256": "ccf6ed9342158a27d63518804f265bf37a4ab140010c9a56e4dce35c590b9773"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-clearance_reference-fallback3.json",
+            "sha256": "d30262cef6d8f82ab8cc258262a5635e38b918a88c085d4007b6510cade50bbb",
+            "log": "cases/fallback-compat-clearance_reference-fallback3.log",
+            "negative_log": "cases/fallback-negative-clearance_reference-fallback3.log"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__property_near",
+      "kind": "diagnostic_probe",
+      "construction": "cases/construction-property_near.json",
+      "construction_sha256": "ca2d935adef414126dd5b98571a922f430f2c471d05e5cb1fd13c7591b93d2e8",
+      "measurement_contract": "cases/measurement-contract-property_near.json",
+      "measurement_procedure": {
+        "entrypoint": "endangerment_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/diagnostic-recipe-property_near.json",
+      "acquisition": {
+        "exposure_gap_m": {
+          "entrypoint": "endangerment_finalizer.py",
+          "method": "original Native subject/exposed body polygon distance at each saved frame",
+          "evidence": "exposed_actor_footprints.jsonl joined to trace.jsonl and video_frames.jsonl; derived only after saved acquisition"
+        }
+      },
+      "compatibility": {
+        "receipt": "case-property_near-compatibility.json",
+        "sha256": "ed033c39ffaa25e575a987a704b9246f3d9b494f448360a231b7dc46e9bdfd1f",
+        "log": "case-property_near-compat.log",
+        "negative_log": "case-property_near-negative.log"
+      },
+      "negative": {
+        "log": "case-property_near-negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Connected narrow-road spawn, subject tracking and original camera visibility can fail in Native simulation."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-property_near-fallback1.json",
+          "construction_sha256": "a80d477bd33b8b260dd165b197d56027cf8c486b24dbc2c5de88f13e7f200709",
+          "changed_knobs": [
+            "shorten connected route search to 90 m"
+          ],
+          "trigger": {
+            "source": "construction-probe.json",
+            "metric": "connected route selection",
+            "failure_condition": "No connected 100 m narrow-road route at the selected spawn point"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__property_near --candidate fallback1 --output .runtime-work/c136539-property_near-fallback1-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "a80d477bd33b8b260dd165b197d56027cf8c486b24dbc2c5de88f13e7f200709",
+            "log": "cases/fallback-offline-property_near-fallback1.log",
+            "log_sha256": "c5f6ae80311ee2c4f706e5c6cb2169529826b8a0eb777b5da2df3bc91cccf251"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-property_near-fallback1.json",
+            "sha256": "1d18cb8b27a81906b93f287af3bed794b77ab1646c1ffb4adff17764eb23e9f3",
+            "log": "cases/fallback-compat-property_near-fallback1.log",
+            "negative_log": "cases/fallback-negative-property_near-fallback1.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-property_near-fallback2.json",
+          "construction_sha256": "0255f4b5094a3e6c97c7ee4cc1f4b67a58fcc9422563f3648b0d1843f5f67336",
+          "changed_knobs": [
+            "reduce controller lookahead by one 2.5 m waypoint"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and exposed_actor_footprints.jsonl",
+            "metric": "original subject path tracking error",
+            "failure_condition": "Subject drifts from the selected driving lane before the exposure window"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__property_near --candidate fallback2 --output .runtime-work/c136539-property_near-fallback2-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "0255f4b5094a3e6c97c7ee4cc1f4b67a58fcc9422563f3648b0d1843f5f67336",
+            "log": "cases/fallback-offline-property_near-fallback2.log",
+            "log_sha256": "c9d8f6952f585bb9dc75ef55c509d5d6cdafd577f25c207347aba994c69dd233"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-property_near-fallback2.json",
+            "sha256": "ff200f7e4b4143048d07ea17a6efadfc182c4014774435f273de9567121bbf0d",
+            "log": "cases/fallback-compat-property_near-fallback2.log",
+            "negative_log": "cases/fallback-negative-property_near-fallback2.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-property_near-fallback3.json",
+          "construction_sha256": "31ffd4ddfd83fc901e004891062d05e534408d2e3aa7a331bc9f81342fd44938",
+          "changed_knobs": [
+            "raise overview mount by 2 m"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "exposed actor visibility in original overview frames",
+            "failure_condition": "Exposed actor is occluded or outside the original overview camera field"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__property_near --candidate fallback3 --output .runtime-work/c136539-property_near-fallback3-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "31ffd4ddfd83fc901e004891062d05e534408d2e3aa7a331bc9f81342fd44938",
+            "log": "cases/fallback-offline-property_near-fallback3.log",
+            "log_sha256": "3f854174209778dc55ce096a4d747e5efb8d3b9978db3c839c18882e25090fb1"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-property_near-fallback3.json",
+            "sha256": "23efa5bba4fc61d3dc6012a0ac9bf143c710bbd78da6d18731ec26a3d5116316",
+            "log": "cases/fallback-compat-property_near-fallback3.log",
+            "negative_log": "cases/fallback-negative-property_near-fallback3.log"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__property_far",
+      "kind": "diagnostic_probe",
+      "construction": "cases/construction-property_far.json",
+      "construction_sha256": "82ed4ba4b26e0cd93f9bfc0d080d7140ff500300aedcf9bc65d656d187a1d430",
+      "measurement_contract": "cases/measurement-contract-property_far.json",
+      "measurement_procedure": {
+        "entrypoint": "endangerment_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/diagnostic-recipe-property_far.json",
+      "acquisition": {
+        "exposure_gap_m": {
+          "entrypoint": "endangerment_finalizer.py",
+          "method": "original Native subject/exposed body polygon distance at each saved frame",
+          "evidence": "exposed_actor_footprints.jsonl joined to trace.jsonl and video_frames.jsonl; derived only after saved acquisition"
+        }
+      },
+      "compatibility": {
+        "receipt": "case-property_far-compatibility.json",
+        "sha256": "dc7dd471da5459e2db26cf50ebff0784028d8049abb41de1177af0ed8c9db217",
+        "log": "case-property_far-compat.log",
+        "negative_log": "case-property_far-negative.log"
+      },
+      "negative": {
+        "log": "case-property_far-negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Connected narrow-road spawn, subject tracking and original camera visibility can fail in Native simulation."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-property_far-fallback1.json",
+          "construction_sha256": "28ab575241b40f49028838c844e21d9d8709306d8714ac61bfa3882725f53455",
+          "changed_knobs": [
+            "shorten connected route search to 90 m"
+          ],
+          "trigger": {
+            "source": "construction-probe.json",
+            "metric": "connected route selection",
+            "failure_condition": "No connected 100 m narrow-road route at the selected spawn point"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__property_far --candidate fallback1 --output .runtime-work/c136539-property_far-fallback1-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "28ab575241b40f49028838c844e21d9d8709306d8714ac61bfa3882725f53455",
+            "log": "cases/fallback-offline-property_far-fallback1.log",
+            "log_sha256": "a199d2e858b0d1b9fcaf1d273fac85bf69e545dce8a2dc17de0d68bc8c830f74"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-property_far-fallback1.json",
+            "sha256": "f96aefa69092ef0c33c127e5780fae2451abd1b8fd9d8c0ebbaa07b25e0f038a",
+            "log": "cases/fallback-compat-property_far-fallback1.log",
+            "negative_log": "cases/fallback-negative-property_far-fallback1.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-property_far-fallback2.json",
+          "construction_sha256": "eb894bf41a082588cbc785c164e81341c714e5643ac4d933d2d01eab001e5c89",
+          "changed_knobs": [
+            "reduce controller lookahead by one 2.5 m waypoint"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and exposed_actor_footprints.jsonl",
+            "metric": "original subject path tracking error",
+            "failure_condition": "Subject drifts from the selected driving lane before the exposure window"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__property_far --candidate fallback2 --output .runtime-work/c136539-property_far-fallback2-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "eb894bf41a082588cbc785c164e81341c714e5643ac4d933d2d01eab001e5c89",
+            "log": "cases/fallback-offline-property_far-fallback2.log",
+            "log_sha256": "51d40c9f640241531a1c939eb91ffcf1d9bc114f285a737eaf914a8910052526"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-property_far-fallback2.json",
+            "sha256": "bdc9bcf65222435134cf5c7ee369d9a72ea9b24411ca38f9bea486a486b4a655",
+            "log": "cases/fallback-compat-property_far-fallback2.log",
+            "negative_log": "cases/fallback-negative-property_far-fallback2.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-property_far-fallback3.json",
+          "construction_sha256": "e7592e149bc9464e378951a12e74fb93380c8ef634ba1e3f24a49c80c23b5441",
+          "changed_knobs": [
+            "raise overview mount by 2 m"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "exposed actor visibility in original overview frames",
+            "failure_condition": "Exposed actor is occluded or outside the original overview camera field"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver/fallback-constructions-manifest.json --case heldout__C136539__NRS-484B-600-1b__motor_vehicle_driver__property_far --candidate fallback3 --output .runtime-work/c136539-property_far-fallback3-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "e7592e149bc9464e378951a12e74fb93380c8ef634ba1e3f24a49c80c23b5441",
+            "log": "cases/fallback-offline-property_far-fallback3.log",
+            "log_sha256": "fc1fc5c8bcb5ae7508ba3976c32dbb2c543a70653b1ade06d6c0219ffa2a62c7"
+          },
+          "compatibility": {
+            "receipt": "cases/fallback-compatibility-property_far-fallback3.json",
+            "sha256": "c03a8ba633116a59ae8d7b27a505d11a3e7488c48598c1c786c5b0eee750c148",
+            "log": "cases/fallback-compat-property_far-fallback3.log",
+            "negative_log": "cases/fallback-negative-property_far-fallback3.log"
+          }
+        }
+      ]
+    }
+  ]
+}

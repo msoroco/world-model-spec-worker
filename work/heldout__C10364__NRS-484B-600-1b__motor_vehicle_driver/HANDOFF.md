@@ -80,3 +80,11 @@ still fails with `Preparation acceptance failed: partial/missing packages remain
 see `work/_shared/batch-strict-gate.log`. This package remains partial for the
 CPU tasks above, as do other incomplete assignments. The failure is not a tool
 or package dependency failure.
+
+## 2026-11-11 sourced alley route and feedback checkpoint
+
+`alley_route.py` now selects a connected, nonjunction Native map lane inside a supplied alley polygon, with both east and west approach support. It requires a named original polygon source, checks that the complete vehicle width plus an engineering edge margin fits inside the polygon and mapped lane, and rejects an out-of-polygon, wrong-way, narrow or branching route. The pure feedback controller uses measured position, heading and velocity to request steering, throttle and brake toward a case speed. The polygon and target speed remain authored construction inputs; a speed command and diagnostic polygon do not establish actual endangerment or legal status. No selected C10364 alley polygon has yet been sourced, and no Native run is claimed.
+
+`tests/test_alley_route.py` exercises both approach directions, missing source, geometry rejection and feedback response. The full local suite passes 15 tests: `.venv-cpu/bin/python -m unittest discover -s work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/tests -v`; `cpu-tests.log` SHA-256 `d4c9317e3d52b8426dd40d21cacbe6d18eb4c0caca831af375b171daa233ccb6`. The assignment-scoped static check exits 0; `worker-check.log` SHA-256 `042998b01b6533c72a6cffdcfee0d7a8010973a06cf87259d4f5fd9907da5ebe`. Status remains partial.
+
+Next CPU work: bind an actual source-backed alley polygon and participant placements to the first `__person_3mps` config, author the CARLA-lazy runner with four source cameras and original footprint/motion capture, then finalize and run exact offline, positive/negative compatibility and saved processing. Preserve the six planned cases, measured fixed-condition comparisons and unresolved endangerment judgment. Continue fallback, semantic and independent audit work after the first case passes.

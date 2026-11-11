@@ -1,4 +1,4 @@
-"""Native construction probe for the 299-foot nighttime upper-beam case.
+"""Native construction probes for exact nighttime following comparisons.
 
 This records a physical attempt; it does not claim legal or delivery acceptance.
 """
@@ -14,16 +14,27 @@ from headlamp_roadway_capture import RoadwaySourceRecorder
 
 
 CASE_ID = 'heldout__C178038__NRS-484D-215-2__motor_vehicle_driver__night_299_upper'
+CASE_PREFIX = CASE_ID.removesuffix('night_299_upper')
+NIGHT_CASES = {
+    CASE_PREFIX + 'night_299_upper': (299, True),
+    CASE_PREFIX + 'night_299_other': (299, False),
+    CASE_PREFIX + 'night_300_upper': (300, True),
+    CASE_PREFIX + 'night_301_upper': (301, True),
+}
 
 
 def check_config(config):
-    if config.get('selected_case_id') != CASE_ID:
+    case_id = config.get('selected_case_id')
+    if case_id not in NIGHT_CASES:
         raise ValueError('Unknown exact following probe case')
     if (config.get('law_id'), config.get('cell_id'), config.get('actor')) != (
             'NRS-484D-215-2', 'C178038', 'motor_vehicle_driver'):
         raise ValueError('Following probe identity differs')
-    if (config.get('rate_hz'), config.get('frames'), config.get('requested_gap_ft')) != (20, 80, 299):
+    gap_ft, uppermost = NIGHT_CASES[case_id]
+    if (config.get('rate_hz'), config.get('frames'), config.get('requested_gap_ft')) != (20, 80, gap_ft):
         raise ValueError('Following probe rate, duration or gap differs')
+    if config.get('requested_uppermost_distribution') is not uppermost:
+        raise ValueError('Following probe beam setup differs')
     if config.get('construction_probe_only') is not True:
         raise ValueError('Following probe may not masquerade as delivery')
 
@@ -39,15 +50,30 @@ def _command(actor, target, speed=6):
                           target_speed_mps=speed)
 
 
+def prepare_output(output, config):
+    """Accept a fresh standalone directory or the exact runtime materialization."""
+    output = Path(output)
+    if output.exists():
+        if not (output / 'construction.json').is_file():
+            raise ValueError('Existing Native output is not a materialized construction')
+        config_path = output / 'config.json'
+        if not config_path.is_file() or json.loads(config_path.read_text()) != config:
+            raise ValueError('Materialized Native config differs')
+        if (output / 'trace.jsonl').exists() or (output / 'video_frames.jsonl').exists():
+            raise ValueError('Retain prior Native acquisition')
+    else:
+        output.mkdir(parents=True)
+        (output / 'config.json').write_text(json.dumps(config, indent=2) + '\n')
+    return output
+
+
 def run(config, output, host, port):
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
 
     check_config(config)
-    output = Path(output)
-    output.mkdir(parents=True, exist_ok=False)
-    (output / 'config.json').write_text(json.dumps(config, indent=2) + '\n')
+    output = prepare_output(output, config)
     client = carla.Client(host, port)
     client.set_timeout(30.)
     world = client.get_world()
@@ -60,7 +86,7 @@ def run(config, output, host, port):
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
-        route = select_follow_route(world.get_map(), target_gap_ft=299)
+        route = select_follow_route(world.get_map(), target_gap_ft=config['requested_gap_ft'])
         library = world.get_blueprint_library()
         lead = world.try_spawn_actor(library.find('vehicle.tesla.model3'),
                                      route['lead'].transform)
@@ -72,14 +98,18 @@ def run(config, output, host, port):
         if ego is None:
             raise ValueError('Native following subject spawn failed')
         actors.append(ego)
-        ego.set_light_state(carla.VehicleLightState(carla.VehicleLightState.Position |
-                                                    carla.VehicleLightState.LowBeam |
-                                                    carla.VehicleLightState.HighBeam))
-        if not int(ego.get_light_state()) & int(carla.VehicleLightState.HighBeam):
-            raise ValueError('Native upper-beam setup readback failed')
+        requested_lights = carla.VehicleLightState.Position | carla.VehicleLightState.LowBeam
+        if config['requested_uppermost_distribution']:
+            requested_lights |= carla.VehicleLightState.HighBeam
+        ego.set_light_state(carla.VehicleLightState(requested_lights))
+        actual_lights = int(ego.get_light_state())
+        if (bool(actual_lights & int(carla.VehicleLightState.HighBeam)) is not
+                config['requested_uppermost_distribution'] or
+                not actual_lights & int(carla.VehicleLightState.LowBeam)):
+            raise ValueError('Native beam setup readback failed')
         recorder = HeadlampSourceRecorder(output, ego, lead)
         roadway = RoadwaySourceRecorder(output, world, ego, carla)
-        pipeline = PipelineCapture(client, ego, output, CASE_ID,
+        pipeline = PipelineCapture(client, ego, output, config['selected_case_id'],
                                    required_observations=config.get('required_atoms', []))
         frame_map = FrameMap(output / 'video_frames.jsonl')
         for name in CAMERAS:
@@ -110,10 +140,13 @@ def run(config, output, host, port):
             frames.append(frame)
         cameras.verify(frames)
         (output / 'construction-probe.json').write_text(json.dumps({
-            'format': 'worker-headlamp-construction-probe', 'case_id': CASE_ID,
+            'format': 'worker-headlamp-construction-probe',
+            'case_id': config['selected_case_id'],
             'map_name': world.get_map().name,
             'road_id': route['ego'].road_id, 'lane_id': route['ego'].lane_id,
-            'requested_gap_ft': 299, 'frames': frames,
+            'requested_gap_ft': config['requested_gap_ft'],
+            'requested_uppermost_distribution': config['requested_uppermost_distribution'],
+            'frames': frames,
             'lighting_time_physical_verification': False,
             'roadway_occupancy_physical_verification': False,
             'delivery_ready': False}, indent=2) + '\n')
@@ -143,8 +176,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--run', action='store_true')
-    parser.add_argument('--config', default='probe-config.json')
-    parser.add_argument('--output')
+    parser.add_argument('--config', default='config.json')
+    parser.add_argument('--output', '--output-dir', dest='output')
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()

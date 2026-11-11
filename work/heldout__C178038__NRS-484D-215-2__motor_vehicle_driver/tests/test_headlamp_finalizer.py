@@ -16,7 +16,7 @@ def sources(root):
     (root / 'config.json').write_text(json.dumps({
         'selected_case_id': CASE, 'law_id': 'NRS-484D-215-2',
         'cell_id': 'C178038', 'actor': 'motor_vehicle_driver',
-        'target_gap_ft': 299,
+        'requested_gap_ft': 299,
         'case': {'recording_description': {'channels': [], 'context_inputs': [],
                                            'limitations': ['CPU fixture only']}}}))
     (root / 'video_frames.jsonl').write_text(''.join(json.dumps({
@@ -50,6 +50,7 @@ class SavedHeadlampTests(unittest.TestCase):
             from worker_exchange.native_output import validate_result
             validate_result(native)
             self.assertFalse(native['physical_acceptance_claimed'])
+            self.assertEqual(native['target_checks'][0]['requested'], 299)
             self.assertIn('roadway_environment.jsonl', report['measurements']
                           ['headlamp_following_observation']['sources'])
             self.assertTrue((root / 'headlamp_gap_ft.jsonl').is_file())
