@@ -87,6 +87,8 @@ for index, (phrase, note) in enumerate(zip(phrases, notes), 1):
         'status': 'incomplete',
         'missing_inputs': ['Verified Native two-directional/one-way connected roadway and physical feasible lateral range for a finite sweep'],
         'rationale': 'An actual feasible lateral range and spacing must be surveyed before selecting judgment sweep setpoints.'})
+from batch_pipeline.sweeps import expand_sweeps
+expand_sweeps(cases, [template], binding)
 refs['cases'] = write('cases', cases)
 write('semantic-index', {'format': 'worker-semantic-delivery', 'assignment_id': aid, 'stages': refs})
 print('Draft semantic stages: three ordinary turn cases and two explicitly incomplete Native-feasibility sweeps')

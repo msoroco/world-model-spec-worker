@@ -12,26 +12,56 @@
       "sha256": "11f12f8bd199fa4b30fbc550f8b4f1900b23fac64d257b3e7e5ae035e13ba5a4"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/construction-probe-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --output .runtime-work/c109705-first-offline-v4 --python .venv-cpu/bin/python (absolute interpreter path used)",
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/prove_contrasts_saved.py",
       "exit_code": 0,
-      "log": "first-offline.log",
-      "sha256": "59099628c9ef216814bf8964ebfd2f45e29a004230afb74451ab4c86864bb011"
+      "log": "saved-contrasts-proof.log",
+      "sha256": "9672e4d8d63b65331e31162d7c2782b442cb5acaaac44adef5e4ee7e511b43d4"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --output .runtime-work/c109705-first-compat-v5 --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/prove_contrast_comparisons.py",
       "exit_code": 0,
-      "log": "first-compatibility.log",
-      "sha256": "fbe124ebc4046371a39b22f0705d24b3d704aa2d442dc109e5bf5897bc034361"
+      "log": "contrast-comparison-proof.log",
+      "sha256": "77e75765aea8a233ca54dc089ea8578345af68df07f7b32fc101679a8a47b3ea"
     },
     {
-      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/prove_first_saved.py",
+      "command": ".venv-cpu/bin/python runtime.py offline --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right (see expansion manifests)",
       "exit_code": 0,
-      "log": "saved-first-proof.log",
-      "sha256": "25be37717de6cc9f4b60ab062674161f29719dbbd5f776b4cd1774bf2fd448db"
+      "log": "proof-approach_near_depart_right-offline.log",
+      "sha256": "25a0d2ff5e8197fa130c383781bdb344e50e246bfd74098b8ff0675c5ef2fbc4"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right (see expansion manifests)",
+      "exit_code": 0,
+      "log": "proof-approach_near_depart_right-compatibility.log",
+      "sha256": "2db7f242b61bcaec91c440af3303683ce6dbc04b32b9e420bd8fd6d660671f0d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right (see expansion manifests)",
+      "exit_code": 0,
+      "log": "proof-approach_far_depart_right-offline.log",
+      "sha256": "77e5e4a000737b3ec4140f395478bc8c190892eeaf0c9ac2b421f15517412b71"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right (see expansion manifests)",
+      "exit_code": 0,
+      "log": "proof-approach_far_depart_right-compatibility.log",
+      "sha256": "eb7df68856ccd0e464cbdda54bc3cb064efe1b9150ebd789f60b3698a794dd33"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left (see expansion manifests)",
+      "exit_code": 0,
+      "log": "proof-approach_near_depart_left-offline.log",
+      "sha256": "e168b7415e7474df5ca9aade493f622c9a89bf74e175e43a24abd25b42f7e4c4"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left (see expansion manifests)",
+      "exit_code": 0,
+      "log": "proof-approach_near_depart_left-compatibility.log",
+      "sha256": "3293953fd3c26372a25c5e26f983285f29719d6cd0de8821a84e15d71dd1f99c"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and capture quality after CPU preparation"
   ],
-  "reason": "First exact turn has CPU tests, offline, source-bound positive/negative compatibility and saved-only processing. Remaining exact cases, judgment sweep, three fallbacks per case, independent comparisons and delivery audit remain CPU work."
+  "reason": "All three exact primary contrasts pass offline, positive/negative compatibility and saved-only processing; source-bound comparisons pass. Finite practicability sweep, three physical-risk fallback constructions per case, physical fixtures and independent delivery audit remain CPU work."
 }

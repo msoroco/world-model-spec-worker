@@ -16,6 +16,9 @@ CASES = {
     'approach_near_depart_right': (1.25, 1.80),
     'approach_far_depart_right': (2.20, 1.80),
     'approach_near_depart_left': (1.25, -1.00),
+    'approach_practicability_grid-0000': (1.25, 1.80),
+    'approach_practicability_grid-0001': (2.25, 1.80),
+    'approach_practicability_grid-0002': (1.75, 1.80),
 }
 
 
@@ -33,6 +36,8 @@ def check_config(config):
         raise ValueError('Unsupported Native route step')
     if not 0.0 <= float(config.get('overview_height_delta_m', 0.0)) <= 2.0:
         raise ValueError('Unsupported overview mount')
+    if not 0.10 <= float(config.get('turn_throttle', 0.23)) <= 0.35:
+        raise ValueError('Unsupported turn throttle')
     return CASES[slug]
 
 
@@ -61,7 +66,7 @@ def choose_turn(world_map, *, step_m=2.0, max_steps=75):
     directions = road_directions(world_map.to_opendrive())
     for spawn in world_map.get_spawn_points():
         source = world_map.get_waypoint(spawn.location)
-        if (source is None or source.is_junction or source.lane_id >= 0
+        if (source is None or source.is_junction or source.lane_id != -1
                 or directions.get(source.road_id) != {-1}):
             continue
         queue = [(source, [source], False)]
@@ -111,12 +116,12 @@ def center_offset_transform(carla, waypoint, distance_from_left_m):
     return carla.Transform(location, base.rotation)
 
 
-def control_to(ego, target):
+def control_to(ego, target, throttle=0.23):
     pose = ego.get_transform()
     current = math.radians(pose.rotation.yaw)
     desired = math.atan2(target.y - pose.location.y, target.x - pose.location.x)
     error = math.atan2(math.sin(desired-current), math.cos(desired-current))
-    return {'throttle': 0.23, 'brake': 0.0,
+    return {'throttle': throttle, 'brake': 0.0,
             'steer': max(-1.0, min(1.0, error / math.radians(45)))}
 
 
@@ -194,7 +199,7 @@ def run(output, host, port):
             offset = (departure_offset if target_waypoint.road_id == destination.road_id
                       and not target_waypoint.is_junction else approach_offset)
             target = center_offset_transform(carla, target_waypoint, offset).location
-            control = control_to(ego, target)
+            control = control_to(ego, target, throttle=float(config.get('turn_throttle', 0.23)))
             ego.apply_control(carla.VehicleControl(**control))
             frame = world.tick()
             snapshot = world.get_snapshot()

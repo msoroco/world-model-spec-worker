@@ -37,7 +37,9 @@ config = {
     'law_id': 'NRS-484B-400-4', 'cell_id': 'C109705', 'actor': 'motor_vehicle_driver',
     'selected_case_id': CASE,
     'supported_case_ids': [ROOT.name + '__' + slug for slug in (
-        'approach_near_depart_right', 'approach_far_depart_right', 'approach_near_depart_left')],
+        'approach_near_depart_right', 'approach_far_depart_right', 'approach_near_depart_left',
+        'approach_practicability_grid-0000', 'approach_practicability_grid-0001',
+        'approach_practicability_grid-0002')],
     'required_atoms': [], 'source_packets': [],
     'rate_hz': 20, 'duration_s': 8, 'frames': 160, 'route_step_m': 2.0,
     'cameras': [

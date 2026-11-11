@@ -74,6 +74,10 @@ class TurnNativeTests(unittest.TestCase):
         departure.lane_id = 1
         with self.assertRaisesRegex(ValueError, 'one-way to two-way'):
             runner.choose_turn(mapping)
+        departure.lane_id = -1
+        source.lane_id = -2
+        with self.assertRaisesRegex(ValueError, 'one-way to two-way'):
+            runner.choose_turn(mapping)
 
     def test_original_reference_boundary_and_lateral_target(self):
         source = Waypoint(1, -1, 0, 0)

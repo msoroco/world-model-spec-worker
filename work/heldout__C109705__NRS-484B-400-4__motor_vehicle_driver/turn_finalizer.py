@@ -93,7 +93,7 @@ def result(root, report):
         recorded.append({'name': name, 'unit': channel['unit'], 'reference': path.name, 'sha256': sha(path)})
         realized[name] = {'unit': channel['unit'], 'method': channel['method'],
                           'time_window': channel['time_window'],
-                          'statistic': 'minimum' if name.startswith('approach') else 'maximum',
+                          'statistic': 'min' if name.startswith('approach') else 'max',
                           'reference': path.name, 'value': values[name],
                           'sample_window_s': [samples[0]['time_s'], samples[-1]['time_s']]}
     for name in ('road_geometry', 'body_footprints'):

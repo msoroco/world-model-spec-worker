@@ -25,6 +25,11 @@ def assemble(folder):
     assignment = plan['assignment_id']
     expected = {case['case_id'] for case in plan['cases']}
     entries = []
+    previous_path = folder / 'execution-manifest.json'
+    previous = {}
+    if previous_path.is_file():
+        previous = {item['case_id']: item for item in
+                    json.loads(previous_path.read_text()).get('cases', [])}
     runtime_hash = None
     for name in SOURCES:
         manifest = json.loads((folder / name).read_text())
@@ -44,6 +49,11 @@ def assemble(folder):
         if not construction.is_file() or hashlib.sha256(
                 construction.read_bytes()).hexdigest() != entry['construction_sha256']:
             raise ValueError('Exact construction source changed: ' + name)
+        prior = previous.get(entry['case_id'], {})
+        if prior.get('construction_sha256') == entry['construction_sha256']:
+            for key in ('physical_preparation', 'native_handoff'):
+                if key in prior:
+                    entry[key] = prior[key]
         entries.append(entry)
     actual = [entry['case_id'] for entry in entries]
     if len(actual) != len(set(actual)) or set(actual) != expected:

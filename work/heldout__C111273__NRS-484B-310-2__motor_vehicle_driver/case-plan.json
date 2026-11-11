@@ -156,7 +156,28 @@
       }
     }
   ],
-  "observations": [],
+  "observations": [
+    {
+      "name": "native_yellow_on",
+      "mandatory": true,
+      "source": "original Native 20 Hz acquisition joined to video_frames.jsonl"
+    },
+    {
+      "name": "ego_speed_mps",
+      "mandatory": true,
+      "source": "original Native 20 Hz acquisition joined to video_frames.jsonl"
+    },
+    {
+      "name": "ego_center_xy",
+      "mandatory": true,
+      "source": "original Native 20 Hz acquisition joined to video_frames.jsonl"
+    },
+    {
+      "name": "crossing_center_xy",
+      "mandatory": true,
+      "source": "original Native 20 Hz acquisition joined to video_frames.jsonl"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/assignment.json",
@@ -188,7 +209,7 @@
       }
     ]
   },
-  "review_status": "partial_native_construction",
+  "review_status": "cpu_delivery_prepared",
   "branch_inventory": [
     {
       "branch": "flashing_yellow_with_official_device",
@@ -198,7 +219,7 @@
         "heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_clear_approach",
         "heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__west_cautious_approach"
       ],
-      "status": "construction_draft"
+      "status": "cpu_prepared_physical_unverified"
     },
     {
       "branch": "caution_judgment_sampling",
@@ -207,13 +228,15 @@
         "heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_faster_approach",
         "heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_clear_approach"
       ],
-      "status": "construction_draft"
+      "status": "cpu_prepared_physical_unverified"
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "dev.traffic_signal",
-      "measurement": "original 20 Hz Native lamp, device and participant states; camera pixels; source premise for official status",
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "evidence": "original 20 Hz Native lamp, device and participant states; camera pixels; source premise for official status",
+      "channels": [
+        "native_yellow_on"
+      ],
       "source_refs": [
         "signal_state.jsonl",
         "participant_state.jsonl",
@@ -222,9 +245,11 @@
       ],
       "limitation": "Time to conflict and speed are descriptive surrogates; no legal caution threshold is adopted."
     },
-    {
-      "term": "dev.governs",
-      "measurement": "original 20 Hz Native lamp, device and participant states; camera pixels; source premise for official status",
+    "dev.governs": {
+      "evidence": "original 20 Hz Native lamp, device and participant states; camera pixels; source premise for official status",
+      "channels": [
+        "native_yellow_on"
+      ],
       "source_refs": [
         "signal_state.jsonl",
         "participant_state.jsonl",
@@ -233,9 +258,11 @@
       ],
       "limitation": "Time to conflict and speed are descriptive surrogates; no legal caution threshold is adopted."
     },
-    {
-      "term": "st.intersection",
-      "measurement": "original 20 Hz Native lamp, device and participant states; camera pixels; source premise for official status",
+    "st.intersection": {
+      "evidence": "original 20 Hz Native lamp, device and participant states; camera pixels; source premise for official status",
+      "channels": [
+        "ego_center_xy"
+      ],
       "source_refs": [
         "signal_state.jsonl",
         "participant_state.jsonl",
@@ -244,9 +271,11 @@
       ],
       "limitation": "Time to conflict and speed are descriptive surrogates; no legal caution threshold is adopted."
     },
-    {
-      "term": "kin.speed",
-      "measurement": "original 20 Hz Native lamp, device and participant states; camera pixels; source premise for official status",
+    "kin.speed": {
+      "evidence": "original 20 Hz Native lamp, device and participant states; camera pixels; source premise for official status",
+      "channels": [
+        "ego_speed_mps"
+      ],
       "source_refs": [
         "signal_state.jsonl",
         "participant_state.jsonl",
@@ -255,9 +284,13 @@
       ],
       "limitation": "Time to conflict and speed are descriptive surrogates; no legal caution threshold is adopted."
     },
-    {
-      "term": "drv.time_to_conflict",
-      "measurement": "original 20 Hz Native lamp, device and participant states; camera pixels; source premise for official status",
+    "drv.time_to_conflict": {
+      "evidence": "original 20 Hz Native lamp, device and participant states; camera pixels; source premise for official status",
+      "channels": [
+        "ego_center_xy",
+        "crossing_center_xy",
+        "ego_speed_mps"
+      ],
       "source_refs": [
         "signal_state.jsonl",
         "participant_state.jsonl",
@@ -266,9 +299,11 @@
       ],
       "limitation": "Time to conflict and speed are descriptive surrogates; no legal caution threshold is adopted."
     },
-    {
-      "term": "drv.approaching",
-      "measurement": "original 20 Hz Native lamp, device and participant states; camera pixels; source premise for official status",
+    "drv.approaching": {
+      "evidence": "original 20 Hz Native lamp, device and participant states; camera pixels; source premise for official status",
+      "channels": [
+        "ego_center_xy"
+      ],
       "source_refs": [
         "signal_state.jsonl",
         "participant_state.jsonl",
@@ -277,9 +312,11 @@
       ],
       "limitation": "Time to conflict and speed are descriptive surrogates; no legal caution threshold is adopted."
     },
-    {
-      "term": "kin.accel_longitudinal",
-      "measurement": "original 20 Hz Native lamp, device and participant states; camera pixels; source premise for official status",
+    "kin.accel_longitudinal": {
+      "evidence": "original 20 Hz Native lamp, device and participant states; camera pixels; source premise for official status",
+      "channels": [
+        "ego_speed_mps"
+      ],
       "source_refs": [
         "signal_state.jsonl",
         "participant_state.jsonl",
@@ -288,7 +325,7 @@
       ],
       "limitation": "Time to conflict and speed are descriptive surrogates; no legal caution threshold is adopted."
     }
-  ],
+  },
   "requirement_dispositions": [
     {
       "requirement": "rapidly flashing illuminated yellow lens with official device and cautious passage",
@@ -302,5 +339,69 @@
       ],
       "evidence_or_gap": "No accepted recording; original signal and participant histories and pixels require review."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "fps": 20,
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "sources": [
+      {
+        "name": "overview",
+        "size": [
+          1920,
+          1080
+        ],
+        "purpose": "subject, governed signal and crossing actor context"
+      },
+      {
+        "name": "approach",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "approaching signal head and intersection"
+      },
+      {
+        "name": "reference_corner",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "crossing actor relation to subject"
+      },
+      {
+        "name": "driver_reference",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "driver-visible signal and roadway"
+      }
+    ],
+    "coverage": [
+      {
+        "subject": "signal lens, housing and subject approach",
+        "interval": "all original frames through passage",
+        "view": "overview"
+      },
+      {
+        "subject": "signal head, intersection and road approach",
+        "interval": "approach through crossing",
+        "view": "approach"
+      },
+      {
+        "subject": "crossing actor and conflicting route",
+        "interval": "all original frames",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver-visible signal and route",
+        "interval": "all original frames",
+        "view": "driver_reference"
+      }
+    ],
+    "implementation": "signal_camera_capture.py",
+    "limitation": "Native source pixels must establish illuminated yellow lens, authority and governed lane."
+  }
 }

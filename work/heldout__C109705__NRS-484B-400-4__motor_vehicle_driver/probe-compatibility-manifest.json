@@ -6,7 +6,7 @@
     {
       "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right",
       "construction": "construction-approach_near_depart_right.json",
-      "construction_sha256": "e8c455a09aef557ddab162740c2ba5015800d2d28b6a2fb95978c47c0553b7d5",
+      "construction_sha256": "9a2a061f22bba291cec5ad9cbb74c672214c806b3cd4d5db9a0085ffeace192d",
       "kind": "delivery",
       "measurement_contract": "measurement-contract-approach_near_depart_right.json",
       "measurement_procedure": {
@@ -24,12 +24,57 @@
           "method": "original body corners relative to entered road directed centerline",
           "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
         }
-      }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route connectivity, turn speed and original curb/centerline camera visibility may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-approach_near_depart_right-fallback1.json",
+          "construction_sha256": "c179af696069d891b1e5cb95269e69d3ba593cc225b8656cd59f15f7989709e2",
+          "changed_knobs": [
+            "Use one-meter connected route sampling"
+          ],
+          "trigger": {
+            "source": "road.xodr and original route/trace readback",
+            "metric": "connected junction and destination route at one-meter waypoint spacing",
+            "failure_condition": "Two-meter sampling skips the intended connected left-turn route"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-approach_near_depart_right-fallback2.json",
+          "construction_sha256": "909f7fa7e0e08f666e675054061d759bc2161b44af99f15d68a2697f25417773",
+          "changed_knobs": [
+            "Lower turn throttle to 0.16"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and body_footprints.jsonl",
+            "metric": "original departure completion and body-corner side after turn",
+            "failure_condition": "Primary turn speed overshoots the intended right-of-centerline departure"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-approach_near_depart_right-fallback3.json",
+          "construction_sha256": "5824e2a3d17b7ac119b35c74ab6451f52ddeedd7c2a817119593cdb872f3dcee",
+          "changed_knobs": [
+            "Raise the overview camera by two meters"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "original left curb and entered-road centerline visibility",
+            "failure_condition": "Primary overview hides the source curb or entered centerline"
+          }
+        }
+      ]
     },
     {
       "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right",
       "construction": "construction-approach_far_depart_right.json",
-      "construction_sha256": "874d93f330f459a3acdaa9e0bc6eb411beb97c94ff6e6006196664f22b825b32",
+      "construction_sha256": "c8faeca73e85b35be6c904048aebed94db29653cab7bdd89e4d7b20c537c7633",
       "kind": "delivery",
       "measurement_contract": "measurement-contract-approach_far_depart_right.json",
       "measurement_procedure": {
@@ -47,12 +92,57 @@
           "method": "original body corners relative to entered road directed centerline",
           "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
         }
-      }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route connectivity, turn speed and original curb/centerline camera visibility may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-approach_far_depart_right-fallback1.json",
+          "construction_sha256": "e93d54977d4f6f4a58d59b4fa196687609085561cd9f1efcb66cf09df914126a",
+          "changed_knobs": [
+            "Use one-meter connected route sampling"
+          ],
+          "trigger": {
+            "source": "road.xodr and original route/trace readback",
+            "metric": "connected junction and destination route at one-meter waypoint spacing",
+            "failure_condition": "Two-meter sampling skips the intended connected left-turn route"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-approach_far_depart_right-fallback2.json",
+          "construction_sha256": "b1a43b7e650b7b9af25decd1850843114058535256d5a2dbfbb244cab4b64d30",
+          "changed_knobs": [
+            "Lower turn throttle to 0.16"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and body_footprints.jsonl",
+            "metric": "original departure completion and body-corner side after turn",
+            "failure_condition": "Primary turn speed overshoots the intended right-of-centerline departure"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-approach_far_depart_right-fallback3.json",
+          "construction_sha256": "6530f619869b17eb3ec49c3ef360d4e71666e67b77027acb103e1af6bf9f8d4f",
+          "changed_knobs": [
+            "Raise the overview camera by two meters"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "original left curb and entered-road centerline visibility",
+            "failure_condition": "Primary overview hides the source curb or entered centerline"
+          }
+        }
+      ]
     },
     {
       "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left",
       "construction": "construction-approach_near_depart_left.json",
-      "construction_sha256": "5f8c407b87c96b3a842ecb3cb271ce00495f784fcc0b8b6bc837e453c0809563",
+      "construction_sha256": "cdea302a0ef52bf615e108cee29a08f1a23f75ceda128d76fc2b0f2288abcd5f",
       "kind": "delivery",
       "measurement_contract": "measurement-contract-approach_near_depart_left.json",
       "measurement_procedure": {
@@ -70,7 +160,256 @@
           "method": "original body corners relative to entered road directed centerline",
           "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
         }
-      }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route connectivity, turn speed and original curb/centerline camera visibility may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-approach_near_depart_left-fallback1.json",
+          "construction_sha256": "e1cf877cb95b4e318e6d953503eded37dd6507cc5b017a215e1d14a9be91322b",
+          "changed_knobs": [
+            "Use one-meter connected route sampling"
+          ],
+          "trigger": {
+            "source": "road.xodr and original route/trace readback",
+            "metric": "connected junction and destination route at one-meter waypoint spacing",
+            "failure_condition": "Two-meter sampling skips the intended connected left-turn route"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-approach_near_depart_left-fallback2.json",
+          "construction_sha256": "688f2c38da22483e3039108792e0262a3fde2ed456b67874f59476b616a76ddc",
+          "changed_knobs": [
+            "Lower turn throttle to 0.16"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and body_footprints.jsonl",
+            "metric": "original departure completion and body-corner side after turn",
+            "failure_condition": "Primary turn speed overshoots the intended right-of-centerline departure"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-approach_near_depart_left-fallback3.json",
+          "construction_sha256": "53b26178edcfcfe373c5984a8c722b2f1327fae0241f143054970d06d16e15d6",
+          "changed_knobs": [
+            "Raise the overview camera by two meters"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "original left curb and entered-road centerline visibility",
+            "failure_condition": "Primary overview hides the source curb or entered centerline"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0000",
+      "construction": "construction-approach_practicability_grid-0000.json",
+      "construction_sha256": "fcc780acde2750ab4cd847eb45de69fa07c52f24987095bdc92a4c681838ea2f",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-approach_practicability_grid-0000.json",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/diagnostic-recipe-approach_practicability_grid-0000.json",
+      "acquisition": {
+        "approach_left_curb_distance_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to map left curb",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        },
+        "departure_centerline_signed_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to entered road directed centerline",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route connectivity, turn speed and original curb/centerline camera visibility may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-approach_practicability_grid-0000-fallback1.json",
+          "construction_sha256": "4d3bae5f7f477618948039ff479ef9f7e209e22a5b7f2686ecd6d8cb8fa7c5e3",
+          "changed_knobs": [
+            "Use one-meter connected route sampling"
+          ],
+          "trigger": {
+            "source": "road.xodr and original route/trace readback",
+            "metric": "connected junction and destination route at one-meter waypoint spacing",
+            "failure_condition": "Two-meter sampling skips the intended connected left-turn route"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-approach_practicability_grid-0000-fallback2.json",
+          "construction_sha256": "cc80e19126ade2b3c876111fc5c12dfee04212660687a8e5753ee3146c5ffd03",
+          "changed_knobs": [
+            "Lower turn throttle to 0.16"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and body_footprints.jsonl",
+            "metric": "original departure completion and body-corner side after turn",
+            "failure_condition": "Primary turn speed overshoots the intended right-of-centerline departure"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-approach_practicability_grid-0000-fallback3.json",
+          "construction_sha256": "548587eef5bb840d6ed2d3a5f7f3d76daf08985cba2538c6e21913af6b61633b",
+          "changed_knobs": [
+            "Raise the overview camera by two meters"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "original left curb and entered-road centerline visibility",
+            "failure_condition": "Primary overview hides the source curb or entered centerline"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0001",
+      "construction": "construction-approach_practicability_grid-0001.json",
+      "construction_sha256": "1a9be71ef12dcfdc0189873aea5cb658b414d5fb643943e0d978ca4ea02d6926",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-approach_practicability_grid-0001.json",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/diagnostic-recipe-approach_practicability_grid-0001.json",
+      "acquisition": {
+        "approach_left_curb_distance_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to map left curb",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        },
+        "departure_centerline_signed_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to entered road directed centerline",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route connectivity, turn speed and original curb/centerline camera visibility may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-approach_practicability_grid-0001-fallback1.json",
+          "construction_sha256": "58ba15082c8414ef99fee5df98996c51c9e2badc7d1e7a8e5c5e9f895346aa4e",
+          "changed_knobs": [
+            "Use one-meter connected route sampling"
+          ],
+          "trigger": {
+            "source": "road.xodr and original route/trace readback",
+            "metric": "connected junction and destination route at one-meter waypoint spacing",
+            "failure_condition": "Two-meter sampling skips the intended connected left-turn route"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-approach_practicability_grid-0001-fallback2.json",
+          "construction_sha256": "778b77baa935461189e33dd925b162921538d1c3ae41ab6ee91947aa1f2168e3",
+          "changed_knobs": [
+            "Lower turn throttle to 0.16"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and body_footprints.jsonl",
+            "metric": "original departure completion and body-corner side after turn",
+            "failure_condition": "Primary turn speed overshoots the intended right-of-centerline departure"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-approach_practicability_grid-0001-fallback3.json",
+          "construction_sha256": "d209beca836f29a6ba438c4e5bc688cc34a034319a1910c23668dbefcbe300fa",
+          "changed_knobs": [
+            "Raise the overview camera by two meters"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "original left curb and entered-road centerline visibility",
+            "failure_condition": "Primary overview hides the source curb or entered centerline"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_practicability_grid-0002",
+      "construction": "construction-approach_practicability_grid-0002.json",
+      "construction_sha256": "4ca601e3ba710a4643dde9dc61ed6bb4fea3f87ea512303dd7a13a4374a753bd",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-approach_practicability_grid-0002.json",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/diagnostic-recipe-approach_practicability_grid-0002.json",
+      "acquisition": {
+        "approach_left_curb_distance_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to map left curb",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        },
+        "departure_centerline_signed_m": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original body corners relative to entered road directed centerline",
+          "evidence": "road_geometry.json, body_footprints.jsonl and original frame map"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route connectivity, turn speed and original curb/centerline camera visibility may fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/construction-approach_practicability_grid-0002-fallback1.json",
+          "construction_sha256": "8443c7089ad1bf988118b3ef22095a76d379d5e229f97f4a614595d1ac0a3318",
+          "changed_knobs": [
+            "Use one-meter connected route sampling"
+          ],
+          "trigger": {
+            "source": "road.xodr and original route/trace readback",
+            "metric": "connected junction and destination route at one-meter waypoint spacing",
+            "failure_condition": "Two-meter sampling skips the intended connected left-turn route"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/construction-approach_practicability_grid-0002-fallback2.json",
+          "construction_sha256": "06954a603b42d9088b7a3cd001f20ba8796a0051a4362d7f414d30df8e3af830",
+          "changed_knobs": [
+            "Lower turn throttle to 0.16"
+          ],
+          "trigger": {
+            "source": "trace.jsonl and body_footprints.jsonl",
+            "metric": "original departure completion and body-corner side after turn",
+            "failure_condition": "Primary turn speed overshoots the intended right-of-centerline departure"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/construction-approach_practicability_grid-0002-fallback3.json",
+          "construction_sha256": "0e93ea74d46872a2d82b60c8643bd549336e16862233fd260ed0ef1d2282aa1b",
+          "changed_knobs": [
+            "Raise the overview camera by two meters"
+          ],
+          "trigger": {
+            "source": "overview.mkv and video_frames.jsonl",
+            "metric": "original left curb and entered-road centerline visibility",
+            "failure_condition": "Primary overview hides the source curb or entered centerline"
+          }
+        }
+      ]
     }
   ]
 }
