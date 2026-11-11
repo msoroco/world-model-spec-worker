@@ -24,6 +24,8 @@ def measure_following_interval(report):
 def finalize(attempt:Path,output:Path)->dict:
     from worker_exchange.native_output import write_result
     attempt,output=Path(attempt),Path(output)
+    if output.exists() or (attempt/'result.json').exists():
+        raise ValueError('Retain prior finalization; choose a fresh attempt')
     required=('config.json','road_context.json','vehicle_history.jsonl',
               'video_frames.jsonl','trace.jsonl','capture/evidence.jsonl',*CAMERAS)
     for name in required:
@@ -41,6 +43,28 @@ def finalize(attempt:Path,output:Path)->dict:
     following_context=measure_following_context(report)
     ends_before_change=measure_following_interval(report)
     source_hashes=report['sources']
+    channel_root=attempt/'channels'
+    if channel_root.exists():
+        raise ValueError('Retain prior derived channels; choose a fresh attempt')
+    channel_root.mkdir()
+    samples=report['samples']
+    streams={'ego_speed':'ego_speed_mps','lead_speed':'lead_speed_mps',
+             'longitudinal_body_gap':'longitudinal_body_gap_m'}
+    for name,field in streams.items():
+        with (channel_root/(name+'.jsonl')).open('x') as stream:
+            for row in samples:
+                stream.write(json.dumps({'time_s':row['time_s'],'value':row[field],
+                                         'original_frame':row['frame']},allow_nan=False)+'\n')
+    road_context=json.loads((attempt/'road_context.json').read_text())
+    context_record={'highway_condition':{'surface_samples':[row['surface_condition'] for row in samples],
+                                         'native_map_id':road_context['native_map_id']},
+                    'traffic_state':{'actor_ids_by_frame':[row['traffic_actor_ids'] for row in samples],
+                                     'lead_brake_frames':[row['frame'] for row in samples if row['lead_brake']]}}
+    (channel_root/'context.json').write_text(json.dumps(context_record,indent=2)+'\n')
+    evidence=[{'name':name,'unit':unit,'reference':'channels/'+name+'.jsonl'}
+              for name,unit in (('ego_speed','m/s'),('lead_speed','m/s'),('longitudinal_body_gap','m'))]
+    evidence += [{'name':name,'unit':'structured record','reference':'channels/context.json'}
+                 for name in ('highway_condition','traffic_state')]
     result={'case_id':case_id,
             'measured_values':{'minimum_sampled_body_gap_m':gap,
                                'following_end_before_lane_change':ends_before_change},
@@ -55,13 +79,10 @@ def finalize(attempt:Path,output:Path)->dict:
             'trace_reference':'trace.jsonl','video_references':list(CAMERAS),
             'video_frame_map_reference':'video_frames.jsonl',
             'recording_description':config['recording_description'],
-            'recording_evidence':{'source_hashes':source_hashes,
-                                  'capture_evidence_sha256':sha(attempt/'capture/evidence.jsonl')},
-            'realized_observables':{'following_start':report['following_start'],
-                                    'following_end':report['following_end'],
-                                    'first_lane_change':report['first_lane_change'],
-                                    'minimum_sampled_body_gap_m':gap,
-                                    'reasonable_and_prudent_judgment':'unresolved'}}
+            'recording_evidence':evidence,
+            'source_evidence_hashes':source_hashes,
+            'capture_evidence_sha256':sha(attempt/'capture/evidence.jsonl'),
+            'realized_observables':{}}
     analysis={'format':'worker-following-analysis','case_id':case_id,
               'measurements':{'minimum_sampled_body_gap_m':{'method':'measure_minimum_following_gap',
                   'value':gap,'sources':source_hashes},
@@ -71,8 +92,6 @@ def finalize(attempt:Path,output:Path)->dict:
                   'value':result['measured_values']['following_end_before_lane_change'],
                   'sources':source_hashes}},
               'source_report':report}
-    if output.exists() or (attempt/'result.json').exists():
-        raise ValueError('Retain prior finalization; choose a fresh attempt')
     write_result(attempt,result)
     output.write_text(json.dumps(analysis,indent=2,allow_nan=False)+'\n')
     return analysis

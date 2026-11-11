@@ -15,6 +15,7 @@ class FFV1Writer:
             raise ValueError("Fresh path and positive video dimensions/rate required")
         self.path, self.width, self.height, self.fps = path, width, height, fps
         self.frames = 0
+        self.exit_code = None
         self.process = subprocess.Popen([
             "ffmpeg", "-hide_banner", "-loglevel", "error", "-n",
             "-f", "rawvideo", "-pixel_format", "bgra",
@@ -35,6 +36,7 @@ class FFV1Writer:
         if self.process.stdin and not self.process.stdin.closed:
             self.process.stdin.close()
         code = self.process.wait(timeout=60)
+        self.exit_code = code
         error = self.process.stderr.read().decode(errors="replace")
         self.process.stderr.close()
         if code != 0 or self.frames == 0 or not self.path.is_file():

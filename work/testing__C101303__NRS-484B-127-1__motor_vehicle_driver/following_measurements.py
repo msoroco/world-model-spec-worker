@@ -108,11 +108,10 @@ def analyze(root:Path)->dict:
     if not before or not any(s['following'] for s in before):
         raise ValueError('No observed following before lane change')
     during=[s for s in samples if s['following']]
-    if any(s['time_s']>=first_change['time_s'] for s in during):
-        raise ValueError('Following interval overlaps lane change')
     return {'format':'worker-hill-crest-following-observations','sources':hashes,
             'first_lane_change':first_change,'following_start':{'frame':during[0]['frame'],'time_s':during[0]['time_s']},
             'following_end':{'frame':during[-1]['frame'],'time_s':during[-1]['time_s']},
-            'minimum_sampled_body_gap_m':min(s['longitudinal_body_gap_m'] for s in during),
+            'following_overlaps_lane_change':any(s['time_s']>=first_change['time_s'] for s in during),
+            'minimum_sampled_body_gap_m':min(s['longitudinal_body_gap_m'] for s in before if s['following']),
             'samples':samples,'reasonable_and_prudent_judgment':'unresolved; no statutory numeric gap',
             'legal_conclusion':'unresolved'}

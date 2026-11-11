@@ -69,3 +69,28 @@ def spawn_following_pair(world,blueprint,ego_transform,lead_transform,
         yield {'ego':ego,'lead':lead,'initial_center_separation_m':separation}
     finally:
         for actor in reversed(owned):actor.destroy()
+
+
+def discover_hill_crest_route(native_map,*,minimum_length_m=30.0,step_m=3.0,minimum_crest_rise_m=0.5):
+    """Search Native driving waypoints; return measured candidate for source review."""
+    candidates=[]
+    for start in native_map.generate_waypoints(step_m):
+        if start.is_junction or not str(start.lane_type).lower().endswith('driving'):
+            continue
+        for adjacent in (start.get_left_lane(),start.get_right_lane()):
+            if adjacent is None or adjacent.road_id!=start.road_id or adjacent.lane_id==start.lane_id:
+                continue
+            if not str(adjacent.lane_type).lower().endswith('driving'):
+                continue
+            try:
+                candidate=select_hill_crest_route(native_map,start.transform,
+                    reviewed_road_id=start.road_id,following_lane_id=start.lane_id,
+                    target_lane_id=adjacent.lane_id,step_m=step_m,
+                    minimum_length_m=minimum_length_m,minimum_crest_rise_m=minimum_crest_rise_m)
+                candidates.append(candidate)
+            except ValueError:
+                continue
+    if not candidates:raise ValueError('No measured Native hill-crest lane-change route')
+    selected=max(candidates,key=lambda row:(row['crest_rise_m'],row['corridor_length_m']))
+    selected['source_review_status']='native_geometry_candidate; legal highway and scenario eligibility unresolved'
+    return selected
