@@ -71,7 +71,7 @@ def finalize(attempt, output):
     if not ffmpeg:
         raise ValueError('Pinned FFmpeg executable is required for saved video proof')
     original = measurement['physical_native_evidence']
-    signal_name = 'reference_corner.mkv' if original else 'signal_reference.mkv'
+    signal_name = 'reference_corner.mkv'
     if not (attempt / signal_name).is_file():
         raise ValueError('Missing required source: ' + signal_name)
     if original:
@@ -144,7 +144,10 @@ def finalize(attempt, output):
               'termination_reason': 'full 480-frame saved window; independent acceptance pending',
               'physical_failure_flags': ['Original pixel and physical behavior review pending'] if original else ['Native signal/body behavior and original pixels unverified'],
               'trace_reference': 'trace.jsonl',
-              'video_references': [signal_name, 'raw.mkv'] if original else [signal_name],
+              'video_references': (['overview.mkv', 'approach.mkv', signal_name,
+                                    'driver_reference.mkv', 'raw.mkv'] if original else
+                                   ['overview.mkv', 'approach.mkv', signal_name,
+                                    'driver_reference.mkv']),
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': construction['recording_description'],
               'recording_evidence': evidence,

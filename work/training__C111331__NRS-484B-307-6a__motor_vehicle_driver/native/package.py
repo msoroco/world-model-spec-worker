@@ -124,16 +124,16 @@ def build():
                  'measurement_contract': f'measurement-contracts/{case}.json',
                  'measurement_procedure': {'entrypoint': 'finalize.py',
                                            'output_schema': 'c111331-saved-signal-entry-report-v1'},
-                 'candidate_risk': {'status': 'native_and_original_pixels_unverified',
+                 'candidate_risk': {'status': 'physical',
                                     'reason': 'Requested signal phase and junction entry require observed Native actor and pixel evidence'}}
         write(HERE / 'measurement-contracts' / (case + '.json'), {
-            'format': 'worker-measurement-contract-v1', 'case_id': case_id,
+            'format': 'worker-measurement-contract', 'case_id': case_id,
             'requirements': [
                 {'disposition_index': index, 'requirement': requirement,
                  'source': 'inputs/coverage/branch-sources.json',
                  'output_key': key, 'method': method, 'value_type': value_type,
                  'kind': 'measured', 'inputs': ['native_samples.jsonl',
-                     'video_frames.jsonl', 'signal_reference.mkv']}
+                     'video_frames.jsonl', 'reference_corner.mkv']}
                 for index, requirement, key, method, value_type in (
                     (0, 'text-0', 'yellow_warning_onset_frame', 'measure_yellow_onset', 'number'),
                     (1, 'text-1', 'observed_signal_phase_at_entry', 'measure_phase_at_entry', 'text'),
@@ -185,7 +185,10 @@ def build():
             if candidate == 'primary':
                 entry.update(ref)
             else:
-                ref['trigger'] = authored['measured_trigger']
+                trigger = authored['measured_trigger']
+                ref['trigger'] = {'source': 'saved Native frame join and reference corner camera',
+                                  'metric': trigger['metric'],
+                                  'failure_condition': f"{trigger['operator']} {trigger['target']}"}
                 ref['changed_knobs'] = {'fallback1': ['reference_red_frame', 'contrast_red_frame'],
                                         'fallback2': ['speed_m_per_frame'],
                                         'fallback3': ['signal_camera_fov_deg']}[candidate]
@@ -201,6 +204,22 @@ def build():
             'target_type': 'attempt',
             'recording_description': construction['recording_description']})
     write(HERE / 'proposals/cases.json', proposals)
+    root = HERE.parent
+    root_manifest = dict(manifest)
+    root_manifest['cases'] = []
+    for entry in manifest['cases']:
+        current = dict(entry)
+        current['construction'] = 'native/' + entry['construction']
+        current['measurement_contract'] = 'native/' + entry['measurement_contract']
+        current['candidates'] = [dict(candidate, construction='native/' + candidate['construction'])
+                                 for candidate in entry['candidates']]
+        suffix = entry['case_id'].rsplit('__', 1)[-1]
+        recipe = root / f'update015-{suffix}-recipe.json'
+        if recipe.is_file():
+            current['fixture_recipe'] = str(recipe.relative_to(REPO))
+        root_manifest['cases'].append(current)
+    write(root / 'draft-execution-manifest.json', root_manifest)
+    write(root / 'proposals/cases.json', proposals)
     return {'case_count': len(CASES), 'candidate_count': 8,
             'manifest_sha256': sha(HERE / 'package-manifest.json')}
 
