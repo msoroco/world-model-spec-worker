@@ -9,7 +9,7 @@ import subprocess
 
 from measure_native import analyze,rows,sha
 
-CAMERAS=('overview','reference_left','reference_right','ego')
+CAMERAS=('overview','approach','reference_corner','driver_reference')
 CHANNELS=('drv.u_turn','st.curvature','st.grade','st.crest',
           'st.sight_distance','rel.oncoming','drv.approaching','kin.position')
 MEASUREMENT_INPUTS={
@@ -22,7 +22,7 @@ MEASUREMENT_INPUTS={
     'multi_movement_reversal_history':('native_body_history.jsonl','trace.jsonl'),
     'sightline_boundary_and_pixels':(
         'driver_eye_rays.jsonl','video_frames.jsonl',
-        'reference_left.mkv','reference_right.mkv')}
+        'approach.mkv','reference_corner.mkv')}
 
 
 def measure_case_sources(attempt):
@@ -69,6 +69,45 @@ def video_frames(path, expected_hashes=None):
     return count
 
 
+def derive_channels(attempt, count):
+    """Reconstruct observation rows from retained frame-joined Native sources."""
+    trace=rows(attempt/'trace.jsonl')
+    history=rows(attempt/'native_body_history.jsonl')
+    viewpoints=rows(attempt/'driver_eye_rays.jsonl')
+    mapping=rows(attempt/'video_frames.jsonl')
+    if any(len(series)!=count for series in (trace,history,viewpoints,mapping)):
+        raise ValueError('Original channel source counts differ')
+    context=json.loads((attempt/'native-construction-context.json').read_text())
+    output={name:[] for name in CHANNELS}
+    for t,h,v,m in zip(trace,history,viewpoints,mapping):
+        frame=m['native_frame'];time=m['time_s']
+        if any(item!=frame for item in (t['frame'],h['native_frame'],v['native_frame'])) or any(
+            abs(item-time)>1e-4 for item in (t['time_s'],h['time_s'],v['time_s'])):
+            raise ValueError('Original channel frame/time join differs')
+        values={
+            'drv.u_turn':{'observed_heading_deg':h['ego_heading_deg'],
+                          'observed_body_vertices_m':h['ego_body_vertices_m']},
+            'st.curvature':{'authored_road_sha256':context.get('authored_road_sha256'),
+                            'physical_curvature_verified':False},
+            'st.grade':{'native_waypoint_elevation_samples':context['waypoint_elevation_samples'],
+                        'physical_grade_at_turn_verified':False},
+            'st.crest':{'native_waypoint_elevation_samples':context['waypoint_elevation_samples'],
+                        'near_crest_judgment_verified':False},
+            'st.sight_distance':{'approaching_driver_views':v['views'],
+                                 'original_body_and_pixel_visibility_verified':False},
+            'rel.oncoming':{'approaching_driver_views':v['views'],
+                            'actual_approach_direction_verified':False},
+            'drv.approaching':{'approaching_driver_views':v['views'],
+                               'actual_approach_motion_verified':False},
+            'kin.position':t['position_m']}
+        for name,value in values.items():
+            output[name].append(json.dumps({'native_frame':frame,'time_s':time,
+                                             'value':value},allow_nan=False)+'\n')
+    channel_dir=attempt/'channels';channel_dir.mkdir(exist_ok=True)
+    for name,lines in output.items():
+        (channel_dir/(name+'.jsonl')).write_text(''.join(lines))
+
+
 def finalize(attempt,output):
     attempt=Path(attempt).resolve();output=Path(output).resolve()
     if output.exists() or (attempt/'result.json').exists():
@@ -92,6 +131,7 @@ def finalize(attempt,output):
         [frame['original_rgb_sha256'][name] for frame in mapping]) for name in CAMERAS}
     if any(value!=count for value in video_counts.values()):
         raise ValueError('Original source video frame count differs')
+    derive_channels(attempt,count)
     recording_evidence=[]
     for name in CHANNELS:
         reference='channels/'+name+'.jsonl';source=rows(attempt/reference)
@@ -104,7 +144,7 @@ def finalize(attempt,output):
             'method':'count of independently verified original-pixel frame pairs; no such audit is present in this saved source',
             'tolerance':0,'matched':False,'physical_cause_confirmed':False,
             'cause_evidence':['driver_eye_rays.jsonl','video_frames.jsonl',
-                              'reference_left.mkv','reference_right.mkv']}
+                              'approach.mkv','reference_corner.mkv']}
     description=config.get('recording_description') or {
         'channels':[{'name':name,'unit':'structured','sampling_rate_hz':config['rate_hz']}
                     for name in CHANNELS],

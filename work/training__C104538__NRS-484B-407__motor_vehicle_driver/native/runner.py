@@ -61,8 +61,8 @@ def check(config):
             raise ValueError('Materialized obstruction differs from exact case source')
     cameras=camera_plan(suffix,candidate)
     if [(c['name'],c['width'],c['height']) for c in cameras] != [
-        ('overview',1920,1080),('reference_left',1280,720),
-        ('reference_right',1280,720),('ego',1280,720)]:
+        ('overview',1920,1080),('approach',1280,720),
+        ('reference_corner',1280,720),('driver_reference',1280,720)]:
         raise ValueError('Four-view original camera contract changed')
     layout=placements(suffix,candidate)
     return {'geometry':geometry_check(),'obstruction':obstruction_check(),

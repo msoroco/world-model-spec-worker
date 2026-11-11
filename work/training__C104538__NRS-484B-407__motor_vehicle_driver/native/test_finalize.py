@@ -16,10 +16,6 @@ def prepare(root):
     mapping=[json.loads(s) for s in (root/'video_frames.jsonl').read_text().splitlines()]
     for row in mapping:row['original_rgb_sha256']={name:'a'*64 for name in CAMERAS}
     put_rows(root/'video_frames.jsonl',mapping)
-    for name in CHANNELS:
-        put_rows(root/'channels'/(name+'.jsonl'),[
-            {'native_frame':row['native_frame'],'time_s':row['time_s'],'value':{}}
-            for row in mapping])
     for name in CAMERAS:(root/(name+'.mkv')).write_bytes(b'synthetic-test-video-placeholder')
 
 
@@ -37,6 +33,8 @@ class FinalizerTest(unittest.TestCase):
             self.assertFalse(result['accepted'])
             self.assertFalse(result['legal_verdict_claimed'])
             self.assertEqual(len(result['recording_evidence']),8)
+            self.assertEqual(json.loads((root/'channels/kin.position.jsonl').read_text().splitlines()[0])['value'],
+                             json.loads((root/'trace.jsonl').read_text().splitlines()[0])['position_m'])
 
     def test_incomplete_capture_and_channel_rejected(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -47,7 +45,7 @@ class FinalizerTest(unittest.TestCase):
                 finalize(root,root/'analysis-report.json')
             put(root/'capture/manifest.json',{'case_id':json.loads((root/'config.json').read_text())['case_id'],
                 'frames':3,'extraction_confirmed':True})
-            (root/'channels'/'st.sight_distance.jsonl').unlink()
+            (root/'driver_eye_rays.jsonl').unlink()
             with patch('finalize.video_frames',return_value=3):
                 with self.assertRaisesRegex(ValueError,'Missing required source'):
                     finalize(root,root/'analysis-report.json')

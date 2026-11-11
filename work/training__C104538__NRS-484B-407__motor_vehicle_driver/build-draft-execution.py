@@ -21,10 +21,9 @@ def write(path,value):
 
 
 def build():
-    runtime_proof=json.loads((FOLDER.parents[1]/'work/_shared/runtime-proof.json').read_text())
     manifest={'format':'worker-unselected-draft-construction-manifest-v1',
               'assignment_id':ASSIGNMENT,'status':'draft_not_selected',
-              'runtime_manifest_sha256':runtime_proof['runtime_manifest_sha256'],'cases':[]}
+              'runtime_manifest_sha256':sha(FOLDER.parents[1]/'runtime/pipeline/SOURCE-MANIFEST.json'),'cases':[]}
     common=[{'path':name,'content':(NATIVE/name).read_text()} for name in MODULES]
     common += [{'path':'tests/'+name,'content':(NATIVE/name).read_text()} for name in TESTS]
     for suffix in SUFFIXES:
@@ -48,7 +47,7 @@ def build():
                           source_packets=[],
                           cameras=[{'name':name,'width':width,'height':height}
                              for name,width,height in (('overview',1920,1080),
-                                 ('reference_left',1280,720),('reference_right',1280,720),('ego',1280,720))])
+                                 ('approach',1280,720),('reference_corner',1280,720),('driver_reference',1280,720))])
             description={'channels':[{'name':name,'unit':'structured',
                 'sampling_rate_hz':20,'method':'original Native actor/map/channel source',
                 'time_window':'entire original 24 s / 480-frame attempt',
