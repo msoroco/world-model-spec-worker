@@ -1,4 +1,5 @@
 import importlib.util
+import hashlib
 import json
 import tempfile
 import unittest
@@ -83,12 +84,20 @@ class SignalTests(unittest.TestCase):
     def fixture(self, root):
         context = {"intersection_id": 25, "native_signal_id": 8,
                    "native_map_id": "TownX", "governed_road_id": 11,
-                   "governed_lane_id": -1, "vehicular_heads_installed": True,
-                   "vehicular_heads_uncovered": True,
-                   "head_visibility_source": "source-camera/front"}
+                   "governed_lane_id": -1, "other_native_signal_id": 9,
+                   "other_governed_road_id": 22, "other_governed_lane_id": -1}
         (root / "signal_context.json").write_text(json.dumps(context))
-        rows = [{"frame": 101, "time_s": 1.0, "native_signal_id": 8, "state": "Red"},
-                {"frame": 102, "time_s": 1.1, "native_signal_id": 8, "state": "Off"}]
+        (root / "approach.mkv").write_bytes(b"synthetic source-camera placeholder")
+        review = {"native_signal_id": 8, "camera": "approach", "video_frame": 1,
+                  "carla_frame": 102, "source_video_sha256": hashlib.sha256((root / "approach.mkv").read_bytes()).hexdigest(),
+                  "head_region_px": [10, 10, 50, 50], "installed": True, "uncovered": True,
+                  "review_basis": "synthetic diagnostic only; physical pixels unverified"}
+        (root / "head_visibility_review.json").write_text(json.dumps(review))
+        (root / "other_head_visibility_review.json").write_text(json.dumps({**review, "native_signal_id": 9}))
+        rows = [{"frame": 101, "time_s": 1.0, "native_signal_id": 8, "state": "Red",
+                 "other_native_signal_id": 9, "other_state": "Green"},
+                {"frame": 102, "time_s": 1.1, "native_signal_id": 8, "state": "Off",
+                 "other_native_signal_id": 9, "other_state": "Green"}]
         frames = [{"video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}
                   for i, row in enumerate(rows)]
         (root / "signal_history.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
@@ -104,7 +113,7 @@ class SignalTests(unittest.TestCase):
             entry = self.fixture(root)
             result = measure.analyze(root, entry)
             self.assertEqual(result["at_body_entry"]["ego"]["native_state"], "Off")
-            self.assertEqual(result["at_body_entry"]["other"]["native_state"], "Red")
+            self.assertEqual(result["at_body_entry"]["other"]["native_state"], "Green")
             self.assertIn("unresolved", result["inoperative_judgment"])
 
     def test_reject_stale_frame_and_uncovered_assertion(self):
@@ -115,9 +124,9 @@ class SignalTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "join"):
                 measure.analyze(root, entry)
             self.fixture(root)
-            context = json.loads((root / "signal_context.json").read_text())
-            context["vehicular_heads_uncovered"] = False
-            (root / "signal_context.json").write_text(json.dumps(context))
+            review = json.loads((root / "head_visibility_review.json").read_text())
+            review["uncovered"] = False
+            (root / "head_visibility_review.json").write_text(json.dumps(review))
             with self.assertRaisesRegex(ValueError, "uncovered"):
                 measure.analyze(root, entry)
 
