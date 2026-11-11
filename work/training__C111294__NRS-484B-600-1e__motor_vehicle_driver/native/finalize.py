@@ -143,6 +143,31 @@ def _video_frames(path: Path) -> int:
     return int(result.stdout.strip())
 
 
+def derive_recording_channels(folder: Path, config: dict) -> None:
+    """Derive recording channels from retained Native rows, never fixture channels."""
+    rows = _rows(folder, "native_samples.jsonl")
+    declared = {item["name"] for item in config["recording_description"]["channels"]}
+    expected = {"ego_pose", "ego_speed", "observed_speed", "other_vehicle_pose"}
+    if declared != expected or len(rows) != 480:
+        raise ValueError("Speed recording channel/source contract differs")
+    values = {name: [] for name in expected}
+    for row in rows:
+        velocity = row["ego_velocity_mps"]
+        speed = sum(component * component for component in velocity) ** 0.5
+        current = {"ego_pose": row["ego_position_m"],
+                   "ego_speed": speed, "observed_speed": speed / .44704,
+                   "other_vehicle_pose": row["other_position_m"]}
+        for name, value in current.items():
+            values[name].append(json.dumps({"time_s": row["time_s"], "value": value,
+                "source_kind": row["source_kind"]}, allow_nan=False) + "\n")
+    channel_dir = folder / "channels"
+    if channel_dir.exists():
+        raise ValueError("Pre-existing derived channels are not accepted as saved source")
+    channel_dir.mkdir()
+    for name, lines in values.items():
+        (channel_dir / (name + ".jsonl")).write_text("".join(lines))
+
+
 def finalize_attempt(folder: Path, output: Path) -> dict:
     from worker_exchange.native_output import validate_result
 
@@ -157,15 +182,16 @@ def finalize_attempt(folder: Path, output: Path) -> dict:
     report = finalize(folder, contract, _sha(folder / "native_samples.jsonl"))
     source = report["measurements"]["speed_relation"]["value"]
     videos = [name + ".mkv" for name in
-              ("overview", "ego_forward", "ego_side", "junction")]
+              ("overview", "approach", "reference_corner", "driver_reference")]
     counts = {name: _video_frames(folder / name) for name in videos}
     if set(counts.values()) != {480}:
         raise ValueError("Original camera frame count differs")
     source_kind = report["source_kind"]
     original = source_kind == "original_native_capture"
     requested = {"below_80_mph": 75.0, "inside_80_mph": 79.5,
-                 "above_80_mph": 85.0}[config["case_suffix"]]
+                 "at_80_mph": 80.0, "above_80_mph": 85.0}[config["case_suffix"]]
     measured = source["derived_peak_mph"]
+    derive_recording_channels(folder, config)
     evidence = []
     for channel in config["recording_description"]["channels"]:
         ref = "channels/" + channel["name"] + ".jsonl"
@@ -197,7 +223,8 @@ def finalize_attempt(folder: Path, output: Path) -> dict:
             "unit": "mph", "statistic": "maximum sampled speed",
             "method": "three-axis Native velocity norm over 480 original frames",
             "time_window": "entire 24 s attempt", "reference": "native_samples.jsonl"}},
-        "provenance_kind": "native", "diagnostic_fixture": not original,
+        "provenance_kind": "native" if original else "synthetic_local_diagnostic",
+        "diagnostic_fixture": not original,
         "accepted": False, "legal_verdict_claimed": False}
     validate_result(result)
     report.update(format="c111294-saved-speed-analysis-v1", original_joins=joined,

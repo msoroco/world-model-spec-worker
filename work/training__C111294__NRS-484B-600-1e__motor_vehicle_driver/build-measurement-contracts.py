@@ -29,7 +29,7 @@ def main() -> None:
                          "kind": "measured" if index != 2 else "sourced_context",
                          "inputs": ["native_samples.jsonl", "road.xodr"]
                          if index == 2 else ["native_samples.jsonl"]})
-        contract = {"format": "worker-measurement-contract-v1",
+        contract = {"format": "worker-measurement-contract",
                     "case_id": case_id, "requirements": rows,
                     "negative": {"remove": ["native_samples.jsonl"],
                                  "error_contains": "Missing required source: native_samples.jsonl"}}

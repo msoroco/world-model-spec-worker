@@ -31,7 +31,6 @@ def write_rows(path: Path, rows: list[dict]) -> None:
 def make_attempt(destination: Path, suffix: str, full_resolution: bool = False) -> None:
     destination.mkdir()
     (destination / "capture/native").mkdir(parents=True)
-    (destination / "channels").mkdir()
     construction = json.loads((HERE / "exact-drafts" / suffix / "primary/construction.json").read_text())
     config = json.loads(next(item["content"] for item in construction["files"]
                              if item["path"] == "config.json"))
@@ -64,13 +63,14 @@ def make_attempt(destination: Path, suffix: str, full_resolution: bool = False) 
             "position": {"x": x, "y": y, "z": z}, "position_m": [x, y, z],
             "heading_deg": 90.0, "speed_mps": speed, "speed_mph": speed / .44704,
             "control": {"throttle": .5, "brake": 0, "hand_brake": False},
-            "synthetic_diagnostic": True})
+            "synthetic_diagnostic": True,
+            "speed_provenance": "synthetic_native_sample"})
         evidence.append({"original_frame": frame, "replay_frame": frame,
             "actor_id": sample["ego_actor_id"], "recording_time_s": time_s,
             "replay_simulation_time_s": time_s,
             "ego": {"position_m": [x, y, z], "heading_deg": 90.0,
                     "speed_mps": speed,
-                    "speed_provenance": "original_trace_actor_get_velocity",
+                    "speed_provenance": "synthetic_native_sample",
                     "body_vertices_m": vertices},
             "world": {"weather": {"cloudiness": 0, "precipitation": 0,
                                   "wetness": 0, "fog_density": 0},
@@ -98,17 +98,6 @@ def make_attempt(destination: Path, suffix: str, full_resolution: bool = False) 
             "road.xodr": sha(destination / "road.xodr"),
             "trace.jsonl": sha(destination / "trace.jsonl")},
         "synthetic_diagnostic": True}) + "\n")
-    for channel in config["recording_description"]["channels"]:
-        name = channel["name"]
-        rows = []
-        for sample in native:
-            if name == "ego_pose": value = sample["ego_position_m"]
-            elif name == "other_vehicle_pose": value = sample["other_position_m"]
-            elif name == "ego_speed": value = math.sqrt(sum(v*v for v in sample["ego_velocity_mps"]))
-            elif name == "observed_speed": value = math.sqrt(sum(v*v for v in sample["ego_velocity_mps"])) / .44704
-            else: raise ValueError("Unexpected channel")
-            rows.append({"time_s": sample["time_s"], "value": value})
-        write_rows(destination / "channels" / (name + ".jsonl"), rows)
     for camera in config["cameras"]:
         size = f'{camera["width"]}x{camera["height"]}' if full_resolution else "32x32"
         subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
@@ -121,7 +110,7 @@ def main() -> None:
     scratch = Path(tempfile.mkdtemp(dir=ROOT / ".runtime-work",
                                     prefix="c111294-saved-probe-"))
     results = []
-    for suffix in ("below_80_mph", "inside_80_mph", "above_80_mph"):
+    for suffix in ("below_80_mph", "inside_80_mph", "at_80_mph", "above_80_mph"):
         attempt = scratch / suffix
         make_attempt(attempt, suffix)
         source_hashes = {str(p.relative_to(attempt)): sha(p) for p in attempt.rglob("*") if p.is_file()}
@@ -129,7 +118,8 @@ def main() -> None:
         result = json.loads((attempt / "result.json").read_text())
         validate_result(result)
         if source_hashes != {str(p.relative_to(attempt)): sha(p) for p in attempt.rglob("*")
-                             if p.is_file() and p.name not in ("analysis-report.json", "result.json")}:
+                             if p.is_file() and p.name not in ("analysis-report.json", "result.json")
+                             and "channels" not in p.parts}:
             raise ValueError("Saved analysis changed original source")
         contract = json.loads((attempt / "measurement-contract.json").read_text())
         verify_report(contract, report, attempt)
@@ -144,7 +134,7 @@ def main() -> None:
         changed = scratch / (suffix + "-changed-frame")
         for diagnostic in (missing, changed):
             shutil.copytree(attempt, diagnostic,
-                            ignore=shutil.ignore_patterns("analysis-report.json", "result.json"))
+                            ignore=shutil.ignore_patterns("analysis-report.json", "result.json", "channels"))
         (missing / "native_samples.jsonl").unlink()
         frame_rows = [json.loads(line) for line in
                       (changed / "capture/evidence.jsonl").read_text().splitlines()]

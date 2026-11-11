@@ -36,7 +36,7 @@ class FakeActor:
 
 class RunnerTest(unittest.TestCase):
     def test_all_twelve_cpu_preflights(self):
-        for case in ("below_80_mph", "inside_80_mph", "above_80_mph"):
+        for case in ("below_80_mph", "inside_80_mph", "at_80_mph", "above_80_mph"):
             for candidate in engineering.CANDIDATES:
                 with self.subTest(case=case, candidate=candidate):
                     report = runner.check(case, candidate)

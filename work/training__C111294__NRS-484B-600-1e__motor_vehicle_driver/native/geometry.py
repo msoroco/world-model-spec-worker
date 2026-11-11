@@ -17,7 +17,7 @@ EGO_START_Y_M = -70.0
 OTHER_START_Y_M = 100.0
 OTHER_SPEED_MPS = 10.0
 SPEED_MPH = {"below_80_mph": 75.0, "inside_80_mph": 79.5,
-             "above_80_mph": 85.0}
+             "at_80_mph": 80.0, "above_80_mph": 85.0}
 MPH_TO_MPS = 0.44704
 
 

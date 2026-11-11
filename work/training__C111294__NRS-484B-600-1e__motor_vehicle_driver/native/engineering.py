@@ -13,7 +13,7 @@ CANDIDATES = ("primary", "fallback1", "fallback2", "fallback3")
 BASE_KNOBS = {"speed_pid_kp": 0.40, "steering_lookahead_m": 8.0,
               "brake_pid_kp": 0.30, "sample_rate_hz": 20,
               "duration_s": 24.0,
-              "camera_profile": ["overview", "ego_forward", "ego_side", "junction"]}
+              "camera_profile": ["overview", "approach", "reference_corner", "driver_reference"]}
 CHANGED_KNOBS = {"primary": {},
                  "fallback1": {"speed_pid_kp": 0.55},
                  "fallback2": {"steering_lookahead_m": 11.0},

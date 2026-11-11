@@ -65,6 +65,9 @@ def build() -> dict:
                  "measurement_procedure": {"entrypoint": "finalize.py",
                     "output_schema": "c111294-saved-speed-measurement-v1"},
                  "candidates": []}
+        recipe_path = HERE / f"update015-{suffix}-recipe.json"
+        if recipe_path.is_file():
+            entry["fixture_recipe"] = str(recipe_path.relative_to(ROOT))
         for candidate in CANDIDATES:
             policy = candidate_plan(suffix, candidate)
             config = {"case_id": case["case_id"],

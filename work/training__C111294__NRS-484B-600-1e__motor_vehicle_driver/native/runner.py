@@ -233,9 +233,6 @@ def execute(case: str, candidate: str, output_dir: Path, host: str, port: int) -
         capture = PipelineCapture(client, ego, output, plan["case_id"],
                                   visibility=False,
                                   required_observations=config.get("required_atoms", []))
-        (output / "channels").mkdir()
-        for name in CHANNELS:
-            channels[name] = (output / "channels" / (name + ".jsonl")).open("x")
         start = world.get_snapshot().timestamp.elapsed_seconds
         with (output / "native_samples.jsonl").open("x") as native_file, \
              (output / "video_frames.jsonl").open("x") as video_file, \
@@ -255,13 +252,6 @@ def execute(case: str, candidate: str, output_dir: Path, host: str, port: int) -
                 body_file.write(json.dumps({"frame": frame, "time_s": elapsed,
                     "body_vertices_m": row["ego_body_vertices_m"]}, allow_nan=False) + "\n")
                 capture.capture(frame, elapsed, extra={"c111294_speed_source": row})
-                values = {"ego_pose": row["ego_position_m"],
-                          "ego_speed": math.sqrt(sum(v*v for v in row["ego_velocity_mps"])),
-                          "observed_speed": math.sqrt(sum(v*v for v in row["ego_velocity_mps"])) / MPH_TO_MPS,
-                          "other_vehicle_pose": row["other_position_m"]}
-                for name, stream in channels.items():
-                    stream.write(json.dumps({"frame": index, "native_frame": frame,
-                        "time_s": elapsed, "value": values[name]}, allow_nan=False) + "\n")
                 for spec in camera_plan():
                     image = queues[spec["name"]].get(timeout=30)
                     while image.frame < frame:
@@ -322,10 +312,8 @@ def execute(case: str, candidate: str, output_dir: Path, host: str, port: int) -
                 error = error or {"world_restore_error": str(exc)}
         if error is None and frames == FRAMES:
             try:
-                sources = {"overview": output / "overview.mkv",
-                           "approach": output / "ego_forward.mkv",
-                           "reference_corner": output / "junction.mkv",
-                           "driver_reference": output / "ego_side.mkv"}
+                sources = {name: output / (name + ".mkv") for name in
+                           ("overview", "approach", "reference_corner", "driver_reference")}
                 composed = compose_four_views(sources, output / "video_frames.jsonl",
                                               output / "raw.mkv")
                 _write_new(output / "four-view-receipt.json", composed)

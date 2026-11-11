@@ -27,6 +27,7 @@ class GeometrySpeedTest(unittest.TestCase):
     def test_three_controlled_speed_settings(self):
         expected = {75: "measured_not_above_80_mph",
                     79.5: "measured_not_above_80_mph",
+                    80: "unresolved_at_80_mph",
                     85: "measured_above_80_mph"}
         for mph, relation in expected.items():
             with self.subTest(mph=mph):
