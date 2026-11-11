@@ -2,6 +2,7 @@
 import copy
 import hashlib
 import json
+import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -58,15 +59,20 @@ def main():
             assert row['manifest_sha256'] == indexed['manifest_sha256']
             assert sha(ROOT/indexed['manifest']) == indexed['manifest_sha256']
             output = (REPO/'.runtime-work/c132497-selected-offline'/short/ident/
-                      (indexed['manifest_sha256'][:12]+'-'+sha(ROOT/'native/finalize_current.py')[:12]))
+                      (indexed['manifest_sha256'][:12]+'-'+sha(ROOT/'native/finalize_current.py')[:12]+'-canonical-v1'))
             command = [str(REPO/'.venv-cpu/bin/python'), str(REPO/'runtime.py'),
                        'offline', '--manifest', str(ROOT/indexed['manifest']),
                        '--case', case_id, '--candidate', ident,
                        '--output', str(output)]
+            archived = ROOT/'canonical-proof-bindings'/short/ident
+            archived.mkdir(parents=True, exist_ok=True)
+            offline_log = archived/'offline.log'
+            shutil.copyfile(log, offline_log)
             candidate['offline'] = {
                 'exit_code': 0, 'construction_sha256': construction_sha,
                 'command': ' '.join(command),
-                'log': row['log'], 'log_sha256': row['log_sha256']}
+                'log': str(offline_log.relative_to(ROOT)),
+                'log_sha256': sha(offline_log)}
             sub = Path('update015-current-all')/short/ident
             receipt = ROOT/sub/'compatibility.json'
             result = read(receipt)
@@ -75,12 +81,22 @@ def main():
             assert sha(ROOT/sub/'current-command.log') == comp_row['compatibility_sha256']
             assert sha(ROOT/sub/'saved-analysis.log') == result['log_sha256']
             assert sha(ROOT/sub/'negative-analysis.log') == result['negative_log_sha256']
-            candidate['compatibility'] = {'receipt': str(sub/'compatibility.json'),
-                                          'sha256': sha(receipt),
-                                          'log': str(sub/'saved-analysis.log'),
-                                          'negative_log': str(sub/'negative-analysis.log')}
+            for name in ('compatibility.json','saved-analysis.log','negative-analysis.log'):
+                shutil.copyfile(ROOT/sub/name, archived/name)
+            candidate['compatibility'] = {
+                'receipt': str((archived/'compatibility.json').relative_to(ROOT)),
+                'sha256': sha(archived/'compatibility.json'),
+                'log': str((archived/'saved-analysis.log').relative_to(ROOT)),
+                'negative_log': str((archived/'negative-analysis.log').relative_to(ROOT))}
         entry['offline'] = candidates[0]['offline']
         entry['compatibility'] = candidates[0]['compatibility']
+        entry['negative'] = {'log': candidates[0]['compatibility']['negative_log']}
+        entry['acquisition'] = {name: {
+            'entrypoint': 'finalize_current.py',
+            'method': 'derive '+name+' from retained Native actor/frame rows',
+            'evidence': 'native-raw-actors.jsonl and video_frames.jsonl'}
+            for name in ('ego_pose', 'ego_speed', 'ego_lane_id', 'ego_road_id',
+                         'path_length_m', 'right_lane_exit')}
         validate(ROOT, entry, law['law_id'], law['cell_id'], required=True,
                  require_alternate=True, candidate_count=4)
     assert not offline_rows and not compatibility_rows and not index_rows
