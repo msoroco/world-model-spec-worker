@@ -13,18 +13,18 @@ SPEC.loader.exec_module(CAPTURE)
 
 
 class TraceFromReadback(unittest.TestCase):
-    def test_measured_pose_velocity_and_applied_control(self):
-        class Control:
-            throttle=.3;brake=.1;hand_brake=False
+    def test_shared_measured_pose_velocity_join(self):
         measured={'center_native_xyz_m':[2.5,-7.0,1.5],
                   'velocity_native_xyz_mps':[3.0,4.0,0.0],
                   'yaw_deg':91.0,'speed_mps':5.0}
-        row=CAPTURE.trace_point(1009,.45,measured,Control())
-        self.assertEqual(row['position_m'],measured['center_native_xyz_m'])
-        self.assertEqual(row['velocity_mps'],measured['velocity_native_xyz_mps'])
-        self.assertEqual(row['speed_mps'],measured['speed_mps'])
-        self.assertEqual(row['control']['throttle'],.3)
-        self.assertEqual(row['frame'],1009)
+        row={'frame':1009,'time_s':.45,
+             'position_m':measured['center_native_xyz_m'],
+             'velocity_mps':measured['velocity_native_xyz_mps'],
+             'speed_mps':5.0,'heading_deg':91.0}
+        CAPTURE.check_shared_trace_point(row,1009,.45,measured)
+        row['speed_mps']=6.0
+        with self.assertRaisesRegex(ValueError,'trace differs'):
+            CAPTURE.check_shared_trace_point(row,1009,.45,measured)
 
     def test_seal_requires_finished_capture_and_restoration(self):
         with tempfile.TemporaryDirectory() as temporary:

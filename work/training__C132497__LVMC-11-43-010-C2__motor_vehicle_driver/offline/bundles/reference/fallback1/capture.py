@@ -70,18 +70,15 @@ def pose(actor):
         'speed_mps':math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2),
         'body_native_xyz_m':[[p.x,p.y,p.z] for p in body]}
 
-def trace_point(native_frame,time_s,ego,applied_control):
-    """Retain a Native-measured trace row; requested tracks are never substituted."""
-    x,y,z=ego['center_native_xyz_m']
-    vx,vy,vz=ego['velocity_native_xyz_mps']
-    return {'frame':native_frame,'time_s':time_s,
-        'position':{'x':x,'y':y,'z':z},'position_m':[x,y,z],
-        'heading_deg':ego['yaw_deg'],'speed_mps':ego['speed_mps'],
-        'speed_mph':ego['speed_mps']*2.2369362921,
-        'velocity_mps':[vx,vy,vz],
-        'control':{'throttle':applied_control.throttle,
-                   'brake':applied_control.brake,
-                   'hand_brake':applied_control.hand_brake}}
+def check_shared_trace_point(point,native_frame,time_s,ego):
+    """Check shared PipelineCapture telemetry against the same actor readback."""
+    if (point.get('frame') != native_frame or
+            abs(point.get('time_s',float('inf'))-time_s)>1e-6 or
+            point.get('position_m') != ego['center_native_xyz_m'] or
+            point.get('velocity_mps') != ego['velocity_native_xyz_mps'] or
+            abs(point.get('speed_mps',float('inf'))-ego['speed_mps'])>1e-6 or
+            abs(point.get('heading_deg',float('inf'))-ego['yaw_deg'])>1e-6):
+        raise ValueError('Shared original trace differs from retained actor readback')
 def control(carla,ego,target,target_speed):
     transform=ego.get_transform();velocity=ego.get_velocity()
     speed=math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
@@ -227,8 +224,7 @@ def execute(bundle,output,host,port):
             visibility=False,required_observations=[])
         start=world.get_snapshot().timestamp.elapsed_seconds
         with (output/'native-raw-actors.jsonl').open('x') as observed, \
-             (output/'video_frames.jsonl').open('x') as frame_map, \
-             (output/'trace.jsonl').open('x') as retained_trace:
+             (output/'video_frames.jsonl').open('x') as frame_map:
             for i,request in enumerate(requests):
                 target=requests[min(239,i+12)]
                 ego.apply_control(control(carla,ego,target,request['ego_speed_mps']))
@@ -246,10 +242,9 @@ def execute(bundle,output,host,port):
                     'observed_lane_id':None if waypoint is None else waypoint.lane_id,
                     'ego':measured_ego,'physical_roundabout_verified':False,
                     'actual_right_exit_verified':False,'legal_verdict':None}
-                capture.capture(frame,time_s,extra={'c132497_right_exit':row})
+                point=capture.capture(frame,time_s,extra={'c132497_right_exit':row})
+                check_shared_trace_point(point,frame,time_s,measured_ego)
                 observed.write(json.dumps(row,allow_nan=False)+'\n')
-                retained_trace.write(json.dumps(trace_point(frame,time_s,measured_ego,
-                    ego.get_control()),allow_nan=False)+'\n')
                 for name,width,height,_,_,_,_ in cameras:
                     image=camera_queues[name].get(timeout=30)
                     while image.frame<frame:image=camera_queues[name].get(timeout=30)

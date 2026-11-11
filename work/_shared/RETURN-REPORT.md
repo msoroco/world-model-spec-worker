@@ -4241,3 +4241,17 @@ Ordinary scoped complete passes (log SHA-256 `59620a88be59348db00e8f36b814dd9c75
 Next worker-owned CPU work: generate source-bound complete/incomplete/missing physical outcome fixture receipts and capture-owner lifecycle proof; bind the exact two cases and four candidates each into a canonical execution manifest with fresh offline/compatibility proofs; add positive/negative independent delivery acceptance proof contracts; build the ordered batch queue and local integration proof. Preserve synthetic labels and zero accepted original recordings/comparisons.
 
 No Git command or frozen-file edit ran. Goal remains active.
+
+### 2026-11-11 C132497 Native closure checkpoint
+
+Status **partial**. `native/capture.py` now uses the pinned `PipelineCapture.capture` as the only original `trace.jsonl` writer. The earlier second exclusive open would have failed on a real run. Each shared trace point is checked against the retained actor readback and actual CARLA frame. On successful capture, four encoder exits and world restoration are checked before calling the pinned `seal_capture`; the seal binds the runner, construction, capture sources, case and predeclared controller intention. Selected constructions now include `runner.py` as their Native entrypoint. No original CARLA execution or operator owner release occurred.
+
+CPU mechanics tests use a mock seal and motion-free synthetic closure fixture. They reject short capture, failed restoration, missing/failed encoder, capture error, missing Native-exit order, missing owner attestation, reordered seal events and changed sealed source. These tests do not create an original capture receipt. Twenty-seven assignment tests pass; root tests and pinned preflight pass.
+
+All changed receipts were rebuilt from the final capture revision: copied chain SHA-256 `f08bae98122947ab298cf26089c1cb4d2a33f2f88ca706a91355d3eac64bfe98`; unselected offline 8/8 `6863eb3aa8283889bbce712965f1fd9b05b36c525d3bae358c941e196e731e42`; selected offline 8/8 `0c08e048dd138fd6c1abf42041516ca92d3a56daa1bcb73d2bbe010119450eb6`; selected compatibility and actual saved processing 8/8 `e35f1b9557f2c9cbb814ea557b7c2bac30e338d959b99565038308ab56e5dd6c`; four synthetic comparison pairs and damaged-proof negatives `b8e838aea793812d3c823964c081f2e72f8adb755fc0afe5217db1e4f720c9b1`. The root reference-primary pinned offline check passed (log SHA-256 `79800308b5826fc96515cc727683b2fca1d1264b6f968b988a11826c6b25be28`).
+
+Ordinary scoped complete passes (log SHA-256 `59620a88be59348db00e8f36b814dd9c756ad1e5f240f5f4efb4a25f900217bd`). Scoped strict exits 1 for truthful partial/missing packages (log SHA-256 `f269c2d5acd89b61494632191e9062f5a604d37a03156e205eac15b87b44e653`). Full strict exits 1 at frozen `runtime/pipeline/runs/scenario_pipeline/inputs/shared/manifest.json` (`work/_shared/strict-gate-update015-c132497-shared-trace.log`, SHA-256 `8d7e8fd1171ae719680b30734c114c2710c02b8b6f271e6d3072b4371c96bdfd`). Frozen inputs, runtime and `batch.json` were untouched.
+
+Next worker-owned CPU work: prove the real pinned seal call on a clearly synthetic, motion-free fixture without returning it as an original; author source-bound physical outcome result shapes and three outcome fixtures; bind both exact cases and four candidates to a canonical execution manifest and acceptance contracts; construct the ordered batch queue and local integration proof. Preserve zero original accepted recordings and comparisons.
+
+No Git command ran. Goal remains active.
