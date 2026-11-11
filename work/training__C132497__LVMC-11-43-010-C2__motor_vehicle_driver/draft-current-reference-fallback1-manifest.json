@@ -1,0 +1,68 @@
+{
+  "format": "worker-unselected-current-runtime-candidate-v1",
+  "assignment_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver",
+  "status": "draft_not_selected",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "source_branch": "roundabout_right_exit",
+  "cases": [
+    {
+      "case_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__reference",
+      "kind": "draft_not_selected",
+      "construction": "native/package-current/reference/primary/construction.json",
+      "construction_sha256": "e1bbaa6411cb1424c3ab20710e4b57933944adc9d1b36020c116a5bfe09615fb",
+      "measurement_contract": "native/measurement-contracts-current/reference.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_current.py",
+        "output_schema": "c132497-current-saved-diagnostic-v1"
+      },
+      "fixture_recipe": "work/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/update015-current-reference-fallback1-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native road connectivity, governed right lane, actual exit and pixels unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/package-current/reference/fallback1/construction.json",
+          "construction_sha256": "e87db27ece400c8df5a9c96c5975a1e63ef01d48236038fe4f31f075fc6668b4",
+          "trigger": {
+            "source": "saved Native rows",
+            "metric": "lane_center_deviation_m",
+            "failure_condition": "> 0.2 m"
+          },
+          "changed_knobs": [
+            "requested_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "native/package-current/reference/fallback2/construction.json",
+          "construction_sha256": "f48b6be2c84cd82de4a0c20d33db8893c439bbad09231d9f8da6ad65c7027f94",
+          "trigger": {
+            "source": "saved Native rows",
+            "metric": "first_40_visible_frames",
+            "failure_condition": "< 20 frames"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "native/package-current/reference/fallback3/construction.json",
+          "construction_sha256": "a7286d7680b366c3326ceed95865dddb3155a3453685c4af4f1673aec057c7da",
+          "trigger": {
+            "source": "saved Native rows",
+            "metric": "first_40_stopped_frames",
+            "failure_condition": "< 20 frames"
+          },
+          "changed_knobs": [
+            "pre_entry_dwell_s"
+          ]
+        }
+      ]
+    }
+  ],
+  "original_native_observed": false,
+  "delivery_ready": false
+}
