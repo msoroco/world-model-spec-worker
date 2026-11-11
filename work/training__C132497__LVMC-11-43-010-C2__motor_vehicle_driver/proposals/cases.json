@@ -5,135 +5,9 @@
   "sweep_specs": [],
   "cases": [
     {
-      "case_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__baseline",
-      "target_law_id": null,
-      "target_type": "baseline",
-      "rationale": "Shared neutral source context; no accepted original is claimed.",
-      "variable_assignments": {
-        "roundabout_geometry": {
-          "kind": "world_setup",
-          "value": "source-hashed two-lane counterclockwise right-exit loop",
-          "unit": "structured"
-        },
-        "ego_trajectory": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "structured"
-        },
-        "commanded_circulating_lane_id": {
-          "kind": "controller",
-          "value": -2,
-          "unit": "index"
-        },
-        "commanded_turn_path": {
-          "kind": "controller",
-          "value": "road 20 to 21 to right exit 22",
-          "unit": "structured"
-        }
-      },
-      "unresolved_judgment_calls": [],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "ego_pose",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "retained Native actor/frame join",
-            "time_window": "240 frames",
-            "reference_frame": "authored OpenDRIVE coordinates",
-            "uncertainty": "50 ms frame bracket; physical lane/exit unverified"
-          },
-          {
-            "name": "ego_speed",
-            "unit": "m/s",
-            "sampling_rate_hz": 20,
-            "method": "retained Native actor/frame join",
-            "time_window": "240 frames",
-            "reference_frame": "authored OpenDRIVE coordinates",
-            "uncertainty": "50 ms frame bracket; physical lane/exit unverified"
-          },
-          {
-            "name": "ego_lane_id",
-            "unit": "index",
-            "sampling_rate_hz": 20,
-            "method": "retained Native actor/frame join",
-            "time_window": "240 frames",
-            "reference_frame": "authored OpenDRIVE coordinates",
-            "uncertainty": "50 ms frame bracket; physical lane/exit unverified"
-          },
-          {
-            "name": "ego_road_id",
-            "unit": "index",
-            "sampling_rate_hz": 20,
-            "method": "retained Native actor/frame join",
-            "time_window": "240 frames",
-            "reference_frame": "authored OpenDRIVE coordinates",
-            "uncertainty": "50 ms frame bracket; physical lane/exit unverified"
-          },
-          {
-            "name": "path_length_m",
-            "unit": "m",
-            "sampling_rate_hz": 20,
-            "method": "retained Native actor/frame join",
-            "time_window": "240 frames",
-            "reference_frame": "authored OpenDRIVE coordinates",
-            "uncertainty": "50 ms frame bracket; physical lane/exit unverified"
-          },
-          {
-            "name": "right_lane_exit",
-            "unit": "bool",
-            "sampling_rate_hz": 20,
-            "method": "retained Native actor/frame join",
-            "time_window": "240 frames",
-            "reference_frame": "authored OpenDRIVE coordinates",
-            "uncertainty": "50 ms frame bracket; physical lane/exit unverified"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "authored_road",
-            "unit": "structured",
-            "method": "source-hashed OpenDRIVE"
-          },
-          {
-            "name": "predeclared_intention",
-            "unit": "structured",
-            "method": "controller intention hashed before motion"
-          }
-        ],
-        "limitations": [
-          "Native lane allocation, actual right exit, pixels and legal status unverified"
-        ]
-      }
-    },
-    {
       "case_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__reference",
       "target_law_id": "LVMC-11-43-010-C2",
-      "target_type": "compliant_attempt",
-      "rationale": "Conditional right-exit attempt; actual lane and exit require original Native review.",
-      "variable_assignments": {
-        "roundabout_geometry": {
-          "kind": "world_setup",
-          "value": "source-hashed two-lane counterclockwise right-exit loop",
-          "unit": "structured"
-        },
-        "ego_trajectory": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "structured"
-        },
-        "commanded_circulating_lane_id": {
-          "kind": "controller",
-          "value": -2,
-          "unit": "index"
-        },
-        "commanded_turn_path": {
-          "kind": "controller",
-          "value": "road 20 to 21 to right exit 22",
-          "unit": "structured"
-        }
-      },
-      "unresolved_judgment_calls": [],
+      "target_type": "attempt",
       "recording_description": {
         "channels": [
           {
@@ -207,44 +81,18 @@
           "Native lane allocation, actual right exit, pixels and legal status unverified"
         ]
       },
-      "paired_probe_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__right_exit_lane_pair",
-      "deliberate_differences": [
-        "commanded_circulating_lane_id"
-      ],
-      "probe": {
-        "primary_variable": "commanded_circulating_lane_id",
-        "comparison_or_standard": "right circulating lane versus adjacent lane for the same intended right exit",
-        "target_value_or_branch": -2
-      }
+      "rationale": "Conditional original capture to compare intended right exit from right versus other circulating lane",
+      "variable_assignments": {
+        "right_turn_lane_used": true
+      },
+      "unresolved_judgment_calls": [
+        "Native governed right lane and actual right exit require source review"
+      ]
     },
     {
       "case_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__contrast",
       "target_law_id": "LVMC-11-43-010-C2",
-      "target_type": "violating_attempt",
-      "rationale": "Conditional right-exit attempt; actual lane and exit require original Native review.",
-      "variable_assignments": {
-        "roundabout_geometry": {
-          "kind": "world_setup",
-          "value": "source-hashed two-lane counterclockwise right-exit loop",
-          "unit": "structured"
-        },
-        "ego_trajectory": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "structured"
-        },
-        "commanded_circulating_lane_id": {
-          "kind": "controller",
-          "value": -1,
-          "unit": "index"
-        },
-        "commanded_turn_path": {
-          "kind": "controller",
-          "value": "road 20 to 21 to right exit 22",
-          "unit": "structured"
-        }
-      },
-      "unresolved_judgment_calls": [],
+      "target_type": "attempt",
       "recording_description": {
         "channels": [
           {
@@ -318,15 +166,13 @@
           "Native lane allocation, actual right exit, pixels and legal status unverified"
         ]
       },
-      "paired_probe_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__right_exit_lane_pair",
-      "deliberate_differences": [
-        "commanded_circulating_lane_id"
-      ],
-      "probe": {
-        "primary_variable": "commanded_circulating_lane_id",
-        "comparison_or_standard": "right circulating lane versus adjacent lane for the same intended right exit",
-        "target_value_or_branch": -1
-      }
+      "rationale": "Conditional original capture to compare intended right exit from right versus other circulating lane",
+      "variable_assignments": {
+        "right_turn_lane_used": false
+      },
+      "unresolved_judgment_calls": [
+        "Native governed right lane and actual right exit require source review"
+      ]
     }
   ]
 }

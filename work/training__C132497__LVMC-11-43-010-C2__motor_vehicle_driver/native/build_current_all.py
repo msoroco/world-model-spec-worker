@@ -18,7 +18,8 @@ def package(case, candidate, recording):
     cfg = json.loads(next(item['content'] for item in files if item['path']=='config.json'))
     cfg.update({'selected_case_id':case_id,'duration_s':12,'required_atoms':[],
                 'source_packets':[], 'cameras':['overview','approach',
-                'reference_corner','driver_reference'], 'case':{'case_id':case_id},
+                'reference_corner','driver_reference'],
+                'case':{'case_id':case_id,'recording_description':recording},
                 'physical_success_claimed':False})
     next(item for item in files if item['path']=='config.json')['content'] = json.dumps(cfg,indent=2)+'\n'
     road = next(item['content'] for item in files if item['path']=='right-exit-road.xodr')
