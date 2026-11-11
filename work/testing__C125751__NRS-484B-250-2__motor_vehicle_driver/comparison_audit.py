@@ -11,7 +11,7 @@ from pathlib import Path
 
 PREFIX = "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__"
 CASES = (PREFIX + "signal_operative", PREFIX + "signal_off")
-FIXED = ("road_geometry.json", "crossing_history.jsonl", "stop_context.json",
+FIXED = ("road_geometry.json", "turn_route_context.json", "crossing_history.jsonl", "stop_context.json",
          "stop_history.jsonl", "video_frames.jsonl", "trace.jsonl",
          "signal_context.json", "road.xodr", "capture/evidence.jsonl",
          "overview.mkv", "approach.mkv", "reference_corner.mkv",
