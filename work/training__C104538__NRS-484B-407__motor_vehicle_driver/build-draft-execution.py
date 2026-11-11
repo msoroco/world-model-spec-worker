@@ -37,7 +37,10 @@ def build():
                  'reason':'Native crest, obstruction geometry, physical opacity, driver-eye pixels and turn completion remain unmeasured'},
                'measurement_procedure':{'entrypoint':'finalize.py',
                   'output_schema':'c104538-saved-analysis-v1'},
+               'measurement_contract':f'draft-candidates/{suffix}/measurement-contract.json',
                'candidates':[]}
+        if suffix=='below_500_ft' and (FOLDER/'update015-below-primary-recipe.json').is_file():
+            entry['fixture_recipe']=f'work/{ASSIGNMENT}/update015-below-primary-recipe.json'
         for candidate in CANDIDATES:
             plan=json.loads((FOLDER/'draft-candidates'/suffix/candidate/'plan.json').read_text())
             config=json.loads((NATIVE/'config.json').read_text())

@@ -119,6 +119,17 @@ def finalize(attempt,output):
     if (capture.get('case_id')!=config['case_id'] or
         capture.get('frames')!=count or capture.get('extraction_confirmed') is not True):
         raise ValueError('Original capture extraction incomplete')
+    synthetic=capture.get('synthetic_diagnostic') is True or capture.get('synthetic_fixture') is True
+    if synthetic:
+        traces=rows(attempt/'trace.jsonl')
+        evidence=rows(attempt/'capture/evidence.jsonl')
+        if not all(t.get('synthetic_diagnostic') is True and
+                   t.get('speed_provenance')=='synthetic_native_sample'
+                   for t in traces) or not all(
+                       e.get('synthetic_diagnostic') is True and
+                       e.get('ego',{}).get('speed_provenance')=='synthetic_native_sample'
+                       for e in evidence):
+            raise ValueError('Synthetic speed must retain diagnostic provenance')
     mapping=rows(attempt/'video_frames.jsonl')
     for frame in mapping:
         pixel_hashes=frame.get('original_rgb_sha256')
@@ -152,8 +163,8 @@ def finalize(attempt,output):
     result={'case_id':config['case_id'],'measured_values':measurement,
             'target_checks':[target],
             'setup_confirmed':False,
-            'behavior_attempted':measurement['sampled_body_path_m']>0,
-            'maneuver_completed':bool(measurement['engineering_reversal_observed'] and
+            'behavior_attempted':not synthetic and measurement['sampled_body_path_m']>0,
+            'maneuver_completed':not synthetic and bool(measurement['engineering_reversal_observed'] and
                                       measurement['reverse_motion_observed']),
             'termination_reason':'full original Native duration retained',
             'physical_failure_flags':['original_pixel_visibility_unverified',
@@ -171,7 +182,7 @@ def finalize(attempt,output):
                     'unit':'m','method':'adjacent original Native barrier actor world bounding boxes',
                     'time_window':'before original motion','statistic':'maximum gap',
                     'reference':'native-construction-context.json'}},
-            'provenance_kind':'synthetic' if config.get('synthetic_fixture') is True else 'native',
+            'provenance_kind':'synthetic_local_diagnostic' if synthetic else 'native',
             'accepted':False,'legal_verdict_claimed':False}
     from worker_exchange.native_output import validate_result
     validate_result(result)

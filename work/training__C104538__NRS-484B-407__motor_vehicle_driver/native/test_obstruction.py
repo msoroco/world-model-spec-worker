@@ -26,6 +26,6 @@ class PhysicalProposalTest(unittest.TestCase):
             self.assertEqual([v['name'] for v in baseline],
                              [v['name'] for v in raised])
             for a,b in zip(baseline,raised):
-                if a['name'].startswith('reference_'):
+                if a['attachment'] in ('reference_left','reference_right'):
                     self.assertEqual(b['native_xyz_m'][2]-a['native_xyz_m'][2],2)
                 else:self.assertEqual(a,b)
