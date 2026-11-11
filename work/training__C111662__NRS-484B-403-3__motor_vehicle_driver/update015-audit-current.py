@@ -1,6 +1,7 @@
 """Independent hash and comparison audit of current U-turn diagnostic CPU proofs."""
 import hashlib
 import json
+import ast
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
@@ -34,7 +35,21 @@ def inspect(case,candidate,entry):
     construction=ROOT/selected['construction']
     if sha(construction)!=selected['construction_sha256'] or summary['construction_sha256']!=sha(construction):
         raise ValueError('Construction hash mismatch: '+case+'/'+candidate)
-    config=json.loads(next(f['content'] for f in read(construction)['files'] if f['path']=='config.json'))
+    packaged=read(construction)
+    files={f['path']:f['content'] for f in packaged['files']}
+    config=json.loads(files['config.json'])
+    frontage=json.loads(files['frontage-plan.json'])
+    if frontage!=read(NATIVE/'frontage-plan.json') or frontage['district_designation_verified'] is not False:
+        raise ValueError('Frontage plan source or uncertainty changed: '+case+'/'+candidate)
+    if files['frontage.py']!=files[f'work/{ROOT.name}/native/frontage.py']:
+        raise ValueError('Frontage implementation differs across package paths')
+    capture_name='capture_divided.py' if case.startswith('divided_') else 'capture.py'
+    capture_code=files[f'work/{ROOT.name}/native/{capture_name}']
+    capture=next(n for n in ast.parse(capture_code).body
+                 if isinstance(n,ast.FunctionDef) and n.name=='capture')
+    calls={n.func.id for n in ast.walk(capture) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name)}
+    if 'spawn_and_measure' not in calls or 'authored_plan' not in calls:
+        raise ValueError('Native capture lacks physical frontage construction')
     if config['case_id']!=case_id or config['candidate_id']!=candidate:
         raise ValueError('Candidate identity mismatch')
     compatibility=read(folder/'compatibility.json')
@@ -70,6 +85,14 @@ def inspect(case,candidate,entry):
 
 def main():
     manifest=read(ROOT/'draft-execution-manifest.json')
+    witness=ROOT.parents[1]/'inputs'/ROOT.name/'witnesses.json'
+    planned=read(ROOT/'case-plan.json')
+    witness_source=next(row for row in planned['sources'] if row['path'].endswith('/witnesses.json'))
+    if sha(witness)!=witness_source['sha256']:
+        raise ValueError('Frozen conditional witness changed')
+    contexts=' '.join(read(witness)[0]['witness']['required_context']).lower()
+    if not all(term in contexts for term in ('300-foot','600-foot','business')):
+        raise ValueError('Frontage construction lacks frozen witness threshold')
     configs={}
     for entry in manifest['cases']:
         case=entry['case_id'].rsplit('__',1)[-1]
@@ -104,6 +127,7 @@ def main():
     result={'format':'c111662-current-independent-audit-v1','candidate_count':16,
             'positive_compatibility_count':16,'positive_saved_processing_count':16,
             'missing_source_negative_count':16,'comparison_pairs_checked':8,
+            'frontage_constructions_checked':16,
             'scope':'unselected synthetic diagnostic; no physical or legal acceptance',
             'passed':True}
     (ROOT/'update015-current-independent-audit.json').write_text(json.dumps(result,indent=2)+'\n')
