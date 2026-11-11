@@ -1,0 +1,56 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_matched",
+      "construction": "construction.json",
+      "construction_sha256": "b2d3690e3cec30463a55017c4b59b65e30e4ac660438d5539c37f7dd806db290",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "later actor may enter before braking or stop too far from turning ego; actual motion and visibility unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "aeda64a96a1284f20fe7f6e98a22df4ab87dfc95f7a2242b0eb3d33493b7aafe",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "later actor brakes too far outside to be observed near the turning ego",
+            "failure_condition": "original later opposing body remains distant from the junction at subject turn"
+          },
+          "changed_knobs": [
+            "reciprocal_spawn_behind_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "fallback2-construction.json",
+          "construction_sha256": "a4069e32627a75cb6e8fb3792ee1ba363e5e1b7a983833614450525b45bbd0f3",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "later actor enters junction before stopping",
+            "failure_condition": "original later opposing complete body enters junction before low-speed outside interval"
+          },
+          "changed_knobs": [
+            "reciprocal_approach_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "fallback3-construction.json",
+          "construction_sha256": "6f5bbabbe258ec439eda676b7c32a608f9f88c5c6ac5fedb729b4e7b79780923",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "subject exits before later actor stop can be observed during the turn",
+            "failure_condition": "original ego body clears junction before later opposing low-speed interval"
+          },
+          "changed_knobs": [
+            "ego_turn_throttle"
+          ]
+        }
+      ]
+    }
+  ]
+}
