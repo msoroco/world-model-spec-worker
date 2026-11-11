@@ -29,7 +29,28 @@ def check_capture(bundle):
         raise ValueError('Four-camera right-exit acquisition plan differs')
     return {'case_id':checked['case_id'],'candidate_id':checked['candidate_id'],
             'camera_names':list(CAMERA_NAMES),'camera_dimensions':[list(row[1:3]) for row in plan],
+            'camera_positions_m':[list(row[4]) for row in plan],
             'requested_phases':checked['phases'],'original_native_observed':False}
+
+def spawn_camera_sensors(world,carla,ego,policy,owned):
+    """Configure and attach each required Native source camera."""
+    library=world.get_blueprint_library()
+    sensors={}
+    for name,width,height,fov,location,rotation,attached in camera_plan(policy):
+        camera_bp=library.find('sensor.camera.rgb')
+        for key,value in (('image_size_x',width),('image_size_y',height),
+                          ('fov',fov),('sensor_tick',0)):
+            camera_bp.set_attribute(key,str(value))
+        transform=carla.Transform(carla.Location(x=location[0],
+            y=location[1],z=location[2]),
+            carla.Rotation(yaw=rotation[0],pitch=rotation[1]))
+        sensor=world.spawn_actor(camera_bp,transform,
+                                 attach_to=ego if attached else None)
+        if sensor is None:
+            raise RuntimeError('Native source camera spawn failed: '+name)
+        owned.append(sensor)
+        sensors[name]=sensor
+    return sensors
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def repository():
@@ -130,25 +151,16 @@ def execute(bundle,output,host,port):
             'lane_allocation_verified':False,'actual_right_exit_verified':False,
             'legal_verdict':None})
         cameras=camera_plan(cfg['camera_policy'])
-        library=world.get_blueprint_library()
+        sensors=spawn_camera_sensors(world,carla,ego,cfg['camera_policy'],owned)
         for name,width,height,fov,location,rotation,attached in cameras:
-            camera_bp=library.find('sensor.camera.rgb')
-            for key,value in (('image_size_x',width),('image_size_y',height),
-                ('fov',fov),('sensor_tick',0)):
-                camera_bp.set_attribute(key,str(value))
-            transform=carla.Transform(carla.Location(x=location[0],
-                y=location[1],z=location[2]),
-                carla.Rotation(yaw=rotation[0],pitch=rotation[1]))
-            sensor=world.spawn_actor(camera_bp,transform,
-                attach_to=ego if attached else None)
-            owned.append(sensor);camera_queues[name]=queue.Queue()
+            camera_queues[name]=queue.Queue()
             logs[name]=(output/(name+'.encoder.log')).open('x')
             video[name]=subprocess.Popen(['ffmpeg','-nostdin','-hide_banner',
                 '-loglevel','error','-n','-f','rawvideo','-pix_fmt','rgb24',
                 '-s',f'{width}x{height}','-r','20','-i','pipe:0','-an',
                 '-c:v','ffv1','-level','1',str(output/(name+'.mkv'))],
                 stdin=subprocess.PIPE,stderr=logs[name])
-            sensor.listen(camera_queues[name].put)
+            sensors[name].listen(camera_queues[name].put)
         capture=PipelineCapture(client,ego,output,cfg['case_id'],
             visibility=False,required_observations=[])
         start=world.get_snapshot().timestamp.elapsed_seconds
@@ -218,7 +230,7 @@ def execute(bundle,output,host,port):
 if __name__=='__main__':
     import argparse
     parser=argparse.ArgumentParser()
-    parser.add_argument('--bundle',type=Path,required=True)
+    parser.add_argument('--bundle',type=Path,default=Path('.'))
     parser.add_argument('--check',action='store_true')
     parser.add_argument('--output-dir',type=Path)
     parser.add_argument('--host')

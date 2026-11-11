@@ -18,6 +18,8 @@ def audit():
         proof['base']['first_40_visible_frames']!=sum(x['right_lane_visible'] for x in camera[:40]) or
         proof['base']['first_40_stopped_frames']!=sum(x['ego_speed_mps']<=.1 for x in observed[:40]) or
         proof['base']['triggered']!={'fallback1':False,'fallback2':False,'fallback3':True} or
+        proof['dwell_variant']['first_40_stopped_frames']!=40 or
+        proof['dwell_variant']['triggered']['fallback3'] is not False or
         proof['visibility_variant']['first_40_visible_frames']!=0 or
         not proof['visibility_variant']['triggered']['fallback2'] or
         proof['lane_deviation_variant']['maximum_lane_center_deviation_m']<=.2 or
