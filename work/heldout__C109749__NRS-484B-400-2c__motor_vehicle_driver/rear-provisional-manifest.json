@@ -1,0 +1,138 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_no_device",
+      "construction": "construction-rear_pass_no_device.json",
+      "construction_sha256": "ab41d1cbbddefe719f47b593bef1f54ed1ce425cf865ca4606c9b8484e59612b",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "opposing_turn_rear_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The delayed subject may lose simultaneous overlap or fail to realize rearward passing; Native route and camera coverage may also fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-rear_pass_no_device-fallback1.json",
+          "construction_sha256": "75767fc75605d64f02b4ea9fcabad7d9c93b7ee43043f1704ba8cc04af4637db",
+          "changed_knobs": [
+            "route_step_m=1.0"
+          ],
+          "trigger": {
+            "source": "Original waypoint successor inventory",
+            "metric": "connected left-turn paths",
+            "failure_condition": "Primary 2 m sampling skips an opposing connected turn branch"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver/rear-provisional-manifest.json --case heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_no_device --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109749-rear-fallback1-offline-1794437052286369613 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "rear-fallback1-offline.log",
+            "log_sha256": "8b0f667f5bdfcdbd1ee10b72c4e217f2b287f9da71670a3807fbe289cc1a7011",
+            "construction_sha256": "75767fc75605d64f02b4ea9fcabad7d9c93b7ee43043f1704ba8cc04af4637db"
+          },
+          "compatibility": {
+            "receipt": "rear-fallback1-compatibility.json",
+            "sha256": "d1453bc10784cba89656be71ec70bce808d829ea115fa39a41814b30d5b91705",
+            "log": "rear-fallback1-compatibility.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "rear-fallback1-negative.log",
+            "negative_log_sha256": "c1c971efb53937fadb21c137d20583acb544b327e6048b70ab36f4eb56654e5d"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-rear_pass_no_device-fallback2.json",
+          "construction_sha256": "e24c439837072ca74a979e9b16e14fb6b37b377fbf913c3176909358b59b92d3",
+          "changed_knobs": [
+            "target_speed_mps=4.0"
+          ],
+          "trigger": {
+            "source": "Original 20 Hz subject/opposing body histories",
+            "metric": "simultaneous left-turn frame count",
+            "failure_condition": "Primary rear controller loses simultaneous junction occupancy"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver/rear-provisional-manifest.json --case heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_no_device --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109749-rear-fallback2-offline-1794437052651468374 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "rear-fallback2-offline.log",
+            "log_sha256": "45fe899e07ab971841cf562b77b1652e209c0f5f3a7b1574481ea2dc8150b140",
+            "construction_sha256": "e24c439837072ca74a979e9b16e14fb6b37b377fbf913c3176909358b59b92d3"
+          },
+          "compatibility": {
+            "receipt": "rear-fallback2-compatibility.json",
+            "sha256": "8e5f02406ef10595b0c052237ec4d481222c6a22cb4b7cdd9a55fa8ab42e09ac",
+            "log": "rear-fallback2-compatibility.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "rear-fallback2-negative.log",
+            "negative_log_sha256": "5483a35e7782ac121fefc974fc96857d3d8f41adc5e341dbad002fc78e939669"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-rear_pass_no_device-fallback3.json",
+          "construction_sha256": "383b7dde7db6afb044695e2c3373d716fe969ed0f0dd41dde337e64d986ccbc0",
+          "changed_knobs": [
+            "overview_height_delta_m=2.0"
+          ],
+          "trigger": {
+            "source": "overview.mkv and original frame map",
+            "metric": "both vehicle bodies and crossing visible",
+            "failure_condition": "Primary mount occludes a body or crossing area"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver/rear-provisional-manifest.json --case heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_no_device --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109749-rear-fallback3-offline-1794437053103839123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "rear-fallback3-offline.log",
+            "log_sha256": "7b22955e7115cb9bee3a1220615aa199cba60cc45f2d3a3abe9f291635eb1596",
+            "construction_sha256": "383b7dde7db6afb044695e2c3373d716fe969ed0f0dd41dde337e64d986ccbc0"
+          },
+          "compatibility": {
+            "receipt": "rear-fallback3-compatibility.json",
+            "sha256": "cd8fb9fdd1fed71c400cc4a11a726fc09599f3a825f8a0c8bd5f5e6be2f3f955",
+            "log": "rear-fallback3-compatibility.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "rear-fallback3-negative.log",
+            "negative_log_sha256": "708ab734426373c5c2cd665baefb120c6c14486bc35577186f9c061a9a35c2c5"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver/rear-provisional-manifest.json --case heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_no_device --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c109749-rear-primary-offline-1794437051912671739 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "rear-primary-offline.log",
+        "log_sha256": "447c46a2072d69d1e3068ea12782e3a99ab224931723592b96dc4e636c85d630",
+        "construction_sha256": "ab41d1cbbddefe719f47b593bef1f54ed1ce425cf865ca4606c9b8484e59612b"
+      },
+      "acquisition": {
+        "simultaneous_left_turn_frames": {
+          "entrypoint": "opposing_turn_finalizer.py",
+          "method": "original source joined Native body and map/device measurement",
+          "evidence": "subject_original.jsonl, opposing_original.jsonl, topology_original.json, devices_original.json and frame map"
+        },
+        "closest_ground_body_clearance_m": {
+          "entrypoint": "opposing_turn_finalizer.py",
+          "method": "original source joined Native body and map/device measurement",
+          "evidence": "subject_original.jsonl, opposing_original.jsonl, topology_original.json, devices_original.json and frame map"
+        }
+      },
+      "negative": {
+        "log": "front-primary-negative.log"
+      },
+      "measurement_contract": "measurement-contract-rear_pass_no_device.json",
+      "fixture_recipe": "work/heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver/diagnostic-recipe-rear_pass_no_device.json",
+      "compatibility": {
+        "receipt": "rear-primary-compatibility.json",
+        "sha256": "b9fc013013b3142b31393574e8d59976034399cc9ed32aec1d94179eac2e7e5c",
+        "log": "rear-primary-compatibility.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_log": "rear-primary-negative.log",
+        "negative_log_sha256": "a7e3f5db167e37415ad4b29067518d29a2504fced410b9cb4bea2c2b8a332746"
+      }
+    }
+  ]
+}

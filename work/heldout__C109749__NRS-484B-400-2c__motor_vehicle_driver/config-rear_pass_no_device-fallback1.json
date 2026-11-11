@@ -1,0 +1,92 @@
+{
+  "required_atoms": [],
+  "source_packets": [],
+  "rate_hz": 20,
+  "duration_s": 8,
+  "frames": 160,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "subject-mounted original turn, curb and entered-road view",
+      "fov_deg": 95
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original turn, curb and entered-road view",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original turn, curb and entered-road view",
+      "fov_deg": 100
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original turn, curb and entered-road view",
+      "fov_deg": 85
+    }
+  ],
+  "law_id": "NRS-484B-400-2c",
+  "cell_id": "C109749",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_no_device",
+  "supported_case_ids": [
+    "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_no_device"
+  ],
+  "route_step_m": 1.0,
+  "target_speed_mps": 5.0,
+  "case": {
+    "case_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_no_device",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "simultaneous_left_turn_frames",
+          "unit": "frames",
+          "method": "joined original Native body, heading and junction samples for both vehicles",
+          "sampling_rate_hz": 20,
+          "time_window": "both actors turning left inside selected junction",
+          "reference_frame": "Native original frame",
+          "uncertainty": "sparse 20 Hz capture and map junction extent"
+        },
+        {
+          "name": "closest_ground_body_clearance_m",
+          "unit": "m",
+          "method": "original ground-body corner polygons at closest simultaneous center separation",
+          "sampling_rate_hz": 20,
+          "time_window": "simultaneous left-turn frames",
+          "reference_frame": "Native map ground plane",
+          "uncertainty": "bounding-box approximation and sampling interval"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "opposing_topology",
+          "unit": "structured record",
+          "method": "original OpenDRIVE and connected waypoint inventory"
+        },
+        {
+          "name": "opposing_devices",
+          "unit": "structured record",
+          "method": "original approach-road signals and nearby Native lights"
+        }
+      ],
+      "limitations": [
+        "Front/rear crossing order, physical motion, camera pixels and official-device applicability require independent review."
+      ]
+    }
+  },
+  "rear_policy": {
+    "subject_release_delay_ticks": 2,
+    "subject_speed_ratio": 0.85,
+    "opposing_release_delay_ticks": 0,
+    "crossing_order": "measure from original bodies; unverified"
+  }
+}

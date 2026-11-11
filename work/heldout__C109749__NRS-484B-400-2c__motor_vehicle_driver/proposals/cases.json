@@ -63,6 +63,67 @@
           "Front/rear crossing order, physical motion, camera pixels and official-device applicability require independent review."
         ]
       }
+    },
+    {
+      "case_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_no_device",
+      "target_law_id": "NRS-484B-400-2c",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled alternate two-actor release and speed policy for a prospective rearward passing contrast; original body geometry decides whether the intended contrast occurred, with no legal cutoff.",
+      "variable_assignments": {
+        "governing_device_inventory": {
+          "kind": "world_setup",
+          "value": "none after conservative Native survey"
+        },
+        "both_vehicles_turn_left": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "relative_front_lateral_geometry": {
+          "kind": "subject_behavior",
+          "value": "subject two-tick release and 0.85 speed ratio; outcome unverified"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whether the observed passing is in front of each other",
+        "whether an official device governs the selected approaches"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "simultaneous_left_turn_frames",
+            "unit": "frames",
+            "method": "joined original Native body, heading and junction samples for both vehicles",
+            "sampling_rate_hz": 20,
+            "time_window": "both actors turning left inside selected junction",
+            "reference_frame": "Native original frame",
+            "uncertainty": "sparse 20 Hz capture and map junction extent"
+          },
+          {
+            "name": "closest_ground_body_clearance_m",
+            "unit": "m",
+            "method": "original ground-body corner polygons at closest simultaneous center separation",
+            "sampling_rate_hz": 20,
+            "time_window": "simultaneous left-turn frames",
+            "reference_frame": "Native map ground plane",
+            "uncertainty": "bounding-box approximation and sampling interval"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "opposing_topology",
+            "unit": "structured record",
+            "method": "original OpenDRIVE and connected waypoint inventory"
+          },
+          {
+            "name": "opposing_devices",
+            "unit": "structured record",
+            "method": "original approach-road signals and nearby Native lights"
+          }
+        ],
+        "limitations": [
+          "Front/rear crossing order, physical motion, camera pixels and official-device applicability require independent review."
+        ]
+      }
     }
   ]
 }
