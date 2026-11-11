@@ -95,6 +95,8 @@ def source_contexts(site, plan, light, other_light):
     for key in ("device_inventory_source", "approach_geometry_source"):
         if not site.get(key):
             raise ValueError("Missing sourced site context: " + key)
+    if not isinstance(site.get("routes"), dict) or set(site["routes"]) != {"ego", "other"}:
+        raise ValueError("Two source-reviewed routes required")
     references = site.get("selected_stop_references")
     if not isinstance(references, dict) or set(references) != {"ego", "other"}:
         raise ValueError("Selected source-reviewed stop references required")
@@ -134,5 +136,10 @@ def source_contexts(site, plan, light, other_light):
         "other_governed_lane_id": approaches["other"]["lane_id"]}
     stop_context = {"intersection_id": plan["native_junction_id"],
         "selected_references": references}
+    turn_route_context = {"intersection_id": plan["native_junction_id"],
+        "routes": site["routes"],
+        "approach_geometry_source": site["approach_geometry_source"],
+        "turn_intention_source": "reviewed route waypoints; actor heading and trajectory must be measured"}
     return {"road_geometry.json": road_geometry,
-            "signal_context.json": signal_context, "stop_context.json": stop_context}
+            "signal_context.json": signal_context, "stop_context.json": stop_context,
+            "turn_route_context.json": turn_route_context}

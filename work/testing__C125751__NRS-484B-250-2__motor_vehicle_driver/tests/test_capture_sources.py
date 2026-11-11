@@ -40,6 +40,8 @@ def site():
     return {"native_map_name": "FixtureTown",
             "device_inventory_source": "test Native light inventory",
             "approach_geometry_source": "test Native waypoints",
+            "routes": {"ego": [[-10,0],[-4,0],[0,0],[10,0]],
+                       "other": [[0,-10],[0,-4],[0,0],[0,10]]},
             "selected_stop_references": {
                 "ego": {"kind": "marked_stop_line", "segment_xy_m": [[-5,-2],[-5,2]],
                         "geometry_source": "test Native ego marking", "reference_review_source": "test ego review"},

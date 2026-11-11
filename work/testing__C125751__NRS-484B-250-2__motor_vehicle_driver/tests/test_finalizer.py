@@ -36,7 +36,9 @@ class SavedFinalizerTests(unittest.TestCase):
                 "context_inputs": [{"name": "entry_context", "unit": "structured record",
                                     "method": "saved-source entry/signal/stop join"}],
                 "limitations": ["synthetic diagnostic only"]},
-            "physical_completion": {"context_sources": ["road_geometry.json"]}}))
+            "physical_completion": {"context_sources": ["road_geometry.json"]},
+            "site": {"routes": {"ego": [[-10,0],[-4,0],[0,0],[10,0]],
+                                "other": [[0,-10],[0,-4],[0,0],[0,10]]}}}))
         (root / "road_geometry.json").write_text(json.dumps({
             "intersection_polygon_xy_m": [[-5,-5],[5,-5],[5,5],[-5,5]],
             "intersection_id": 7, "ego_highway_id": 1, "other_highway_id": 2,
@@ -44,12 +46,20 @@ class SavedFinalizerTests(unittest.TestCase):
             "ego_approach_heading_deg": 0, "other_approach_heading_deg": 90,
             "approach_geometry_source": "synthetic source",
             "ego_approach_origin_xy_m": [-8,0], "other_approach_origin_xy_m": [0,-8]}))
+        (root / "turn_route_context.json").write_text(json.dumps({
+            "intersection_id": 7,
+            "routes": {"ego": [[-10,0],[-4,0],[0,0],[10,0]],
+                       "other": [[0,-10],[0,-4],[0,0],[0,10]]},
+            "approach_geometry_source": "synthetic source"}))
         frames = [100,101,102,103]
         times = [0,.05,.1,.15]
         crossing=[];signal=[];stop=[];mapping=[];trace=[]
         for i,(frame,t) in enumerate(zip(frames,times)):
             ex,oy = (-8,-8) if i == 0 else ((-8,-5.2) if i == 1 else ((-5.2,-4) if i == 2 else (-4,-3)))
-            crossing.append({"frame":frame,"time_s":t,"ego":body(ex,0),"other":body(0,oy)})
+            ego, other = body(ex,0), body(0,oy)
+            ego.update(heading_deg=0, native_road_id=1, native_lane_id=-1)
+            other.update(heading_deg=90, native_road_id=2, native_lane_id=-1)
+            crossing.append({"frame":frame,"time_s":t,"ego":ego,"other":other})
             signal.append({"frame":frame,"time_s":t,"native_signal_id":55,
                            "state":"Off" if i>=2 else "Red",
                            "other_native_signal_id":56,"other_state":"Off"})
@@ -91,11 +101,12 @@ class SavedFinalizerTests(unittest.TestCase):
             "head_region_px":[10,10,30,30],"installed":True,"uncovered":True,
             "review_basis":"synthetic diagnostic; no physical pixel claim"}))
 
-    def test_saved_sources_create_three_measurements(self):
+    def test_saved_sources_create_four_measurements(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp);self.sources(root)
             measurements=finalize(root,root/"analysis-report.json")
-            self.assertEqual(set(measurements),{"body_entry_timing","signal_at_entry","stop_order"})
+            self.assertEqual(set(measurements),{"body_entry_timing","signal_at_entry","stop_order","turn_context"})
+            self.assertTrue(measurements["turn_context"]["value"]["original_heading_complete"])
             self.assertEqual(measurements["signal_at_entry"]["value"]["at_body_entry"]["ego"]["native_state"],"Off")
             self.assertEqual(measurements["stop_order"]["value"]["statutory_stop_judgment"],"unresolved")
             result=json.loads((root/"result.json").read_text())

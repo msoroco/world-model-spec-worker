@@ -7,11 +7,12 @@ from pathlib import Path
 from entry_measurements import analyze as _measure_entry
 from signal_measurements import analyze as _measure_signal
 from stop_measurements import analyze as _measure_stop
+from turn_context import analyze as _measure_turn
 
 PREFIX = "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__"
 CASES = {PREFIX + "signal_operative": "Green", PREFIX + "signal_off": "Off"}
 CAMERAS = ("overview.mkv", "approach.mkv", "reference_corner.mkv", "driver_reference.mkv")
-REQUIRED = ("config.json", "road_geometry.json", "crossing_history.jsonl", "signal_context.json",
+REQUIRED = ("config.json", "road_geometry.json", "turn_route_context.json", "crossing_history.jsonl", "signal_context.json",
             "signal_history.jsonl", "head_visibility_review.json", "other_head_visibility_review.json", "stop_context.json",
             "stop_history.jsonl", "video_frames.jsonl", "trace.jsonl", "capture/evidence.jsonl", *CAMERAS)
 
@@ -36,13 +37,20 @@ def measure_stop(attempt, entry):
     return _measure_stop(attempt, entry)
 
 
+def measure_turn(attempt):
+    return _measure_turn(attempt)
+
+
 def analyze_sources(attempt):
     entry = measure_entry(attempt)
     if not all(entry["first_body_entry"].values()):
         raise ValueError("Both original vehicle body entries required")
     signal = measure_signal(attempt, entry)
     stop = measure_stop(attempt, entry)
-    return entry, signal, stop
+    turn = measure_turn(attempt)
+    if not turn["original_heading_complete"]:
+        raise ValueError("Original actor headings required for turn context")
+    return entry, signal, stop, turn
 
 
 def finalize(attempt: Path, output: Path):
@@ -62,7 +70,7 @@ def finalize(attempt: Path, output: Path):
         raise ValueError("Exact case target signal state required")
     if not isinstance(config.get("recording_description"), dict):
         raise ValueError("Recording description required")
-    entry, signal, stop = analyze_sources(attempt)
+    entry, signal, stop, turn = analyze_sources(attempt)
     measured_state = signal["at_body_entry"]["ego"]["native_state"]
     channels = attempt / "channels"
     channels.mkdir()
@@ -81,6 +89,7 @@ def finalize(attempt: Path, output: Path):
         "other_is_to_ego_right": entry["other_is_to_ego_right"],
         "signal_at_entry": signal["at_body_entry"],
         "stop_order": stop,
+        "turn_context": turn,
         "approximately_same_time_judgment": "unresolved; no numeric legal threshold",
         "official_control_judgment": "unresolved",
         "inoperative_judgment": "unresolved"}}
@@ -104,7 +113,15 @@ def finalize(attempt: Path, output: Path):
             "other_body_inside_at_ego_entry": stop["other_body_inside_at_ego_entry"],
             "statutory_stop_judgment": stop["statutory_stop_judgment"],
             "statutory_yield_judgment": stop["statutory_yield_judgment"]},
-            "sources": stop["sources"]}}
+            "sources": stop["sources"]},
+        "turn_context": {"method": "measure_turn", "value": {
+            "approach_difference_deg": turn["approach_difference_deg"],
+            "routes": turn["routes"], "first_original_headings": turn["first_original_headings"],
+            "original_heading_complete": turn["original_heading_complete"],
+            "opposite_direction_judgment": turn["opposite_direction_judgment"],
+            "left_turn_intention_judgment": turn["left_turn_intention_judgment"],
+            "statutory_exception_judgment": turn["statutory_exception_judgment"]},
+            "sources": turn["source_hashes"]}}
     matched = measured_state == config["target_signal_state"]
     result = {"case_id": case,
         "measured_values": {"entry_delta_s": entry["ego_minus_other_entry_time_s"],
@@ -127,6 +144,7 @@ def finalize(attempt: Path, output: Path):
                                {"name": "entry_context", "unit": "structured record",
                                 "reference": "channels/entry_context.json"}],
         "source_evidence_hashes": {**entry["sources"], **signal["sources"], **stop["sources"],
+                                   **turn["source_hashes"],
                                    signal["head_review"]["camera"] + ".mkv": signal["source_video_sha256"],
                                    signal["other_head_review"]["camera"] + ".mkv": signal["other_source_video_sha256"]},
         "capture_evidence_sha256": _sha(attempt / "capture/evidence.jsonl"),

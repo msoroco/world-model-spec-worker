@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE = Path(__file__).resolve().parent
-OUT = ROOT / ".runtime-work/c125751-two-signal-saved-source-55s-v4"
+OUT = ROOT / ".runtime-work/c125751-two-signal-saved-source-55s-v6"
 sys.path.insert(0, str(PACKAGE / "tests"))
 sys.path.insert(0, str(PACKAGE))
 sys.path.insert(0, str(ROOT / "runtime/scenario_pipeline"))
@@ -57,8 +57,11 @@ def make_sources(attempt, case, state):
     for i in range(4, FRAMES):
         frame, t = 100 + i, i / 20
         ex, oy = min(9, -4 + .12 * (i-3)), min(9, -3 + .12 * (i-3))
-        crossing.append({"frame": frame, "time_s": t, "ego": body(ex, 0),
-                         "other": body(0, oy), "ego_vertices_m": body(ex, 0)["body_vertices_xy_m"]})
+        ego, other = body(ex, 0), body(0, oy)
+        ego.update(heading_deg=0, native_road_id=1, native_lane_id=-1)
+        other.update(heading_deg=90, native_road_id=2, native_lane_id=-1)
+        crossing.append({"frame": frame, "time_s": t, "ego": ego,
+                         "other": other, "ego_vertices_m": ego["body_vertices_xy_m"]})
         signal.append({"frame": frame, "time_s": t, "native_signal_id": 55, "state": state,
                        "other_native_signal_id": 56, "other_state": other_state})
         stop.append({"frame": frame, "time_s": t,
@@ -106,7 +109,7 @@ def make_sources(attempt, case, state):
 def negative_with_bad_review(attempt, negative, role):
     negative.mkdir()
     (negative / "capture").mkdir()
-    for name in ("config.json", "road_geometry.json", "crossing_history.jsonl",
+    for name in ("config.json", "road_geometry.json", "turn_route_context.json", "crossing_history.jsonl",
                  "signal_context.json", "signal_history.jsonl", "stop_context.json",
                  "stop_history.jsonl", "video_frames.jsonl", "trace.jsonl", *CAMERAS):
         (negative / name).hardlink_to(attempt / name)

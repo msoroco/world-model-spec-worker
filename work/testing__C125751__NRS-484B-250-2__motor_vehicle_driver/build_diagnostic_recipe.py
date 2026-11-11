@@ -17,8 +17,8 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "runtime/scenario_pipeline"))
 from worker_exchange.fixture_generator import generate, inspect
 
-SOURCE_ROOT = ROOT / ".runtime-work/c125751-two-signal-saved-source-55s-v4"
-SOURCE_NAMES = ("road_geometry.json", "crossing_history.jsonl", "signal_context.json",
+SOURCE_ROOT = ROOT / ".runtime-work/c125751-two-signal-saved-source-55s-v6"
+SOURCE_NAMES = ("road_geometry.json", "turn_route_context.json", "crossing_history.jsonl", "signal_context.json",
                 "signal_history.jsonl", "stop_context.json", "stop_history.jsonl",
                 "video_frames.jsonl", "trace.jsonl",
                 "head_visibility_review.json", "other_head_visibility_review.json")
