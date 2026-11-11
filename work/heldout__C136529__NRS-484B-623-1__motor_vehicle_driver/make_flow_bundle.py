@@ -58,7 +58,7 @@ rows=[json.loads(s) for s in spec['files']['participant_state.jsonl'].splitlines
 for row in rows:row['ego_speed_mps']=8.0;row['follower_speed_mps']=8.0
 spec['files']['participant_state.jsonl']=''.join(json.dumps(row)+'\n' for row in rows)
 spec['files']['slow_context.json']=json.dumps({'case_branch':'flowing_reference',
- 'diagnostic_fixture':True,'legal_judgment':'unresolved'})+'\n'
+ 'diagnostic_fixture':True,'native_weather':{'precipitation':0.0,'wetness':0.0},'legal_judgment':'unresolved'})+'\n'
 spec['files']['fixture-provenance.json']=json.dumps({'kind':'textual CPU diagnostic',
  'case_id':case,'physical_recording':False,'law_or_canonical_acceptance':False})+'\n'
 spec_path=folder/'diagnostic-input.json';spec_path.write_text(json.dumps(spec,separators=(',',':'))+'\n')

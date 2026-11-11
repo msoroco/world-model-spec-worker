@@ -62,7 +62,7 @@ for index,(f,t) in enumerate(zip(frames,trace)):
 example['files']['participant_state.jsonl']=''.join(json.dumps(row)+'\n' for row in actors)
 example['files']['prop_state.jsonl']=''.join(json.dumps(row)+'\n' for row in props)
 example['files']['slow_context.json']=json.dumps({'case_branch':'slow_with_following_traffic',
-  'diagnostic_fixture':True,'legal_judgment':'unresolved'})+'\n'
+  'diagnostic_fixture':True,'native_weather':{'precipitation':0.0,'wetness':0.0},'legal_judgment':'unresolved'})+'\n'
 example['files']['fixture-provenance.json']=json.dumps({'kind':'textual CPU diagnostic',
   'case_id':case,'physical_recording':False,'law_or_canonical_acceptance':False})+'\n'
 input_path=root/'diagnostic-input.json'

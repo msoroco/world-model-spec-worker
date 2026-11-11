@@ -16,6 +16,14 @@ class RunnerTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'160 original'):runner.check_config(bad)
         bad=dict(self.config(),selected_case_id='other')
         with self.assertRaisesRegex(ValueError,'exact supported'):runner.check_config(bad)
+    def test_speed_sign_selection_requires_physical_native_actor(self):
+        sign=SimpleNamespace(id=5,type_id='traffic.speed_limit.30',is_alive=True,
+            get_transform=lambda:SimpleNamespace(location=SimpleNamespace(x=5,y=0)))
+        ego=SimpleNamespace(get_transform=lambda:SimpleNamespace(location=SimpleNamespace(x=0,y=0)))
+        world=SimpleNamespace(get_actors=lambda:SimpleNamespace(filter=lambda pattern:[sign]))
+        self.assertIs(runner._find_speed_sign(world,ego),sign)
+        with self.assertRaisesRegex(ValueError,'No physical 30'):
+            runner._find_speed_sign(world,ego,max_distance_m=1)
     def test_obstruction_control_slows_near_physical_actor(self):
         def actor(y):return SimpleNamespace(get_transform=lambda:SimpleNamespace(location=SimpleNamespace(x=0,y=y)))
         ego=actor(0)

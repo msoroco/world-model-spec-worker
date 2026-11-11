@@ -1,34 +1,25 @@
 # Handoff: heldout__C136014__NRS-484B-113-1__motor_vehicle_driver
 
-## Frozen scope
+## Exact frozen scope
 
-The driver of a vehicle: Shall not back the vehicle unless such movement can be made with reasonable safety and without interfering with other traffic.
+NRS 484B.113(1): a driver shall not back unless the movement can be made with reasonable safety and without interfering with other traffic. C136014 is a narrow road reverse maneuver with another vehicle; actor is `motor_vehicle_driver`. The law supplies no numeric safety or interference cutoff.
 
-Cell C136014: narrow_road / reverse / other_vehicle; actor motor_vehicle_driver.
+## Current CPU construction and proofs
 
-## Full-text branch inventory for CPU construction
+Three exact cases isolate (1) clear traffic with steady speed, (2) close traffic with steady speed, and (3) clear traffic with braking. Every case has a Native CARLA runner, four synchronized cameras, raw backing history, a source-bound finalizer, a measurement contract, a diagnostic recipe, and three distinct risk-triggered fallbacks. All 12 primary/fallback bundles passed `runtime.py offline`, positive and missing-source `runtime.py compatibility`, and positive and missing-source `runtime.py process-saved` with the pinned Lean decoder. The associated logs and SHA-bound compatibility receipts are in `execution-manifest.json`. These are synthetic CPU fixtures, not physical backing acceptance.
 
-- Backward vehicle motion with reasonable safety and no interference with other traffic.
-- Compare controlled opposing-traffic/no-conflict conditions and interference conditions while maintaining reverse maneuver.
-- Reasonable safety is a judgment phrase without a statutory numeric cutoff.
+`comparison_audit.py` independently joins original history, trace and video-frame map, recomputes reverse motion, minimum center distance and traffic speed change, checks fixed road and ego trajectories, and rejects swapped case sources. `delivery_audit.py` checks exact case identity, both participant sources, full frame joins and four complete video decodes; `prove_delivery_audit.py` confirms removal of `backing_history.jsonl` is rejected for each case. The fixture's `physical_completion_check` is false, so these proofs claim no actual physical or legal acceptance.
 
-## Current checkpoint
+Draft `relevance_batch`, `relevance`, `template`, two `judgment_observables`, and `bindings` proposals pass `batch_pipeline.stages.validate`. The existing `proposals/cases.json` is still a noncanonical planning draft (`selected_branch` cases, no baseline/judgment sweep), so no semantic index is asserted.
 
-Three planned cases compare observed reverse clearance from other traffic and other-traffic speed response independently on the narrow road. `backing.py` requests narrow-road geometry, a reverse-geared subject and approaching vehicle through an adapter, then measures original 20 Hz reverse displacement, center distance and other speed change. Tests cover creation calls and missing-source, missing-motion and changed-fixed-condition rejection; `cpu-tests.log` SHA256 is `95b24ff83addcef2f141ac5ca1a3fbe12b6f1966f607763b025ad4d67601f24e`. These engineering measurements do not decide reasonable safety or interference.
+Eight unit tests pass (`cpu-tests.log`). `.venv-cpu/bin/python worker_check.py --assignment heldout__C136014__NRS-484B-113-1__motor_vehicle_driver --complete` passes. The scoped strict `--require-delivery-ready` check fails because `result.json` truthfully remains `partial`.
 
-Status remains partial. Concrete Native adapter, four-camera capture, exact runner/config/construction, three fallbacks per case, compatibility, saved processing, semantic proposals and delivery audit remain CPU work.
+## Next CPU work
 
-## Exact next CPU work
+1. Author and validate a canonical cases proposal: complete variable maps, shared baseline, exact three selected cases and law judgment sweep plan. Keep its recording descriptions identical to the exact constructions; if a required observation is absent, add the source channel and rerun affected exact proofs.
+2. Implement three measured physical outcome fixtures (`complete_motion`, `incomplete_motion`, `missing_evidence`) and capture lifecycle proof for each case; bind source/log hashes as `physical_preparation`. The current direct execution-manifest validation stops at the first missing physical preparation receipt.
+3. Run execution-manifest, semantic-delivery, package-compatibility, independent delivery and comparison validations; repair concrete failures. Re-run all scoped CPU proofs after any construction/manifest changes. Mark `ready` only after the scoped strict gate passes.
 
-1. Independently split the original law into all applicable clauses, alternatives, exceptions and any explicit numeric boundaries; map each to source-backed reuses or exact comparison cases without changing frozen cell/actor scope.
-2. Complete canonical semantic proposals, runner/config/construction, controller and four-camera plan, raw source acquisition, finalizer, measurement contracts and three tested risk-triggered fallbacks per selected case.
-3. Run `.venv-cpu/bin/python runtime.py offline` and `.venv-cpu/bin/python runtime.py compatibility` for each exact case and fallback, plus `runtime.py process-saved` on retained synthetic sources. Implement and test rejection paths in independent delivery and comparison audits.
-4. Update result.json with hashed logs only after proofs pass, then run `.venv-cpu/bin/python worker_check.py --assignment heldout__C136014__NRS-484B-113-1__motor_vehicle_driver --complete --require-delivery-ready`.
+## Current limits
 
-## Dependencies and limits
-
-Use the pinned runtime. CARLA, SQLite and canonical source recordings are unavailable in this CPU repository; those do not block the listed CPU preparation. The accepted summaries are retained as historical source evidence.
-
-## Current CPU proof
-
-Run `.venv-cpu/bin/python -m unittest discover -s work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/tests -v` and `.venv-cpu/bin/python worker_check.py --assignment heldout__C136014__NRS-484B-113-1__motor_vehicle_driver --complete`. Strict readiness still fails while this package is partial.
+No Native CARLA run or original physical road/camera evidence has been accepted. CPU compatibility and saved processing establish software behavior and rejection paths only. The independent audit still requires visual subject/body review on real four-camera output after execution.

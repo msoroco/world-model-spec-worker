@@ -51,7 +51,8 @@ def _chain(start, steps, spacing_m):
     return chain
 
 
-def select_marked_one_way_pair(carla_map, *, spacing_m=2.0, steps=15):
+def select_marked_one_way_pair(carla_map, *, spacing_m=2.0, steps=15,
+                               candidate_index=0):
     """Select a deterministic marked straight route with same-direction pair.
 
     Road-level absence of opposite-sign driving lane IDs is an engineering
@@ -89,7 +90,9 @@ def select_marked_one_way_pair(carla_map, *, spacing_m=2.0, steps=15):
     candidates.sort(key=lambda item: (int(item[0].road_id), abs(int(item[0].lane_id)),
                                       int(item[0].lane_id),
                                       *_xy(item[0].transform.location)))
-    start, primary, adjacent = candidates[0]
+    if type(candidate_index) is not int or candidate_index < 0 or candidate_index >= len(candidates):
+        raise ValueError("Requested marked route candidate is unavailable")
+    start, primary, adjacent = candidates[candidate_index]
     return {"road_id": int(start.road_id), "lane_id": int(start.lane_id),
             "adjacent_lane_id": int(adjacent[0].lane_id),
             "primary": primary, "adjacent": adjacent}

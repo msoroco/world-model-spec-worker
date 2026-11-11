@@ -26,7 +26,7 @@ def measure_saved_lane(path, ego_id, *, require_overtaken=False):
                                  require_overtaken=require_overtaken)
 
 
-def analyze(attempt):
+def analyze(attempt, *, write_channel=True):
     root = Path(attempt)
     config_path, _ = required(root, "config.json")
     config = json.loads(config_path.read_text())
@@ -50,12 +50,13 @@ def analyze(attempt):
     measured = measure_saved_lane(source_path, expected_ego,
                                   require_overtaken=case_id.endswith("__passing_boundary_crossing"))
     channel = root / "lane_clearance_m.jsonl"
-    if channel.exists():
-        raise ValueError("Retain prior derived lane channel")
-    channel.write_text("".join(json.dumps({"frame": frame["frame"],
-                                            "time_s": frame["time_s"],
-                                            "value": frame["minimum_corner_clearance_m"]}) + "\n"
-                               for frame in measured["frames"]))
+    if write_channel:
+        if channel.exists():
+            raise ValueError("Retain prior derived lane channel")
+        channel.write_text("".join(json.dumps({"frame": frame["frame"],
+                                                "time_s": frame["time_s"],
+                                                "value": frame["minimum_corner_clearance_m"]}) + "\n"
+                                   for frame in measured["frames"]))
     sources = {"video_frames.jsonl": map_sha, "trace.jsonl": trace_sha,
                "marked_lane_sources.jsonl": source_sha}
     return {"format": "worker-analysis-report", "case_id": case_id,

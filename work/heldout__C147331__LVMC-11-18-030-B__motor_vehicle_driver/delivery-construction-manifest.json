@@ -1,0 +1,307 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__within_marked_lane",
+      "kind": "delivery",
+      "construction": "construction-delivery-within_marked_lane.json",
+      "construction_sha256": "ba073fa4f264f2cc4f90c12c647024fb245a03eb69fd6d8223956c98fb4ba611",
+      "measurement_contract": "first-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "lane_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/lane-diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route availability, spawn occupancy and controller excursion remain unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-delivery-within_marked_lane-fallback1.json",
+          "construction_sha256": "aebecfd73f198ea362a4db292a95b28d40fd86e88a1a8c2b5910e53c287eb095",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "connected marked-route count at 2 m samples",
+            "failure_condition": "Primary route sampling misses a continuous marked segment; retry at 1 m samples."
+          },
+          "changed_knobs": [
+            "waypoint route spacing 2 m to 1 m and steps 15 to 30"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__within_marked_lane --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c147331-delivery-within_marked_lane-fallback1-offline-1794398998116549835 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "delivery-within_marked_lane-fallback1-offline.log",
+            "log_sha256": "eab4281419f49474c6773f172eab4705e82da9e9196e5418e92a366609bcb99e",
+            "construction_sha256": "aebecfd73f198ea362a4db292a95b28d40fd86e88a1a8c2b5910e53c287eb095"
+          },
+          "compatibility": {
+            "receipt": "delivery-within_marked_lane-fallback1-compatibility.json",
+            "sha256": "993c48253d3046d8fab63d782822cfdf9bd83cd4fe48541c8f1a9faa5f919b06",
+            "log": "delivery-within_marked_lane-fallback1-compat.log",
+            "negative_log": "delivery-within_marked_lane-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-delivery-within_marked_lane-fallback2.json",
+          "construction_sha256": "9c1a34f231d421e73b230afaaf22824bf232cc6917f4cd1d5546f7a1208a5954",
+          "trigger": {
+            "source": "retained trace.jsonl and marked_lane_sources.jsonl",
+            "metric": "body-corner excursion after controller steering correction",
+            "failure_condition": "Primary control overshoots its requested lane path; reduce speed and speed gain."
+          },
+          "changed_knobs": [
+            "controller target speed 6 to 4.5 m/s and speed gain 0.25 to 0.2"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__within_marked_lane --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c147331-delivery-within_marked_lane-fallback2-offline-1794399001875327395 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "delivery-within_marked_lane-fallback2-offline.log",
+            "log_sha256": "31fee74ca91764ff428912a09870cbe01b998b86899b47ff32b2bbbf7fdc0d92",
+            "construction_sha256": "9c1a34f231d421e73b230afaaf22824bf232cc6917f4cd1d5546f7a1208a5954"
+          },
+          "compatibility": {
+            "receipt": "delivery-within_marked_lane-fallback2-compatibility.json",
+            "sha256": "ae834b28f99b52b6bbfc990cbafc001e56e56c000e3b2024f1458039c9284ced",
+            "log": "delivery-within_marked_lane-fallback2-compat.log",
+            "negative_log": "delivery-within_marked_lane-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-delivery-within_marked_lane-fallback3.json",
+          "construction_sha256": "bf12cc137c537bb46d61f14d57a8e0e76a0e7bb5b8a5f40361268d5d3020aa7c",
+          "trigger": {
+            "source": "Native actor spawn diagnostic",
+            "metric": "failed primary marked-route spawn count",
+            "failure_condition": "Primary route spawn is blocked by world occupancy; select the next verified marked route."
+          },
+          "changed_knobs": [
+            "marked-route candidate index 0 to 1"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__within_marked_lane --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c147331-delivery-within_marked_lane-fallback3-offline-1794399005553213282 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "delivery-within_marked_lane-fallback3-offline.log",
+            "log_sha256": "ca18ffc8e8fdc6b71e49e9b4fd64e04661daa3243fb767d57a64ce80ea2d7b63",
+            "construction_sha256": "bf12cc137c537bb46d61f14d57a8e0e76a0e7bb5b8a5f40361268d5d3020aa7c"
+          },
+          "compatibility": {
+            "receipt": "delivery-within_marked_lane-fallback3-compatibility.json",
+            "sha256": "fdfa9f5d51043e9da168e1467ec0848588ee18bf0ff72065f85da4b829c3b798",
+            "log": "delivery-within_marked_lane-fallback3-compat.log",
+            "negative_log": "delivery-within_marked_lane-fallback3-negative.log"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__unexcused_boundary_crossing",
+      "kind": "delivery",
+      "construction": "construction-delivery-unexcused_boundary_crossing.json",
+      "construction_sha256": "8ecb9250a5ae3e4b4b40a2c5ef8bf84cebd47ccce60ec41dae0194160381918c",
+      "measurement_contract": "measurement-contract-unexcused_boundary_crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "lane_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/lane-diagnostic-unexcused_boundary_crossing-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route availability, spawn occupancy and controller excursion remain unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-delivery-unexcused_boundary_crossing-fallback1.json",
+          "construction_sha256": "bf2cca00c645740e9ec2ecf9607d88aec6c1492957c405f822d11af3a687110f",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "connected marked-route count at 2 m samples",
+            "failure_condition": "Primary route sampling misses a continuous marked segment; retry at 1 m samples."
+          },
+          "changed_knobs": [
+            "waypoint route spacing 2 m to 1 m and steps 15 to 30"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__unexcused_boundary_crossing --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c147331-delivery-unexcused_boundary_crossing-fallback1-offline-1794399009268581886 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "delivery-unexcused_boundary_crossing-fallback1-offline.log",
+            "log_sha256": "31fee74ca91764ff428912a09870cbe01b998b86899b47ff32b2bbbf7fdc0d92",
+            "construction_sha256": "bf2cca00c645740e9ec2ecf9607d88aec6c1492957c405f822d11af3a687110f"
+          },
+          "compatibility": {
+            "receipt": "delivery-unexcused_boundary_crossing-fallback1-compatibility.json",
+            "sha256": "345921285adfdb8e51b3cdb1055a9e3d5bc795fa28bc79e84017a1e2b2150499",
+            "log": "delivery-unexcused_boundary_crossing-fallback1-compat.log",
+            "negative_log": "delivery-unexcused_boundary_crossing-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-delivery-unexcused_boundary_crossing-fallback2.json",
+          "construction_sha256": "2a43c45c750ef2923b58201050da39627cc01f966bbb8888f554075aa973c4d9",
+          "trigger": {
+            "source": "retained trace.jsonl and marked_lane_sources.jsonl",
+            "metric": "body-corner excursion after controller steering correction",
+            "failure_condition": "Primary control overshoots its requested lane path; reduce speed and speed gain."
+          },
+          "changed_knobs": [
+            "controller target speed 6 to 4.5 m/s and speed gain 0.25 to 0.2"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__unexcused_boundary_crossing --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c147331-delivery-unexcused_boundary_crossing-fallback2-offline-1794399012901035458 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "delivery-unexcused_boundary_crossing-fallback2-offline.log",
+            "log_sha256": "5684d13977a1f6829bcd5f644c72b35ab6f8d42951d571a5f230c4cc35a359f3",
+            "construction_sha256": "2a43c45c750ef2923b58201050da39627cc01f966bbb8888f554075aa973c4d9"
+          },
+          "compatibility": {
+            "receipt": "delivery-unexcused_boundary_crossing-fallback2-compatibility.json",
+            "sha256": "e6e869029e8c999e532e44c80605466cce2d857c6c6193715a7b3b51c55bcb59",
+            "log": "delivery-unexcused_boundary_crossing-fallback2-compat.log",
+            "negative_log": "delivery-unexcused_boundary_crossing-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-delivery-unexcused_boundary_crossing-fallback3.json",
+          "construction_sha256": "0338c1c8c4c6c61b433d435218ad695c3946dd419ed966b5476fd9e79884f1cd",
+          "trigger": {
+            "source": "Native actor spawn diagnostic",
+            "metric": "failed primary marked-route spawn count",
+            "failure_condition": "Primary route spawn is blocked by world occupancy; select the next verified marked route."
+          },
+          "changed_knobs": [
+            "marked-route candidate index 0 to 1"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__unexcused_boundary_crossing --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c147331-delivery-unexcused_boundary_crossing-fallback3-offline-1794399016679517082 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "delivery-unexcused_boundary_crossing-fallback3-offline.log",
+            "log_sha256": "ca18ffc8e8fdc6b71e49e9b4fd64e04661daa3243fb767d57a64ce80ea2d7b63",
+            "construction_sha256": "0338c1c8c4c6c61b433d435218ad695c3946dd419ed966b5476fd9e79884f1cd"
+          },
+          "compatibility": {
+            "receipt": "delivery-unexcused_boundary_crossing-fallback3-compatibility.json",
+            "sha256": "79d415c683d535eafcc14e02e1d85a24f2c3370e3bc986e740522119715dcbde",
+            "log": "delivery-unexcused_boundary_crossing-fallback3-compat.log",
+            "negative_log": "delivery-unexcused_boundary_crossing-fallback3-negative.log"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_boundary_crossing",
+      "kind": "delivery",
+      "construction": "construction-delivery-passing_boundary_crossing.json",
+      "construction_sha256": "842576c4eeb2210d49abf8eb4b0be3e5031437b09083b21557be998f5e4ff28e",
+      "measurement_contract": "measurement-contract-passing_boundary_crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "lane_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/lane-diagnostic-passing_boundary_crossing-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route availability, spawn occupancy and controller excursion remain unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-delivery-passing_boundary_crossing-fallback1.json",
+          "construction_sha256": "4425ba75009e9114a8fecd94704f110c244bdd1015e5eeee8550c01dfcff1182",
+          "trigger": {
+            "source": "Native waypoint route-selection diagnostic",
+            "metric": "connected marked-route count at 2 m samples",
+            "failure_condition": "Primary route sampling misses a continuous marked segment; retry at 1 m samples."
+          },
+          "changed_knobs": [
+            "waypoint route spacing 2 m to 1 m and steps 15 to 30"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_boundary_crossing --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c147331-delivery-passing_boundary_crossing-fallback1-offline-1794399020309772070 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "delivery-passing_boundary_crossing-fallback1-offline.log",
+            "log_sha256": "ca18ffc8e8fdc6b71e49e9b4fd64e04661daa3243fb767d57a64ce80ea2d7b63",
+            "construction_sha256": "4425ba75009e9114a8fecd94704f110c244bdd1015e5eeee8550c01dfcff1182"
+          },
+          "compatibility": {
+            "receipt": "delivery-passing_boundary_crossing-fallback1-compatibility.json",
+            "sha256": "898fb6aa70bb34ca4656bd7385241091d6b05870a869eafa913fdb8b27d0b892",
+            "log": "delivery-passing_boundary_crossing-fallback1-compat.log",
+            "negative_log": "delivery-passing_boundary_crossing-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-delivery-passing_boundary_crossing-fallback2.json",
+          "construction_sha256": "ea94ffb2b6367bf99fd87bdb1b04b0beeb72302fb50ec531010fe5b6a014ba1f",
+          "trigger": {
+            "source": "retained trace.jsonl and marked_lane_sources.jsonl",
+            "metric": "body-corner excursion after controller steering correction",
+            "failure_condition": "Primary control overshoots its requested lane path; reduce speed and speed gain."
+          },
+          "changed_knobs": [
+            "controller target speed 6 to 4.5 m/s and speed gain 0.25 to 0.2"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_boundary_crossing --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c147331-delivery-passing_boundary_crossing-fallback2-offline-1794399024022197090 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "delivery-passing_boundary_crossing-fallback2-offline.log",
+            "log_sha256": "ca18ffc8e8fdc6b71e49e9b4fd64e04661daa3243fb767d57a64ce80ea2d7b63",
+            "construction_sha256": "ea94ffb2b6367bf99fd87bdb1b04b0beeb72302fb50ec531010fe5b6a014ba1f"
+          },
+          "compatibility": {
+            "receipt": "delivery-passing_boundary_crossing-fallback2-compatibility.json",
+            "sha256": "a76839dce4f965269afc782dc7331de12e9c3d2a68434a18826d11b9ff2a1361",
+            "log": "delivery-passing_boundary_crossing-fallback2-compat.log",
+            "negative_log": "delivery-passing_boundary_crossing-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-delivery-passing_boundary_crossing-fallback3.json",
+          "construction_sha256": "12676c89b50f8266e524d266c395c0407e95c007f030d5d0eca3446e42f73da1",
+          "trigger": {
+            "source": "Native actor spawn diagnostic",
+            "metric": "failed primary marked-route spawn count",
+            "failure_condition": "Primary route spawn is blocked by world occupancy; select the next verified marked route."
+          },
+          "changed_knobs": [
+            "marked-route candidate index 0 to 1"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__passing_boundary_crossing --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c147331-delivery-passing_boundary_crossing-fallback3-offline-1794399027879679153 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "delivery-passing_boundary_crossing-fallback3-offline.log",
+            "log_sha256": "3a1c4cd02a1576f2aafd89a805ce14566da40f26587c010179bb2611fcfbc795",
+            "construction_sha256": "12676c89b50f8266e524d266c395c0407e95c007f030d5d0eca3446e42f73da1"
+          },
+          "compatibility": {
+            "receipt": "delivery-passing_boundary_crossing-fallback3-compatibility.json",
+            "sha256": "6042367455e372b3afda2016a915ba9651abe3bdbfc04e8e34489b47a5be10dc",
+            "log": "delivery-passing_boundary_crossing-fallback3-compat.log",
+            "negative_log": "delivery-passing_boundary_crossing-fallback3-negative.log"
+          }
+        }
+      ]
+    }
+  ],
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+}

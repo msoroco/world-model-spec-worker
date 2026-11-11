@@ -12,14 +12,14 @@ for entry in manifest['cases']:
     case=entry['case_id'];branch=case.split('__')[-1]
     for candidate,item in [('primary',entry)]+[(x['id'],x) for x in entry['candidates']]:
         stem=branch+'-'+candidate
-        offline_dir=repo/'.runtime-work'/('c136529-'+stem+'-offline')
-        compat_dir=repo/'.runtime-work'/('c136529-'+stem+'-compat')
+        offline_dir=repo/'.runtime-work'/('c136529-'+stem+'-offline-v3')
+        compat_dir=repo/'.runtime-work'/('c136529-'+stem+'-compat-v3')
         outputs=[('offline.log',offline_dir/'offline.log'),
                  ('compatibility.json',compat_dir/'compatibility.json'),
                  ('compat.log',compat_dir/'compatibility-analysis.log'),
                  ('negative.log',compat_dir/'negative-analysis.log')]
         for suffix,source in outputs:copyfile(source,root/(stem+'-'+suffix))
-        item['offline']={'command':f'.venv-cpu/bin/python runtime.py offline --manifest work/{root.name}/execution-manifest.json --case {case} --candidate {candidate} --output .runtime-work/c136529-{stem}-offline --python "$PWD/.venv-cpu/bin/python"',
+        item['offline']={'command':f'.venv-cpu/bin/python runtime.py offline --manifest work/{root.name}/execution-manifest.json --case {case} --candidate {candidate} --output .runtime-work/c136529-{stem}-offline-v3 --python "$PWD/.venv-cpu/bin/python"',
                          'exit_code':0,'log':stem+'-offline.log',
                          'log_sha256':sha(root/(stem+'-offline.log')),
                          'construction_sha256':item['construction_sha256']}

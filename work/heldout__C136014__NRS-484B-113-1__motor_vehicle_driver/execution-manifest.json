@@ -34,7 +34,7 @@
           },
           "compatibility": {
             "receipt": "fallback1-compatibility.json",
-            "sha256": "f7a6042960f5315525ba442fe5cb7e7e6ead6808969574b96f9ac0d757973140",
+            "sha256": "ae99c8db1f81d6c0b8223cd4d220dc701cd34cfc8edb86e6795ae1b7d031cdfb",
             "log": "fallback1-compat.log",
             "negative_log": "fallback1-negative.log"
           },
@@ -66,7 +66,7 @@
           },
           "compatibility": {
             "receipt": "fallback2-compatibility.json",
-            "sha256": "8592a50f02633b921fa5d8e8fd71264d2068e10e1f45745f3b1d0f7b2a1e91db",
+            "sha256": "5bfe729b14eca3d7a20334b76879891cb8996048b480a0fcd5ada5f5558fce81",
             "log": "fallback2-compat.log",
             "negative_log": "fallback2-negative.log"
           },
@@ -98,7 +98,7 @@
           },
           "compatibility": {
             "receipt": "fallback3-compatibility.json",
-            "sha256": "6bfd057fede114978228137e7e9a0a2cd4096015a6e6602f0f1880605b161d63",
+            "sha256": "5accc977276d159ce45695dd4f41143ed2120a6babdfe61ceed4b3bda1285b34",
             "log": "fallback3-compat.log",
             "negative_log": "fallback3-negative.log"
           },
@@ -129,7 +129,7 @@
       },
       "compatibility": {
         "receipt": "first-compatibility.json",
-        "sha256": "07ea40ac3152a964853914fbc4e1cd0ff12324e7a06b02688c8c16c1708ee3d6",
+        "sha256": "e29b846a9b27062d28bb1fb5d65b018ece5ad60c60768e3d13ea88785fac4797",
         "log": "first-compat.log",
         "negative_log": "first-negative.log"
       },
@@ -140,6 +140,51 @@
         "test_log": "first-saved-proof.log",
         "test_log_sha256": "45ab9c411fa50a1f4a294f8d0cae5b7e2ccc3ad4148fad2706e14056d69369e2",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "736815ae97042898cab103598aff1ceeb45a225a00a1bf092c872eaa03b27de3",
+        "command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_delivery_audit.py --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady --attempt .runtime-work/c136014-primary-compat-006",
+        "test_exit_code": 0,
+        "test_log": "cases/reverse_clear_traffic_steady-delivery-proof.log",
+        "test_log_sha256": "7504981caec13be9a2d22689e864840c5fa86ab70f340ed9417a631f95dbdc5b",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_delivery_audit.py --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady --attempt .runtime-work/c136014-primary-compat-006 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: backing_history.jsonl",
+        "negative_log": "cases/reverse_clear_traffic_steady-delivery-negative.log",
+        "negative_log_sha256": "86dc209961324694ae6fbcd9ff344270a604af036c055b8f5af6c7cb32ab79aa",
+        "scope": "CPU fixture source audit; physical and legal acceptance remain pending"
+      },
+      "negative": {
+        "log": "first-negative.log"
+      },
+      "acquisition": {
+        "reverse_displacement_m": {
+          "entrypoint": "backing_finalizer.py",
+          "method": "recompute from original 20 Hz ego poses and reverse gear readback",
+          "evidence": "backing_history.jsonl joined to trace.jsonl and video_frames.jsonl"
+        },
+        "other_traffic_center_distance_m": {
+          "entrypoint": "backing_finalizer.py",
+          "method": "recompute original actor-center distance at each joined frame",
+          "evidence": "backing_history.jsonl original ego/other positions and body vertices"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical/reverse_clear_traffic_steady-proof.json",
+        "sha256": "98887dc11324df07c551414cc90d9bdbf607e414c3bf0e1aeda5e96d49a29f3f"
       }
     },
     {
@@ -163,7 +208,26 @@
           },
           "changed_knobs": [
             "rear actor spawn offset 10 m to 8 m"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady --candidate fallback1 --output .runtime-work/c136014-reverse_close_traffic_steady-fallback1-offline-001 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/reverse_close_traffic_steady/fallback1-offline.log",
+            "log_sha256": "133449d6f429f0588126e0403937f271f33f90517460d5c4b39d69c2eeda0f25",
+            "construction_sha256": "950b7089d579ecb4f4b6684b77a010230e7d57953bd10ca231c0b5f1510427fe"
+          },
+          "compatibility": {
+            "receipt": "cases/reverse_close_traffic_steady/fallback1-compatibility.json",
+            "sha256": "20c71744bf16d548609389d403ddad507eaf990304dd127cdc413663a44f5905",
+            "log": "cases/reverse_close_traffic_steady/fallback1-compat.log",
+            "negative_log": "cases/reverse_close_traffic_steady/fallback1-negative.log"
+          },
+          "saved_processing_test": {
+            "command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_saved.py --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --validator $VALIDATOR --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady --candidate fallback1",
+            "exit_code": 0,
+            "log": "cases/reverse_close_traffic_steady/fallback1-saved-proof.log",
+            "log_sha256": "3e3fd55d9b0d8ee2f01ed7508698fffc03d542bb95c911268827dba86ab3f1c7"
+          }
         },
         {
           "id": "fallback2",
@@ -176,7 +240,26 @@
           },
           "changed_knobs": [
             "ego reverse throttle 0.22 to 0.14"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady --candidate fallback2 --output .runtime-work/c136014-reverse_close_traffic_steady-fallback2-offline-001 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/reverse_close_traffic_steady/fallback2-offline.log",
+            "log_sha256": "60bb849356ffbc091f601e17fc6ae0b2eb5e26d734d433da020c6e775efbf97f",
+            "construction_sha256": "1154a7e8378b69251ff1d88a5b693ac706d800e0c9e12f98ab602cc26a1ae11b"
+          },
+          "compatibility": {
+            "receipt": "cases/reverse_close_traffic_steady/fallback2-compatibility.json",
+            "sha256": "3cef1d991c8ca98a9fa279ea693f8efd8538637760e01e0883dae49cb383387a",
+            "log": "cases/reverse_close_traffic_steady/fallback2-compat.log",
+            "negative_log": "cases/reverse_close_traffic_steady/fallback2-negative.log"
+          },
+          "saved_processing_test": {
+            "command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_saved.py --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --validator $VALIDATOR --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady --candidate fallback2",
+            "exit_code": 0,
+            "log": "cases/reverse_close_traffic_steady/fallback2-saved-proof.log",
+            "log_sha256": "ec06db88d1e864551829f134ea3911329b35f3882235bfa6f41e8eaba75ad5cf"
+          }
         },
         {
           "id": "fallback3",
@@ -189,7 +272,26 @@
           },
           "changed_knobs": [
             "approach camera mount x 1.2 to 1.8 m, z 2.0 to 2.4 m"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady --candidate fallback3 --output .runtime-work/c136014-reverse_close_traffic_steady-fallback3-offline-001 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/reverse_close_traffic_steady/fallback3-offline.log",
+            "log_sha256": "60bb849356ffbc091f601e17fc6ae0b2eb5e26d734d433da020c6e775efbf97f",
+            "construction_sha256": "05236f859ac38bf64eb85ca210ef82fdf8394de80c6dc32f84b5d50dd9b10c1c"
+          },
+          "compatibility": {
+            "receipt": "cases/reverse_close_traffic_steady/fallback3-compatibility.json",
+            "sha256": "555ce7a0cf528e9c9c5a5749f082a82de1859c0801cae93f7b56930aead7f388",
+            "log": "cases/reverse_close_traffic_steady/fallback3-compat.log",
+            "negative_log": "cases/reverse_close_traffic_steady/fallback3-negative.log"
+          },
+          "saved_processing_test": {
+            "command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_saved.py --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --validator $VALIDATOR --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady --candidate fallback3",
+            "exit_code": 0,
+            "log": "cases/reverse_close_traffic_steady/fallback3-saved-proof.log",
+            "log_sha256": "09d7aabe2713810aea0e73b73644811c3be159793b37bbd7c242adaea87d1501"
+          }
         }
       ],
       "measurement_contract": "cases/reverse_close_traffic_steady/measurement-contract.json",
@@ -201,6 +303,72 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady --output .runtime-work/c136014-reverse_close_traffic_steady-offline-002 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/reverse_close_traffic_steady/primary-offline.log",
+        "log_sha256": "c6352adff70a6982c739a1cd77bbb43d2425eefd2dc2112b92b0ceebf2a6ca31",
+        "construction_sha256": "6f83971fc4bf966ab4a1a1cfbb87eb81a109dd40d75c097008163309eed8d58b"
+      },
+      "compatibility": {
+        "receipt": "cases/reverse_close_traffic_steady/primary-compatibility.json",
+        "sha256": "29a12c47d74a7be79b08d67d8bc58ec94763905a1fe58599bc2ce886c01f9407",
+        "log": "cases/reverse_close_traffic_steady/primary-compat.log",
+        "negative_log": "cases/reverse_close_traffic_steady/primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cases/reverse_close_traffic_steady/reverse_close_traffic_steady-saved-proof.log",
+        "test_log_sha256": "836079d5650e96d7db5402592173eb699fa74da5d8307a96f840792f4dd64a35",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "736815ae97042898cab103598aff1ceeb45a225a00a1bf092c872eaa03b27de3",
+        "command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_delivery_audit.py --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady --attempt .runtime-work/c136014-reverse_close_traffic_steady-compat-002",
+        "test_exit_code": 0,
+        "test_log": "cases/reverse_close_traffic_steady-delivery-proof.log",
+        "test_log_sha256": "df6001fb33379be4f21f09be1c5dd18c930d7a0e70264d32b23c3219e53aa16b",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_delivery_audit.py --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady --attempt .runtime-work/c136014-reverse_close_traffic_steady-compat-002 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: backing_history.jsonl",
+        "negative_log": "cases/reverse_close_traffic_steady-delivery-negative.log",
+        "negative_log_sha256": "86dc209961324694ae6fbcd9ff344270a604af036c055b8f5af6c7cb32ab79aa",
+        "scope": "CPU fixture source audit; physical and legal acceptance remain pending"
+      },
+      "negative": {
+        "log": "cases/reverse_close_traffic_steady/primary-negative.log"
+      },
+      "acquisition": {
+        "reverse_displacement_m": {
+          "entrypoint": "backing_finalizer.py",
+          "method": "recompute from original 20 Hz ego poses and reverse gear readback",
+          "evidence": "backing_history.jsonl joined to trace.jsonl and video_frames.jsonl"
+        },
+        "other_traffic_center_distance_m": {
+          "entrypoint": "backing_finalizer.py",
+          "method": "recompute original actor-center distance at each joined frame",
+          "evidence": "backing_history.jsonl original ego/other positions and body vertices"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical/reverse_close_traffic_steady-proof.json",
+        "sha256": "b7af75b3eafd041278f5252eb3881f624129ca48398d2a943533aae180170af9"
       }
     },
     {
@@ -224,7 +392,26 @@
           },
           "changed_knobs": [
             "rear actor spawn offset 18 m to 16 m"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes --candidate fallback1 --output .runtime-work/c136014-reverse_clear_traffic_brakes-fallback1-offline-001 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/reverse_clear_traffic_brakes/fallback1-offline.log",
+            "log_sha256": "c6352adff70a6982c739a1cd77bbb43d2425eefd2dc2112b92b0ceebf2a6ca31",
+            "construction_sha256": "79c3b846d03846753611dd736a6d229b41ef0f441981f6c96ca37a7743e366d1"
+          },
+          "compatibility": {
+            "receipt": "cases/reverse_clear_traffic_brakes/fallback1-compatibility.json",
+            "sha256": "e0cbc71e49059e897c464870f51542e58e43861138d36f182c7661357c2aa8ae",
+            "log": "cases/reverse_clear_traffic_brakes/fallback1-compat.log",
+            "negative_log": "cases/reverse_clear_traffic_brakes/fallback1-negative.log"
+          },
+          "saved_processing_test": {
+            "command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_saved.py --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --validator $VALIDATOR --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes --candidate fallback1",
+            "exit_code": 0,
+            "log": "cases/reverse_clear_traffic_brakes/fallback1-saved-proof.log",
+            "log_sha256": "ae663e6da5856fb4023075c9f6735da431d31887353d6e26ead51f7ac606e5ea"
+          }
         },
         {
           "id": "fallback2",
@@ -237,7 +424,26 @@
           },
           "changed_knobs": [
             "ego reverse throttle 0.22 to 0.14"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes --candidate fallback2 --output .runtime-work/c136014-reverse_clear_traffic_brakes-fallback2-offline-001 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/reverse_clear_traffic_brakes/fallback2-offline.log",
+            "log_sha256": "60bb849356ffbc091f601e17fc6ae0b2eb5e26d734d433da020c6e775efbf97f",
+            "construction_sha256": "268e6452bff478998400faacd009f1fb60fba3fdf75044ed98e5c685f6305737"
+          },
+          "compatibility": {
+            "receipt": "cases/reverse_clear_traffic_brakes/fallback2-compatibility.json",
+            "sha256": "0127bf557f2cb6d21786c6f795e63151c0b8325c9b7df7ef0eb94af6dce1a049",
+            "log": "cases/reverse_clear_traffic_brakes/fallback2-compat.log",
+            "negative_log": "cases/reverse_clear_traffic_brakes/fallback2-negative.log"
+          },
+          "saved_processing_test": {
+            "command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_saved.py --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --validator $VALIDATOR --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes --candidate fallback2",
+            "exit_code": 0,
+            "log": "cases/reverse_clear_traffic_brakes/fallback2-saved-proof.log",
+            "log_sha256": "115855436ed53a27c2a589ddbcee0d56c64c8e8e903b12eb0f3b54525ce0df18"
+          }
         },
         {
           "id": "fallback3",
@@ -250,7 +456,26 @@
           },
           "changed_knobs": [
             "approach camera mount x 1.2 to 1.8 m, z 2.0 to 2.4 m"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes --candidate fallback3 --output .runtime-work/c136014-reverse_clear_traffic_brakes-fallback3-offline-001 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cases/reverse_clear_traffic_brakes/fallback3-offline.log",
+            "log_sha256": "60bb849356ffbc091f601e17fc6ae0b2eb5e26d734d433da020c6e775efbf97f",
+            "construction_sha256": "dc97540a3d7b111549d63dbbc8235e32deb698269607a36a9ff2c87ac03a610b"
+          },
+          "compatibility": {
+            "receipt": "cases/reverse_clear_traffic_brakes/fallback3-compatibility.json",
+            "sha256": "ea6224c4629278d13b2d569c7c6f3f0f3f0b32a0571dc6f81443c98a9c43bdff",
+            "log": "cases/reverse_clear_traffic_brakes/fallback3-compat.log",
+            "negative_log": "cases/reverse_clear_traffic_brakes/fallback3-negative.log"
+          },
+          "saved_processing_test": {
+            "command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_saved.py --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --validator $VALIDATOR --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes --candidate fallback3",
+            "exit_code": 0,
+            "log": "cases/reverse_clear_traffic_brakes/fallback3-saved-proof.log",
+            "log_sha256": "a28d812953245977f881dc4f7efff61d8acaddb97202c66d5267fa6122abb532"
+          }
         }
       ],
       "measurement_contract": "cases/reverse_clear_traffic_brakes/measurement-contract.json",
@@ -262,6 +487,72 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes --output .runtime-work/c136014-reverse_clear_traffic_brakes-offline-002 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cases/reverse_clear_traffic_brakes/primary-offline.log",
+        "log_sha256": "c6352adff70a6982c739a1cd77bbb43d2425eefd2dc2112b92b0ceebf2a6ca31",
+        "construction_sha256": "205896eafc7926f622044ff00e10f90f7aa5c11fd9959ae4d005ebacb6839896"
+      },
+      "compatibility": {
+        "receipt": "cases/reverse_clear_traffic_brakes/primary-compatibility.json",
+        "sha256": "46ad6319d99e9f66e86218abc80806aa8a413f7c10a3b951595fc36138bf6a2d",
+        "log": "cases/reverse_clear_traffic_brakes/primary-compat.log",
+        "negative_log": "cases/reverse_clear_traffic_brakes/primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "cases/reverse_clear_traffic_brakes/primary-saved-proof.log",
+        "test_log_sha256": "37453a6f5a76db9b83e38169d8cc372ae9853c405667581036cd04b3e4c9d5b1",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "736815ae97042898cab103598aff1ceeb45a225a00a1bf092c872eaa03b27de3",
+        "command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_delivery_audit.py --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes --attempt .runtime-work/c136014-reverse_clear_traffic_brakes-primary-compat-002",
+        "test_exit_code": 0,
+        "test_log": "cases/reverse_clear_traffic_brakes-delivery-proof.log",
+        "test_log_sha256": "d550c98bfa8a7c26ffa729040c926544f73609bb2c725c6b198e754790160396",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_delivery_audit.py --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes --attempt .runtime-work/c136014-reverse_clear_traffic_brakes-primary-compat-002 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: backing_history.jsonl",
+        "negative_log": "cases/reverse_clear_traffic_brakes-delivery-negative.log",
+        "negative_log_sha256": "86dc209961324694ae6fbcd9ff344270a604af036c055b8f5af6c7cb32ab79aa",
+        "scope": "CPU fixture source audit; physical and legal acceptance remain pending"
+      },
+      "negative": {
+        "log": "cases/reverse_clear_traffic_brakes/primary-negative.log"
+      },
+      "acquisition": {
+        "reverse_displacement_m": {
+          "entrypoint": "backing_finalizer.py",
+          "method": "recompute from original 20 Hz ego poses and reverse gear readback",
+          "evidence": "backing_history.jsonl joined to trace.jsonl and video_frames.jsonl"
+        },
+        "other_traffic_center_distance_m": {
+          "entrypoint": "backing_finalizer.py",
+          "method": "recompute original actor-center distance at each joined frame",
+          "evidence": "backing_history.jsonl original ego/other positions and body vertices"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical/reverse_clear_traffic_brakes-proof.json",
+        "sha256": "04d1e7064517aef589ced8bd3188ce5acb8336b6ba5656e99293f4b1090c5fdc"
       }
     }
   ]

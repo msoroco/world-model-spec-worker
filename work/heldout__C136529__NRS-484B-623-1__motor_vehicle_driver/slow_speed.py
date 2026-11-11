@@ -18,7 +18,7 @@ CASES = {
     'flowing_reference': Case('flowing_reference', 8.0, 8.0),
     'slow_with_following_traffic': Case('slow_with_following_traffic', 3.0, 8.0),
     'slow_for_obstruction': Case('slow_for_obstruction', 3.0, 8.0, obstruction=True),
-    'slow_under_control': Case('slow_under_control', 3.0, 8.0, regulatory_control=True),
+    'slow_under_control': Case('slow_under_control', 8.0, 12.0, regulatory_control=True),
 }
 
 
@@ -41,8 +41,8 @@ def construct(adapter, case: Case):
         props.append(adapter.prop(kind='parked_vehicle', center=(0.0, 5.0),
                                   extent=(1.1, 1.4, 0.6)))
     if case.regulatory_control:
-        props.append(adapter.prop(kind='temporary_speed_control', center=(2.7, -35.0),
-                                  extent=(0.4, 0.2, 1.8), displayed_mps=3.0))
+        props.append(adapter.prop(kind='existing_speed_limit_sign', center=(2.7, -35.0),
+                                  extent=(0.4, 0.2, 1.8), displayed_kmh=30))
     return {'road': road, 'ego': ego, 'follower': follower,
             'opposing': opposing, 'props': props}
 

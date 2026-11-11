@@ -30,16 +30,19 @@ def check_config(config):
 
 def run(config, output, host, port):
     import carla  # Native-only dependency.
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap
 
     check_config(config)
     output = Path(output)
     output.mkdir(parents=True, exist_ok=False)
+    (output / 'config.json').write_text(json.dumps(config, indent=2) + '\n')
     client = carla.Client(host, port)
     client.set_timeout(30.)
     world = client.get_world()
     original = world.get_settings()
     owned = []
-    recorder = cameras = None
+    recorder = cameras = pipeline = frame_map = None
     sinks = {}
     try:
         settings = world.get_settings()
@@ -54,6 +57,9 @@ def run(config, output, host, port):
             raise ValueError('Native right-half subject spawn failed')
         owned.append(ego)
         recorder = RoadwaySourceRecorder(output, ego)
+        pipeline = PipelineCapture(client, ego, output, config['selected_case_id'],
+                                   required_observations=config.get('required_atoms', []))
+        frame_map = FrameMap(output / 'video_frames.jsonl')
         for name in CAMERAS:
             sinks[name] = LosslessSourceSink(output, name)
         cameras = RightHalfCameraCapture(world, carla, ego, sinks)
@@ -77,8 +83,12 @@ def run(config, output, host, port):
             if start is None:
                 start = snapshot.timestamp.elapsed_seconds
             waypoint = world.get_map().get_waypoint(ego.get_location())
+            trace = pipeline.capture(frame, snapshot.timestamp.elapsed_seconds - start)
+            if trace.get('frame') != frame or trace.get('time_s') != snapshot.timestamp.elapsed_seconds - start:
+                raise ValueError('Native right-half trace/frame mismatch')
             recorder.append(frame, snapshot.timestamp.elapsed_seconds - start,
                             waypoint)
+            frame_map.append(frame, snapshot.timestamp.elapsed_seconds - start)
             frames.append(frame)
         cameras.verify(frames)
         (output / 'construction-probe.json').write_text(json.dumps({
@@ -88,8 +98,12 @@ def run(config, output, host, port):
             'road_id': route[0].road_id, 'lane_id': route[0].lane_id,
             'frames': frames, 'delivery_ready': False}, indent=2) + '\n')
     finally:
+        if frame_map is not None:
+            frame_map.close()
         if recorder is not None:
             recorder.close()
+        if pipeline is not None:
+            pipeline.close(confirmed=False)
         if cameras is not None:
             cameras.close()
         for sink in sinks.values():

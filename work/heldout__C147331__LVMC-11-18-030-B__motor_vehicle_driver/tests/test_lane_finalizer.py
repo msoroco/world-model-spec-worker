@@ -49,6 +49,7 @@ class SavedLaneFinalizerTests(unittest.TestCase):
             self.assertEqual(len(report["measurements"]["lane_boundary_observation"]["value"]["frames"]), 3)
             self.assertFalse(result["physical_acceptance_claimed"])
             self.assertEqual(len((root / "lane_clearance_m.jsonl").read_text().splitlines()), 3)
+            self.assertEqual(analyze(root, write_channel=False)["measurements"], report["measurements"])
             from worker_exchange.native_output import validate_result
             validate_result(result)
 

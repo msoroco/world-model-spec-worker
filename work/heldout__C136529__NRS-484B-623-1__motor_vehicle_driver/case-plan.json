@@ -43,7 +43,7 @@
       "gap_ids": [
         "uncovered-branches"
       ],
-      "construction_status": "cpu_component_draft",
+      "construction_status": "primary_and_three_fallbacks_offline_compatibility_saved_proved",
       "description": "Request the same reduced speed with a physical fallen-branch obstruction in the lane; record geometry and visibility.",
       "physical_risk": {
         "risk": "Requested speed, follower interaction, physical feature visibility and control validity remain unconfirmed until native capture.",
@@ -59,7 +59,7 @@
       "gap_ids": [
         "uncovered-branches"
       ],
-      "construction_status": "cpu_component_draft",
+      "construction_status": "primary_and_three_fallbacks_offline_compatibility_saved_proved",
       "description": "Request the same reduced speed with a physical temporary speed-control device; source regulatory validity separately.",
       "physical_risk": {
         "risk": "Requested speed, follower interaction, physical feature visibility and control validity remain unconfirmed until native capture.",
@@ -85,7 +85,20 @@
       ],
       "deliberate_differences": [
         "subject requested speed; measured subject and follower speed and spacing are reported without a legal cutoff"
-      ]
+      ],
+      "audit_proof": {
+        "script": "comparison_audit.py",
+        "script_sha256": "8b5cb19abd63f3384358929791d24c28aab5bde2a5aee7994434538e6670bb3f",
+        "command": ".venv-cpu/bin/python work/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/prove_comparisons.py --comparison traffic_impedance",
+        "exit_code": 0,
+        "log": "traffic_impedance-comparison-positive.log",
+        "log_sha256": "a457b88a2533f623739c2b9a11ce8be097fea645f3701c4bb1848e211c8b986c",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/prove_comparisons.py --comparison traffic_impedance --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Fixed comparison condition differs: duration_s",
+        "negative_log": "traffic_impedance-comparison-negative.log",
+        "negative_log_sha256": "ba65fe194d4b6e78507825ac6529bbebfa52dc5c69a16692fb050542d3531a57"
+      }
     },
     {
       "comparison_id": "safety_obstruction",
@@ -101,7 +114,20 @@
       ],
       "deliberate_differences": [
         "physical obstruction and its measured visibility"
-      ]
+      ],
+      "audit_proof": {
+        "script": "comparison_audit.py",
+        "script_sha256": "8b5cb19abd63f3384358929791d24c28aab5bde2a5aee7994434538e6670bb3f",
+        "command": ".venv-cpu/bin/python work/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/prove_comparisons.py --comparison safety_obstruction",
+        "exit_code": 0,
+        "log": "safety_obstruction-comparison-positive.log",
+        "log_sha256": "90bb780391bc40a74ea0a6d8a895a57f71e0ca091d75288276f850618370d49b",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/prove_comparisons.py --comparison safety_obstruction --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Fixed comparison condition differs: duration_s",
+        "negative_log": "safety_obstruction-comparison-negative.log",
+        "negative_log_sha256": "ba65fe194d4b6e78507825ac6529bbebfa52dc5c69a16692fb050542d3531a57"
+      }
     },
     {
       "comparison_id": "lawful_control",
@@ -117,10 +143,42 @@
       ],
       "deliberate_differences": [
         "physical temporary control device and separately sourced regulatory premise"
-      ]
+      ],
+      "audit_proof": {
+        "script": "comparison_audit.py",
+        "script_sha256": "8b5cb19abd63f3384358929791d24c28aab5bde2a5aee7994434538e6670bb3f",
+        "command": ".venv-cpu/bin/python work/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/prove_comparisons.py --comparison lawful_control",
+        "exit_code": 0,
+        "log": "lawful_control-comparison-positive.log",
+        "log_sha256": "10e4b5500df237f9969e64909e81ba572317c787030101e02b48246b3f976e75",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/prove_comparisons.py --comparison lawful_control --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Fixed comparison condition differs: duration_s",
+        "negative_log": "lawful_control-comparison-negative.log",
+        "negative_log_sha256": "ba65fe194d4b6e78507825ac6529bbebfa52dc5c69a16692fb050542d3531a57"
+      }
     }
   ],
-  "observations": [],
+  "observations": [
+    {
+      "name": "ego_speed_mps",
+      "mandatory": true,
+      "source": "joined original participant_state.jsonl and video_frames.jsonl",
+      "method": "slow_finalizer.py recomputes the derived time series after saved capture"
+    },
+    {
+      "name": "follower_speed_mps",
+      "mandatory": true,
+      "source": "joined original participant_state.jsonl and video_frames.jsonl",
+      "method": "slow_finalizer.py recomputes the derived time series after saved capture"
+    },
+    {
+      "name": "follower_gap_m",
+      "mandatory": true,
+      "source": "joined original participant_state.jsonl and video_frames.jsonl",
+      "method": "slow_finalizer.py recomputes the derived time series after saved capture"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C136529__NRS-484B-623-1__motor_vehicle_driver/assignment.json",
@@ -133,7 +191,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Only a CPU construction and measurement component exists. Exact runner, four-camera capture, finalization, canonical semantic proposals, fallback bundles, saved processing and independent delivery audit remain to be authored and proved.",
+    "All four exact cases have CPU construction, fallback, source/compatibility and saved-processing proofs. Physical motion, source camera visibility, regulatory validity and legal judgment remain unverified until native capture. Canonical semantic-stage proposals remain incomplete.",
     "No legal cutoff is defined for normal and reasonable movement or necessity."
   ],
   "evidence_review": {
@@ -179,100 +237,108 @@
       "status": "construction_draft"
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "kin.speed",
-      "measurement": "observed native participant states and synchronized speeds",
-      "source_refs": [
-        "native/actors.jsonl",
-        "native/props.jsonl",
-        "camera/chase.mp4"
+  "source_observation_mapping": {
+    "kin.speed": {
+      "evidence": "Original Native ego velocity and 20 Hz derived speed",
+      "channels": [
+        "ego_speed_mps"
       ],
-      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+      "source_refs": [
+        "participant_state.jsonl"
+      ],
+      "limitation": "A planning observation term does not establish a Core atom or legal decision."
     },
-    {
-      "term": "drv.speed_below_traffic",
-      "measurement": "observed native participant states and synchronized speeds",
-      "source_refs": [
-        "native/actors.jsonl",
-        "native/props.jsonl",
-        "camera/chase.mp4"
+    "drv.speed_below_traffic": {
+      "evidence": "Joined ego and follower speed histories, with the standard unresolved",
+      "channels": [
+        "ego_speed_mps",
+        "follower_speed_mps"
       ],
-      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+      "source_refs": [
+        "participant_state.jsonl"
+      ],
+      "limitation": "A planning observation term does not establish a Core atom or legal decision."
     },
-    {
-      "term": "drv.queue_behind",
-      "measurement": "observed native participant states and synchronized speeds",
-      "source_refs": [
-        "native/actors.jsonl",
-        "native/props.jsonl",
-        "camera/chase.mp4"
+    "drv.queue_behind": {
+      "evidence": "Follower position and speed history; queue interpretation needs native capture",
+      "channels": [
+        "follower_speed_mps",
+        "follower_gap_m"
       ],
-      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+      "source_refs": [
+        "participant_state.jsonl",
+        "camera/reference_corner.mp4"
+      ],
+      "limitation": "A planning observation term does not establish a Core atom or legal decision."
     },
-    {
-      "term": "drv.following",
-      "measurement": "observed native participant states and synchronized speeds",
-      "source_refs": [
-        "native/actors.jsonl",
-        "native/props.jsonl",
-        "camera/chase.mp4"
+    "drv.following": {
+      "evidence": "Joined subject and follower positions and the original rear camera",
+      "channels": [
+        "follower_gap_m"
       ],
-      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+      "source_refs": [
+        "participant_state.jsonl",
+        "camera/reference_corner.mp4"
+      ],
+      "limitation": "A planning observation term does not establish a Core atom or legal decision."
     },
-    {
-      "term": "drv.slower_than_posted",
-      "measurement": "observed native participant states and synchronized speeds",
-      "source_refs": [
-        "native/actors.jsonl",
-        "native/props.jsonl",
-        "camera/chase.mp4"
+    "drv.slower_than_posted": {
+      "evidence": "Joined subject speed and independently sourced governing sign context",
+      "channels": [
+        "ego_speed_mps"
       ],
-      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+      "source_refs": [
+        "participant_state.jsonl",
+        "slow_context.json",
+        "prop_state.jsonl"
+      ],
+      "limitation": "A planning observation term does not establish a Core atom or legal decision."
     },
-    {
-      "term": "dev.speed_limit_sign",
-      "measurement": "observed native prop/weather state and original camera visibility",
+    "dev.speed_limit_sign": {
+      "evidence": "Native physical sign geometry and source pixels when control branch is selected",
+      "channels": [],
       "source_refs": [
-        "native/actors.jsonl",
-        "native/props.jsonl",
-        "camera/chase.mp4"
+        "prop_state.jsonl",
+        "slow_context.json",
+        "camera/approach.mp4"
       ],
-      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+      "limitation": "A planning observation term does not establish a Core atom or legal decision."
     },
-    {
-      "term": "drv.forced_halt",
-      "measurement": "observed native participant states and synchronized speeds",
-      "source_refs": [
-        "native/actors.jsonl",
-        "native/props.jsonl",
-        "camera/chase.mp4"
+    "drv.forced_halt": {
+      "evidence": "Original speed history, obstruction geometry and source pixels; necessity remains a judgment",
+      "channels": [
+        "ego_speed_mps"
       ],
-      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+      "source_refs": [
+        "participant_state.jsonl",
+        "prop_state.jsonl",
+        "camera/approach.mp4"
+      ],
+      "limitation": "A planning observation term does not establish a Core atom or legal decision."
     },
-    {
-      "term": "env.precipitation",
-      "measurement": "observed native prop/weather state and original camera visibility",
+    "env.precipitation": {
+      "evidence": "Original Native weather readback after ClearNoon setup, retained in slow_context.json",
+      "channels": [],
       "source_refs": [
-        "native/actors.jsonl",
-        "native/props.jsonl",
-        "camera/chase.mp4"
+        "slow_context.json"
       ],
-      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+      "limitation": "Only zero precipitation and wetness are checked; the legal safety exception remains unresolved."
     },
-    {
-      "term": "st.obstruction",
-      "measurement": "observed native prop/weather state and original camera visibility",
+    "st.obstruction": {
+      "evidence": "Native physical obstruction geometry and source pixels when safety branch is selected",
+      "channels": [],
       "source_refs": [
-        "native/actors.jsonl",
-        "native/props.jsonl",
-        "camera/chase.mp4"
+        "prop_state.jsonl",
+        "camera/approach.mp4"
       ],
-      "limitation": "The term is a source planning prompt, not a Core atom or legal decision."
+      "limitation": "A planning observation term does not establish a Core atom or legal decision."
     }
-  ],
+  },
   "camera_plan": {
+    "profile": "overview1080-capability",
     "fps": 20,
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
     "sources": [
       {
         "name": "overview",
@@ -307,8 +373,30 @@
         "purpose": "driver reference view"
       }
     ],
+    "coverage": [
+      {
+        "subject": "ego and follower body histories",
+        "interval": "all original frames, startup through final observation",
+        "view": "overview"
+      },
+      {
+        "subject": "forward narrow-road geometry, obstruction or physical control",
+        "interval": "approach through clearance",
+        "view": "approach"
+      },
+      {
+        "subject": "following and opposing participant histories",
+        "interval": "all original frames",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver reference and forward speed-control approach",
+        "interval": "all original frames",
+        "view": "driver_reference"
+      }
+    ],
     "implementation": "slow_camera_capture.py",
-    "limitation": "Camera geometry is prospective; actual bodies and devices must be checked in original pixels."
+    "limitation": "Actual bodies, devices, legibility and governed road portion must be independently checked in original pixels."
   },
   "requirement_dispositions": [
     {

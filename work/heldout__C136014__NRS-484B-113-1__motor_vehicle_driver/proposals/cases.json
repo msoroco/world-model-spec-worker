@@ -1,29 +1,60 @@
 {
-  "format": "worker-stage-proposal",
-  "status": "proposed",
+  "format": "worker-cases-proposal",
+  "status": "draft",
   "cell_id": "C136014",
   "actor": "motor_vehicle_driver",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "backing-safety-physical-grid",
+      "target_law_id": "NRS-484B-113-1",
+      "judgment_refs": [
+        {
+          "phrase": "reasonable safety",
+          "note": "No statutory numeric safety cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "A fixed physical sampling grid is required before canonical judgment coverage.",
+      "missing_inputs": [
+        "Exact controller sweep axes and complete Native feasibility evidence are not yet encoded in selected constructions."
+      ]
+    },
+    {
+      "sweep_id": "backing-interference-physical-grid",
+      "target_law_id": "NRS-484B-113-1",
+      "judgment_refs": [
+        {
+          "phrase": "without interfering with other traffic",
+          "note": "Traffic interference requires independent original-source observations."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "A fixed traffic-response sampling grid is required before canonical judgment coverage.",
+      "missing_inputs": [
+        "Original other-speed response channel and complete Native feasibility evidence are not yet encoded in selected constructions."
+      ]
+    }
+  ],
   "cases": [
     {
-      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady",
-      "target_law_id": "NRS-484B-113-1",
-      "target_type": "selected_branch",
-      "rationale": "Measure original reverse motion and other-traffic response without defining a legal safety cutoff",
+      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__baseline_no_reverse",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared narrow-road context without backing; no legal outcome asserted.",
       "variable_assignments": {
         "reverse_motion": {
           "kind": "subject_behavior",
-          "value": true
+          "value": null
         },
-        "other_traffic": {
+        "other_traffic_spacing": {
           "kind": "world_setup",
-          "value": true
+          "value": 12.0
+        },
+        "other_traffic_speed_policy": {
+          "kind": "world_setup",
+          "value": "steady"
         }
       },
-      "unresolved_judgment_calls": [
-        "reasonable safety",
-        "interference with other traffic"
-      ],
       "recording_description": {
         "channels": [
           {
@@ -50,34 +81,86 @@
           "Reasonable safety and interference remain independent physical/legal questions."
         ]
       },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady",
+      "target_law_id": "NRS-484B-113-1",
+      "target_type": "boundary_probe",
+      "rationale": "Measure clear spacing and steady traffic during original backing without a legal cutoff.",
+      "variable_assignments": {
+        "reverse_motion": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_spacing": {
+          "kind": "world_setup",
+          "value": 12.0
+        },
+        "other_traffic_speed_policy": {
+          "kind": "world_setup",
+          "value": "steady"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "reverse_displacement_m",
+            "unit": "m",
+            "method": "original ego position displacement after reverse gear readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world coordinates",
+            "uncertainty": "20 Hz sampling and Native pose precision"
+          },
+          {
+            "name": "other_traffic_center_distance_m",
+            "unit": "m",
+            "method": "original actor-center separation",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "body clearance requires footprint audit"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Reasonable safety and interference remain independent physical/legal questions."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "without interfering with other traffic"
+      ],
       "paired_probe_id": "traffic_clearance",
       "deliberate_differences": [
-        "other traffic spacing"
-      ]
+        "other_traffic_spacing"
+      ],
+      "probe": {
+        "primary_variable": "other_traffic_spacing",
+        "comparison_or_standard": "physical contrast; legal judgment unresolved",
+        "target_value_or_branch": 12.0
+      }
     },
     {
       "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady",
       "target_law_id": "NRS-484B-113-1",
-      "target_type": "selected_branch",
-      "rationale": "Measure original backing with closer approaching traffic",
+      "target_type": "boundary_probe",
+      "rationale": "Measure closer spacing while holding original ego motion and traffic speed steady.",
       "variable_assignments": {
         "reverse_motion": {
           "kind": "subject_behavior",
-          "value": true
+          "value": null
         },
-        "other_traffic": {
+        "other_traffic_spacing": {
           "kind": "world_setup",
-          "value": true
+          "value": 7.0
         },
-        "other_traffic_variant": {
+        "other_traffic_speed_policy": {
           "kind": "world_setup",
-          "value": "close"
+          "value": "steady"
         }
       },
-      "unresolved_judgment_calls": [
-        "reasonable safety",
-        "interference with other traffic"
-      ],
       "recording_description": {
         "channels": [
           {
@@ -104,34 +187,39 @@
           "Reasonable safety and interference remain independent physical/legal questions."
         ]
       },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "without interfering with other traffic"
+      ],
       "paired_probe_id": "traffic_clearance",
       "deliberate_differences": [
-        "other traffic spacing"
-      ]
+        "other_traffic_spacing"
+      ],
+      "probe": {
+        "primary_variable": "other_traffic_spacing",
+        "comparison_or_standard": "physical contrast; legal judgment unresolved",
+        "target_value_or_branch": 7.0
+      }
     },
     {
       "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes",
       "target_law_id": "NRS-484B-113-1",
-      "target_type": "selected_branch",
-      "rationale": "Measure original backing with approaching traffic braking",
+      "target_type": "boundary_probe",
+      "rationale": "Measure traffic deceleration while retaining the measured minimum clearance of the clear steady comparison.",
       "variable_assignments": {
         "reverse_motion": {
           "kind": "subject_behavior",
-          "value": true
+          "value": null
         },
-        "other_traffic": {
+        "other_traffic_spacing": {
           "kind": "world_setup",
-          "value": true
+          "value": 10.4
         },
-        "other_traffic_variant": {
+        "other_traffic_speed_policy": {
           "kind": "world_setup",
-          "value": "brakes"
+          "value": "braking"
         }
       },
-      "unresolved_judgment_calls": [
-        "reasonable safety",
-        "interference with other traffic"
-      ],
       "recording_description": {
         "channels": [
           {
@@ -158,10 +246,21 @@
           "Reasonable safety and interference remain independent physical/legal questions."
         ]
       },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "without interfering with other traffic"
+      ],
       "paired_probe_id": "traffic_interference",
       "deliberate_differences": [
-        "other traffic speed response"
-      ]
+        "other_traffic_spacing",
+        "other_traffic_speed_policy"
+      ],
+      "probe": {
+        "primary_variable": "other_traffic_speed_policy",
+        "comparison_or_standard": "physical contrast; legal judgment unresolved",
+        "target_value_or_branch": "braking"
+      }
     }
-  ]
+  ],
+  "sweeps_expanded": true
 }

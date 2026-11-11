@@ -127,10 +127,10 @@ physical camera visibility claim has been made.
 
 `construction-probe.json` and `construction-probe-manifest.json` bind the first
 `__within_marked_lane` construction to SHA256
-`991a066b8fbbd0c6e8ab3b4bb3cff0d3216dca6b8866c734af63b7dbcbffd6da`.
+the current per-case SHA256 values in `probe-case-proofs.json`.
 The exact `runtime.py offline` command and current hashed positive log are in
-`probe-proof.json`; it passes the materialized entrypoint `--check` and four
-bundled CPU tests. The complete local suite passes 13 tests under the command
+`probe-case-proofs.json`; each passes the materialized entrypoint `--check`
+and its bundled CPU tests. The complete local suite passes 13 tests under the command
 in `result.json`. These proofs validate construction software only.
 
 Next CPU work is to promote this probe to a complete selected-case delivery
@@ -141,3 +141,45 @@ then risk-triggered fallbacks and audits. Keep all cases partial until the
 scoped strict gate passes.
 
 Scoped strict gate still exits 1 with `Preparation acceptance failed: partial/missing packages remain`; latest `strict-gate.log` SHA256 `89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`.
+
+## 2026-11-11 three-case saved processing and independent audit
+
+The current `construction-probe-manifest.json` binds all three planned C147331
+case IDs to distinct source-hashed inline constructions. Each embeds the
+CARLA-lazy Native route/controller/source-camera probe, exact config,
+`lane_finalizer.py`, and CPU tests. `probe-case-proofs.json` records each exact
+`runtime.py offline` and `runtime.py compatibility` command, construction SHA,
+passing log hashes and positive receipt. Every compatibility receipt includes
+`actual_analysis`, Native validation, mandatory observations, Lean decoder,
+render, final decode, four camera sources, selected measurements, and negative
+`marked_lane_sources.jsonl` removal. The selected measurement is recomputed
+from the new case-specific original lane source. The frozen generic graph and
+trace fixture shapes are retained only for software adapter compatibility;
+they are synthetic and do not demonstrate this law's physical facts. The
+`__unexcused_boundary_crossing` diagnostic contains a measured body excursion;
+`__passing_boundary_crossing` additionally contains a participant and measured
+longitudinal order reversal. No legal crossing tolerance or lawful-passing
+status is assigned.
+
+`probe-saved-proofs.json` records three passing `runtime.py process-saved`
+commands. Each selected candidate is primary, original acquisition bytes
+remain unchanged, `missing_evidence` is false, and the renderer/full video
+decoder pass. `delivery_audit.py` independently recomputes lane measurements
+from retained sources, checks source hashes and fully decodes each of four named
+cameras. `probe-source-audit-proofs.json` binds all three passing saved-source
+audits and their auditor hash; its unit test rejects changed or missing source
+bytes. `audit_saved_comparisons.py` binds each saved result and source hash,
+compares the original fixed map/lane geometry/markings/camera plan/duration,
+and checks measured containment, excursion and passing order.
+`probe-comparison-audit.json` records both passing software comparisons. The
+local CPU suite now has 18 tests; one materialized-config test is skipped in
+the repository checkout but runs in each exact offline bundle.
+
+This remains **partial**. The Native probe still identifies itself as
+`construction_probe_only` and does not seal a deliverable attempt. Complete
+original FrameMap/PipelineCapture output, actual first-case delivery runner,
+risk-triggered fallback constructions and proofs, canonical semantic stage
+proposals, final source-bound acceptance handoff and C5191 turn branch are
+unfinished CPU work. No synthetic receipt proves physical visibility, motion,
+municipal applicability or a legal exception. All current commands and log
+hashes are recorded in `result.json` and the named proof JSON files.

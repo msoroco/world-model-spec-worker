@@ -12,7 +12,7 @@ from slow_route import select_route
 from slow_camera_capture import CAMERAS,SlowCameraCapture,FFmpegSourceSink
 from slow_capture_session import SlowCaptureSession
 
-CASE_SUFFIXES={'flowing_reference','slow_with_following_traffic','slow_for_obstruction'}
+CASE_SUFFIXES={'flowing_reference','slow_with_following_traffic','slow_for_obstruction','slow_under_control'}
 
 def check_config(config):
     branch=config.get('case_branch')
@@ -33,6 +33,8 @@ def check_config(config):
         raise ValueError('Invalid obstruction site index')
     if config.get('obstruction_brake_gain',.4)<=0:
         raise ValueError('Invalid obstruction braking gain')
+    if config.get('control_search_m',30.0)<=0:
+        raise ValueError('Invalid control search distance')
     if not isinstance(config.get('case',{}).get('recording_description'),dict):
         raise ValueError('Selected recording description required')
     return True
@@ -69,12 +71,24 @@ def _lane_control(world_map,actor,target_mps,carla,*,speed_kp=.22,brake_gain=.3)
                           steer=min(.45,max(-.45,error_angle/.6))))
 
 
-def _follower_target(ego,follower,*,gain=.4):
+def _follower_target(ego,follower,*,gain=.4,cap_mps=8.0):
     ep=ego.get_transform().location;fp=follower.get_transform().location
     gap=hypot(ep.x-fp.x,ep.y-fp.y)
     ev=ego.get_velocity();ego_speed=hypot(ev.x,ev.y)
-    return min(8.0,max(0.0,ego_speed+gain*(gap-9.0)))
+    return min(cap_mps,max(0.0,ego_speed+gain*(gap-9.0)))
 
+
+def _find_speed_sign(world,ego,max_distance_m=30.0):
+    ep=ego.get_transform().location
+    matches=[]
+    for actor in world.get_actors().filter('traffic.speed_limit.*'):
+        if actor.type_id!='traffic.speed_limit.30' or not actor.is_alive:continue
+        p=actor.get_transform().location
+        distance=hypot(ep.x-p.x,ep.y-p.y)
+        if distance<=max_distance_m:matches.append((distance,actor))
+    if not matches:raise ValueError('No physical 30 km/h speed-limit sign near narrow route')
+    matches.sort(key=lambda pair:pair[0])
+    return matches[0][1]
 
 def _obstruction_target(ego,obstruction,requested_mps,*,gain=.4):
     ep=ego.get_transform().location;op=obstruction.get_transform().location
@@ -90,10 +104,15 @@ def run(output,host,port):
     check_config(config)
     client=carla.Client(host,port);client.set_timeout(30.)
     world=client.get_world();original=world.get_settings()
+    original_weather=world.get_weather()
     owned=[];sinks={};camera=pipeline=session=None;frames=[];errors=[];restored=False
     try:
         settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=.05
         world.apply_settings(settings)
+        world.set_weather(carla.WeatherParameters.ClearNoon)
+        applied_weather=world.get_weather()
+        if applied_weather.precipitation>0 or applied_weather.wetness>0:
+            raise ValueError('Dry-weather comparison setup was not applied')
         route=select_route(world.get_map(),step_m=config.get('route_step_m',5.0))
         for role in ('ego','follower','opposing'):
             owned.append(_spawn(world,'vehicle.tesla.model3',route[role]))
@@ -103,12 +122,18 @@ def run(output,host,port):
             obstruction=_spawn(world,'vehicle.tesla.model3',route['chain'][config.get('obstruction_index',12)])
             obstruction.set_simulate_physics(False)
             owned.append(obstruction)
+        control=None
+        if config['case_branch']=='slow_under_control':
+            control=_find_speed_sign(world,ego,max_distance_m=config.get('control_search_m',30.0))
         for name in CAMERAS:sinks[name]=FFmpegSourceSink(output,name)
         camera=SlowCameraCapture(world,carla,ego,sinks)
         pipeline=PipelineCapture(client,ego,output,config['selected_case_id'],
                                   required_observations=config.get('required_atoms',[]))
-        session=SlowCaptureSession(output,pipeline,ego,follower,opposing,obstruction,None,
-                                   {'case_branch':config['case_branch']})
+        session=SlowCaptureSession(output,pipeline,ego,follower,opposing,obstruction,control,
+                                   {'case_branch':config['case_branch'],
+                                    'native_weather':{'precipitation':float(applied_weather.precipitation),
+                                                      'wetness':float(applied_weather.wetness)},
+                                    'regulatory_source':('Native traffic.speed_limit.30 actor and local map; authority and governed portion require independent review' if control is not None else None)})
         start=None
         for _ in range(config['frames']):
             target_speed=(_obstruction_target(ego,obstruction,config['ego_target_mps'],
@@ -117,7 +142,8 @@ def run(output,host,port):
             _lane_control(world.get_map(),ego,target_speed,carla,
                           speed_kp=config.get('speed_kp',.22),brake_gain=config.get('speed_brake_gain',.3))
             _lane_control(world.get_map(),follower,_follower_target(ego,follower,
-                          gain=config.get('follower_gain',.4)),carla)
+                          gain=config.get('follower_gain',.4),
+                          cap_mps=config.get('follower_cruise_mps',8.0)),carla)
             _lane_control(world.get_map(),opposing,8.0,carla)
             frame=world.tick();snapshot=world.get_snapshot()
             if snapshot.frame!=frame:raise ValueError('Native snapshot differs from completed tick')
@@ -135,9 +161,12 @@ def run(output,host,port):
         if camera is not None:camera.close()
         for sink in sinks.values():sink.close()
         for actor in reversed(owned):actor.destroy()
+        world.set_weather(original_weather)
         world.apply_settings(original)
         current=world.get_settings()
         restored=current.synchronous_mode==original.synchronous_mode and current.fixed_delta_seconds==original.fixed_delta_seconds
+        current_weather=world.get_weather()
+        restored=restored and current_weather.precipitation==original_weather.precipitation and current_weather.wetness==original_weather.wetness
         if not restored:raise ValueError('Native world settings restoration readback differs')
     if errors or not frames:raise ValueError('Native capture did not finish')
     (output/'acquisition-provenance.json').write_text(json.dumps({

@@ -164,7 +164,98 @@
         "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady",
         "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes"
       ],
-      "reason": "Original reverse and other-traffic motion require a selected exact case."
+      "evidence_or_gap": "Original reverse and other-traffic motion require a selected exact case."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego full body and reversing path",
+        "interval": "all backing frames",
+        "view": "overview"
+      },
+      {
+        "subject": "approaching other vehicle full body",
+        "interval": "all backing frames",
+        "view": "approach"
+      },
+      {
+        "subject": "road edge and reference geometry",
+        "interval": "all backing frames",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver reference and reverse movement",
+        "interval": "all backing frames",
+        "view": "driver_reference"
+      }
+    ],
+    "limitations": [
+      "Original pixels must be reviewed for subject/other full-body visibility after Native capture."
+    ]
+  },
+  "source_observation_mapping": {
+    "drv.backing": {
+      "evidence": "Reverse gear readback and displacement measured from original 20 Hz backing history and trace.",
+      "channels": [
+        "reverse_displacement_m"
+      ],
+      "source_refs": [
+        "backing_history.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Original relative positions and speed for an external time-to-conflict analysis; no legal cutoff encoded.",
+      "channels": [
+        "other_traffic_center_distance_m"
+      ],
+      "source_refs": [
+        "backing_history.jsonl"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Original full-body vertices and actor positions support a later surface-gap calculation; center distance is diagnostic only.",
+      "channels": [
+        "other_traffic_center_distance_m"
+      ],
+      "source_refs": [
+        "backing_history.jsonl"
+      ]
+    },
+    "drv.hard_deceleration": {
+      "evidence": "Other-vehicle original speed sequence supports measured braking response. No hard-deceleration threshold is encoded.",
+      "channels": [],
+      "source_refs": [
+        "backing_history.jsonl"
+      ]
+    },
+    "ru.pedestrian": {
+      "evidence": "Original synchronized RGB views allow review for persons in the reversing path; none is presumed present.",
+      "channels": [],
+      "source_refs": [
+        "overview.mkv",
+        "approach.mkv"
+      ]
+    },
+    "rel.bearing": {
+      "evidence": "Original ego and other positions plus four views support relative bearing calculation and visual cross-check.",
+      "channels": [],
+      "source_refs": [
+        "backing_history.jsonl",
+        "overview.mkv"
+      ]
+    },
+    "rel.contact": {
+      "evidence": "Original participant body vertices and full RGB sources support later contact review; no collision finding is made.",
+      "channels": [],
+      "source_refs": [
+        "backing_history.jsonl",
+        "overview.mkv"
+      ]
+    }
+  }
 }
