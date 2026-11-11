@@ -2,14 +2,14 @@
   "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
   "input_sha256": "912e2ac429853e443ff83b2d323134aca9fc59f31fecef23b322dcc620d3aef4",
   "status": "partial",
-  "readiness_kind": "two_case_delivery_with_inside_yield_staged_draft_checkpoint",
+  "readiness_kind": "two_case_delivery_with_inside_pair_staged_draft_checkpoint",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-253__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "a2810e17f501c74a8a0185936bd15de31aaad323420179264e86854a5996118c"
+      "sha256": "0e0f4dbab7cf09b558497a07069a82c1217f121430a5a78dd3f02f4eacdfea4a"
     },
     {
       "command": "PYTHONPATH=runtime/scenario_pipeline:runtime/python .venv-cpu/bin/python -m worker_exchange.atom_preflight --runtime runtime --config work/testing__C109749__NRS-484B-253__motor_vehicle_driver/config.json",
@@ -27,7 +27,7 @@
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "preflight.log",
-      "sha256": "7e0688578ae00c7d1794ecb468f4a73d2c406c1770df1f1ebd48bd7e1e6992c1"
+      "sha256": "a2309ccf567c1289e5557aa890b0b95d752d69797ca47e8418024410cd3e3947"
     },
     {
       "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --output .runtime-work/c109749-semantic-yield-primary-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
@@ -256,10 +256,28 @@
       "exit_code": 0,
       "log": "cases/inside_yield/runner-check.log",
       "sha256": "c30349bcab5c11b3f744511619a9d1448c95a61551b048927b801e5d51bff5df"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/inside_no_yield/validate_draft.py",
+      "exit_code": 0,
+      "log": "cases/inside_no_yield/draft-validation.log",
+      "sha256": "d1cbf6aaa6ce27124b27c74cc74ef0c784877ec2433bae6770c62703da565807"
+    },
+    {
+      "command": "PYTHONPATH=work/testing__C109749__NRS-484B-253__motor_vehicle_driver .venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/inside_no_yield/runner.py --check",
+      "exit_code": 0,
+      "log": "cases/inside_no_yield/runner-check.log",
+      "sha256": "9f9684fccb55929cd9740651258ae2458d3e5a5cf3fae5fc6d4b4e0c21676dec"
+    },
+    {
+      "command": "PYTHONPATH=work/testing__C109749__NRS-484B-253__motor_vehicle_driver .venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/inside_comparison_audit.py --output work/testing__C109749__NRS-484B-253__motor_vehicle_driver/inside-comparison-receipt.json",
+      "exit_code": 0,
+      "log": "inside-comparison-positive.log",
+      "sha256": "bab11d5dd85eb61dadc306858941f6aa04a73eafa96e2cd0de094c63fb19ac7d"
     }
   ],
   "remaining_gpu_checks": [
     "Actual opposing approach and subject motion, signal pixels and four-camera visibility."
   ],
-  "reason": "Two C109749 reciprocal-response cases and three fallbacks per case pass exact offline, compatibility and recorded-only saved processing. Source-bound physical-classifier and full-duration delivery-audit CPU fixtures pass software checks; diagnostic audits explicitly report passed=false. A comparison audit verifies fixed conditions and the declared later opposing response difference on synthetic sources, and rejects a changed fixed ego trajectory. A third inside-yield case draft now has a same-lane Native junction spawn, complete-body placement check, staged subject-yield observation and three distinct risk-based fallbacks. All four draft candidates pass exact offline, positive/negative compatibility and recorded-only saved processing in an isolated ignored staging root; they are not yet canonical manifest cases or delivery-ready. The six-stage semantic chain validates for the original two cases, but all three physical judgment sweeps remain explicitly incomplete and statutory alternatives are not yet covered. These, complete coverage and all other partial assignment packages are unfinished worker-owned CPU work. Root supported_case_ids now lists both selected cases and all affected primary proofs were rerun. Accepted-original equivalence and actual Native motion/pixel visibility are unverified. Strict assignment and batch gates fail with Preparation acceptance failed: partial/missing packages remain. See HANDOFF.md."
+  "reason": "Two C109749 reciprocal-response cases and three fallbacks per case pass exact offline, compatibility and recorded-only saved processing. Source-bound physical-classifier and full-duration delivery-audit CPU fixtures pass software checks; diagnostic audits explicitly report passed=false. A comparison audit verifies fixed conditions and the declared later opposing response difference on synthetic sources, and rejects a changed fixed ego trajectory. Paired inside-yield and inside-no-yield case drafts have same-lane Native junction spawn, complete-body placement checks, distinct yield/proceed controllers, original-source turn-order observations and three distinct risk-based fallbacks each. All eight draft candidates pass exact offline, positive/negative compatibility and recorded-only saved processing in isolated ignored staging roots. An independent diagnostic comparison confirms common opposing trajectories and contrasting subject turn order and rejects a perturbed opposing trajectory; it claims no physical or legal acceptance. The pair is not yet in the canonical plan, proposal or manifest, and is not delivery-ready. The six-stage semantic chain validates for the original two cases, but all three physical judgment sweeps remain explicitly incomplete and statutory alternatives are not yet covered. These, complete coverage and all other partial assignment packages are unfinished worker-owned CPU work. Root supported_case_ids now lists both selected cases and all affected primary proofs were rerun. Accepted-original equivalence and actual Native motion/pixel visibility are unverified. Strict assignment and batch gates fail with Preparation acceptance failed: partial/missing packages remain. See HANDOFF.md."
 }
