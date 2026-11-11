@@ -65,6 +65,16 @@ class ComparisonAuditTest(unittest.TestCase):
             self.assertEqual(isolated['left_candidate'], 'primary')
             self.assertEqual(isolated['right_candidate'], 'fallback1')
 
+    def test_unrelated_initial_lead_velocity_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            left = full_source('base', Path(tmp) / 'base.jsonl')
+            right = full_source('faster_ego', Path(tmp) / 'faster_ego.jsonl')
+            rows = [json.loads(line) for line in right.read_text().splitlines()]
+            rows[0]['lead']['velocity_mps'] = [9.0, 0, 0]
+            right.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+            with self.assertRaisesRegex(ValueError, 'fixed initial actor condition differs: lead.velocity_mps'):
+                audit.audit_pair(FOLDER, 'ego_speed', left, right)
+
     def test_missing_frame_and_relative_time_drift_are_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             left = full_source('base', Path(tmp) / 'base.jsonl')

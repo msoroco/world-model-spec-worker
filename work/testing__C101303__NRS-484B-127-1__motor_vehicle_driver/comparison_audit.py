@@ -21,6 +21,15 @@ DIMENSIONS = {
     'queued_traffic': ({'queued_traffic_required'}, 'traffic'),
 }
 IDENTITY = {'selected_case_id', 'supported_case_ids'}
+INITIAL_ACTOR_DIFFERENCES = {
+    'body_gap': {'lead.body_vertices_xy_m'},
+    'ego_speed': {'ego.velocity_mps'},
+    'lead_speed': {'lead.velocity_mps'},
+    'lead_braking': set(),
+    'wet_surface': set(),
+    'following_end': set(),
+    'queued_traffic': set(),
+}
 
 
 def _construction_config(folder, entry, candidate=None):
@@ -117,6 +126,12 @@ def audit_pair(folder, comparison_id, left_source, right_source, candidate=None,
     if any(not math.isclose(a['time_s'] - left_zero, b['time_s'] - right_zero, abs_tol=0.005)
            for a, b in zip(left, right)):
         raise ValueError('comparison source relative time join differs')
+    allowed_initial = INITIAL_ACTOR_DIFFERENCES[comparison_id]
+    for actor in ('ego', 'lead'):
+        left_actor, right_actor = left[0][actor], right[0][actor]
+        for field in left_actor.keys() | right_actor.keys():
+            if f'{actor}.{field}' not in allowed_initial and left_actor.get(field) != right_actor.get(field):
+                raise ValueError('fixed initial actor condition differs: ' + actor + '.' + field)
     for a, b in zip(left, right):
         if a['road_id'] != b['road_id'] or a['ego']['actor_id'] != b['ego']['actor_id'] or a['lead']['actor_id'] != b['lead']['actor_id']:
             raise ValueError('comparison route or participant source differs')

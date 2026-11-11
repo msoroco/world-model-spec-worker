@@ -15,7 +15,8 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def source(case):
     label=case.rsplit('source_verified_',1)[1]
-    path=repo/'.runtime-work/c101303-full-duration'/(label+'-positive-v1/attempt/vehicle_history.jsonl')
+    version='v2' if label=='faster_ego' else 'v1'
+    path=repo/'.runtime-work/c101303-full-duration'/(label+'-positive-'+version+'/attempt/vehicle_history.jsonl')
     receipt=json.loads((folder/'delivery-proofs'/label/'diagnostic-audit.json').read_text())
     if (receipt['frames']!=900 or receipt['passed'] is not False or
             receipt['original_sources']['history_sha256']!=sha(path)):

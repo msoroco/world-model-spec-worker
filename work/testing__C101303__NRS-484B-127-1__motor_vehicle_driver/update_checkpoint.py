@@ -21,6 +21,13 @@ for name in ('cpu-tests.log','preflight-current.log'):
 for entry in manifest['cases']:
     proof=entry['delivery_acceptance']
     claim(proof['command'],proof['test_log'])
+    for row in [entry, *entry['candidates']]:
+        compat=row['compatibility']
+        if compat.get('replay_command'):
+            claim(compat['replay_command'],compat['replay_log'])
+        saved=row.get('post_capture')
+        if saved and saved.get('command'):
+            claim(saved['command'],saved['test_log'])
 claim('.venv-cpu/bin/python work/'+folder.name+'/validate_delivery_full.py',
       'delivery-full-validator.log')
 claim('.venv-cpu/bin/python work/'+folder.name+'/full_duration_comparison_proof.py',
@@ -33,19 +40,24 @@ claim('.venv-cpu/bin/python work/'+folder.name+'/sweep_controller_envelope.py '
 result['tests']=list(claims.values())
 result['readiness_kind']='all_exact_case_full_duration_diagnostic_delivery_checkpoint'
 result['reason']=(
-    'All eight C101303 conditional cases and 24 fallbacks retain exact offline, '
-    'compatibility and diagnostic saved-processing proofs. Their independent delivery '
+    'All eight C101303 conditional cases and 24 fallbacks retain exact offline and '
+    'compatibility proofs. All eight primaries and all 24 fallbacks '
+    'have recorded-only saved-processing proofs, with the 21 remaining fallback '
+    'paths freshly rerun against their exact constructions. Their independent delivery '
     'audit now passes eight full 900-frame synthetic source, classifier, four-camera, '
     'composed-video and Core-join software paths, with eight missing-sealed-history '
     'negative proofs plus base actor-identity, unsealed-source and unverified-physical-status rejection. Seven '
     'primary comparisons pass against the 900-frame diagnostic sources, and 21 '
     'fallback construction comparisons pass with those primary synthetic histories; '
-    'an altered fixed surface, skipped frame and relative-time drift are rejected. All '
+    'an altered fixed surface, skipped frame, relative-time drift and unrelated initial '
+    'lead velocity are rejected. The faster-ego diagnostic source was corrected so '
+    'its lead initial velocity matches the base; its four exact compatibility and '
+    'recorded-only saved paths, 900-frame delivery audit and linked comparisons were rerun. All '
     'diagnostic audits explicitly report passed=false and no physical acceptance. '
     'The three-point 7.0/8.5/10.0 m controller probe verifies command response only; '
     'a 42-state CPU envelope finds 19 states with distinct commands and exposes '
     'saturation at larger spacing. '
-    'The complete physically feasible judgment sweep, fallback-source and '
+    'The complete physically feasible judgment sweep, fallback-specific source and '
     'actual Native-source comparisons, independent final review and '
     'shared branch/delivery queue/integration remain worker-owned CPU work. Actual '
     'Native motion, source pixels and legal judgment remain unverified. See HANDOFF.md.'
