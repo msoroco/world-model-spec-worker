@@ -4,6 +4,7 @@ This checks pinned saved-processing output without changing acquisition sources.
 It does not establish original motion or legal acceptance.
 """
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -11,6 +12,8 @@ from pathlib import Path
 def audit(processing_path, result_path):
     processing = json.loads(Path(processing_path).read_text())
     result = json.loads(Path(result_path).read_text())
+    if processing.get('result_sha256') != hashlib.sha256(Path(result_path).read_bytes()).hexdigest():
+        raise ValueError('Saved-processing result source hash differs')
     if processing.get('missing_evidence') is not True:
         raise ValueError('Expected a missing-evidence saved-processing diagnostic')
     if 'native-raw-actors.jsonl' in processing.get('original_source_hashes', {}):

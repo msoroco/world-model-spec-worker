@@ -21,6 +21,7 @@ def main():
     import sys
     sys.path.insert(0, str(REPO/'runtime/pipeline'))
     from scenario_pipeline.worker_exchange.candidate_constructions import validate
+    from scenario_pipeline.worker_exchange.delivery_handoff import validate_case
 
     source = read(ROOT/'execution-manifest.json')
     offline_rows = {(r['case_id'], r['candidate_id']): r for r in
@@ -32,12 +33,17 @@ def main():
     assert set(offline_rows) == set(compatibility_rows) and len(offline_rows) == 8
     assert set(index_rows) == set(offline_rows)
     draft = copy.deepcopy(source)
+    acceptance = read(ROOT/'delivery-acceptance-contracts.json')
+    assert acceptance['assignment_id'] == ROOT.name
+    assert set(acceptance['contracts']) == {entry['case_id'] for entry in draft['cases']}
     draft['format'] = 'worker-execution-manifest'
     draft['status'] = 'partial_cpu_candidate_proofs_bound_original_unverified'
     draft['native_handoff_scope'] = 'env_only_no_original_claim'
     law = read(ROOT/'case-plan.json')
     for entry in draft['cases']:
         case_id = entry['case_id']
+        entry['delivery_acceptance'] = copy.deepcopy(acceptance['contracts'][case_id])
+        validate_case(ROOT, entry, ['full-train'])
         short = case_id.rsplit('__', 1)[-1]
         entry['native_handoff'] = {'python_env_var': 'CARLA_PYTHON',
                                    'host_env_var': 'CARLA_HOST',
