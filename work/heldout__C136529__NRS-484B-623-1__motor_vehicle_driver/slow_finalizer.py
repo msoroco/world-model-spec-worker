@@ -5,6 +5,9 @@ import json
 from pathlib import Path
 from slow_speed import measure
 
+def measure_slow_branch(samples):
+    return measure(samples)
+
 CAMERAS = ('overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv')
 
 
@@ -60,14 +63,14 @@ def analyze(attempt, *, write_channels=True):
         sample['control_visible']=p.get('control_visible')
         sample['source']='participant_state.jsonl'
         samples.append(sample)
-    observations=measure(samples)
+    observations=measure_slow_branch(samples)
     if branch=='slow_for_obstruction' and not all(p.get('obstruction_present') is True and len((p.get('obstruction_geometry') or {}).get('vertices_xyz',[]))>=4 for p in props):
         raise ValueError('physical obstruction missing from retained prop source')
     if branch=='slow_under_control' and not all(p.get('control_present') is True and len((p.get('control_geometry') or {}).get('vertices_xyz',[]))>=4 for p in props):
         raise ValueError('physical control missing from retained prop source')
     if branch=='slow_under_control' and not context.get('regulatory_source'):
         raise ValueError('regulatory premise needs a source')
-    sources={'config.json':config_hash,'slow_context.json':context_hash,
+    sources={'slow_context.json':context_hash,
              'video_frames.jsonl':frame_hash,'trace.jsonl':trace_hash,
              'participant_state.jsonl':actor_hash,'prop_state.jsonl':prop_hash}
     if write_channels:
@@ -78,7 +81,7 @@ def analyze(attempt, *, write_channels=True):
                        'value':row[key],'frame':f['carla_frame']})+'\n'
                        for row,f in zip(observations['samples'],frames)))
     return {'format':'worker-analysis-report','case_id':config['selected_case_id'],
-            'measurements':{'slow_speed_observation':{'method':'original 20 Hz Native participant and prop join',
+            'measurements':{'slow_speed_observation':{'method':'measure_slow_branch',
                         'value':observations,'sources':sources}},
             'limitations':['Normal and reasonable movement, necessity and regulatory validity remain subject to source and physical review.'],
             'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}

@@ -20,3 +20,13 @@ Resume: read each accepted metadata source, decompose full law text and exceptio
 - insufficient-width exception
 
 No legal judgment threshold is inferred from these engineering comparisons. Verify cell compatibility and governing cross-references before selecting exact cases.
+
+## 2026-11-11 construction checkpoint
+
+The frozen evidence inventory has zero recordings. Eight exact case intents and seven controlled comparisons now cover the continuous baseline and all five express exceptions in `case-plan.json`; all are `planned_unimplemented`. No accepted reuse is asserted.
+
+`directed_geometry.py` derives a direction-aware center boundary from joined, opposite-direction Native lane waypoints, rejects a separated median and wrong-way or unjoined lane, and reads four bottom body corners from the original actor bounding box. `roadway_source_capture.py` writes new, original 20 Hz rows with frame and actor identity. `right_half_measurement.py` reads those rows and measures full-body right-half occupancy, crossing and road width without inferring sufficient width or any exception. These modules are acquisition and measurement work; they are not an executable route/controller or delivery capture. The median-opening cell may require explicit map geometry beyond the directly joined lane helper.
+
+Proof: `.venv-cpu/bin/python -m unittest discover -s work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/tests -v` exited 0, nine tests; `cpu-tests.log` SHA-256 8bcdeb19ce5d7cfaa10335d27aa67a60f1f57391c39ae9db6f1882b636fd77e6. Scoped static and strict gates are rerun in `worker-check.log` and `strict-gate.log`.
+
+Next CPU work: implement route and controller for the selected median-opening cell, four synchronized cameras, exact construction bundle and three fallbacks only for documented physical risk; bind case-specific saved finalizer and positive/negative compatibility; expand eight cases and comparisons; add semantic proposals and independent delivery/comparison audits. Select legal sufficient-width and exception dispositions only with separate original context; no cutoff is assumed here.

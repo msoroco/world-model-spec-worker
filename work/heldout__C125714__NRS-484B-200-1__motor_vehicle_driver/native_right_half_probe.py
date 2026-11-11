@@ -1,0 +1,124 @@
+"""Native baseline route and original-source probe for C125714.
+
+This probe does not seal a delivery attempt or establish median-opening
+geometry, legal sufficient width, or a statutory exception.
+"""
+
+import argparse
+import json
+from pathlib import Path
+
+from right_half_route import control_step, select_two_way_route
+from roadway_source_capture import RoadwaySourceRecorder
+from right_half_camera import CAMERAS, LosslessSourceSink, RightHalfCameraCapture
+
+
+CASE_SUFFIX = '__baseline_right_east'
+
+
+def check_config(config):
+    if not config.get('selected_case_id', '').endswith(CASE_SUFFIX):
+        raise ValueError('Unknown right-half baseline probe case')
+    if (config.get('law_id'), config.get('cell_id'), config.get('actor')) != (
+            'NRS-484B-200-1', 'C125714', 'motor_vehicle_driver'):
+        raise ValueError('Right-half probe identity differs')
+    if config.get('rate_hz') != 20 or config.get('frames', 0) < 80:
+        raise ValueError('Right-half probe requires at least 80 frames at 20 Hz')
+    if config.get('construction_probe_only') is not True:
+        raise ValueError('Probe may not masquerade as delivery')
+
+
+def run(config, output, host, port):
+    import carla  # Native-only dependency.
+
+    check_config(config)
+    output = Path(output)
+    output.mkdir(parents=True, exist_ok=False)
+    client = carla.Client(host, port)
+    client.set_timeout(30.)
+    world = client.get_world()
+    original = world.get_settings()
+    owned = []
+    recorder = cameras = None
+    sinks = {}
+    try:
+        settings = world.get_settings()
+        settings.synchronous_mode = True
+        settings.fixed_delta_seconds = .05
+        world.apply_settings(settings)
+        route = select_two_way_route(world.get_map())
+        ego = world.try_spawn_actor(
+            world.get_blueprint_library().find('vehicle.tesla.model3'),
+            route[0].transform)
+        if ego is None:
+            raise ValueError('Native right-half subject spawn failed')
+        owned.append(ego)
+        recorder = RoadwaySourceRecorder(output, ego)
+        for name in CAMERAS:
+            sinks[name] = LosslessSourceSink(output, name)
+        cameras = RightHalfCameraCapture(world, carla, ego, sinks)
+        frames = []
+        start = None
+        for index in range(config['frames']):
+            transform = ego.get_transform()
+            position = transform.location
+            forward = transform.get_forward_vector()
+            velocity = ego.get_velocity()
+            target = route[min(2 + index // 8, len(route) - 1)].transform.location
+            command = control_step([position.x, position.y],
+                                   [forward.x, forward.y], [velocity.x, velocity.y],
+                                   [target.x, target.y])
+            ego.apply_control(carla.VehicleControl(**command))
+            frame = world.tick()
+            cameras.wait_for_frame(frame)
+            snapshot = world.get_snapshot()
+            if snapshot.frame != frame:
+                raise ValueError('Native right-half snapshot/frame mismatch')
+            if start is None:
+                start = snapshot.timestamp.elapsed_seconds
+            waypoint = world.get_map().get_waypoint(ego.get_location())
+            recorder.append(frame, snapshot.timestamp.elapsed_seconds - start,
+                            waypoint)
+            frames.append(frame)
+        cameras.verify(frames)
+        (output / 'construction-probe.json').write_text(json.dumps({
+            'format': 'worker-right-half-construction-probe',
+            'case_id': config['selected_case_id'],
+            'map_name': world.get_map().name,
+            'road_id': route[0].road_id, 'lane_id': route[0].lane_id,
+            'frames': frames, 'delivery_ready': False}, indent=2) + '\n')
+    finally:
+        if recorder is not None:
+            recorder.close()
+        if cameras is not None:
+            cameras.close()
+        for sink in sinks.values():
+            sink.close()
+        for actor in reversed(owned):
+            actor.destroy()
+        world.apply_settings(original)
+        restored = world.get_settings()
+        if (restored.synchronous_mode != original.synchronous_mode or
+                restored.fixed_delta_seconds != original.fixed_delta_seconds):
+            raise ValueError('Native right-half world settings restore failed')
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--check', action='store_true')
+    parser.add_argument('--run', action='store_true')
+    parser.add_argument('--config', default='probe-config.json')
+    parser.add_argument('--output')
+    parser.add_argument('--host', default='127.0.0.1')
+    parser.add_argument('--port', type=int, default=2000)
+    args = parser.parse_args()
+    config = json.loads(Path(args.config).read_text())
+    check_config(config)
+    if args.run:
+        if not args.output:
+            raise ValueError('Fresh Native output directory required')
+        run(config, args.output, args.host, args.port)
+
+
+if __name__ == '__main__':
+    main()

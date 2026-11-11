@@ -102,3 +102,42 @@ measured longitudinal order reversal. These are engineering triggers, not
 legal thresholds or physical-success claims.
 
 Latest scoped strict gate log `strict-gate.log` SHA256 `89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`; exit code 1 because status is correctly partial.
+
+## 2026-11-11 Native construction probe and offline proof
+
+`lane_construction.py` now selects a connected marked, same-direction pair of
+driving lanes and rejects a road with opposite-direction sampled lanes, absent
+markings, junction intrusion or ambiguous continuation. It builds three
+case-specific route targets. The crossing and passing cases share the same
+lateral route; the passing case additionally specifies a separately spawned
+participant. `control_step` makes bounded steering/throttle/brake requests from
+Native position, heading and velocity, using one engineering policy for linked
+cases. `tests/test_lane_construction.py` exercises both travel directions, all
+three paths, missing geometry and controller readbacks.
+
+`native_construction_probe.py` is a CARLA-lazy diagnostic entrypoint. Its
+`--run` path selects the route, spawns the ego and optional overtaken vehicle,
+executes controller ticks, retains original waypoint/participant source rows
+and synchronizes four named source-camera FFV1 streams at 20 Hz.
+`lane_camera_capture.py` creates overview 1920x1080 and approach,
+reference_corner, driver_reference 1280x720 streams; its fake Native test
+exercises sensor creation, frame join, duplicate rejection and cleanup. The
+probe does not seal Native output or claim delivery readiness. No CARLA run or
+physical camera visibility claim has been made.
+
+`construction-probe.json` and `construction-probe-manifest.json` bind the first
+`__within_marked_lane` construction to SHA256
+`991a066b8fbbd0c6e8ab3b4bb3cff0d3216dca6b8866c734af63b7dbcbffd6da`.
+The exact `runtime.py offline` command and current hashed positive log are in
+`probe-proof.json`; it passes the materialized entrypoint `--check` and four
+bundled CPU tests. The complete local suite passes 13 tests under the command
+in `result.json`. These proofs validate construction software only.
+
+Next CPU work is to promote this probe to a complete selected-case delivery
+runner with original frame map, Native sealing, four-camera acquisition checks,
+source-bound finalizer, diagnostic recipe, positive/negative compatibility and
+saved-only processing. Build separate exact crossing and passing constructions,
+then risk-triggered fallbacks and audits. Keep all cases partial until the
+scoped strict gate passes.
+
+Scoped strict gate still exits 1 with `Preparation acceptance failed: partial/missing packages remain`; latest `strict-gate.log` SHA256 `89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`.

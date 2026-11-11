@@ -38,7 +38,7 @@ def construct(adapter, case: Case):
                                target_mps=8.0)
     props = []
     if case.obstruction:
-        props.append(adapter.prop(kind='fallen_branch', center=(0.0, 5.0),
+        props.append(adapter.prop(kind='parked_vehicle', center=(0.0, 5.0),
                                   extent=(1.1, 1.4, 0.6)))
     if case.regulatory_control:
         props.append(adapter.prop(kind='temporary_speed_control', center=(2.7, -35.0),

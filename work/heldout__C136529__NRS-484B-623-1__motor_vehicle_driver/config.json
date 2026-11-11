@@ -1,0 +1,92 @@
+{
+  "cell_id": "C136529",
+  "law_id": "NRS-484B-623-1",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_with_following_traffic",
+  "supported_case_ids": [
+    "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__flowing_reference",
+    "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_with_following_traffic",
+    "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_for_obstruction",
+    "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_under_control"
+  ],
+  "ego_target_mps": 3.0,
+  "follower_cruise_mps": 8.0,
+  "case_branch": "slow_with_following_traffic",
+  "route_step_m": 5.0,
+  "follower_gain": 0.4,
+  "speed_kp": 0.22,
+  "speed_brake_gain": 0.3,
+  "required_atoms": [],
+  "source_packets": [],
+  "rate_hz": 20,
+  "duration_s": 8,
+  "frames": 160,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "subject-mounted original RGB source",
+      "fov_deg": 95
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original RGB source",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original RGB source",
+      "fov_deg": 100
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original RGB source",
+      "fov_deg": 85
+    }
+  ],
+  "case": {
+    "case_id": "heldout__C136529__NRS-484B-623-1__motor_vehicle_driver__slow_with_following_traffic",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_speed_mps",
+          "unit": "m/s",
+          "method": "Native subject velocity vector magnitude",
+          "sampling_rate_hz": 20,
+          "time_window": "all original frames",
+          "reference_frame": "world ground plane",
+          "uncertainty": "Native velocity precision and 20 Hz temporal sampling"
+        },
+        {
+          "name": "follower_speed_mps",
+          "unit": "m/s",
+          "method": "Native following vehicle velocity vector magnitude",
+          "sampling_rate_hz": 20,
+          "time_window": "all original frames",
+          "reference_frame": "world ground plane",
+          "uncertainty": "Native velocity precision and 20 Hz temporal sampling"
+        },
+        {
+          "name": "follower_gap_m",
+          "unit": "m",
+          "method": "Native actor-center ground-plane separation; full body gap separately requires footprint capture",
+          "sampling_rate_hz": 20,
+          "time_window": "all original frames",
+          "reference_frame": "world ground plane",
+          "uncertainty": "Actor-center distance is a descriptive traffic proxy, not full body separation"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Normal and reasonable movement remains a legal judgment; actual traffic impedance and camera visibility need physical review."
+      ]
+    }
+  }
+}

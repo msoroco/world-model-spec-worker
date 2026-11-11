@@ -1,0 +1,268 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "362033c8f31c0c2b0d57a41420a3a702025848b351cb44216d5981584b466ca8",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route availability, reverse encounter control and original-camera coverage may fail; the three alternatives address those separate measured risks."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/fallback1-construction.json",
+          "construction_sha256": "0e2229035bcf0243d4d3e483c79c0fb063f7f4e518a820063e73a8f745848689",
+          "trigger": {
+            "source": "Native waypoint selection diagnostic",
+            "metric": "number of 18 m rear continuation candidates",
+            "failure_condition": "No connected 18 m rear waypoint; use a 16 m rear actor offset"
+          },
+          "changed_knobs": [
+            "rear other-actor spawn offset 18 m to 16 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady --candidate fallback1 --output .runtime-work/c136014-fallback1-offline-001 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "fallback1-offline.log",
+            "log_sha256": "c6352adff70a6982c739a1cd77bbb43d2425eefd2dc2112b92b0ceebf2a6ca31",
+            "construction_sha256": "0e2229035bcf0243d4d3e483c79c0fb063f7f4e518a820063e73a8f745848689"
+          },
+          "compatibility": {
+            "receipt": "fallback1-compatibility.json",
+            "sha256": "f7a6042960f5315525ba442fe5cb7e7e6ead6808969574b96f9ac0d757973140",
+            "log": "fallback1-compat.log",
+            "negative_log": "fallback1-negative.log"
+          },
+          "saved_processing_test": {
+            "command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_saved.py --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --validator $VALIDATOR --candidate fallback1",
+            "exit_code": 0,
+            "log": "fallback1-saved-proof.log",
+            "log_sha256": "45ab9c411fa50a1f4a294f8d0cae5b7e2ccc3ad4148fad2706e14056d69369e2"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/fallback2-construction.json",
+          "construction_sha256": "6641b1f70ff0573f8a455bbb398ef604dbb381c5b35d101640db7998d7c3dafc",
+          "trigger": {
+            "source": "original backing_history.jsonl actor positions",
+            "metric": "minimum original actor-center gap and rate of closing",
+            "failure_condition": "Primary control enters a predeclared 2 m engineering collision-risk band before stopping; reduce reverse throttle"
+          },
+          "changed_knobs": [
+            "ego reverse throttle 0.22 to 0.14"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady --candidate fallback2 --output .runtime-work/c136014-fallback2-offline-001 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "fallback2-offline.log",
+            "log_sha256": "c6352adff70a6982c739a1cd77bbb43d2425eefd2dc2112b92b0ceebf2a6ca31",
+            "construction_sha256": "6641b1f70ff0573f8a455bbb398ef604dbb381c5b35d101640db7998d7c3dafc"
+          },
+          "compatibility": {
+            "receipt": "fallback2-compatibility.json",
+            "sha256": "8592a50f02633b921fa5d8e8fd71264d2068e10e1f45745f3b1d0f7b2a1e91db",
+            "log": "fallback2-compat.log",
+            "negative_log": "fallback2-negative.log"
+          },
+          "saved_processing_test": {
+            "command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_saved.py --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --validator $VALIDATOR --candidate fallback2",
+            "exit_code": 0,
+            "log": "fallback2-saved-proof.log",
+            "log_sha256": "45ab9c411fa50a1f4a294f8d0cae5b7e2ccc3ad4148fad2706e14056d69369e2"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/fallback3-construction.json",
+          "construction_sha256": "6a9445d0d70b3dc2e45d9f80cc38eb8616edbfc34c06c67a8ba4e1e1ac14f41e",
+          "trigger": {
+            "source": "full decoded original approach RGB source",
+            "metric": "per-frame subject and other vehicle body visibility",
+            "failure_condition": "Either required body is omitted in an original approach frame; move approach camera forward and higher"
+          },
+          "changed_knobs": [
+            "approach camera mount x 1.2 to 1.8 m, z 2.0 to 2.4 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady --candidate fallback3 --output .runtime-work/c136014-fallback3-offline-001 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "fallback3-offline.log",
+            "log_sha256": "c6352adff70a6982c739a1cd77bbb43d2425eefd2dc2112b92b0ceebf2a6ca31",
+            "construction_sha256": "6a9445d0d70b3dc2e45d9f80cc38eb8616edbfc34c06c67a8ba4e1e1ac14f41e"
+          },
+          "compatibility": {
+            "receipt": "fallback3-compatibility.json",
+            "sha256": "6bfd057fede114978228137e7e9a0a2cd4096015a6e6602f0f1880605b161d63",
+            "log": "fallback3-compat.log",
+            "negative_log": "fallback3-negative.log"
+          },
+          "saved_processing_test": {
+            "command": ".venv-cpu/bin/python work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/prove_saved.py --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --validator $VALIDATOR --candidate fallback3",
+            "exit_code": 0,
+            "log": "fallback3-saved-proof.log",
+            "log_sha256": "45ab9c411fa50a1f4a294f8d0cae5b7e2ccc3ad4148fad2706e14056d69369e2"
+          }
+        }
+      ],
+      "measurement_contract": "first-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "backing_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady --output .runtime-work/c136014-primary-offline-004 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "first-offline.log",
+        "log_sha256": "c6352adff70a6982c739a1cd77bbb43d2425eefd2dc2112b92b0ceebf2a6ca31",
+        "construction_sha256": "362033c8f31c0c2b0d57a41420a3a702025848b351cb44216d5981584b466ca8"
+      },
+      "compatibility": {
+        "receipt": "first-compatibility.json",
+        "sha256": "07ea40ac3152a964853914fbc4e1cd0ff12324e7a06b02688c8c16c1708ee3d6",
+        "log": "first-compat.log",
+        "negative_log": "first-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json",
+        "test_log": "first-saved-proof.log",
+        "test_log_sha256": "45ab9c411fa50a1f4a294f8d0cae5b7e2ccc3ad4148fad2706e14056d69369e2",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_close_traffic_steady",
+      "kind": "delivery",
+      "construction": "cases/reverse_close_traffic_steady/construction.json",
+      "construction_sha256": "6f83971fc4bf966ab4a1a1cfbb87eb81a109dd40d75c097008163309eed8d58b",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map route, reverse control and original-camera coverage may independently fail"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/reverse_close_traffic_steady/fallback1-construction.json",
+          "construction_sha256": "950b7089d579ecb4f4b6684b77a010230e7d57953bd10ca231c0b5f1510427fe",
+          "trigger": {
+            "source": "Native waypoint selection diagnostic",
+            "metric": "connected rear spawn candidates",
+            "failure_condition": "Primary 10 m rear continuation absent; use 8 m verified continuation"
+          },
+          "changed_knobs": [
+            "rear actor spawn offset 10 m to 8 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/reverse_close_traffic_steady/fallback2-construction.json",
+          "construction_sha256": "1154a7e8378b69251ff1d88a5b693ac706d800e0c9e12f98ab602cc26a1ae11b",
+          "trigger": {
+            "source": "original backing_history.jsonl actor positions",
+            "metric": "closing rate and minimum center distance",
+            "failure_condition": "Primary reverse control enters 2 m engineering collision-risk band before planned stop"
+          },
+          "changed_knobs": [
+            "ego reverse throttle 0.22 to 0.14"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/reverse_close_traffic_steady/fallback3-construction.json",
+          "construction_sha256": "05236f859ac38bf64eb85ca210ef82fdf8394de80c6dc32f84b5d50dd9b10c1c",
+          "trigger": {
+            "source": "full decoded original approach RGB source",
+            "metric": "per-frame complete body visibility",
+            "failure_condition": "Subject or other vehicle body omitted from any original approach frame"
+          },
+          "changed_knobs": [
+            "approach camera mount x 1.2 to 1.8 m, z 2.0 to 2.4 m"
+          ]
+        }
+      ],
+      "measurement_contract": "cases/reverse_close_traffic_steady/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "backing_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/cases/reverse_close_traffic_steady/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_brakes",
+      "kind": "delivery",
+      "construction": "cases/reverse_clear_traffic_brakes/construction.json",
+      "construction_sha256": "205896eafc7926f622044ff00e10f90f7aa5c11fd9959ae4d005ebacb6839896",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map route, reverse control and original-camera coverage may independently fail"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/reverse_clear_traffic_brakes/fallback1-construction.json",
+          "construction_sha256": "79c3b846d03846753611dd736a6d229b41ef0f441981f6c96ca37a7743e366d1",
+          "trigger": {
+            "source": "Native waypoint selection diagnostic",
+            "metric": "connected rear spawn candidates",
+            "failure_condition": "Primary 18 m rear continuation absent; use 16 m verified continuation"
+          },
+          "changed_knobs": [
+            "rear actor spawn offset 18 m to 16 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/reverse_clear_traffic_brakes/fallback2-construction.json",
+          "construction_sha256": "268e6452bff478998400faacd009f1fb60fba3fdf75044ed98e5c685f6305737",
+          "trigger": {
+            "source": "original backing_history.jsonl actor positions",
+            "metric": "closing rate and minimum center distance",
+            "failure_condition": "Primary reverse control enters 2 m engineering collision-risk band before planned stop"
+          },
+          "changed_knobs": [
+            "ego reverse throttle 0.22 to 0.14"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/reverse_clear_traffic_brakes/fallback3-construction.json",
+          "construction_sha256": "dc97540a3d7b111549d63dbbc8235e32deb698269607a36a9ff2c87ac03a610b",
+          "trigger": {
+            "source": "full decoded original approach RGB source",
+            "metric": "per-frame complete body visibility",
+            "failure_condition": "Subject or other vehicle body omitted from any original approach frame"
+          },
+          "changed_knobs": [
+            "approach camera mount x 1.2 to 1.8 m, z 2.0 to 2.4 m"
+          ]
+        }
+      ],
+      "measurement_contract": "cases/reverse_clear_traffic_brakes/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "backing_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/cases/reverse_clear_traffic_brakes/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    }
+  ]
+}

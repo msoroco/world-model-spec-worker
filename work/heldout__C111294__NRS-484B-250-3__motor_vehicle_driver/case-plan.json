@@ -3,8 +3,137 @@
   "law_id": "NRS-484B-250-3",
   "cell_id": "C111294",
   "actor": "motor_vehicle_driver",
-  "cases": [],
-  "comparisons": [],
+  "cases": [
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "ending-through"
+      ],
+      "description": "ending approach gives way to through approach at closely spaced authored approach times",
+      "construction_status": "source_measurement_component_cpu_tested_exact_bundle_pending",
+      "physical_risk": {
+        "risk": "topology may not retain a genuine ending highway and distinct through route",
+        "trigger_source": "original Native lane graph, body footprints and device source",
+        "trigger_metric": "connected ending/through lane identities, original entry frames and conflict occupancy",
+        "failure_condition": "missing or contradictory topology, incomplete 20 Hz entry trace, or absent governing-device/turn construction"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "ending-through"
+      ],
+      "description": "ending approach enters before through approach with the same authored approach-time setup",
+      "construction_status": "source_measurement_component_cpu_tested_exact_bundle_pending",
+      "physical_risk": {
+        "risk": "controller may not produce the intended entry-order contrast",
+        "trigger_source": "original Native lane graph, body footprints and device source",
+        "trigger_metric": "connected ending/through lane identities, original entry frames and conflict occupancy",
+        "failure_condition": "missing or contradictory topology, incomplete 20 Hz entry trace, or absent governing-device/turn construction"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "separated_arrival"
+      ],
+      "description": "approach arrivals separated while the ending/through topology stays fixed",
+      "construction_status": "source_measurement_component_cpu_tested_exact_bundle_pending",
+      "physical_risk": {
+        "risk": "arrival timing may collapse into a near-simultaneous entry",
+        "trigger_source": "original Native lane graph, body footprints and device source",
+        "trigger_metric": "connected ending/through lane identities, original entry frames and conflict occupancy",
+        "failure_condition": "missing or contradictory topology, incomplete 20 Hz entry trace, or absent governing-device/turn construction"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "official_device_control"
+      ],
+      "description": "official-control alternative with device identity and governing phase source",
+      "construction_status": "source_measurement_component_cpu_tested_exact_bundle_pending",
+      "physical_risk": {
+        "risk": "traffic device may not govern both approaches as declared",
+        "trigger_source": "original Native lane graph, body footprints and device source",
+        "trigger_metric": "connected ending/through lane identities, original entry frames and conflict occupancy",
+        "failure_condition": "missing or contradictory topology, incomplete 20 Hz entry trace, or absent governing-device/turn construction"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "opposing_left_turn"
+      ],
+      "description": "opposite-direction left-turn alternative in a compatible connected intersection",
+      "construction_status": "source_measurement_component_cpu_tested_exact_bundle_pending",
+      "physical_risk": {
+        "risk": "fixed travel cell may require an additional compatible left-turn binding",
+        "trigger_source": "original Native lane graph, body footprints and device source",
+        "trigger_metric": "connected ending/through lane identities, original entry frames and conflict occupancy",
+        "failure_condition": "missing or contradictory topology, incomplete 20 Hz entry trace, or absent governing-device/turn construction"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "ending_through_yield_order",
+      "case_ids": [
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields",
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first"
+      ],
+      "fixed_conditions": [
+        "same ending/through connected lane graph, actor identities, authored near-arrival setup and four-camera duration"
+      ],
+      "deliberate_differences": [
+        "ending-approach controller yield versus proceed request; actual entry order measured from original body polygons"
+      ]
+    },
+    {
+      "comparison_id": "arrival_timing_applicability",
+      "case_ids": [
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields",
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival"
+      ],
+      "fixed_conditions": [
+        "same ending/through connected lane graph, actor routes and yielding policy"
+      ],
+      "deliberate_differences": [
+        "approach timing; approximately the same time remains an unresolved legal judgment"
+      ]
+    },
+    {
+      "comparison_id": "official_control_exception",
+      "case_ids": [
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields",
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control"
+      ],
+      "fixed_conditions": [
+        "same ending/through route topology and actor roles"
+      ],
+      "deliberate_differences": [
+        "source-backed official device presence and governing phase; subsection 4 remains a separate cited exception"
+      ]
+    },
+    {
+      "comparison_id": "opposing_left_turn_exception",
+      "case_ids": [
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields",
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn"
+      ],
+      "fixed_conditions": [
+        "same intersection identity and source cameras"
+      ],
+      "deliberate_differences": [
+        "opposing approach and actual left-turn intent/trajectory; may require a compatible cell binding"
+      ]
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
@@ -17,11 +146,42 @@
   ],
   "evidence_review": {
     "reviewer": "partition-01 CPU source inventory",
-    "method": "Exact law and evidence inventory read; no coverage or equivalence disposition asserted until each frozen accepted summary is compared with the law alternatives.",
+    "method": "Exact statute and frozen evidence inventory reviewed. Inventory is empty. No equivalence or prior coverage is asserted; topology and original-frame entry measurements are CPU components only.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "same_arrival_ending_yields",
+        "requirement": "ending approach gives way to through approach at closely spaced authored approach times",
+        "source": "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recording is supplied for this assignment."
+      },
+      {
+        "id": "same_arrival_ending_enters_first",
+        "requirement": "ending approach enters before through approach with the same authored approach-time setup",
+        "source": "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recording is supplied for this assignment."
+      },
+      {
+        "id": "separated_arrival",
+        "requirement": "approach arrivals separated while the ending/through topology stays fixed",
+        "source": "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recording is supplied for this assignment."
+      },
+      {
+        "id": "official_device_control",
+        "requirement": "official-control alternative with device identity and governing phase source",
+        "source": "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recording is supplied for this assignment."
+      },
+      {
+        "id": "opposing_left_turn",
+        "requirement": "opposite-direction left-turn alternative in a compatible connected intersection",
+        "source": "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recording is supplied for this assignment."
+      }
+    ]
   },
-  "review_status": "partial; statutory alternatives and accepted evidence still require source-grounded review",
+  "review_status": "partial: source-backed topology and entry measurement CPU-tested; exact Native bundles, exceptions and proofs pending",
   "branch_analysis": {
     "source": "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
     "status": "planning_only",
@@ -39,7 +199,7 @@
         "sha256": "24e209f870de9b286b901327faf3d6e109e3857a41d349abed5cea2c1a157320"
       },
       "requirement": "two vehicles enter approximately together: ending highway yields to through highway",
-      "status": "planned_unimplemented"
+      "status": "measurement_component_cpu_tested_exact_bundle_pending"
     },
     {
       "source": {
@@ -47,7 +207,7 @@
         "sha256": "24e209f870de9b286b901327faf3d6e109e3857a41d349abed5cea2c1a157320"
       },
       "requirement": "separated arrival timing as applicability comparison",
-      "status": "planned_unimplemented"
+      "status": "measurement_component_cpu_tested_exact_bundle_pending"
     },
     {
       "source": {
@@ -55,7 +215,7 @@
         "sha256": "24e209f870de9b286b901327faf3d6e109e3857a41d349abed5cea2c1a157320"
       },
       "requirement": "official traffic-control device exception, unless subsection 4 applies",
-      "status": "planned_unimplemented"
+      "status": "measurement_component_cpu_tested_exact_bundle_pending"
     },
     {
       "source": {
@@ -63,13 +223,101 @@
         "sha256": "24e209f870de9b286b901327faf3d6e109e3857a41d349abed5cea2c1a157320"
       },
       "requirement": "opposite-direction approaching left-turn exception",
-      "status": "planned_unimplemented"
+      "status": "measurement_component_cpu_tested_exact_bundle_pending"
     }
   ],
-  "observations": [],
+  "observations": [
+    {
+      "name": "intersection_entry",
+      "mandatory": true,
+      "source": "original 20 Hz participant body polygons and retained lane graph with reviewed highway identity",
+      "measurement": "ending/through topology, entry-frame delta, conflict overlap and observed yield order",
+      "case_ids": [
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields",
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first",
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival",
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control",
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn"
+      ]
+    }
+  ],
   "existing_evidence": [],
   "runtime_uncertainties": [
     "Pinned CPU preflight now passes. Exact construction and saved-processing proofs have not yet been run for this partial assignment.",
     "Actual CARLA motion, participant visibility, and physical capture remain unverified."
-  ]
+  ],
+  "source_observation_mapping": {
+    "st.intersection": {
+      "evidence": "retained original lane graph/topology and 20 Hz participant body polygons; governing-device source needs exact construction",
+      "channels": [
+        "intersection_entry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "retained original lane graph/topology and 20 Hz participant body polygons; governing-device source needs exact construction",
+      "channels": [
+        "intersection_entry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "retained original lane graph/topology and 20 Hz participant body polygons; governing-device source needs exact construction",
+      "channels": [
+        "intersection_entry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.arrival_order": {
+      "evidence": "retained original lane graph/topology and 20 Hz participant body polygons; governing-device source needs exact construction",
+      "channels": [
+        "intersection_entry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_connectivity": {
+      "evidence": "retained original lane graph/topology and 20 Hz participant body polygons; governing-device source needs exact construction",
+      "channels": [
+        "intersection_entry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.priority_roadway": {
+      "evidence": "retained original lane graph/topology and 20 Hz participant body polygons; governing-device source needs exact construction",
+      "channels": [
+        "intersection_entry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "retained original lane graph/topology and 20 Hz participant body polygons; governing-device source needs exact construction",
+      "channels": [
+        "intersection_entry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "retained original lane graph/topology and 20 Hz participant body polygons; governing-device source needs exact construction",
+      "channels": [
+        "intersection_entry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  }
 }

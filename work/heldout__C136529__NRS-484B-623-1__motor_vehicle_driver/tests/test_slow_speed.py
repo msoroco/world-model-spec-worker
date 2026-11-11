@@ -22,7 +22,7 @@ class SlowSpeedTest(unittest.TestCase):
             self.assertEqual(scene['ego']['route'][0][1],-65)
             self.assertEqual(scene['opposing']['route'][0][1],65)
             self.assertEqual(len(scene['props']),int(case.obstruction)+int(case.regulatory_control))
-            if case.obstruction: self.assertEqual(scene['props'][0]['kind'],'fallen_branch')
+            if case.obstruction: self.assertEqual(scene['props'][0]['kind'],'parked_vehicle')
     def samples(self):
         return [{'time_s':i*.05,'ego_valid':True,'follower_valid':True,'opposing_valid':True,
                  'ego_xy':(0,i*.15),'follower_xy':(0,-20+i*.2),'opposing_xy':(0,70-i*.4),
