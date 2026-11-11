@@ -1,0 +1,119 @@
+{
+  "assignment_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver",
+  "cases": [
+    {
+      "candidate_risk": {
+        "reason": "Native stop placement, route timing and intersection entry can miss the selected physical sources; choose an alternate only after the named original-source trigger is observed.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "config.ego_target_speed_mps: 5 -> 3.5"
+          ],
+          "construction": "diagnostic-construction-signal_operative-fallback1.json",
+          "construction_sha256": "345ae79954d6fe90c6e707fb9c4abd23a9b2a907b783e78f4b31bb532cbecfed",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "Ego first zero-speed point is beyond the selected reference or no near-line zero is recorded",
+            "metric": "ego first-zero front distance to sourced stop reference",
+            "source": "stop_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "config.other_target_speed_mps: 5 -> 3.5"
+          ],
+          "construction": "diagnostic-construction-signal_operative-fallback2.json",
+          "construction_sha256": "4fff5753816a4a3d8ebed492239fb3d068d40d77ed469b8634d855824527411b",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "Other first zero-speed point is beyond the selected reference or no near-line zero is recorded",
+            "metric": "other first-zero front distance to sourced stop reference",
+            "source": "stop_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "config.other_release_frame: 20 -> 5"
+          ],
+          "construction": "diagnostic-construction-signal_operative-fallback3.json",
+          "construction_sha256": "343a47fe120a9f0039d9cb9c87ae2ce7f250444cb480614b7fa250948c9a0d10",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "Other body has not entered the sourced crossing by original capture frame 400",
+            "metric": "other first body-entry original frame and capture duration",
+            "source": "crossing_history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
+      "construction": "diagnostic-construction-signal_operative.json",
+      "construction_sha256": "5f7768688fdf81e70b6ebdc06a24fd47cffecfb941d5c8fc64e85f83a47d6554",
+      "fixture_recipe": "work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Native stop placement, route timing and intersection entry can miss the selected physical sources; choose an alternate only after the named original-source trigger is observed.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "config.ego_target_speed_mps: 5 -> 3.5"
+          ],
+          "construction": "diagnostic-construction-signal_off-fallback1.json",
+          "construction_sha256": "dc71e7b98bfa5410bdf5a749c18a00c7c2f2d2a3ebfba680af2ee05d638ff114",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "Ego first zero-speed point is beyond the selected reference or no near-line zero is recorded",
+            "metric": "ego first-zero front distance to sourced stop reference",
+            "source": "stop_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "config.other_target_speed_mps: 5 -> 3.5"
+          ],
+          "construction": "diagnostic-construction-signal_off-fallback2.json",
+          "construction_sha256": "3c3d316fb1d6e5434a17b1e3281c02d24b5d0c0dd540130fdc108673dcd5a3c5",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "Other first zero-speed point is beyond the selected reference or no near-line zero is recorded",
+            "metric": "other first-zero front distance to sourced stop reference",
+            "source": "stop_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "config.other_release_frame: 20 -> 5"
+          ],
+          "construction": "diagnostic-construction-signal_off-fallback3.json",
+          "construction_sha256": "272147610dfd186f522195c613d1583cca60800198ed030c621d71b9c295124e",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "Other body has not entered the sourced crossing by original capture frame 400",
+            "metric": "other first body-entry original frame and capture duration",
+            "source": "crossing_history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+      "construction": "diagnostic-construction-signal_off.json",
+      "construction_sha256": "1feae5af8267a2d8be3bbeeef9251e44edddf5bf9a252ed866758c5d90198cb6",
+      "fixture_recipe": "work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/diagnostic-off-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+}

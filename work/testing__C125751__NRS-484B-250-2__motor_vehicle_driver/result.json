@@ -3,7 +3,7 @@
   "assignment_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver",
   "input_sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a",
   "readiness_kind": "implementation_checkpoint",
-  "reason": "Both primary cases and six matched fallbacks pass exact offline, full compatibility and recorded-only saved processing. Independent per-case delivery CPU audits pass four-camera decodes and four source-hashed measurements and reject tampered frame maps. The source-hashed nine-stage canonical semantic chain validates for the baseline and two selected cases, with all four judgment sweep specifications explicitly incomplete pending fixed feasible physical ranges. Physical outcome/lifecycle fixture proofs, ordered GPU handoff/local integration and strict readiness proof remain worker-owned CPU work. Status remains partial; see HANDOFF.md.",
+  "reason": "Both primary cases and six matched fallbacks pass exact offline, full compatibility and recorded-only saved processing. Independent per-case delivery audits, canonical semantic stage validation, and three physical-outcome plus lifecycle CPU fixture proofs per case pass. The draft canonical execution manifest currently fails because bundled comparison_audit.py differs from the strengthened returned source by one fixed-source check; construction and all affected exact/fallback proofs require refresh before readiness. Judgment sweeps remain incomplete; ordered GPU handoff/local integration and package-level canonical artifacts remain worker-owned CPU work. Status remains partial; see HANDOFF.md.",
   "remaining_gpu_checks": [
     "Native map and signal governance at selected junction; visible uncovered heads; realized vehicle motion and four source-camera visibility."
   ],
@@ -13,7 +13,7 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "90a7590128a2ead6f3bf8cb2385e128024cf99e9e1f9e90dfa983f9fa7bd45c5"
+      "sha256": "cfb5c81ee9e1274315137752fc675151c00ecd2c7a684939c35aaa03b2fc3a62"
     },
     {
       "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/saved_source_proof.py",
@@ -25,7 +25,7 @@
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "preflight-current.log",
-      "sha256": "8cbc7ba37fe65c9850c9f1f0d431e65bee8d66ea74b1412e5d2a66c1c07e25dd"
+      "sha256": "d0ae3f79efcc1d3fc36c9b948996fee6274af9d73b0d892c60f5de6970b404df"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative --output .runtime-work/c125751-signal_operative-offline-v4",
@@ -211,7 +211,55 @@
       "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/validate_semantic_proposals.py",
       "exit_code": 0,
       "log": "semantic-proposal-proof.log",
-      "sha256": "2675c513071bff1695fddc8f62356aebc41b8bff8bfc79200dc66df4379e9d65"
+      "sha256": "0b43a71a9010bd53dbb11f9bff498f7bd8bf6615343333692172cf79b0936e4a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical_fixture_proof.py --manifest work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative --kind complete_motion --output work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical-proofs/signal_operative/complete_motion.json",
+      "exit_code": 0,
+      "log": "physical-proofs/signal_operative/complete_motion.log",
+      "sha256": "9010cfe4d5025d32ae680acad50b34a3129a36087b9f89101338eafd14857d61"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical_fixture_proof.py --manifest work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative --kind incomplete_motion --output work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical-proofs/signal_operative/incomplete_motion.json",
+      "exit_code": 0,
+      "log": "physical-proofs/signal_operative/incomplete_motion.log",
+      "sha256": "60d356f791e004d3d151177fc74206df7342abd4fa689bd22dfeed120e015730"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical_fixture_proof.py --manifest work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative --kind missing_evidence --output work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical-proofs/signal_operative/missing_evidence.json",
+      "exit_code": 0,
+      "log": "physical-proofs/signal_operative/missing_evidence.log",
+      "sha256": "3fe1eb1272e8d0b301ca0bf679044959e34387cd0d58015097c596b1dd5cc7b3"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical_fixture_proof.py --manifest work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative --kind lifecycle --output work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical-proofs/signal_operative/lifecycle.json",
+      "exit_code": 0,
+      "log": "physical-proofs/signal_operative/lifecycle.log",
+      "sha256": "065ffb57ea6bbb07f3690eb56b38e435c0b923793a049905ec88a8fe2b9d67b5"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical_fixture_proof.py --manifest work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off --kind complete_motion --output work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical-proofs/signal_off/complete_motion.json",
+      "exit_code": 0,
+      "log": "physical-proofs/signal_off/complete_motion.log",
+      "sha256": "30244eb57f0c3bfaeb3bfa53a374a3a264fff31ca52a5cea9fe761d75dd4b950"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical_fixture_proof.py --manifest work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off --kind incomplete_motion --output work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical-proofs/signal_off/incomplete_motion.json",
+      "exit_code": 0,
+      "log": "physical-proofs/signal_off/incomplete_motion.log",
+      "sha256": "2a23cc2efb75ccb509f7382fa17e10e6aa3bb9e707610bc4e4290b5527213a2f"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical_fixture_proof.py --manifest work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off --kind missing_evidence --output work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical-proofs/signal_off/missing_evidence.json",
+      "exit_code": 0,
+      "log": "physical-proofs/signal_off/missing_evidence.log",
+      "sha256": "6c0884dc451e3c125e20be6c63ffba35327621b4b4bd048f7e3972bd440ae1d7"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical_fixture_proof.py --manifest work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off --kind lifecycle --output work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/physical-proofs/signal_off/lifecycle.json",
+      "exit_code": 0,
+      "log": "physical-proofs/signal_off/lifecycle.log",
+      "sha256": "ba4f0a2891a23f4e019e3ad95c2ca19fddd57151939ea96467ed1a84dcb5861f"
     }
   ]
 }
