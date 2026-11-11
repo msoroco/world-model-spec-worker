@@ -83,8 +83,15 @@ def main():
                         'frames','rate_hz','source_text'):
                 if changed.get(key)!=primary.get(key):
                     raise ValueError('Fallback changed fixed source: '+case+'/'+candidate+'/'+key)
-            if changed['tracks_sha256']==primary['tracks_sha256']:
-                raise ValueError('Fallback has no distinct request: '+case+'/'+candidate)
+            distinct = {
+                'fallback1': changed['requested_approach_speed_mps'] != primary['requested_approach_speed_mps']
+                             and changed['tracks_sha256'] != primary['tracks_sha256'],
+                'fallback2': changed['camera_policy'] != primary['camera_policy'],
+                'fallback3': changed['pre_turn_dwell_s'] != primary['pre_turn_dwell_s']
+                             and changed['tracks_sha256'] != primary['tracks_sha256'],
+            }[candidate]
+            if not distinct:
+                raise ValueError('Fallback has no distinct engineered change: '+case+'/'+candidate)
     for a,b in (('reference','contrast'),('divided_reference','divided_opening')):
         for candidate in CANDIDATES:
             left,right=configs[(a,candidate)],configs[(b,candidate)]
