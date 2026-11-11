@@ -8,6 +8,7 @@ def load(name):
     spec=importlib.util.spec_from_file_location(name,ROOT/(name+'.py'));mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod);return mod
 measure=load('crossing_precedence');native=load('native_crossing');comparison=load('comparison_audit');geometry=load('median_geometry');spacing=load('median_spacing');capture=load('capture_sources');finalizer=load('finalizer');runner=load('runner');cameras=load('camera_setup');encoder=load('camera_encoder');turns=load('turn_exception_audit');turn_fixture=load('turn_exception_fixture_proof')
 route=load('route_control')
+site_packet=load('site_packet')
 def body(x,y):return [[x-1,y-1],[x+1,y-1],[x+1,y+1],[x-1,y+1]]
 class Tests(unittest.TestCase):
     def test_authored_route_steering_and_progress(self):
@@ -33,6 +34,26 @@ class Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'does not traverse crossing interior'):
             route.validate_route([[-5,-2],[5,-2],[15,-2]],[-5,-2,0,0],
                                  [5,-2,0,0],'ego',crossing)
+    def test_device_review_requires_entrance_coverage_and_no_control(self):
+        site={'crossing_id':5,'native_map_name':'TownX',
+              'ego_highway_id':1,'other_highway_id':2}
+        review={'format':'worker-median-device-inventory','crossing_id':5,
+                'native_map_name':'TownX','all_entrances_reviewed':True,
+                'review_basis':'synthetic entrance coverage fixture',
+                'entrances':[{'road_id':11,'lane_id':-1,'highway_id':1},
+                             {'road_id':22,'lane_id':-1,'highway_id':2}],
+                'devices':[]}
+        self.assertEqual(site_packet.verify_device_review(review,site)
+                         ['reviewed_entrance_count'],2)
+        missing=json.loads(json.dumps(review))
+        missing['entrances'].pop()
+        with self.assertRaisesRegex(ValueError,'At least two reviewed'):
+            site_packet.verify_device_review(missing,site)
+        controlled=json.loads(json.dumps(review))
+        controlled['devices']=[{'type':'stop','source':'synthetic device',
+                                'controls_crossing':True}]
+        with self.assertRaisesRegex(ValueError,'Official device controls'):
+            site_packet.verify_device_review(controlled,site)
     def test_precedence_controller_holds_until_other_clears(self):
         held,entered=runner.precedence_hold(False,False)
         self.assertTrue(held)
@@ -285,12 +306,18 @@ class Tests(unittest.TestCase):
             for key in ('polygon_source','entrance_source','median_spacing_source',
                         'device_review_source','statutory_crossing_review_source'):
                 name=config['site'][key]
-                content=('synthetic '+key+'\n') if key!='median_spacing_source' else json.dumps({
+                content=('synthetic '+key+'\n') if key not in ('median_spacing_source','device_review_source') else json.dumps({
                     'format':'worker-median-roadway-geometry','units':'m',
                     'source_description':'synthetic two-roadway fixture',
                     'roadway_polygons_xy_m':[
                         [[0,0],[10,0],[10,10],[0,10]],
-                        [[0,20],[10,20],[10,30],[0,30]]]})+'\n'
+                        [[0,20],[10,20],[10,30],[0,30]]]})+'\n' if key=='median_spacing_source' else json.dumps({
+                    'format':'worker-median-device-inventory','crossing_id':5,
+                    'native_map_name':'TownX','all_entrances_reviewed':True,
+                    'review_basis':'synthetic entrance coverage fixture',
+                    'entrances':[{'road_id':11,'lane_id':-1,'highway_id':1},
+                                 {'road_id':22,'lane_id':-1,'highway_id':2}],
+                    'devices':[]})+'\n'
                 (root/name).write_text(content)
                 documents[key]={'path':name,'sha256':hashlib.sha256(content.encode()).hexdigest()}
             packet={'format':'worker-median-site-review','review_status':'reviewed_candidate',

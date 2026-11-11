@@ -184,6 +184,10 @@ def capture(args, config):
                     transforms["other_approach"], transforms["other_entry"],
                     blueprint, site["crossing_polygon_xy_m"], site["crossing_id"],
                     site["polygon_source"], site["entrance_source"]) as (plan, other):
+                native_lanes = {tuple(pair) for pair in plan["device_inventory"]["entrance_road_lanes"]}
+                reviewed_lanes = {tuple(pair) for pair in site_review["device_review"]["entrance_road_lanes"]}
+                if not native_lanes <= reviewed_lanes:
+                    raise ValueError("Native participant entrance absent from reviewed device inventory")
                 context = {
                     "native_map_id": world_map.name, "intersection_id": site["crossing_id"],
                     "ego_highway_id": site["ego_highway_id"],
@@ -195,12 +199,13 @@ def capture(args, config):
                     "official_device_inventory_source": site["device_review_source"],
                     "median_spacing_source": site["median_spacing_source"],
                     "same_statutory_crossing": True,
-                    "official_device_controls_crossing": False,
+                    "official_device_controls_crossing": site_review["device_review"]["official_device_controls_crossing"],
                     "opposite_approach_with_left_turn": False,
                     "intersection_polygon_xy_m": site["crossing_polygon_xy_m"],
                     "native_candidate": plan,
                     "statutory_crossing_review_source": site["statutory_crossing_review_source"],
                     "site_review_packet": site_review,
+                    "device_review": site_review["device_review"],
                     "median_spacing_measurement": site_review["median_spacing_measurement"],
                     "controller_history_source": "controller_history.jsonl",
                     "authored_routes_xy_m": site["routes"],

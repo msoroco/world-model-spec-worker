@@ -13,7 +13,8 @@ sys.path.insert(0, str(PACKAGE))
 sys.path.insert(0, str(ROOT / "runtime/scenario_pipeline"))
 
 from finalizer import CAMERAS, finalize
-from worker_exchange.media import audit, check_four_view_sources
+from delivery_audit import audit_delivery
+from worker_exchange.media import check_four_view_sources
 from worker_exchange.measurement_contract import validate, verify_report
 
 FRAMES = 1100
@@ -106,13 +107,6 @@ def main():
     attempt = OUT / "positive"
     write_sources(attempt)
     check_four_view_sources({name.removesuffix(".mkv"): attempt / name for name in CAMERAS})
-    mapping_sha = hashlib.sha256((attempt / "video_frames.jsonl").read_bytes()).hexdigest()
-    decodes = {}
-    for index, name in enumerate(CAMERAS):
-        receipt = audit(attempt / name, FRAMES, mapping_sha256=mapping_sha,
-                        receipt=OUT / f"source-decode-{index}.json")
-        decodes[name] = {"frames": receipt["frames"],
-                         "video_sha256": receipt["video_sha256"]}
     analysis = finalize(attempt, attempt / "analysis-report.json")
     plan = json.loads((PACKAGE / "case-plan.json").read_text())
     contract = json.loads((PACKAGE / "measurement-contract.json").read_text())
@@ -121,6 +115,19 @@ def main():
     verified = verify_report(contract, analysis, attempt)
     assert analysis["source_report"]["other_enters_before_ego"] is True
     assert analysis["measurements"]["yield_control_attempt"]["value"]["other_entry_seen_before_tick"] is True
+    independent = audit_delivery(attempt, PACKAGE, FRAMES, OUT / "independent-decoder-receipts")
+    missing_camera = attempt / CAMERAS[-1]
+    parked_camera = OUT / "parked-camera.mkv"
+    missing_camera.rename(parked_camera)
+    try:
+        try:
+            audit_delivery(attempt, PACKAGE, FRAMES)
+        except ValueError as error:
+            assert "Missing source camera: " + CAMERAS[-1] in str(error), error
+        else:
+            raise AssertionError("Missing original camera was accepted")
+    finally:
+        parked_camera.rename(missing_camera)
     negative = OUT / "missing-controller"
     negative.mkdir()
     for name in ("config.json", "junction_context.json", "crossing_history.jsonl",
@@ -136,10 +143,12 @@ def main():
         raise AssertionError("Missing original controller history was accepted")
     print(json.dumps({"format": "worker-c125714-full-duration-saved-source-proof",
                       "frames": FRAMES, "rate_hz": 20,
-                      "source_decodes": decodes,
+                      "source_decodes": independent["source_decodes"],
                       "measurement_keys": sorted(verified),
+                      "independent_delivery_audit": "passed",
                       "other_enters_before_ego": True,
-                      "negative": "missing_controller_history_rejected",
+                      "negative": ["missing_controller_history_rejected",
+                                   "missing_source_camera_rejected"],
                       "synthetic_only": True,
                       "physical_acceptance_claimed": False,
                       "legal_conclusion": "unresolved"}))

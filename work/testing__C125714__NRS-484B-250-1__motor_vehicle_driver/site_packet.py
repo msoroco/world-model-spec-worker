@@ -12,6 +12,44 @@ def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def verify_device_review(document: dict, site: dict) -> dict:
+    """Require a reviewed entrance inventory; Native actor checks remain separate."""
+    if not isinstance(document, dict) or document.get("format") != "worker-median-device-inventory":
+        raise ValueError("Structured official-device inventory required")
+    if document.get("crossing_id") != site.get("crossing_id") or document.get("native_map_name") != site.get("native_map_name"):
+        raise ValueError("Official-device inventory differs from selected crossing")
+    if document.get("all_entrances_reviewed") is not True or not isinstance(document.get("review_basis"), str) or not document["review_basis"].strip():
+        raise ValueError("Complete sourced entrance/device review required")
+    entrances = document.get("entrances")
+    if not isinstance(entrances, list) or len(entrances) < 2:
+        raise ValueError("At least two reviewed crossing entrances required")
+    identities = set()
+    highways = set()
+    for entrance in entrances:
+        if not isinstance(entrance, dict) or any(type(entrance.get(key)) is not int
+                for key in ("road_id", "lane_id", "highway_id")):
+            raise ValueError("Sourced road, lane and highway identity required at every entrance")
+        identity = (entrance["road_id"], entrance["lane_id"])
+        if identity in identities:
+            raise ValueError("Duplicate reviewed crossing entrance")
+        identities.add(identity)
+        highways.add(entrance["highway_id"])
+    if {site.get("ego_highway_id"), site.get("other_highway_id")} - highways:
+        raise ValueError("Selected highways missing from reviewed entrances")
+    devices = document.get("devices")
+    if not isinstance(devices, list):
+        raise ValueError("Explicit official-device list required, including empty list")
+    for device in devices:
+        if not isinstance(device, dict) or not device.get("type") or not device.get("source") or type(device.get("controls_crossing")) is not bool:
+            raise ValueError("Sourced device identity and control status required")
+        if device["controls_crossing"]:
+            raise ValueError("Official device controls selected crossing")
+    return {"reviewed_entrance_count": len(entrances), "reviewed_device_count": len(devices),
+            "entrance_road_lanes": [list(pair) for pair in sorted(identities)],
+            "official_device_controls_crossing": False,
+            "review_basis": document["review_basis"]}
+
+
 def verify_site_packet(config, base_dir: Path) -> dict:
     reference = config.get("site_review")
     if not isinstance(reference, dict) or set(reference) != {"path", "sha256"}:
@@ -46,7 +84,11 @@ def verify_site_packet(config, base_dir: Path) -> dict:
     spacing = check_roadway_pair(json.loads(spacing_path.read_text()),
                                  config["site"].get("crossing_polygon_xy_m"),
                                  config["site"].get("selected_roadway_index"))
+    device_path = Path(verified["device_review_source"]["path"])
+    device_review = verify_device_review(json.loads(device_path.read_text()),
+                                         config["site"])
     return {"packet_path": str(path), "packet_sha256": reference["sha256"],
             "source_documents": verified,
             "median_spacing_measurement": spacing,
+            "device_review": device_review,
             "physical_site_verified": False, "statutory_identity_verified": False}

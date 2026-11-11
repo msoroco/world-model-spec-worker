@@ -17,6 +17,9 @@ def write_sources(root):
         "intersection_id": "junction-1", "ego_highway_id": "east-west",
         "other_highway_id": "north-south", "device_inventory_source": "native-map-audit",
         "ego_approach_heading_deg": 0, "other_approach_heading_deg": -90,
+        "approach_geometry_source": "synthetic waypoint-pair fixture",
+        "ego_approach_origin_xy_m": [-8, 0],
+        "other_approach_origin_xy_m": [0, 8],
     }))
     def actor(x, y):
         return {"position_xy_m": [x, y], "body_vertices_xy_m": [
@@ -41,7 +44,31 @@ class EntryMeasurementsTest(unittest.TestCase):
             self.assertEqual(report["first_body_entry"]["ego"]["frame"], 11)
             self.assertEqual(report["first_body_entry"]["other"]["frame"], 12)
             self.assertAlmostEqual(report["ego_minus_other_entry_time_s"], -.05)
+            self.assertEqual(report["geometric_yield_candidate"], "other")
+            self.assertTrue(report["ego_is_to_other_right"])
             self.assertIn("unresolved", report["approximately_same_time_judgment"])
+
+    def test_right_hand_approach_reverses_geometric_candidate(self):
+        with tempfile.TemporaryDirectory() as path:
+            root = Path(path)
+            write_sources(root)
+            context = json.loads((root / "road_geometry.json").read_text())
+            context["other_approach_origin_xy_m"] = [0, -8]
+            context["other_approach_heading_deg"] = 90
+            (root / "road_geometry.json").write_text(json.dumps(context))
+            report = MODULE.analyze(root)
+            self.assertEqual(report["geometric_yield_candidate"], "ego")
+            self.assertTrue(report["other_is_to_ego_right"])
+
+    def test_rejects_ambiguous_or_nonreciprocal_approach(self):
+        with tempfile.TemporaryDirectory() as path:
+            root = Path(path)
+            write_sources(root)
+            context = json.loads((root / "road_geometry.json").read_text())
+            context["other_approach_origin_xy_m"] = [-6, 0]
+            (root / "road_geometry.json").write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, "geometrically ambiguous"):
+                MODULE.analyze(root)
 
     def test_rejects_missing_road_context(self):
         with tempfile.TemporaryDirectory() as path:

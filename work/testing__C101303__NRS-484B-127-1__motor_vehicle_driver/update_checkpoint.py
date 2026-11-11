@@ -43,6 +43,9 @@ claim('.venv-cpu/bin/python work/'+folder.name+'/record_fallback_candidate_compa
 claim('.venv-cpu/bin/python work/'+folder.name+'/sweep_controller_envelope.py '
       '--config work/'+folder.name+'/config.json --output work/'+folder.name+
       '/sweep-controller-envelope.json', 'sweep-envelope.log')
+claim('.venv-cpu/bin/python work/'+folder.name+'/sweep_dynamics_probe.py '
+      '--config work/'+folder.name+'/config.json --output work/'+folder.name+
+      '/sweep-dynamics-diagnostic.json', 'sweep-dynamics.log')
 result['tests']=list(claims.values())
 result['readiness_kind']='all_exact_case_full_duration_diagnostic_delivery_checkpoint'
 result['reason']=(
@@ -64,7 +67,10 @@ result['reason']=(
     'diagnostic audits explicitly report passed=false and no physical acceptance. '
     'The three-point 7.0/8.5/10.0 m controller probe verifies command response only; '
     'a 42-state CPU envelope finds 19 states with distinct commands and exposes '
-    'saturation at larger spacing. '
+    'saturation at larger spacing. A 900-frame, 20 Hz simple-dynamics trajectory '
+    'probe keeps assumed four-metre bodies separate for all three proposed gaps '
+    'and yields increasing mean modeled gaps, but uses an assumed response and '
+    'does not establish CARLA or hill-crest feasibility. '
     'The complete physically feasible judgment sweep, actual fallback and '
     'other Native-source comparisons, independent final review and '
     'shared branch/delivery queue/integration remain worker-owned CPU work. Actual '

@@ -42,6 +42,16 @@ def _body(actor):
     return MultiPoint([_pair(v, "body vertex") for v in vertices]).convex_hull
 
 
+def _right_side(origin, heading_deg, other_origin):
+    """Signed lateral projection onto the driver's right-hand axis."""
+    theta = math.radians(heading_deg)
+    dx, dy = other_origin[0] - origin[0], other_origin[1] - origin[1]
+    right_m = dx * math.sin(theta) - dy * math.cos(theta)
+    if abs(right_m) < 1.0:
+        raise ValueError("Approach side is geometrically ambiguous")
+    return right_m
+
+
 def analyze(root: Path) -> dict:
     root = Path(root)
     paths, hashes = {}, {}
@@ -56,9 +66,18 @@ def analyze(root: Path) -> dict:
         raise ValueError("Invalid identified intersection polygon")
     for key in ("intersection_id", "ego_highway_id", "other_highway_id",
                 "device_inventory_source", "ego_approach_heading_deg",
-                "other_approach_heading_deg"):
+                "other_approach_heading_deg", "approach_geometry_source"):
         if key not in geometry or geometry[key] in (None, ""):
             raise ValueError("Missing sourced road context: " + key)
+    ego_origin = _pair(geometry.get("ego_approach_origin_xy_m"), "ego approach origin")
+    other_origin = _pair(geometry.get("other_approach_origin_xy_m"), "other approach origin")
+    for key in ("ego_approach_heading_deg", "other_approach_heading_deg"):
+        if type(geometry[key]) not in (int, float) or not math.isfinite(geometry[key]):
+            raise ValueError("Finite sourced approach heading required")
+    ego_right = _right_side(ego_origin, geometry["ego_approach_heading_deg"], other_origin)
+    other_right = _right_side(other_origin, geometry["other_approach_heading_deg"], ego_origin)
+    if (ego_right > 0) == (other_right > 0):
+        raise ValueError("Approach sides are not reciprocal")
     history, mapping = _rows(paths["crossing_history.jsonl"]), _rows(paths["video_frames.jsonl"])
     if len(history) < 2 or len(mapping) != len(history):
         raise ValueError("Incomplete source/frame map")
@@ -92,6 +111,12 @@ def analyze(root: Path) -> dict:
         "first_body_entry": first,
         "ego_minus_other_entry_time_s": difference,
         "approach_heading_difference_deg": heading_difference,
+        "approach_geometry_source": geometry["approach_geometry_source"],
+        "other_lateral_to_ego_right_m": ego_right,
+        "ego_lateral_to_other_right_m": other_right,
+        "other_is_to_ego_right": ego_right > 0,
+        "ego_is_to_other_right": other_right > 0,
+        "geometric_yield_candidate": "ego" if ego_right > 0 else "other",
         "approximately_same_time_judgment": "unresolved; no numeric legal threshold",
         "right_of_way_judgment": "unresolved",
     }
