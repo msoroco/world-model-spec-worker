@@ -1,0 +1,109 @@
+{
+  "assignment_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C331230",
+  "law_id": "NRS-484A-450-2",
+  "selected_branch": "Near-side crosswalk first in the stop-reference hierarchy.",
+  "cases": [
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before",
+      "target_law_id": "NRS-484A-450-2",
+      "purpose": "Marked near-side crosswalk and proper stop sign; complete ego halt before body enters crosswalk",
+      "physical_risk": "braking overshoots crosswalk edge"
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_inside",
+      "target_law_id": "NRS-484A-450-2",
+      "purpose": "Same crosswalk and sign; halt occurs after body enters crosswalk",
+      "physical_risk": "controller may brake earlier for safety"
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_stop_before",
+      "target_law_id": "NRS-484A-450-2",
+      "purpose": "Sidewalk-derived near-side crosswalk with no painted stripe; complete halt before body entry",
+      "physical_risk": "unmarked boundary may be ambiguous in Native map/camera"
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__crosswalk_and_stop_line",
+      "target_law_id": "NRS-484A-450-2",
+      "purpose": "Both near-side crosswalk and marked stop line; crosswalk keeps statutory priority",
+      "physical_risk": "marking geometry may not coexist on selected map"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "halt_position",
+      "case_ids": [
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before",
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_inside"
+      ],
+      "fixed_conditions": [
+        "same two-way-to-two-way junction, sign, crosswalk and cameras"
+      ],
+      "deliberate_differences": [
+        "original-frame complete halt before versus inside crosswalk"
+      ]
+    },
+    {
+      "comparison_id": "crosswalk_origin",
+      "case_ids": [
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before",
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_stop_before"
+      ],
+      "fixed_conditions": [
+        "same sign, junction, body-stop behavior and camera contract"
+      ],
+      "deliberate_differences": [
+        "marked versus sidewalk-derived near-side crosswalk"
+      ]
+    },
+    {
+      "comparison_id": "reference_precedence",
+      "case_ids": [
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before",
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__crosswalk_and_stop_line"
+      ],
+      "fixed_conditions": [
+        "same near-side crosswalk, sign and stop behavior"
+      ],
+      "deliberate_differences": [
+        "presence of an additional marked stop line, which remains lower priority under this exact subsection"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "recordings_reviewed": [],
+    "accepted_recording_count": 0,
+    "supported_reuses": [],
+    "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
+  },
+  "observations": [
+    "proper stop sign physically governing ego approach",
+    "marked or sidewalk-derived near-side crosswalk geometry and approach direction",
+    "source-backed intersection boundary and any stop line",
+    "original-frame complete ego body position and speed at halt, crosswalk and junction entry",
+    "crosswalk-before-stop-line priority specific to NRS 484A.450(2)"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/assignment.json",
+      "sha256": "e4c51e4dfd439b2831a6f09d2f08d6d36cb8ff98c5d759eb9bbcdb1a57ca3192"
+    },
+    {
+      "path": "inputs/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/witnesses.json",
+      "sha256": "f614c60b359bd0ad9af90dbd35a2c7e8a8edf046a4694797f5ffdf615db00348"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "This law selects near-side crosswalk before stop line; do not import the different NRS 484B.257(1) hierarchy.",
+    "Native trigger does not establish proper official sign erection or sidewalk-derived crosswalk boundary.",
+    "A sampled zero-speed frame is physical observation, not an invented statutory duration.",
+    "Runner, cameras, finalizer, fallbacks and full proofs remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; Native stop-sign selector and original-frame body halt/crosswalk ordering CPU-tested"
+}

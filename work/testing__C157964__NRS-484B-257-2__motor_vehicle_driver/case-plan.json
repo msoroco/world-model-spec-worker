@@ -1,0 +1,127 @@
+{
+  "assignment_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C157964",
+  "law_id": "NRS-484B-257-2",
+  "selected_branch": "Signed non-through one-way-to-two-way intersection with police-officer control exception; within-intersection and approaching-hazard traffic remain distinct.",
+  "cases": [
+    {
+      "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Officer actually controls traffic and directs ego to proceed while other occupies intersection",
+      "physical_risk": "performer gesture may not be visible"
+    },
+    {
+      "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Officer actually controls traffic and holds ego as other occupies intersection",
+      "physical_risk": "ego controller may enter despite hold"
+    },
+    {
+      "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Visible officer does not control traffic; signed-entrance duty remains candidate",
+      "physical_risk": "officer presence may be mistaken for active control"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "officer_control_exception",
+      "case_ids": [
+        "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+        "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive"
+      ],
+      "fixed_conditions": [
+        "same signed non-through junction, other vehicle, route and cameras"
+      ],
+      "deliberate_differences": [
+        "source-reviewed actual officer control at ego entry"
+      ]
+    },
+    {
+      "comparison_id": "officer_direction",
+      "case_ids": [
+        "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+        "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold"
+      ],
+      "fixed_conditions": [
+        "same officer authority, junction, signage, traffic and cameras"
+      ],
+      "deliberate_differences": [
+        "observed go versus hold direction"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Frozen evidence inventory has zero accepted recordings; no reuse is proposed.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "signed_entrance",
+        "requirement": "Stop or yield sign at one or more non-through entrances, with manner prescribed in subsection 1.",
+        "source": {
+          "path": "inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "0945a327ec9adef52d821c4c44c94e2d5a23f3833f88eafdfd849ff9bfbf5bd8"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; exact physical state and hazard must be constructed and observed."
+      },
+      {
+        "id": "officer_exception",
+        "requirement": "Whether traffic is actually controlled by a police officer at ego entry.",
+        "source": {
+          "path": "inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "0945a327ec9adef52d821c4c44c94e2d5a23f3833f88eafdfd849ff9bfbf5bd8"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; exact physical state and hazard must be constructed and observed."
+      },
+      {
+        "id": "non_obligated_traffic",
+        "requirement": "Other vehicle not obligated by sign inside intersection or approaching closely during ego crossing.",
+        "source": {
+          "path": "inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "0945a327ec9adef52d821c4c44c94e2d5a23f3833f88eafdfd849ff9bfbf5bd8"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; exact physical state and hazard must be constructed and observed."
+      },
+      {
+        "id": "hazard_sweep",
+        "requirement": "Approaching vehicle immediate-hazard branch remains a source-bound judgment.",
+        "source": {
+          "path": "inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "0945a327ec9adef52d821c4c44c94e2d5a23f3833f88eafdfd849ff9bfbf5bd8"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; exact physical state and hazard must be constructed and observed."
+      }
+    ],
+    "supported_reuses": []
+  },
+  "observations": [
+    "source-backed non-through status and all entrance signs",
+    "actual police authority, visible direction and traffic-control status",
+    "original-frame ego and other complete bodies at entry",
+    "other non-obligated vehicle inside intersection",
+    "approaching traffic and immediate hazard without invented numeric cutoff"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+      "sha256": "0945a327ec9adef52d821c4c44c94e2d5a23f3833f88eafdfd849ff9bfbf5bd8"
+    },
+    {
+      "path": "inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/witnesses.json",
+      "sha256": "a932c2c53344f47ca25ab6e83b402a154788f7300632a82ef8d9ea0095e10de5"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Performer blueprint and costume do not prove police authority or control.",
+    "Within-intersection observation does not complete approaching-hazard sweep.",
+    "Exact runner, gesture controller, cameras, saved finalizer, fallbacks, proposals, proofs and audits remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; officer control and within-intersection body observations CPU-tested"
+}

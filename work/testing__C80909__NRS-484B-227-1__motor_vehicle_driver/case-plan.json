@@ -1,0 +1,97 @@
+{
+  "assignment_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C80909",
+  "law_id": "NRS-484B-227-1",
+  "selected_branch": "Frozen inherited label mentions U-turn through median opening; bound cell is divided_road/left_turn/other_vehicle for distinct 90-degree left-turn alternative.",
+  "binding_review": "Witness states original C126120 fixes U-turn and cannot realize 90-degree left turn. C80909 covers left-turn alternatives; U-turn coverage remains with separate assigned C126120 and is not claimed here.",
+  "cases": [
+    {
+      "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_through_opening",
+      "target_law_id": "NRS-484B-227-1",
+      "purpose": "Divided-highway right-hand roadway to 90-degree left turn through physical barrier opening, with other vehicle",
+      "physical_risk": "opening may be too narrow for actual body path"
+    },
+    {
+      "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_across_blocked_divider",
+      "target_law_id": "NRS-484B-227-1",
+      "purpose": "Same divided highway and left-turn intent but complete body overlaps dividing space outside opening",
+      "physical_risk": "collision with physical barrier prevents safe realization"
+    },
+    {
+      "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_at_established_crossover",
+      "target_law_id": "NRS-484B-227-1",
+      "purpose": "Left turn through sourced public-authority-established crossover or intersection",
+      "physical_risk": "administrative establishment source may be unavailable"
+    },
+    {
+      "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_right_roadway_continuation",
+      "target_law_id": "NRS-484B-227-1",
+      "purpose": "Same divided road, ego continues on right-hand roadway without crossing",
+      "physical_risk": "route may drift near median or other traffic"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "opening_vs_blocked_divider",
+      "case_ids": [
+        "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_through_opening",
+        "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_across_blocked_divider"
+      ],
+      "fixed_conditions": [
+        "same divided highway, right-hand origin roadway, barrier segments, other traffic and cameras"
+      ],
+      "deliberate_differences": [
+        "complete-body crossing through opening versus outside opening"
+      ]
+    },
+    {
+      "comparison_id": "left_turn_vs_continue",
+      "case_ids": [
+        "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_through_opening",
+        "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_right_roadway_continuation"
+      ],
+      "fixed_conditions": [
+        "same roadway, opening geometry, actor and other traffic"
+      ],
+      "deliberate_differences": [
+        "left turn across median versus continuing right-hand roadway"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "recordings_reviewed": [],
+    "accepted_recording_count": 0,
+    "supported_reuses": [],
+    "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
+  },
+  "observations": [
+    "source-backed divided highway and separate opposing roadway boundaries excluding shoulders",
+    "two real barrier sections with explicit physical opening",
+    "complete-body trajectory across opening or blocked divider and right-hand-roadway occupancy",
+    "initial/final heading to distinguish 90-degree left turn from U-turn",
+    "other vehicle location and public-authority crossover establishment kept separate"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
+      "sha256": "e79b2fec46440ac98d8c4e8d508782653e4a559c6d11393e8a67e0335087c1ee"
+    },
+    {
+      "path": "inputs/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/witnesses.json",
+      "sha256": "ecfcb88a95536293a129a513eafd5998062ab5b1c4c9cb388d1bcfb8e361d78b"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Public-authority establishment is an administrative fact not inferred from an apparent opening.",
+    "Planar barrier geometry does not prove vertical clearance or physical drivability.",
+    "This bound left-turn cell does not cover the inherited U-turn label; C126120 remains responsible.",
+    "Exact runner, cameras, finalizer, fallbacks and proofs remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; Native two-section barrier opening and original-frame complete-body divider measurements CPU-tested"
+}

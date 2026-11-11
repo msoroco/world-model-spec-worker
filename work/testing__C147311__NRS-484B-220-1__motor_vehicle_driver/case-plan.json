@@ -1,0 +1,108 @@
+{
+  "assignment_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C147311",
+  "law_id": "NRS-484B-220-1",
+  "selected_branch": "Designated and signposted multilane one-way highway.",
+  "cases": [
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__source_verified_with_designation",
+      "target_law_id": "NRS-484B-220-1",
+      "purpose": "Drive in designated direction on signposted multilane one-way highway",
+      "gap_ids": [
+        "designation_and_signage",
+        "multilane_direction",
+        "original_motion"
+      ],
+      "physical_risk": "wrong-way sign may not be visible from chosen approach"
+    },
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__source_verified_against_designation",
+      "target_law_id": "NRS-484B-220-1",
+      "purpose": "Controlled opposite-direction physical movement on same designated roadway",
+      "gap_ids": [
+        "designation_and_signage",
+        "multilane_direction",
+        "original_motion"
+      ],
+      "physical_risk": "Native lane routing may force normal direction or produce collision"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "designated_vs_opposite_motion",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__source_verified_with_designation",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__source_verified_against_designation"
+      ],
+      "fixed_conditions": [
+        "same authority designation, signs, Native highway and lanes, cameras and traffic"
+      ],
+      "deliberate_differences": [
+        "measured ego displacement and heading with or against designated direction"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Frozen evidence inventory has zero accepted recordings; no reuse is proposed.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "designation_and_signage",
+        "requirement": "Public highway is designated and signposted for one-way traffic.",
+        "source": {
+          "path": "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json",
+          "sha256": "df44830516fad6996d0f5f802c76f9448a7f56380cf30746e2b013d7e0c736a6"
+        },
+        "why_existing_insufficient": "No accepted source recording is listed for this assignment."
+      },
+      {
+        "id": "multilane_direction",
+        "requirement": "At least two same-direction driving lanes on assigned highway.",
+        "source": {
+          "path": "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json",
+          "sha256": "df44830516fad6996d0f5f802c76f9448a7f56380cf30746e2b013d7e0c736a6"
+        },
+        "why_existing_insufficient": "No accepted source recording is listed for this assignment."
+      },
+      {
+        "id": "original_motion",
+        "requirement": "Original-frame complete body is driven in or against designated direction.",
+        "source": {
+          "path": "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json",
+          "sha256": "df44830516fad6996d0f5f802c76f9448a7f56380cf30746e2b013d7e0c736a6"
+        },
+        "why_existing_insufficient": "No accepted source recording is listed for this assignment."
+      }
+    ],
+    "supported_reuses": []
+  },
+  "observations": [
+    "source-backed designation and visible signpost",
+    "two same-direction Native driving lanes",
+    "original-frame ego complete body and source frame join",
+    "positive/negative displacement along designated direction and heading alignment"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json",
+      "sha256": "df44830516fad6996d0f5f802c76f9448a7f56380cf30746e2b013d7e0c736a6"
+    },
+    {
+      "path": "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/witnesses.json",
+      "sha256": "0efc71611aa21fab8ca878cd5c2824cab4dd03db799642c440eb9113781a59cc"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native signed lane IDs do not by themselves prove legal one-way designation or signposting.",
+    "No numeric legal threshold was introduced for direction; projected displacement is diagnostic.",
+    "Exact runner, cameras, saved finalizer, fallbacks, proposals, full proofs and independent audits remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; no accepted evidence listed, original-frame direction and Native lane checks CPU-tested"
+}

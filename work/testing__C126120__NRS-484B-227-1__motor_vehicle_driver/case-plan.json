@@ -1,0 +1,144 @@
+{
+  "assignment_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C126120",
+  "law_id": "NRS-484B-227-1",
+  "selected_branch": "U-turn through divided-highway median opening, including multiple movement.",
+  "cases": [
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn",
+      "target_law_id": "NRS-484B-227-1",
+      "purpose": "Complete-body forward U-turn through source-backed authority-established median opening",
+      "gap_ids": [
+        "actual_uturn",
+        "opening_and_barrier",
+        "public_authority"
+      ],
+      "physical_risk": "turning radius may carry body over divider outside opening"
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn",
+      "target_law_id": "NRS-484B-227-1",
+      "purpose": "Forward-reverse-forward U-turn with each body movement through or clear of source-backed opening",
+      "gap_ids": [
+        "actual_uturn",
+        "opening_and_barrier",
+        "public_authority"
+      ],
+      "physical_risk": "reverse segment may strike divider or block opposing roadway"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "single_vs_multiple_uturn",
+      "case_ids": [
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn",
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn"
+      ],
+      "fixed_conditions": [
+        "same divided highway, authority-established opening, barriers, cameras and traffic"
+      ],
+      "deliberate_differences": [
+        "forward-only versus forward-reverse-forward movement sequence"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Read both frozen accepted metadata sources and source hashes, including law/cell/actor, frame count and decoder result. Original movement trace, video and audit are not exported, so no U-turn equivalence or reuse is claimed.",
+    "facts": [
+      {
+        "recording_id": "6a938d9ea05657d38e43da89df4fb1daf58ef4d839e1539d0390f373824f7131",
+        "demonstrated_fact": "Accepted metadata identifies C126120-227-1-opposite-roadway, 556 frames, decoder_passed=True, matching law/cell/actor and manifest d87f9f1fc33099dc536be4941f699519622592492180d39fa1fde05387739510.",
+        "limitations": "Raw movement trace, video and delivery audit absent. The label does not establish a U-turn or multiple movements, barrier opening traversal, right-hand roadway or public-authority establishment.",
+        "sources": [
+          {
+            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/6a938d9ea05657d38e43da89df4fb1daf58ef4d839e1539d0390f373824f7131/metadata.json",
+            "sha256": "07f8c34fc4ddc4346a6445106982ca9687aa8f7c65298f42c7591186c9c22407"
+          }
+        ]
+      },
+      {
+        "recording_id": "5152b5e2f221e247f54a9ba7cfbf80add3b9c8d9fee1c4fe35e7c79f4fb1eadf",
+        "demonstrated_fact": "Accepted metadata identifies C126120-227-1-right-roadway, 556 frames, decoder_passed=True, matching law/cell/actor and manifest d87f9f1fc33099dc536be4941f699519622592492180d39fa1fde05387739510.",
+        "limitations": "Raw movement trace, video and delivery audit absent. The label does not establish a U-turn or multiple movements, barrier opening traversal, right-hand roadway or public-authority establishment.",
+        "sources": [
+          {
+            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/5152b5e2f221e247f54a9ba7cfbf80add3b9c8d9fee1c4fe35e7c79f4fb1eadf/metadata.json",
+            "sha256": "d619d0986b62baa4fc442fdce206719f16a50e97bf5595200bef2a2c8a03630d"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      {
+        "id": "actual_uturn",
+        "requirement": "Complete body performs U-turn, including multiple movement variant, from right-hand roadway to destination roadway.",
+        "source": {
+          "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
+          "sha256": "7cc994a8ed4c11105f24aeb4218428a57d1ead12ae7ae9560cc88ef644c64335"
+        },
+        "why_existing_insufficient": "Accepted metadata lacks original body positions, gear history, divider geometry or public-authority source."
+      },
+      {
+        "id": "opening_and_barrier",
+        "requirement": "Complete body crosses divider only inside physical opening between barrier sections.",
+        "source": {
+          "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/evidence.json",
+          "sha256": "cefcb225a8307102e72aad1eca1f683d7b7190d93a8728c1cf49a4336f2dc9e1"
+        },
+        "why_existing_insufficient": "Accepted metadata lacks original body positions, gear history, divider geometry or public-authority source."
+      },
+      {
+        "id": "public_authority",
+        "requirement": "Opening, crossover or intersection is established by public authority.",
+        "source": {
+          "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/evidence.json",
+          "sha256": "cefcb225a8307102e72aad1eca1f683d7b7190d93a8728c1cf49a4336f2dc9e1"
+        },
+        "why_existing_insufficient": "Accepted metadata lacks original body positions, gear history, divider geometry or public-authority source."
+      }
+    ],
+    "supported_reuses": []
+  },
+  "observations": [
+    "source-backed divided highway and right-hand roadway",
+    "real Native barrier sections straddling opening",
+    "original-frame complete-body path and divider overlap",
+    "approximately 180-degree heading change as diagnostic; gear sequence for multiple movements",
+    "public-authority establishment from independent source"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
+      "sha256": "7cc994a8ed4c11105f24aeb4218428a57d1ead12ae7ae9560cc88ef644c64335"
+    },
+    {
+      "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/evidence.json",
+      "sha256": "cefcb225a8307102e72aad1eca1f683d7b7190d93a8728c1cf49a4336f2dc9e1"
+    },
+    {
+      "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/witnesses.json",
+      "sha256": "6795836b45fa10ba47ce463e08177b09c8257f18e6b88f14e255b5833cfadf39"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "recording_id": "6a938d9ea05657d38e43da89df4fb1daf58ef4d839e1539d0390f373824f7131",
+      "case_id": "C126120-227-1-opposite-roadway",
+      "status": "accepted_metadata_reviewed_physical_equivalence_unresolved"
+    },
+    {
+      "recording_id": "5152b5e2f221e247f54a9ba7cfbf80add3b9c8d9fee1c4fe35e7c79f4fb1eadf",
+      "case_id": "C126120-227-1-right-roadway",
+      "status": "accepted_metadata_reviewed_physical_equivalence_unresolved"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Accepted opposite/right roadway recordings are preserved, not replayed or claimed to cover U-turn.",
+    "Gear changes and turn angle describe motion, not a legal conclusion.",
+    "Public-authority establishment remains source review.",
+    "Exact runner, cameras, saved finalizer, fallbacks, proposals, full proofs and independent audits remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; two metadata inventories reviewed and Native U-turn opening and original-frame motion CPU-tested"
+}

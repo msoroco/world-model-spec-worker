@@ -1,0 +1,136 @@
+{
+  "assignment_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C125751",
+  "law_id": "NRS-484B-250-1",
+  "selected_branch": "Traffic-light median crossing; subsection-1 device exclusion and subsection-4 qualification must be resolved.",
+  "cases": [
+    {
+      "case_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_signal_exclusion",
+      "target_law_id": "NRS-484B-250-1",
+      "purpose": "Observe earlier other entry while governing signal is active; preserve subsection-1 exclusion",
+      "gap_ids": [
+        "signal_control",
+        "same_crossing_and_entry",
+        "exception_applicability"
+      ],
+      "physical_risk": "signal head may govern a different entrance or be obscured"
+    },
+    {
+      "case_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_off_subsection_4",
+      "target_law_id": "NRS-484B-250-1",
+      "purpose": "Conditional cross-reference only; verify installed governing signal wholly inoperative before considering subsection 4",
+      "gap_ids": [
+        "signal_control",
+        "subsection_4"
+      ],
+      "physical_risk": "Native Off state may not mean all installed heads are inoperative"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "active_vs_off_signal_applicability",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_signal_exclusion",
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_off_subsection_4"
+      ],
+      "fixed_conditions": [
+        "same median crossing, highway identities, vehicles, entry order and cameras"
+      ],
+      "deliberate_differences": [
+        "governing signal active versus source-verified wholly inoperative"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Read frozen accepted metadata and evidence source hash; checked assignment law/cell/actor, 1100 frames and decoder result. Original trace, video and audit are not exported; no reuse is claimed.",
+    "facts": [
+      {
+        "recording_id": "2b931e668e3aa7aa06a52bf5c92b3508b369614dc9b2ef62c19d13b403d534e8",
+        "demonstrated_fact": "Accepted metadata identifies testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence, 1100 frames, decoder_passed=True, fixed law/cell/actor and manifest hash d87f9f1fc33099dc536be4941f699519622592492180d39fa1fde05387739510.",
+        "limitations": "Raw trace, video and delivery audit are absent. Metadata does not show the signal state, whether it controls this crossing, same-crossing entry order, subsection-4 status or physical applicability.",
+        "sources": [
+          {
+            "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/accepted/2b931e668e3aa7aa06a52bf5c92b3508b369614dc9b2ef62c19d13b403d534e8/metadata.json",
+            "sha256": "1ea10e3fe4628b34f9e35cdd7b7115f741855b7fdef860e7f6e4146e4e37e1f2"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      {
+        "id": "signal_control",
+        "requirement": "Source-bound traffic light governing crossing and original-frame active or Off state.",
+        "source": {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/evidence.json",
+          "sha256": "3c6a76509a34b5f83161176a0f946a31ada9bc49c2150c1d050b24a3604e276d"
+        },
+        "why_existing_insufficient": "Metadata does not expose governing-head identity/state, original body frames, crossing boundaries or subsection-4 physical status."
+      },
+      {
+        "id": "same_crossing_and_entry",
+        "requirement": "Another vehicle from a different highway enters the same crossing before ego.",
+        "source": {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/evidence.json",
+          "sha256": "3c6a76509a34b5f83161176a0f946a31ada9bc49c2150c1d050b24a3604e276d"
+        },
+        "why_existing_insufficient": "Metadata does not expose governing-head identity/state, original body frames, crossing boundaries or subsection-4 physical status."
+      },
+      {
+        "id": "exception_applicability",
+        "requirement": "Apply official-device exclusion before subsection-1 yield claim.",
+        "source": {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+          "sha256": "9baaabedfa26da92c3fa03927e8c1171002f049cc3831112073df2d61ddfbd00"
+        },
+        "why_existing_insufficient": "Metadata does not expose governing-head identity/state, original body frames, crossing boundaries or subsection-4 physical status."
+      },
+      {
+        "id": "subsection_4",
+        "requirement": "Inoperative-signal branch requires subsection-4 independent prerequisites, not mere Off readback.",
+        "source": {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/evidence.json",
+          "sha256": "3c6a76509a34b5f83161176a0f946a31ada9bc49c2150c1d050b24a3604e276d"
+        },
+        "why_existing_insufficient": "Metadata does not expose governing-head identity/state, original body frames, crossing boundaries or subsection-4 physical status."
+      }
+    ],
+    "supported_reuses": []
+  },
+  "observations": [
+    "source-backed median crossing and different highways",
+    "governing Native traffic-light actor and original frame state",
+    "complete-body entry order and other occupancy",
+    "subsection-1 official-device exclusion or subsection-4 qualification",
+    "opposite-direction left-turn exclusion"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+      "sha256": "9baaabedfa26da92c3fa03927e8c1171002f049cc3831112073df2d61ddfbd00"
+    },
+    {
+      "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/evidence.json",
+      "sha256": "3c6a76509a34b5f83161176a0f946a31ada9bc49c2150c1d050b24a3604e276d"
+    },
+    {
+      "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "sha256": "d86907c2de48eb418f8e4c87683dd565ce933706ae61ee9f01cf8dbfe8b4dcc8"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "recording_id": "2b931e668e3aa7aa06a52bf5c92b3508b369614dc9b2ef62c19d13b403d534e8",
+      "case_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence",
+      "status": "accepted_metadata_reviewed_physical_equivalence_unresolved"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Active governing traffic light excludes subsection 1 even when other enters first.",
+    "Off readback alone does not establish wholly inoperative signal or subsection-4 applicability.",
+    "Accepted original preserved; no replay or reuse claim.",
+    "Exact runner, cameras, saved finalizer, fallbacks, proposals, full proofs and independent audits remain worker-owned CPU work."
+  ],
+  "planning_status": "partial; accepted metadata reviewed and signal-exclusion geometry CPU-tested"
+}
