@@ -4,18 +4,80 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide",
+      "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__baseline_reference",
       "target_law_id": "NRS-484B-207-1",
-      "target_type": "boundary_probe",
-      "rationale": "Source-joined same-direction left pass and rightward return; safe distance and safely clear remain unresolved legal judgments.",
+      "target_type": "baseline",
+      "rationale": "Shared source-plan reference; no additional recording or case allocation.",
       "variable_assignments": {
         "target_left_gap_m": {
           "kind": "controller",
-          "value": 2
+          "value": 1.25
         },
         "requested_return_clearance_m": {
           "kind": "controller",
           "value": 3
+        },
+        "left_pass_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "return_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "safe distance",
+        "safely clear"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "left_pass_clearance_m",
+            "unit": "m",
+            "method": "original Native body polygon separation",
+            "sampling_rate_hz": 20,
+            "time_window": "abreast frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native bounding-box precision"
+          },
+          {
+            "name": "return_clearance_m",
+            "unit": "m",
+            "method": "original Native body longitudinal projection",
+            "sampling_rate_hz": 20,
+            "time_window": "first rightward return",
+            "reference_frame": "road tangent",
+            "uncertainty": "Native bounding-box precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No legal safe-distance threshold or physical acceptance inferred from CPU sources."
+        ]
+      }
+    },
+    {
+      "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow",
+      "target_law_id": "NRS-484B-207-1",
+      "target_type": "boundary_probe",
+      "rationale": "Original-body overtaking comparison: left pass narrow",
+      "variable_assignments": {
+        "target_left_gap_m": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "requested_return_clearance_m": {
+          "kind": "controller",
+          "value": 3
+        },
+        "left_pass_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "return_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
@@ -51,16 +113,41 @@
       "paired_probe_id": "left_pass_clearance_pair",
       "deliberate_differences": [
         "target_left_gap_m"
-      ]
+      ],
+      "probe": {
+        "primary_variable": "target_left_gap_m",
+        "comparison_or_standard": "controlled physical observation; legal judgment unresolved",
+        "target_value_or_branch": 0.5
+      },
+      "sweep_id": "left_pass_clearance_pair",
+      "sweep_point": {
+        "target_left_gap_m": 0.5
+      },
+      "sweep_spec_version": "50b41da8d0ac7942b10465c6a5b63ab8d352209200834c9918f41733cdcb9040",
+      "selection_rank": 0
     },
     {
-      "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow",
+      "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide",
       "target_law_id": "NRS-484B-207-1",
       "target_type": "boundary_probe",
-      "rationale": "Original-body overtaking comparison: left pass narrow",
+      "rationale": "Source-joined same-direction left pass and rightward return; safe distance and safely clear remain unresolved legal judgments.",
       "variable_assignments": {
-        "target_left_gap_m": 0.5,
-        "requested_return_clearance_m": 3
+        "target_left_gap_m": {
+          "kind": "controller",
+          "value": 2
+        },
+        "requested_return_clearance_m": {
+          "kind": "controller",
+          "value": 3
+        },
+        "left_pass_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "return_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
       },
       "unresolved_judgment_calls": [
         "safe distance",
@@ -92,10 +179,21 @@
           "No legal safe-distance threshold or physical acceptance inferred from CPU sources."
         ]
       },
-      "paired_probe_id": null,
+      "paired_probe_id": "left_pass_clearance_pair",
       "deliberate_differences": [
         "target_left_gap_m"
-      ]
+      ],
+      "probe": {
+        "primary_variable": "target_left_gap_m",
+        "comparison_or_standard": "controlled physical observation; legal judgment unresolved",
+        "target_value_or_branch": 2
+      },
+      "sweep_id": "left_pass_clearance_pair",
+      "sweep_point": {
+        "target_left_gap_m": 2.0
+      },
+      "sweep_spec_version": "50b41da8d0ac7942b10465c6a5b63ab8d352209200834c9918f41733cdcb9040",
+      "selection_rank": 1
     },
     {
       "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_before_clear",
@@ -103,8 +201,22 @@
       "target_type": "boundary_probe",
       "rationale": "Original-body overtaking comparison: return before clear",
       "variable_assignments": {
-        "target_left_gap_m": 1.25,
-        "requested_return_clearance_m": -1
+        "target_left_gap_m": {
+          "kind": "controller",
+          "value": 1.25
+        },
+        "requested_return_clearance_m": {
+          "kind": "controller",
+          "value": -1
+        },
+        "left_pass_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "return_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
       },
       "unresolved_judgment_calls": [
         "safe distance",
@@ -136,10 +248,21 @@
           "No legal safe-distance threshold or physical acceptance inferred from CPU sources."
         ]
       },
-      "paired_probe_id": null,
+      "paired_probe_id": "return_clearance_order_pair",
       "deliberate_differences": [
-        "target_left_gap_m"
-      ]
+        "requested_return_clearance_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_return_clearance_m",
+        "comparison_or_standard": "controlled physical observation; legal judgment unresolved",
+        "target_value_or_branch": -1
+      },
+      "sweep_id": "return_clearance_order_pair",
+      "sweep_point": {
+        "requested_return_clearance_m": -1.0
+      },
+      "sweep_spec_version": "36491a79f6b0ebb69e16142108f60cc55b8c38426636f1ded4a0bf721d2ec329",
+      "selection_rank": 0
     },
     {
       "case_id": "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_after_clear",
@@ -147,8 +270,22 @@
       "target_type": "boundary_probe",
       "rationale": "Original-body overtaking comparison: return after clear",
       "variable_assignments": {
-        "target_left_gap_m": 1.25,
-        "requested_return_clearance_m": 3
+        "target_left_gap_m": {
+          "kind": "controller",
+          "value": 1.25
+        },
+        "requested_return_clearance_m": {
+          "kind": "controller",
+          "value": 3
+        },
+        "left_pass_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "return_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
       },
       "unresolved_judgment_calls": [
         "safe distance",
@@ -180,12 +317,188 @@
           "No legal safe-distance threshold or physical acceptance inferred from CPU sources."
         ]
       },
-      "paired_probe_id": null,
+      "paired_probe_id": "return_clearance_order_pair",
       "deliberate_differences": [
-        "target_left_gap_m"
+        "requested_return_clearance_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_return_clearance_m",
+        "comparison_or_standard": "controlled physical observation; legal judgment unresolved",
+        "target_value_or_branch": 3
+      },
+      "sweep_id": "return_clearance_order_pair",
+      "sweep_point": {
+        "requested_return_clearance_m": 3.0
+      },
+      "sweep_spec_version": "36491a79f6b0ebb69e16142108f60cc55b8c38426636f1ded4a0bf721d2ec329",
+      "selection_rank": 1
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "left_pass_clearance_pair",
+      "target_law_id": "NRS-484B-207-1",
+      "judgment_refs": [
+        {
+          "phrase": "safe distance",
+          "note": "The statute supplies no numeric safe-distance cutoff; preserve measured body separation for independent legal and physical review."
+        }
+      ],
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "target_left_gap_m",
+          "observable": "left_pass_clearance_m",
+          "unit": "m",
+          "min": 0.5,
+          "max": 2,
+          "spacing": 1.5,
+          "measurement": {
+            "method": "original Native full-body participant corners joined to 20 Hz frame map",
+            "time_window": "abreast interval",
+            "statistic": "min"
+          },
+          "range_rationale": "Two constructible engineering outcomes with the same law, actor, roadway and capture contract.",
+          "spacing_rationale": "Two distinct controller requests; no legal boundary is inferred.",
+          "feasibility_evidence": "overtake_variants.py and runner.py/variant_runner.py select the requested lateral or return target."
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Physical comparison of left_pass_clearance_m with statutory judgment unresolved.",
+      "variable_assignments": {
+        "target_left_gap_m": {
+          "kind": "controller",
+          "value": 1.25
+        },
+        "requested_return_clearance_m": {
+          "kind": "controller",
+          "value": 3
+        },
+        "left_pass_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "return_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "left_pass_clearance_m",
+            "unit": "m",
+            "method": "original Native body polygon separation",
+            "sampling_rate_hz": 20,
+            "time_window": "abreast frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native bounding-box precision"
+          },
+          {
+            "name": "return_clearance_m",
+            "unit": "m",
+            "method": "original Native body longitudinal projection",
+            "sampling_rate_hz": 20,
+            "time_window": "first rightward return",
+            "reference_frame": "road tangent",
+            "uncertainty": "Native bounding-box precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No legal safe-distance threshold or physical acceptance inferred from CPU sources."
+        ]
+      },
+      "spec_version": "50b41da8d0ac7942b10465c6a5b63ab8d352209200834c9918f41733cdcb9040",
+      "planned_case_count": 2,
+      "selection_order": [
+        "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow",
+        "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide"
+      ]
+    },
+    {
+      "sweep_id": "return_clearance_order_pair",
+      "target_law_id": "NRS-484B-207-1",
+      "judgment_refs": [
+        {
+          "phrase": "safely clear",
+          "note": "The statute supplies no numeric safely-clear cutoff; preserve first-return full-body order for independent legal and physical review."
+        }
+      ],
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "requested_return_clearance_m",
+          "observable": "return_clearance_m",
+          "unit": "m",
+          "min": -1,
+          "max": 3,
+          "spacing": 4,
+          "measurement": {
+            "method": "original Native full-body participant corners joined to 20 Hz frame map",
+            "time_window": "first rightward return",
+            "statistic": "first"
+          },
+          "range_rationale": "Two constructible engineering outcomes with the same law, actor, roadway and capture contract.",
+          "spacing_rationale": "Two distinct controller requests; no legal boundary is inferred.",
+          "feasibility_evidence": "overtake_variants.py and runner.py/variant_runner.py select the requested lateral or return target."
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Physical comparison of return_clearance_m with statutory judgment unresolved.",
+      "variable_assignments": {
+        "target_left_gap_m": {
+          "kind": "controller",
+          "value": 1.25
+        },
+        "requested_return_clearance_m": {
+          "kind": "controller",
+          "value": 3
+        },
+        "left_pass_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "return_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "left_pass_clearance_m",
+            "unit": "m",
+            "method": "original Native body polygon separation",
+            "sampling_rate_hz": 20,
+            "time_window": "abreast frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native bounding-box precision"
+          },
+          {
+            "name": "return_clearance_m",
+            "unit": "m",
+            "method": "original Native body longitudinal projection",
+            "sampling_rate_hz": 20,
+            "time_window": "first rightward return",
+            "reference_frame": "road tangent",
+            "uncertainty": "Native bounding-box precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No legal safe-distance threshold or physical acceptance inferred from CPU sources."
+        ]
+      },
+      "spec_version": "36491a79f6b0ebb69e16142108f60cc55b8c38426636f1ded4a0bf721d2ec329",
+      "planned_case_count": 2,
+      "selection_order": [
+        "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_before_clear",
+        "heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__return_after_clear"
       ]
     }
   ],
-  "sweep_specs": [],
-  "sweeps_expanded": false
+  "sweeps_expanded": true
 }

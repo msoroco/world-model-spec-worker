@@ -11,6 +11,11 @@ from overtake_source_capture import OvertakeSourceRecorder
 
 
 CASE_ID = 'heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide'
+ALL_CASE_IDS = [
+    'heldout__C110161__NRS-484B-207-1__motor_vehicle_driver__' + suffix
+    for suffix in ('left_pass_wide', 'left_pass_narrow',
+                   'return_before_clear', 'return_after_clear')
+]
 
 
 def check_config(config):
@@ -21,7 +26,7 @@ def check_config(config):
         raise ValueError('Overtake probe identity differs')
     if (config.get('rate_hz'), config.get('frames'), config.get('requested_return_clearance_m')) != (20, 160, 3):
         raise ValueError('Overtake probe rate, duration or return clearance differs')
-    if config.get('duration_s') != 8 or config.get('supported_case_ids') != [CASE_ID]:
+    if config.get('duration_s') != 8 or config.get('supported_case_ids') not in ([CASE_ID], ALL_CASE_IDS):
         raise ValueError('Overtake delivery duration or selected case differs')
     if config.get('construction_probe_only') is not None:
         raise ValueError('Delivery config retains construction-probe marker')
