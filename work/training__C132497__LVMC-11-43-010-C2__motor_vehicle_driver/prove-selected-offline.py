@@ -1,6 +1,7 @@
 """Verify every selected C132497 construction through the pinned offline runner."""
 import hashlib
 import json
+import shlex
 import subprocess
 from pathlib import Path
 
@@ -21,8 +22,13 @@ def main():
         manifest = ROOT/item['manifest']
         if sha(manifest) != item['manifest_sha256']:
             raise ValueError('Selected manifest changed: '+case+'/'+candidate)
-        output = (REPO/'.runtime-work/c132497-selected-offline'/case/candidate/
-                  (item['manifest_sha256'][:12]+'-'+sha(ROOT/'native/finalize_current.py')[:12]+'-canonical-v2'))
+        output_parent = REPO/'.runtime-work/c132497-selected-offline'/case/candidate
+        stem = item['manifest_sha256'][:12]+'-'+sha(ROOT/'native/finalize_current.py')[:12]
+        version = 1
+        output = output_parent/(stem+'-proof'+str(version))
+        while output.exists():
+            version += 1
+            output = output_parent/(stem+'-proof'+str(version))
         output.parent.mkdir(parents=True, exist_ok=True)
         command = [str(REPO/'.venv-cpu/bin/python'), str(REPO/'runtime.py'),
                    'offline', '--manifest', str(manifest), '--case', item['case_id'],
@@ -45,6 +51,7 @@ def main():
                      'construction_sha256':item['construction_sha256'],
                      'log':log.name, 'log_sha256':sha(log),
                      'runtime_log_sha256':sha(output/'offline.log'),
+                     'command':shlex.join(command),'output':str(output),
                      'offline_passed':True, 'simulation_started':False})
         print(json.dumps({'case':case,'candidate':candidate,'offline_passed':True}),flush=True)
     target = ROOT/'update015-selected-offline-matrix.json'

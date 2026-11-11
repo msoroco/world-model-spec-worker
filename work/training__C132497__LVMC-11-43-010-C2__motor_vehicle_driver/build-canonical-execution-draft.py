@@ -58,19 +58,19 @@ def main():
             assert sha(log) == row['log_sha256']
             assert row['manifest_sha256'] == indexed['manifest_sha256']
             assert sha(ROOT/indexed['manifest']) == indexed['manifest_sha256']
-            output = (REPO/'.runtime-work/c132497-selected-offline'/short/ident/
-                      (indexed['manifest_sha256'][:12]+'-'+sha(ROOT/'native/finalize_current.py')[:12]+'-canonical-v2'))
-            command = [str(REPO/'.venv-cpu/bin/python'), str(REPO/'runtime.py'),
-                       'offline', '--manifest', str(ROOT/indexed['manifest']),
-                       '--case', case_id, '--candidate', ident,
-                       '--output', str(output)]
+            output = Path(row['output']).resolve()
+            assert REPO/'.runtime-work' in output.parents
+            assert sha(output/'construction.json') == construction_sha
+            assert sha(output/'offline.log') == row['runtime_log_sha256']
+            command = row['command']
+            assert case_id in command and ident in command and indexed['manifest'] in command
             archived = ROOT/'canonical-proof-bindings'/short/ident
             archived.mkdir(parents=True, exist_ok=True)
             offline_log = archived/'offline.log'
             shutil.copyfile(log, offline_log)
             candidate['offline'] = {
                 'exit_code': 0, 'construction_sha256': construction_sha,
-                'command': ' '.join(command),
+                'command': command,
                 'log': str(offline_log.relative_to(ROOT)),
                 'log_sha256': sha(offline_log)}
             sub = Path('update015-current-all')/short/ident
