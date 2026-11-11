@@ -113,6 +113,26 @@ def prepare_output(bundle,output):
         raise ValueError('Predeclared controller intention changed before capture')
     return bundle,output
 
+
+def finish_original_capture(output,checked,frames,restored,error,encoder_exit_codes,
+                            seal=None):
+    """Seal only after Native encoders, cleanup and world readback complete."""
+    if error:
+        raise RuntimeError('Native attempt failed; see native-capture-report.json')
+    if (frames != 240 or restored is None or restored.get('restored') is not True or
+            set(encoder_exit_codes) != set(CAMERA_NAMES) or
+            any(code != 0 for code in encoder_exit_codes.values())):
+        raise RuntimeError('Native attempt cannot seal before complete closure')
+    if seal is None:
+        from worker_exchange.native_output import seal_capture
+        seal=seal_capture
+    return seal(output,frames=frames,restoration=restored,errors=[],
+                encoder_exit_codes=encoder_exit_codes,
+                context={'case_id':checked['case_id'],
+                         'candidate_id':checked['candidate_id'],
+                         'controller_intention_sha256':sha(Path(output)/'controller-intention.json'),
+                         'legal_verdict_claimed':False})
+
 def execute(bundle,output,host,port):
     checked=check_capture(bundle)
     bundle,output=prepare_output(bundle,output)
@@ -131,6 +151,7 @@ def execute(bundle,output,host,port):
         raise RuntimeError('Exclusive idle asynchronous CARLA world required')
     owned=[];video={};logs={};camera_queues={}
     capture=None;changed=False;frames=0;restored=None;error=None
+    encoder_exit_codes={}
     try:
         world=client.generate_opendrive_world((bundle/'right-exit-road.xodr').read_text(),
             carla.OpendriveGenerationParameters(vertex_distance=.25,max_road_length=50,
@@ -250,7 +271,8 @@ def execute(bundle,output,host,port):
         for name,process in video.items():
             try:
                 process.stdin.close()
-                if process.wait(timeout=180)!=0:raise RuntimeError('Lossless encoder failed: '+name)
+                encoder_exit_codes[name]=process.wait(timeout=180)
+                if encoder_exit_codes[name]!=0:raise RuntimeError('Lossless encoder failed: '+name)
             except BaseException as exc:error=error or {'encoder_error':str(exc)}
             logs[name].close()
         for actor in reversed(owned):
@@ -272,7 +294,7 @@ def execute(bundle,output,host,port):
             'physical_roundabout_verified':False,'lane_allocation_verified':False,
             'actual_right_exit_verified':False,'legal_verdict':None,
             'delivery_ready':False})
-    if error:raise RuntimeError('Native attempt failed; see native-capture-report.json')
+    finish_original_capture(output,checked,frames,restored,error,encoder_exit_codes)
 
 if __name__=='__main__':
     import argparse

@@ -2,6 +2,7 @@
 import importlib.util
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 
 NATIVE=Path(__file__).resolve().parents[1]/'native'
@@ -24,6 +25,32 @@ class TraceFromReadback(unittest.TestCase):
         self.assertEqual(row['speed_mps'],measured['speed_mps'])
         self.assertEqual(row['control']['throttle'],.3)
         self.assertEqual(row['frame'],1009)
+
+    def test_seal_requires_finished_capture_and_restoration(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            (root/'controller-intention.json').write_text('{"synthetic_test":true}\n')
+            calls=[]
+            def seal(*args,**kwargs):
+                calls.append((args,kwargs))
+                return {'synthetic_test_only':True}
+            identity={'case_id':'reference','candidate_id':'primary'}
+            closed={name:0 for name in CAPTURE.CAMERA_NAMES}
+            args=(root,identity,240,{'restored':True},None,closed)
+            self.assertEqual(CAPTURE.finish_original_capture(*args,seal=seal),
+                             {'synthetic_test_only':True})
+            self.assertEqual(len(calls),1)
+            self.assertEqual(calls[0][1]['context']['controller_intention_sha256'],
+                             CAPTURE.sha(root/'controller-intention.json'))
+            self.assertEqual(calls[0][1]['encoder_exit_codes'],closed)
+            for bad in ((239,{'restored':True},None,closed),
+                        (240,{'restored':False},None,closed),
+                        (240,{'restored':True},None,{'overview':0}),
+                        (240,{'restored':True},None,{**closed,'approach':1}),
+                        (240,{'restored':True},{'type':'test'},closed)):
+                with self.assertRaises(RuntimeError):
+                    CAPTURE.finish_original_capture(root,identity,*bad,seal=seal)
+            self.assertEqual(len(calls),1)
 
 
 if __name__=='__main__':unittest.main()

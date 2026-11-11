@@ -28,8 +28,12 @@ def main():
          'pose_strategy':'ego_attached','fov_deg':90}]
     config_item['content'] = json.dumps(config, indent=2)+'\n'
     runner = (ROOT/'runner.py').read_text()
-    package['files'] = copy.deepcopy(package['files'])+[
-        {'path':'runner.py','content':runner}]
+    package['files'] = copy.deepcopy(package['files'])
+    bundled = next((item for item in package['files'] if item['path']=='runner.py'),None)
+    if bundled is None:
+        package['files'].append({'path':'runner.py','content':runner})
+    elif bundled['content'] != runner:
+        raise ValueError('Bundled Native runner differs from root entrypoint')
     package['entrypoint'] = 'runner.py'
     plan = json.loads((ROOT/'case-plan.json').read_text())
     package['measurement_plan'] = {

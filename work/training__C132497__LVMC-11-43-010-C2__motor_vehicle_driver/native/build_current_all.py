@@ -24,7 +24,9 @@ def package(case, candidate, recording):
     road = next(item['content'] for item in files if item['path']=='right-exit-road.xodr')
     files.extend([{'path':'road.xodr','content':road},
                   {'path':'finalize_current.py',
-                   'content':(ROOT/'native/finalize_current.py').read_text()}])
+                   'content':(ROOT/'native/finalize_current.py').read_text()},
+                  {'path':'runner.py','content':(ROOT/'runner.py').read_text()}])
+    construction['entrypoint'] = 'runner.py'
     construction['recording_description'] = recording
     construction['status'] = 'selected_cpu_preparation_original_unverified'
     construction['static_checks'] = ['240-frame source-bound request identity',
