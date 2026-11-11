@@ -69,8 +69,8 @@ class FireSourceRecorder:
                 (self.previous_frame is not None and
                  (frame != self.previous_frame + 1 or time_s <= self.previous_time))):
             raise ValueError("Original fire source frame/time is invalid or missing")
-        if type(warning_lamp_readback) is not bool or type(siren_readback) is not bool:
-            raise ValueError("Fire warning lamp and siren require explicit readbacks")
+        if type(warning_lamp_readback) is not bool or siren_readback is not None and type(siren_readback) is not bool:
+            raise ValueError("Fire warning lamp needs a readback; siren must be a readback or unknown")
         ego_corners = ground_corners(self.ego)
         apparatus_corners = ground_corners(self.apparatus)
         ego_speed, apparatus_speed = _speed(self.ego), _speed(self.apparatus)
@@ -95,7 +95,9 @@ class FireSourceRecorder:
                  "apparatus_moving": moving_apparatus, "ego_moving": moving_ego,
                  "ego_following": moving_ego and moving_apparatus and aligned and ahead and lateral <= 2.5,
                  "ego_parked": parked, "warning_lamp": warning_lamp_readback,
-                 "siren": siren_readback}
+                 "siren": siren_readback,
+                 "siren_source": "Native actor getter" if siren_readback is not None
+                                 else "unavailable on this Native actor; purpose is separate sourced premise"}
         self.participants.write(json.dumps(participant, allow_nan=False) + "\n")
         self.states.write(json.dumps(state, allow_nan=False) + "\n")
         self.participants.flush()

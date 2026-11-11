@@ -93,3 +93,44 @@ The strict failure remains `Preparation acceptance failed: partial/missing packa
 The strict failure still states `Preparation acceptance failed: partial/missing packages remain`. C102304 remains partial because the selected exact case and candidates have no executable construction or full offline/compatibility/saved-processing proof. Resume with the at-500 traveling runner and four named camera streams, bind the current source/finalizer modules, then expand the remaining exact cases and independent audits.
 
 The saved result now gives each retained acquisition entry the Native recording-evidence `name`, `unit`, and `reference` fields plus its SHA256. After this correction, the 31-test suite remains passing; current `cpu-tests.log` SHA256 755eda220c06cc1f0a2ac4a78a65b4d95f9254d2849997471a9473b83622d74e. This is still a partial source/analysis integration and not an exact-case compatibility receipt.
+
+## Final checks for this checkpoint
+
+- `work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/worker-check.log` (assignment checkpoint) exit 0; SHA256 e1c2de7288b0b7a530f361a3a1db8c5cf337461cf87d1b7203971fd4657a2645.
+- `work/_shared/batch-strict-gate.log` (batch strict) exit 1; SHA256 89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292.
+
+The updated analysis code and result claim are covered by 31 passing CPU tests. The complete batch still has 49 partial assignments and 2 ready assignments; `--require-delivery-ready` fails as it should. Continue worker-owned construction and proof work from the first at-500 traveling exact case.
+
+## Current four-camera construction checkpoint
+
+`fire_camera_capture.py` creates `overview`, `approach`, `reference_corner`, and `driver_reference` RGB sensors attached to the subject at 20 Hz using the prospective 1920x1080 + three 1280x720 profile. It rejects missing sinks, changed dimensions, duplicate frames and a missing original-frame join. `FFmpegSourceSink` writes original BGRA bytes as lossless FFV1 `.mkv` sources and checks encoder exit. `tests/test_fire_camera_capture.py` fake-world tests exercise sensor creation, frame joins, rejection and encoding command/byte checks. The real FFmpeg/ffprobe smoke at `.runtime-work/fire-camera-smoke/approach.mkv` reports FFV1 1280x720; this is generated diagnostic media, not a recording or visibility proof. Camera placement is provisional and actual participant visibility remains a physical risk.
+
+Proof: `.venv-cpu/bin/python -m unittest discover -s work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/tests -v` passes 34 tests; `cpu-tests.log` SHA256 e5e47797fe017520afb4034a6f46666d27d5d0a5686c1caac47030db5f3ea391.
+
+Next CPU construction: implement the first traveling-follow 500 ft CARLA-lazy runner, create the four sinks and `PipelineCapture`, call `FireCaptureSession.capture` once per original tick with actual warning-lamp and siren readbacks, and close/verify all camera streams before saved processing. Then bind `fire_finalizer.py` and run exact offline, positive/negative compatibility and process-saved proofs. Expand the remaining cases, fallbacks, proposals and independent audits before readiness. The current sink and fake-world tests are components, not an exact-case receipt.
+
+- assignment checkpoint: `worker-check.log` exit 0, SHA256 e1c2de7288b0b7a530f361a3a1db8c5cf337461cf87d1b7203971fd4657a2645.
+- assignment strict: `strict-gate.log` exit 1, SHA256 89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292.
+The strict assignment gate still rejects the partial package at `preparation.py:276`; it does not certify readiness.
+
+Batch return gate after this change: `.venv-cpu/bin/python worker_check.py --complete` exits 0, `work/_shared/batch-checkpoint-gate.log` SHA256 b240d7e9206f7ce14c8a3993e3129987c0a88e4abdbae1a23fc38114833693b5. `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exits 1 at `preparation.py:276` because partial packages remain; `work/_shared/batch-strict-gate.log` SHA256 89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292. No assignment status was promoted.
+
+## Current Native construction integration
+
+`fire_route.py` now samples a single continuous Native lane and requires measured uphill and downhill waypoint grades with the crest between the selected actors; it rejects flat/discontinuous routes and tests both approach directions. This is a map-shape construction check, not a measured sight line. `runner.py` is the CARLA-lazy Native entrypoint for the planned traveling-follow 500 ft case. It selects that route, spawns an ordinary ego and fire apparatus, applies lane-following and spacing controls, joins each original tick to `PipelineCapture`, `FireCaptureSession` and all four camera frames, closes the source encoders and seals the capture only after world settings restoration. `fire_camera_capture.py` now waits for all four camera callbacks for each frame and rejects callback errors/timeouts. When the Native actor exposes no siren getter, `participant_state.jsonl` records an explicit unknown; it does not infer alarm purpose from warning devices.
+
+The assignment test command `.venv-cpu/bin/python -m unittest discover -s work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/tests -v` passes 41 CPU tests; `cpu-tests.log` SHA256 d9b04968e878282fc071c09b2d7ba73a570c251fc243ab805bdd30479dd93124. The assignment checkpoint gate exits 0, while the strict gate still exits 1 because status is partial. The new runner has no exact construction/config bundle or compatibility and saved-processing receipt and has not run against CARLA. The next CPU action is to bundle the first case in `execution-manifest.json`, supply its case-specific diagnostic sources and measurement contract, run `runtime.py offline`, positive/negative `runtime.py compatibility`, and `runtime.py process-saved`; then expand the other nine cases, fallbacks, proposals and audits. A local Native run later must confirm a usable crest, device readbacks, motion and camera visibility.
+
+## Independent saved-source audit checkpoint
+
+`delivery_audit.py` independently rereads and hashes the six retained source files, recomputes the fire measurement with the selected finalizer, verifies original frame identities and fully decodes all four named camera sources through the shared media auditor. Its CPU tests reject changed original state, missing original state, missing camera and a short decode. The tests use a decoder stub and textual source fixtures; no physical visibility or real video acceptance is claimed. `runner.py --check` now validates a materialized `config.json` when present and rejects a wrong exact-case identity.
+
+Current test command `.venv-cpu/bin/python -m unittest discover -s work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/tests -v` exits 0 with 45 tests; log `cpu-tests.log` SHA256 025aa275b2163216bbba094c9570523018e2bfb2c844111a360a4a5bcc4224d5. Next bundle the first exact case, run its source-bound full compatibility and saved-processing path, then expand the remaining cases, three fallback constructions each, semantic proposals, and audit/queue bindings. The assignment remains partial.
+
+## Final gate receipts for this checkpoint
+
+- assignment checkpoint: `work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/worker-check.log` exit 0; SHA256 e1c2de7288b0b7a530f361a3a1db8c5cf337461cf87d1b7203971fd4657a2645.
+- assignment strict: `work/heldout__C102304__NRS-484B-710__motor_vehicle_driver/strict-gate.log` exit 1; SHA256 89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292.
+- batch strict: `work/_shared/batch-strict-gate.log` exit 1; SHA256 89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292.
+
+The strict gates still reject partial packages at `runtime/scenario_pipeline/worker_exchange/preparation.py:276`. C102304 has executable CPU components but lacks the required exact-case proof bundle, and 48 other assignments also remain partial. This is unfinished CPU preparation, not an external blocker.

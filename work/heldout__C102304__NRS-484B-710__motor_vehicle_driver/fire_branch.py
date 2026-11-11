@@ -36,7 +36,8 @@ def measure_branch(participant_source, state_source, expected_frames, branch, co
 
     State records must carry original Native frame/time and boolean fields:
     apparatus_moving, ego_moving, ego_following, ego_parked, warning_lamp,
-    siren. These are measured or recorded states, not expected labels.
+    siren. Siren may be null when Native has no readback; alarm purpose remains
+    a separately sourced premise rather than being inferred from device state.
     """
     if branch not in {"traveling_follow", "stopped_drive_to", "stopped_park"}:
         raise ValueError("Unknown fire apparatus branch")
@@ -53,7 +54,7 @@ def measure_branch(participant_source, state_source, expected_frames, branch, co
     if len(states) != expected_frames:
         raise ValueError("Incomplete retained participant state history")
     required_state = ("apparatus_moving", "ego_moving", "ego_following",
-                      "ego_parked", "warning_lamp", "siren")
+                      "ego_parked", "warning_lamp")
     observations = []
     previous_centre_distance = None
     for distance, state in zip(measured["measurements"], states):
@@ -64,6 +65,8 @@ def measure_branch(participant_source, state_source, expected_frames, branch, co
             raise ValueError("Native state and footprint frame/time join failed")
         if any(type(state.get(key)) is not bool for key in required_state):
             raise ValueError("Missing measured Native participant state")
+        if "siren" not in state or (state["siren"] is not None and type(state["siren"]) is not bool):
+            raise ValueError("Siren state must be a Native readback or explicit unknown")
         if branch == "traveling_follow":
             active = state["apparatus_moving"] and state["ego_following"] and state["ego_moving"]
         elif branch == "stopped_drive_to":

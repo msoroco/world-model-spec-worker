@@ -103,7 +103,7 @@ class FireCaptureSessionTests(unittest.TestCase):
             pipeline = FakePipeline(output, ego)
             try:
                 with session_module.FireCaptureSession(output, pipeline, ego, apparatus, context) as session:
-                    with self.assertRaisesRegex(ValueError, "Native readbacks"):
+                    with self.assertRaisesRegex(ValueError, "Warning lamp requires"):
                         session.capture(10, .5, warning_lamp_readback=None,
                                         siren_readback=True)
                 self.assertEqual((output / "trace.jsonl").read_text(), "")

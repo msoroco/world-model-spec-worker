@@ -49,8 +49,8 @@ class FireCaptureSession:
     def capture(self, frame, time_s, *, warning_lamp_readback, siren_readback):
         if self.closed:
             raise ValueError("Fire capture session is closed")
-        if type(warning_lamp_readback) is not bool or type(siren_readback) is not bool:
-            raise ValueError("Warning lamp and siren require Native readbacks")
+        if type(warning_lamp_readback) is not bool or siren_readback is not None and type(siren_readback) is not bool:
+            raise ValueError("Warning lamp requires a Native readback; siren must be a readback or unknown")
         # PipelineCapture verifies the current world snapshot and writes the
         # original trace/graphs. FireSourceRecorder then records the same tick.
         row = self.pipeline.capture(frame, time_s)

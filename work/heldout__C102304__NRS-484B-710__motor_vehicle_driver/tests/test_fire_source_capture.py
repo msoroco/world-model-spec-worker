@@ -64,11 +64,20 @@ class SourceCaptureTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             ego, apparatus = Actor(1, 0, 1, 6), Actor(2, 150, 1, 0)
             with module.FireSourceRecorder(temp, ego, apparatus) as recorder:
-                with self.assertRaisesRegex(ValueError, "explicit readbacks"):
+                with self.assertRaisesRegex(ValueError, "warning lamp needs"):
                     recorder.append(10, .5, warning_lamp_readback=None, siren_readback=True)
                 recorder.append(10, .5, warning_lamp_readback=True, siren_readback=True)
                 with self.assertRaisesRegex(ValueError, "frame/time"):
                     recorder.append(12, .6, warning_lamp_readback=True, siren_readback=True)
+
+    def test_unavailable_native_siren_is_explicit_unknown(self):
+        with tempfile.TemporaryDirectory() as temp:
+            ego, apparatus = Actor(1, 0, 1, 6), Actor(2, 150, 1, 6)
+            with module.FireSourceRecorder(temp, ego, apparatus) as recorder:
+                recorder.append(10, .5, warning_lamp_readback=True, siren_readback=None)
+            state = json.loads((Path(temp) / "participant_state.jsonl").read_text())
+            self.assertIsNone(state["siren"])
+            self.assertIn("unavailable", state["siren_source"])
 
 
 if __name__ == "__main__":
