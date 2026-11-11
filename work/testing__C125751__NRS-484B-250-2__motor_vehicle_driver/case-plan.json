@@ -33,13 +33,18 @@
     }
   ],
   "observations": [
-    "Native intersection and lane identity for both highways",
-    "body-entry times and frame join to original video",
-    "governing traffic-light actor and affected road/lane waypoints",
-    "installed and uncovered vehicular heads from source camera",
-    "Native Red/Green/Off state at each entry",
-    "stop-line, prior-stop and in-intersection histories for subsection 4",
-    "turn intention and measured trajectory; no statutory judgment from a label"
+    {
+      "name": "signal_state",
+      "mandatory": true,
+      "method": "original 20 Hz Native signal state and affected lane history, joined by original frame",
+      "limitations": "official device status and visible head pixels require physical review"
+    },
+    {
+      "name": "stop_state",
+      "mandatory": true,
+      "method": "original 20 Hz actor speed, body occupancy and approach history, joined by original frame",
+      "limitations": "statutory stop, yield and approximately-same-time judgments remain unresolved"
+    }
   ],
   "sources": [
     {
@@ -68,95 +73,111 @@
   ],
   "source_observation_mapping": {
     "st.intersection": {
-      "evidence": "Planned raw crossing and signal telemetry plus Native map and source-camera evidence; signal_control.py and signal_measurements.py cover only the governance/state component.",
-      "channels": [],
+      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "channels": [
+        "stop_state"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
           "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
         }
       ],
-      "status": "planned_unverified"
+      "status": "selected_diagnostic_unverified"
     },
     "st.lane_enters": {
-      "evidence": "Planned raw crossing and signal telemetry plus Native map and source-camera evidence; signal_control.py and signal_measurements.py cover only the governance/state component.",
-      "channels": [],
+      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "channels": [
+        "stop_state"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
           "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
         }
       ],
-      "status": "planned_unverified"
+      "status": "selected_diagnostic_unverified"
     },
     "drv.entering_intersection": {
-      "evidence": "Planned raw crossing and signal telemetry plus Native map and source-camera evidence; signal_control.py and signal_measurements.py cover only the governance/state component.",
-      "channels": [],
+      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "channels": [
+        "stop_state"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
           "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
         }
       ],
-      "status": "planned_unverified"
+      "status": "selected_diagnostic_unverified"
     },
     "drv.arrival_order": {
-      "evidence": "Planned raw crossing and signal telemetry plus Native map and source-camera evidence; signal_control.py and signal_measurements.py cover only the governance/state component.",
-      "channels": [],
+      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "channels": [
+        "stop_state"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
           "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
         }
       ],
-      "status": "planned_unverified"
+      "status": "selected_diagnostic_unverified"
     },
     "rel.bearing": {
-      "evidence": "Planned raw crossing and signal telemetry plus Native map and source-camera evidence; signal_control.py and signal_measurements.py cover only the governance/state component.",
-      "channels": [],
+      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "channels": [
+        "stop_state"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
           "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
         }
       ],
-      "status": "planned_unverified"
+      "status": "selected_diagnostic_unverified"
     },
     "drv.yields_to": {
-      "evidence": "Planned raw crossing and signal telemetry plus Native map and source-camera evidence; signal_control.py and signal_measurements.py cover only the governance/state component.",
-      "channels": [],
+      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "channels": [
+        "stop_state"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
           "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
         }
       ],
-      "status": "planned_unverified"
+      "status": "selected_diagnostic_unverified"
     },
     "dev.traffic_signal": {
-      "evidence": "Planned raw crossing and signal telemetry plus Native map and source-camera evidence; signal_control.py and signal_measurements.py cover only the governance/state component.",
-      "channels": [],
+      "evidence": "Selected original signal_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "channels": [
+        "signal_state"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
           "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
         }
       ],
-      "status": "planned_unverified"
+      "status": "selected_diagnostic_unverified"
     },
     "drv.turning": {
-      "evidence": "Planned raw crossing and signal telemetry plus Native map and source-camera evidence; signal_control.py and signal_measurements.py cover only the governance/state component.",
-      "channels": [],
+      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "channels": [
+        "stop_state"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
           "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
         }
       ],
-      "status": "planned_unverified"
+      "status": "selected_diagnostic_unverified"
     }
   },
-  "planning_status": "partial; signal actor selection/state control and original-frame signal state join CPU-tested; full cases not constructed",
+  "planning_status": "Two selected exact signal cases and three tested fallback constructions each; synthetic site remains diagnostic, four judgment sweeps and full branch coverage are incomplete.",
   "requirement_dispositions": [
     {
       "requirement": "Both complete vehicle bodies enter one sourced crossing from different highways; original frame/time joins report entry delta and right-hand approach geometry without inventing a legal simultaneity cutoff",
@@ -198,5 +219,44 @@
       ],
       "evidence_or_gap": "Source-bound planned routes, original actor headings and frame joins are measured by finalizer turn_context; opposite-direction, intent and statutory exception judgments remain unresolved pending physical map and trajectory review."
     }
-  ]
+  ],
+  "observation_requirements": [
+    "Native intersection and lane identity for both highways",
+    "body-entry times and frame join to original video",
+    "governing traffic-light actor and affected road/lane waypoints",
+    "installed and uncovered vehicular heads from source camera",
+    "Native Red/Green/Off state at each entry",
+    "stop-line, prior-stop and in-intersection histories for subsection 4",
+    "turn intention and measured trajectory; no statutory judgment from a label"
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 55,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both complete vehicle bodies, median crossing and approach paths",
+        "interval": "startup through final 55-second observation"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach, governing signal head and stop reference",
+        "interval": "startup through ego clearance"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "other approach, governing signal head and stop reference",
+        "interval": "startup through other clearance"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego-relative approach, signal, crossing and turn context",
+        "interval": "startup through ego clearance"
+      }
+    ],
+    "limitations": [
+      "Current pose file is an explicitly synthetic diagnostic fixture with identical camera poses; Native framing and actual visibility are not established."
+    ]
+  }
 }
