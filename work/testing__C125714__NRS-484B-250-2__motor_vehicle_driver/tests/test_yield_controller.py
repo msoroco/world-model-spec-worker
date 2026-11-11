@@ -5,7 +5,7 @@ from types import SimpleNamespace as NS
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from yield_controller import apply_speed_control, body_in_crossing, right_hand_hold
+from yield_controller import apply_speed_control, body_in_crossing, right_hand_hold, near_time_entry_hold
 
 
 class YieldControllerTests(unittest.TestCase):
@@ -15,6 +15,15 @@ class YieldControllerTests(unittest.TestCase):
         held, entered = right_hand_hold(True, entered)
         self.assertTrue(held)
         held, entered = right_hand_hold(False, entered)
+        self.assertFalse(held)
+        self.assertTrue(entered)
+
+    def test_near_time_policy_releases_on_first_measured_other_entry(self):
+        held, entered = near_time_entry_hold(False, False)
+        self.assertTrue(held)
+        held, entered = near_time_entry_hold(True, entered)
+        self.assertFalse(held)
+        held, entered = near_time_entry_hold(False, entered)
         self.assertFalse(held)
         self.assertTrue(entered)
 
@@ -34,9 +43,12 @@ class YieldControllerTests(unittest.TestCase):
         held=apply_speed_control(carla,vehicle,4.0,True)
         self.assertEqual(held['brake'],1.0)
         self.assertEqual(held['throttle'],0.0)
-        moving=apply_speed_control(carla,vehicle,4.0,False)
+        moving=apply_speed_control(carla,vehicle,4.0,False,steer=.3)
         self.assertGreater(moving['throttle'],0)
+        self.assertEqual(commands[-1].steer,.3)
         self.assertEqual(len(commands),2)
+        with self.assertRaisesRegex(ValueError,'steering'):
+            apply_speed_control(carla,vehicle,4.0,False,steer=2)
 
 
 if __name__=='__main__':
