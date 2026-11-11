@@ -45,12 +45,12 @@ def main():
                 args += ['--candidate', ident]
             offline_log = ROOT / 'cases' / f'case-offline-{label}.log'
             off = run([sys.executable, str(REPO / 'runtime.py'), 'offline', *args,
-                       '--output', str(REPO / '.runtime-work' / f'c10365-{label}-offline-v3'),
+                       '--output', str(REPO / '.runtime-work' / f'c10365-{label}-offline-v9'),
                        '--python', sys.executable], offline_log)
             if not off.get('offline_passed'):
                 raise ValueError('Offline construction failed: ' + label)
             compatibility_log = ROOT / 'cases' / f'case-compat-{label}.log'
-            compat_output = REPO / '.runtime-work' / f'c10365-{label}-compat-v3'
+            compat_output = REPO / '.runtime-work' / f'c10365-{label}-compat-v9'
             compatible = run([sys.executable, str(REPO / 'runtime.py'), 'compatibility', *args,
                               '--output', str(compat_output), '--library', str(REPO / 'runtime/library'),
                               '--validator', str(VALIDATOR)], compatibility_log)
@@ -68,8 +68,8 @@ def main():
                       'compatibility_receipt': str(receipt_path.relative_to(ROOT)),
                       'compatibility_receipt_sha256': digest(receipt_path)}
             if ident == 'primary':
-                attempt = REPO / '.runtime-work' / f'c10365-{suffix}-saved-attempt-v3'
-                saved_output = REPO / '.runtime-work' / f'c10365-{suffix}-saved-output-v3'
+                attempt = REPO / '.runtime-work' / f'c10365-{suffix}-saved-attempt-v9'
+                saved_output = REPO / '.runtime-work' / f'c10365-{suffix}-saved-output-v9'
                 materialize(MANIFEST, case_id, attempt)
                 with tempfile.TemporaryDirectory(dir=REPO / '.runtime-work', prefix='c10365-source-') as temporary:
                     fixture = Path(temporary) / 'source'
@@ -98,7 +98,7 @@ def main():
     (ROOT / 'candidate-proofs.json').write_text(json.dumps({
         'format': 'worker-officer-candidate-cpu-proofs', 'assignment_id': ROOT.name,
         'manifest_sha256': digest(MANIFEST), 'cases': records}, indent=2) + '\n')
-    print('All 16 exact officer construction candidates pass', flush=True)
+    print(f'All {len(records)} exact officer construction candidates pass', flush=True)
 
 
 if __name__ == '__main__':

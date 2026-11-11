@@ -135,3 +135,11 @@ saved, physical protocol and delivery audit bindings; complete the canonical
 semantic proposal chain and independent cross-case comparison audits; rerun
 every changed exact proof and the scoped strict gate. Do not infer a physical
 hand signal from the diagnostic bone coordinates or black source videos.
+
+## 2026-11-11 nine-case canonical manifest assembly
+
+`assemble_execution_manifest.py` now reads all nine exact one-case manifests, checks assignment/runtime identity, requires one case in each source, verifies each current construction file SHA256 and compares the nine selected IDs with `case-plan.json`. It wrote `execution-manifest.json` SHA256 `747d98d06ecfd0d8b979d3be2fda247f06803c237ad00b328bdfdcf6a774a7a2`. The new test tampers with one source construction and confirms rejection. `.venv-cpu/bin/python -m unittest discover -s work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/tests -v` passes 19 tests (`cpu-tests.log` SHA256 `6122eee99f2a16a90c1203b4a0d7f93e91f14a8520618c4647ccd0e370eb706b`). Scoped `worker_check.py --assignment heldout__C111603__NRS-484B-413-1__motor_vehicle_driver --complete` passes.
+
+Direct pinned `worker_exchange.execution_manifest.validate` exits 1 (`assembled-execution-validation.log` SHA256 `d1e01793706712ccb1f10b72987e7c25b448d69cacf9d7576c42738f0af44665`) at `Missing physical preparation proof for case: ...__vehicle_left_indicator`. This is unfinished CPU fixture/lifecycle work, not an external blocker. Next: add source-derived physical completion/lifecycle fixture checks to each exact case, run the frozen validator to expose further gaps, complete case proposals and cross-case audits, then rerun all nine saved-only proofs against the final aggregate manifest hash. Keep status partial until the scoped strict gate passes. Actual lamp/hand/horn audibility, affected-party status, safe motion and legal judgment remain unverified.
+
+The assembly path check now rejects a construction file outside the assignment directory; the same CPU test exercises that rejection. The 19-test suite still passes with final `cpu-tests.log` SHA256 `3fb53af506f5c4febed1c5c0cf5f26111e9adca2fb7bba2aa8d7d6cbe4d64c0e`, superseding the preceding assembly test-log hash. The assembled manifest bytes and its validator failure remain unchanged.

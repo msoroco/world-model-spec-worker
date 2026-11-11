@@ -55,7 +55,7 @@ def audit(comparison_id, first, second):
             raise ValueError('Requested speed differs from exact case')
     source_hashes = []
     for root, report in zip(roots, reports):
-        hashes = report['measurements']['flashing_yellow']['source_hashes']
+        hashes = report['measurements']['flashing_yellow']['value']['source_hashes']
         for name, digest in hashes.items():
             if hashlib.sha256((root/name).read_bytes()).hexdigest() != digest:
                 raise ValueError('Source changed during comparison audit')

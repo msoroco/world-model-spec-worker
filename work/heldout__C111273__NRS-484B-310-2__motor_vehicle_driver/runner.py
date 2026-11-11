@@ -25,12 +25,18 @@ def check_config(config):
         raise ValueError('official-control premise source required')
     if config.get('flash_period_s', .5) <= 0:
         raise ValueError('flash period must be positive')
+    if not 40 <= config.get('approach_before_m', 70.0) <= 90:
+        raise ValueError('approach route distance outside engineering bounds')
+    if not 0 <= config.get('spawn_z_offset_m', 0.0) <= .5:
+        raise ValueError('spawn height outside engineering bounds')
+    if not 0 < config.get('speed_kp', .22) <= .5:
+        raise ValueError('speed controller gain outside engineering bounds')
     if config.get('target_speed_mps') != CASES[name].approach_target_mps:
         raise ValueError('case target speed differs from exact construction')
     return True
 
 
-def _lane_control(world_map, actor, target_mps, carla, desired_yaw):
+def _lane_control(world_map, actor, target_mps, carla, desired_yaw, *, speed_kp=.22):
     """Track a through lane across the junction using a heading constrained lookahead."""
     if actor is None or not actor.is_alive:
         raise ValueError('controlled participant absent')
@@ -56,7 +62,7 @@ def _lane_control(world_map, actor, target_mps, carla, desired_yaw):
     speed = hypot(velocity.x, velocity.y)
     error = target_mps-speed
     actor.apply_control(carla.VehicleControl(
-        throttle=min(.6, max(0., .22*error)),
+        throttle=min(.6, max(0., speed_kp*error)),
         brake=min(.8, max(0., -.3*error)),
         steer=min(.45, max(-.45, steering_error/.6))))
 
@@ -77,7 +83,9 @@ def run(output, host, port):
         settings = world.get_settings()
         settings.synchronous_mode = True; settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
-        scene = construct_native(world, case, config['official_control_source'])
+        scene = construct_native(world, case, config['official_control_source'],
+            approach_before_m=config.get('approach_before_m',70.0),
+            spawn_z_offset_m=config.get('spawn_z_offset_m',0.0))
         for name in CAMERAS:
             sinks[name] = FFmpegSourceSink(output, name)
         camera = SignalCameraCapture(world, carla, scene['ego'], sinks)
@@ -102,9 +110,10 @@ def run(output, host, port):
                 # State is set before the tick whose source pixels are retained.
                 flash_row = flash.set_at(index*.05)
                 _lane_control(world.get_map(), scene['ego'], case.approach_target_mps,
-                              carla, yaw)
+                              carla, yaw, speed_kp=config.get('speed_kp',.22))
                 if scene['crossing'] is not None:
-                    _lane_control(world.get_map(), scene['crossing'], 6., carla, cross_yaw)
+                    _lane_control(world.get_map(), scene['crossing'], 6., carla, cross_yaw,
+                                  speed_kp=config.get('speed_kp',.22))
                 frame = world.tick(); snapshot = world.get_snapshot()
                 if snapshot.frame != frame:
                     raise ValueError('Native snapshot differs from completed tick')

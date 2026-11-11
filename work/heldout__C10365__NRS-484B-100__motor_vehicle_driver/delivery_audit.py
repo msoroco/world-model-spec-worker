@@ -9,7 +9,9 @@ from pathlib import Path
 
 PREFIX = 'heldout__C10365__NRS-484B-100__motor_vehicle_driver__'
 CASES = {'stop_responds', 'stop_does_not_respond',
-         'proceed_responds', 'proceed_does_not_respond'}
+         'proceed_responds', 'proceed_does_not_respond',
+         'stop_response_window_grid-0000', 'stop_response_window_grid-0001',
+         'stop_response_window_grid-0002'}
 CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv')
 
 

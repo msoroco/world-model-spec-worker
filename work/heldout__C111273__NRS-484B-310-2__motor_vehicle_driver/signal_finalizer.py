@@ -112,12 +112,12 @@ def analyze(attempt, write_channels=True):
             dest.write_text(''.join(json.dumps({'frame': r['frame'], 'time_s': r['time_s'], 'value': value}, allow_nan=False)+'\n'
                                     for r, value in zip(observations, values)))
     return {'format': 'worker-analysis-report', 'case_id': case_id,
-            'measurements': {'flashing_yellow': {'source_hashes': hashes,
+            'measurements': {'flashing_yellow': {'method': 'analyze', 'sources': {name: hashes[name] for name in ('signal_context.json', 'signal_state.jsonl', 'participant_state.jsonl', 'video_frames.jsonl', 'trace.jsonl')}, 'value': {'source_hashes': hashes,
                 'native_transitions': sum(a['native_yellow_on'] != b['native_yellow_on'] for a, b in zip(observations, observations[1:])),
                 'ego_speed_samples_mps': channels['ego_speed_mps'],
                 'crossing_present': case.crossing_vehicle,
                 'lens_pixel_visibility': 'unverified',
-                'legal_caution_judgment': 'unresolved'}},
+                'legal_caution_judgment': 'unresolved'}}},
             'limitations': ['Native Yellow/Off readback does not establish illuminated lens pixels, rapid legal flashing, official authority or caution.'],
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 
@@ -134,7 +134,7 @@ def build_result(attempt, report):
         path, digest = _source(root, name+'.jsonl')
         evidence.append({'name': name, 'unit': item['unit'], 'reference': path.name,
                          'sha256': digest})
-    measured = report['measurements']['flashing_yellow']
+    measured = report['measurements']['flashing_yellow']['value']
     return {'case_id': report['case_id'],
             'measured_values': {'flashing_yellow': measured},
             'target_checks': [{'target': 'original Native Yellow/Off transition',

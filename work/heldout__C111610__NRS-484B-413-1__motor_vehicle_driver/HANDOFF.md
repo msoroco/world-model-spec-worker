@@ -1,5 +1,32 @@
 # heldout__C111610__NRS-484B-413-1__motor_vehicle_driver: CPU preparation checkpoint
 
+## 2026-11-11 branch and original signal-timing continuation
+
+`case-plan.json` now names four exact pedestrian, other-vehicle and combined-user
+cases with three controlled comparisons. The same intersection, turn route,
+vehicle, cameras, audio acquisition and duration must be held fixed. The
+planned horn and indicator differences are construction targets; affectedness
+and legal safety are not presumed.
+
+`turn_signal_measurement.py` joins each original turn-state and Native signal
+readback to the frame map, requires source-cited highway/turn route and road
+users, and reports horn-command and indicator frames before observed turn onset.
+It leaves actual horn emission, pedestrian reception/audibility, possible
+effect, signal appropriateness and reasonable safety unknown. A commanded horn
+is not proof that a pedestrian heard it. Two CPU tests pass with wrong-frame
+and uncited-user rejection. Run `.venv-cpu/bin/python -m unittest discover -s
+work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/tests -v`;
+`cpu-tests.log` SHA-256 is
+`cdde17f7f8ccaf9ff26cdea64c4bd46045872131fc6be749144bff68f93a1a70`.
+Scoped complete passes; strict still rejects the truthful partial result.
+
+Next, implement the first exact Native turn, pedestrian route and acoustic
+source acquisition, including a microphone or equivalent original source at
+the pedestrian position, and retain four synchronized camera streams. Run its
+source-bound finalizer through exact offline, positive/negative compatibility
+and saved processing before linked comparisons and fallbacks. No physical or
+legal acceptance is claimed.
+
 ## Frozen scope and source
 
 - Law: NRS 484B.413(1) — A driver shall not turn a vehicle from a direct course upon a highway unless and until such movement can be made with reasonable safety, and then only after giving a clearly audible signal by sounding the horn if any pedestrian may be affected by such movement and after giving an appropriate signal if any other vehicle may be affected by such movement.

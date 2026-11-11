@@ -3,9 +3,60 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C126064",
   "law_id": "LVMC-11-12-020",
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__indicated_course",
+      "target_law_id": "LVMC-11-12-020",
+      "gap_ids": [
+        "authorized-course"
+      ],
+      "construction_state": "planned_unconstructed",
+      "purpose": "Turn along the source-authorized marked course."
+    },
+    {
+      "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__divergent_course",
+      "target_law_id": "LVMC-11-12-020",
+      "gap_ids": [
+        "authorized-course"
+      ],
+      "construction_state": "planned_unconstructed",
+      "purpose": "Same turn and authorized markers with an intentionally divergent target path; actual source footprint decides realized relation."
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "marked_turn_course",
+      "case_ids": [
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__indicated_course",
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__divergent_course"
+      ],
+      "fixed_conditions": [
+        "same authorized physical markers/buttons and indicated direction",
+        "same median-opening intersection and jurisdiction",
+        "same vehicle, camera profile and duration"
+      ],
+      "deliberate_differences": [
+        "measured vehicle footprint course relative to the source-indicated route"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "authorized_course_source",
+      "mandatory": true,
+      "method": "Authorization, physical marker positions and directed course cited to independent source."
+    },
+    {
+      "name": "intersection_containment",
+      "mandatory": true,
+      "method": "Frame-joined original footprint and marker locations against sourced intersection polygon."
+    },
+    {
+      "name": "actual_turn_course",
+      "mandatory": true,
+      "method": "All original body footprints and path distances relative to indicated polyline; no legal numerical cutoff."
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/assignment.json",
@@ -48,6 +99,19 @@
       "Authorized intersection indications must actually exist and indicate a turning course.",
       "Compare turn path conforming to versus disobeying the same physically placed course indications.",
       "Authorization and direction are source facts; painted overlay or authored label alone cannot establish actual device."
+    ]
+  },
+  "evidence_review": {
+    "reviewer": "partition-02 CPU preparer",
+    "method": "Read frozen evidence.json: no accepted recordings and no source-backed reuse.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "authorized-course",
+        "requirement": "Authorized physical indications within a municipal intersection and the complete actual turning path",
+        "source": "inputs/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are listed."
+      }
     ]
   }
 }

@@ -76,7 +76,7 @@ def main():
     write(MANIFEST, manifest)
     write(ROOT / 'construction-probe-manifest.json', {
         'format': 'worker-construction-cases', 'assignment_id': ROOT.name, 'cases': probes})
-    print('Bound four primaries and twelve distinct officer fallback constructions')
+    print('Bound seven primaries and twenty-one distinct officer fallback constructions')
 
 
 if __name__ == '__main__':

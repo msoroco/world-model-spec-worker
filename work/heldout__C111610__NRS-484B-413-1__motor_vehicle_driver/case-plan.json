@@ -3,9 +3,146 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C111610",
   "law_id": "NRS-484B-413-1",
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn",
+      "target_law_id": "NRS-484B-413-1",
+      "gap_ids": [
+        "turn-safety",
+        "signal-timing"
+      ],
+      "construction_state": "planned_unconstructed",
+      "purpose": "Pedestrian present near the turn; record source-reviewed possible effect, horn emission and reception before turn onset.",
+      "physical_risk": {
+        "risk": "Native horn emission/reception and affected road-user visibility may not be realized",
+        "trigger_source": "original motion, audio and four named camera streams",
+        "trigger_metric": "turn onset, received horn interval and signal timing by actor",
+        "failure_condition": "missing source, inaudible horn or user out of view"
+      }
+    },
+    {
+      "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_no_horn_before_turn",
+      "target_law_id": "NRS-484B-413-1",
+      "gap_ids": [
+        "turn-safety",
+        "signal-timing"
+      ],
+      "construction_state": "planned_unconstructed",
+      "purpose": "Same pedestrian/turn geometry with no original horn emission before onset.",
+      "physical_risk": {
+        "risk": "Native horn emission/reception and affected road-user visibility may not be realized",
+        "trigger_source": "original motion, audio and four named camera streams",
+        "trigger_metric": "turn onset, received horn interval and signal timing by actor",
+        "failure_condition": "missing source, inaudible horn or user out of view"
+      }
+    },
+    {
+      "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__other_vehicle_signal_before_turn",
+      "target_law_id": "NRS-484B-413-1",
+      "gap_ids": [
+        "turn-safety",
+        "signal-timing"
+      ],
+      "construction_state": "planned_unconstructed",
+      "purpose": "Separate other vehicle near turn; record source-reviewed possible effect and appropriate signal before onset.",
+      "physical_risk": {
+        "risk": "Native horn emission/reception and affected road-user visibility may not be realized",
+        "trigger_source": "original motion, audio and four named camera streams",
+        "trigger_metric": "turn onset, received horn interval and signal timing by actor",
+        "failure_condition": "missing source, inaudible horn or user out of view"
+      }
+    },
+    {
+      "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__both_users_both_signals",
+      "target_law_id": "NRS-484B-413-1",
+      "gap_ids": [
+        "turn-safety",
+        "signal-timing"
+      ],
+      "construction_state": "planned_unconstructed",
+      "purpose": "Pedestrian and other vehicle near turn; retain each independent possible-effect and signal branch.",
+      "physical_risk": {
+        "risk": "Native horn emission/reception and affected road-user visibility may not be realized",
+        "trigger_source": "original motion, audio and four named camera streams",
+        "trigger_metric": "turn onset, received horn interval and signal timing by actor",
+        "failure_condition": "missing source, inaudible horn or user out of view"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "pedestrian_horn_timing",
+      "case_ids": [
+        "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn",
+        "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_no_horn_before_turn"
+      ],
+      "fixed_conditions": [
+        "same sourced intersection and direct-course turn",
+        "same four source cameras, audio acquisition and duration",
+        "same vehicle and turn controller"
+      ],
+      "deliberate_differences": [
+        "original emitted and received horn before turn onset"
+      ]
+    },
+    {
+      "comparison_id": "affected_user_branch",
+      "case_ids": [
+        "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn",
+        "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__other_vehicle_signal_before_turn"
+      ],
+      "fixed_conditions": [
+        "same sourced intersection and direct-course turn",
+        "same four source cameras, audio acquisition and duration",
+        "same vehicle and turn controller"
+      ],
+      "deliberate_differences": [
+        "pedestrian versus other-vehicle possible-effect source context and required signal modality"
+      ]
+    },
+    {
+      "comparison_id": "combined_user_duties",
+      "case_ids": [
+        "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn",
+        "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__both_users_both_signals"
+      ],
+      "fixed_conditions": [
+        "same sourced intersection and direct-course turn",
+        "same four source cameras, audio acquisition and duration",
+        "same vehicle and turn controller"
+      ],
+      "deliberate_differences": [
+        "additional potentially affected other vehicle and its independent signal"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "turn_onset",
+      "mandatory": true,
+      "method": "Original heading, position and frame-joined course change"
+    },
+    {
+      "name": "pedestrian_possible_effect",
+      "mandatory": true,
+      "method": "Original pedestrian route, body gap and independent contextual review"
+    },
+    {
+      "name": "vehicle_possible_effect",
+      "mandatory": true,
+      "method": "Original other-vehicle route, body gap and independent contextual review"
+    },
+    {
+      "name": "horn_received",
+      "mandatory": true,
+      "method": "Source audio at pedestrian position with emitted interval and ambient context"
+    },
+    {
+      "name": "vehicle_signal",
+      "mandatory": true,
+      "method": "Native indicator or arm signal state and source pixels before turn"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/assignment.json",
@@ -50,6 +187,25 @@
       "Turn from direct course has an unresolved reasonable-safety condition.",
       "Pedestrian-may-be-affected branch requires clearly audible horn signal; other-vehicle-may-be-affected branch requires appropriate signal. Both may apply together.",
       "Need source-bound affectedness, audibility and signal timing before motion; no numeric safety or affectedness cutoff is supplied."
+    ]
+  },
+  "evidence_review": {
+    "reviewer": "partition-02 CPU preparer",
+    "method": "Read frozen evidence.json: zero accepted recordings; no source-backed reuse.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "turn-safety",
+        "requirement": "Original turn, affected users and reasonable-safety context",
+        "source": "inputs/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are listed."
+      },
+      {
+        "id": "signal-timing",
+        "requirement": "Horn reception at pedestrian and appropriate vehicle signal before movement",
+        "source": "inputs/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are listed."
+      }
     ]
   }
 }

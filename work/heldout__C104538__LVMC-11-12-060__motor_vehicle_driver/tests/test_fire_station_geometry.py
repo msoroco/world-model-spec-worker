@@ -9,7 +9,7 @@ from fire_station_geometry import classify_path, validate_entrance
 
 
 def wp(x, y, lane):
-    return SimpleNamespace(road_id=7 if lane == 1 else 8, lane_id=lane,
+    return SimpleNamespace(road_id=7 if lane == 1 else 8, lane_id=lane, lane_width=3.0,
                            transform=SimpleNamespace(location=SimpleNamespace(x=x, y=y)))
 
 

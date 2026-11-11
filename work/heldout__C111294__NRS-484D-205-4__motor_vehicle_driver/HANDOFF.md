@@ -1,5 +1,27 @@
 # heldout__C111294__NRS-484D-205-4__motor_vehicle_driver: CPU preparation checkpoint
 
+## 2026-11-11 original lamp and forward-motion measurement
+
+`backup_lamp_measurement.py` now joins original equipment inventory, body
+heading/velocity and Native backup-lamp state readbacks with the frame map for
+every tick. It reports forward-motion frames and their overlap with the Native
+lamp-state bit. It keeps actual emitted pixels and legal outcome unknown until
+a separate source-bound rear-view pixel review exists; a state bit alone does
+not prove lighting. No transition allowance is inferred from the planning
+summary because the exact statute states the forward-motion condition without
+one.
+
+Two CPU tests pass for reverse/forward intervals, Native state overlap,
+wrong-actor rejection and missing state rejection. Run `.venv-cpu/bin/python
+-m unittest discover -s work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/tests -v`;
+`cpu-tests.log` SHA-256 is
+`2ffabec6609e2b2a3ad26ec07878eb1eb7ba6cf97f7709cd2104b6ebd9d49209`.
+Scoped complete passes; scoped strict rejects the truthful partial status.
+Next, construct the first exact Native forward-motion case and four-camera
+source capture, verify actual backup-lamp equipment capability and source
+pixels, then prove exact offline, positive/negative compatibility and saved
+processing. Preserve the conditional review's pending source and human audits.
+
 ## Frozen scope and source
 
 - Law: NRS 484D.205(4) — Any motor vehicle may be equipped with one or more backup lamps either separately or in combination with other lamps. Backup lamps shall not be lighted when the vehicle is in forward motion.

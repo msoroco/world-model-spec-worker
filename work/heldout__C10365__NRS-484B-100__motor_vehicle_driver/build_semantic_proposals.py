@@ -37,7 +37,9 @@ params = [
     {'name': 'intended_observed_response', 'kind': 'controller',
      'range_or_domain': 'observable response or nonresponse after indication; no willfulness inference'},
     {'name': 'direction_frame', 'kind': 'world_setup',
-     'range_or_domain': 'frame 40 of the 160-frame 20 Hz recording'}]
+     'range_or_domain': 'frames 30, 40 or 50 of the 160-frame 20 Hz recording'},
+    {'name': 'subject_speed_mps', 'kind': 'subject_behavior',
+     'range_or_domain': 'original measured subject velocity, no authored outcome value'}]
 template = {'template_id': template_id, 'law_id': law_id, 'actor': actor,
     'status': 'draft', 'quote': law['text'],
     'structure': {'law_id': law_id,
@@ -65,6 +67,8 @@ judgment = {'template_id': template_id, 'phrase': phrase, 'note': note,
             {'name': 'officer_direction_context', 'unit': 'structured record',
              'description': 'Addressed subject and timed original pose indication.'}],
         'sweep_dimensions': [
+            {'name': 'subject_speed_mps', 'unit': 'm/s',
+             'description': 'Original measured post-indication speed under fixed physical indication timing.'},
             {'name': 'officer_command', 'unit': 'enum', 'description': 'Stop versus proceed arm indication.'},
             {'name': 'intended_observed_response', 'unit': 'enum',
              'description': 'Observed response versus nonresponse after indication.'}],
@@ -87,21 +91,37 @@ binding = {'cell_id': cell_id, 'actor': actor, 'status': 'draft',
 refs['bindings'] = write('bindings', binding)
 description = json.loads((ROOT / 'config.json').read_text())['case']['recording_description']
 cases = {'status': 'draft', 'cell_id': cell_id, 'actor': actor,
-         'sweep_specs': [{'sweep_id': aid + '__officer_response_latency_sweep',
+         'sweep_specs': [{'sweep_id': aid + '__stop_response_window_grid',
              'target_law_id': law_id,
              'judgment_refs': [{'phrase': phrase, 'note': note}],
-             'status': 'incomplete',
-             'rationale': 'A finite original-motion response-latency sampling is needed without assigning willfulness or lawful-order labels.',
-             'missing_inputs': ['Exact source-backed latency setpoints and generated Native constructions remain worker-owned CPU work.']}],
-         'sweeps_expanded': False, 'cases': []}
+             'status': 'complete', 'mode': 'one_dimensional',
+             'axes': [{'variable': 'direction_frame', 'observable': 'subject_speed_mps',
+                 'unit': 'm/s', 'min': 30, 'max': 50, 'spacing': 10,
+                 'measurement': {'method': 'original subject velocity sampled after indication',
+                                 'time_window': 'post-indication original frames', 'statistic': 'min'},
+                 'range_rationale': 'An indication at 1.5, 2.0 or 2.5 seconds leaves distinct fixed observation windows within the eight-second capture; no willfulness cutoff.',
+                 'spacing_rationale': 'Three predeclared physical timing settings include both endpoints and one interior point.',
+                 'feasibility_evidence': 'The exact Native controller schedules the officer pose and subject control at direction_frame; original pose and speed sources are retained.'}],
+             'landmarks': [],
+             'rationale': 'Vary the available observation window for a stop indication while keeping the officer, subject and response controller fixed; no lawful-order or willfulness label.',
+             'variable_assignments': {
+                 'officer_command': {'kind': 'world_setup', 'value': 'stop'},
+                 'intended_observed_response': {'kind': 'controller', 'value': 'responds'},
+                 'direction_frame': {'kind': 'world_setup', 'value': 40},
+                 'subject_speed_mps': {'kind': 'subject_behavior', 'value': None}},
+             'recording_description': description}],
+         'cases': []}
 for planned in plan['cases']:
     case_id = planned['case_id']
     suffix = case_id.split('__')[-1]
+    if suffix.startswith('stop_response_window_grid-'):
+        continue
     command = 'stop' if suffix.startswith('stop_') else 'proceed'
     response = 'responds' if suffix.endswith('_responds') and 'does_not' not in suffix else 'does_not_respond'
     assignments = {'officer_command': {'kind': 'world_setup', 'value': command},
                    'intended_observed_response': {'kind': 'controller', 'value': response},
-                   'direction_frame': {'kind': 'world_setup', 'value': 40}}
+                   'direction_frame': {'kind': 'world_setup', 'value': 40},
+                   'subject_speed_mps': {'kind': 'subject_behavior', 'value': None}}
     cases['cases'].append({'case_id': case_id, 'target_law_id': law_id,
         'target_type': 'boundary_probe',
         'rationale': 'Observe a timed '+command+' indication followed by '+response+'; no legal or willfulness inference.',
@@ -117,6 +137,10 @@ baseline = dict(cases['cases'][0], case_id=aid + '__baseline',
                 target_law_id=None, target_type='baseline',
                 rationale='Shared alley officer and subject setup; no baseline legal result.')
 cases['cases'].insert(0, baseline)
+import sys
+sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
+from batch_pipeline.sweeps import expand_sweeps
+expand_sweeps(cases, [template], binding)
 refs['cases'] = write('cases', cases)
 write('semantic-index', {'format': 'worker-semantic-delivery',
                          'assignment_id': aid, 'stages': refs})

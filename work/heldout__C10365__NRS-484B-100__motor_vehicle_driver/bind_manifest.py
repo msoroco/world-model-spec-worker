@@ -1,4 +1,5 @@
 """Bind exact pinned-runtime proof receipts to the officer delivery manifest."""
+import hashlib
 import json
 from pathlib import Path
 
@@ -17,7 +18,7 @@ def bind(entry, ident, target):
     option = '' if ident == 'primary' else f' --candidate {ident}'
     base = f'.venv-cpu/bin/python runtime.py offline --manifest work/{AID}/execution-manifest.json --case {case}{option}'
     target['offline'] = {
-        'command': f'{base} --output .runtime-work/c10365-{label}-offline-next --python .venv-cpu/bin/python',
+        'command': f'{base} --output .runtime-work/c10365-{label}-offline-v9 --python .venv-cpu/bin/python',
         'exit_code': 0,
         'log': row['offline_log'],
         'log_sha256': row['offline_log_sha256'],
@@ -44,8 +45,8 @@ for entry in manifest['cases']:
         'recorded_only': True,
         'command': f'.venv-cpu/bin/python runtime.py process-saved --manifest work/{AID}/execution-manifest.json --case {entry["case_id"]} --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR',
         'feedback_command': 'cat $OUTPUT/v0001/feedback.json',
-        'test_log': row['saved_log'],
-        'test_log_sha256': row['saved_log_sha256'],
+        'test_log': f'cases/delivery-saved-{slug}.log',
+        'test_log_sha256': hashlib.sha256((ROOT / 'cases' / f'delivery-saved-{slug}.log').read_bytes()).hexdigest(),
         'test_exit_code': 0,
     }
 manifest['format'] = 'worker-execution-manifest'

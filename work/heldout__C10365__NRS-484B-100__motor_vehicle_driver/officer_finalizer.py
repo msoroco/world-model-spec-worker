@@ -48,6 +48,8 @@ def analyze(root):
 
 def result(root,report):
     root=Path(root);cfg=json.loads((root/'config.json').read_text());observed=report['measurements']['officer_response']['value']
+    original_motion=rows(root/'subject_motion_history.jsonl')
+    post_times=[row['time_s'] for row in original_motion if row['frame']>observed['indication_frame']]
     contexts=[]
     for name,reference in (('officer_context','officer_context.json'),
                            ('officer_direction_context','officer_direction.json'),
@@ -77,7 +79,7 @@ def result(root,report):
             'realized_observables':{'subject_speed_mps':{'unit':'m/s','method':'original subject velocity sampled after indication',
                                   'time_window':'post-indication original frames','statistic':'min',
                                   'reference':'subject_speed_mps.jsonl','value':observed['min_post_speed_mps'],
-                                  'sample_window_s':[0,(observed['last_motion_frame']-observed['indication_frame'])/20]},
+                                  'sample_window_s':[min(post_times),max(post_times)]},
                                     'officer_direction':{'unit':'boolean','method':'original walker pose activation at indication frame',
                                   'time_window':'all original frames','statistic':'event','reference':'officer_direction.jsonl',
                                   'value':1,'sample_window_s':[0,(observed['last_motion_frame']-observed['first_motion_frame'])/20]}},

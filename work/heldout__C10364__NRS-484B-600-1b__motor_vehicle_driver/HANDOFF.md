@@ -1,5 +1,40 @@
 # heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver: CPU preparation checkpoint
 
+## 2026-11-11 pinned decode and participant visibility audit continuation
+
+The current `.venv-cpu/bin/python runtime.py preflight` passes with the pinned
+CPU environment and FFmpeg/Lean on PATH. `delivery_audit.py` now runs the pinned
+`worker_exchange.media.audit` over the complete composed original `raw.mkv`,
+binds the frame-map hash, and returns the exact source-decode receipt path, hash,
+and auditor revision. Native audit requires an independent
+`participant-visibility-review.json` that names a reviewer and identifies a
+visible original frame for ego, pedestrian, and property, each bound to the
+corresponding source-camera SHA-256. Missing, stale, or incomplete review is
+rejected. A complete decode by itself does not assert participant visibility.
+Marked synthetic fixtures report these Native-only checks false.
+
+`tests/test_delivery_pixel_review.py` tests positive source binding and missing
+or stale review rejection. The 25-test suite passes (`cpu-tests.log` SHA-256
+`07ba96e0eff586ed695afc87e19a4498b1b83993b698a2c8d7805cdff61237fc`).
+Nine positive and tampered-source negative diagnostic delivery audits pass. The
+rebuilt `execution-manifest.json` SHA-256 is
+`3282c43265863a154296ffc9eb3cc9d4aa593627f37468789c2c240c96c24ac7`.
+All nine primaries and 27 fallbacks pass current exact offline and
+positive/negative compatibility; `execution-reproof.json` SHA-256 is
+`6d49e8f27de5f617ece2d31bcb64be4126039a1e1546afd8dcace5047bd4fa56`.
+All nine primaries pass exact synthetic saved-only processing;
+`execution-saved-proofs.json` SHA-256 is
+`cf479ed70a5ab8ddc67755e252d78c428e4b2a358b8b65c652c354c976d50450`.
+The pinned execution validator passes. Scoped `worker_check.py --complete`
+passes; scoped `--complete --require-delivery-ready` still rejects the partial
+result (`worker-check-strict.log`).
+
+Status remains **partial**. Supplied inputs do not contain an original Native
+alley polygon/map source with coordinates. The current polygon and all media are
+explicitly synthetic diagnostics. Before readiness, bind a verified Native alley
+source, run any affected exact proofs, and review actual original pixels and
+motion through the Native audit. No physical or legal acceptance is claimed.
+
 ## Frozen scope and source
 
 - Law: NRS 484B.600(1)(b) — It is unlawful for any person to drive or operate a vehicle of any kind or character at: Such a rate of speed as to endanger the life, limb or property of any person.

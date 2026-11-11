@@ -1,0 +1,1440 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_left_indicator",
+      "kind": "delivery",
+      "construction": "vehicle-indicator-construction.json",
+      "construction_sha256": "0e2a3e9ddb76c8a88c643f9ee45ef6e4a4d06dfc8ec701e8ea80f058c24f8ef0",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "vehicle-indicator-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-indicator-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native connected turn, lamp pixel visibility and affected participant geometry may fail"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original 20 Hz Native turn, indicator, participant and explicit no-pedestrian audio status",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-indicator-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_left_indicator --output .runtime-work/c111603-vehicle-indicator-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "vehicle-indicator-offline.log",
+        "log_sha256": "0dc56e795c77a1919076fb68fe2dc123a70b4965e3709e9f2798afaa839b0d49",
+        "construction_sha256": "0e2a3e9ddb76c8a88c643f9ee45ef6e4a4d06dfc8ec701e8ea80f058c24f8ef0"
+      },
+      "compatibility": {
+        "receipt": "vehicle-indicator-compatibility-receipt.json",
+        "sha256": "744c7db6cb78eabeca970816cb9a2f7b01cb1a9bd982efef91c9d7678a8acba9",
+        "log": "vehicle-indicator-analysis.log"
+      },
+      "negative": {
+        "log": "vehicle-indicator-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_left_indicator",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "vehicle_indicator_audit.py",
+        "script_sha256": "fcd8c709060b0b664a769ea662e701fa7d0d12a5c70863535c39248bb865a405",
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle_indicator_audit.py --attempt .runtime-work/c111603-vehicle-indicator-compat-d --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-indicator-audit.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_left_indicator",
+        "test_exit_code": 0,
+        "test_log": "vehicle-indicator-audit.log",
+        "test_log_sha256": "7c6be9a4c0680ff0561a30402f603195bba3907721d1e45f013752114c410649",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle_indicator_audit.py --attempt .runtime-work/c111603-vehicle-indicator-compat-d --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-indicator-audit.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_left_indicator --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original indicator source",
+        "negative_log": "vehicle-indicator-stale-audit.log",
+        "negative_log_sha256": "2405df0969a62c633a6584aa6219f4ca59c9a634252ab20fa7358c28c8d6bcef"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "vehicle-indicator-fallback1-construction.json",
+          "construction_sha256": "bbe92341d0fa337b32d8dfd511548fbb8b20e7dfc595edde9ddeb3a2403ca429",
+          "trigger": {
+            "source": "Native connected left-turn route inventory",
+            "metric": "eligible left-turn routes at 2 m sampling",
+            "failure_condition": "Primary route sampling finds no connected left turn"
+          },
+          "changed_knobs": [
+            "route sampling 2 m/6 steps to 1.5 m/8 steps"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-indicator-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_left_indicator --candidate fallback1 --output .runtime-work/c111603-vehicle-indicator-fallback1-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "vehicle-indicator-fallback1-offline.log",
+            "log_sha256": "240e229dfeadc82efa2e11f3ee72722cd212b2e5238615078e22189c91f69eff",
+            "construction_sha256": "bbe92341d0fa337b32d8dfd511548fbb8b20e7dfc595edde9ddeb3a2403ca429"
+          },
+          "compatibility": {
+            "receipt": "vehicle-indicator-fallback1-receipt.json",
+            "sha256": "17d2f725993b8ddd243654a6eed8fc2df20d95aa611b1afad23e90f555d38c28",
+            "log": "vehicle-indicator-fallback1-analysis.log",
+            "negative_log": "vehicle-indicator-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "vehicle-indicator-fallback2-construction.json",
+          "construction_sha256": "20b6cab3cf9dea9d06d165a28d9aa49d72a6fe83b11615f3ec8b5e4f1936aeff",
+          "trigger": {
+            "source": "Original ego speed, yaw and indicator readback",
+            "metric": "approach speed settling and turn onset frames",
+            "failure_condition": "Primary 5 m/s approach destabilizes the signal-before-turn timing"
+          },
+          "changed_knobs": [
+            "target speed 5 to 4 m/s and gain .25 to .2"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-indicator-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_left_indicator --candidate fallback2 --output .runtime-work/c111603-vehicle-indicator-fallback2-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "vehicle-indicator-fallback2-offline.log",
+            "log_sha256": "511c25cf5061de08186cf5c73aca396a569c9c2131b1846b89ceb13a5876b784",
+            "construction_sha256": "20b6cab3cf9dea9d06d165a28d9aa49d72a6fe83b11615f3ec8b5e4f1936aeff"
+          },
+          "compatibility": {
+            "receipt": "vehicle-indicator-fallback2-receipt.json",
+            "sha256": "e7f031d36acf4fa5cf707b97b4b53b7f44e92e172f3843d6346bddbc281892e2",
+            "log": "vehicle-indicator-fallback2-analysis.log",
+            "negative_log": "vehicle-indicator-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "vehicle-indicator-fallback3-construction.json",
+          "construction_sha256": "88d1420ed044a380f9e079a6a9606dce8b866dde1092cd5c77216fe95f5e7b0c",
+          "trigger": {
+            "source": "Original overview RGB decode",
+            "metric": "ego, affected vehicle and lamp visible pixel count",
+            "failure_condition": "Primary overview mount crops participant or indicator visibility"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-indicator-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_left_indicator --candidate fallback3 --output .runtime-work/c111603-vehicle-indicator-fallback3-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "vehicle-indicator-fallback3-offline.log",
+            "log_sha256": "dcafcca486288e95c02f8f26d4d1115dc471be26702815513214c09391094628",
+            "construction_sha256": "88d1420ed044a380f9e079a6a9606dce8b866dde1092cd5c77216fe95f5e7b0c"
+          },
+          "compatibility": {
+            "receipt": "vehicle-indicator-fallback3-receipt.json",
+            "sha256": "01cbab459e1cf987989f8c9de5d1866fcceb32be30e13b073e42601ef5f74ab8",
+            "log": "vehicle-indicator-fallback3-analysis.log",
+            "negative_log": "vehicle-indicator-fallback3-negative.log"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_no_indicator",
+      "kind": "delivery",
+      "construction": "vehicle-no-indicator-construction.json",
+      "construction_sha256": "3f231627f681fe5d3791594c063a53c4b6cd7a9ee1c356b9dd749d8b8b620053",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "vehicle-no-indicator-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-no-indicator-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native connected turn and the absence of indicator lamp pixels need physical source review"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original 20 Hz Native turn, off indicator readback, participant and no-pedestrian-audio status",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "vehicle-no-indicator-fallback1-construction.json",
+          "construction_sha256": "299665391c3ee98b940630cf4ade7ccdaf5f5825f0da98221f0e241de7eca854",
+          "trigger": {
+            "source": "Native connected left-turn route inventory",
+            "metric": "eligible left-turn routes at 2 m sampling",
+            "failure_condition": "Primary route sampling finds no connected left turn"
+          },
+          "changed_knobs": [
+            "route sampling 2 m/6 steps to 1.5 m/8 steps"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-no-indicator-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_no_indicator --candidate fallback1 --output .runtime-work/c111603-no-indicator-fallback1-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "vehicle-no-indicator-fallback1-offline.log",
+            "log_sha256": "631c804b9d698b437569ef80db731f2b34fc05e0d644e8978515a39ebf8ffc17",
+            "construction_sha256": "299665391c3ee98b940630cf4ade7ccdaf5f5825f0da98221f0e241de7eca854"
+          },
+          "compatibility": {
+            "receipt": "vehicle-no-indicator-fallback1-receipt.json",
+            "sha256": "a62c8e9b2e2c597b769ebd1f1b7a3b485f3b97ac215b17ebedc4c944b56556e4",
+            "log": "vehicle-no-indicator-fallback1-analysis.log",
+            "negative_log": "vehicle-no-indicator-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "vehicle-no-indicator-fallback2-construction.json",
+          "construction_sha256": "e28c3fa817515ef33d42ee087c7a0c92fd98bd4d6c12a270dc813bbd82ddce80",
+          "trigger": {
+            "source": "Original ego speed, yaw and off-indicator readback",
+            "metric": "approach speed settling and turn onset frames",
+            "failure_condition": "Primary 5 m/s approach destabilizes the signal comparison timing"
+          },
+          "changed_knobs": [
+            "target speed 5 to 4 m/s and gain .25 to .2"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-no-indicator-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_no_indicator --candidate fallback2 --output .runtime-work/c111603-no-indicator-fallback2-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "vehicle-no-indicator-fallback2-offline.log",
+            "log_sha256": "cbdbce60536d3a293d1b3d82c0200195cfe484121a3543aaaf793c24d8238356",
+            "construction_sha256": "e28c3fa817515ef33d42ee087c7a0c92fd98bd4d6c12a270dc813bbd82ddce80"
+          },
+          "compatibility": {
+            "receipt": "vehicle-no-indicator-fallback2-receipt.json",
+            "sha256": "c40962a8a9cbe5e0b249b58f62c20ca140f1bf6a706c3a253a3fb0ae165fcc6e",
+            "log": "vehicle-no-indicator-fallback2-analysis.log",
+            "negative_log": "vehicle-no-indicator-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "vehicle-no-indicator-fallback3-construction.json",
+          "construction_sha256": "486119b9c1739569d0c2e29c59bb3aafe8055e4f72c6df503ebf7b4dedc7729a",
+          "trigger": {
+            "source": "Original overview RGB decode",
+            "metric": "ego and affected vehicle visible pixel count",
+            "failure_condition": "Primary overview mount crops participant visibility"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-no-indicator-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_no_indicator --candidate fallback3 --output .runtime-work/c111603-no-indicator-fallback3-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "vehicle-no-indicator-fallback3-offline.log",
+            "log_sha256": "2b1861efbfe92052b693c208375d6e70fce55cd3b41ed150fb1c4aaac253e2d2",
+            "construction_sha256": "486119b9c1739569d0c2e29c59bb3aafe8055e4f72c6df503ebf7b4dedc7729a"
+          },
+          "compatibility": {
+            "receipt": "vehicle-no-indicator-fallback3-receipt.json",
+            "sha256": "53ea1d5c92427154371b89934023e38ca548b769a81101c23760c471dacd521a",
+            "log": "vehicle-no-indicator-fallback3-analysis.log",
+            "negative_log": "vehicle-no-indicator-fallback3-negative.log"
+          }
+        }
+      ],
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-no-indicator-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_no_indicator --attempt .runtime-work/c111603-no-indicator-saved-attempt-a --output .runtime-work/c111603-no-indicator-saved-a --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "vehicle-no-indicator-saved.log",
+        "log_sha256": "a200777b078ccb0a6c1b7be534ac6d8e828f6e7126f8147ed3adf79bb31138c6",
+        "receipt": "vehicle-no-indicator-saved-receipt.json",
+        "receipt_sha256": "a200777b078ccb0a6c1b7be534ac6d8e828f6e7126f8147ed3adf79bb31138c6"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-no-indicator-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_no_indicator --output .runtime-work/c111603-no-indicator-primary-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "vehicle-no-indicator-offline.log",
+        "log_sha256": "14e487dfbdbfcb30127e1d8487ba276eb8f3474353a42ab9dd8d99f9e4a04d6d",
+        "construction_sha256": "3f231627f681fe5d3791594c063a53c4b6cd7a9ee1c356b9dd749d8b8b620053"
+      },
+      "compatibility": {
+        "receipt": "vehicle-no-indicator-compatibility-receipt.json",
+        "sha256": "367fe8007d3e361ade0a58c7ff59def6c1f98bad4482354062f4b28767e9451a",
+        "log": "vehicle-no-indicator-analysis.log"
+      },
+      "negative": {
+        "log": "vehicle-no-indicator-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_no_indicator",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "vehicle_no_indicator_audit.py",
+        "script_sha256": "8e065bfe18e9a579ba5432eb912bfb07bf2946ab83dc3d573bb34baf6c754db1",
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle_no_indicator_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_no_indicator --attempt .runtime-work/c111603-no-indicator-primary-compat-c --positive .runtime-work/c111603-vehicle-indicator-compat-d --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-no-indicator-audit.json",
+        "test_exit_code": 0,
+        "test_log": "vehicle-no-indicator-audit.log",
+        "test_log_sha256": "4bc106b336860cd8a9569776f0ce144be18fc621d87d6b3ebe4e401be9e21f65",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle_no_indicator_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_no_indicator --attempt .runtime-work/c111603-no-indicator-primary-compat-c --positive .runtime-work/c111603-vehicle-indicator-compat-d --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/vehicle-no-indicator-audit.json --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original no-indicator source",
+        "negative_log": "vehicle-no-indicator-stale-audit.log",
+        "negative_log_sha256": "5608bedf32c929002e4a11c90742f776a07c7d8405640986bdd5af81a940293a"
+      }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_wide",
+      "kind": "delivery",
+      "construction": "clearance-wide-construction.json",
+      "construction_sha256": "8098ae73145942ac96c30a4c9a2bbf84694deca45d05b2ba81db8b722745abd5",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "clearance-wide-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-wide-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native connected turn and affected-vehicle offset may not realize a wider sampled gap"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original 20 Hz Native turn, indicator, wider placed affected vehicle and no-pedestrian-audio status",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "clearance-wide-fallback1-construction.json",
+          "construction_sha256": "559c8f177311356b392e5777594ab5c5e0764bb44dde81f852e716493f566b9a",
+          "trigger": {
+            "source": "Native connected left-turn route inventory",
+            "metric": "eligible routes at 2 m sampling",
+            "failure_condition": "Primary sampling finds no connected left turn"
+          },
+          "changed_knobs": [
+            "route sampling 2 m/6 steps to 1.5 m/8 steps"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-wide-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_wide --candidate fallback1 --output .runtime-work/c111603-clearance-wide-fallback1-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "clearance-wide-fallback1-offline.log",
+            "log_sha256": "0a13a5d26a2ae96ea94b754d417aedb9f99e2d1a3ad9c2e6d49c364697c7dc6c",
+            "construction_sha256": "559c8f177311356b392e5777594ab5c5e0764bb44dde81f852e716493f566b9a"
+          },
+          "compatibility": {
+            "receipt": "clearance-wide-fallback1-receipt.json",
+            "sha256": "2846a6a5ea9ee636fdc2754b88e069667785611ea3700ab5800f8b891b7ac514",
+            "log": "clearance-wide-fallback1-analysis.log",
+            "negative_log": "clearance-wide-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "clearance-wide-fallback2-construction.json",
+          "construction_sha256": "631f4df7206a8cfd469977f852ba3a3ddba2ff8829cf76540598a81c465606de",
+          "trigger": {
+            "source": "Original ego speed, yaw and participant gap",
+            "metric": "speed settling and sampled turn gap",
+            "failure_condition": "Primary speed yields unstable clearance sample timing"
+          },
+          "changed_knobs": [
+            "target speed 5 to 4 m/s and gain .25 to .2"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-wide-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_wide --candidate fallback2 --output .runtime-work/c111603-clearance-wide-fallback2-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "clearance-wide-fallback2-offline.log",
+            "log_sha256": "6dab631629168636442cd134ffe26ceef230044450fc1895e151e70702767803",
+            "construction_sha256": "631f4df7206a8cfd469977f852ba3a3ddba2ff8829cf76540598a81c465606de"
+          },
+          "compatibility": {
+            "receipt": "clearance-wide-fallback2-receipt.json",
+            "sha256": "81f9ea1f724477f1f3e32774aaa42440f5d7a6972c5d50ef5ef9a652f559a2ee",
+            "log": "clearance-wide-fallback2-analysis.log",
+            "negative_log": "clearance-wide-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "clearance-wide-fallback3-construction.json",
+          "construction_sha256": "0e3b1f577ace5cc488a4607c8142563d1e3d7cf2ed78f1584c8f8eb64db67edb",
+          "trigger": {
+            "source": "Original overview RGB decode",
+            "metric": "affected vehicle visible pixel count",
+            "failure_condition": "Primary overview mount crops affected vehicle"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-wide-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_wide --candidate fallback3 --output .runtime-work/c111603-clearance-wide-fallback3-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "clearance-wide-fallback3-offline.log",
+            "log_sha256": "8420559d14fa4fcefbc5386e06a7dab304ddd1e0fd7146f6c847da7f44a11140",
+            "construction_sha256": "0e3b1f577ace5cc488a4607c8142563d1e3d7cf2ed78f1584c8f8eb64db67edb"
+          },
+          "compatibility": {
+            "receipt": "clearance-wide-fallback3-receipt.json",
+            "sha256": "67381f2bd09711ed3e793022752ff3c13e40b9bfeaed6282213eef20ae5bb752",
+            "log": "clearance-wide-fallback3-analysis.log",
+            "negative_log": "clearance-wide-fallback3-negative.log"
+          }
+        }
+      ],
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-wide-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_wide --attempt .runtime-work/c111603-clearance-wide-saved-attempt-a --output .runtime-work/c111603-clearance-wide-saved-a --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "clearance-wide-saved.log",
+        "log_sha256": "ef348d4120fe44700d79313547025a810510cdfbf810691b2b21cc8561178f36",
+        "receipt": "clearance-wide-saved-receipt.json",
+        "receipt_sha256": "ef348d4120fe44700d79313547025a810510cdfbf810691b2b21cc8561178f36"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-wide-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_wide --output .runtime-work/c111603-clearance-wide-primary-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "clearance-wide-offline.log",
+        "log_sha256": "a2425071af4b6c64f287ddcff27a47d86fca71cacd38c41783a7666a63861fc2",
+        "construction_sha256": "8098ae73145942ac96c30a4c9a2bbf84694deca45d05b2ba81db8b722745abd5"
+      },
+      "compatibility": {
+        "receipt": "clearance-wide-compatibility-receipt.json",
+        "sha256": "03ce3b6bd7eedd755937f307218084f61744ecd9408cd0369ce9fdbdaa62d7d3",
+        "log": "clearance-wide-analysis.log"
+      },
+      "negative": {
+        "log": "clearance-wide-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_wide",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "clearance_wide_audit.py",
+        "script_sha256": "e8c39a0b60cef6f5e72f033e02dee58208fbea493c17dcda0d6c5b328059756e",
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance_wide_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_wide --attempt .runtime-work/c111603-clearance-wide-primary-compat-a --baseline .runtime-work/c111603-vehicle-indicator-compat-d --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-wide-audit.json",
+        "test_exit_code": 0,
+        "test_log": "clearance-wide-audit.log",
+        "test_log_sha256": "f904d6eb105eb88946a165123c1360ed6e62ff3c286dbc65e4c82657f59f39e6",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance_wide_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_wide --attempt .runtime-work/c111603-clearance-wide-primary-compat-a --baseline .runtime-work/c111603-vehicle-indicator-compat-d --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-wide-audit.json --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original clearance source",
+        "negative_log": "clearance-wide-stale-audit.log",
+        "negative_log_sha256": "a7b23b4790d027bcfeaa6700d67ac52a9f487d40fe4507d730db214b2c770b2c"
+      }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_narrow",
+      "kind": "delivery",
+      "construction": "clearance-narrow-construction.json",
+      "construction_sha256": "5b3f0d5acf0a5319e78ed0c02cc8125e028c4d22be7b830f1a9987acb8e7f9f8",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "clearance-narrow-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-narrow-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native connected turn and affected-vehicle offset may not realize a narrower sampled gap"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original 20 Hz Native turn, indicator, narrower placed affected vehicle and no-pedestrian-audio status",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "clearance-narrow-fallback1-construction.json",
+          "construction_sha256": "a6c3ec2b0b947b490c99b9f6c47582c8fa409b9561ab72d771a8960ed9eada6c",
+          "trigger": {
+            "source": "Native connected left-turn route inventory",
+            "metric": "eligible routes at 2 m sampling",
+            "failure_condition": "Primary sampling finds no connected left turn"
+          },
+          "changed_knobs": [
+            "route sampling 2 m/6 steps to 1.5 m/8 steps"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-narrow-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_narrow --candidate fallback1 --output .runtime-work/c111603-clearance-narrow-fallback1-offline-c --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "clearance-narrow-fallback1-offline.log",
+            "log_sha256": "868cbe53dc5000730a1b9e0799d6c48b8510bd2688e963278a751034a3e95f41",
+            "construction_sha256": "a6c3ec2b0b947b490c99b9f6c47582c8fa409b9561ab72d771a8960ed9eada6c"
+          },
+          "compatibility": {
+            "receipt": "clearance-narrow-fallback1-receipt.json",
+            "sha256": "38f3e2726e73d73df20d606800ad35f93e1614815fae6f39f678f625fc5f1765",
+            "log": "clearance-narrow-fallback1-analysis.log",
+            "negative_log": "clearance-narrow-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "clearance-narrow-fallback2-construction.json",
+          "construction_sha256": "a8caa7ea8ae3ebb910988fb89e8e74c6cfe181fbe3cef3058513a78c0a8d55ae",
+          "trigger": {
+            "source": "Original ego speed, yaw and participant gap",
+            "metric": "speed settling and sampled turn gap",
+            "failure_condition": "Primary speed yields unstable clearance sample timing"
+          },
+          "changed_knobs": [
+            "target speed 5 to 4 m/s and gain .25 to .2"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-narrow-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_narrow --candidate fallback2 --output .runtime-work/c111603-clearance-narrow-fallback2-offline-c --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "clearance-narrow-fallback2-offline.log",
+            "log_sha256": "50332faec3345f3ea62366867ecf0af55576edac30a4389ce2696d45cfec33d3",
+            "construction_sha256": "a8caa7ea8ae3ebb910988fb89e8e74c6cfe181fbe3cef3058513a78c0a8d55ae"
+          },
+          "compatibility": {
+            "receipt": "clearance-narrow-fallback2-receipt.json",
+            "sha256": "2eb7b5fd34be74a7f5c719148b40a1ac5bcb1f6512280e8c6a9470e417d39330",
+            "log": "clearance-narrow-fallback2-analysis.log",
+            "negative_log": "clearance-narrow-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "clearance-narrow-fallback3-construction.json",
+          "construction_sha256": "038851818edf3ba44541e6d7569fe0237f6b48a504a41d3e570b58a5d00f4bd8",
+          "trigger": {
+            "source": "Original overview RGB decode",
+            "metric": "affected vehicle visible pixel count",
+            "failure_condition": "Primary overview mount crops affected vehicle"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-narrow-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_narrow --candidate fallback3 --output .runtime-work/c111603-clearance-narrow-fallback3-offline-c --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "clearance-narrow-fallback3-offline.log",
+            "log_sha256": "eac31e1881705fe3697c947c99b5853c053dac3f52a5279efd9fc5ce4622cc58",
+            "construction_sha256": "038851818edf3ba44541e6d7569fe0237f6b48a504a41d3e570b58a5d00f4bd8"
+          },
+          "compatibility": {
+            "receipt": "clearance-narrow-fallback3-receipt.json",
+            "sha256": "929f8e1f48848bee16ddfffcdec8a6f78d9b3263b1e1ef11ab382d8db733eb76",
+            "log": "clearance-narrow-fallback3-analysis.log",
+            "negative_log": "clearance-narrow-fallback3-negative.log"
+          }
+        }
+      ],
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-narrow-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_narrow --attempt .runtime-work/c111603-clearance-narrow-saved-attempt-b --output .runtime-work/c111603-clearance-narrow-saved-b --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "clearance-narrow-saved.log",
+        "log_sha256": "f69c3f073321beb9d19d6d050cbd54f677c047bfe73f91439c7faf45b3a82a24",
+        "receipt": "clearance-narrow-saved-receipt.json",
+        "receipt_sha256": "f69c3f073321beb9d19d6d050cbd54f677c047bfe73f91439c7faf45b3a82a24"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-narrow-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_narrow --output .runtime-work/c111603-clearance-narrow-primary-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "clearance-narrow-offline.log",
+        "log_sha256": "63355f13b60b48dcb6367d53cd2caed9b9f91da79376e7efa31f93bc4f3c4ef0",
+        "construction_sha256": "5b3f0d5acf0a5319e78ed0c02cc8125e028c4d22be7b830f1a9987acb8e7f9f8"
+      },
+      "compatibility": {
+        "receipt": "clearance-narrow-compatibility-receipt.json",
+        "sha256": "535f8f470627f49658fe4f701eadfd3b24437b8e640747c9ae9d97e0f3cf3974",
+        "log": "clearance-narrow-analysis.log"
+      },
+      "negative": {
+        "log": "clearance-narrow-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_narrow",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "clearance_narrow_audit.py",
+        "script_sha256": "d244bff95aaf6280d3b5bebb41368f3efe00b5da52d9b3750014736024defe9b",
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance_narrow_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_narrow --attempt .runtime-work/c111603-clearance-narrow-primary-compat-c --baseline .runtime-work/c111603-vehicle-indicator-compat-d --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-narrow-audit.json",
+        "test_exit_code": 0,
+        "test_log": "clearance-narrow-audit.log",
+        "test_log_sha256": "d0f96d0ee7c84a49bd10f64442ec5956616fa936d3d846fbb819434a175aa70d",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance_narrow_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_narrow --attempt .runtime-work/c111603-clearance-narrow-primary-compat-c --baseline .runtime-work/c111603-vehicle-indicator-compat-d --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-narrow-audit.json --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original clearance source",
+        "negative_log": "clearance-narrow-stale-audit.log",
+        "negative_log_sha256": "1a6e9a7d101459b4a5b275c6d2515635986971bce92e51ed7638a744fa6f1c78"
+      }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_no_horn_audio",
+      "kind": "delivery",
+      "construction": "ped-no-horn-construction.json",
+      "construction_sha256": "2ea5f1a8e0b5ae19b0d5e993354976965f4727d06bf1fec98db2a55fa837d8bb",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "ped-no-horn-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-no-horn-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pedestrian proximity, independent microphone timing and absence of a sounded horn need physical source review"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native turn and participant frames joined to independent listener PCM; no horn actuator command",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and independently captured listener PCM",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "microphone alignment and physical horn absence require original-source review; legal audibility stays unresolved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "ped-no-horn-fallback1-construction.json",
+          "construction_sha256": "f8a4e42378f1e50cf232cf27b22ed776556531487bf681262ee2fee5b2b6db3f",
+          "trigger": {
+            "source": "Native pedestrian and connected-route inventory",
+            "metric": "pedestrian distance to sampled route",
+            "failure_condition": "Primary placement does not make pedestrian potentially affected"
+          },
+          "changed_knobs": [
+            "pedestrian route-side offset 6/2 to 5/1.5 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-no-horn-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_no_horn_audio --candidate fallback1 --output .runtime-work/c111603-ped-no-horn-fallback1-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "ped-no-horn-fallback1-offline.log",
+            "log_sha256": "8cfa69517c0d78badeda61ca27a58ceabb96d3b5bbb8e76c03f1280b5bd2f2e2",
+            "construction_sha256": "f8a4e42378f1e50cf232cf27b22ed776556531487bf681262ee2fee5b2b6db3f"
+          },
+          "compatibility": {
+            "receipt": "ped-no-horn-fallback1-receipt.json",
+            "sha256": "02bb91edb2769c4de9414cf0bfb1ff4387db8ba6c6e22cd0ce25da593a7326d7",
+            "log": "ped-no-horn-fallback1-analysis.log",
+            "negative_log": "ped-no-horn-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "ped-no-horn-fallback2-construction.json",
+          "construction_sha256": "29e7dd0aefd79730b2abf1e458055dbe583c5bb815999038924de29e23652619",
+          "trigger": {
+            "source": "Original listener microphone PCM",
+            "metric": "20 Hz audio packet continuity",
+            "failure_condition": "Primary ALSA device loses or misaligns a listener packet"
+          },
+          "changed_knobs": [
+            "listener PCM rate 16000 to 32000 Hz"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-no-horn-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_no_horn_audio --candidate fallback2 --output .runtime-work/c111603-ped-no-horn-fallback2-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "ped-no-horn-fallback2-offline.log",
+            "log_sha256": "abb89e5c7966209cc99f02ad3e7499ec082afdf66f188d158c518c6edff99cbc",
+            "construction_sha256": "29e7dd0aefd79730b2abf1e458055dbe583c5bb815999038924de29e23652619"
+          },
+          "compatibility": {
+            "receipt": "ped-no-horn-fallback2-receipt.json",
+            "sha256": "ab5cd004cb0ea03126c2bb713415ed6ddaa5a576a6ee3815116d071439daa382",
+            "log": "ped-no-horn-fallback2-analysis.log",
+            "negative_log": "ped-no-horn-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "ped-no-horn-fallback3-construction.json",
+          "construction_sha256": "7fbad4bf0d4e67e99e40a3afe1a7360b3f0100f1210e61499fae74a50691d82a",
+          "trigger": {
+            "source": "Original overview RGB decode",
+            "metric": "pedestrian visible pixel count",
+            "failure_condition": "Primary overview crops the potentially affected pedestrian"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-no-horn-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_no_horn_audio --candidate fallback3 --output .runtime-work/c111603-ped-no-horn-fallback3-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "ped-no-horn-fallback3-offline.log",
+            "log_sha256": "aa17d521681bc15db6b4d0c0dd850d59f9eaec55f908cb5a6b7679d9bb135fd5",
+            "construction_sha256": "7fbad4bf0d4e67e99e40a3afe1a7360b3f0100f1210e61499fae74a50691d82a"
+          },
+          "compatibility": {
+            "receipt": "ped-no-horn-fallback3-receipt.json",
+            "sha256": "55be469338b5a4fca5e0f79684a1e3462d4213704eacc95220111f41f0fcaac8",
+            "log": "ped-no-horn-fallback3-analysis.log",
+            "negative_log": "ped-no-horn-fallback3-negative.log"
+          }
+        }
+      ],
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-no-horn-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_no_horn_audio --attempt .runtime-work/c111603-ped-no-horn-saved-attempt-a --output .runtime-work/c111603-ped-no-horn-saved-a --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "ped-no-horn-saved.log",
+        "log_sha256": "516816842ae70681c0baf01d61078eb55a0ac614a2ff9f2a73783025f743ff42",
+        "receipt": "ped-no-horn-saved-receipt.json",
+        "receipt_sha256": "516816842ae70681c0baf01d61078eb55a0ac614a2ff9f2a73783025f743ff42"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-no-horn-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_no_horn_audio --output .runtime-work/c111603-ped-no-horn-primary-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "ped-no-horn-offline.log",
+        "log_sha256": "348200127b2bb292ecba49abc5f7760d592c7c82e01c2fd4200db1ec36445680",
+        "construction_sha256": "2ea5f1a8e0b5ae19b0d5e993354976965f4727d06bf1fec98db2a55fa837d8bb"
+      },
+      "compatibility": {
+        "receipt": "ped-no-horn-compatibility-receipt.json",
+        "sha256": "dd1d0eff8d25a4c03b14450e2fb93f77e6e354332e3c5f1de8e3f14db142363d",
+        "log": "ped-no-horn-analysis.log"
+      },
+      "negative": {
+        "log": "ped-no-horn-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_no_horn_audio",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "ped_no_horn_audit.py",
+        "script_sha256": "62e25a8482aa7f319bfa8f4f9bbdad9b61342a35c09222f1a3e9812d667f3506",
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped_no_horn_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_no_horn_audio --attempt .runtime-work/c111603-ped-no-horn-primary-compat-a --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-no-horn-audit.json",
+        "test_exit_code": 0,
+        "test_log": "ped-no-horn-audit.log",
+        "test_log_sha256": "32883d50eecf8f8533a0c6efade21214ba20ca597aa8094fec5dbbdf36e0f23b",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped_no_horn_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_no_horn_audio --attempt .runtime-work/c111603-ped-no-horn-primary-compat-a --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-no-horn-audit.json --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original pedestrian listener source",
+        "negative_log": "ped-no-horn-stale-audit.log",
+        "negative_log_sha256": "892183d46c232302f35163d45ff1406dd73187a9585302f40e2ccee3c32936cd"
+      }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_audio",
+      "kind": "delivery",
+      "construction": "ped-horn-construction.json",
+      "construction_sha256": "c2f73521bdda6f812e834715f33617d99e934ac337413a5e7d2b67805abe52e1",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "ped-horn-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-horn-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pedestrian proximity, relay actuation, listener microphone timing and actual audible sound need physical source review"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native turn and participant frames joined to relay acknowledgement and independent listener PCM",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and independently captured listener PCM",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "microphone alignment, physical relay sound and legal audibility require original-source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "ped-horn-fallback1-construction.json",
+          "construction_sha256": "d9048dd74ac8122954e9d77ad43dff102d03daedb70f19c19f3ce1dfcfad92ad",
+          "trigger": {
+            "source": "Native pedestrian and connected-route inventory",
+            "metric": "pedestrian distance to sampled route",
+            "failure_condition": "Primary placement does not make pedestrian potentially affected"
+          },
+          "changed_knobs": [
+            "pedestrian route-side offset 6/2 to 5/1.5 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-horn-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_audio --candidate fallback1 --output .runtime-work/c111603-ped-horn-fallback1-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "ped-horn-fallback1-offline.log",
+            "log_sha256": "65f81d2f623b0bedd7fe0ce5c758263c27472e9a5b427fa138c48d5835bb0d17",
+            "construction_sha256": "d9048dd74ac8122954e9d77ad43dff102d03daedb70f19c19f3ce1dfcfad92ad"
+          },
+          "compatibility": {
+            "receipt": "ped-horn-fallback1-receipt.json",
+            "sha256": "869afd270740c12b6111c2909bd99ef193420104bf28e34ef45abdd8c8014b26",
+            "log": "ped-horn-fallback1-analysis.log",
+            "negative_log": "ped-horn-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "ped-horn-fallback2-construction.json",
+          "construction_sha256": "85167431d64410386ae3c602d70448e8522db0fc817c879411afa393ac0f67b5",
+          "trigger": {
+            "source": "Original listener microphone PCM",
+            "metric": "20 Hz audio packet continuity",
+            "failure_condition": "Primary ALSA device loses or misaligns a listener packet"
+          },
+          "changed_knobs": [
+            "listener PCM rate 16000 to 32000 Hz"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-horn-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_audio --candidate fallback2 --output .runtime-work/c111603-ped-horn-fallback2-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "ped-horn-fallback2-offline.log",
+            "log_sha256": "5bc4aad8a79e0685cd3b7920cd315f12d6e8fd1b297e679581c8dd7246be8f77",
+            "construction_sha256": "85167431d64410386ae3c602d70448e8522db0fc817c879411afa393ac0f67b5"
+          },
+          "compatibility": {
+            "receipt": "ped-horn-fallback2-receipt.json",
+            "sha256": "63842872fc27a3b3ae47f90774621a4a397e5efbc50aff950e6c8dfe34a840d0",
+            "log": "ped-horn-fallback2-analysis.log",
+            "negative_log": "ped-horn-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "ped-horn-fallback3-construction.json",
+          "construction_sha256": "fdc5b41a524947b1fba2caf43002f39296b7d0774446efa3e2e08171ed9cb313",
+          "trigger": {
+            "source": "Original overview RGB decode",
+            "metric": "pedestrian visible pixel count",
+            "failure_condition": "Primary overview crops the potentially affected pedestrian"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-horn-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_audio --candidate fallback3 --output .runtime-work/c111603-ped-horn-fallback3-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "ped-horn-fallback3-offline.log",
+            "log_sha256": "b62a7e54ac55e72c30f8b9ee7dcec1e2e5b374d5829ea2c805f323fc2714f88e",
+            "construction_sha256": "fdc5b41a524947b1fba2caf43002f39296b7d0774446efa3e2e08171ed9cb313"
+          },
+          "compatibility": {
+            "receipt": "ped-horn-fallback3-receipt.json",
+            "sha256": "8f3a0fa7692dd1bea60b9eadb0893909892438d4e47cd77b8ca5a9529d407cde",
+            "log": "ped-horn-fallback3-analysis.log",
+            "negative_log": "ped-horn-fallback3-negative.log"
+          }
+        }
+      ],
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-horn-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_audio --attempt .runtime-work/c111603-ped-horn-saved-attempt-a --output .runtime-work/c111603-ped-horn-saved-a --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "ped-horn-saved.log",
+        "log_sha256": "eda21cf5ccf508dd37990420571fb37234375e8320d501870aa5b50b6bf4904a",
+        "receipt": "ped-horn-saved-receipt.json",
+        "receipt_sha256": "eda21cf5ccf508dd37990420571fb37234375e8320d501870aa5b50b6bf4904a"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-horn-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_audio --output .runtime-work/c111603-ped-horn-primary-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "ped-horn-offline.log",
+        "log_sha256": "137d385053d5c163cb1e80f0d3fd634ebad1f4514d916f192ba817dd24331fe9",
+        "construction_sha256": "c2f73521bdda6f812e834715f33617d99e934ac337413a5e7d2b67805abe52e1"
+      },
+      "compatibility": {
+        "receipt": "ped-horn-compatibility-receipt.json",
+        "sha256": "80424f3da79c2336fccd2592c973298a0112ed36c06fc5f9b2c832861cc35760",
+        "log": "ped-horn-analysis.log"
+      },
+      "negative": {
+        "log": "ped-horn-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_audio",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "ped_horn_audit.py",
+        "script_sha256": "42d0f24fb0c2f59a09c80374ecbe0adfa15d1506532044373c041b96b8676dc3",
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped_horn_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_audio --attempt .runtime-work/c111603-ped-horn-primary-compat-a --no-horn .runtime-work/c111603-ped-no-horn-primary-compat-a --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-horn-audit.json",
+        "test_exit_code": 0,
+        "test_log": "ped-horn-audit.log",
+        "test_log_sha256": "32883d50eecf8f8533a0c6efade21214ba20ca597aa8094fec5dbbdf36e0f23b",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped_horn_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_audio --attempt .runtime-work/c111603-ped-horn-primary-compat-a --no-horn .runtime-work/c111603-ped-no-horn-primary-compat-a --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/ped-horn-audit.json --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original horn actuation source",
+        "negative_log": "ped-horn-stale-audit.log",
+        "negative_log_sha256": "58447a61172790567b55cc7478915e974f0c83099a606203f6ae063b4e162816"
+      }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals",
+      "kind": "delivery",
+      "construction": "both-signals-construction.json",
+      "construction_sha256": "14f68bbdf4c1fcebf671f3cfb01492fdee2b2ef4010ff41069a0f9f636b83370",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "both-signals-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pedestrian and vehicle effects, relay sound, listener timing and indicator visibility need physical source review"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native turn and both affected participants joined to indicator readback, relay ACK and independent listener PCM",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and independently captured listener PCM",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "microphone alignment, physical relay sound and legal audibility require original-source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "both-signals-fallback1-construction.json",
+          "construction_sha256": "f8a9b7cd0f5082f7ccf33bbd4d1803c276ebf6e7f0e2aed0d6485c64e18fe1ff",
+          "trigger": {
+            "source": "Native pedestrian and connected-route inventory",
+            "metric": "pedestrian distance to sampled route",
+            "failure_condition": "Primary placement does not make pedestrian potentially affected"
+          },
+          "changed_knobs": [
+            "pedestrian route-side offset 6/2 to 5/1.5 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals --candidate fallback1 --output .runtime-work/c111603-both-signals-fallback1-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "both-signals-fallback1-offline.log",
+            "log_sha256": "72ca7978434c1ba7acd2bb4bc2422497ea9936cf592de6f3a0652e55fd246fbe",
+            "construction_sha256": "f8a9b7cd0f5082f7ccf33bbd4d1803c276ebf6e7f0e2aed0d6485c64e18fe1ff"
+          },
+          "compatibility": {
+            "receipt": "both-signals-fallback1-receipt.json",
+            "sha256": "fa6528d3cbef1b97977e7e15df8b2d19b8f92e52594492251d3c4aa8be8a2087",
+            "log": "both-signals-fallback1-analysis.log",
+            "negative_log": "both-signals-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "both-signals-fallback2-construction.json",
+          "construction_sha256": "dcb0b7b323f4e4a62c9abd217bbdf047a78a21a5a50a39ddf18ff708c75d1d2e",
+          "trigger": {
+            "source": "Original listener microphone PCM",
+            "metric": "20 Hz audio packet continuity",
+            "failure_condition": "Primary ALSA device loses or misaligns a listener packet"
+          },
+          "changed_knobs": [
+            "listener PCM rate 16000 to 32000 Hz"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals --candidate fallback2 --output .runtime-work/c111603-both-signals-fallback2-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "both-signals-fallback2-offline.log",
+            "log_sha256": "8320a0b85e42fe070ff864a19729f183e5487fe4d39c003c7049badf722b50a8",
+            "construction_sha256": "dcb0b7b323f4e4a62c9abd217bbdf047a78a21a5a50a39ddf18ff708c75d1d2e"
+          },
+          "compatibility": {
+            "receipt": "both-signals-fallback2-receipt.json",
+            "sha256": "97c8ccd2c96dad2e3f9cd07ed47e3ddd452425c13bfd39f7af148e31c0206cdd",
+            "log": "both-signals-fallback2-analysis.log",
+            "negative_log": "both-signals-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "both-signals-fallback3-construction.json",
+          "construction_sha256": "1501e23bfbfdd5aefebe913d1c863d7f64ece3b04145751b7e26b15be773b49a",
+          "trigger": {
+            "source": "Original overview RGB decode",
+            "metric": "pedestrian visible pixel count",
+            "failure_condition": "Primary overview crops the potentially affected pedestrian"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals --candidate fallback3 --output .runtime-work/c111603-both-signals-fallback3-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "both-signals-fallback3-offline.log",
+            "log_sha256": "fd1a48d2854f174068f6b71229f0fe7b8c7e7216084c44035bfd1cd200e4e449",
+            "construction_sha256": "1501e23bfbfdd5aefebe913d1c863d7f64ece3b04145751b7e26b15be773b49a"
+          },
+          "compatibility": {
+            "receipt": "both-signals-fallback3-receipt.json",
+            "sha256": "e6da42d0ed3003019e19d4c34cdbaf0a052958852c122b063fd2483507a227aa",
+            "log": "both-signals-fallback3-analysis.log",
+            "negative_log": "both-signals-fallback3-negative.log"
+          }
+        }
+      ],
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals --attempt .runtime-work/c111603-both-signals-saved-attempt-a --output .runtime-work/c111603-both-signals-saved-a --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "both-signals-saved.log",
+        "log_sha256": "2c6ea8584c95da6993c18f68f0cf626179d629caa0116bc8048a160eb41be843",
+        "receipt": "both-signals-saved-receipt.json",
+        "receipt_sha256": "2c6ea8584c95da6993c18f68f0cf626179d629caa0116bc8048a160eb41be843"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals --output .runtime-work/c111603-both-signals-primary-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "both-signals-offline.log",
+        "log_sha256": "78174461f1c399f16c82f88fc65a1b32ae5ed207055c9d293522beb37d42239e",
+        "construction_sha256": "14f68bbdf4c1fcebf671f3cfb01492fdee2b2ef4010ff41069a0f9f636b83370"
+      },
+      "compatibility": {
+        "receipt": "both-signals-compatibility-receipt.json",
+        "sha256": "32c4da3d9265681e8d95189de3568a414713a929593c12d1ea04360a2aefbfac",
+        "log": "both-signals-analysis.log"
+      },
+      "negative": {
+        "log": "both-signals-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "both_signals_audit.py",
+        "script_sha256": "5008e5b1fba27ae1ea11fa022fd16610a532bf15042a0959ed9d480fd406c370",
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both_signals_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals --attempt .runtime-work/c111603-both-signals-primary-compat-a --no-horn .runtime-work/c111603-both-indicator-only-primary-compat-a --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-audit.json",
+        "test_exit_code": 0,
+        "test_log": "both-signals-audit.log",
+        "test_log_sha256": "32883d50eecf8f8533a0c6efade21214ba20ca597aa8094fec5dbbdf36e0f23b",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both_signals_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_signals --attempt .runtime-work/c111603-both-signals-primary-compat-a --no-horn .runtime-work/c111603-both-indicator-only-primary-compat-a --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-signals-audit.json --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original horn actuation source",
+        "negative_log": "both-signals-stale-audit.log",
+        "negative_log_sha256": "7fac1616e0270eee5f1b81e8b1d10906f2c458f970c68a587031a04856dff8e3"
+      }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_indicator_only",
+      "kind": "delivery",
+      "construction": "both-indicator-only-construction.json",
+      "construction_sha256": "e9f03a42f839f022e6d97751dfe9f2436d77a7717ae06d06ba17160a151a39ca",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "both-indicator-only-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-indicator-only-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pedestrian and vehicle effects, listener timing, absence of horn sound and indicator visibility need physical source review"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native turn and both affected participants joined to indicator readback and independent listener PCM; no horn actuator command",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and independently captured listener PCM",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "microphone alignment and physical horn absence require original-source review; legal audibility stays unresolved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "both-indicator-only-fallback1-construction.json",
+          "construction_sha256": "991668391b70bfc927d86f0181da4fe3906e658ba34887ae0e7ce696dd1e27fd",
+          "trigger": {
+            "source": "Native pedestrian and connected-route inventory",
+            "metric": "pedestrian distance to sampled route",
+            "failure_condition": "Primary placement does not make pedestrian potentially affected"
+          },
+          "changed_knobs": [
+            "pedestrian route-side offset 6/2 to 5/1.5 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-indicator-only-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_indicator_only --candidate fallback1 --output .runtime-work/c111603-both-indicator-only-fallback1-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "both-indicator-only-fallback1-offline.log",
+            "log_sha256": "409f77c302acf0dbca0cba7be1251db975418c37628a2af82fb9655601cfa9fb",
+            "construction_sha256": "991668391b70bfc927d86f0181da4fe3906e658ba34887ae0e7ce696dd1e27fd"
+          },
+          "compatibility": {
+            "receipt": "both-indicator-only-fallback1-receipt.json",
+            "sha256": "72db419c1ddeac70035ec77f4a29b646c5b280f2fda6e511e612d4d96d62b7d9",
+            "log": "both-indicator-only-fallback1-analysis.log",
+            "negative_log": "both-indicator-only-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "both-indicator-only-fallback2-construction.json",
+          "construction_sha256": "3bfbffeaf78734409046450f1ec35095725d33fe4fa5c60b32128e83b7990f2b",
+          "trigger": {
+            "source": "Original listener microphone PCM",
+            "metric": "20 Hz audio packet continuity",
+            "failure_condition": "Primary ALSA device loses or misaligns a listener packet"
+          },
+          "changed_knobs": [
+            "listener PCM rate 16000 to 32000 Hz"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-indicator-only-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_indicator_only --candidate fallback2 --output .runtime-work/c111603-both-indicator-only-fallback2-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "both-indicator-only-fallback2-offline.log",
+            "log_sha256": "32891efd5d05c348f17e708014d405565e28b8bb0823a5a4e1dde3f12c146bc8",
+            "construction_sha256": "3bfbffeaf78734409046450f1ec35095725d33fe4fa5c60b32128e83b7990f2b"
+          },
+          "compatibility": {
+            "receipt": "both-indicator-only-fallback2-receipt.json",
+            "sha256": "12555a174be8db26b040fffcf3880769adfc885a7aa6764598eb5aa945a41c95",
+            "log": "both-indicator-only-fallback2-analysis.log",
+            "negative_log": "both-indicator-only-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "both-indicator-only-fallback3-construction.json",
+          "construction_sha256": "e0a32d283af2d0c1e8e105fbe7543d941c2a4d8c50b5ed005f819c8f7006bca2",
+          "trigger": {
+            "source": "Original overview RGB decode",
+            "metric": "pedestrian visible pixel count",
+            "failure_condition": "Primary overview crops the potentially affected pedestrian"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-indicator-only-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_indicator_only --candidate fallback3 --output .runtime-work/c111603-both-indicator-only-fallback3-offline-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "both-indicator-only-fallback3-offline.log",
+            "log_sha256": "9967652ddebd8477040689ad5245704cf768e63df816b7b95470867c4d211a31",
+            "construction_sha256": "e0a32d283af2d0c1e8e105fbe7543d941c2a4d8c50b5ed005f819c8f7006bca2"
+          },
+          "compatibility": {
+            "receipt": "both-indicator-only-fallback3-receipt.json",
+            "sha256": "2afa3d03176feadb72cb5ab6848aceedfaef9aafbcc6d55f5a277bc4e1f38ed7",
+            "log": "both-indicator-only-fallback3-analysis.log",
+            "negative_log": "both-indicator-only-fallback3-negative.log"
+          }
+        }
+      ],
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-indicator-only-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_indicator_only --attempt .runtime-work/c111603-both-indicator-only-saved-attempt-a --output .runtime-work/c111603-both-indicator-only-saved-a --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "both-indicator-only-saved.log",
+        "log_sha256": "452d1ecc1c59d7a4f1fcd0e2707e4749460f0b96e7ce2d9de8d0dbc6be82fdf9",
+        "receipt": "both-indicator-only-saved-receipt.json",
+        "receipt_sha256": "452d1ecc1c59d7a4f1fcd0e2707e4749460f0b96e7ce2d9de8d0dbc6be82fdf9"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-indicator-only-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_indicator_only --output .runtime-work/c111603-both-indicator-only-primary-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "both-indicator-only-offline.log",
+        "log_sha256": "50fb381eb00f3503bc333df74449a216d1a6e6d16976a4a622b4952452bcbff0",
+        "construction_sha256": "e9f03a42f839f022e6d97751dfe9f2436d77a7717ae06d06ba17160a151a39ca"
+      },
+      "compatibility": {
+        "receipt": "both-indicator-only-compatibility-receipt.json",
+        "sha256": "734b38701f773a90a1fb26463a82b28ac0b26b39568fe2aa3d111eacf15a94a2",
+        "log": "both-indicator-only-analysis.log"
+      },
+      "negative": {
+        "log": "both-indicator-only-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_indicator_only",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "both_indicator_only_audit.py",
+        "script_sha256": "d1efbe27f52fd2fd468f1da6e6cc7fe8e3ee55ea020c6abd140e5e8f0c33c35f",
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both_indicator_only_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_indicator_only --attempt .runtime-work/c111603-both-indicator-only-primary-compat-a --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-indicator-only-audit.json",
+        "test_exit_code": 0,
+        "test_log": "both-indicator-only-audit.log",
+        "test_log_sha256": "32883d50eecf8f8533a0c6efade21214ba20ca597aa8094fec5dbbdf36e0f23b",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both_indicator_only_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__both_indicator_only --attempt .runtime-work/c111603-both-indicator-only-primary-compat-a --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/both-indicator-only-audit.json --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original pedestrian listener source",
+        "negative_log": "both-indicator-only-stale-audit.log",
+        "negative_log_sha256": "387d23f62986c7c4e512b8f9a8b3cd7c1a670fd5f47e17293291777e08832421"
+      }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_hand_signal",
+      "kind": "delivery",
+      "construction": "hand-signal-construction.json",
+      "construction_sha256": "4b9e05609401bac26d37bea4acb3682b8a3c085cda0aec3144ff387ac1129ce8",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "hand-signal-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/hand-signal-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Attached Native walker arm pose and hand pixels may not yield an observable road signal"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original 20 Hz Native turn, off indicator, affected vehicle and hand-bone source",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        },
+        "hand_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native attached avatar left-arm bone world readback",
+          "evidence": "hand_signal_original.jsonl, ego_turn_motion.jsonl and four videos"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "hand-signal-fallback1-construction.json",
+          "construction_sha256": "98f9b97d5a68ed84d219c1dc98b5578553517c2250be9ccbbcf30736b1ea589a",
+          "trigger": {
+            "source": "Native connected left-turn route inventory",
+            "metric": "eligible connected left-turn routes",
+            "failure_condition": "Primary route selection cannot spawn a complete turn"
+          },
+          "changed_knobs": [
+            "route spacing 2 m to 1.5 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/hand-signal-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_hand_signal --candidate fallback1 --output .runtime-work/c111603-hand-fallback1-22cdafd4-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "hand-signal-fallback1-offline.log",
+            "log_sha256": "7cde7faf45192bc77d9193ebe14a3dd6cfdcc35d984189df6557063475bcd261",
+            "construction_sha256": "98f9b97d5a68ed84d219c1dc98b5578553517c2250be9ccbbcf30736b1ea589a"
+          },
+          "compatibility": {
+            "receipt": "hand-signal-fallback1-receipt.json",
+            "sha256": "d1558ebc1dbed9a3fb2d1cf84ea57c4d5523305f3140f4b5ab02851f78213222",
+            "log": "hand-signal-fallback1-analysis.log",
+            "negative_log": "hand-signal-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "hand-signal-fallback2-construction.json",
+          "construction_sha256": "124c2639e77df347d5de1a1fcafcdce469e0bf45201bc44ea60904d8b40c308f",
+          "trigger": {
+            "source": "Original avatar actor and left-arm bone readback",
+            "metric": "attached avatar pose continuity",
+            "failure_condition": "Primary avatar overlaps ego or arm readback is occluded"
+          },
+          "changed_knobs": [
+            "avatar mount y -0.7 m to -0.8 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/hand-signal-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_hand_signal --candidate fallback2 --output .runtime-work/c111603-hand-fallback2-c93b5403-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "hand-signal-fallback2-offline.log",
+            "log_sha256": "47c20a93211537b3241877d3a55a1b85b764c17fe15d9941b8b339c37d8044de",
+            "construction_sha256": "124c2639e77df347d5de1a1fcafcdce469e0bf45201bc44ea60904d8b40c308f"
+          },
+          "compatibility": {
+            "receipt": "hand-signal-fallback2-receipt.json",
+            "sha256": "1720ee01e61e9519ee84a4a95be5ed259373e641e37c6f5b48ea9fa423d1cb1a",
+            "log": "hand-signal-fallback2-analysis.log",
+            "negative_log": "hand-signal-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "hand-signal-fallback3-construction.json",
+          "construction_sha256": "cede60519a5aa4a9af49e011251d23585320fc7a65e59545c231cd1312db4d15",
+          "trigger": {
+            "source": "Original driver-reference RGB stream",
+            "metric": "hand visible pixels",
+            "failure_condition": "Primary driver-reference camera crops the arm"
+          },
+          "changed_knobs": [
+            "driver camera mount x 0.6 m to 0.4 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/hand-signal-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_hand_signal --candidate fallback3 --output .runtime-work/c111603-hand-fallback3-815b13c6-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "hand-signal-fallback3-offline.log",
+            "log_sha256": "efe5ae1571699558368ba9f4270d8c5e67fa3220c38359a5e456059f2bf981b4",
+            "construction_sha256": "cede60519a5aa4a9af49e011251d23585320fc7a65e59545c231cd1312db4d15"
+          },
+          "compatibility": {
+            "receipt": "hand-signal-fallback3-receipt.json",
+            "sha256": "ce12466303b61de8982199d3aa1e05d8128c1f8b153d54efe118a14dde79a077",
+            "log": "hand-signal-fallback3-analysis.log",
+            "negative_log": "hand-signal-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/hand-signal-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_hand_signal --output .runtime-work/c111603-hand-primary-79c34742-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "hand-signal-primary-offline.log",
+        "log_sha256": "c8e822be5913f87a36e7250f8c3c5edb565873faacc1e35ad12c7473325d589a",
+        "construction_sha256": "4b9e05609401bac26d37bea4acb3682b8a3c085cda0aec3144ff387ac1129ce8"
+      },
+      "compatibility": {
+        "receipt": "hand-signal-primary-receipt.json",
+        "sha256": "7570fcc95de8d6dde4f9bf81455a0c04f69fa86be0dd38e4a988aa2bb53333a5",
+        "log": "hand-signal-primary-analysis.log",
+        "negative_log": "hand-signal-primary-negative.log"
+      },
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/hand-signal-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_hand_signal --attempt .runtime-work/c111603-hand-saved-attempt-9c52bead --output .runtime-work/c111603-hand-saved-9c52bead --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "hand-signal-saved.log",
+        "log_sha256": "fdd95ccaf51918d82dd36d4f4630a9fab6679bab0f7a9fa3159190b1196f2c1e",
+        "receipt": "hand-signal-saved-receipt.json",
+        "receipt_sha256": "fdd95ccaf51918d82dd36d4f4630a9fab6679bab0f7a9fa3159190b1196f2c1e"
+      }
+    }
+  ]
+}

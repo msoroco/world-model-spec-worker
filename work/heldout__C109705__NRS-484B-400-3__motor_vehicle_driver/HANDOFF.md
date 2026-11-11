@@ -1,5 +1,28 @@
 # heldout__C109705__NRS-484B-400-3__motor_vehicle_driver: CPU preparation checkpoint
 
+## 2026-11-11 original-source measurement continuation
+
+`turn_source_measurement.py` now joins a named original road-geometry packet,
+every measured body footprint and the original frame map. It requires source
+identity, a two-directional approach, one-way departure, left-turn maneuver,
+public non-alley intersection, matching actor and frame/time identities, and
+ordered approach, entry and departure intervals. It preserves original body
+corner offsets from the directed centerline and distances to the directed
+left curb, plus source hashes. These are descriptive measurements; no
+statutory lateral threshold or practicability decision is inferred.
+
+Four CPU tests pass, including wrong destination direction, omitted departure
+interval and actor-identity rejection. Command:
+`.venv-cpu/bin/python -m unittest discover -s work/heldout__C109705__NRS-484B-400-3__motor_vehicle_driver/tests -v`.
+`cpu-tests.log` SHA-256 is
+`844ab3a77e1ce1c9bc2413a45a2d7a79ba6b4b8a54caf4f2d6e04596a14d7a56`.
+The scoped complete checkpoint passes; scoped strict still fails because status
+is correctly **partial**. Next, connect this helper to a CARLA-lazy Native
+runner and four-source capture, finalize the first reference case from retained
+sources, and prove exact offline, positive/negative compatibility and saved
+processing before expanding comparisons and fallbacks. No Native turn or
+physical/legal acceptance is claimed.
+
 ## Frozen scope and source
 
 - Law: NRS 484B.400(3) — If the driver of a vehicle intends to turn at an intersection and: The turn is a left turn from a two-directional highway onto a one-way highway, the approach for the left turn must be made in that portion of the right half of the highway nearest the centerline thereof, and the turn must be made by turning from the right of the centerline where it enters the intersection as close as practicable to the left-hand curb of the one-way highway.

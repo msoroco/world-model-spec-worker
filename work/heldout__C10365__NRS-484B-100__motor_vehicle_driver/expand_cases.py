@@ -13,6 +13,9 @@ CASES = {
     'stop_does_not_respond': ('stop', 'no_observed_stop', [2] * 9),
     'proceed_responds': ('proceed', 'moved_after_indication', [0, 0, 0, 0, 1, 2, 2, 2, 2]),
     'proceed_does_not_respond': ('proceed', 'no_observed_movement', [0] * 9),
+    'stop_response_window_grid-0000': ('stop', 'stopped_after_indication', [2,2,2,2,1,.5,0,0,0]),
+    'stop_response_window_grid-0001': ('stop', 'stopped_after_indication', [2,2,2,2,1,.5,0,0,0]),
+    'stop_response_window_grid-0002': ('stop', 'stopped_after_indication', [2,2,2,2,1,.5,0,0,0]),
 }
 
 
@@ -43,10 +46,14 @@ def main():
         selected_config['selected_case_id'] = case_id
         selected_config['case']['case_id'] = case_id
         selected_config['case']['intended_observed_response'] = observed_response
+        selected_config['direction_frame'] = {'stop_response_window_grid-0000':30,
+                                              'stop_response_window_grid-0001':50,
+                                              'stop_response_window_grid-0002':40}.get(suffix,40)
         selected_construction = deepcopy(construction)
         selected_construction['case_id'] = case_id
-        next(item for item in selected_construction['files'] if item['path'] == 'config.json')['content'] = (
-            json.dumps(selected_config, indent=2) + '\n')
+        config_item = next(item for item in selected_construction['files'] if item['path'] == 'config.json')
+        config_item['content'] = json.dumps(selected_config, indent=2) + '\n'
+        config_item.pop('source', None)
         construction_path = ROOT / 'cases' / f'construction-{suffix}.json'
         write(construction_path, selected_construction)
         probes.append({'case_id': case_id,
@@ -56,6 +63,9 @@ def main():
         files = source['files']
         indication = json.loads(files['officer_direction.json'])
         indication['command'] = command
+        indication['frame'] = {'stop_response_window_grid-0000':38034,
+                               'stop_response_window_grid-0001':38038,
+                               'stop_response_window_grid-0002':38036}.get(suffix,38036)
         files['officer_direction.json'] = json.dumps(indication) + '\n'
         motion = json.loads(files['subject_motion.json'])
         for row, speed in zip(motion['frames'], speeds):
@@ -88,7 +98,7 @@ def main():
     first['cases'] = entries
     write(ROOT / 'probe-compatibility-manifest.json', first)
     write(plan_path, plan)
-    print('Materialized four exact C10365 primary constructions, contracts and distinct fixtures')
+    print('Materialized seven exact C10365 primary constructions, contracts and distinct fixtures')
 
 
 if __name__ == '__main__':

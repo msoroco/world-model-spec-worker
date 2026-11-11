@@ -1,0 +1,471 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111273__NRS-484B-310-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_cautious_approach",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "ed17031fccdb1c95b93c51efa6a969f85e09f1f4a8aee7e6d810c679bbbb303c",
+      "measurement_procedure": {
+        "entrypoint": "signal_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native signal appearance and crossing geometry may fail physical capture"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/east_cautious_approach/fallback1-construction.json",
+          "construction_sha256": "cd8f03d201e3e6e23f317175dd56181e7ace3d7c110ca42981effdb4527d3312",
+          "trigger": {
+            "source": "Native governed-lane waypoint selection",
+            "metric": "unique route availability at 70 m before governed head",
+            "failure_condition": "Primary 70 m approach lacks a unique prior waypoint; 60 m maintains the same governed lane and turn context."
+          },
+          "changed_knobs": [
+            "approach_before_m: 70.0 to 60.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_cautious_approach --candidate fallback1 --output .runtime-work/c111273-east_cautious_approach-fallback1-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "east_cautious_approach-fallback1-offline-v2.log",
+            "log_sha256": "f065786f6787aed4e1c6fca3023847e8cf81daa928f4604c43456488558fe297",
+            "construction_sha256": "cd8f03d201e3e6e23f317175dd56181e7ace3d7c110ca42981effdb4527d3312"
+          },
+          "compatibility": {
+            "receipt": "east_cautious_approach-fallback1-compatibility.json",
+            "sha256": "349e879c267b48d0c6f76ea133703ecfeb61cbf6e8997d3636091aefc385bd90",
+            "log": "east_cautious_approach-fallback1-compat-v2.log",
+            "negative_log": "east_cautious_approach-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/east_cautious_approach/fallback2-construction.json",
+          "construction_sha256": "d0a7de39673ef838f0a3b2c53e1a3afc6d2e7cab2a603b8aced2f4af46a96a38",
+          "trigger": {
+            "source": "Native actor spawn result and original first body pose",
+            "metric": "successful subject and crossing actor creation with body above road",
+            "failure_condition": "Primary ground-level spawn collides with map geometry; a 0.35 m height adjustment permits the same lane actors."
+          },
+          "changed_knobs": [
+            "spawn_z_offset_m: 0.0 to 0.35"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_cautious_approach --candidate fallback2 --output .runtime-work/c111273-east_cautious_approach-fallback2-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "east_cautious_approach-fallback2-offline-v2.log",
+            "log_sha256": "a0707afb62e0b82518391e44337e63106efe6b3168dfa2d62f45345bef67416b",
+            "construction_sha256": "d0a7de39673ef838f0a3b2c53e1a3afc6d2e7cab2a603b8aced2f4af46a96a38"
+          },
+          "compatibility": {
+            "receipt": "east_cautious_approach-fallback2-compatibility.json",
+            "sha256": "bbc512787f03f4474b092002adc24d400a43a748d8f5cf432f463359579d0caa",
+            "log": "east_cautious_approach-fallback2-compat-v2.log",
+            "negative_log": "east_cautious_approach-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/east_cautious_approach/fallback3-construction.json",
+          "construction_sha256": "9df4ff5adacd089cb553a1843eddaacf6f3a189850660ee1579b360ca64310e8",
+          "trigger": {
+            "source": "original participant speed history",
+            "metric": "peak-to-peak approach speed tracking error in m/s",
+            "failure_condition": "Primary gain causes persistent approach speed oscillation; lower gain stabilizes the same requested case speed."
+          },
+          "changed_knobs": [
+            "speed_kp: 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_cautious_approach --candidate fallback3 --output .runtime-work/c111273-east_cautious_approach-fallback3-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "east_cautious_approach-fallback3-offline-v2.log",
+            "log_sha256": "34379b03a5806dec5d58e89b6b06b613f01d8999cc922b2dd7b69dfb044d7b95",
+            "construction_sha256": "9df4ff5adacd089cb553a1843eddaacf6f3a189850660ee1579b360ca64310e8"
+          },
+          "compatibility": {
+            "receipt": "east_cautious_approach-fallback3-compatibility.json",
+            "sha256": "9437f5d4616a93ccf4aea73cc13ed5b97c556fe65b7a9f7d372a1080f425fbe0",
+            "log": "east_cautious_approach-fallback3-compat-v2.log",
+            "negative_log": "east_cautious_approach-fallback3-negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "first-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/diagnostic-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_cautious_approach --candidate primary --output .runtime-work/c111273-east_cautious_approach-primary-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "east_cautious_approach-primary-offline-v2.log",
+        "log_sha256": "8da86af596486d16b9c171b3a8f9347152cb45fb0ac0feb0e3e6fd250918028f",
+        "construction_sha256": "ed17031fccdb1c95b93c51efa6a969f85e09f1f4a8aee7e6d810c679bbbb303c"
+      },
+      "compatibility": {
+        "receipt": "east_cautious_approach-primary-compatibility.json",
+        "sha256": "38edfc5f3aad8aafc347836f91969e638cd01a384372b08a3a87a575162990ec",
+        "log": "east_cautious_approach-primary-compat-v2.log",
+        "negative_log": "east_cautious_approach-primary-negative.log"
+      },
+      "negative": {
+        "log": "east_cautious_approach-primary-negative.log"
+      }
+    },
+    {
+      "case_id": "heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_faster_approach",
+      "kind": "delivery",
+      "construction": "cases/east_faster_approach/construction.json",
+      "construction_sha256": "7d8c7c5d3c47a01b7db5aeffb2f08be74c800f07d53b0df63708e44d5b378d4a",
+      "measurement_procedure": {
+        "entrypoint": "signal_finalizer.py"
+      },
+      "measurement_contract": "cases/east_faster_approach/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/cases/east_faster_approach/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Signal head visibility, governed lane and participant crossing may fail physical capture"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/east_faster_approach/fallback1-construction.json",
+          "construction_sha256": "5ad5f464dbfb46b4bb8ada4bf646f99d0fb9be9f9be23a326967ea1072eb8cc0",
+          "trigger": {
+            "source": "Native governed-lane waypoint selection",
+            "metric": "unique route availability at 70 m before governed head",
+            "failure_condition": "Primary 70 m approach lacks a unique prior waypoint; 60 m maintains the same governed lane and turn context."
+          },
+          "changed_knobs": [
+            "approach_before_m: 70.0 to 60.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_faster_approach --candidate fallback1 --output .runtime-work/c111273-east_faster_approach-fallback1-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "east_faster_approach-fallback1-offline-v2.log",
+            "log_sha256": "3b04f0573a9ee0664a0fd1cba5d4fcbe86a0ed9e099d6dc342a46cd8638effdc",
+            "construction_sha256": "5ad5f464dbfb46b4bb8ada4bf646f99d0fb9be9f9be23a326967ea1072eb8cc0"
+          },
+          "compatibility": {
+            "receipt": "east_faster_approach-fallback1-compatibility.json",
+            "sha256": "bcf733ca76ab8b21c05d41f41f81eadad575e4716e1537fe0086c2ff3c287f6e",
+            "log": "east_faster_approach-fallback1-compat-v2.log",
+            "negative_log": "east_faster_approach-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/east_faster_approach/fallback2-construction.json",
+          "construction_sha256": "0a967e6fae323e128fb19b4744f11a2bb18e09129fc69a212145e63aa51284a3",
+          "trigger": {
+            "source": "Native actor spawn result and original first body pose",
+            "metric": "successful subject and crossing actor creation with body above road",
+            "failure_condition": "Primary ground-level spawn collides with map geometry; a 0.35 m height adjustment permits the same lane actors."
+          },
+          "changed_knobs": [
+            "spawn_z_offset_m: 0.0 to 0.35"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_faster_approach --candidate fallback2 --output .runtime-work/c111273-east_faster_approach-fallback2-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "east_faster_approach-fallback2-offline-v2.log",
+            "log_sha256": "ac603699b84da09e37e3ba2f8979b16ae053367bb4dd59f94af01f63bf4f10c0",
+            "construction_sha256": "0a967e6fae323e128fb19b4744f11a2bb18e09129fc69a212145e63aa51284a3"
+          },
+          "compatibility": {
+            "receipt": "east_faster_approach-fallback2-compatibility.json",
+            "sha256": "bb2851911d4c7c313658b785ae865b3ec3c67a60017bc1dd9feb3174310e9f4a",
+            "log": "east_faster_approach-fallback2-compat-v2.log",
+            "negative_log": "east_faster_approach-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/east_faster_approach/fallback3-construction.json",
+          "construction_sha256": "aed45ae83aa6731ccea7c57e7df5829845f003077686e384061092cd887e98c0",
+          "trigger": {
+            "source": "original participant speed history",
+            "metric": "peak-to-peak approach speed tracking error in m/s",
+            "failure_condition": "Primary gain causes persistent approach speed oscillation; lower gain stabilizes the same requested case speed."
+          },
+          "changed_knobs": [
+            "speed_kp: 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_faster_approach --candidate fallback3 --output .runtime-work/c111273-east_faster_approach-fallback3-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "east_faster_approach-fallback3-offline-v2.log",
+            "log_sha256": "e7304819d89f1d8d5773d2c73ae3d7204df37a5ab75d9151dcc271d24884435c",
+            "construction_sha256": "aed45ae83aa6731ccea7c57e7df5829845f003077686e384061092cd887e98c0"
+          },
+          "compatibility": {
+            "receipt": "east_faster_approach-fallback3-compatibility.json",
+            "sha256": "96de1916493496971e2e14bfebb78b74d4c053363def25a3891e507d049acdb7",
+            "log": "east_faster_approach-fallback3-compat-v2.log",
+            "negative_log": "east_faster_approach-fallback3-negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_faster_approach --candidate primary --output .runtime-work/c111273-east_faster_approach-primary-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "east_faster_approach-primary-offline-v2.log",
+        "log_sha256": "105fec5384c0a13e277a2de2321fe47239a6b50b35f4e9b30448a41b7b957ca1",
+        "construction_sha256": "7d8c7c5d3c47a01b7db5aeffb2f08be74c800f07d53b0df63708e44d5b378d4a"
+      },
+      "compatibility": {
+        "receipt": "east_faster_approach-primary-compatibility.json",
+        "sha256": "a82a833547736720bdfad57b01f064ceb4e73dcbfb9d4629bfd4ef4eb47da1bc",
+        "log": "east_faster_approach-primary-compat-v2.log",
+        "negative_log": "east_faster_approach-primary-negative.log"
+      },
+      "negative": {
+        "log": "east_faster_approach-primary-negative.log"
+      }
+    },
+    {
+      "case_id": "heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_clear_approach",
+      "kind": "delivery",
+      "construction": "cases/east_clear_approach/construction.json",
+      "construction_sha256": "b485570856e06699ef5d00be74b84a2b763cd655a43fff193a82efac28ab1638",
+      "measurement_procedure": {
+        "entrypoint": "signal_finalizer.py"
+      },
+      "measurement_contract": "cases/east_clear_approach/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/cases/east_clear_approach/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Signal head visibility, governed lane and participant crossing may fail physical capture"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/east_clear_approach/fallback1-construction.json",
+          "construction_sha256": "eef0e56cf26a50b96e4c2b4386d5b593caa1981ebced907d27e9e6242bd57490",
+          "trigger": {
+            "source": "Native governed-lane waypoint selection",
+            "metric": "unique route availability at 70 m before governed head",
+            "failure_condition": "Primary 70 m approach lacks a unique prior waypoint; 60 m maintains the same governed lane and turn context."
+          },
+          "changed_knobs": [
+            "approach_before_m: 70.0 to 60.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_clear_approach --candidate fallback1 --output .runtime-work/c111273-east_clear_approach-fallback1-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "east_clear_approach-fallback1-offline-v2.log",
+            "log_sha256": "a264e32ebeb4bdb40458d7a55f25123c7defc8fa7d9bd1e2e56631d3f257691a",
+            "construction_sha256": "eef0e56cf26a50b96e4c2b4386d5b593caa1981ebced907d27e9e6242bd57490"
+          },
+          "compatibility": {
+            "receipt": "east_clear_approach-fallback1-compatibility.json",
+            "sha256": "116e9709574b123568076deedc1e3b811b11e1c43c78a5c27635d5530ebfddb2",
+            "log": "east_clear_approach-fallback1-compat-v2.log",
+            "negative_log": "east_clear_approach-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/east_clear_approach/fallback2-construction.json",
+          "construction_sha256": "2a27ef65406cd8493b221033ef3d791f24ae7e4dae8a0e821d496caa73e8a2cc",
+          "trigger": {
+            "source": "Native actor spawn result and original first body pose",
+            "metric": "successful subject and crossing actor creation with body above road",
+            "failure_condition": "Primary ground-level spawn collides with map geometry; a 0.35 m height adjustment permits the same lane actors."
+          },
+          "changed_knobs": [
+            "spawn_z_offset_m: 0.0 to 0.35"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_clear_approach --candidate fallback2 --output .runtime-work/c111273-east_clear_approach-fallback2-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "east_clear_approach-fallback2-offline-v2.log",
+            "log_sha256": "463b80a3af985d0870d1b745f5c7ef646de609748a9e76cae1aba6f31676c0f0",
+            "construction_sha256": "2a27ef65406cd8493b221033ef3d791f24ae7e4dae8a0e821d496caa73e8a2cc"
+          },
+          "compatibility": {
+            "receipt": "east_clear_approach-fallback2-compatibility.json",
+            "sha256": "dece78b56280814710b2fde0acdc5bca5047fdf62d6d691ca1bf6eef66fea6d2",
+            "log": "east_clear_approach-fallback2-compat-v2.log",
+            "negative_log": "east_clear_approach-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/east_clear_approach/fallback3-construction.json",
+          "construction_sha256": "d56c08efc7bfa7eb7101dbed0b9a0f1fb5fe45125af6bf82b3f47be6134c4953",
+          "trigger": {
+            "source": "original participant speed history",
+            "metric": "peak-to-peak approach speed tracking error in m/s",
+            "failure_condition": "Primary gain causes persistent approach speed oscillation; lower gain stabilizes the same requested case speed."
+          },
+          "changed_knobs": [
+            "speed_kp: 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_clear_approach --candidate fallback3 --output .runtime-work/c111273-east_clear_approach-fallback3-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "east_clear_approach-fallback3-offline-v2.log",
+            "log_sha256": "ce108667ab41febbfbea87bccd21542b1552eb1c30aff0031d54a0e9abc7cbfd",
+            "construction_sha256": "d56c08efc7bfa7eb7101dbed0b9a0f1fb5fe45125af6bf82b3f47be6134c4953"
+          },
+          "compatibility": {
+            "receipt": "east_clear_approach-fallback3-compatibility.json",
+            "sha256": "ef6d1ed5aa04c33c2f45b078b428c33ad6e378254d364a002414d25d276edf3a",
+            "log": "east_clear_approach-fallback3-compat-v2.log",
+            "negative_log": "east_clear_approach-fallback3-negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__east_clear_approach --candidate primary --output .runtime-work/c111273-east_clear_approach-primary-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "east_clear_approach-primary-offline-v2.log",
+        "log_sha256": "d6c87bd0b17efbb963bb37a53bd6f00263fd5d552e45d04473bdb252a2dc6a52",
+        "construction_sha256": "b485570856e06699ef5d00be74b84a2b763cd655a43fff193a82efac28ab1638"
+      },
+      "compatibility": {
+        "receipt": "east_clear_approach-primary-compatibility.json",
+        "sha256": "f321ae584cfcc4551f515df3d85c56eaf4ceedf63ca1ed154868e38ccd7cd312",
+        "log": "east_clear_approach-primary-compat-v2.log",
+        "negative_log": "east_clear_approach-primary-negative.log"
+      },
+      "negative": {
+        "log": "east_clear_approach-primary-negative.log"
+      }
+    },
+    {
+      "case_id": "heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__west_cautious_approach",
+      "kind": "delivery",
+      "construction": "cases/west_cautious_approach/construction.json",
+      "construction_sha256": "34592441b3d7d0a5a6f2d7dd38eb4c3e9069adba0d9c30996ee189f379457311",
+      "measurement_procedure": {
+        "entrypoint": "signal_finalizer.py"
+      },
+      "measurement_contract": "cases/west_cautious_approach/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/cases/west_cautious_approach/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Signal head visibility, governed lane and participant crossing may fail physical capture"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/west_cautious_approach/fallback1-construction.json",
+          "construction_sha256": "3f061540d0bd5d190cebec4862b032d594fb3871bfb6d620522af0e453b627f4",
+          "trigger": {
+            "source": "Native governed-lane waypoint selection",
+            "metric": "unique route availability at 70 m before governed head",
+            "failure_condition": "Primary 70 m approach lacks a unique prior waypoint; 60 m maintains the same governed lane and turn context."
+          },
+          "changed_knobs": [
+            "approach_before_m: 70.0 to 60.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__west_cautious_approach --candidate fallback1 --output .runtime-work/c111273-west_cautious_approach-fallback1-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "west_cautious_approach-fallback1-offline-v2.log",
+            "log_sha256": "a7d6abffed2b90be952115fc138f386a6d7c7144795ab4bf6e0ef127151d29f4",
+            "construction_sha256": "3f061540d0bd5d190cebec4862b032d594fb3871bfb6d620522af0e453b627f4"
+          },
+          "compatibility": {
+            "receipt": "west_cautious_approach-fallback1-compatibility.json",
+            "sha256": "61fa6820ce331fbd5b08a5c96a2962186bc3911cb0318f391759b0274de2e3d5",
+            "log": "west_cautious_approach-fallback1-compat-v2.log",
+            "negative_log": "west_cautious_approach-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/west_cautious_approach/fallback2-construction.json",
+          "construction_sha256": "4d7b04a97ed8a51dda7d1205ea14388c9d2458ea2bb578670550b2c5bdf0b7b2",
+          "trigger": {
+            "source": "Native actor spawn result and original first body pose",
+            "metric": "successful subject and crossing actor creation with body above road",
+            "failure_condition": "Primary ground-level spawn collides with map geometry; a 0.35 m height adjustment permits the same lane actors."
+          },
+          "changed_knobs": [
+            "spawn_z_offset_m: 0.0 to 0.35"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__west_cautious_approach --candidate fallback2 --output .runtime-work/c111273-west_cautious_approach-fallback2-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "west_cautious_approach-fallback2-offline-v2.log",
+            "log_sha256": "7c3cdd86a2767d3870cba198ceabb09f66b35abb5755a9eefce05c5ef8304e3f",
+            "construction_sha256": "4d7b04a97ed8a51dda7d1205ea14388c9d2458ea2bb578670550b2c5bdf0b7b2"
+          },
+          "compatibility": {
+            "receipt": "west_cautious_approach-fallback2-compatibility.json",
+            "sha256": "a2ebbb14139437853f9ae59644776d713b1603f169ff8bfe796dffc32f784d63",
+            "log": "west_cautious_approach-fallback2-compat-v2.log",
+            "negative_log": "west_cautious_approach-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/west_cautious_approach/fallback3-construction.json",
+          "construction_sha256": "8e4e7ac677bf11da3142e181b81b60a3f5fc87c09486e86a93f164d628078f01",
+          "trigger": {
+            "source": "original participant speed history",
+            "metric": "peak-to-peak approach speed tracking error in m/s",
+            "failure_condition": "Primary gain causes persistent approach speed oscillation; lower gain stabilizes the same requested case speed."
+          },
+          "changed_knobs": [
+            "speed_kp: 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__west_cautious_approach --candidate fallback3 --output .runtime-work/c111273-west_cautious_approach-fallback3-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "west_cautious_approach-fallback3-offline-v2.log",
+            "log_sha256": "25383b8bd37bbece2a10022734984c2b0ccc3e018c7a295b1be486520f2af2b0",
+            "construction_sha256": "8e4e7ac677bf11da3142e181b81b60a3f5fc87c09486e86a93f164d628078f01"
+          },
+          "compatibility": {
+            "receipt": "west_cautious_approach-fallback3-compatibility.json",
+            "sha256": "6582d862b31a041161950441b98a2824a390a7d2443c1b5b4e2de1e122d8776a",
+            "log": "west_cautious_approach-fallback3-compat-v2.log",
+            "negative_log": "west_cautious_approach-fallback3-negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111273__NRS-484B-310-2__motor_vehicle_driver/execution-manifest.json --case heldout__C111273__NRS-484B-310-2__motor_vehicle_driver__west_cautious_approach --candidate primary --output .runtime-work/c111273-west_cautious_approach-primary-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "west_cautious_approach-primary-offline-v2.log",
+        "log_sha256": "722671408d8f8be2e8a4c68ae4cfdf2ccc2db6c4adc11132bdd45d1cfd8c9f8d",
+        "construction_sha256": "34592441b3d7d0a5a6f2d7dd38eb4c3e9069adba0d9c30996ee189f379457311"
+      },
+      "compatibility": {
+        "receipt": "west_cautious_approach-primary-compatibility.json",
+        "sha256": "0fab9bcd6add3ac1e9137fbc68e34e2789210f75f1fd38324debc1a782e7df10",
+        "log": "west_cautious_approach-primary-compat-v2.log",
+        "negative_log": "west_cautious_approach-primary-negative.log"
+      },
+      "negative": {
+        "log": "west_cautious_approach-primary-negative.log"
+      }
+    }
+  ]
+}

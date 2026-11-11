@@ -1,5 +1,28 @@
 # heldout__C126064__LVMC-11-12-020__motor_vehicle_driver: CPU preparation checkpoint
 
+## 2026-11-11 authorized marker and original-course continuation
+
+`case-plan.json` now specifies two exact turns, one targeting the indicated
+course and one targeting a divergent path, in a comparison that holds the
+physical markers, median-opening intersection, vehicle and capture plan fixed.
+`marked_course_measurement.py` requires separate source references for municipal
+jurisdiction, the intersecting-road geometry and marker authorization; it
+rejects markers outside the sourced intersection. It joins every original body
+footprint to the frame map and reports centroid/corner distances to the
+indicated polyline throughout the turn. No numeric legal disobedience cutoff is
+invented.
+
+Two CPU tests pass, including out-of-intersection marker and wrong actor
+rejection. Run `.venv-cpu/bin/python -m unittest discover -s
+work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/tests -v`;
+`cpu-tests.log` SHA-256 is
+`21a8336d6a48f9beff492c4bc9911b0d37a6f2a5c9a4e4626ee959705694cede`.
+Scoped complete passes; strict rejects the truthful partial status. Next,
+construct a sourced Native median-opening intersection with physical authorized
+markers, four-camera capture and the first exact saved finalizer, then run
+offline, positive/negative compatibility and saved processing. Physical marker
+presence, authorization and any legal outcome are unverified.
+
 ## Frozen scope and source
 
 - Law: LVMC 11.12.020 — When authorized markers, buttons, or other indications are placed within an intersection indicating the course to be traveled by vehicles turning thereat, no driver of a vehicle shall disobey the direction of such indications.

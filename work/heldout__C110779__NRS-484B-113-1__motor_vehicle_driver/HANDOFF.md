@@ -1,5 +1,25 @@
 # heldout__C110779__NRS-484B-113-1__motor_vehicle_driver: CPU preparation checkpoint
 
+## 2026-11-11 reverse feedback continuation
+
+`reverse_feedback.py` now provides a bounded, CARLA-independent closed-loop
+reverse command from original position, heading and signed speed readbacks to a
+point behind the vehicle. It brakes at a fixed engineering stop radius, brakes
+when reverse speed exceeds the requested target and reverses steering sign for
+reverse kinematics. The target and controller are construction inputs; the
+original motion measurement remains authoritative for realized backing.
+
+Six tests pass, including speed correction, steering direction, target stop and
+invalid input rejection. Run `.venv-cpu/bin/python -m unittest discover -s
+work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/tests -v`;
+`cpu-tests.log` SHA-256 is
+`27135f224f88402772379f61d65606f2aae6bd3b09605a52e62ec6cb18efae3b`.
+The scoped complete checkpoint passes; scoped strict still rejects the partial
+result. Next, bind a sourced intersection backing corridor and independently
+specified other vehicle to Native spawn and source capture, then run the first
+exact case through offline, positive/negative compatibility and saved-only
+processing. No reverse movement or safety judgment has been physically verified.
+
 ## Frozen scope and source
 
 - Law: NRS 484B.113(1) — The driver of a vehicle: Shall not back the vehicle unless such movement can be made with reasonable safety and without interfering with other traffic.

@@ -63,7 +63,7 @@ class TestSignalFinalizer(unittest.TestCase):
             with self.subTest(branch=branch), tempfile.TemporaryDirectory() as tmp:
                 path = Path(tmp); fixture(path, branch)
                 report = analyze(path)
-                measured = report['measurements']['flashing_yellow']
+                measured = report['measurements']['flashing_yellow']['value']
                 self.assertEqual(measured['native_transitions'], 3)
                 self.assertEqual(measured['lens_pixel_visibility'], 'unverified')
                 self.assertEqual(measured['legal_caution_judgment'], 'unresolved')
@@ -96,7 +96,7 @@ class TestSignalFinalizer(unittest.TestCase):
             for row in rows:
                 row['native_light_state'] = 'TrafficLightState.' + row['native_light_state']
             (path/'signal_state.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
-            self.assertEqual(analyze(path, write_channels=False)['measurements']['flashing_yellow']['native_transitions'], 3)
+            self.assertEqual(analyze(path, write_channels=False)['measurements']['flashing_yellow']['value']['native_transitions'], 3)
 
     def test_comparisons_check_fixed_conditions_and_sources(self):
         pairs = {'approach_speed_sample': 'east_faster_approach',

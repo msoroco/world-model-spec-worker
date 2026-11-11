@@ -9,7 +9,8 @@ class NativeConstructionTests(unittest.TestCase):
         for suffix,(command,responds) in module.CASES.items():
             config={'law_id':'NRS-484B-100','cell_id':'C10365','actor':'motor_vehicle_driver',
                     'selected_case_id':module.PREFIX+suffix,'case':{'case_id':module.PREFIX+suffix},
-                    'rate_hz':20,'frames':160,'cameras':[{}]*4,'direction_frame':40}
+                    'rate_hz':20,'frames':160,'cameras':[{}]*4,
+                    'direction_frame':module.SWEEP_FRAMES.get(suffix,40)}
             self.assertEqual(module.check_config(config),(command,responds))
             self.assertEqual(module.command_for(command,responds,39,40),{'throttle':.16,'brake':0.0})
             following=module.command_for(command,responds,40,40)

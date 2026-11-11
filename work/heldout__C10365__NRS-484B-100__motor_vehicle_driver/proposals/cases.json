@@ -4,7 +4,7 @@
   "actor": "motor_vehicle_driver",
   "sweep_specs": [
     {
-      "sweep_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__officer_response_latency_sweep",
+      "sweep_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_response_window_grid",
       "target_law_id": "NRS-484B-100",
       "judgment_refs": [
         {
@@ -12,14 +12,102 @@
           "note": "Original officer indication and subsequent subject motion are measurable; officer duty, order lawfulness and willfulness require independent source and legal review."
         }
       ],
-      "status": "incomplete",
-      "rationale": "A finite original-motion response-latency sampling is needed without assigning willfulness or lawful-order labels.",
-      "missing_inputs": [
-        "Exact source-backed latency setpoints and generated Native constructions remain worker-owned CPU work."
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "direction_frame",
+          "observable": "subject_speed_mps",
+          "unit": "m/s",
+          "min": 30,
+          "max": 50,
+          "spacing": 10,
+          "measurement": {
+            "method": "original subject velocity sampled after indication",
+            "time_window": "post-indication original frames",
+            "statistic": "min"
+          },
+          "range_rationale": "An indication at 1.5, 2.0 or 2.5 seconds leaves distinct fixed observation windows within the eight-second capture; no willfulness cutoff.",
+          "spacing_rationale": "Three predeclared physical timing settings include both endpoints and one interior point.",
+          "feasibility_evidence": "The exact Native controller schedules the officer pose and subject control at direction_frame; original pose and speed sources are retained."
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Vary the available observation window for a stop indication while keeping the officer, subject and response controller fixed; no lawful-order or willfulness label.",
+      "variable_assignments": {
+        "officer_command": {
+          "kind": "world_setup",
+          "value": "stop"
+        },
+        "intended_observed_response": {
+          "kind": "controller",
+          "value": "responds"
+        },
+        "direction_frame": {
+          "kind": "world_setup",
+          "value": 40
+        },
+        "subject_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_speed_mps",
+            "unit": "m/s",
+            "method": "original subject velocity sampled at each joined Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz sampled velocity"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "boolean",
+            "method": "walker arm-pose activation joined to original four-view frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "officer actor and addressed subject",
+            "uncertainty": "physical gesture visibility and meaning require original-pixel review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "original officer role, identity, duty and lawfulness source references"
+          },
+          {
+            "name": "officer_direction_context",
+            "unit": "structured record",
+            "method": "original addressed subject and timed pose indication"
+          },
+          {
+            "name": "subject_motion_context",
+            "unit": "structured record",
+            "method": "original subject motion batch"
+          },
+          {
+            "name": "subject_motion_history",
+            "unit": "structured record",
+            "method": "original 20 Hz subject motion rows"
+          }
+        ],
+        "limitations": [
+          "Officer authority, lawful duty and willfulness require independent source/legal review."
+        ]
+      },
+      "spec_version": "814e7f0dc03b8563cc7b104e5026a3ab9672c128fa3e69e506c353ff5b7ed6d7",
+      "planned_case_count": 3,
+      "selection_order": [
+        "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_response_window_grid-0000",
+        "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_response_window_grid-0001",
+        "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_response_window_grid-0002"
       ]
     }
   ],
-  "sweeps_expanded": false,
   "cases": [
     {
       "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__baseline",
@@ -38,6 +126,10 @@
         "direction_frame": {
           "kind": "world_setup",
           "value": 40
+        },
+        "subject_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
@@ -117,6 +209,10 @@
         "direction_frame": {
           "kind": "world_setup",
           "value": 40
+        },
+        "subject_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
@@ -196,6 +292,10 @@
         "direction_frame": {
           "kind": "world_setup",
           "value": 40
+        },
+        "subject_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
@@ -275,6 +375,10 @@
         "direction_frame": {
           "kind": "world_setup",
           "value": 40
+        },
+        "subject_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
@@ -354,6 +458,10 @@
         "direction_frame": {
           "kind": "world_setup",
           "value": 40
+        },
+        "subject_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
@@ -415,6 +523,316 @@
         "comparison_or_standard": "post-indication original motion contrast",
         "target_value_or_branch": "does_not_respond"
       }
+    },
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_response_window_grid-0000",
+      "target_law_id": "NRS-484B-100",
+      "target_type": "judgment_sweep",
+      "rationale": "Vary the available observation window for a stop indication while keeping the officer, subject and response controller fixed; no lawful-order or willfulness label.",
+      "paired_probe_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_response_window_grid",
+      "deliberate_differences": [
+        "direction_frame"
+      ],
+      "probe": {
+        "primary_variable": "direction_frame",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "direction_frame": 30.0
+        }
+      },
+      "sweep_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_response_window_grid",
+      "sweep_spec_version": "814e7f0dc03b8563cc7b104e5026a3ab9672c128fa3e69e506c353ff5b7ed6d7",
+      "sweep_point": {
+        "direction_frame": 30.0
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "officer_command": {
+          "kind": "world_setup",
+          "value": "stop"
+        },
+        "intended_observed_response": {
+          "kind": "controller",
+          "value": "responds"
+        },
+        "direction_frame": {
+          "kind": "world_setup",
+          "value": 30.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "subject_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_speed_mps",
+            "unit": "m/s",
+            "method": "original subject velocity sampled at each joined Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz sampled velocity"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "boolean",
+            "method": "walker arm-pose activation joined to original four-view frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "officer actor and addressed subject",
+            "uncertainty": "physical gesture visibility and meaning require original-pixel review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "original officer role, identity, duty and lawfulness source references"
+          },
+          {
+            "name": "officer_direction_context",
+            "unit": "structured record",
+            "method": "original addressed subject and timed pose indication"
+          },
+          {
+            "name": "subject_motion_context",
+            "unit": "structured record",
+            "method": "original subject motion batch"
+          },
+          {
+            "name": "subject_motion_history",
+            "unit": "structured record",
+            "method": "original 20 Hz subject motion rows"
+          }
+        ],
+        "limitations": [
+          "Officer authority, lawful duty and willfulness require independent source/legal review."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "subject_speed_mps",
+          "unit": "m/s",
+          "measurement": {
+            "method": "original subject velocity sampled after indication",
+            "time_window": "post-indication original frames",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "willfully to fail or refuse to comply with any lawful order or direction"
+      ]
+    },
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_response_window_grid-0001",
+      "target_law_id": "NRS-484B-100",
+      "target_type": "judgment_sweep",
+      "rationale": "Vary the available observation window for a stop indication while keeping the officer, subject and response controller fixed; no lawful-order or willfulness label.",
+      "paired_probe_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_response_window_grid",
+      "deliberate_differences": [
+        "direction_frame"
+      ],
+      "probe": {
+        "primary_variable": "direction_frame",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "direction_frame": 50.0
+        }
+      },
+      "sweep_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_response_window_grid",
+      "sweep_spec_version": "814e7f0dc03b8563cc7b104e5026a3ab9672c128fa3e69e506c353ff5b7ed6d7",
+      "sweep_point": {
+        "direction_frame": 50.0
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "officer_command": {
+          "kind": "world_setup",
+          "value": "stop"
+        },
+        "intended_observed_response": {
+          "kind": "controller",
+          "value": "responds"
+        },
+        "direction_frame": {
+          "kind": "world_setup",
+          "value": 50.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "subject_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_speed_mps",
+            "unit": "m/s",
+            "method": "original subject velocity sampled at each joined Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz sampled velocity"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "boolean",
+            "method": "walker arm-pose activation joined to original four-view frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "officer actor and addressed subject",
+            "uncertainty": "physical gesture visibility and meaning require original-pixel review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "original officer role, identity, duty and lawfulness source references"
+          },
+          {
+            "name": "officer_direction_context",
+            "unit": "structured record",
+            "method": "original addressed subject and timed pose indication"
+          },
+          {
+            "name": "subject_motion_context",
+            "unit": "structured record",
+            "method": "original subject motion batch"
+          },
+          {
+            "name": "subject_motion_history",
+            "unit": "structured record",
+            "method": "original 20 Hz subject motion rows"
+          }
+        ],
+        "limitations": [
+          "Officer authority, lawful duty and willfulness require independent source/legal review."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "subject_speed_mps",
+          "unit": "m/s",
+          "measurement": {
+            "method": "original subject velocity sampled after indication",
+            "time_window": "post-indication original frames",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "willfully to fail or refuse to comply with any lawful order or direction"
+      ]
+    },
+    {
+      "case_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_response_window_grid-0002",
+      "target_law_id": "NRS-484B-100",
+      "target_type": "judgment_sweep",
+      "rationale": "Vary the available observation window for a stop indication while keeping the officer, subject and response controller fixed; no lawful-order or willfulness label.",
+      "paired_probe_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_response_window_grid",
+      "deliberate_differences": [
+        "direction_frame"
+      ],
+      "probe": {
+        "primary_variable": "direction_frame",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "direction_frame": 40.0
+        }
+      },
+      "sweep_id": "heldout__C10365__NRS-484B-100__motor_vehicle_driver__stop_response_window_grid",
+      "sweep_spec_version": "814e7f0dc03b8563cc7b104e5026a3ab9672c128fa3e69e506c353ff5b7ed6d7",
+      "sweep_point": {
+        "direction_frame": 40.0
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "officer_command": {
+          "kind": "world_setup",
+          "value": "stop"
+        },
+        "intended_observed_response": {
+          "kind": "controller",
+          "value": "responds"
+        },
+        "direction_frame": {
+          "kind": "world_setup",
+          "value": 40.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "subject_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_speed_mps",
+            "unit": "m/s",
+            "method": "original subject velocity sampled at each joined Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz sampled velocity"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "boolean",
+            "method": "walker arm-pose activation joined to original four-view frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "officer actor and addressed subject",
+            "uncertainty": "physical gesture visibility and meaning require original-pixel review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "original officer role, identity, duty and lawfulness source references"
+          },
+          {
+            "name": "officer_direction_context",
+            "unit": "structured record",
+            "method": "original addressed subject and timed pose indication"
+          },
+          {
+            "name": "subject_motion_context",
+            "unit": "structured record",
+            "method": "original subject motion batch"
+          },
+          {
+            "name": "subject_motion_history",
+            "unit": "structured record",
+            "method": "original 20 Hz subject motion rows"
+          }
+        ],
+        "limitations": [
+          "Officer authority, lawful duty and willfulness require independent source/legal review."
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "subject_speed_mps",
+          "unit": "m/s",
+          "measurement": {
+            "method": "original subject velocity sampled after indication",
+            "time_window": "post-indication original frames",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "willfully to fail or refuse to comply with any lawful order or direction"
+      ]
     }
-  ]
+  ],
+  "sweeps_expanded": true
 }

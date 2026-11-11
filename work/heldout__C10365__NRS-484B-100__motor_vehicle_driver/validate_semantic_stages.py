@@ -34,6 +34,6 @@ stages.validate('cases', cases,
     {'request': request, 'dependencies': [binding], 'templates': [template],
      'canonical_parameter_rules': rules, 'judgment_completion_policy': {}})
 selected = [row for row in cases['cases'] if row['target_type'] != 'baseline']
-if len(selected) != 4:
-    raise ValueError('Four exact officer indication and response cases required')
-print('Four exact officer cases validate across six canonical stages')
+if len(selected) != 7 or len([x for x in selected if x['target_type'] == 'judgment_sweep']) != 3:
+    raise ValueError('Four indication/response cases and three exact sweep points required')
+print('Seven exact officer cases validate across six canonical stages')

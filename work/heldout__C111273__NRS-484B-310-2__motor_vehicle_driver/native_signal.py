@@ -114,7 +114,8 @@ def crossing_route(world_map, junction_id, sample_step_m=5.0,
     return {'road_id': road_id, 'lane_id': lane_id, 'start': start, 'end': end}
 
 
-def construct_native(world, case, official_control_source, blueprint_id='vehicle.tesla.model3'):
+def construct_native(world, case, official_control_source, blueprint_id='vehicle.tesla.model3',
+                     *, approach_before_m=70.0, spawn_z_offset_m=0.0):
     """Place the selected participants on map governed lanes.
 
     The caller owns returned vehicle actors and must destroy them in a finally
@@ -125,19 +126,31 @@ def construct_native(world, case, official_control_source, blueprint_id='vehicle
     approaches = discover_approaches(
         world.get_actors().filter('traffic.traffic_light*'), official_control_source)
     selected = approaches[case.direction]
-    ego_route = route_for(selected)
+    if not 0 <= spawn_z_offset_m <= .5:
+        raise ValueError('spawn height adjustment outside engineering bounds')
+    ego_route = route_for(selected, before_m=approach_before_m)
     cross_route = (crossing_route(world.get_map(), selected.junction_id)
                    if case.crossing_vehicle else None)
     blueprint = world.get_blueprint_library().find(blueprint_id)
     owned = []
     try:
-        ego = world.try_spawn_actor(blueprint, ego_route[0])
+        ego_start = ego_route[0]
+        if spawn_z_offset_m:
+            from copy import deepcopy
+            ego_start = deepcopy(ego_start)
+            ego_start.location.z += spawn_z_offset_m
+        ego = world.try_spawn_actor(blueprint, ego_start)
         if ego is None:
             raise ValueError('ego Native actor spawn failed')
         owned.append(ego)
         crossing = None
         if cross_route is not None:
-            crossing = world.try_spawn_actor(blueprint, cross_route['start'])
+            crossing_start = cross_route['start']
+            if spawn_z_offset_m:
+                from copy import deepcopy
+                crossing_start = deepcopy(crossing_start)
+                crossing_start.location.z += spawn_z_offset_m
+            crossing = world.try_spawn_actor(blueprint, crossing_start)
             if crossing is None:
                 raise ValueError('crossing Native actor spawn failed')
             owned.append(crossing)

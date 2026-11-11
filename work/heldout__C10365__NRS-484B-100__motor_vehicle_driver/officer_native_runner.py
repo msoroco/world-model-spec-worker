@@ -13,7 +13,13 @@ CASES={
     'stop_does_not_respond':('stop',False),
     'proceed_responds':('proceed',True),
     'proceed_does_not_respond':('proceed',False),
+    'stop_response_window_grid-0000':('stop',True),
+    'stop_response_window_grid-0001':('stop',True),
+    'stop_response_window_grid-0002':('stop',True),
 }
+SWEEP_FRAMES = {'stop_response_window_grid-0000': 30,
+                'stop_response_window_grid-0001': 50,
+                'stop_response_window_grid-0002': 40}
 
 def check_config(config):
     if (config.get('law_id'),config.get('cell_id'),config.get('actor'))!=('NRS-484B-100','C10365','motor_vehicle_driver'):
@@ -24,7 +30,7 @@ def check_config(config):
         raise ValueError('Unknown exact officer-direction case')
     if config.get('rate_hz')!=20 or config.get('frames')!=160 or len(config.get('cameras',[]))!=4:
         raise ValueError('Four-view 20 Hz capture contract missing')
-    if config.get('direction_frame')!=40:
+    if config.get('direction_frame')!=SWEEP_FRAMES.get(suffix,40):
         raise ValueError('Timed indication frame changed')
     if not 10.0<=float(config.get('route_distance_m',18.0))<=18.0:
         raise ValueError('Unsupported connected alley route length')
