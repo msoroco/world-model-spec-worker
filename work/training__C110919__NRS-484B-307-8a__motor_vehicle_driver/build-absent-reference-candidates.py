@@ -37,6 +37,9 @@ def main():
                  "limitations": ["CPU fixtures do not prove absence in original Native map/pixels or accepted recording"]}
     files = {target: (NATIVE / source).read_text() for target, source in SOURCES.items()}
     dispositions = json.loads((HERE / "case-plan.json").read_text())["requirement_dispositions"]
+    manifest_path = HERE / "draft-absent-reference-execution-manifest.json"
+    previous = json.loads(manifest_path.read_text()) if manifest_path.is_file() else {"cases": []}
+    previous_by_case = {row["case_id"]: row for row in previous["cases"]}
     manifest = {"format": "worker-unselected-draft-construction-manifest-v1",
                 "assignment_id": HERE.name, "status": "draft_absent_reference_not_selected",
                 "runtime_manifest_sha256": sha(ROOT / "runtime/pipeline/SOURCE-MANIFEST.json"),
@@ -51,7 +54,6 @@ def main():
                                       "value_type": "object", "kind": "measured",
                                       "inputs": ["native_samples.jsonl", "road_geometry.json"]}
                                      for i, key, method in ((0, "steady_red_activation", "measure_signal"),
-                                                            (1, "right_turn_stop", "measure_stop"),
                                                             (2, "right_turn_yield", "measure_turn_yield"),
                                                             (3, "right_turn_stop", "measure_stop"))],
                     "negative": {"remove": ["road_geometry.json"],
@@ -65,6 +67,8 @@ def main():
                  "measurement_procedure": {"entrypoint": "finalize.py",
                                            "output_schema": "c110919-saved-analysis-v1"},
                  "candidates": []}
+        if previous_by_case.get(case_id, {}).get("fixture_recipe"):
+            entry["fixture_recipe"] = previous_by_case[case_id]["fixture_recipe"]
         for candidate in engineering.CANDIDATES:
             config = dict(template)
             config.update(case_id=case_id, selected_case_id=case_id, case_suffix=suffix,
@@ -101,7 +105,7 @@ def main():
                            changed_knobs=list(engineering.CHANGES[candidate]))
                 entry["candidates"].append(ref)
         manifest["cases"].append(entry)
-    path = HERE / "draft-absent-reference-execution-manifest.json"
+    path = manifest_path
     save(path, manifest)
     print(json.dumps({"cases": len(manifest["cases"]), "candidate_bundles": 8,
                       "manifest_sha256": sha(path), "selected": False}))

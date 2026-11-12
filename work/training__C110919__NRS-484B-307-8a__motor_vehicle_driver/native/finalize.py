@@ -129,8 +129,12 @@ def derive_channels(attempt: Path,config: dict,native: list[dict],mapping: list[
         values={
             'dev.traffic_signal':{'observed_state':sample['signal_state_observed'],
                                   'native_actor_id':geometry['signal_actor_id']},
-            'st.stop_line':geometry['stop_line_y_m'],
-            'st.crosswalk':geometry['nearest_crosswalk_y_m'],
+            'st.stop_line':(geometry['stop_line_y_m'] if geometry['stop_line_y_m'] is not None
+                            else {'present':False,'source':'road_geometry.json',
+                                  'native_map_sha256':geometry['native_map_sha256']}),
+            'st.crosswalk':(geometry['nearest_crosswalk_y_m'] if geometry['nearest_crosswalk_y_m'] is not None
+                            else {'present':False,'source':'road_geometry.json',
+                                  'native_map_sha256':geometry['native_map_sha256']}),
             'drv.stopped':speed<.05,
             'kin.velocity':speed,
             'drv.extreme_lane':geometry['lanes']['approach_right'],

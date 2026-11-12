@@ -1,0 +1,122 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver",
+  "status": "draft_absent_reference_not_selected",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "cases": [
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original absence of crosswalk/sign/marking, intersection boundary, signal, body and pixels require Native evidence"
+      },
+      "measurement_contract": "absent-reference-candidates/absent_reference/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110919-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "absent-reference-candidates/absent_reference/fallback1/construction.json",
+          "construction_sha256": "5a2e754dc5adf1c52ce6900820d167fb73bc0690c84691cfd20696d443158d3c",
+          "trigger": {
+            "source": "original Native ego pose joined to authored route and map readback",
+            "metric": "max_route_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "absent-reference-candidates/absent_reference/fallback2/construction.json",
+          "construction_sha256": "7f8f7f1219194e017cd5193de37cee1736ec6f734758ef641b6ebfc8f94f4571",
+          "trigger": {
+            "source": "original Native pedestrian and ego conflict-zone crossing times",
+            "metric": "min_pedestrian_clearance_s",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "yield_clearance_margin_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "absent-reference-candidates/absent_reference/fallback3/construction.json",
+          "construction_sha256": "1b069d0f3a66c6d3a6095c132efaa9057021b2e41a7cfc3d6ae810b2d8399788",
+          "trigger": {
+            "source": "decoded original signal and body mask corners in overview video",
+            "metric": "min_signal_or_body_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/update024-absent_reference-recipe.json",
+      "construction": "absent-reference-candidates/absent_reference/primary/construction.json",
+      "construction_sha256": "7da13713831c4cc785a745f33e97714aef7cf4789f481c2614a5cff1a58e0ca2"
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original absence of crosswalk/sign/marking, intersection boundary, signal, body and pixels require Native evidence"
+      },
+      "measurement_contract": "absent-reference-candidates/absent_reference_contrast/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110919-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "absent-reference-candidates/absent_reference_contrast/fallback1/construction.json",
+          "construction_sha256": "1e5e169b1c9af1923d4b2f682ed85a36c2e29a2ad3e4f60be378f9f35cf96b33",
+          "trigger": {
+            "source": "original Native ego pose joined to authored route and map readback",
+            "metric": "max_route_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "absent-reference-candidates/absent_reference_contrast/fallback2/construction.json",
+          "construction_sha256": "0ecefda93791816de60b93b5f25e6cbccb3ba4591592540a5adfdfd6c4216047",
+          "trigger": {
+            "source": "original Native pedestrian and ego conflict-zone crossing times",
+            "metric": "min_pedestrian_clearance_s",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "yield_clearance_margin_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "absent-reference-candidates/absent_reference_contrast/fallback3/construction.json",
+          "construction_sha256": "5cd2e41cef2703c64d106fc602c7aab073e66c39585b0d4568606bb226124aa6",
+          "trigger": {
+            "source": "decoded original signal and body mask corners in overview video",
+            "metric": "min_signal_or_body_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/update024-absent_reference_contrast-recipe.json",
+      "construction": "absent-reference-candidates/absent_reference_contrast/primary/construction.json",
+      "construction_sha256": "9976f917c3ca5e4c94b51356200785f0c14111cf07461cb2d9b720862b4c3881"
+    }
+  ]
+}
