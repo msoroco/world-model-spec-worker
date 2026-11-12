@@ -13,6 +13,7 @@ class HazardSweepPolicy:
         self.release_ttc_s = release_ttc_s
         self.approach_speed_mps = approach_speed_mps
         self.state = "approach"
+        self.hazard_seen = False
 
     def step(self, *, distance_to_hold_m, ego_speed_mps,
              oncoming_distance_to_conflict_m, oncoming_closing_speed_mps,
@@ -30,12 +31,17 @@ class HazardSweepPolicy:
                if oncoming_distance_to_conflict_m >= 0 and oncoming_closing_speed_mps > 0
                else None)
         demand_yield = oncoming_in_intersection or (ttc is not None and ttc < self.release_ttc_s)
+        if demand_yield:
+            self.hazard_seen = True
         if self.state in ("approach", "yield") and distance_to_hold_m <= 2.0:
             self.state = "yield"
         # An unentered, distant opponent need not become "cleared" before the
         # controller can express the far-approach construction. Body occupancy
         # and measured TTC still prevent the turn during the engineering hazard.
-        if self.state == "yield" and not demand_yield:
+        # A controller that already observed the approaching hazard must not
+        # treat a later increase in TTC as evidence that yielding is complete.
+        # Require the source-measured clearance signal before turning.
+        if self.state == "yield" and not demand_yield and (not self.hazard_seen or oncoming_cleared):
             self.state = "turn"
         if self.state == "yield":
             return {"state": "yield", "throttle": 0.0, "brake": 1.0,
