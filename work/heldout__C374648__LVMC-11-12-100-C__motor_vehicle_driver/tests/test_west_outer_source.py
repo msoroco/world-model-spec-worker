@@ -8,7 +8,7 @@ import unittest
 
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
-import test_west_source
+from test_turn_origin_finalizer import sources
 from west_outer_finalizer import CASE, analyze
 from west_outer_runner import check_config
 
@@ -16,19 +16,25 @@ from west_outer_runner import check_config
 class WestOuterSourceTests(unittest.TestCase):
     def _source(self, root):
         root = Path(root)
-        test_west_source.WestSourceTests()._source(root)
-        config = json.loads((root/'config.json').read_text())
+        sources(root)
+        config = json.loads((HERE/'config.json').read_text())
         config['selected_case_id'] = CASE
         config['case']['case_id'] = CASE
         (root/'config.json').write_text(json.dumps(config)+'\n')
         rows = [json.loads(line) for line in
                 (root/'turn_origin_native.jsonl').read_text().splitlines()]
         for row in rows:
+            row['ego_forward_xy'] = [-v for v in row['ego_forward_xy']]
             row['lane_id'] = -2
+            row['center_turn_lane_id'] = -row['center_turn_lane_id']
+            row['center_marking_source_ids'] = [
+                source.replace('lane:1:', 'lane:-1:')
+                for source in row['center_marking_source_ids']]
         (root/'turn_origin_native.jsonl').write_text(''.join(
             json.dumps(row)+'\n' for row in rows))
         context = json.loads((root/'case_context.json').read_text())
         context['case_id'] = CASE
+        context['target_exit_lane_id'] = -1
         (root/'case_context.json').write_text(json.dumps(context)+'\n')
         return config
 

@@ -71,3 +71,5 @@ Zero-byte synthetic diagnostic logs were source-preservingly compacted into `wor
 2026-11-12 return-cap compaction: 32 small UTF-8 diagnostic logs have exact path, contents and SHA256 stored in `work/_shared/prune-history.json.compacted_text_files`. Scoped nonstrict preparation passes after compaction. Restore before any strict completion sweep with `.venv-cpu/bin/python work/_shared/restore_compacted_zero_logs.py --assignment heldout__C293604__NRS-484B-250-3__motor_vehicle_driver`; status remains partial.
 
 Additional cap compaction after the previous note archived 71 more UTF-8 diagnostic logs under the same hashed shared inventory. Total newly compacted on 2026-11-12: 103 files. Scoped nonstrict still passes. The same restore command restores all compacted logs for this assignment.
+
+Final cap compaction in this wave archived the remaining six UTF-8 diagnostic logs. Total newly compacted on 2026-11-12 is 109 files; full text/path/SHA256 remain in the shared inventory. Scoped nonstrict passes. Restore all 109 before strict with the same command above.

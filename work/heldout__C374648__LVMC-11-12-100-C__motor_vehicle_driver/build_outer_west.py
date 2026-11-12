@@ -30,8 +30,7 @@ def build():
              'center_turn_construction.py', 'turn_origin_capture.py',
              'turn_origin_measurement.py', 'turn_origin_finalizer.py',
              'west_outer_finalizer.py',
-             'tests/test_west_outer_source.py', 'tests/test_west_source.py',
-             'tests/test_turn_origin_finalizer.py',
+             'tests/test_west_outer_source.py', 'tests/test_turn_origin_finalizer.py',
              'tests/test_turn_origin_measurement.py',
              'tests/test_center_turn_construction.py']
     construction = json.loads((HERE/'construction.json').read_text())

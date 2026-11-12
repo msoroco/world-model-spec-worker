@@ -15,9 +15,39 @@
         "trigger_metric": "first and second signed ego-minus-lead gap reversals with separate off-paved intervals and intervening paved reentry",
         "failure_condition": "either pass lacks original gap reversal, off-paved crossing, same target, reentry or four-camera visibility"
       }
+    },
+    {
+      "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__single_right_pass",
+      "target_law_id": "NRS-484B-650-1",
+      "description": "Same fixed overtaken vehicle, route and four cameras with only one requested mapped-edge right pass; second interval remains on the paved lane as a controlled repeat-act comparison",
+      "construction_status": "exact_offline_passed_compatibility_pending",
+      "physical_risk": {
+        "risk": "Native map may not have a traversable off-paved shoulder or enough same-vehicle gap reversal to reset between passes",
+        "trigger_source": "20 Hz original ego/lead geometry, paved boundary source and four synchronized cameras",
+        "trigger_metric": "first and second signed ego-minus-lead gap reversals with separate off-paved intervals and intervening paved reentry",
+        "failure_condition": "either pass lacks original gap reversal, off-paved crossing, same target, reentry or four-camera visibility"
+      }
     }
   ],
-  "comparisons": [],
+  "comparisons": [
+    {
+      "comparison_id": "repeated_right_pass_required",
+      "case_ids": [
+        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass",
+        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__single_right_pass"
+      ],
+      "fixed_conditions": [
+        "C178759 paved-road/overtake-right/other-vehicle cell",
+        "same fixed overtaken actor",
+        "20 Hz 100-second four-camera source profile",
+        "first right-pass request, road geometry, speed context and independent hazard review"
+      ],
+      "deliberate_differences": [
+        "second right-pass interval requested beyond mapped outer-road edge in repeated_right_pass; second interval paved-lane continuation in single_right_pass"
+      ],
+      "legal_judgment": "Original pavement, speeding and immediate-hazard predicates require independent review; no automatic offense verdict"
+    }
+  ],
   "observations": [
     {
       "name": "path_length_m",
@@ -25,7 +55,8 @@
       "source": "original 20 Hz ego world positions",
       "measurement": "cumulative continuous path",
       "case_ids": [
-        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass"
+        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass",
+        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__single_right_pass"
       ]
     },
     {
@@ -34,7 +65,8 @@
       "source": "original actor position and separately retained OpenDRIVE road edge",
       "measurement": "signed mapped outer-edge clearance, not legal pavement classification",
       "case_ids": [
-        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass"
+        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass",
+        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__single_right_pass"
       ]
     },
     {
@@ -43,7 +75,8 @@
       "source": "saved-only source joins",
       "measurement": "two candidate order reversals and measured event envelope with legal findings null",
       "case_ids": [
-        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass"
+        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass",
+        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__single_right_pass"
       ]
     }
   ],
@@ -104,7 +137,8 @@
       "source": "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
       "status": "selected_required",
       "case_ids": [
-        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass"
+        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass",
+        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__single_right_pass"
       ],
       "evidence_or_gap": "Exact two-pass source collection and one-mile event-envelope measurement requested; original pavement, speeding predicate and hazard judgments remain independent review."
     }

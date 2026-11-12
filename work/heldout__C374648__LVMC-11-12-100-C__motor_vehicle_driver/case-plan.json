@@ -70,7 +70,7 @@
     {
       "case_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_outer_west",
       "requirement": "Westbound left turn from adjacent outer lane",
-      "status": "planned_unimplemented",
+      "status": "primary_cpu_proved",
       "candidate_risk": {
         "status": "physical",
         "reason": "westbound controller may enter center lane"
@@ -81,7 +81,12 @@
           "sha256": "6366d357ca323359ec0aaf0fd375c7bd4c9bd7c058a0f693e378c42cb0fff23b"
         }
       ],
-      "target_law_id": "LVMC-11-12-100-C"
+      "target_law_id": "LVMC-11-12-100-C",
+      "cpu_proofs": {
+        "offline_log": "west-outer-offline.log",
+        "compatibility_receipt": "west-outer-compatibility.json",
+        "saved_processing_receipt": "west-outer-saved-processing.json"
+      }
     },
     {
       "case_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_center_east",
@@ -142,13 +147,14 @@
       ],
       "fixed_conditions": "same left-turn target, designation, subject type, cameras and observation method",
       "deliberate_differences": "lane occupied at junction entry",
-      "status": "planned_unimplemented",
+      "status": "cpu_proved",
       "source_refs": [
         {
           "path": "inputs/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/assignment.json",
           "sha256": "6366d357ca323359ec0aaf0fd375c7bd4c9bd7c058a0f693e378c42cb0fff23b"
         }
-      ]
+      ],
+      "proof": "west-turn-origin-comparison-proof.json"
     },
     {
       "comparison_id": "center_use",
@@ -317,7 +323,7 @@
     }
   },
   "implemented_measurement": "turn_origin_measurement.py and turn_origin_capture.py source-bind lane of origin and observed left deflection; turn_origin_finalizer.py derives the first exact case channel from retained raw sources. First exact offline, positive/negative compatibility and clean saved processing pass.",
-  "review_status": "partial; eastbound center and outer left-turn exact primaries plus independent original-source comparison pass CPU; four other exact cases, all fallbacks and remaining comparisons remain",
+  "review_status": "partial; eastbound and westbound center/outer left-turn exact primaries plus independent original-source comparisons pass CPU; two straight exact cases, all fallbacks and remaining comparisons remain",
   "observations": [
     {
       "name": "turn_origin_observation",

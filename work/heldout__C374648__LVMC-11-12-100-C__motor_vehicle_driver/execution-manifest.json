@@ -151,7 +151,7 @@
       "case_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_outer_west",
       "kind": "delivery",
       "construction": "construction-outer_west.json",
-      "construction_sha256": "c798b80462924f9e47955ab1ef59d73512665674884a1f61ac74a01e43dc9c47",
+      "construction_sha256": "70e277053a5f2fe753354f8f225141ec3ec8f30048279dcd5d64580c39e16b5f",
       "measurement_procedure": {
         "entrypoint": "west_outer_finalizer.py"
       },
@@ -161,7 +161,39 @@
         "status": "physical",
         "reason": "Westbound outer lane may cross into candidate center lane before turn; map and motion require Native review"
       },
-      "candidates": []
+      "candidates": [],
+      "acquisition": {
+        "turn_origin_observation": {
+          "entrypoint": "west_outer_runner.py",
+          "method": "20 Hz original Native westbound outer lane/heading source recorder",
+          "evidence": "turn_origin_native.jsonl, case_context.json, trace.jsonl, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_outer_west --output .runtime-work/c374648-west-outer-offline-3",
+        "exit_code": 0,
+        "log": "west-outer-offline.log",
+        "log_sha256": "d541ac3e05ce57fe3003c7ebb42418333809297403b96b5b181089462f2aaa53",
+        "construction_sha256": "70e277053a5f2fe753354f8f225141ec3ec8f30048279dcd5d64580c39e16b5f"
+      },
+      "compatibility": {
+        "receipt": "west-outer-compatibility.json",
+        "sha256": "5cf48f1dc0ac70b1f3903dcdac09b017147378688d0ba322e36ebeb2442390f6",
+        "log": "west-outer-compat-analysis.log",
+        "negative_log": "west-outer-negative.log"
+      },
+      "negative": {
+        "log": "west-outer-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_outer_west --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/v0001/feedback.json\"",
+        "test_log": "west-outer-saved.log",
+        "test_log_sha256": "103fc03a16eab3e3ee07af9f11626e01b84a4dfbe91f371ed09865fff76a2a82",
+        "saved_processing_receipt": "west-outer-saved-processing.json",
+        "saved_processing_sha256": "103fc03a16eab3e3ee07af9f11626e01b84a4dfbe91f371ed09865fff76a2a82"
+      }
     }
   ]
 }
