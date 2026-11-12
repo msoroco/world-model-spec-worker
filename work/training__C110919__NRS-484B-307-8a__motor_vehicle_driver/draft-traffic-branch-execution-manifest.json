@@ -1,0 +1,122 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver",
+  "status": "draft_traffic_branch_not_selected",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "cases": [
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__traffic_yield_wait",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red stop, directed cross-traffic signal, two full-body paths, overlap and four-camera pixels require Native review"
+      },
+      "measurement_contract": "traffic_branch_cases/traffic_yield_wait/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110919-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "traffic_branch_cases/traffic_yield_wait/fallback1/construction.json",
+          "construction_sha256": "9983e93d636bfb0a3da7eddddebc8e815c7f27f0b6e9f6ea2a820380cdb797c7",
+          "trigger": {
+            "source": "original Native ego pose joined to authored route and map readback",
+            "metric": "max_route_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "traffic_branch_cases/traffic_yield_wait/fallback2/construction.json",
+          "construction_sha256": "aba284d3a8e72af1a91f011c148359bfedf7c38a97a4e9a145694c42bfa2788b",
+          "trigger": {
+            "source": "original Native pedestrian and ego conflict-zone crossing times",
+            "metric": "min_pedestrian_clearance_s",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "yield_clearance_margin_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "traffic_branch_cases/traffic_yield_wait/fallback3/construction.json",
+          "construction_sha256": "e314e6e430ffa30a786cb17286bc138409b9737d6d9b0f64d0ea08759ed01442",
+          "trigger": {
+            "source": "decoded original signal and body mask corners in overview video",
+            "metric": "min_signal_or_body_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "construction": "traffic_branch_cases/traffic_yield_wait/primary/construction.json",
+      "construction_sha256": "b692ccc3b9f15b022f257a844354c2feec8f6e59ebf89248746e4fa406b24b2f",
+      "fixture_recipe": "work/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/traffic_branch_cases/traffic_yield_wait-recipe.json"
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__traffic_conflict_entry",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red stop, directed cross-traffic signal, two full-body paths, overlap and four-camera pixels require Native review"
+      },
+      "measurement_contract": "traffic_branch_cases/traffic_conflict_entry/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110919-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "traffic_branch_cases/traffic_conflict_entry/fallback1/construction.json",
+          "construction_sha256": "7d3aa1209bccda542b647675c3202ab9cdc60d0c68cdd22331ce46ef7c7a249a",
+          "trigger": {
+            "source": "original Native ego pose joined to authored route and map readback",
+            "metric": "max_route_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "traffic_branch_cases/traffic_conflict_entry/fallback2/construction.json",
+          "construction_sha256": "4153450ba43aa4aff2dd05ed24c933f736ba678e3058ad2b40dce4ba5c604940",
+          "trigger": {
+            "source": "original Native pedestrian and ego conflict-zone crossing times",
+            "metric": "min_pedestrian_clearance_s",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "yield_clearance_margin_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "traffic_branch_cases/traffic_conflict_entry/fallback3/construction.json",
+          "construction_sha256": "11dc6a9f51a574d6cc416effdbc88b75b947be02b6a528538224099473ee85c6",
+          "trigger": {
+            "source": "decoded original signal and body mask corners in overview video",
+            "metric": "min_signal_or_body_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "construction": "traffic_branch_cases/traffic_conflict_entry/primary/construction.json",
+      "construction_sha256": "08b101ef3e6e3572754d3d75537badf6d1d74bfdd8883db4a1289f28e2010d21",
+      "fixture_recipe": "work/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/traffic_branch_cases/traffic_conflict_entry-recipe.json"
+    }
+  ]
+}

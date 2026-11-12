@@ -23,7 +23,9 @@
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_wait",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_wait",
-        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_conflict_entry"
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_conflict_entry",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__traffic_yield_wait",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__traffic_conflict_entry"
       ]
     },
     {
@@ -51,7 +53,9 @@
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_wait",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_wait",
-        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_conflict_entry"
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_conflict_entry",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__traffic_yield_wait",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__traffic_conflict_entry"
       ]
     },
     {
@@ -67,7 +71,9 @@
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_wait",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_wait",
-        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_conflict_entry"
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_conflict_entry",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__traffic_yield_wait",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__traffic_conflict_entry"
       ]
     }
   ],
@@ -251,6 +257,48 @@
         "right_turn_permission_and_yield",
         "selected_delivery_comparison"
       ]
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__traffic_yield_wait",
+      "target_law_id": "NRS-484B-307-8a",
+      "planning_status": "unverified_definition",
+      "target_type": "boundary_probe",
+      "comparison_variable": "signal_directed_other_traffic_response",
+      "comparison_unit": "observed_ego_and_other_traffic_full_body_conflict",
+      "requested_setting": "traffic_yield_wait",
+      "recorded_value": null,
+      "case_description": "After the same red-signal full-body stop, compare waiting for signal-directed cross traffic with a deliberate occupied-lane entry probe. Original traffic direction and legal right-of-way remain unresolved.",
+      "fixed_context": "Hold marked-reference road, extreme-right right-turn route, separate green west-approach signal, other-traffic actor path, early-cleared pedestrian path, weather, capture profile and all noncompared controller knobs constant.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "gap_ids": [
+        "right_turn_permission_and_yield",
+        "selected_delivery_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__traffic_conflict_entry",
+      "target_law_id": "NRS-484B-307-8a",
+      "planning_status": "unverified_definition",
+      "target_type": "boundary_probe",
+      "comparison_variable": "signal_directed_other_traffic_response",
+      "comparison_unit": "observed_ego_and_other_traffic_full_body_conflict",
+      "requested_setting": "traffic_conflict_entry",
+      "recorded_value": null,
+      "case_description": "After the same red-signal full-body stop, compare waiting for signal-directed cross traffic with a deliberate occupied-lane entry probe. Original traffic direction and legal right-of-way remain unresolved.",
+      "fixed_context": "Hold marked-reference road, extreme-right right-turn route, separate green west-approach signal, other-traffic actor path, early-cleared pedestrian path, weather, capture profile and all noncompared controller knobs constant.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "gap_ids": [
+        "right_turn_permission_and_yield",
+        "selected_delivery_comparison"
+      ]
     }
   ],
   "comparisons": [
@@ -334,6 +382,31 @@
         "extreme_right_approach",
         "two_directional_receiving_road",
         "pedestrian_path_and_signal_direction",
+        "weather",
+        "noncompared_controller_settings",
+        "camera_and_capture_profile"
+      ],
+      "status": "planned_unverified"
+    },
+    {
+      "comparison_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__comparison_other_traffic_yield",
+      "case_ids": [
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__traffic_yield_wait",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__traffic_conflict_entry"
+      ],
+      "deliberate_differences": [
+        "signal_directed_other_traffic_response"
+      ],
+      "fixed_conditions": [
+        "cell",
+        "actor",
+        "steady_red_ego_signal",
+        "marked_stop_reference",
+        "extreme_right_approach",
+        "two_directional_receiving_road",
+        "separate_green_cross_traffic_signal",
+        "other_traffic_path",
+        "early_cleared_pedestrian_path",
         "weather",
         "noncompared_controller_settings",
         "camera_and_capture_profile"
@@ -524,7 +597,8 @@
     "Green-release, absent-reference, one-way-left and paragraph (c)/(d) exception branches remain open.",
     "Selected delivery comparison, independent acceptance audit and GPU queue are unfinished worker-owned tasks.",
     "Absent-reference right-turn pair has runner/geometry/finalizer CPU branch proof only; exact selected offline, compatibility, saved processing, independent audits and original absence review remain pending.",
-    "Pedestrian-conflict pair has eight draft offline constructions and source-shaped comparison tests; exact compatibility, saved processing, original signal-directed walker timing and legal yield review remain unverified."
+    "Pedestrian-conflict pair has eight draft offline constructions and source-shaped comparison tests; exact compatibility, saved processing, original signal-directed walker timing and legal yield review remain unverified.",
+    "Other-traffic pair has an authored separate green signal and moving west-approach vehicle; original Native lane direction, movement, full-body overlap, pixels and legal yielding remain unverified. CPU diagnostic recipes are synthetic."
   ],
   "selection_targets": [
     "full-train"
