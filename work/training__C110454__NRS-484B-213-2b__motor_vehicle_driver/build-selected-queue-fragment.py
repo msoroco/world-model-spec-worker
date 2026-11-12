@@ -112,15 +112,18 @@ def build():
                                                "--left-attempt", "${LEFT_ATTEMPT_DIR}",
                                                "--left-saved", "${LEFT_PROCESSED_DIR}",
                                                "--right-attempt", "${RIGHT_ATTEMPT_DIR}",
-                                               "--right-saved", "${RIGHT_PROCESSED_DIR}")})
+                                               "--right-saved", "${RIGHT_PROCESSED_DIR}",
+                                               "--left-audit", "${LEFT_SOURCE_AUDIT}",
+                                               "--right-audit", "${RIGHT_SOURCE_AUDIT}",
+                                               "--output", "${COMPARISON_AUDIT}")})
     require(len(comparisons) == 3, "Selected comparisons incomplete")
     return {"format": "c110454-selected-queue-fragment-v1", "assignment_id": AID,
             "manifest_sha256": sha(manifest_path), "case_plan_sha256": sha(plan_path),
             "status": "partial", "dispatchable": False, "cases": rows,
             "comparison_audit_commands": comparisons,
             "withheld_comparison_id": AID + "__comparison_main",
-            "missing_to_dispatch": ["original-mode delivery_audit.py and negative proofs",
-                                    "original-mode comparison_audit.py",
+            "missing_to_dispatch": ["original Native delivery audits and pixel/context reviews",
+                                    "original Native comparison receipts",
                                     "accepted-original 100-foot equivalence disposition",
                                     "complete selected manifest proof fields",
                                     "canonical batch queue and local integration proof"]}
