@@ -9,12 +9,13 @@ spec = importlib.util.spec_from_file_location('selected_pair', HERE / 'audit-sel
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 manifest = module.read(HERE / 'execution-manifest.json')
-matrix = module.read(HERE / 'update017-selected-process-saved-matrix.json')
+matrix = module.read(HERE / 'update019-selected-process-saved-matrix.json')
 positive = module.audit(manifest, matrix)
 assert positive['selected_cases'] == 2 and positive['candidate_receipts_verified'] == 8
 rejected = []
 for name in ('missing_fallback', 'wrong_construction_hash', 'missing_saved_receipt',
-             'wrong_manifest_binding', 'wrong_compatibility_receipt'):
+             'wrong_manifest_binding', 'wrong_compatibility_receipt',
+             'wrong_physical_receipt'):
     edited_manifest = copy.deepcopy(manifest)
     edited_matrix = copy.deepcopy(matrix)
     if name == 'missing_fallback':
@@ -25,8 +26,10 @@ for name in ('missing_fallback', 'wrong_construction_hash', 'missing_saved_recei
         edited_matrix['rows'].pop()
     elif name == 'wrong_manifest_binding':
         edited_matrix['manifest_sha256'] = '0' * 64
-    else:
+    elif name == 'wrong_compatibility_receipt':
         edited_manifest['cases'][0]['compatibility']['sha256'] = '0' * 64
+    else:
+        edited_manifest['cases'][0]['physical_preparation']['sha256'] = '0' * 64
     try:
         module.audit(edited_manifest, edited_matrix)
     except (ValueError, KeyError, StopIteration):

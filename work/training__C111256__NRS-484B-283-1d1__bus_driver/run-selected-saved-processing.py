@@ -1,5 +1,6 @@
 """Regenerate current-manifest saved processing from selected synthetic source recipes."""
 import hashlib
+import argparse
 import json
 import subprocess
 import sys
@@ -18,7 +19,7 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def main():
+def main(tag):
     manifest_path = HERE / 'execution-manifest.json'
     manifest = json.loads(manifest_path.read_text())
     bound_sha = sha(manifest_path)
@@ -26,11 +27,11 @@ def main():
     if not validator.is_file():
         raise ValueError('Pinned validator missing')
     rows = []
-    matrix_path = HERE / 'update018-selected-process-saved-matrix.json'
+    matrix_path = HERE / f'{tag}-selected-process-saved-matrix.json'
     for entry in manifest['cases']:
         suffix = entry['case_id'].removeprefix(HERE.name + '__')
         for candidate in ('primary', *(item['id'] for item in entry['candidates'])):
-            base = ROOT / '.runtime-work/c111256-update018-selected' / suffix / candidate
+            base = ROOT / '.runtime-work' / f'c111256-{tag}-selected' / suffix / candidate
             fixture, attempt, output = (base / name for name in
                                         ('source-fixture', 'selected-attempt', 'processed'))
             if any(path.exists() for path in (fixture, attempt, output)):
@@ -50,7 +51,7 @@ def main():
                        '--validator', str(validator)]
             run = subprocess.run(command, cwd=ROOT, text=True,
                                  stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=600)
-            log = HERE / f'update018-selected-{suffix}-{candidate}-process-saved.log'
+            log = HERE / f'{tag}-selected-{suffix}-{candidate}-process-saved.log'
             log.write_text(run.stdout)
             print(suffix, candidate, run.returncode, flush=True)
             if run.returncode:
@@ -74,4 +75,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--tag', default='update019')
+    main(parser.parse_args().tag)

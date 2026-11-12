@@ -43,6 +43,16 @@ def audit(manifest, matrix):
         require(entry['kind'] == 'delivery' and
                 entry['candidate_risk']['status'] == 'physical' and
                 len(entry['candidates']) == 3, 'Selected physical alternatives differ')
+        physical_ref = entry.get('physical_preparation', {})
+        physical_path = HERE / physical_ref.get('receipt', '')
+        require(physical_path.is_file() and sha(physical_path) == physical_ref.get('sha256'),
+                'Selected physical fixture receipt differs')
+        physical = read(physical_path)
+        require(physical.get('fixtures_are_cpu_mocks') is True and
+                physical.get('original_native_motion_verified') is False and
+                physical.get('original_walk_pixels_verified') is False and
+                physical.get('construction_sha256') == entry['construction_sha256'],
+                'Physical CPU mock was promoted to original')
         for candidate_id in ('primary', 'fallback1', 'fallback2', 'fallback3'):
             candidate = entry if candidate_id == 'primary' else next(
                 item for item in entry['candidates'] if item['id'] == candidate_id)
@@ -63,12 +73,12 @@ def audit(manifest, matrix):
             require(row['diagnostic_only'] is True and
                     sha(HERE / row['log']) == row['log_sha256'],
                     'Selected saved processing log differs')
-            base = ROOT / '.runtime-work/c111256-update017-selected' / suffix / candidate_id
-            processing = base / 'processed-fresh/v0001/processing.json'
+            base = ROOT / '.runtime-work/c111256-update019-selected' / suffix / candidate_id
+            processing = base / 'processed/v0001/processing.json'
             require(processing.is_file() and sha(processing) == row['processing_receipt_sha256'] and
                     read(processing)['physical_acceptance_claimed'] is False,
                     'Selected saved processing receipt differs')
-            attempt = base / 'fresh-attempt'
+            attempt = base / 'selected-attempt'
             selection = read(attempt / 'candidate-selection.json')
             require(selection['manifest_sha256'] == matrix['manifest_sha256'] and
                     selection['construction_sha256'] == candidate['construction_sha256'] and
@@ -104,6 +114,6 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     result = audit(read(HERE / 'execution-manifest.json'),
-                   read(HERE / 'update017-selected-process-saved-matrix.json'))
+                   read(HERE / 'update019-selected-process-saved-matrix.json'))
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
     print(json.dumps(result, sort_keys=True))
