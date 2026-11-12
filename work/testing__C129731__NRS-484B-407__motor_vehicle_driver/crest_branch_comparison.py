@@ -1,0 +1,162 @@
+"""Independent source comparison for four crest placement/direction diagnostics."""
+
+import hashlib
+import json
+import math
+from pathlib import Path
+
+from build_crest_opendrive import check_source_geometry, grade
+
+HERE = Path(__file__).resolve().parent
+CASE = HERE.name + "__crest__short_of_500ft"
+NAMES = ("near-a", "near-b", "approach-a", "approach-b")
+REQUIRED = ("config.json", "diagnostic-site-crest-short.json", "motion_history.jsonl",
+            "video_frames.jsonl", "trace.jsonl", "capture/evidence.jsonl",
+            "turn_history.jsonl", "curve_context.json")
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def read(path):
+    path = Path(path)
+    if not path.is_file():
+        raise ValueError("Missing comparison source: " + str(path))
+    return json.loads(path.read_text())
+
+
+def rows(path):
+    path = Path(path)
+    if not path.is_file():
+        raise ValueError("Missing comparison source: " + str(path))
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def normalized_actor(actor, turn_x):
+    xyz = actor["location_xyz_m"]
+    return {"x_relative_to_turn_m": round(xyz[0] - turn_x, 7),
+            "y_m": round(xyz[1], 7), "height_above_authored_grade_m": round(xyz[2] - grade(xyz[0]), 7),
+            "yaw_deg": actor["yaw_deg"], "velocity_xyz_mps": actor["velocity_xyz_mps"],
+            "road_lane": actor["road_lane"]}
+
+
+def inspect(name, attempt):
+    if name not in NAMES:
+        raise ValueError("Unknown exact crest alternative")
+    attempt = Path(attempt)
+    config, result = read(attempt / "config.json"), read(attempt / "result.json")
+    if config.get("selected_case_id") != CASE or (config.get("rate_hz"), config.get("duration_s")) != (20, 55):
+        raise ValueError("Crest branch capture contract changed")
+    if result.get("case_id") != CASE or result.get("provenance_kind") != "synthetic_fixture" or result.get("physical_acceptance_claimed") is not False:
+        raise ValueError("Crest branch diagnostic result identity differs")
+    hashes = result.get("source_evidence_hashes", {})
+    for source in REQUIRED:
+        if hashes.get(source) != sha(attempt / source):
+            raise ValueError("Sealed comparison source changed: " + source)
+    site = read(attempt / "diagnostic-site-crest-short.json")
+    if config["site_source"]["sha256"] != sha(attempt / "diagnostic-site-crest-short.json"):
+        raise ValueError("Config/site source binding differs")
+    build = read(HERE / ("branch-proof-" + name) / "build-receipt.json")
+    if build["site_sha256"] != config["site_source"]["sha256"]:
+        raise ValueError("Branch build/site source binding differs")
+    if site["source_status"] != "diagnostic_fixture" or site["map_source"]["status"] != "cpu_geometry_plan_unverified_in_carla":
+        raise ValueError("Branch falsely claims Native source review")
+    if not check_source_geometry((HERE / "native-map-plan/crest-road.xodr").read_text(), site):
+        raise ValueError("OpenDRIVE source geometry differs")
+    placement = "near_summit" if name.startswith("near-") else "approach_to_crest"
+    direction = "approach_a" if name.endswith("-a") else "approach_b"
+    turn_x = 0 if placement == "near_summit" else -40
+    if (site["turn_site_xyz_m"][0] != turn_x or
+            site["occluder"]["target_direction"] != direction or
+            build["placement"] != placement or build["occluded_direction"] != direction):
+        raise ValueError("Declared crest placement or obscured direction differs")
+    center_x = site["occluder"]["center_xyz_m"][0]
+    half_x = site["occluder"]["half_extent_xyz_m"][0]
+    if not math.isclose(abs(center_x - turn_x) - half_x, 150.0, abs_tol=1e-7):
+        raise ValueError("Planned prop near face differs from short-probe ray station")
+    context = read(attempt / "curve_context.json")
+    if (context.get("site_source_sha256") != config["site_source"]["sha256"] or
+            context.get("incoming_lanes") != site["incoming_lanes"] or
+            context.get("turn_site_xyz_m") != site["turn_site_xyz_m"]):
+        raise ValueError("Original context/site binding differs")
+    mapping = rows(attempt / "video_frames.jsonl")
+    motion = rows(attempt / "motion_history.jsonl")
+    trace = rows(attempt / "trace.jsonl")
+    evidence = rows(attempt / "capture/evidence.jsonl")
+    turns = rows(attempt / "turn_history.jsonl")
+    if any(len(collection) != 1100 for collection in (mapping, motion, trace, evidence, turns)):
+        raise ValueError("Crest branch source duration differs")
+    fixed_config = {k: v for k, v in config.items() if k != "site_source"}
+    fixed_site = {k: v for k, v in site.items() if k not in
+                  ("turn_site_xyz_m", "incoming_lanes", "u_turn_route_xyz_m", "camera_poses", "occluder")}
+    lane_ids = {lane["lane_id"] for lane in site["incoming_lanes"].values()}
+    blocked_lane = site["incoming_lanes"][direction]["lane_id"]
+    normalized = []
+    worlds = []
+    for index, (frame, actors, tick, ray, turn) in enumerate(zip(mapping, motion, trace, evidence, turns)):
+        native, time = frame.get("native_frame"), frame.get("time_s")
+        if (frame.get("video_frame") != index or actors.get("video_frame") != index or
+                actors.get("native_frame") != native or tick.get("frame") != native or
+                ray.get("original_frame") != native or turn.get("frame") != native or
+                actors.get("site_source_sha256") != config["site_source"]["sha256"] or
+                any(not math.isclose(t, time, abs_tol=.001) for t in
+                    (tick.get("time_s"), ray.get("recording_time_s"), turn.get("time_s"))) or
+                not math.isclose(time - mapping[0]["time_s"], index / 20, abs_tol=.005)):
+            raise ValueError("Crest branch original frame/time join differs")
+        if set(actors.get("approaches", {})) != {"approach_a", "approach_b"}:
+            raise ValueError("Both approaching directions required")
+        for label, actor in actors["approaches"].items():
+            lane = site["incoming_lanes"][label]
+            if actor.get("road_lane") != [lane["road_id"], lane["lane_id"]]:
+                raise ValueError("Approaching actor lane differs")
+        vis = ray.get("visibility", {})
+        if vis.get("probe_distance_m") != 152.4 or set(vis.get("required_lane_ids", [])) != lane_ids:
+            raise ValueError("Crest branch source ray inventory differs")
+        rays = {row.get("lane_id"): row for row in vis.get("approaches", [])}
+        if set(rays) != lane_ids:
+            raise ValueError("Both original approach rays required")
+        blocked = rays[blocked_lane]
+        clear = rays[next(iter(lane_ids - {blocked_lane}))]
+        horizon = blocked.get("any_body_sight_horizon", {})
+        bracket = horizon.get("bracket_m")
+        if (horizon.get("bound") != "first_sampled_occlusion" or bracket != [150.0, 150.125] or
+                blocked.get("any_sample_clear_at_probe") is not False or
+                clear.get("any_body_sight_horizon", {}).get("bound") != "at_least" or
+                clear.get("any_sample_clear_at_probe") is not True):
+            raise ValueError("Direction-specific short-of-500ft sight source differs")
+        normalized.append({"ego": normalized_actor(actors["ego"], turn_x),
+                           "approach_a": normalized_actor(actors["approaches"]["approach_a"], turn_x),
+                           "approach_b": normalized_actor(actors["approaches"]["approach_b"], turn_x)})
+        worlds.append(ray.get("world"))
+    return {"name": name, "placement": placement, "direction": direction,
+            "fixed_config": fixed_config, "fixed_site": fixed_site,
+            "normalized_motion": normalized, "worlds": worlds,
+            "source_sha256": {source: hashes[source] for source in REQUIRED},
+            "physical_acceptance_claimed": False}
+
+
+def audit(attempts):
+    if set(attempts) != set(NAMES):
+        raise ValueError("Four declared crest branch attempts required")
+    views = {name: inspect(name, attempts[name]) for name in NAMES}
+    first = views[NAMES[0]]
+    for name, view in views.items():
+        for key in ("fixed_config", "fixed_site", "normalized_motion", "worlds"):
+            if view[key] != first[key]:
+                raise ValueError("Unrelated fixed source condition differs: " + key + " in " + name)
+    return {"format": "worker-crest-branch-comparison-diagnostic",
+            "case_id": CASE, "alternatives": list(NAMES),
+            "source_sha256": {name: views[name]["source_sha256"] for name in NAMES},
+            "software_checks_passed": True, "passed": False,
+            "physical_acceptance_claimed": False,
+            "limitations": ["Synthetic rays and roads do not prove physical occlusion or driver recognition"]}
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    for name in NAMES:
+        parser.add_argument("--" + name, required=True)
+    args = parser.parse_args()
+    print(json.dumps(audit({name: getattr(args, name.replace("-", "_")) for name in NAMES}), sort_keys=True))

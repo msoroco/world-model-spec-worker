@@ -31,7 +31,9 @@ def _place_occluder(site, direction):
     station = site["incoming_lanes"][direction]["stations"][-1]["xyz_m"]
     # The prop is placed inside the 500-foot probe, on this direction's
     # planned eye-to-body ray. This does not predict a real CARLA sight result.
-    fraction = 0.625
+    # The short-probe ray packet first samples occlusion at 150 m. With the
+    # two-metre x half extent, put the planned prop's near face at that station.
+    fraction = (150.0 + 2.0) / station_distance(site, direction)
     eye = [station[0], station[1], station[2] + 1.4]
     body = [turn[0], turn[1], turn[2] + 1.5]
     center = [body[i] + fraction * (eye[i] - body[i]) for i in range(3)]
@@ -42,6 +44,10 @@ def _place_occluder(site, direction):
         "yaw_deg": 0,
         "target_direction": direction,
     }
+
+
+def station_distance(site, direction):
+    return site["incoming_lanes"][direction]["stations"][-1]["distance_to_turn_m"]
 
 
 def construct(base, placement, direction):
@@ -88,6 +94,9 @@ def check_branch(site, placement, direction):
     center = site["occluder"]["center_xyz_m"]
     extent = site["occluder"]["half_extent_xyz_m"]
     turn = site["turn_site_xyz_m"]
+    if site["probe"] == "short_of_500ft" and not math.isclose(
+            abs(center[0] - turn[0]) - extent[0], 150.0, abs_tol=1e-7):
+        raise ValueError("Planned prop near face differs from short-probe ray station")
     target = [turn[0], turn[1], turn[2] + 1.5]
     observed = {}
     for name, lane in site["incoming_lanes"].items():

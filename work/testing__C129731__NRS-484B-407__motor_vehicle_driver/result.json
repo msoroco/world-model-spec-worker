@@ -3,7 +3,7 @@
   "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
   "input_sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b",
   "readiness_kind": "delivery_preparation_in_progress",
-  "reason": "Six exact selected cases and all 18 risk-triggered fallbacks have current offline, positive/negative compatibility and recorded-only saved-processing proofs. Seven semantic stages, the six-case canonical execution manifest, six physical classifier/lifecycle receipts and six independent full-path diagnostic delivery audit positive/negative proofs validate. Four CPU-tested diagnostic crest alternatives now construct near-summit and approach-to-crest turn sites with either approach ray occluded; a separate source-bound OpenDRIVE crest road plan verifies lane stations and grade geometry; a separate curved OpenDRIVE road plan verifies six source-bound curve probe/direction site packets. Strict delivery readiness remains open: actual CARLA ingestion and Native asset/site review (a guarded loader has CPU mock proofs), full positive/negative saved processing proofs for the new alternatives, a completed source-grounded judgment sweep, shared branch review/GPU queue/local integration proof and full-batch ready packages remain unfinished worker CPU work. Synthetic pixels/rays prove no physical or legal acceptance.",
+  "reason": "Six exact selected cases and all 18 risk-triggered fallbacks have current offline, positive/negative compatibility and recorded-only saved-processing proofs. Seven semantic stages, the six-case canonical execution manifest, six physical classifier/lifecycle receipts and six independent full-path diagnostic delivery audit positive/negative proofs validate. Four CPU-tested diagnostic crest alternatives now construct near-summit and approach-to-crest turn sites with either approach ray occluded; a separate source-bound OpenDRIVE crest road plan verifies lane stations and grade geometry; a separate curved OpenDRIVE road plan verifies six source-bound curve probe/direction site packets. Strict delivery readiness remains open: actual CARLA ingestion and Native asset/site review (a guarded loader has CPU mock proofs), full positive/negative saved processing proofs for the other new alternatives (all four short-probe crest placement/direction branches now have full diagnostic offline, compatibility and recorded-only saved proofs), a independent four-alternative source comparison passed its software checks and two negative tampering proofs; a completed source-grounded judgment sweep, shared branch review/GPU queue/local integration proof and full-batch ready packages remain unfinished worker CPU work. Synthetic pixels/rays prove no physical or legal acceptance.",
   "remaining_gpu_checks": [
     "Actual U-turn motion, realized curve/crest geometry, two-direction visibility and four-camera coverage."
   ],
@@ -457,19 +457,19 @@
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "preflight-current.log",
-      "sha256": "8e03859443c5377b0b9a52a0e18b9d44e6d0adf52b2a4b63fb23c2b11a25cde0"
+      "sha256": "4e3900af2e0fec6d12c4dab414e9cd582e781853d1bcde6a8275b4607a79e538"
     },
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s tests",
       "exit_code": 0,
       "log": "root-cpu-tests-current.log",
-      "sha256": "99cf3055eb6906e301c859f75dc83e676e59bfd046986c8c1c3ea49e16dc20bb"
+      "sha256": "916ef58ed8ecbb734f78b68dd63218a2e8f1bd9a5d4cb4d0504560bef6fb95b9"
     },
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C129731__NRS-484B-407__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests-current.log",
-      "sha256": "d70b2ce276231323bbda45c9111d56cac61de1c9b5f4f2a8284f8c693bf0361b"
+      "sha256": "7ac08a855cec7a0c1195a72729dcd0e171d12321b17268ef3169276c256c9458"
     },
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C129731__NRS-484B-407__motor_vehicle_driver/tests -p test_delivery_audit.py -v",
@@ -560,6 +560,114 @@
       "exit_code": 0,
       "log": "curve-opendrive-build.log",
       "sha256": "5e97a492fe13022a9b46ab41472b962da30b50b36fca6f491ab800a752017023"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/build_approach_branch_proof.py",
+      "exit_code": 0,
+      "log": "approach-branch-build.log",
+      "sha256": "810b64cc8997c6020ec18fafce19299182eaca5ddada6b1bad675041e948bfca"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-approach-b-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --output .runtime-work/c129731-approach-b-offline-v3",
+      "exit_code": 0,
+      "log": "approach-branch-offline.log",
+      "sha256": "3a562323606b975fc646dbd33d85cf9ed5b6b94148136e4ac06a019602cc1100"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-approach-b-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --output .runtime-work/c129731-approach-b-compat-v4 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "approach-branch-compatibility.json",
+      "sha256": "1b0ea42b255d1bb20746f0aa4f18b43c0eb04422f8fbb824d5272ee90d809b25"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-approach-b-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --attempt .runtime-work/c129731-approach-b-compat-v4 --output .runtime-work/c129731-approach-b-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "approach-branch-processing.json",
+      "sha256": "062712a42b127172b9e1bec4b3a26f466de52bca3854486cc235d837fcefae5b"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/record_crest_branch_proofs.py",
+      "exit_code": 0,
+      "log": "crest-branch-proof-record.log",
+      "sha256": "edb628782bd5f0efef6fcf97300b0e0cbe9d90edb6ce64a37880142f39c6c201"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/prove_crest_branch_comparison.py",
+      "exit_code": 0,
+      "log": "crest-branch-comparison-proof.log",
+      "sha256": "936ef344ec515d6daec1b4ff16d165733d146106bd77914418c3729bfc35a3ac"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/build_approach_branch_proof.py --placement near_summit --direction approach_a",
+      "exit_code": 0,
+      "log": "near-a-branch-build.log",
+      "sha256": "1efa481cbd6820b19beda01becb1baf5d0ca40d3eabdebdbf2ec0667d528a93d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-near-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --output .runtime-work/c129731-near-a-offline-v1",
+      "exit_code": 0,
+      "log": "near-a-branch-offline.log",
+      "sha256": "1a6933339d005adcaf8157b82ad7f6223be1fa91ee5331b5ef96398911796e27"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-near-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --output .runtime-work/c129731-near-a-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "near-a-branch-compatibility.json",
+      "sha256": "a0fa399a7fc03a29fe9cd34b4f0df9317ec8d26408a6f19828a83efdbaaa2dcc"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-near-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --attempt .runtime-work/c129731-near-a-compat-v1 --output .runtime-work/c129731-near-a-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "near-a-branch-processing.json",
+      "sha256": "56e395e7be057781b4a922caf9ec727f7eee6094f4f75ea825bc743dbbebefcb"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/build_approach_branch_proof.py --placement near_summit --direction approach_b",
+      "exit_code": 0,
+      "log": "near-b-branch-build.log",
+      "sha256": "7df280e91f509545d05e906eeaa240dd8e738758f7a452c5dc056cce307147ad"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-near-b-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --output .runtime-work/c129731-near-b-offline-v1",
+      "exit_code": 0,
+      "log": "near-b-branch-offline.log",
+      "sha256": "dda9577d8907f4a297122e2099b6d1e10e24207a2f8ce2a290d0c106d3f207af"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-near-b-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --output .runtime-work/c129731-near-b-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "near-b-branch-compatibility.json",
+      "sha256": "27eea4f8f9347cc54d5be3746fa3cfc011619462f38cf495792815f26abb9f1c"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-near-b-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --attempt .runtime-work/c129731-near-b-compat-v1 --output .runtime-work/c129731-near-b-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "near-b-branch-processing.json",
+      "sha256": "941222ddcae15abd3bfc46d85a0c4daf1a16a2e4b55afa369e2679d48b6f0404"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/build_approach_branch_proof.py --placement approach_to_crest --direction approach_a",
+      "exit_code": 0,
+      "log": "approach-a-branch-build.log",
+      "sha256": "81e5a5ba3b788d52934c27b61ecb9a6958d2062100750483cccc764ef50a3e57"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-approach-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --output .runtime-work/c129731-approach-a-offline-v1",
+      "exit_code": 0,
+      "log": "approach-a-branch-offline.log",
+      "sha256": "31ef1c212f6039acbb5a84f387c47af892cb959500dcc4f4493a624c09d656f2"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-approach-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --output .runtime-work/c129731-approach-a-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "approach-a-branch-compatibility.json",
+      "sha256": "ccd48ca8524b2789ff240fd32d04d6492dcdf82a41943349814bea6015c8a053"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-approach-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft --attempt .runtime-work/c129731-approach-a-compat-v1 --output .runtime-work/c129731-approach-a-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "approach-a-branch-processing.json",
+      "sha256": "d7eec88c99455a92c48c07beb57b2bcd5cdcc71482ac32d8f68c14afc8134ee8"
     }
   ]
 }

@@ -89,7 +89,8 @@ def bind_site(site, road_hash):
     occluded = site["occluder"]["target_direction"]
     far = site["incoming_lanes"][occluded]["stations"][-1]["xyz_m"]
     turn = site["turn_site_xyz_m"]
-    fraction = .625
+    fraction = (150.0 + site["occluder"]["half_extent_xyz_m"][0]) / \
+        site["incoming_lanes"][occluded]["stations"][-1]["distance_to_turn_m"]
     site["occluder"]["center_xyz_m"] = [
         turn[0] + fraction * (far[0] - turn[0]),
         turn[1] + fraction * (far[1] - turn[1]),
