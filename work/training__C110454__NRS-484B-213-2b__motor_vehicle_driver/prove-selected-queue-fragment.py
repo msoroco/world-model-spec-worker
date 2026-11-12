@@ -42,6 +42,10 @@ def check(fragment):
         for key in ("capture_command", "postprocessing_command", "owner_release_command",
                     "additional_source_audit_command", "prepare_command", "execute_command", "accept_command"):
             require(case in row[key], "Exact case absent from " + key)
+        require(all(flag in shlex.split(row["additional_source_audit_command"]) for flag in
+                    ("--pixel-review", "--context-review", "--primary-video", "--core-trace",
+                     "--decode-receipt", "--job-id", "--attempt-number", "--recording-id")),
+                "Original delivery audit inputs incomplete")
         require(set(row["candidate_commands"]) == {c["id"] for c in entry["candidates"]},
                 "Fallback coverage changed")
         for candidate, cmd in row["candidate_commands"].items():
@@ -91,6 +95,11 @@ def main():
                         "execute-delivery": ("--run", "--job", "--case"),
                         "accept-delivery": ("--attempt", "--audit", "--case")}.items():
         require(all(flag in exchange[name] for flag in flags), "Exchange CLI changed: " + name)
+    audit_help = cli_help(py, str(HERE / "delivery_audit.py"), "--help")
+    require(all(flag in audit_help for flag in
+                ("--pixel-review", "--context-review", "--primary-video", "--core-trace",
+                 "--decode-receipt", "--job-id", "--attempt-number", "--recording-id")),
+            "Delivery auditor CLI changed")
     rejected = []
     for name, mutation in (
         ("missing_case", lambda f: f["cases"].pop()),
@@ -113,7 +122,7 @@ def main():
              "cases": len(fragment["cases"]),
              "fallbacks": sum(len(row["candidate_commands"]) for row in fragment["cases"]),
              "comparisons": len(fragment["comparison_audit_commands"]),
-             "cli_help_checked": 6, "mutations_rejected": rejected,
+             "cli_help_checked": 7, "mutations_rejected": rejected,
              "fragment_sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
              "dispatchable": False, "physical_or_local_acceptance_claimed": False}
     (HERE / "update020-selected-queue-proof.json").write_text(json.dumps(proof, indent=2) + "\n")
