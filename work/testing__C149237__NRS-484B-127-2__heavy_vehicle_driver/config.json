@@ -1,0 +1,114 @@
+{
+  "law_id": "NRS-484B-127-2",
+  "cell_id": "C149237",
+  "actor": "heavy_vehicle_driver",
+  "selected_case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft",
+  "supported_case_ids": [
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__two_same_direction_lanes",
+    "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__overtaking"
+  ],
+  "rate_hz": 20,
+  "duration_s": 45,
+  "blueprint_ids": [
+    "vehicle.carlamotors.european_hgv",
+    "vehicle.carlamotors.carlacola"
+  ],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed elevated road overview"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed following lane approach"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed side truck-body reference"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached forward source"
+    }
+  ],
+  "required_atoms": [
+    "ru.subject",
+    "ru.truck",
+    "kin.position",
+    "kin.velocity",
+    "kin.speed",
+    "st.lane",
+    "rel.surface_gap",
+    "rel.ahead_behind_in_lane"
+  ],
+  "source_packets": [],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "longitudinal_body_gap",
+        "unit": "m",
+        "method": "source-bound projection of both truck bodies",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled only; between-frame state unresolved"
+      },
+      {
+        "name": "ego_overall_width",
+        "unit": "m",
+        "method": "Native single-vehicle bounding box",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled only; between-frame state unresolved"
+      },
+      {
+        "name": "lead_overall_width",
+        "unit": "m",
+        "method": "Native single-vehicle bounding box",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled only; between-frame state unresolved"
+      },
+      {
+        "name": "same_direction_lane_count",
+        "unit": "count",
+        "method": "authored map and Native lane readback",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled only; between-frame state unresolved"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "conditions_permitting",
+        "unit": "source review",
+        "method": "road, traffic and camera source review; unresolved"
+      }
+    ],
+    "limitations": [
+      "physical truck dimensions, following and visibility unverified",
+      "safe overtaker occupancy and legal judgment unresolved"
+    ]
+  }
+}

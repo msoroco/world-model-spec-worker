@@ -2,7 +2,7 @@
   "assignment_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver",
   "input_sha256": "25b365e5565f5d528a89b79eea5ec05f76d91fe6a8d02e683d5a9a9edab8d9fc",
   "status": "partial",
-  "readiness_kind": "one_way_truck_site_and_exact_gap_spawn_checkpoint",
+  "readiness_kind": "first_truck_gap_case_offline_and_saved_finalizer_checkpoint",
   "applied_update": 0,
   "tests": [
     {
@@ -12,16 +12,34 @@
       "sha256": "e7ffd9fef45826ec78f7b57cf06722d0c2b51684c5312bc36e58c10bbabcbfa8"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "command": "PYTHONPATH=runtime/scenario_pipeline:runtime/python .venv-cpu/bin/python runtime/scenario_pipeline/worker_exchange/atom_preflight.py --runtime runtime --config work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/config.json",
       "exit_code": 0,
-      "log": "preflight-current.log",
-      "sha256": "d34f0220360a23d39988beea74078244cfcd2f31ead1340b9f6282c706e0f699"
+      "log": "atom-preflight-current.log",
+      "sha256": "f9ebcfb4c17fa0feb48c9f4065dcfc1f062809aabeca2bf841f5736396665d64"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --output .runtime-work/c149237-gap-below-primary-offline-v2",
+      "exit_code": 0,
+      "log": "primary-offline-tests.log",
+      "sha256": "fa1c2e4eb559377c9f5c48f1207cb8399f3081c76143d9ddb93406bb6d59f148"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/prove_finalizer.py",
+      "exit_code": 0,
+      "log": "finalizer-proof-current.log",
+      "sha256": "96b1b45a69f201189096d32fafc57213e86fdbc9efc8f074c350cca5570bd093"
     },
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests-current.log",
-      "sha256": "8a24fe583ced8b8bcee54b13a6dd62eb210cd5016cc9ef3d4cc54a5e5e5d0092"
+      "sha256": "1ae75ce4052b9ad068b659867214522528bbfa8af9158a3b807c639f27b7419a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight-current.log",
+      "sha256": "f1cbf7a989a91f6e2a80264ffc506522abbfeb7070ba54ef0f86e086becd56f5"
     },
     {
       "command": ".venv-cpu/bin/python work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/truck_site.py work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/site-proof.json",
@@ -33,5 +51,5 @@
   "remaining_gpu_checks": [
     "Realized qualifying truck dimensions, roadway topology, following gap, overtaking path and camera visibility."
   ],
-  "reason": "The authored 800 m one-way road, pinned truck blueprint classification, and source-hashed three-gap site plan now have CPU proofs. A fake Native spawn test measures realized body half-lengths and moves the lead to below/at/above the 152.4 m target; narrow actors, altered lane topology and impossible dimensions are rejected. This does not prove actual CARLA class, width, movement, legal highway status, or source pixels. Exact manifest, four-camera capture, finalizer, all selected case/fallback offline and compatibility receipts, saved processing, semantic proposals, independent audits and shared branch/delivery artifacts remain worker-owned CPU work; see HANDOFF.md."
+  "reason": "C149237 now has a 1200 m authored one-way road, exact measured-length placement and a two-truck controller. The first below-500-foot case has a materialized four-camera Native runner and passing exact offline CPU bundle. Atom preflight passes. The saved finalizer derives four observation channels from retained original truck and map sources; a positive source-shaped three-frame test and missing-truck-history negative test pass, but its placeholder cameras do not prove decoding. Compatibility, a full recorded-only saved-processing proof, 900-frame diagnostic media, fallback constructions, remaining exact cases, semantic proposals, independent audits and shared artifacts remain worker-owned CPU work. CARLA motion, widths, road status, source pixels and legal judgment remain unverified. See HANDOFF.md."
 }

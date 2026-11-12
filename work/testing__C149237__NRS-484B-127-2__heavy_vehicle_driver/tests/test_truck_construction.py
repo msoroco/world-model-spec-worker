@@ -84,8 +84,8 @@ class ConstructionTests(unittest.TestCase):
 
         for name, target in construction._site.GAP_TARGETS_M.items():
             world = AuthoredWorld()
-            with construction.spawn_exact_gap_pair(world, 'vehicle.carlamotors.european_hgv',
-                                                   'vehicle.carlamotors.carlacola', name,
+            with construction.spawn_exact_gap_pair(world, NS(id='vehicle.carlamotors.european_hgv'),
+                                                   NS(id='vehicle.carlamotors.carlacola'), name,
                                                    transform_at) as pair:
                 self.assertAlmostEqual(pair['initial_body_gap_m'], target)
                 self.assertEqual(pair['site']['same_direction_lane_count'], 1)
@@ -101,10 +101,20 @@ class ConstructionTests(unittest.TestCase):
 
         world = AuthoredWorld(widths=(2.1, 2.0))
         with self.assertRaisesRegex(ValueError, '80-inch'):
-            with construction.spawn_exact_gap_pair(world, 'ego', 'lead', 'gap_at_500ft',
+            with construction.spawn_exact_gap_pair(world, 'vehicle.carlamotors.european_hgv',
+                                                   'vehicle.carlamotors.carlacola', 'gap_at_500ft',
                                                    lambda x, y, heading: NS(x=x, y=y)):
                 pass
         self.assertTrue(all(a.destroyed for a in world.actors))
+
+    def test_exact_gap_rejects_unclassified_blueprint(self):
+        world = World()
+        with self.assertRaisesRegex(ValueError, 'classification'):
+            with construction.spawn_exact_gap_pair(world, 'vehicle.lincoln.mkz_2020',
+                                                   'vehicle.carlamotors.carlacola', 'gap_at_500ft',
+                                                   lambda x, y, heading: NS(x=x, y=y)):
+                pass
+        self.assertEqual(world.actors, [])
 
 
 if __name__ == "__main__":

@@ -19,13 +19,17 @@ class TruckSiteTests(unittest.TestCase):
             measured = pair['lead_center_xy_m'][0] - 5.1 - (pair['ego_center_xy_m'][0] + 4.3)
             self.assertAlmostEqual(measured, target)
             self.assertEqual(pair['ego_center_xy_m'][1], pair['lead_center_xy_m'][1])
+            envelope = site.validate_motion_envelope(pair, 5.1)
+            self.assertGreater(envelope['remaining_margin_m'], 50)
 
     def test_rejects_oversize_and_nonfinite_body_lengths(self):
         for bad in (0, -1, float('inf'), float('nan'), True):
             with self.assertRaisesRegex(ValueError, 'half lengths'):
                 site.initial_pair('gap_at_500ft', bad, 4)
         with self.assertRaisesRegex(ValueError, 'margins'):
-            site.initial_pair('gap_at_500ft', 4, 600)
+            site.initial_pair('gap_at_500ft', 4, 1100)
+        with self.assertRaisesRegex(ValueError, 'motion budget'):
+            site.validate_motion_envelope(site.initial_pair('gap_at_500ft', 4, 5), 5, speed_mps=25)
 
     def test_rejects_added_opposing_lane(self):
         original = site.ROAD

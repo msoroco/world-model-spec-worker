@@ -91,6 +91,10 @@ def spawn_exact_gap_pair(world, ego_blueprint, lead_blueprint, gap_case, transfo
     The caller must review actual vehicle class and width as well as the site.
     """
     site = _site.validate_site()
+    ego_id = getattr(ego_blueprint, 'id', ego_blueprint)
+    lead_id = getattr(lead_blueprint, 'id', lead_blueprint)
+    if ego_id not in site['blueprint_ids'] or lead_id not in site['blueprint_ids']:
+        raise ValueError('Blueprint lacks pinned truck classification')
     if tolerance_m <= 0 or not math.isfinite(tolerance_m):
         raise ValueError('Invalid gap tolerance')
     lane_y = -site['lane_width_m'] / 2
@@ -107,6 +111,7 @@ def spawn_exact_gap_pair(world, ego_blueprint, lead_blueprint, gap_case, transfo
         ego_half = _projected_half_length(ego, (1.0, 0.0))
         lead_half = _projected_half_length(lead, (1.0, 0.0))
         placement = _site.initial_pair(gap_case, ego_half, lead_half)
+        _site.validate_motion_envelope(placement, lead_half)
         lead.set_transform(transform_at(*placement['lead_center_xy_m'], placement['heading_deg']))
         world.tick()
         for actor in actors:

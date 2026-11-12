@@ -9,13 +9,18 @@ import math
 import xml.etree.ElementTree as ET
 
 
+def _repo_root():
+    return next((parent for parent in Path(__file__).resolve().parents
+                 if (parent / 'runtime/python/carla_sgg/actors.py').is_file()), None)
+
+
 ROAD = Path(__file__).resolve().parent / 'native-map-plan/one-way-truck-road.xodr'
-CLASS_MAP = Path(__file__).resolve().parents[2] / 'runtime/python/carla_sgg/actors.py'
+CLASS_MAP = _repo_root() / 'runtime/python/carla_sgg/actors.py' if _repo_root() else None
 TRUCK_BLUEPRINTS = ('vehicle.carlamotors.european_hgv', 'vehicle.carlamotors.carlacola')
 GAP_TARGETS_M = {'gap_below_500ft': 150.0, 'gap_at_500ft': 152.4,
                  'gap_above_500ft': 155.0}
 LANE_WIDTH_M = 3.8
-ROAD_LENGTH_M = 800.0
+ROAD_LENGTH_M = 1200.0
 EGO_S_M = 100.0
 MIN_EDGE_MARGIN_M = 50.0
 
@@ -49,12 +54,14 @@ def validate_site():
     if width is None or any(float(width.get(key)) != value for key, value in
             {'sOffset': 0, 'a': LANE_WIDTH_M, 'b': 0, 'c': 0, 'd': 0}.items()):
         raise ValueError('Truck lane width changed')
+    if CLASS_MAP is None:
+        raise ValueError('Pinned truck class map missing')
     classifications = CLASS_MAP.read_text()
     for bp in TRUCK_BLUEPRINTS:
         if f"'{bp}': 'truck'" not in classifications:
             raise ValueError('Selected blueprint lacks pinned truck classification: ' + bp)
-    return {'road_source': str(ROAD.relative_to(Path(__file__).resolve().parents[2])),
-            'road_sha256': sha(ROAD), 'class_source': str(CLASS_MAP.relative_to(Path(__file__).resolve().parents[2])),
+    return {'road_source': str(ROAD.relative_to(_repo_root())),
+            'road_sha256': sha(ROAD), 'class_source': str(CLASS_MAP.relative_to(_repo_root())),
             'class_sha256': sha(CLASS_MAP), 'road_id': 149237, 'lane_id': -1,
             'lane_width_m': LANE_WIDTH_M, 'same_direction_lane_count': 1,
             'blueprint_ids': list(TRUCK_BLUEPRINTS)}
@@ -81,13 +88,28 @@ def initial_pair(gap_case, ego_half_length_m, lead_half_length_m):
             'gap_case': gap_case, 'actual_spawn_and_motion': 'unverified'}
 
 
+def validate_motion_envelope(placement, lead_half_length_m, speed_mps=12.0, duration_s=45.0):
+    """Check a straight-road engineering travel budget, not realized motion."""
+    if any(type(x) not in (int, float) or not math.isfinite(x) or x <= 0
+           for x in (lead_half_length_m, speed_mps, duration_s)):
+        raise ValueError('Invalid motion envelope values')
+    endpoint = placement['lead_center_xy_m'][0] + speed_mps * duration_s + lead_half_length_m
+    if endpoint > ROAD_LENGTH_M - MIN_EDGE_MARGIN_M:
+        raise ValueError('Lead motion budget exceeds authored road')
+    return {'projected_lead_front_at_end_m': endpoint,
+            'remaining_margin_m': ROAD_LENGTH_M - endpoint,
+            'assumes_constant_target_speed': True, 'actual_motion': 'unverified'}
+
+
 if __name__ == '__main__':
     import json
     import sys
     if len(sys.argv) != 2:
         raise SystemExit('usage: truck_site.py OUTPUT_JSON')
+    cases = {name: initial_pair(name, 5.0, 5.0) for name in GAP_TARGETS_M}
     proof = {'format': 'worker-truck-site-cpu-proof', 'site': validate_site(),
-             'cases': {name: initial_pair(name, 5.0, 5.0) for name in GAP_TARGETS_M},
+             'cases': cases,
+             'motion_envelopes': {name: validate_motion_envelope(case, 5.0) for name, case in cases.items()},
              'sample_half_lengths_m': {'ego': 5.0, 'lead': 5.0},
              'sample_lengths_are_realized_dimensions': False,
              'physical_acceptance': False}
