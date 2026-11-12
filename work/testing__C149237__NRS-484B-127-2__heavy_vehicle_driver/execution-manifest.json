@@ -15,9 +15,118 @@
       "fixture_recipe": "work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "realized truck body visibility and gap persistence can fail"
+        "reason": "source-camera coverage of the truck body and relation may fail under Native motion; distinct camera poses are predeclared alternatives"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "candidate-constructions/gap_below_500ft-fallback1.json",
+          "construction_sha256": "bbdb7574c3296ea0daf1f7aa7f746d18c3c434efd545cb2738bc27725e35758e",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "both truck bodies visible across original frames",
+            "failure_condition": "source-pixel review finds a truck body outside overview framing"
+          },
+          "changed_knobs": [
+            "overview camera x 450->400 m",
+            "overview camera height 90->110 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback1 --output .runtime-work/c149237-gap_below_500ft-fallback1-offline-v13",
+            "exit_code": 0,
+            "log": "gap_below_500ft-fallback1-offline.log",
+            "log_sha256": "59c0a9b618aacf6337f1aaa69fb92ea888be6f89d0f2adede8589b92ebf6a0cf",
+            "construction_sha256": "bbdb7574c3296ea0daf1f7aa7f746d18c3c434efd545cb2738bc27725e35758e"
+          },
+          "compatibility": {
+            "receipt": "gap_below_500ft-fallback1-compatibility.json",
+            "sha256": "7b61898610c4f89bfbd0482fa2069c4d606c5841fc567a7eb5ecd3084ae23e1d",
+            "log": "gap_below_500ft-fallback1-analysis.log",
+            "negative_log": "gap_below_500ft-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "candidate-constructions/gap_below_500ft-fallback2.json",
+          "construction_sha256": "d12c7a4b7f28a4d44fa1cf0a25269f71a0e2d90961acfe3e1b8b71f02194cc2f",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "truck body reference edge completeness",
+            "failure_condition": "source-pixel review finds a width/body reference clipped"
+          },
+          "changed_knobs": [
+            "reference corner x 300->330 m",
+            "reference corner y -24->-34 m",
+            "reference corner height 30->35 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback2 --output .runtime-work/c149237-gap_below_500ft-fallback2-offline-v13",
+            "exit_code": 0,
+            "log": "gap_below_500ft-fallback2-offline.log",
+            "log_sha256": "a855de09414b3499b4fb861f57643a71f1bcfefa801fe968a659069d0806c6a4",
+            "construction_sha256": "d12c7a4b7f28a4d44fa1cf0a25269f71a0e2d90961acfe3e1b8b71f02194cc2f"
+          },
+          "compatibility": {
+            "receipt": "gap_below_500ft-fallback2-compatibility.json",
+            "sha256": "1edf2df478bfae67ede97c99ee9cff0bd00b049c28a99fa00f01609b70457eb7",
+            "log": "gap_below_500ft-fallback2-analysis.log",
+            "negative_log": "gap_below_500ft-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "candidate-constructions/gap_below_500ft-fallback3.json",
+          "construction_sha256": "385537d04da60ff0ad7d9aef2dbfb07a535247c1a4c19da606fdffc30324d81f",
+          "trigger": {
+            "source": "approach.mkv",
+            "metric": "lead and ego approach interval coverage",
+            "failure_condition": "source-pixel review finds the approach relation outside the frame"
+          },
+          "changed_knobs": [
+            "approach camera x 60->80 m",
+            "approach camera height 8->12 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback3 --output .runtime-work/c149237-gap_below_500ft-fallback3-offline-v13",
+            "exit_code": 0,
+            "log": "gap_below_500ft-fallback3-offline.log",
+            "log_sha256": "65f52b78ceffbf4647a35a20b687655f0809f3b0bf4d42169491cf908747ac57",
+            "construction_sha256": "385537d04da60ff0ad7d9aef2dbfb07a535247c1a4c19da606fdffc30324d81f"
+          },
+          "compatibility": {
+            "receipt": "gap_below_500ft-fallback3-compatibility.json",
+            "sha256": "beaca59ba2440b621ca973bb3cfa3bc7fe75b9259f892d60d7d6a80bdccc4c21",
+            "log": "gap_below_500ft-fallback3-analysis.log",
+            "negative_log": "gap_below_500ft-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --output .runtime-work/c149237-gap_below_500ft-offline-v13",
+        "exit_code": 0,
+        "log": "gap_below_500ft-offline.log",
+        "log_sha256": "fa1c2e4eb559377c9f5c48f1207cb8399f3081c76143d9ddb93406bb6d59f148",
+        "construction_sha256": "4c50c5e5ea30cb99c933ee0e2ba66d70d29904b4a2464c9215ca3b1e3c673d25"
+      },
+      "compatibility": {
+        "receipt": "gap_below_500ft-compatibility.json",
+        "sha256": "e1d4957657ad1fecb06eb209b34bd24adbea1dd7ea9802259ead299f52047f09",
+        "log": "gap_below_500ft-analysis.log"
+      },
+      "negative": {
+        "log": "gap_below_500ft-negative.log",
+        "log_sha256": "3143727abda51e9165a79df844a176e7d9dcc8291bdb7d96e0db3c62b69c716a"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --attempt .runtime-work/c149237-gap_below_500ft-compat-v13 --output .runtime-work/c149237-gap_below_500ft-saved-v13 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "gap_below_500ft-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "receipt": "gap_below_500ft-saved-processing.json",
+        "receipt_sha256": "55dcc5e4f5c04a179c3b4bb2d71a4ba8673b32ca0ced2a06be53002dc792c297",
+        "scope": "nine-frame synthetic saved-only software processing"
+      }
     },
     {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft",
@@ -31,9 +140,118 @@
       "fixture_recipe": "work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe-gap_at_500ft.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "realized truck body gap and visibility may diverge from the gap_at_500ft target"
+        "reason": "source-camera coverage of the truck body and relation may fail under Native motion; distinct camera poses are predeclared alternatives"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "candidate-constructions/gap_at_500ft-fallback1.json",
+          "construction_sha256": "570afc5a9b8c9aa79fb97fe5111411f9fdf9aea4c0bb49ed1ad6c8d7edf92bbd",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "both truck bodies visible across original frames",
+            "failure_condition": "source-pixel review finds a truck body outside overview framing"
+          },
+          "changed_knobs": [
+            "overview camera x 450->400 m",
+            "overview camera height 90->110 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft --candidate fallback1 --output .runtime-work/c149237-gap_at_500ft-fallback1-offline-v13",
+            "exit_code": 0,
+            "log": "gap_at_500ft-fallback1-offline.log",
+            "log_sha256": "1ad0b4fdcf37ad2a5ee16195036f0538d28ec9e55e68011f4efdebf482f9a270",
+            "construction_sha256": "570afc5a9b8c9aa79fb97fe5111411f9fdf9aea4c0bb49ed1ad6c8d7edf92bbd"
+          },
+          "compatibility": {
+            "receipt": "gap_at_500ft-fallback1-compatibility.json",
+            "sha256": "98f4c659dc54404951c27c9b9cdc1caeac77590025b1558a35fba6cd55ef3548",
+            "log": "gap_at_500ft-fallback1-analysis.log",
+            "negative_log": "gap_at_500ft-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "candidate-constructions/gap_at_500ft-fallback2.json",
+          "construction_sha256": "f8788f2978b2fb6ef611db2d4e6142bdff0ab43a654409a440640ba72e3b20da",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "truck body reference edge completeness",
+            "failure_condition": "source-pixel review finds a width/body reference clipped"
+          },
+          "changed_knobs": [
+            "reference corner x 300->330 m",
+            "reference corner y -24->-34 m",
+            "reference corner height 30->35 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft --candidate fallback2 --output .runtime-work/c149237-gap_at_500ft-fallback2-offline-v13",
+            "exit_code": 0,
+            "log": "gap_at_500ft-fallback2-offline.log",
+            "log_sha256": "6259e92e08585f82f04f85b81b43b5e9f8be4d1365e7b849d8b42838c5b210be",
+            "construction_sha256": "f8788f2978b2fb6ef611db2d4e6142bdff0ab43a654409a440640ba72e3b20da"
+          },
+          "compatibility": {
+            "receipt": "gap_at_500ft-fallback2-compatibility.json",
+            "sha256": "dd2332603eb4335efaa452627b6e403bf4fd431269fe0943efc125d91dd98b0e",
+            "log": "gap_at_500ft-fallback2-analysis.log",
+            "negative_log": "gap_at_500ft-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "candidate-constructions/gap_at_500ft-fallback3.json",
+          "construction_sha256": "1d7a228fa4d8e189e0bca7214f9cb58670ff987b6b879eea4ee06df152c59284",
+          "trigger": {
+            "source": "approach.mkv",
+            "metric": "lead and ego approach interval coverage",
+            "failure_condition": "source-pixel review finds the approach relation outside the frame"
+          },
+          "changed_knobs": [
+            "approach camera x 60->80 m",
+            "approach camera height 8->12 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft --candidate fallback3 --output .runtime-work/c149237-gap_at_500ft-fallback3-offline-v13",
+            "exit_code": 0,
+            "log": "gap_at_500ft-fallback3-offline.log",
+            "log_sha256": "6259e92e08585f82f04f85b81b43b5e9f8be4d1365e7b849d8b42838c5b210be",
+            "construction_sha256": "1d7a228fa4d8e189e0bca7214f9cb58670ff987b6b879eea4ee06df152c59284"
+          },
+          "compatibility": {
+            "receipt": "gap_at_500ft-fallback3-compatibility.json",
+            "sha256": "4973415bc15166ad31f19b06fd0b606367e9bdf2a20521554e009fe178681934",
+            "log": "gap_at_500ft-fallback3-analysis.log",
+            "negative_log": "gap_at_500ft-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft --output .runtime-work/c149237-gap_at_500ft-offline-v13",
+        "exit_code": 0,
+        "log": "gap_at_500ft-offline.log",
+        "log_sha256": "d2ef851b0e1497a8648dc0eb559ce1975ba4b6b54ea97dc6f670067437b0b60d",
+        "construction_sha256": "61b7c4e1ad9c89bf3be623fa966394ac087f03390ed95ed785855d24ef3e9a50"
+      },
+      "compatibility": {
+        "receipt": "gap_at_500ft-compatibility.json",
+        "sha256": "440706867b3b1f54e533f3d4f8bc3114a8bc24240dd6c1553b0eb348af7841aa",
+        "log": "gap_at_500ft-analysis.log"
+      },
+      "negative": {
+        "log": "gap_at_500ft-negative.log",
+        "log_sha256": "c0387cd97b55a6997445c51473ed4a514b5ce602a8ac1b19ce43f1173ff4e10c"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft --attempt .runtime-work/c149237-gap_at_500ft-compat-v13 --output .runtime-work/c149237-gap_at_500ft-saved-v13 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "gap_at_500ft-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "receipt": "gap_at_500ft-saved-processing.json",
+        "receipt_sha256": "16035e7c3c738c4862e62ff4fb03b6488858a40b1d09ffedef41c61785361caf",
+        "scope": "nine-frame synthetic saved-only software processing"
+      }
     },
     {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft",
@@ -47,9 +265,118 @@
       "fixture_recipe": "work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe-gap_above_500ft.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "realized truck body gap and visibility may diverge from the gap_above_500ft target"
+        "reason": "source-camera coverage of the truck body and relation may fail under Native motion; distinct camera poses are predeclared alternatives"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "candidate-constructions/gap_above_500ft-fallback1.json",
+          "construction_sha256": "62e0cb98b02368927e5536a3d332d390b05a51528128e20b0fa14e007da75adc",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "both truck bodies visible across original frames",
+            "failure_condition": "source-pixel review finds a truck body outside overview framing"
+          },
+          "changed_knobs": [
+            "overview camera x 450->400 m",
+            "overview camera height 90->110 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft --candidate fallback1 --output .runtime-work/c149237-gap_above_500ft-fallback1-offline-v13",
+            "exit_code": 0,
+            "log": "gap_above_500ft-fallback1-offline.log",
+            "log_sha256": "fe9aa9f039a087ff0f4126f326b6acf01317cd3f651635fc3683534389bc7b77",
+            "construction_sha256": "62e0cb98b02368927e5536a3d332d390b05a51528128e20b0fa14e007da75adc"
+          },
+          "compatibility": {
+            "receipt": "gap_above_500ft-fallback1-compatibility.json",
+            "sha256": "883c4f24d8759b1d32503e53b8022c586dd22306e2c144890ca43bd7d619abf7",
+            "log": "gap_above_500ft-fallback1-analysis.log",
+            "negative_log": "gap_above_500ft-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "candidate-constructions/gap_above_500ft-fallback2.json",
+          "construction_sha256": "1295f8e7391b3b240a4711d114163fc45b548e770bff3cff13daf1662d72692e",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "truck body reference edge completeness",
+            "failure_condition": "source-pixel review finds a width/body reference clipped"
+          },
+          "changed_knobs": [
+            "reference corner x 300->330 m",
+            "reference corner y -24->-34 m",
+            "reference corner height 30->35 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft --candidate fallback2 --output .runtime-work/c149237-gap_above_500ft-fallback2-offline-v13",
+            "exit_code": 0,
+            "log": "gap_above_500ft-fallback2-offline.log",
+            "log_sha256": "fe9aa9f039a087ff0f4126f326b6acf01317cd3f651635fc3683534389bc7b77",
+            "construction_sha256": "1295f8e7391b3b240a4711d114163fc45b548e770bff3cff13daf1662d72692e"
+          },
+          "compatibility": {
+            "receipt": "gap_above_500ft-fallback2-compatibility.json",
+            "sha256": "fc47d954f33305b06905d6569d65f51db8a9002effe3b54223516da8bbe277fe",
+            "log": "gap_above_500ft-fallback2-analysis.log",
+            "negative_log": "gap_above_500ft-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "candidate-constructions/gap_above_500ft-fallback3.json",
+          "construction_sha256": "012c8bcd784d6c60f9ac19918bb422b61da67df5c2fe0590976e556f65f3c4eb",
+          "trigger": {
+            "source": "approach.mkv",
+            "metric": "lead and ego approach interval coverage",
+            "failure_condition": "source-pixel review finds the approach relation outside the frame"
+          },
+          "changed_knobs": [
+            "approach camera x 60->80 m",
+            "approach camera height 8->12 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft --candidate fallback3 --output .runtime-work/c149237-gap_above_500ft-fallback3-offline-v13",
+            "exit_code": 0,
+            "log": "gap_above_500ft-fallback3-offline.log",
+            "log_sha256": "321cdf4a691c0a1d3cf0cb857162d16ddc9841a947c274d6903c8d5298d331e1",
+            "construction_sha256": "012c8bcd784d6c60f9ac19918bb422b61da67df5c2fe0590976e556f65f3c4eb"
+          },
+          "compatibility": {
+            "receipt": "gap_above_500ft-fallback3-compatibility.json",
+            "sha256": "180f2b2d3bb1697895082c6819e07a060cba9079af857b101fbc2b4ec3aa84d2",
+            "log": "gap_above_500ft-fallback3-analysis.log",
+            "negative_log": "gap_above_500ft-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft --output .runtime-work/c149237-gap_above_500ft-offline-v13",
+        "exit_code": 0,
+        "log": "gap_above_500ft-offline.log",
+        "log_sha256": "fe9aa9f039a087ff0f4126f326b6acf01317cd3f651635fc3683534389bc7b77",
+        "construction_sha256": "764af7616f526a272cdb4af9dda2b000aceb766dfa28dfe9eb6946156024cc3e"
+      },
+      "compatibility": {
+        "receipt": "gap_above_500ft-compatibility.json",
+        "sha256": "caffe2e27488e53c3f6ae786e27ee37e5a0cf437cb0a83f8dc37ab01ceef77c6",
+        "log": "gap_above_500ft-analysis.log"
+      },
+      "negative": {
+        "log": "gap_above_500ft-negative.log",
+        "log_sha256": "aec7d6d6781faabfddccec071270ad2186d69d07d282cd6f3df293cd49f40260"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft --attempt .runtime-work/c149237-gap_above_500ft-compat-v13 --output .runtime-work/c149237-gap_above_500ft-saved-v13 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "gap_above_500ft-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "receipt": "gap_above_500ft-saved-processing.json",
+        "receipt_sha256": "f2e97d22d9845a2a2b8d80d869ebfce22d32c030937f8676c772698cd7bfa5ab",
+        "scope": "nine-frame synthetic saved-only software processing"
+      }
     },
     {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in",
@@ -63,9 +390,118 @@
       "fixture_recipe": "work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe-ego_width_below_80in.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "no pinned Native truck asset may meet the exact 80-inch width category"
+        "reason": "source-camera coverage of the truck body and relation may fail under Native motion; distinct camera poses are predeclared alternatives"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "candidate-constructions/ego_width_below_80in-fallback1.json",
+          "construction_sha256": "8ddbe3d15a88dc364f04896b1056aadc49ba9a1eac99a12211b8ad0e572e89d1",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "both truck bodies visible across original frames",
+            "failure_condition": "source-pixel review finds a truck body outside overview framing"
+          },
+          "changed_knobs": [
+            "overview camera x 450->400 m",
+            "overview camera height 90->110 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in --candidate fallback1 --output .runtime-work/c149237-ego_width_below_80in-fallback1-offline-v13",
+            "exit_code": 0,
+            "log": "ego_width_below_80in-fallback1-offline.log",
+            "log_sha256": "fa0b1385928bfb0cb6f075a352cdbed0a0b1c5474c5f1ab58441091ef9f42430",
+            "construction_sha256": "8ddbe3d15a88dc364f04896b1056aadc49ba9a1eac99a12211b8ad0e572e89d1"
+          },
+          "compatibility": {
+            "receipt": "ego_width_below_80in-fallback1-compatibility.json",
+            "sha256": "3b86063c67456286dc31289cde8e5ca12671def83823f2a0e78adc0fe6c2304d",
+            "log": "ego_width_below_80in-fallback1-analysis.log",
+            "negative_log": "ego_width_below_80in-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "candidate-constructions/ego_width_below_80in-fallback2.json",
+          "construction_sha256": "c19cc6459f2bfcf59a0eaa9cd467443024590ac262b7fc00b6441d3884926d93",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "truck body reference edge completeness",
+            "failure_condition": "source-pixel review finds a width/body reference clipped"
+          },
+          "changed_knobs": [
+            "reference corner x 300->330 m",
+            "reference corner y -24->-34 m",
+            "reference corner height 30->35 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in --candidate fallback2 --output .runtime-work/c149237-ego_width_below_80in-fallback2-offline-v13",
+            "exit_code": 0,
+            "log": "ego_width_below_80in-fallback2-offline.log",
+            "log_sha256": "05748bf801dbd0071da0c7b86bd7bd5dbef13a83ee89cb15f41aab7db6047330",
+            "construction_sha256": "c19cc6459f2bfcf59a0eaa9cd467443024590ac262b7fc00b6441d3884926d93"
+          },
+          "compatibility": {
+            "receipt": "ego_width_below_80in-fallback2-compatibility.json",
+            "sha256": "9e31ec3a32a5cf4f1792e09a341c35503deada6c88f9acb03540f5c37cac0033",
+            "log": "ego_width_below_80in-fallback2-analysis.log",
+            "negative_log": "ego_width_below_80in-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "candidate-constructions/ego_width_below_80in-fallback3.json",
+          "construction_sha256": "52a768a7fe3df2e0e8691c68707fb9efddbf6fc25123e67b9dede4740e26a4de",
+          "trigger": {
+            "source": "approach.mkv",
+            "metric": "lead and ego approach interval coverage",
+            "failure_condition": "source-pixel review finds the approach relation outside the frame"
+          },
+          "changed_knobs": [
+            "approach camera x 60->80 m",
+            "approach camera height 8->12 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in --candidate fallback3 --output .runtime-work/c149237-ego_width_below_80in-fallback3-offline-v13",
+            "exit_code": 0,
+            "log": "ego_width_below_80in-fallback3-offline.log",
+            "log_sha256": "fa0b1385928bfb0cb6f075a352cdbed0a0b1c5474c5f1ab58441091ef9f42430",
+            "construction_sha256": "52a768a7fe3df2e0e8691c68707fb9efddbf6fc25123e67b9dede4740e26a4de"
+          },
+          "compatibility": {
+            "receipt": "ego_width_below_80in-fallback3-compatibility.json",
+            "sha256": "bf177417069ce60c9a3be1459da02676f957db9fa9f1293414e4958e9635c451",
+            "log": "ego_width_below_80in-fallback3-analysis.log",
+            "negative_log": "ego_width_below_80in-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in --output .runtime-work/c149237-ego_width_below_80in-offline-v13",
+        "exit_code": 0,
+        "log": "ego_width_below_80in-offline.log",
+        "log_sha256": "eef3be0f8bd058cf978b73b54a2439144b5b9e1701df1be1b7c9b9d64dcd6e28",
+        "construction_sha256": "e863263b71e7b1480da7962e4312905d4724b2f703930e2444ade7476e7fca97"
+      },
+      "compatibility": {
+        "receipt": "ego_width_below_80in-compatibility.json",
+        "sha256": "52bb889cf9ee6916945ca883ec7e2419151c08ebd1e6a15d1c9d638f52c41a88",
+        "log": "ego_width_below_80in-analysis.log"
+      },
+      "negative": {
+        "log": "ego_width_below_80in-negative.log",
+        "log_sha256": "212989f59e14e1813ae7a0b101851ae105138158acde0be58d6d7d66450d4d82"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in --attempt .runtime-work/c149237-ego_width_below_80in-compat-v13 --output .runtime-work/c149237-ego_width_below_80in-saved-v13 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "ego_width_below_80in-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "receipt": "ego_width_below_80in-saved-processing.json",
+        "receipt_sha256": "4bd8344b9e8c5a50e1524560bda07ac00339e74dae642627f8b65f4489d26516",
+        "scope": "nine-frame synthetic saved-only software processing"
+      }
     },
     {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in",
@@ -79,9 +515,118 @@
       "fixture_recipe": "work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe-ego_width_at_80in.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "no pinned Native truck asset may meet the exact 80-inch width category"
+        "reason": "source-camera coverage of the truck body and relation may fail under Native motion; distinct camera poses are predeclared alternatives"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "candidate-constructions/ego_width_at_80in-fallback1.json",
+          "construction_sha256": "391ac0e51a0e291c08e777737c1eff73c46b99b0cb6ddedd04d3f81417a4af99",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "both truck bodies visible across original frames",
+            "failure_condition": "source-pixel review finds a truck body outside overview framing"
+          },
+          "changed_knobs": [
+            "overview camera x 450->400 m",
+            "overview camera height 90->110 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in --candidate fallback1 --output .runtime-work/c149237-ego_width_at_80in-fallback1-offline-v13",
+            "exit_code": 0,
+            "log": "ego_width_at_80in-fallback1-offline.log",
+            "log_sha256": "ed6fd66a915a3d50aefaf56f79cb5bf484bb753a78759951af4b72b07b5fe46b",
+            "construction_sha256": "391ac0e51a0e291c08e777737c1eff73c46b99b0cb6ddedd04d3f81417a4af99"
+          },
+          "compatibility": {
+            "receipt": "ego_width_at_80in-fallback1-compatibility.json",
+            "sha256": "4aaa5967c1f8476579dad47ec7d9466a2f9827675b88e2a8f1deac70d8bf0ac9",
+            "log": "ego_width_at_80in-fallback1-analysis.log",
+            "negative_log": "ego_width_at_80in-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "candidate-constructions/ego_width_at_80in-fallback2.json",
+          "construction_sha256": "5f57e63a1d731463064219e0dae71e7eef74cce60610dabe128e27701b309144",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "truck body reference edge completeness",
+            "failure_condition": "source-pixel review finds a width/body reference clipped"
+          },
+          "changed_knobs": [
+            "reference corner x 300->330 m",
+            "reference corner y -24->-34 m",
+            "reference corner height 30->35 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in --candidate fallback2 --output .runtime-work/c149237-ego_width_at_80in-fallback2-offline-v13",
+            "exit_code": 0,
+            "log": "ego_width_at_80in-fallback2-offline.log",
+            "log_sha256": "57ff700fd9f37b63f6f4d8017ccf288becc1a080d08692908c88fb2339790a4c",
+            "construction_sha256": "5f57e63a1d731463064219e0dae71e7eef74cce60610dabe128e27701b309144"
+          },
+          "compatibility": {
+            "receipt": "ego_width_at_80in-fallback2-compatibility.json",
+            "sha256": "971e812ae113c5caa565f081b058bd35f16cc12905a6cdfc22f650a3db5bbfea",
+            "log": "ego_width_at_80in-fallback2-analysis.log",
+            "negative_log": "ego_width_at_80in-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "candidate-constructions/ego_width_at_80in-fallback3.json",
+          "construction_sha256": "6c97060e97fc03915503c0c2483917aa4475faff2bbefcfa905119c4970970f3",
+          "trigger": {
+            "source": "approach.mkv",
+            "metric": "lead and ego approach interval coverage",
+            "failure_condition": "source-pixel review finds the approach relation outside the frame"
+          },
+          "changed_knobs": [
+            "approach camera x 60->80 m",
+            "approach camera height 8->12 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in --candidate fallback3 --output .runtime-work/c149237-ego_width_at_80in-fallback3-offline-v13",
+            "exit_code": 0,
+            "log": "ego_width_at_80in-fallback3-offline.log",
+            "log_sha256": "57ff700fd9f37b63f6f4d8017ccf288becc1a080d08692908c88fb2339790a4c",
+            "construction_sha256": "6c97060e97fc03915503c0c2483917aa4475faff2bbefcfa905119c4970970f3"
+          },
+          "compatibility": {
+            "receipt": "ego_width_at_80in-fallback3-compatibility.json",
+            "sha256": "3c32f185293ef2bb638974508fb454a47835782a1b160e1574f84d63b37e6b41",
+            "log": "ego_width_at_80in-fallback3-analysis.log",
+            "negative_log": "ego_width_at_80in-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in --output .runtime-work/c149237-ego_width_at_80in-offline-v13",
+        "exit_code": 0,
+        "log": "ego_width_at_80in-offline.log",
+        "log_sha256": "92f6dd08bf86418e9a4a5c68f10ba26394d603131d5b171b81f4cc3fdb2589a7",
+        "construction_sha256": "94548906e031315adb7e5aed4005df3506eb75c72e31c642863a15bc8231c202"
+      },
+      "compatibility": {
+        "receipt": "ego_width_at_80in-compatibility.json",
+        "sha256": "ee72a29e0da3a048ca705aa9e76e08281cb3635e56fae1e45ed6c23180148ce9",
+        "log": "ego_width_at_80in-analysis.log"
+      },
+      "negative": {
+        "log": "ego_width_at_80in-negative.log",
+        "log_sha256": "d6a4f5ab31812d23e546d24384067252b48ba207420a07cc07d13d5669b80051"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in --attempt .runtime-work/c149237-ego_width_at_80in-compat-v13 --output .runtime-work/c149237-ego_width_at_80in-saved-v13 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "ego_width_at_80in-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "receipt": "ego_width_at_80in-saved-processing.json",
+        "receipt_sha256": "98405e15d5f90c6c9638dc668887dceb0f649d0fa5c1567480147d7f567dfb7e",
+        "scope": "nine-frame synthetic saved-only software processing"
+      }
     },
     {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in",
@@ -95,9 +640,118 @@
       "fixture_recipe": "work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe-lead_width_below_80in.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "no pinned Native truck asset may meet the exact 80-inch width category"
+        "reason": "source-camera coverage of the truck body and relation may fail under Native motion; distinct camera poses are predeclared alternatives"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "candidate-constructions/lead_width_below_80in-fallback1.json",
+          "construction_sha256": "269ca96e23576c28b7084885d13672c78be3cbfe858101eb9332b28fdf01d465",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "both truck bodies visible across original frames",
+            "failure_condition": "source-pixel review finds a truck body outside overview framing"
+          },
+          "changed_knobs": [
+            "overview camera x 450->400 m",
+            "overview camera height 90->110 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in --candidate fallback1 --output .runtime-work/c149237-lead_width_below_80in-fallback1-offline-v13",
+            "exit_code": 0,
+            "log": "lead_width_below_80in-fallback1-offline.log",
+            "log_sha256": "cbdf62848cc5fe6ff1b411cd0bed2c7be0323be364a8fe0a991fc9475eb67afb",
+            "construction_sha256": "269ca96e23576c28b7084885d13672c78be3cbfe858101eb9332b28fdf01d465"
+          },
+          "compatibility": {
+            "receipt": "lead_width_below_80in-fallback1-compatibility.json",
+            "sha256": "3d860f750430a7aa03b8a430fa955ff57a3cdad10b310dc8274ac179bfe22a2b",
+            "log": "lead_width_below_80in-fallback1-analysis.log",
+            "negative_log": "lead_width_below_80in-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "candidate-constructions/lead_width_below_80in-fallback2.json",
+          "construction_sha256": "7391c283ed078966142f549048bb19e7be490c50492866eb3e10e89cb68cdb48",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "truck body reference edge completeness",
+            "failure_condition": "source-pixel review finds a width/body reference clipped"
+          },
+          "changed_knobs": [
+            "reference corner x 300->330 m",
+            "reference corner y -24->-34 m",
+            "reference corner height 30->35 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in --candidate fallback2 --output .runtime-work/c149237-lead_width_below_80in-fallback2-offline-v13",
+            "exit_code": 0,
+            "log": "lead_width_below_80in-fallback2-offline.log",
+            "log_sha256": "cbdf62848cc5fe6ff1b411cd0bed2c7be0323be364a8fe0a991fc9475eb67afb",
+            "construction_sha256": "7391c283ed078966142f549048bb19e7be490c50492866eb3e10e89cb68cdb48"
+          },
+          "compatibility": {
+            "receipt": "lead_width_below_80in-fallback2-compatibility.json",
+            "sha256": "a685ff3506f0b8b5513e936cdf36a4f5f6c54b2449157cb230a53c94ff709caa",
+            "log": "lead_width_below_80in-fallback2-analysis.log",
+            "negative_log": "lead_width_below_80in-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "candidate-constructions/lead_width_below_80in-fallback3.json",
+          "construction_sha256": "a5cc7286e521571f06106c3d3bc757126eb814573acf3753f3ff299d3abfdbd8",
+          "trigger": {
+            "source": "approach.mkv",
+            "metric": "lead and ego approach interval coverage",
+            "failure_condition": "source-pixel review finds the approach relation outside the frame"
+          },
+          "changed_knobs": [
+            "approach camera x 60->80 m",
+            "approach camera height 8->12 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in --candidate fallback3 --output .runtime-work/c149237-lead_width_below_80in-fallback3-offline-v13",
+            "exit_code": 0,
+            "log": "lead_width_below_80in-fallback3-offline.log",
+            "log_sha256": "cbdf62848cc5fe6ff1b411cd0bed2c7be0323be364a8fe0a991fc9475eb67afb",
+            "construction_sha256": "a5cc7286e521571f06106c3d3bc757126eb814573acf3753f3ff299d3abfdbd8"
+          },
+          "compatibility": {
+            "receipt": "lead_width_below_80in-fallback3-compatibility.json",
+            "sha256": "fc4bae103e4a27cb69c6be99084c02fb758e6cf782d0902f0d11ddf30fe9fbc2",
+            "log": "lead_width_below_80in-fallback3-analysis.log",
+            "negative_log": "lead_width_below_80in-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in --output .runtime-work/c149237-lead_width_below_80in-offline-v13",
+        "exit_code": 0,
+        "log": "lead_width_below_80in-offline.log",
+        "log_sha256": "666b5239ed74c546fb4b8067c896690af9bd3978971f02c5b3152a35d8e2be53",
+        "construction_sha256": "2782d4b830bfffb81c93866fd16d8549413dc146face87094f51deab84607eb1"
+      },
+      "compatibility": {
+        "receipt": "lead_width_below_80in-compatibility.json",
+        "sha256": "f5c3928fbad41e3793151a4a0d025982bed022c3dea359d69c32ab8b1e521643",
+        "log": "lead_width_below_80in-analysis.log"
+      },
+      "negative": {
+        "log": "lead_width_below_80in-negative.log",
+        "log_sha256": "89c17a16cd333086761e15a6181316cb29ac9c0dc5804ffb7dee83c4c8ee6714"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in --attempt .runtime-work/c149237-lead_width_below_80in-compat-v13 --output .runtime-work/c149237-lead_width_below_80in-saved-v13 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "lead_width_below_80in-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "receipt": "lead_width_below_80in-saved-processing.json",
+        "receipt_sha256": "d3ee2f119a106e3f034faa184a65215ea9d07dc8fc5ad45e6d74aee22699f0b8",
+        "scope": "nine-frame synthetic saved-only software processing"
+      }
     },
     {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__two_same_direction_lanes",
@@ -111,9 +765,118 @@
       "fixture_recipe": "work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe-two_same_direction_lanes.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native two-lane map availability and same-direction lane interpretation may diverge"
+        "reason": "source-camera coverage of the truck body and relation may fail under Native motion; distinct camera poses are predeclared alternatives"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "candidate-constructions/two_same_direction_lanes-fallback1.json",
+          "construction_sha256": "15b381b969c447f91393ce1ddcd24752affb8b8a815f26e50a4db47c51d6e163",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "both truck bodies visible across original frames",
+            "failure_condition": "source-pixel review finds a truck body outside overview framing"
+          },
+          "changed_knobs": [
+            "overview camera x 450->400 m",
+            "overview camera height 90->110 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__two_same_direction_lanes --candidate fallback1 --output .runtime-work/c149237-two_same_direction_lanes-fallback1-offline-v13",
+            "exit_code": 0,
+            "log": "two_same_direction_lanes-fallback1-offline.log",
+            "log_sha256": "bb0e7d44ee2091210858e457b4e8d353b783ee7a4ae80c59da3cb683cae3920f",
+            "construction_sha256": "15b381b969c447f91393ce1ddcd24752affb8b8a815f26e50a4db47c51d6e163"
+          },
+          "compatibility": {
+            "receipt": "two_same_direction_lanes-fallback1-compatibility.json",
+            "sha256": "59ffdd87e73897627f231eb45c0ba72ba94c363027e7f2b3f5c578c7dfb74961",
+            "log": "two_same_direction_lanes-fallback1-analysis.log",
+            "negative_log": "two_same_direction_lanes-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "candidate-constructions/two_same_direction_lanes-fallback2.json",
+          "construction_sha256": "8b58f5b7eaa23d5b951e2cc12af5e4a09934a5dafa867c898ce0948d23c934e3",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "truck body reference edge completeness",
+            "failure_condition": "source-pixel review finds a width/body reference clipped"
+          },
+          "changed_knobs": [
+            "reference corner x 300->330 m",
+            "reference corner y -24->-34 m",
+            "reference corner height 30->35 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__two_same_direction_lanes --candidate fallback2 --output .runtime-work/c149237-two_same_direction_lanes-fallback2-offline-v13",
+            "exit_code": 0,
+            "log": "two_same_direction_lanes-fallback2-offline.log",
+            "log_sha256": "e25ca2bd8556ceb123a805146a819d0f3dc3f901ffbed5852c793febedc7512a",
+            "construction_sha256": "8b58f5b7eaa23d5b951e2cc12af5e4a09934a5dafa867c898ce0948d23c934e3"
+          },
+          "compatibility": {
+            "receipt": "two_same_direction_lanes-fallback2-compatibility.json",
+            "sha256": "ad1d6dc2dd4ea456ce4166e31bff6173020bc54d68e45f2eec89be9384988cc9",
+            "log": "two_same_direction_lanes-fallback2-analysis.log",
+            "negative_log": "two_same_direction_lanes-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "candidate-constructions/two_same_direction_lanes-fallback3.json",
+          "construction_sha256": "c6488df88a94cd5a2924c57612979e15481d4d8f7fc1d0a64d4af9d0c48a36f2",
+          "trigger": {
+            "source": "approach.mkv",
+            "metric": "lead and ego approach interval coverage",
+            "failure_condition": "source-pixel review finds the approach relation outside the frame"
+          },
+          "changed_knobs": [
+            "approach camera x 60->80 m",
+            "approach camera height 8->12 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__two_same_direction_lanes --candidate fallback3 --output .runtime-work/c149237-two_same_direction_lanes-fallback3-offline-v13",
+            "exit_code": 0,
+            "log": "two_same_direction_lanes-fallback3-offline.log",
+            "log_sha256": "14f787ff0390ab2f3f58b7032eaef4bd706f2381201e753a4b5add9098b91f43",
+            "construction_sha256": "c6488df88a94cd5a2924c57612979e15481d4d8f7fc1d0a64d4af9d0c48a36f2"
+          },
+          "compatibility": {
+            "receipt": "two_same_direction_lanes-fallback3-compatibility.json",
+            "sha256": "942bf449490d9805d115c951b83d680a41ec011a727bd3ea9fd111c2b7ed7dc6",
+            "log": "two_same_direction_lanes-fallback3-analysis.log",
+            "negative_log": "two_same_direction_lanes-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__two_same_direction_lanes --output .runtime-work/c149237-two_same_direction_lanes-offline-v13",
+        "exit_code": 0,
+        "log": "two_same_direction_lanes-offline.log",
+        "log_sha256": "db2786fcf426a9277a3b574cba486dae281d3e8f12debd834417b0ceaba70e20",
+        "construction_sha256": "d79d3a908320612f2e9fb3574af592e2fa35781a22c726406b35eefffd41e726"
+      },
+      "compatibility": {
+        "receipt": "two_same_direction_lanes-compatibility.json",
+        "sha256": "c8e8c7ade8031eaf9e48b09494e7750ba1815975282bb8913526b29d9802bb88",
+        "log": "two_same_direction_lanes-analysis.log"
+      },
+      "negative": {
+        "log": "two_same_direction_lanes-negative.log",
+        "log_sha256": "c0d2406888e45a405152ee05d478bb7284c8078c105dc9aabc0da538b50e4bbf"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__two_same_direction_lanes --attempt .runtime-work/c149237-two_same_direction_lanes-compat-v13 --output .runtime-work/c149237-two_same_direction_lanes-saved-v13 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "two_same_direction_lanes-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "receipt": "two_same_direction_lanes-saved-processing.json",
+        "receipt_sha256": "aefd4f41a71aa5019070c2f3b13effcd23943d842bb2addfb70a530b6eac3826",
+        "scope": "nine-frame synthetic saved-only software processing"
+      }
     },
     {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__overtaking",
@@ -127,10 +890,119 @@
       "fixture_recipe": "work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe-overtaking.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "opposing-lane pass may not complete or preserve safe clearance in Native motion"
+        "reason": "source-camera coverage of the truck body and relation may fail under Native motion; distinct camera poses are predeclared alternatives"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "candidate-constructions/overtaking-fallback1.json",
+          "construction_sha256": "4d08a43ecf0f4b4a68d0d7893f7b987ea136b9b3a38104bfd4b316dc0983ec30",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "both truck bodies visible across original frames",
+            "failure_condition": "source-pixel review finds a truck body outside overview framing"
+          },
+          "changed_knobs": [
+            "overview camera x 450->400 m",
+            "overview camera height 90->110 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__overtaking --candidate fallback1 --output .runtime-work/c149237-overtaking-fallback1-offline-v13",
+            "exit_code": 0,
+            "log": "overtaking-fallback1-offline.log",
+            "log_sha256": "2388a8d83e2433614805539ad96f401a7be0b600452a058c87b1f0998ae85af7",
+            "construction_sha256": "4d08a43ecf0f4b4a68d0d7893f7b987ea136b9b3a38104bfd4b316dc0983ec30"
+          },
+          "compatibility": {
+            "receipt": "overtaking-fallback1-compatibility.json",
+            "sha256": "26ce7edfe0d9aa8f2a5f71df7b8b12a4d96a2bb3e388fc33817c67e8d51b0d6a",
+            "log": "overtaking-fallback1-analysis.log",
+            "negative_log": "overtaking-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "candidate-constructions/overtaking-fallback2.json",
+          "construction_sha256": "ac9315ca89de34b3cb5afbd0d3571bd1d7e5db33ecc791f6e0b59ece82850105",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "truck body reference edge completeness",
+            "failure_condition": "source-pixel review finds a width/body reference clipped"
+          },
+          "changed_knobs": [
+            "reference corner x 300->330 m",
+            "reference corner y -24->-34 m",
+            "reference corner height 30->35 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__overtaking --candidate fallback2 --output .runtime-work/c149237-overtaking-fallback2-offline-v13",
+            "exit_code": 0,
+            "log": "overtaking-fallback2-offline.log",
+            "log_sha256": "557038e1e7424de439d8fd1f710469d2cac3ffc1a9c9b4ef413af4251d09d5c6",
+            "construction_sha256": "ac9315ca89de34b3cb5afbd0d3571bd1d7e5db33ecc791f6e0b59ece82850105"
+          },
+          "compatibility": {
+            "receipt": "overtaking-fallback2-compatibility.json",
+            "sha256": "b881ede204b0ab7e3ebb425345742c12aa43ac82b8074f8cfce37f2a8e04d94f",
+            "log": "overtaking-fallback2-analysis.log",
+            "negative_log": "overtaking-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "candidate-constructions/overtaking-fallback3.json",
+          "construction_sha256": "29c992b7563241cc85ad4a8875a18c0de35fe7b9b91d075c79d616e321eef15e",
+          "trigger": {
+            "source": "approach.mkv",
+            "metric": "lead and ego approach interval coverage",
+            "failure_condition": "source-pixel review finds the approach relation outside the frame"
+          },
+          "changed_knobs": [
+            "approach camera x 60->80 m",
+            "approach camera height 8->12 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__overtaking --candidate fallback3 --output .runtime-work/c149237-overtaking-fallback3-offline-v13",
+            "exit_code": 0,
+            "log": "overtaking-fallback3-offline.log",
+            "log_sha256": "557038e1e7424de439d8fd1f710469d2cac3ffc1a9c9b4ef413af4251d09d5c6",
+            "construction_sha256": "29c992b7563241cc85ad4a8875a18c0de35fe7b9b91d075c79d616e321eef15e"
+          },
+          "compatibility": {
+            "receipt": "overtaking-fallback3-compatibility.json",
+            "sha256": "c1a5ade0891f5927270d44b66520b7bf3be07824f80bc5ba5f5906f0c155803b",
+            "log": "overtaking-fallback3-analysis.log",
+            "negative_log": "overtaking-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__overtaking --output .runtime-work/c149237-overtaking-offline-v13",
+        "exit_code": 0,
+        "log": "overtaking-offline.log",
+        "log_sha256": "d61ab8319aa63ce6865fb452d4f07217c034c168f48423a401be5ac1b6da1cb7",
+        "construction_sha256": "0ef4294457d62473069915d11fc66c4a3e5db88d6394e672e24d91f013389228"
+      },
+      "compatibility": {
+        "receipt": "overtaking-compatibility.json",
+        "sha256": "89615dd89c5d8f06bdfa8e264ee28a7319f8bfc89d8fdc47b7c9f9495a1b3715",
+        "log": "overtaking-analysis.log"
+      },
+      "negative": {
+        "log": "overtaking-negative.log",
+        "log_sha256": "271bd96b26d4c6c24221272d9b5240c8dd182c4d5e2561a903b8a94eb75baaf2"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__overtaking --attempt .runtime-work/c149237-overtaking-compat-v13 --output .runtime-work/c149237-overtaking-saved-v13 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "overtaking-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "receipt": "overtaking-saved-processing.json",
+        "receipt_sha256": "3c52ece285924bd7d20f777fa842672e0e092693f111b8e0b8eca9ed2d6c940c",
+        "scope": "nine-frame synthetic saved-only software processing"
+      }
     }
   ],
-  "status": "partial_eight_primaries_unproved"
+  "status": "partial_eight_primaries_and_three_fallbacks_proved_each"
 }

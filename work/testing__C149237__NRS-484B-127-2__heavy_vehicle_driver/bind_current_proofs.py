@@ -1,4 +1,4 @@
-"""Copy and bind seven current v10 diagnostic CPU proofs to the partial package."""
+"""Copy and bind eight current v13 diagnostic CPU proofs to the partial package."""
 import hashlib
 import json
 import shutil
@@ -6,7 +6,7 @@ from pathlib import Path
 
 FOLDER = Path(__file__).resolve().parent
 ROOT = FOLDER.parents[1]
-VERSION = 'v10'
+VERSION = 'v13'
 
 
 def sha(path):
@@ -89,22 +89,21 @@ def main():
         tests.append({'command': cmd, 'exit_code': 0, 'log': name, 'sha256': sha(FOLDER/name)})
     for kind, script in (('gap-boundary', 'prove_gap_comparison.py'),
                          ('width-boundary', 'prove_width_comparison.py'),
-                         ('lane-exception', 'prove_lane_comparison.py')):
+                         ('lane-exception', 'prove_lane_comparison.py'),
+                         ('overtaking-exception', 'prove_overtaking_comparison.py')):
         log = FOLDER/f'{kind}-proof-{VERSION}.log'
         tests.append({'command': f'.venv-cpu/bin/python work/{FOLDER.name}/{script}',
                       'exit_code': 0, 'log': log.name, 'sha256': sha(log)})
     result['tests'] = tests
-    result['readiness_kind'] = 'seven_gap_width_lane_primaries_compatible_saved_checkpoint'
-    result['reason'] = ('Seven of eight exact primary cases have current v10 exact offline, positive/negative '
-                        'synthetic compatibility and recorded-only saved-processing proofs. Gap, width and '
-                        'two-lane saved-source comparisons passed positive and missing/changed-source negatives. '
-                        'The authored overtaking road, staging helper and passing controller pass CPU unit tests '
-                        'but are not yet integrated into an exact capture/finalization bundle. Risk-triggered '
-                        'fallbacks, independent delivery audits, '
+    result['readiness_kind'] = 'eight_primaries_compatible_saved_checkpoint'
+    result['reason'] = ('All eight exact primary cases have current v13 exact offline, positive/negative '
+                        'synthetic compatibility and recorded-only saved-processing proofs. Gap, width, '
+                        'two-lane and overtaking saved-source comparisons passed positive and missing/changed-source negatives. '
+                        'Risk-triggered fallbacks, independent delivery audits, '
                         'full-duration authored-road proof, canonical semantic proposals and shared delivery '
                         'artifacts remain worker-owned CPU work. Real CARLA truck dimensions, motion, visibility '
                         'and legal judgments remain unverified.')
-    manifest['status'] = 'partial_seven_primaries_proved'
+    manifest['status'] = 'partial_eight_primaries_proved'
     manifest_path.write_text(json.dumps(manifest, indent=2)+'\n')
     result_path.write_text(json.dumps(result, indent=2)+'\n')
 
