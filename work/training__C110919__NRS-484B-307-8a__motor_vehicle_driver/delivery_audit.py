@@ -1,0 +1,155 @@
+"""Independent source boundary for a selected red-signal right-turn attempt.
+
+Diagnostic mode checks retained source shape and always returns nonacceptance.
+Original mode requires a separate Native and pixel review before any receipt.
+"""
+import argparse
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+CHECKS = ("native_source", "all_participants", "time_join", "full_video_decode",
+          "actual_pixels", "physical_completion")
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def read(path):
+    return json.loads(path.read_text())
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def rows(path):
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def frames(path):
+    command = ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
+               "-show_entries", "stream=nb_read_frames",
+               "-of", "default=noprint_wrappers=1:nokey=1", str(path)]
+    result = subprocess.run(command, text=True, stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE, timeout=120, check=False)
+    require(result.returncode == 0 and result.stdout.strip().isdigit(),
+            "Source camera decode failed: " + path.name)
+    return int(result.stdout.strip())
+
+
+def audit(case_id, construction_sha256, attempt, processing, *, diagnostic, source_review=None):
+    manifest_path = HERE / "update017-selected-pair-probe-manifest.json"
+    manifest = read(manifest_path)
+    entry = next((x for x in manifest["cases"] if x["case_id"] == case_id), None)
+    require(entry is not None, "Unselected delivery case")
+    require(entry["construction_sha256"] == construction_sha256 and
+            sha(HERE / entry["construction"]) == construction_sha256,
+            "Delivery construction differs from selected manifest")
+    suffix = case_id.removeprefix(HERE.name + "__")
+    require(suffix in ("reference", "contrast"), "Wrong statutory right-turn case")
+    attempt = attempt.resolve()
+    processing = processing.resolve()
+    require(attempt.is_dir() and processing.is_file() and
+            (ROOT / ".runtime-work" in attempt.parents if diagnostic else ROOT in attempt.parents),
+            "Delivery attempt or saved processing path invalid")
+    saved = read(processing)
+    require(saved.get("case_id") == case_id and saved.get("candidate_id") == "primary" and
+            saved.get("passed") is True and saved.get("originals_preserved") is True and
+            saved.get("timestamp_joins", {}).get("passed") is True and
+            saved.get("physical_acceptance_claimed") is False and
+            saved.get("legal_acceptance_claimed") is False,
+            "Saved processing source chain incomplete")
+    names = ("native_samples.jsonl", "road_geometry.json", "video_frames.jsonl",
+             "capture/evidence.jsonl", "body_history.jsonl", "trace.jsonl",
+             *(name + ".mkv" for name in CAMERAS))
+    hashes = {}
+    for name in names:
+        path = attempt / name
+        require(path.is_file(), "Missing delivery source: " + name)
+        digest = sha(path)
+        require(saved.get("original_source_hashes", {}).get(name) == digest,
+                "Saved original source changed: " + name)
+        hashes[name] = digest
+    mapping = rows(attempt / "video_frames.jsonl")
+    native = rows(attempt / "native_samples.jsonl")
+    evidence = rows(attempt / "capture/evidence.jsonl")
+    body = rows(attempt / "body_history.jsonl")
+    require(len(mapping) == len(native) == len(evidence) == len(body) == 480,
+            "Original participant or frame source missing")
+    for index, (frame, sample, capture, physical_body) in enumerate(zip(mapping, native, evidence, body)):
+        require(frame["video_frame"] == index and frame["native_frame"] == sample["native_frame"] ==
+                capture["original_frame"] == physical_body["frame"] and
+                abs(frame["time_s"] - sample["time_s"]) <= 1e-4 and
+                sample["native_body_xy_m"] == physical_body["body_vertices_m"],
+                "Original Native body/time join differs")
+    counts = {name: frames(attempt / (name + ".mkv")) for name in CAMERAS}
+    require(set(counts.values()) == {480}, "Source camera frame count differs")
+    result = read(attempt / "result.json")
+    require(saved.get("result_sha256") == sha(attempt / "result.json") and
+            result.get("case_id") == case_id and result.get("accepted") is False and
+            result.get("legal_verdict_claimed") is False,
+            "Saved Native result changed or claims acceptance")
+    synthetic = any(row.get("synthetic_diagnostic") is True or
+                    row.get("speed_provenance") == "synthetic_native_sample" for row in native)
+    if diagnostic:
+        require(synthetic and result.get("provenance_kind") == "synthetic_local_diagnostic" and
+                result.get("maneuver_completed") is False,
+                "Diagnostic source attempted physical promotion")
+        return {"format": "worker-delivery-audit", "case_id": case_id,
+                "candidate_id": "primary", "passed": False, "source_shaped_unit_test": True,
+                "checks": {name: False for name in CHECKS},
+                "source_sha256": hashes, "source_frame_counts": counts,
+                "source_shape_passed": True, "physical_or_legal_acceptance_claimed": False}
+    require(not synthetic and result.get("provenance_kind") == "native" and
+            result.get("maneuver_completed") is True and source_review is not None,
+            "Original Native motion or independent review missing")
+    review = read(source_review)
+    require(review.get("source_kind") == "original_native_map_signal_actor_pixels" and
+            review.get("case_id") == case_id and review.get("reviewer") and
+            review.get("method") and review.get("source_sha256") == hashes and
+            review.get("signal_governs_ego") is True and
+            review.get("stop_reference_confirmed") is True and
+            review.get("extreme_right_and_receiving_road_confirmed") is True and
+            review.get("pedestrians_and_cross_traffic_reviewed") is True and
+            review.get("four_camera_pixels_reviewed") is True and
+            review.get("native_owner_released") is True and
+            review.get("legal_verdict_claimed") is False,
+            "Independent original signal, actor, road or pixel review incomplete")
+    return {"format": "worker-delivery-audit", "case_id": case_id,
+            "candidate_id": "primary", "passed": True,
+            "checks": {name: True for name in CHECKS},
+            "source_sha256": hashes, "source_frame_counts": counts,
+            "source_review_sha256": sha(source_review),
+            "legal_verdict_claimed": False}
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--case", required=True)
+    parser.add_argument("--construction-sha256", required=True)
+    parser.add_argument("--attempt", type=Path, required=True)
+    parser.add_argument("--processing", type=Path, required=True)
+    parser.add_argument("--source-review", type=Path)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--diagnostic", action="store_true")
+    args = parser.parse_args()
+    receipt = audit(args.case, args.construction_sha256, args.attempt,
+                    args.processing, diagnostic=args.diagnostic,
+                    source_review=args.source_review)
+    require(not args.output.exists(), "Retain previous independent delivery audit")
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(receipt, indent=2) + "\n")
+    print(json.dumps({"case_id": args.case, "source_shape_passed":
+                      receipt.get("source_shape_passed", False),
+                      "delivery_passed": receipt["passed"]}))
+
+
+if __name__ == "__main__":
+    main()
