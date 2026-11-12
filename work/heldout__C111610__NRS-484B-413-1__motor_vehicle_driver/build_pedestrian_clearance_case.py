@@ -63,9 +63,11 @@ def main():
     rows = [json.loads(line) for line in diagnostic['files']['participant_bodies.jsonl'].splitlines()]
     for row in rows:
         row['bodies']['ped_listener']['y_m'] += 12.
-    diagnostic['files']['participant_bodies.jsonl'] = ''.join(json.dumps(row) + '\n' for row in rows)
+    diagnostic['files']['participant_bodies.jsonl'] = ''.join(
+        json.dumps(row, separators=(',', ':')) + '\n' for row in rows)
     diagnostic_name = BASE + '-diagnostic.json'
-    diagnostic_hash = save(ROOT / diagnostic_name, diagnostic)
+    diagnostic_hash = write(ROOT / diagnostic_name,
+                            json.dumps(diagnostic, separators=(',', ':')) + '\n')
     recipe = json.loads((ROOT / 'pedestrian-horn-recipe.json').read_text().replace(OLD, NEW))
     for source_ref in recipe['sources']:
         source_ref['source'] = 'work/' + ROOT.name + '/' + diagnostic_name
@@ -132,14 +134,14 @@ def main():
         stem = BASE + '-' + candidate
         offline = [PY, 'runtime.py', 'offline', '--manifest', str(MANIFEST.relative_to(REPO)),
                    '--case', NEW, '--candidate', candidate,
-                   '--output', '.runtime-work/c111610-' + stem + '-offline-v4', '--python', PY]
+                   '--output', '.runtime-work/c111610-' + stem + '-offline-v6', '--python', PY]
         offline_log = ROOT / (stem + '-offline.log')
         run(offline, offline_log)
         target['offline'] = {'command': ' '.join(offline), 'exit_code': 0,
                              'log': offline_log.name, 'log_sha256': digest(offline_log),
                              'construction_sha256': target['construction_sha256']}
         save(MANIFEST, manifest)
-        output = REPO / ('.runtime-work/c111610-' + stem + '-compat-v4')
+        output = REPO / ('.runtime-work/c111610-' + stem + '-compat-v6')
         compatibility = [PY, 'runtime.py', 'compatibility', '--manifest', str(MANIFEST.relative_to(REPO)),
                          '--case', NEW, '--candidate', candidate,
                          '--output', str(output.relative_to(REPO)), '--library', 'runtime/library',
@@ -162,7 +164,7 @@ def main():
         print(candidate, 'offline and source-positive/negative compatibility passed', flush=True)
         if candidate != 'primary':
             continue
-        attempt = REPO / '.runtime-work/c111610-pedestrian-farther-saved-attempt-v4'
+        attempt = REPO / '.runtime-work/c111610-pedestrian-farther-saved-attempt-v6'
         materialize(MANIFEST, NEW, attempt)
         with tempfile.TemporaryDirectory(prefix='c111610-farther-source-', dir=REPO / '.runtime-work') as temp:
             fixture = Path(temp) / 'fixture'
@@ -175,7 +177,7 @@ def main():
                     shutil.copytree(item, destination)
                 else:
                     shutil.copy2(item, destination)
-        saved_output = REPO / '.runtime-work/c111610-pedestrian-farther-saved-v4'
+        saved_output = REPO / '.runtime-work/c111610-pedestrian-farther-saved-v6'
         saved = [PY, 'runtime.py', 'process-saved', '--manifest', str(MANIFEST.relative_to(REPO)),
                  '--case', NEW, '--attempt', str(attempt.relative_to(REPO)),
                  '--output', str(saved_output.relative_to(REPO)), '--library', 'runtime/library',

@@ -217,7 +217,7 @@ class FourCameraCapture:
 
 
 def drive_turn(world, carla_module, ego, plan, cameras, record_sample,
-               *, max_ticks_per_target=120):
+               *, max_ticks_per_target=120, capture_frames=160):
     """Drive sourced targets and retain original frame/body observations.
 
     The recorder receives raw Native frame identity, time and body vertices;
@@ -232,7 +232,33 @@ def drive_turn(world, carla_module, ego, plan, cameras, record_sample,
         raise ValueError('Unreviewed marked turn plan')
     if type(max_ticks_per_target) is not int or max_ticks_per_target < 1:
         raise ValueError('Invalid turn tick budget')
+    if type(capture_frames) is not int or capture_frames < 1:
+        raise ValueError('Invalid fixed turn capture duration')
     frames = []
+
+    def record_tick():
+        if len(frames) >= capture_frames:
+            raise ValueError('Marked turn exceeded fixed capture duration')
+        frame = world.tick()
+        cameras.wait_for_frame(frame)
+        snapshot = world.get_snapshot()
+        if snapshot.frame != frame:
+            raise ValueError('Original Native snapshot frame mismatch')
+        body_transform = ego.get_transform()
+        vertices = ego.bounding_box.get_world_vertices(body_transform)
+        if len(vertices) != 8:
+            raise ValueError('Original Native body vertices incomplete')
+        corners = []
+        for vertex in vertices:
+            point = [float(vertex.x), float(vertex.y)]
+            if not any(hypot(point[0]-old[0], point[1]-old[1]) < 1e-4
+                       for old in corners):
+                corners.append(point)
+        if len(corners) != 4:
+            raise ValueError('Original Native footprint corners incomplete')
+        record_sample({'frame': frame, 'time_s': float(snapshot.timestamp.elapsed_seconds),
+                       'actor_id': ego.id, 'corners_xy_m': corners})
+        frames.append(frame)
     for target in targets[1:]:
         reached = False
         for _ in range(max_ticks_per_target):
@@ -247,38 +273,19 @@ def drive_turn(world, carla_module, ego, plan, cameras, record_sample,
             controls = control_step(position, (float(forward.x), float(forward.y)),
                                     (float(velocity.x), float(velocity.y)), target)
             ego.apply_control(carla_module.VehicleControl(**controls))
-            frame = world.tick()
-            cameras.wait_for_frame(frame)
-            snapshot = world.get_snapshot()
-            if snapshot.frame != frame:
-                raise ValueError('Original Native snapshot frame mismatch')
-            body_transform = ego.get_transform()
-            vertices = ego.bounding_box.get_world_vertices(body_transform)
-            if len(vertices) != 8:
-                raise ValueError('Original Native body vertices incomplete')
-            corners = []
-            for vertex in vertices:
-                point = [float(vertex.x), float(vertex.y)]
-                if not any(hypot(point[0]-old[0], point[1]-old[1]) < 1e-4
-                           for old in corners):
-                    corners.append(point)
-            if len(corners) != 4:
-                raise ValueError('Original Native footprint corners incomplete')
-            sample = {'frame': frame, 'time_s': float(snapshot.timestamp.elapsed_seconds),
-                      'actor_id': ego.id,
-                      'corners_xy_m': corners}
-            record_sample(sample)
-            frames.append(frame)
+            record_tick()
         if not reached:
             loc = ego.get_transform().location
             reached = hypot(target[0]-float(loc.x), target[1]-float(loc.y)) < .8
         if not reached:
             ego.apply_control(carla_module.VehicleControl(throttle=0., steer=0., brake=1.))
             raise ValueError('Ego did not reach marked turn target within tick budget')
-    cameras.verify(frames)
     ego.apply_control(carla_module.VehicleControl(throttle=0., steer=0., brake=1.))
+    while len(frames) < capture_frames:
+        record_tick()
+    cameras.verify(frames)
     return {'frames': frames, 'targets_reached': len(targets)-1,
-            'actual_turn_observed': bool(frames)}
+            'actual_turn_observed': bool(frames), 'capture_frames': capture_frames}
 
 
 def execute_marked_turn(world, carla_module, ego, case_id, source_path, source_sha256,

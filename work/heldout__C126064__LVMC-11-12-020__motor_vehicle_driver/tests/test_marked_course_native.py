@@ -194,9 +194,19 @@ class NativeMarkerTests(unittest.TestCase):
                             {'targets_xy_m': [[0, 0], [1, 0], [2, 0]],
                              'actual_turn_observed': False}, Cameras(), samples.append)
         self.assertEqual(result['targets_reached'], 2)
+        self.assertEqual(result['capture_frames'], 160)
+        self.assertEqual(len(result['frames']), 160)
+        self.assertEqual([sample['time_s'] for sample in samples],
+                         [frame * .05 for frame in result['frames']])
         self.assertEqual([sample['frame'] for sample in samples], result['frames'])
         self.assertTrue(all(len(sample['corners_xy_m']) == 4 for sample in samples))
         self.assertEqual(ego.controls[-1]['brake'], 1.)
+        short_ego = Ego()
+        with self.assertRaisesRegex(ValueError, 'exceeded fixed capture duration'):
+            drive_turn(TurnWorld(short_ego), carla, short_ego,
+                       {'targets_xy_m': [[0, 0], [1, 0], [2, 0]],
+                        'actual_turn_observed': False}, Cameras(), lambda _: None,
+                       capture_frames=1)
 
     def test_marker_target_camera_and_original_source_orchestration(self):
         with TemporaryDirectory() as td:

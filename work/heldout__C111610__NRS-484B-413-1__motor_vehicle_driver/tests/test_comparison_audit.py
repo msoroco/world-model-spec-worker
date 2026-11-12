@@ -10,6 +10,26 @@ spec.loader.exec_module(module)
 
 
 class ComparisonAuditTests(unittest.TestCase):
+    def test_farther_pedestrian_source_comparison(self):
+        manifest, receipts = module.load()
+        result = module.inspect_clearance(manifest, receipts)
+        self.assertTrue(result['passed'])
+        self.assertGreater(*reversed(result['minimum_sampled_surface_gap_m']))
+
+    def test_clearance_audit_rejects_changed_fixed_motion_and_missing_body_difference(self):
+        manifest, receipts = module.load()
+        bad = copy.deepcopy(receipts)
+        far = bad[module.FAR]['measurement_examples']['turn_signal_observation']['value']
+        far['sources']['ego_turn_motion.jsonl'] = '0' * 64
+        with self.assertRaisesRegex(ValueError, 'fixed original changed'):
+            module.inspect_clearance(manifest, bad)
+        bad = copy.deepcopy(receipts)
+        far = bad[module.FAR]['measurement_examples']['turn_signal_observation']['value']
+        near = bad[module.IDS['horn']]['measurement_examples']['turn_signal_observation']['value']
+        far['sources']['participant_bodies.jsonl'] = near['sources']['participant_bodies.jsonl']
+        with self.assertRaisesRegex(ValueError, 'body source unchanged'):
+            module.inspect_clearance(manifest, bad)
+
     def test_primary_source_comparisons(self):
         manifest, receipts = module.load()
         self.assertTrue(module.inspect(manifest, receipts)['passed'])

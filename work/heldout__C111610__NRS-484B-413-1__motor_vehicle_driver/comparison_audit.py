@@ -10,6 +10,7 @@ IDS = {
     'vehicle': ROOT.name + '__other_vehicle_signal_before_turn',
     'both': ROOT.name + '__both_users_both_signals',
 }
+FAR = ROOT.name + '__pedestrian_farther_horn_before_turn'
 
 
 def require(condition, message):
@@ -63,11 +64,56 @@ def inspect(manifest, receipts):
             'case_ids': list(IDS.values()), 'scope': 'source-shaped CPU comparison only; no physical or legal finding'}
 
 
+def inspect_clearance(manifest, receipts):
+    entries = {entry['case_id']: entry for entry in manifest['cases']}
+    require(IDS['horn'] in entries and FAR in entries, 'Missing pedestrian clearance cases')
+    observed = {}
+    for case_id in (IDS['horn'], FAR):
+        entry = entries[case_id]
+        receipt = receipts[case_id]
+        receipt_path = ROOT / entry['compatibility']['receipt']
+        require(sha256(receipt_path.read_bytes()).hexdigest() == entry['compatibility']['sha256'],
+                'Stale clearance compatibility receipt file')
+        require(receipt['passed'] and receipt['case_id'] == case_id and
+                receipt['construction_sha256'] == entry['construction_sha256'],
+                'Stale clearance construction or receipt')
+        construction = json.loads((ROOT / entry['construction']).read_text())
+        require(sha256((ROOT / entry['construction']).read_bytes()).hexdigest() == entry['construction_sha256'],
+                'Stale clearance construction file')
+        config = json.loads(next(f['content'] for f in construction['files'] if f['path'] == 'config.json'))
+        require(config['selected_case_id'] == case_id, 'Wrong clearance construction identity')
+        value = receipt['measurement_examples']['turn_signal_observation']['value']
+        require(value['format'] == 'worker-turn-signal-observation', 'Wrong clearance measurement')
+        observed[case_id] = config, value
+    near_config, near = observed[IDS['horn']]
+    far_config, far = observed[FAR]
+    for key in ('law_id', 'cell_id', 'actor', 'rate_hz', 'frames', 'duration_s', 'cameras'):
+        require(near_config[key] == far_config[key], 'Clearance fixed condition changed: ' + key)
+    near_engineering = dict(near_config['engineering'])
+    far_engineering = dict(far_config['engineering'])
+    require(far_engineering.pop('pedestrian_along_m') == 6. and
+            far_engineering.pop('pedestrian_left_m') == 14., 'Wrong farther pedestrian offset')
+    require(near_engineering == far_engineering, 'Clearance control or route changed')
+    for key in ('ego_turn_motion.jsonl', 'ego_signal_audio.jsonl', 'affected_participants.json'):
+        require(near['sources'][key] == far['sources'][key], 'Clearance fixed original changed: ' + key)
+    require(near['sources']['participant_bodies.jsonl'] != far['sources']['participant_bodies.jsonl'],
+            'Clearance pedestrian original body source unchanged')
+    require(near['turn_onset_frame'] == far['turn_onset_frame'] and
+            near['turn_direction'] == far['turn_direction'], 'Clearance turn changed')
+    near_gap = near['participant_clearance']['ped_listener']['minimum_sampled_surface_gap_m']
+    far_gap = far['participant_clearance']['ped_listener']['minimum_sampled_surface_gap_m']
+    require(far_gap > near_gap, 'Clearance source measurement did not increase')
+    return {'format': 'worker-turn-clearance-comparison-audit', 'passed': True,
+            'comparison_id': 'pedestrian_clearance_sweep', 'case_ids': [IDS['horn'], FAR],
+            'minimum_sampled_surface_gap_m': [near_gap, far_gap],
+            'scope': 'source-shaped CPU comparison only; affectedness and safety remain unjudged'}
+
+
 def load():
     manifest = json.loads((ROOT / 'execution-manifest.json').read_text())
     receipts = {}
     for entry in manifest['cases']:
-        if entry['case_id'] in IDS.values():
+        if entry['case_id'] in (*IDS.values(), FAR):
             receipts[entry['case_id']] = json.loads((ROOT / entry['compatibility']['receipt']).read_text())
     return manifest, receipts
 
@@ -75,3 +121,4 @@ def load():
 if __name__ == '__main__':
     manifest, receipts = load()
     print(json.dumps(inspect(manifest, receipts), indent=2))
+    print(json.dumps(inspect_clearance(manifest, receipts), indent=2))
