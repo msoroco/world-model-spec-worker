@@ -26,7 +26,8 @@ def point(value):
     return isinstance(value, list) and len(value) == 2 and all(number(v) for v in value)
 
 
-def measure_rows(samples: list[dict], survey: dict, suffix: str, context: dict | None = None) -> dict:
+def measure_rows(samples: list[dict], survey: dict, suffix: str, context: dict | None = None,
+                 *, enforce_target: bool = True) -> dict:
     require(suffix in EXPECTED and len(samples) == 480, "Selected 480-frame motion interval required")
     directions = survey.get("road_directions_native", {})
     require(set(directions) == {"approach_forward", "approach_opposing",
@@ -88,7 +89,8 @@ def measure_rows(samples: list[dict], survey: dict, suffix: str, context: dict |
                 moving_left.append(index)
     endpoint = samples[-1]
     parked = math.dist(endpoint["native_center_xy_m"], [20, -5.25]) <= .8 and endpoint["speed_m_s"] <= .3
-    require(parked, "Native endpoint parking not observed")
+    if enforce_target:
+        require(parked, "Native endpoint parking not observed")
     if suffix.startswith("traversal_"):
         require(bool(moving_traversal), "Moving full-body traversal absent")
         relation = "left_traversal" if moving_left else "no_left_traversal"
@@ -103,7 +105,8 @@ def measure_rows(samples: list[dict], survey: dict, suffix: str, context: dict |
                     "100_ft_boundary_m": 30.48,
                     "zone_kind": survey["approach_zone_kind"],
                     "one_way_native_survey": one_way}
-    require(relation == EXPECTED[suffix], "Native motion differs from selected case")
+    if enforce_target:
+        require(relation == EXPECTED[suffix], "Native motion differs from selected case")
     return {"observed_relation": relation, "measured": measured,
             "endpoint_parked": parked, "original_frames": 480}
 

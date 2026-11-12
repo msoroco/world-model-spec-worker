@@ -22,8 +22,8 @@ def main():
     for kind, suffixes in PAIRS.items():
         paths = []
         for suffix in suffixes:
-            attempt = root / ".runtime-work/c110454-update025-six-selected" / suffix / "primary/compatibility"
-            saved = HERE / "update025-selected-proofs" / suffix / "primary/process-saved.log"
+            attempt = root / ".runtime-work/c110454-update028-six-selected" / suffix / "primary/compatibility"
+            saved = HERE / "update028-selected-proofs" / suffix / "primary/process-saved.log"
             paths.extend((attempt, saved))
         result = audit(kind, *paths, diagnostic=True)
         assert result["source_comparison_passed"] and not result["passed"]
@@ -54,7 +54,7 @@ def main():
              "negative_checks": ["synthetic_as_original_all_3", "changed_weather_all_3",
                                  "changed_capture_config_all_3", "changed_declared_difference_all_3"],
              "original_comparisons_accepted": 0}
-    path = HERE / "update025-original-comparison-proof.json"
+    path = HERE / "update028-original-comparison-proof.json"
     path.write_text(json.dumps(proof, indent=2) + "\n")
     print(json.dumps({"comparisons": len(results),
                       "proof_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}))
