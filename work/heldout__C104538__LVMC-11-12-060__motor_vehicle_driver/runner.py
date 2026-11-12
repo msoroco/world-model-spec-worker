@@ -7,6 +7,7 @@ from pathlib import Path
 from fire_station_geometry import validate_entrance
 from fire_station_camera_capture import CAMERAS, FFmpegSourceSink, FireStationCameraCapture
 from fire_station_capture_session import FireStationCaptureSession
+from native_station_survey import load_and_verify
 
 BRANCHES = {'front_of_entrance', 'front_of_approach',
             'through_driveway', 'remote_reference'}
@@ -94,8 +95,6 @@ def run(output, host, port):
     output = Path(output)
     config = json.loads((output/'config.json').read_text())
     check_config(config)
-    if config['station_survey']['station_source']['kind']=='authored_diagnostic':
-        raise ValueError('Native capture requires a real source-bound station map survey')
     client = carla.Client(host, port); client.set_timeout(30.)
     world = client.get_world(); original = world.get_settings()
     ego = camera = pipeline = session = None
@@ -105,6 +104,11 @@ def run(output, host, port):
         settings.synchronous_mode = True; settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
         world_map = world.get_map()
+        survey, verification = load_and_verify(world, world_map, output)
+        config['station_survey'] = survey
+        config['station_source'] = survey['station_source']
+        check_config(config)
+        (output/'config.json').write_text(json.dumps(config, indent=2)+'\n')
         geometry, route = resolve_survey(world_map, config['station_survey'], config['case_branch'])
         blueprint = world.get_blueprint_library().find(config.get('vehicle_blueprint', 'vehicle.tesla.model3'))
         spawn = route[0].transform
@@ -155,7 +159,8 @@ def run(output, host, port):
     seal_capture(output, frames=len(frames), restoration={'restored': restored},
                  errors=[], encoder_exit_codes={name: 0 for name in CAMERAS},
                  context={'native_map_name': world.get_map().name,
-                          'station_source': config['station_survey']['station_source']})
+                          'station_source': config['station_survey']['station_source'],
+                          'station_survey_verification': verification})
 
 
 def main():

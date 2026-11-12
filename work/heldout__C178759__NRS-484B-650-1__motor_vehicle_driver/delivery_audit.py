@@ -17,6 +17,8 @@ from scenario_pipeline.worker_exchange import media
 CASES = {
     'heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass': (2, 'candidate'),
     'heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__single_right_pass': (1, 'unverified'),
+    'heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__at_mile': (2, 'candidate'),
+    'heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__beyond_mile': (2, 'candidate'),
 }
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 SOURCES = ('video_frames.jsonl', 'trace.jsonl', 'driving_trace.jsonl',

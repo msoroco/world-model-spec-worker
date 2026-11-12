@@ -17,6 +17,7 @@ def survey(reverse=False):
     return {'map_name':'source-bound-test-map',
             'station_source':{'kind':'operator_survey','asset_id':'source-backed-test-station',
                               'source_sha256':'3'*64},
+            'scene_object':{'location_m':[3.,3.,0.]},
             'public_before':ref(7,1,before),'public_at':ref(7,1,0),
             'public_after':ref(7,1,after),'driveway_at':ref(8,2,6),
             'routes':{'front_entrance_turn':[ref(7,1,before),ref(7,1,0),
@@ -51,6 +52,8 @@ class RunnerTests(unittest.TestCase):
                 'cameras':[{'name':name} for name in
                            ('overview','approach','reference_corner','driver_reference')],
                 'station_survey':survey(reverse),
+                'physical_completion':{'criterion':'turn','motion_source':'subject_original.jsonl',
+                    'body_key':'body_corners_xy','heading_key':'heading_deg','turn_degrees':180},
                 'target_speed_mps':4.,'other_speed_mps':2.}
 
     def test_both_approaches_resolve_distinct_station_and_other_routes(self):

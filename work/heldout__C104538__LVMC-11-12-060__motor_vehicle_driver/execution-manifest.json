@@ -7,7 +7,7 @@
       "case_id": "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_entrance",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "adb67d1cb0661d9cafb3188437aa842213fab4e389d9b091d2dc3033861fb243",
+      "construction_sha256": "847c38b6aec6e29f22ca13fa1f848078a35862949a2e9b51c3a75f20d79a5cae",
       "measurement_procedure": {
         "entrypoint": "fire_station_finalizer.py"
       },
@@ -19,7 +19,7 @@
         {
           "id": "fallback1",
           "construction": "cases/front_of_entrance/fallback1-construction.json",
-          "construction_sha256": "973abd50e6c3d09a8d33c93496464f2ae89831cd6794282be53a71324d85814f",
+          "construction_sha256": "93361ba6c82770f227a80aee3710f0784db436fc5d44a9ca9408a7108ed16278",
           "trigger": {
             "source": "Native subject spawn and first original body pose",
             "metric": "subject spawn succeeds and body clears road surface",
@@ -33,7 +33,7 @@
             "exit_code": 0,
             "log": "front_of_entrance-fallback1-offline-v3.log",
             "log_sha256": "4d540a16912afa6620d87c4765a6a12a24a3462307270097c4fff6d68e3f4f43",
-            "construction_sha256": "973abd50e6c3d09a8d33c93496464f2ae89831cd6794282be53a71324d85814f"
+            "construction_sha256": "93361ba6c82770f227a80aee3710f0784db436fc5d44a9ca9408a7108ed16278"
           },
           "compatibility": {
             "receipt": "front_of_entrance-fallback1-compatibility.json",
@@ -51,7 +51,7 @@
         {
           "id": "fallback2",
           "construction": "cases/front_of_entrance/fallback2-construction.json",
-          "construction_sha256": "5fd55c5962049b3a5d2988f61336d5a1739db1eb114cb947ba7d5a876c4ba537",
+          "construction_sha256": "9b2f87bbad729492cb60d65b33c7e95c659284f3e7c755e60bb49c4e08a2f2c1",
           "trigger": {
             "source": "original subject path and selected route waypoint history",
             "metric": "nearest distance to each mapped route waypoint in metres",
@@ -65,7 +65,7 @@
             "exit_code": 0,
             "log": "front_of_entrance-fallback2-offline-v3.log",
             "log_sha256": "d2f14c41f2ae92d46e4e9cc1b6fa65ff5530227531877f8d0adf4a8d698b9a71",
-            "construction_sha256": "5fd55c5962049b3a5d2988f61336d5a1739db1eb114cb947ba7d5a876c4ba537"
+            "construction_sha256": "9b2f87bbad729492cb60d65b33c7e95c659284f3e7c755e60bb49c4e08a2f2c1"
           },
           "compatibility": {
             "receipt": "front_of_entrance-fallback2-compatibility.json",
@@ -83,7 +83,7 @@
         {
           "id": "fallback3",
           "construction": "cases/front_of_entrance/fallback3-construction.json",
-          "construction_sha256": "8411b78c136c1bc4d786af5d50d274351f5c51c321d15a4fab852f49cafff759",
+          "construction_sha256": "8dd037bedf0011dfdcee63d6fe3573e12675fed37c8d13f3e6390517f22dd5ed",
           "trigger": {
             "source": "original subject speed history",
             "metric": "peak-to-peak speed tracking error in m/s",
@@ -97,7 +97,7 @@
             "exit_code": 0,
             "log": "front_of_entrance-fallback3-offline-v3.log",
             "log_sha256": "5dbcecbfa73f7b4613ebcc3a5563cf6633c498168969ed0f909a137cb2e97146",
-            "construction_sha256": "8411b78c136c1bc4d786af5d50d274351f5c51c321d15a4fab852f49cafff759"
+            "construction_sha256": "8dd037bedf0011dfdcee63d6fe3573e12675fed37c8d13f3e6390517f22dd5ed"
           },
           "compatibility": {
             "receipt": "front_of_entrance-fallback3-compatibility.json",
@@ -125,7 +125,7 @@
         "exit_code": 0,
         "log": "front_of_entrance-primary-offline-v3.log",
         "log_sha256": "ee933165d4e4f3660888e438054c7be487927ecdb06a0ff5b35ef5f37f9aab05",
-        "construction_sha256": "adb67d1cb0661d9cafb3188437aa842213fab4e389d9b091d2dc3033861fb243"
+        "construction_sha256": "847c38b6aec6e29f22ca13fa1f848078a35862949a2e9b51c3a75f20d79a5cae"
       },
       "compatibility": {
         "receipt": "front_of_entrance-primary-compatibility.json",
@@ -143,13 +143,41 @@
         "test_log": "front_of_entrance-primary-saved-v3.log",
         "test_log_sha256": "d343e623a24cde9f03718640b66e0cfff1c12007e76d1e68d5e959105c221d73",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_entrance",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "caf84ec96b171caaead6c4fa044995587675126f4740e2988326a5d4f231ebd8",
+        "command": ".venv-cpu/bin/python work/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/delivery_audit.py --case heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_entrance --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/delivery_audit.py --case heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_entrance --attempt \"$ATTEMPT\" --tamper-source-hash",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original station source hash differs",
+        "test_log": "delivery-front_of_entrance-positive.log",
+        "test_log_sha256": "c0df6a9f4d1f7cc0487fddc10f442f65f25dbd1bdd3b8b7cc600b216448b112d",
+        "negative_log": "delivery-front_of_entrance-negative.log",
+        "negative_log_sha256": "8d5d2ca91de8776fc64d8777f7c08e24c99506555723c7d45a0ec0cc39982763",
+        "diagnostic_receipt": "delivery-front_of_entrance-diagnostic.json",
+        "diagnostic_receipt_sha256": "f1c6322119d7a70259803872c0fcf2733ee3c05fe5922a6c4844468f8a1ee950",
+        "scope": "CPU diagnostic proofs; native source/pixel/physical checks execute after actual capture"
       }
     },
     {
       "case_id": "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_approach",
       "kind": "delivery",
       "construction": "cases/front_of_approach/construction.json",
-      "construction_sha256": "ee7544a28926b83d72767138d1d8501dde3c0df3103e4de90073946818796766",
+      "construction_sha256": "1f149596d493d707b3be8eefd0e0ae7105a509a798e6e9c9e95db45347420a51",
       "measurement_procedure": {
         "entrypoint": "fire_station_finalizer.py"
       },
@@ -163,7 +191,7 @@
         {
           "id": "fallback1",
           "construction": "cases/front_of_approach/fallback1-construction.json",
-          "construction_sha256": "ed47314bb2c5f49d1bfd098c75c990a76f94b4f23aea09ccee23153fc85591d9",
+          "construction_sha256": "e3e6f1220b92ae4c8aa4733cdbffc22a3a55078b79c6a267d4d0233a260f707e",
           "trigger": {
             "source": "Native subject spawn and first original body pose",
             "metric": "subject spawn succeeds and body clears road surface",
@@ -177,7 +205,7 @@
             "exit_code": 0,
             "log": "front_of_approach-fallback1-offline-v3.log",
             "log_sha256": "df42899be9cca4ea79d1449818f67f760dd862cc6f7446cfe10ac66bc2dd1cdd",
-            "construction_sha256": "ed47314bb2c5f49d1bfd098c75c990a76f94b4f23aea09ccee23153fc85591d9"
+            "construction_sha256": "e3e6f1220b92ae4c8aa4733cdbffc22a3a55078b79c6a267d4d0233a260f707e"
           },
           "compatibility": {
             "receipt": "front_of_approach-fallback1-compatibility.json",
@@ -195,7 +223,7 @@
         {
           "id": "fallback2",
           "construction": "cases/front_of_approach/fallback2-construction.json",
-          "construction_sha256": "d9e018540927436728bf9c04351a2929e6b55f59d0d398a4a265fa440c335494",
+          "construction_sha256": "ffd0c634bdb87433dba7b4e9dd5e5cbb34093c60ee2ff7c855e13c222df4bf65",
           "trigger": {
             "source": "original subject path and selected route waypoint history",
             "metric": "nearest distance to each mapped route waypoint in metres",
@@ -209,7 +237,7 @@
             "exit_code": 0,
             "log": "front_of_approach-fallback2-offline-v3.log",
             "log_sha256": "3077da80d6ddb7134087944ad5635ac556bcf4339e773c789fa3dfcccc0ceee1",
-            "construction_sha256": "d9e018540927436728bf9c04351a2929e6b55f59d0d398a4a265fa440c335494"
+            "construction_sha256": "ffd0c634bdb87433dba7b4e9dd5e5cbb34093c60ee2ff7c855e13c222df4bf65"
           },
           "compatibility": {
             "receipt": "front_of_approach-fallback2-compatibility.json",
@@ -227,7 +255,7 @@
         {
           "id": "fallback3",
           "construction": "cases/front_of_approach/fallback3-construction.json",
-          "construction_sha256": "cd60409fc5f7b7477470a4a03a4187db436b87c933cb6407cb240b9f41c72350",
+          "construction_sha256": "bf81a3d74548f793bc3f14b7ade57b2109df3aa69b9b49ea7b705253f8aabeab",
           "trigger": {
             "source": "original subject speed history",
             "metric": "peak-to-peak speed tracking error in m/s",
@@ -241,7 +269,7 @@
             "exit_code": 0,
             "log": "front_of_approach-fallback3-offline-v3.log",
             "log_sha256": "b00ae8ce145888f13216abcbdce36f2a1dd121316f26bd0abfbb94038504487d",
-            "construction_sha256": "cd60409fc5f7b7477470a4a03a4187db436b87c933cb6407cb240b9f41c72350"
+            "construction_sha256": "bf81a3d74548f793bc3f14b7ade57b2109df3aa69b9b49ea7b705253f8aabeab"
           },
           "compatibility": {
             "receipt": "front_of_approach-fallback3-compatibility.json",
@@ -267,7 +295,7 @@
         "exit_code": 0,
         "log": "front_of_approach-primary-offline-v3.log",
         "log_sha256": "39e0f8aa862a23dfcb959ad9c4a8adeccadb584f5acca2a07ab508a4adaafcf1",
-        "construction_sha256": "ee7544a28926b83d72767138d1d8501dde3c0df3103e4de90073946818796766"
+        "construction_sha256": "1f149596d493d707b3be8eefd0e0ae7105a509a798e6e9c9e95db45347420a51"
       },
       "compatibility": {
         "receipt": "front_of_approach-primary-compatibility.json",
@@ -285,13 +313,41 @@
         "test_log": "front_of_approach-primary-saved-v3.log",
         "test_log_sha256": "3ee2bc503cef716e32ace7e453c11982f4628eadc09b66cabb82ba409d19c0c5",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_approach",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "caf84ec96b171caaead6c4fa044995587675126f4740e2988326a5d4f231ebd8",
+        "command": ".venv-cpu/bin/python work/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/delivery_audit.py --case heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_approach --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/delivery_audit.py --case heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_approach --attempt \"$ATTEMPT\" --tamper-source-hash",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original station source hash differs",
+        "test_log": "delivery-front_of_approach-positive.log",
+        "test_log_sha256": "2bd52c126b30bf194b8825a93f63e0d1bedd6a56d6f70f39a8842f1711462993",
+        "negative_log": "delivery-front_of_approach-negative.log",
+        "negative_log_sha256": "8d5d2ca91de8776fc64d8777f7c08e24c99506555723c7d45a0ec0cc39982763",
+        "diagnostic_receipt": "delivery-front_of_approach-diagnostic.json",
+        "diagnostic_receipt_sha256": "64292f1cd7060f1669ff9bd1292ad7c82d8b7fd4001de8a53abd4311240b4871",
+        "scope": "CPU diagnostic proofs; native source/pixel/physical checks execute after actual capture"
       }
     },
     {
       "case_id": "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__through_driveway",
       "kind": "delivery",
       "construction": "cases/through_driveway/construction.json",
-      "construction_sha256": "3d21801861bc75ebed5489393e8311056fbfd13040b0d51b13a83263f0f48dd7",
+      "construction_sha256": "dfe127992839c4a0c2ff08ef9267cf1068a080a318455911f703bcbb581e3cba",
       "measurement_procedure": {
         "entrypoint": "fire_station_finalizer.py"
       },
@@ -305,7 +361,7 @@
         {
           "id": "fallback1",
           "construction": "cases/through_driveway/fallback1-construction.json",
-          "construction_sha256": "bb4e176d8a045ed6c70d1136742689d8ea1a4f17482b8682893180179befab94",
+          "construction_sha256": "73661378b6165af1c8a0ca83a8b1b9bee52a35cfc60ab2136b951f04907f1c91",
           "trigger": {
             "source": "Native subject spawn and first original body pose",
             "metric": "subject spawn succeeds and body clears road surface",
@@ -319,7 +375,7 @@
             "exit_code": 0,
             "log": "through_driveway-fallback1-offline-v3.log",
             "log_sha256": "b64acf041de5d7e10de3a0a3c3050725fccf46b2a7e9ebaa7f3409df9afde856",
-            "construction_sha256": "bb4e176d8a045ed6c70d1136742689d8ea1a4f17482b8682893180179befab94"
+            "construction_sha256": "73661378b6165af1c8a0ca83a8b1b9bee52a35cfc60ab2136b951f04907f1c91"
           },
           "compatibility": {
             "receipt": "through_driveway-fallback1-compatibility.json",
@@ -337,7 +393,7 @@
         {
           "id": "fallback2",
           "construction": "cases/through_driveway/fallback2-construction.json",
-          "construction_sha256": "fec471c2042546a1cec9ed6bf99c93fcbb2ad3ead563957ba50219e9874affbc",
+          "construction_sha256": "5abd1b8c6b31abd088e0e3f0d4150b8e0a09c825a728d7e3f3b4d990995d1d00",
           "trigger": {
             "source": "original subject path and selected route waypoint history",
             "metric": "nearest distance to each mapped route waypoint in metres",
@@ -351,7 +407,7 @@
             "exit_code": 0,
             "log": "through_driveway-fallback2-offline-v3.log",
             "log_sha256": "999aa89d003dff41359b12ad11921e97c5fc49da6d8f1906182b94c7ff5b8e1a",
-            "construction_sha256": "fec471c2042546a1cec9ed6bf99c93fcbb2ad3ead563957ba50219e9874affbc"
+            "construction_sha256": "5abd1b8c6b31abd088e0e3f0d4150b8e0a09c825a728d7e3f3b4d990995d1d00"
           },
           "compatibility": {
             "receipt": "through_driveway-fallback2-compatibility.json",
@@ -369,7 +425,7 @@
         {
           "id": "fallback3",
           "construction": "cases/through_driveway/fallback3-construction.json",
-          "construction_sha256": "d7eb3be4ee0ee3322bc83e780484fa271a7a61336f788ed2c85594ccc547d003",
+          "construction_sha256": "68e8b8265dbb368e47d5a4495290426cee73fb29344c14a2465720e24ceb8fd6",
           "trigger": {
             "source": "original subject speed history",
             "metric": "peak-to-peak speed tracking error in m/s",
@@ -383,7 +439,7 @@
             "exit_code": 0,
             "log": "through_driveway-fallback3-offline-v3.log",
             "log_sha256": "48a7b3b0cf89c31105a926aec546837ef15f72e0d4e509d9dbdef9e6036a8c76",
-            "construction_sha256": "d7eb3be4ee0ee3322bc83e780484fa271a7a61336f788ed2c85594ccc547d003"
+            "construction_sha256": "68e8b8265dbb368e47d5a4495290426cee73fb29344c14a2465720e24ceb8fd6"
           },
           "compatibility": {
             "receipt": "through_driveway-fallback3-compatibility.json",
@@ -409,7 +465,7 @@
         "exit_code": 0,
         "log": "through_driveway-primary-offline-v3.log",
         "log_sha256": "0f4e92b4e101d9e45ced02abb302cb702af2f5ca814e6d455f40dac02a5f7718",
-        "construction_sha256": "3d21801861bc75ebed5489393e8311056fbfd13040b0d51b13a83263f0f48dd7"
+        "construction_sha256": "dfe127992839c4a0c2ff08ef9267cf1068a080a318455911f703bcbb581e3cba"
       },
       "compatibility": {
         "receipt": "through_driveway-primary-compatibility.json",
@@ -427,13 +483,41 @@
         "test_log": "through_driveway-primary-saved-v3.log",
         "test_log_sha256": "1bb4aefea8d2d480dcef48ee78670f76a590c0b021a1005e1be5caa94cdd9441",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__through_driveway",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "caf84ec96b171caaead6c4fa044995587675126f4740e2988326a5d4f231ebd8",
+        "command": ".venv-cpu/bin/python work/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/delivery_audit.py --case heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__through_driveway --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/delivery_audit.py --case heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__through_driveway --attempt \"$ATTEMPT\" --tamper-source-hash",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original station source hash differs",
+        "test_log": "delivery-through_driveway-positive.log",
+        "test_log_sha256": "aa3c903beddaa47b9526a62698c371853e9c63e6926adef23afd7bd5a55ba22e",
+        "negative_log": "delivery-through_driveway-negative.log",
+        "negative_log_sha256": "8d5d2ca91de8776fc64d8777f7c08e24c99506555723c7d45a0ec0cc39982763",
+        "diagnostic_receipt": "delivery-through_driveway-diagnostic.json",
+        "diagnostic_receipt_sha256": "211a70a7ce7fa02fb162e391208d17225cfb82cb2978fe891b12f37b49b2402b",
+        "scope": "CPU diagnostic proofs; native source/pixel/physical checks execute after actual capture"
       }
     },
     {
       "case_id": "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__remote_reference",
       "kind": "delivery",
       "construction": "cases/remote_reference/construction.json",
-      "construction_sha256": "da953142a053484ad13c2601df915e0e860bbee39b46b037a534a91162445c64",
+      "construction_sha256": "4805726d3b3cf4f485fc69a422e4147736653e00aee393beeda7189f63632898",
       "measurement_procedure": {
         "entrypoint": "fire_station_finalizer.py"
       },
@@ -447,7 +531,7 @@
         {
           "id": "fallback1",
           "construction": "cases/remote_reference/fallback1-construction.json",
-          "construction_sha256": "0e9f57d7cae830c10fc506544bf64a98c91c1f6c1bfeb71a18148306b85272db",
+          "construction_sha256": "2e58d9a0ce0c8cbad4a97f73180ede5bae8d8dd520e3916a55bd1ee67bbf455d",
           "trigger": {
             "source": "Native subject spawn and first original body pose",
             "metric": "subject spawn succeeds and body clears road surface",
@@ -461,7 +545,7 @@
             "exit_code": 0,
             "log": "remote_reference-fallback1-offline-v3.log",
             "log_sha256": "fcd09d9c94f89094334ab4eec0d5053e11b5076fd9846739dc04c7d3cbf5c1b8",
-            "construction_sha256": "0e9f57d7cae830c10fc506544bf64a98c91c1f6c1bfeb71a18148306b85272db"
+            "construction_sha256": "2e58d9a0ce0c8cbad4a97f73180ede5bae8d8dd520e3916a55bd1ee67bbf455d"
           },
           "compatibility": {
             "receipt": "remote_reference-fallback1-compatibility.json",
@@ -479,7 +563,7 @@
         {
           "id": "fallback2",
           "construction": "cases/remote_reference/fallback2-construction.json",
-          "construction_sha256": "048fab2827dbfaf82a16858d1ee573d77304ce8c9dd6e6bd88a7ccc3895a3f97",
+          "construction_sha256": "65126237ebc95f182f6126b104d17f6ee7fd2dff76718b9833facd4e2bdd8593",
           "trigger": {
             "source": "original subject path and selected route waypoint history",
             "metric": "nearest distance to each mapped route waypoint in metres",
@@ -493,7 +577,7 @@
             "exit_code": 0,
             "log": "remote_reference-fallback2-offline-v3.log",
             "log_sha256": "6b1fc2cba6c21bab4fc74eaf013c4b77709fde7a52e8c5d823d335a183b95c4c",
-            "construction_sha256": "048fab2827dbfaf82a16858d1ee573d77304ce8c9dd6e6bd88a7ccc3895a3f97"
+            "construction_sha256": "65126237ebc95f182f6126b104d17f6ee7fd2dff76718b9833facd4e2bdd8593"
           },
           "compatibility": {
             "receipt": "remote_reference-fallback2-compatibility.json",
@@ -511,7 +595,7 @@
         {
           "id": "fallback3",
           "construction": "cases/remote_reference/fallback3-construction.json",
-          "construction_sha256": "389192408756dd5e037070297cc9347479e327d2ea5dd3ba6dac0113a6d124ac",
+          "construction_sha256": "74abc89844874e9690bf21859a865a7f7a2a5325d0b030c986053f82c3cc49df",
           "trigger": {
             "source": "original subject speed history",
             "metric": "peak-to-peak speed tracking error in m/s",
@@ -525,7 +609,7 @@
             "exit_code": 0,
             "log": "remote_reference-fallback3-offline-v3.log",
             "log_sha256": "f8b24c568a0fff2e8432467f8e52b9ce9a35de35e9a811a0688c90cbffb73437",
-            "construction_sha256": "389192408756dd5e037070297cc9347479e327d2ea5dd3ba6dac0113a6d124ac"
+            "construction_sha256": "74abc89844874e9690bf21859a865a7f7a2a5325d0b030c986053f82c3cc49df"
           },
           "compatibility": {
             "receipt": "remote_reference-fallback3-compatibility.json",
@@ -551,7 +635,7 @@
         "exit_code": 0,
         "log": "remote_reference-primary-offline-v3.log",
         "log_sha256": "64a5826c406450e1aed60bc1ada8b61c8d7dcbbfa11c24db9ec9d9e4128543f0",
-        "construction_sha256": "da953142a053484ad13c2601df915e0e860bbee39b46b037a534a91162445c64"
+        "construction_sha256": "4805726d3b3cf4f485fc69a422e4147736653e00aee393beeda7189f63632898"
       },
       "compatibility": {
         "receipt": "remote_reference-primary-compatibility.json",
@@ -569,6 +653,34 @@
         "test_log": "remote_reference-primary-saved-v3.log",
         "test_log_sha256": "0b7fc9a6e90f75f48feed1be4ace024d0ce00f085bf1f6d531ca6aa9b4a729bc",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__remote_reference",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "caf84ec96b171caaead6c4fa044995587675126f4740e2988326a5d4f231ebd8",
+        "command": ".venv-cpu/bin/python work/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/delivery_audit.py --case heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__remote_reference --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/delivery_audit.py --case heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__remote_reference --attempt \"$ATTEMPT\" --tamper-source-hash",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original station source hash differs",
+        "test_log": "delivery-remote_reference-positive.log",
+        "test_log_sha256": "85b0770ca0a2dc07c227e804dbc210068c250449d708c663d9c0414224d254a5",
+        "negative_log": "delivery-remote_reference-negative.log",
+        "negative_log_sha256": "8d5d2ca91de8776fc64d8777f7c08e24c99506555723c7d45a0ec0cc39982763",
+        "diagnostic_receipt": "delivery-remote_reference-diagnostic.json",
+        "diagnostic_receipt_sha256": "5c073d5e564266fc29b6ba9dab382d91819868c89ccf69d2df5423881c36366b",
+        "scope": "CPU diagnostic proofs; native source/pixel/physical checks execute after actual capture"
       }
     }
   ]

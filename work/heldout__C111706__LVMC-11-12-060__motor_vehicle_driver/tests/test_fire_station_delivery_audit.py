@@ -1,4 +1,5 @@
 import json
+import hashlib
 import sys
 import tempfile
 import unittest
@@ -57,14 +58,22 @@ class DeliveryAuditTests(unittest.TestCase):
     def test_native_review_branch_requires_current_pixels_and_station(self):
         config_path=self.root/'config.json';config=json.loads(config_path.read_text())
         survey_path=self.root/'station_survey.json';survey=json.loads(survey_path.read_text())
-        source={'kind':'operator_survey','asset_id':'source-backed-test-station',
-                'source_sha256':'4'*64}
-        config['station_source']=source;config['station_survey']['station_source']=source
+        material=b'{"review":"synthetic station source test"}\n'
+        (self.root/'station-source-material.json').write_bytes(material)
+        source={'kind':'operator_survey','asset_id':'environment-object:42',
+                'source_sha256':hashlib.sha256(material).hexdigest()}
         survey['station_source']=source
+        site={'station_source':source,'scene_object':{'id':42}}
+        site_path=self.root/'station-runtime-manifest.json'
+        site_path.write_text(json.dumps(site))
+        site_sha=delivery.digest(site_path)
+        (self.root/'station-survey-verification.json').write_text(json.dumps({
+            'manifest_sha256':site_sha,'scene_object':{'id':42}}))
         config_path.write_text(json.dumps(config));survey_path.write_text(json.dumps(survey))
         (self.root/'fixture-provenance.json').unlink()
         (self.root/'acquisition-provenance.json').write_text(json.dumps({
-            'provenance_kind':'native','diagnostic_fixture':False}))
+            'provenance_kind':'native','diagnostic_fixture':False,
+            'station_runtime_manifest_sha256':site_sha}))
         for name in ('analysis-report.json','result.json','station_context-recorded.json'):
             (self.root/name).unlink()
         for channel in config['case']['recording_description']['channels']:

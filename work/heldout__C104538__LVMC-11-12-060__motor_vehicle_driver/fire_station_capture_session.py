@@ -42,6 +42,7 @@ class FireStationCaptureSession:
         self.participants.write(json.dumps({'frame': frame, 'time_s': time_s,
             'ego': {'actor_id': int(self.ego.id),
                 'center_xy': [float(p.x), float(p.y)],
+                'heading_deg': float(transform.rotation.yaw),
                 'heading_rad': radians(float(transform.rotation.yaw)),
                 'speed_mps': hypot(velocity.x, velocity.y),
                 'lane_id': [int(waypoint.road_id), int(waypoint.lane_id)],

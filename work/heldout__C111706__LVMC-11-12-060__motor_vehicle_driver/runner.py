@@ -2,12 +2,14 @@
 
 import argparse
 import json
+import os
 from math import atan2, cos, hypot, radians, sin
 from pathlib import Path
 
 from fire_station_camera_capture import CAMERAS, FFmpegSourceSink, FireStationCameraCapture
 from fire_station_geometry import validate_entrance
 from fire_station_sources import StationSourceRecorder
+from native_station_survey import load_native_survey
 
 
 BRANCHES = {'front_entrance_turn', 'front_approach_turn',
@@ -27,6 +29,13 @@ def check_config(config):
         raise ValueError('Four named original cameras required')
     if config.get('required_atoms') != []:
         raise ValueError('Unreviewed station observation terms are not Core atoms')
+    physical = config.get('physical_completion', {})
+    if (physical.get('criterion') != 'turn' or
+            physical.get('motion_source') != 'subject_original.jsonl' or
+            physical.get('body_key') != 'body_corners_xy' or
+            physical.get('heading_key') != 'heading_deg' or
+            physical.get('turn_degrees') != 180):
+        raise ValueError('Original station reversal completion criterion required')
     survey = config.get('station_survey')
     if not isinstance(survey, dict) or not survey.get('map_name'):
         raise ValueError('Source-bound Native station survey required')
@@ -78,14 +87,25 @@ def resolve_survey(world_map, survey, branch):
     validate_entrance(*(anchors[key] for key in
                         ('public_before','public_at','public_after','driveway_at')),
                       source=survey['station_source'])
+    station_location=survey.get('scene_object',{}).get('location_m')
+    if station_location is None or hypot(
+            station_location[0]-anchors['public_at'].transform.location.x,
+            station_location[1]-anchors['public_at'].transform.location.y)>80:
+        raise ValueError('Source station scene object is not near mapped entrance')
     route = [_waypoint(world_map,ref) for ref in survey['routes'][branch]]
     other = [_waypoint(world_map,ref) for ref in survey['other_route']]
     def identities(path):
         return {(wp.road_id,wp.lane_id,round(float(wp.s),2)) for wp in path}
     if len(identities(route)) < 3 or len(identities(other)) < 3:
         raise ValueError('Two Native routes need distinct physical waypoints')
+    for path in (route,other):
+        if any(hypot(a.transform.location.x-b.transform.location.x,
+                     a.transform.location.y-b.transform.location.y)>25
+               for a,b in zip(path,path[1:])):
+            raise ValueError('Station route contains a physically disconnected waypoint jump')
     original_survey = {'map_name':world_map.name,
                        'station_source':survey['station_source'],
+                       'scene_object':survey.get('scene_object'),
                        **{key:_original_anchor(wp) for key,wp in anchors.items()}}
     return route, other, original_survey
 
@@ -121,11 +141,16 @@ def run(output, host='127.0.0.1', port=2000):
     output = Path(output)
     config = json.loads((output/'config.json').read_text())
     check_config(config)
-    if config['station_survey']['station_source']['kind']=='authored_diagnostic':
-        raise ValueError('Native capture requires a real source-bound station asset')
     client = carla.Client(host,port)
     client.set_timeout(30)
     world = client.get_world()
+    manifest_path=os.environ.get('CARLA_FIRE_STATION_SURVEY')
+    if not manifest_path:
+        raise ValueError('CARLA_FIRE_STATION_SURVEY source manifest required for Native capture')
+    native_survey,site_receipt,site_bytes,source_bytes=load_native_survey(manifest_path,world)
+    (output/'station-runtime-manifest.json').write_bytes(site_bytes)
+    (output/'station-source-material.json').write_bytes(source_bytes)
+    (output/'station-survey-verification.json').write_text(json.dumps(site_receipt)+'\n')
     original_settings = world.get_settings()
     actors=[];sinks={};camera=pipeline=frame_map=recorder=None
     frames=[];failed=False;restored=False
@@ -134,7 +159,7 @@ def run(output, host='127.0.0.1', port=2000):
         world.apply_settings(settings)
         world_map=world.get_map()
         subject_route,other_route,original_survey=resolve_survey(
-            world_map,config['station_survey'],config['case_branch'])
+            world_map,native_survey,config['case_branch'])
         blueprint=world.get_blueprint_library().find(
             config.get('vehicle_blueprint','vehicle.tesla.model3'))
         for route in (subject_route,other_route):
@@ -196,11 +221,13 @@ def run(output, host='127.0.0.1', port=2000):
             raise ValueError('Original C111706 world restoration differs')
     (output/'acquisition-provenance.json').write_text(json.dumps({
         'provenance_kind':'native','diagnostic_fixture':False,
-        'original_frames':len(frames)})+'\n')
+        'original_frames':len(frames),
+        'station_runtime_manifest_sha256':site_receipt['manifest_sha256']})+'\n')
     seal_capture(output,frames=len(frames),restoration={'restored':restored},
                  errors=[],encoder_exit_codes={name:0 for name in CAMERAS},
                  context={'native_map_name':world.get_map().name,
-                          'station_source':config['station_survey']['station_source']})
+                          'station_source':native_survey['station_source'],
+                          'station_runtime_manifest_sha256':site_receipt['manifest_sha256']})
 
 
 def main():

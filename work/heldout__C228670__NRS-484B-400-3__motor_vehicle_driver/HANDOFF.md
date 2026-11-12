@@ -32,3 +32,5 @@ The external CARLA run is a later operator action; remaining CPU omissions above
 
 `case-plan.json` plans a shared reference case plus separate approach and departure variants. `approach_position` changes only measured approach body position within the right half near the centerline; `departure_position` changes only measured departure body position near the one-way left curb. Both hold connected two-directional approach, one-way departure, left-turn maneuver, cameras and duration fixed. The exact law gives no lateral cutoff. All cases are planned only; construction, source-bound measurements, fallbacks, compatibility and saved audits remain CPU work.
 The frozen cell layout is `road`, so intersection compatibility is unverified. Inspect native map geometry and candidate cells before claiming this branch runnable.
+
+2026-11-12 return-cap checkpoint: 0 older UTF-8 logs were preserved with full text/path/SHA-256 in `work/_shared/prune-history-2.json`. Restore before scoped strict with `.venv-cpu/bin/python work/_shared/restore_compacted_zero_logs.py --assignment heldout__C228670__NRS-484B-400-3__motor_vehicle_driver`. Status remains partial.

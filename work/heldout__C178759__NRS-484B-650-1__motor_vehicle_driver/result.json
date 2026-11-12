@@ -1,14 +1,14 @@
 {
   "assignment_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver",
   "input_sha256": "462017cc248d05f689e74d207d3afb650a0cfeefcdb2799662e80902f0a32f3a",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest -v test_aggressive_sequence.py (run in assignment directory)",
+      "command": ".venv-cpu/bin/python -m unittest -v tests/test_aggressive_sequence.py (run in assignment directory)",
       "exit_code": 0,
       "log": "cpu-sequence-tests.log",
-      "sha256": "e6da058d142620edf49acc9a344ec0474a8c6dbe05bf793a2dd4a5e04105679b",
+      "sha256": "0767e92eea183d21381c3e554d530995c07727717ca040a3ad0b4ae6fbb4848c",
       "passed": 7
     },
     {
@@ -21,12 +21,30 @@
       "command": ".venv-cpu/bin/python work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/repeated_pass_comparison_audit.py --folder work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver --output .runtime-work/c178759-repeated-pass-comparison-audit-v1.json",
       "exit_code": 0,
       "log": "repeated-pass-comparison-audit.json",
-      "sha256": "d25c1106963cc33b1749d971e71b9bf5b4ed48b858e074082e91c134e0e2a92b"
+      "sha256": "947a60731a17b269ced343ba2cab68cb6ad8188cdc7bffd00fa182e9a3dc207c"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/one_mile_boundary_audit.py --folder work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver --output .runtime-work/c178759-one-mile-audit-v1.json",
+      "exit_code": 0,
+      "log": "one-mile-boundary-audit.json",
+      "sha256": "70a010520ec7f85b4469fbc11fc14d866c95ea550064e07e2b196cf0e69a6c69"
+    },
+    {
+      "command": "C178759 independent threshold audit with tampered fixed actor source",
+      "exit_code": 0,
+      "log": "one-mile-boundary-negative.log",
+      "sha256": "21326d4676928460f8efcdde34543a2fb5285df769222eb99c4debaff3b1b02c"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment heldout__C178759__NRS-484B-650-1__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 0,
+      "log": "scoped-strict-gate.log",
+      "sha256": "df8d1cd6e80e81aacc8516d7319ed837c1d2f365d7b13ea8aaf274aaf9b78108"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and duration remain unverified after CPU preparation."
   ],
-  "reason": "Three exact cases are now constructed: repeated two-pass primary, controlled single-pass comparator, and requested at-mile two-pass probe. The first two cases and six fallbacks pass exact offline, positive/negative compatibility and saved-only processing; the at-mile primary passes the same three CPU checks with construction SHA-256 7f0dd632efcd0772ccd872a0139daad8963effa899287937d1ccf2509801445f. Its diagnostic source trace is short and software-shaped, so no one-mile physical outcome is claimed. The canonical semantic validator still requires the linked beyond-mile probe; at-mile fallbacks, physical/delivery bindings, independent threshold comparison audit and assignment-wide strict gate remain CPU work. Status stays partial; no physical or legal acceptance is claimed.",
-  "readiness_kind": "delivery_prepared"
+  "readiness_kind": "delivery_prepared",
+  "first_gpu_delivery_command": "PYTHONPATH=runtime .venv-cpu/bin/python -m scenario_pipeline.worker_exchange execute-delivery --repo . --batch held-out-delivery --assignment heldout__C178759__NRS-484B-650-1__motor_vehicle_driver --case heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\""
 }

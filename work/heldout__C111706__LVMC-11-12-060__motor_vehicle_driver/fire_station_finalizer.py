@@ -27,6 +27,26 @@ def _source(root, name):
     return path
 
 
+def _station_source_matches(root, config, observed):
+    original = observed['geometry']['source']
+    if config.get('station_source') == original:
+        return True  # Explicitly marked diagnostic source in CPU fixtures.
+    provenance = json.loads(_source(root, 'acquisition-provenance.json').read_text())
+    manifest_path = _source(root, 'station-runtime-manifest.json')
+    receipt = json.loads(_source(root, 'station-survey-verification.json').read_text())
+    manifest = json.loads(manifest_path.read_text())
+    material = _source(root, 'station-source-material.json')
+    if (provenance.get('provenance_kind') != 'native' or
+            provenance.get('diagnostic_fixture') is not False or
+            receipt.get('manifest_sha256') != _sha(manifest_path) or
+            provenance.get('station_runtime_manifest_sha256') != _sha(manifest_path) or
+            manifest.get('station_source') != original or
+            original.get('kind') != 'operator_survey' or
+            _sha(material) != original.get('source_sha256')):
+        raise ValueError('Native station source manifest/provenance differs')
+    return True
+
+
 def analyze(root):
     root = Path(root)
     config = json.loads(_source(root, 'config.json').read_text())
@@ -36,7 +56,7 @@ def analyze(root):
             case.endswith('__' + branch) for branch in BRANCHES):
         raise ValueError('Wrong exact C111706 station case identity')
     observed = measure_original_station_sources(root)
-    if config.get('station_source') != observed['geometry']['source']:
+    if not _station_source_matches(root, config, observed):
         raise ValueError('Station source differs from selected construction')
     last = observed['last_frame']
     time_s = observed['last_time_s']

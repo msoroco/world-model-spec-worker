@@ -3,8 +3,89 @@
   "status": "draft",
   "cell_id": "C104538",
   "actor": "motor_vehicle_driver",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "station_region_geometry",
+      "target_law_id": "LVMC-11-12-060",
+      "judgment_refs": [
+        {
+          "phrase": "in front of the driveway, entrance or approaches to a fire station",
+          "note": "Survey mapped public road, station doorway and approach footprints; no legal distance cutoff is supplied."
+        },
+        {
+          "phrase": "for the purpose of turning",
+          "note": "Retain complete driveway entry, reversal and exit trajectory; purpose remains a human review question."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "A source-verified station scene and connected route are needed before physical sweep bounds or resolution can be justified. Four selected cases remain diagnostic CPU constructions.",
+      "missing_inputs": [
+        "Source-verified fire-station asset/map and surveyed driveway/approach polygons",
+        "Feasible Native reversal corridor and camera visibility"
+      ]
+    }
+  ],
   "cases": [
+    {
+      "case_id": "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__baseline_station_context",
+      "target_law_id": "LVMC-11-12-060",
+      "target_type": "baseline",
+      "rationale": "Measure reversal and station-region geometry; no legal conclusion assigned.",
+      "variable_assignments": {
+        "reversal_location": {
+          "kind": "world_setup",
+          "value": "remote_reference"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "in front of station entrance",
+        "purpose of turning"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_center_xy",
+            "unit": "m",
+            "method": "saved original subject center",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "Map and actor geometry require independent physical review"
+          },
+          {
+            "name": "subject_heading_rad",
+            "unit": "rad",
+            "method": "saved original subject heading",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "Map and actor geometry require independent physical review"
+          },
+          {
+            "name": "subject_body_vertices_xy",
+            "unit": "m",
+            "method": "saved original CARLA body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "Map and actor geometry require independent physical review"
+          },
+          {
+            "name": "subject_lane_id",
+            "unit": "structured",
+            "method": "saved original OpenDRIVE road and lane identity",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "Map and actor geometry require independent physical review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Station asset and turning purpose unresolved; diagnostic site is synthetic."
+        ]
+      }
+    },
     {
       "case_id": "heldout__C104538__LVMC-11-12-060__motor_vehicle_driver__front_of_entrance",
       "target_law_id": "LVMC-11-12-060",
@@ -12,7 +93,7 @@
       "rationale": "Measure reversal and station-region geometry; no legal conclusion assigned.",
       "variable_assignments": {
         "reversal_location": {
-          "kind": "environment",
+          "kind": "world_setup",
           "value": "front_of_entrance"
         }
       },
@@ -81,7 +162,7 @@
       "rationale": "Measure reversal and station-region geometry; no legal conclusion assigned.",
       "variable_assignments": {
         "reversal_location": {
-          "kind": "environment",
+          "kind": "world_setup",
           "value": "front_of_approach"
         }
       },
@@ -150,7 +231,7 @@
       "rationale": "Measure reversal and station-region geometry; no legal conclusion assigned.",
       "variable_assignments": {
         "reversal_location": {
-          "kind": "environment",
+          "kind": "world_setup",
           "value": "through_driveway"
         }
       },
@@ -219,7 +300,7 @@
       "rationale": "Measure reversal and station-region geometry; no legal conclusion assigned.",
       "variable_assignments": {
         "reversal_location": {
-          "kind": "environment",
+          "kind": "world_setup",
           "value": "remote_reference"
         }
       },
@@ -281,5 +362,6 @@
         "target_value_or_branch": "remote_reference"
       }
     }
-  ]
+  ],
+  "sweeps_expanded": true
 }

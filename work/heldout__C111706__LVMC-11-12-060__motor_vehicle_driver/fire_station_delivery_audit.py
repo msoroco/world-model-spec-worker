@@ -62,12 +62,22 @@ def audit(case,attempt,*,diagnostic_fixture=False):
         acquisition=json.loads(acquisition_path.read_text())
         if acquisition.get('provenance_kind')!='native' or acquisition.get('diagnostic_fixture') is not False:
             raise ValueError('Native C111706 acquisition provenance differs')
-        station_source=config.get('station_source',{})
-        if (station_source!=config.get('station_survey',{}).get('station_source') or
-                station_source!=original['geometry']['source']):
+        station_source=original['geometry']['source']
+        site_path=root/'station-runtime-manifest.json'
+        material_path=root/'station-source-material.json'
+        verification_path=root/'station-survey-verification.json'
+        if not all(path.is_file() for path in (site_path,material_path,verification_path)):
+            raise ValueError('Native C111706 station source binding missing')
+        site=json.loads(site_path.read_text())
+        verification=json.loads(verification_path.read_text())
+        if (station_source.get('kind')!='operator_survey' or
+                station_source!=site.get('station_source') or
+                digest(material_path)!=station_source.get('source_sha256') or
+                digest(site_path)!=verification.get('manifest_sha256') or
+                digest(site_path)!=acquisition.get('station_runtime_manifest_sha256') or
+                verification.get('scene_object',{}).get('id')!=
+                    site.get('scene_object',{}).get('id')):
             raise ValueError('Native C111706 station source binding differs')
-        if station_source.get('kind')=='authored_diagnostic':
-            raise ValueError('Native C111706 audit rejects diagnostic station source')
         seal_path,exit_path=root/'capture-seal.json',root/'native-exit.json'
         if not seal_path.is_file() or not exit_path.is_file():
             raise ValueError('Native C111706 closure and owner exit missing')
