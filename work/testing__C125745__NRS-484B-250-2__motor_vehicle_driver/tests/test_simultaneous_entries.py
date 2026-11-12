@@ -79,6 +79,33 @@ class EntryTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,"frame join"):
                 measure.analyze(root)
 
+    def test_opposite_left_turn_exception_is_measured_separately(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root)
+            ctx=json.loads((root/"junction_context.json").read_text())
+            ctx.update({"approach_relation":"opposite_directions",
+                        "other_highway_id":"east-west",
+                        "other_approach_forward_xy":[-1,0],
+                        "turn_intent_source":"original-turn-indicator-and-route-history"})
+            (root/"junction_context.json").write_text(json.dumps(ctx))
+            rows=[json.loads(line) for line in (root/"crossing_history.jsonl").read_text().splitlines()]
+            for row in rows:row["other_left_turn_intended"]=True
+            rows[0]["other"]["body_vertices_xy_m"]=[[x+30,y] for x,y in ((-1,-1),(-1,1),(1,1),(1,-1))]
+            (root/"crossing_history.jsonl").write_text("".join(json.dumps(r)+"\n" for r in rows))
+            result=measure.analyze(root)
+            self.assertEqual(result["approach_relation"],"opposite_directions")
+            self.assertIsNone(result["other_spatially_right_of_ego_approach"])
+            self.assertEqual(result["opposite_direction_left_turn_exception_judgment"],"unresolved")
+            rows[1]["other_left_turn_intended"]=False
+            (root/"crossing_history.jsonl").write_text("".join(json.dumps(r)+"\n" for r in rows))
+            with self.assertRaisesRegex(ValueError,"left-turn intention missing"):
+                measure.analyze(root)
+            rows[1]["other_left_turn_intended"]=True
+            rows[0]["other"]["body_vertices_xy_m"]=[[x,y-10] for x,y in ((-1,-1),(-1,1),(1,1),(1,-1))]
+            (root/"crossing_history.jsonl").write_text("".join(json.dumps(r)+"\n" for r in rows))
+            with self.assertRaisesRegex(ValueError,"approach does not match heading"):
+                measure.analyze(root)
+
 
 if __name__=="__main__":
     unittest.main()
