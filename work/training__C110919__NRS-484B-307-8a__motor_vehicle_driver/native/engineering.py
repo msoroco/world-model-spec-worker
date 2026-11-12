@@ -5,7 +5,7 @@ import json
 import math
 from pathlib import Path
 
-CASES = ('reference','contrast')
+CASES = ('reference','contrast','absent_reference','absent_reference_contrast')
 CANDIDATES = ('primary','fallback1','fallback2','fallback3')
 BASE = {'stop_hold_s':1.5, 'route_tracking_lookahead_m':5.0,
         'yield_clearance_margin_s':1.0, 'overview_fov_deg':90.0,
@@ -31,7 +31,10 @@ def parameters(case: str, candidate: str) -> dict:
             'source_status':'planned_original_native_or_video_not_observed',
             'law_id':'NRS-484B-307-8a','cell_id':'C110919',
             'comparison_variable':'halt_before_nearest_boundary',
-            'stop_command':'complete_halt' if case=='reference' else 'rolling_entry',
+            'stopping_reference_kind':('intersection_boundary' if case.startswith('absent_')
+                                       else 'marked_stop_line'),
+            'stop_command':'complete_halt' if case in ('reference','absent_reference')
+                           else 'rolling_entry',
             'yield_command':'wait_for_pedestrian_clearance'}
 
 def evaluate_trigger(candidate: str, metrics: dict, source: Path, expected_sha256: str) -> bool:

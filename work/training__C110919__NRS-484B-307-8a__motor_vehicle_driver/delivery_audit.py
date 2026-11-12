@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import subprocess
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -87,7 +88,9 @@ def audit(case_id, construction_sha256, attempt, processing, *, diagnostic, sour
         require(frame["video_frame"] == index and frame["native_frame"] == sample["native_frame"] ==
                 capture["original_frame"] == physical_body["frame"] and
                 abs(frame["time_s"] - sample["time_s"]) <= 1e-4 and
-                sample["native_body_xy_m"] == physical_body["body_vertices_m"],
+                len(physical_body["body_vertices_m"]) == 8 and
+                {tuple(v) for v in sample["native_body_xy_m"]} ==
+                {tuple(v[:2]) for v in physical_body["body_vertices_m"]},
                 "Original Native body/time join differs")
     counts = {name: frames(attempt / (name + ".mkv")) for name in CAMERAS}
     require(set(counts.values()) == {480}, "Source camera frame count differs")
@@ -111,6 +114,21 @@ def audit(case_id, construction_sha256, attempt, processing, *, diagnostic, sour
             result.get("maneuver_completed") is True and source_review is not None,
             "Original Native motion or independent review missing")
     review = read(source_review)
+    require((ROOT / "state/operations").resolve() in source_review.resolve().parents,
+            "Original review must be adopted into local operations")
+    sys.path.insert(0, str(ROOT / "runtime/pipeline"))
+    from scenario_pipeline.worker_exchange.media import audit as decode
+    decoded = {name: decode(attempt / (name + ".mkv"), 480,
+                            mapping_sha256=hashes["video_frames.jsonl"])
+               for name in CAMERAS}
+    views = review.get("views", {})
+    require(set(views) == set(CAMERAS) and all(
+                views[name].get("video_sha256") == hashes[name + ".mkv"] and
+                views[name].get("rgb_sequence_sha256") == decoded[name]["rgb_sequence_sha256"] and
+                views[name].get("reviewed_frame_ids") == list(range(480)) and
+                views[name].get("limitations") is not None
+                for name in CAMERAS),
+            "Original four-camera pixel review missing or decode changed")
     require(review.get("source_kind") == "original_native_map_signal_actor_pixels" and
             review.get("case_id") == case_id and review.get("reviewer") and
             review.get("method") and review.get("source_sha256") == hashes and

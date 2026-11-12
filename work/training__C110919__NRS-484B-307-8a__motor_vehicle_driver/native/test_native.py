@@ -34,7 +34,7 @@ class NativeDraftTest(unittest.TestCase):
     def test_synthetic_positive_and_negative(self):
         with tempfile.TemporaryDirectory() as temp:
             outcomes=[]
-            for case in CASES:
+            for case in ('reference','contrast'):
                 path=Path(temp)/(case+'.json')
                 path.write_text(json.dumps(synthetic(case)))
                 digest=hashlib.sha256(path.read_bytes()).hexdigest()

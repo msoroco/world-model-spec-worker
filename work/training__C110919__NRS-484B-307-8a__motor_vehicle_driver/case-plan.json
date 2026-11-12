@@ -24,8 +24,11 @@
       "requirement": "text-1",
       "source": "inputs/coverage/branch-sources.json",
       "status": "exception_pending",
-      "evidence_or_gap": "Exact statute: Vehicular traffic facing the signal must stop before entering the crosswalk on the nearest side of the intersection where the sign or pavement marking indicates where the stop must be made, or in the absence of any such crosswalk, sign or marking, then before entering the intersection, and, except as otherwise provided in paragraphs (c) and (d) [(c) is appended below, NRS-484B-307-8d], must remain stopped or standing until the green signal is shown.; no measured Native evidence or source-hashed equivalence receipt yet.",
-      "case_ids": []
+      "evidence_or_gap": "Exact statute: Vehicular traffic facing the signal must stop before entering the crosswalk on the nearest side of the intersection where the sign or pavement marking indicates where the stop must be made, or in the absence of any such crosswalk, sign or marking, then before entering the intersection, and, except as otherwise provided in paragraphs (c) and (d) [(c) is appended below, NRS-484B-307-8d], must remain stopped or standing until the green signal is shown.; no measured Native evidence or source-hashed equivalence receipt yet. Authored absent-reference branch pair exercises the intersection-boundary alternative; original absence and green-release still unproven.",
+      "case_ids": [
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast"
+      ]
     },
     {
       "requirement": "text-2",
@@ -94,6 +97,56 @@
         "green_release_and_exceptions",
         "selected_delivery_comparison"
       ]
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference",
+      "target_law_id": "NRS-484B-307-8a",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "halt_before_intersection_when_no_crosswalk_sign_or_marking",
+      "comparison_unit": "bool",
+      "requested_setting": "reference",
+      "recorded_value": null,
+      "case_description": "Steady red right turn with no nearest-side crosswalk, stop sign or stopping pavement marking: full-body halt before the intersection boundary versus entry without halt; pedestrian/traffic yield recorded separately.",
+      "fixed_context": "Hold absent-reference OpenDRIVE object inventory, right-turn route, actor, red signal, receiving road, weather, pedestrian schedule, all noncompared controller settings and four-camera capture profile constant.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "gap_ids": [
+        "official_red_and_stop_reference",
+        "right_turn_permission_and_yield",
+        "green_release_and_exceptions",
+        "selected_delivery_comparison"
+      ],
+      "stopping_reference_kind": "intersection_boundary",
+      "reference_absence_source": "authored OpenDRIVE object inventory; original map and pixel absence still unverified"
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast",
+      "target_law_id": "NRS-484B-307-8a",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "halt_before_intersection_when_no_crosswalk_sign_or_marking",
+      "comparison_unit": "bool",
+      "requested_setting": "contrast",
+      "recorded_value": null,
+      "case_description": "Steady red right turn with no nearest-side crosswalk, stop sign or stopping pavement marking: full-body halt before the intersection boundary versus entry without halt; pedestrian/traffic yield recorded separately.",
+      "fixed_context": "Hold absent-reference OpenDRIVE object inventory, right-turn route, actor, red signal, receiving road, weather, pedestrian schedule, all noncompared controller settings and four-camera capture profile constant.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "gap_ids": [
+        "official_red_and_stop_reference",
+        "right_turn_permission_and_yield",
+        "green_release_and_exceptions",
+        "selected_delivery_comparison"
+      ],
+      "stopping_reference_kind": "intersection_boundary",
+      "reference_absence_source": "authored OpenDRIVE object inventory; original map and pixel absence still unverified"
     }
   ],
   "comparisons": [
@@ -107,6 +160,27 @@
         "halt_before_nearest_boundary"
       ],
       "fixed_conditions": [
+        "cell",
+        "actor",
+        "legal context",
+        "traffic controls",
+        "weather",
+        "other controller settings",
+        "camera and capture profile"
+      ],
+      "status": "planned_unverified"
+    },
+    {
+      "comparison_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__comparison_absent_reference",
+      "case_ids": [
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast"
+      ],
+      "deliberate_differences": [
+        "halt_before_intersection_when_no_crosswalk_sign_or_marking"
+      ],
+      "fixed_conditions": [
+        "absent-reference road and signal",
         "cell",
         "actor",
         "legal context",
@@ -292,7 +366,8 @@
     "All eight current exact candidate compatibility and process-saved CPU diagnostics pass on source-hashed 480-frame synthetic recipes, but no case is selected or accepted.",
     "No original CARLA source recording establishes official signal governance, physical stop reference, receiving road direction, pedestrian/other-traffic precedence, or pixel visibility.",
     "Green-release, absent-reference, one-way-left and paragraph (c)/(d) exception branches remain open.",
-    "Selected delivery comparison, independent acceptance audit and GPU queue are unfinished worker-owned tasks."
+    "Selected delivery comparison, independent acceptance audit and GPU queue are unfinished worker-owned tasks.",
+    "Absent-reference right-turn pair has runner/geometry/finalizer CPU branch proof only; exact selected offline, compatibility, saved processing, independent audits and original absence review remain pending."
   ],
   "selection_targets": [
     "full-train"
