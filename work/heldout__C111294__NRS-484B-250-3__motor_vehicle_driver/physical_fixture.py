@@ -51,7 +51,8 @@ def run(case_id,kind):
             except ValueError as error:
                 if kind=='missing_evidence':
                     if 'Missing required source' not in str(error):raise
-                elif 'participant never enters conflict zone' not in str(error).lower():
+                elif not ('never enters' in str(error).lower() and
+                          'conflict zone' in str(error).lower()):
                     raise
             else:raise ValueError('Incomplete intersection source was accepted')
             status='unverified' if kind=='missing_evidence' else 'not_met'

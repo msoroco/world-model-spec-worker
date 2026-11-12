@@ -107,7 +107,7 @@ def require_retained_pair_bindings(ending_binding, continuing_binding):
 def audit_attempts(ending_attempt, continuing_attempt):
     """Check retained original sources from two saved Native attempts."""
     names = ('intersection_participants.jsonl', 'video_frames.jsonl',
-             'control_inventory.json', 'controlled_route_pair.json')
+             'control_inventory.json', 'controlled_route_pair.json', 'road.xodr')
     roots = (Path(ending_attempt), Path(continuing_attempt))
     required = (names + ('intersection_topology.json',),
                 names + ('highway_pair_topology.json',))
@@ -125,6 +125,9 @@ def audit_attempts(ending_attempt, continuing_attempt):
     binding = json.loads(files[0]['controlled_route_pair.json'])
     result['controlled_route_pair_sha256'] = require_retained_pair_bindings(
         binding, json.loads(files[1]['controlled_route_pair.json']))
+    if any(sha256(item['road.xodr'].encode()).hexdigest() !=
+           binding['opendrive_sha256'] for item in files):
+        raise ValueError('Controlled route-pair OpenDRIVE differs from originals')
     ending_topology = json.loads(files[0]['intersection_topology.json'])
     continuing_topology = json.loads(files[1]['highway_pair_topology.json'])
     if (str(ending_topology['junction_id']) != binding['junction_id'] or
