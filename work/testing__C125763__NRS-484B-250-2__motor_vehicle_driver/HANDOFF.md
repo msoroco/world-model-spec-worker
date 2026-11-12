@@ -377,3 +377,110 @@ testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete`
 `Preparation acceptance failed: partial/missing packages remain`. Delivery
 readiness has not passed; continue the worker-owned fallback and delivery
 construction from this checkpoint.
+
+## Twelve fallback proof checkpoint, 2026-11-12
+
+`build_fallbacks.py` prepares `fallback1`, `fallback2` and `fallback3` for
+each of the four exact selected cases. The changes respond to distinct
+physical risks: insufficient ego braking distance (move ego spawn 5 m
+upstream), other-vehicle spawn clearance (move the other spawn 5 m upstream),
+and overview visibility (shift and raise that camera). Each fallback keeps
+its case identity, crossing, approach headings, release timing, observation
+contract and comparison variable. The first two source-bound approach changes
+also update the crossing-geometry source document and site hash. All three
+alternatives are available with the same policy across linked cases.
+
+All twelve pass exact `runtime.py offline --candidate fallbackN` in
+`{primary,right,separated,opposite}-fallback{1,2,3}-offline-v1.log`.
+All twelve pass positive and missing-controller-source negative
+`runtime.py compatibility --candidate fallbackN` in the corresponding
+`-compat-v1.log`; retained `-compatibility-receipt.json`, `-analysis.log` and
+`-negative-analysis.log` files are bound in the four isolated manifests.
+All twelve pass recorded-only `runtime.py process-saved` in the corresponding
+`-saved-v1.log`; the retained `-saved-receipt.json` files are also bound there.
+For example, the exact primary fallback1 commands are:
+
+```
+.venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/primary-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_near_time --candidate fallback1 --output .runtime-work/c125763-primary-fallback1-offline-v1
+.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/primary-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_near_time --candidate fallback1 --output .runtime-work/c125763-primary-fallback1-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck
+.venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/primary-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_near_time --attempt .runtime-work/c125763-primary-fallback1-compat-v1 --output .runtime-work/c125763-primary-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck
+```
+
+The runtime `candidate_constructions.validate` accepts all four case entries
+with `required=True`, `require_alternate=True` and `candidate_count=4` in
+`fallback-validation.log`. The nonmutating fallback geometry test checks the
+changed knobs and preserved comparison variables for all four cases; the
+assignment suite now passes 30 tests in `cpu-tests.log`. Pinned preflight
+remains passed in `preflight.log`. `worker_check.py --updates` passes in
+`updates.log`; the scoped `worker_check.py --assignment
+testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete` passes in
+`assignment-check.log`.
+
+The next CPU work is a complete canonical `execution-manifest.json` and
+semantic proposals, physical-preparation fixtures for complete, incomplete
+and missing-evidence outcomes, independent delivery acceptance audits and
+their negative proofs, then exact assignment readiness and the batch strict
+gate. The current four manifests are isolated partial diagnostic manifests;
+they do not prove canonical physical or legal acceptance. `result.json`
+remains partial with the current 30-test log hash. No frozen inputs, runtime,
+batch file or Git action was changed.
+
+The fresh full `.venv-cpu/bin/python worker_check.py --complete
+--require-delivery-ready` exits 1 in `strict-gate.log` with `Preparation
+acceptance failed: partial/missing packages remain`. This is a batch
+readiness failure, not a failure of the twelve bound fallback CPU proofs.
+
+## Canonical manifest and physical-classifier checkpoint, 2026-11-12
+
+`build_execution_manifest.py` assembled the four selected case entries,
+including their twelve proved fallback candidates, into the draft canonical
+`execution-manifest.json`. The manifest retains partial status and names
+remaining delivery work. `audit_delivery.py` passed original-source integrity
+checks on all four current primary compatibility attempts in
+`source-audit-four-cases.log`; each has 60 joined original frames and reports
+`delivery_ready: false`.
+
+`physical_fixture_proof.py` and `build_physical_proofs.py` now generate and
+bind a per-case CPU classifier receipt under `physical-proofs/<case>/`. For
+each selected case they exercise an authored complete crossing-clearance
+motion, held incomplete motion, missing body history, failed encoder
+rejection, premature owner-release rejection, and the ordered capture seal,
+Native exit, owner release and saved-processing lifecycle. The complete
+motion is a synthetic classifier fixture derived from the case's source
+shape; it is not a CARLA capture or a claim that real motion occurred.
+`physical-proofs-current.log` records all four passing fixture runs. The
+frozen runtime `physical_preparation.validate` accepts every bound receipt.
+
+The exact `.venv-cpu/bin/python` validation of
+`worker_exchange.execution_manifest.validate(repo, assignment_id)` now
+passes for the four-case `execution-manifest.json` in
+`execution-manifest-validation.log`. The expanded assignment suite passes
+32 tests in `cpu-tests.log`, including stale physical-proof rejection.
+The remaining CPU work is validated canonical semantic stage proposals,
+independent delivery-acceptance positive and negative proofs, and
+recorded-only saved reruns using the canonical manifest path. These are
+worker-owned; retain partial status until the full assignment and batch
+readiness gates pass. No frozen inputs, runtime, batch file or Git action
+was changed.
+
+## Canonical manifest snapshot saved processing, 2026-11-12
+
+All four current primary cases also pass `runtime.py compatibility` and
+`runtime.py process-saved` when invoked with the new canonical
+`execution-manifest.json`, in `canonical-{primary,right,separated,opposite}-compat-v1.log`
+and `canonical-{primary,right,separated,opposite}-saved-v1.log`. Their retained
+receipts and current manifest SHA are bound in `canonical-proof-index.json`.
+For example, the primary commands are:
+
+```
+.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_near_time --output .runtime-work/c125763-canonical-primary-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck
+.venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_near_time --attempt .runtime-work/c125763-canonical-primary-compat-v1 --output .runtime-work/c125763-canonical-primary-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck
+```
+
+Candidate-selection receipts bind the manifest bytes. Future edits to
+`execution-manifest.json` require rerunning these canonical-snapshot checks
+and refreshing `canonical-proof-index.json`. The assignment suite now passes
+33 tests, including the current snapshot receipt/hash join. The manifest and
+all receipts still explicitly retain partial/software scope.
+
+The final checkpoint rerun passes `worker_check.py --updates` in `updates.log` and the scoped `worker_check.py --assignment testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete` in `assignment-check.log`. The full `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exits 1 in `strict-gate.log` with `Preparation acceptance failed: partial/missing packages remain`. The goal and this package remain active/partial.
