@@ -30,7 +30,7 @@ def main():
              'rerun_if_manifest_changes': True, 'physical_acceptance_claimed': False}
     for prefix, entry in zip(('primary', 'right', 'separated', 'opposite'), entries):
         case = entry['case_id']
-        stem = f'canonical-promoted-{prefix}-acquisition'
+        stem = f'canonical-promoted-{prefix}-{sha(manifest)[:10]}'
         output = f'.runtime-work/c125763-{stem}'
         compat_log = stem + '-compat.log'
         run([PYTHON, 'runtime.py', 'compatibility', '--manifest', str(manifest.relative_to(REPO)),

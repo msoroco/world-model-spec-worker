@@ -647,3 +647,50 @@ selected cases, then rerun canonical snapshot proofs after the manifest changes,
 review original law/coverage and comparisons, and rerun assignment and batch
 strict readiness gates. The Native motion, camera/pixel visibility and official
 intersection geometry remain physical checks only.
+
+## Assignment CPU readiness passed (2026-11-12)
+
+Four exact selected cases and twelve distinct fallback constructions now use
+source-bound original body history for physical completion. Every candidate
+passed exact offline, positive/negative compatibility and recorded-only saved
+processing. The four selected cases also passed current canonical-manifest
+compatibility and saved processing; `canonical-proof-index.json` binds the
+combined manifest SHA. `physical-proofs/` contains the synthetic complete,
+incomplete, missing-source and lifecycle receipts for each selected case.
+`prove_delivery_acceptance.py` and `bind_delivery_acceptance.py` produced
+exact-case positive CPU auditor checks and tampered-source rejections for both
+`demo-test` and `full-test` delivery targets. These are diagnostic CPU proofs,
+not Native physical acceptance.
+
+The main sweep implementation expanded the semantic proposal metadata; its
+four qualitative sweep plans remain explicitly incomplete pending measured
+Native motion and verified site geometry. The validated canonical stage chain
+has the same four selected executable cases. `bind_acquisition.py` records the
+Native `PipelineCapture` route for seven mandatory atoms and the original-frame
+finalizer path for `entry_timing`. `build_root_handoff.py` materialized a
+package config/construction, four-camera duration plan, and eight source-term
+mappings. All 39 CPU tests pass, including the materialized root bundle check.
+The direct execution, semantic, delivery acceptance, compatibility receipt,
+source identity and atom validators pass.
+
+Final assignment gate:
+
+```sh
+.venv-cpu/bin/python worker_check.py --assignment testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete --require-delivery-ready
+```
+
+Exit 0, `static_checks_passed: true`. `result.json` is `ready` with
+`readiness_kind: delivery_prepared`. Actual official yield sign/governance,
+intersection geometry, maneuver, timing, body visibility and camera pixels
+remain the listed physical checks at local Native execution. No legal
+compliance conclusion is asserted.
+
+The full batch gate `.venv-cpu/bin/python worker_check.py --complete
+--require-delivery-ready` was rerun after this assignment passed; it exits 1
+with `Preparation acceptance failed: partial/missing packages remain`.
+C125763-250-2 is the sole ready assignment in this 43-item batch at this
+checkpoint. The next incomplete assignment in batch order is
+`testing__C101303__NRS-484B-127-1__motor_vehicle_driver`; its existing
+`HANDOFF.md` identifies the physically feasible judgment sweep and final
+branch/delivery integration as worker-owned CPU work. Do not reinterpret its
+synthetic dynamics probe as verified Native feasibility.

@@ -36,7 +36,7 @@ def main():
             proofs[mode] = {'command': command, 'log': log, 'exit_code': result.returncode,
                             'log_sha256': sha(HERE / log)}
         entry['delivery_acceptance'] = {
-            'case_id': case, 'sets': ['demo-test'],
+            'case_id': case, 'sets': ['demo-test', 'full-test'],
             'checks': ['native_source', 'all_participants', 'time_join',
                        'full_video_decode', 'actual_pixels', 'physical_completion'],
             'script': script.name, 'script_sha256': sha(script),
@@ -51,7 +51,7 @@ def main():
             'negative_expected_error': 'Physical completion source changed',
             'proof_scope': 'diagnostic CPU auditor boundary only; no Native physical acceptance',
         }
-        validate_case(HERE, entry, ['demo-test'])
+        validate_case(HERE, entry, ['demo-test', 'full-test'])
         print(case + ': diagnostic auditor positive and negative CPU proofs passed', flush=True)
     manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
 
