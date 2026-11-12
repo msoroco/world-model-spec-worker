@@ -40,7 +40,7 @@ class NativeConstructionTest(unittest.TestCase):
             provenance='synthetic_native_sample')
         output=controller.step(observation=observation,position_xy_m=(1.75,-18),
             yaw_rad=1.5707963268,speed_mps=3,dt_s=.05)
-        self.assertEqual(output['hold_requested'],case=='reference')
+        self.assertEqual(output['hold_requested'],case!='contrast')
         self.assertFalse(output['physical_yield_observed'])
         self.assertFalse(output['legal_outcome_claimed'])
 

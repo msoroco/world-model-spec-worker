@@ -9,6 +9,7 @@ import subprocess
 
 from measure_walk import analyze, read_rows, require
 from physical_walk_audit import audit_original as audit_original_physical
+from physical_sweep import measured_hold_margin
 
 CAMERAS=('overview','approach','reference_corner','driver_reference')
 CHANNELS=('dev.pedestrian_signal','st.crosswalk','ru.pedestrian','rel.occupies',
@@ -88,8 +89,10 @@ def video_frames(path):
 
 def derive_channels(attempt,config,native,mapping,geometry,review=None):
     declared={row['name'] for row in config['recording_description']['channels']}
-    require(declared==set(CHANNELS),'Declared channels differ from raw Walk derivation')
-    output={name:[] for name in CHANNELS}
+    sweep=config['case_suffix'].startswith('right_of_way_physical_context-')
+    required=set(CHANNELS)|({'crosswalk_hold_margin_m'} if sweep else set())
+    require(declared==required,'Declared channels differ from raw Walk derivation')
+    output={name:[] for name in required}
     for index,(sample,frame) in enumerate(zip(native,mapping)):
         observed=review['observations'][index] if review is not None else None
         display=observed['display'] if observed is not None else sample['walk_signal_display_observed']
@@ -117,6 +120,8 @@ def derive_channels(attempt,config,native,mapping,geometry,review=None):
             'kin.velocity':sample['bus_speed_mps'],
             'native_body_pose_control':sample,
             'camera_frame_join':frame}
+        if sweep:
+            values['crosswalk_hold_margin_m']=geometry['crosswalk_y_range_m'][0]+1.0-max(p[1] for p in bus)
         for name,value in values.items():
             output[name].append(json.dumps({'time_s':frame['time_s'],'value':value},
                                            allow_nan=False)+'\n')
@@ -163,7 +168,9 @@ def finalize(attempt,output):
     require(all(value==count for value in counts.values()),
             'Original source video frame count differs')
     derive_channels(attempt,config,native,mapping,geometry,review)
-    expected=config['case_suffix']=='reference'
+    sweep=config['case_suffix'].startswith('right_of_way_physical_context-')
+    expected=config['case_suffix']!='contrast'
+    sweep_measurement=measured_hold_margin(native,diagnostic=synthetic) if sweep else None
     no_simultaneous=measurement['simultaneous_conflict_frames']==0
     matched=no_simultaneous==expected and measurement['directed_pedestrian_conflict_frames']>0
     completed=original_physical is not None and \
@@ -191,7 +198,12 @@ def finalize(attempt,output):
         'video_frame_map_reference':'video_frames.jsonl',
         'recording_description':config['recording_description'],
         'recording_evidence':recording,
-        'realized_observables':{'first_bus_conflict_frame':{'value':measurement['first_bus_conflict_frame'],
+        'realized_observables':{
+            **({'crosswalk_hold_margin_m':{'value':sweep_measurement['value'],
+                'unit':'m','method':sweep_measurement['method'],
+                'time_window':'entire original 24 s attempt','statistic':'first',
+                'reference':'native_samples.jsonl'}} if sweep else {}),
+            'first_bus_conflict_frame':{'value':measurement['first_bus_conflict_frame'],
             'unit':'frame','method':'saved sampled full-body crosswalk overlap',
             'time_window':'entire original 24 s attempt','statistic':'first',
             'reference':'native_samples.jsonl'}},
@@ -212,6 +224,7 @@ def finalize(attempt,output):
             'provenance_kind':result['provenance_kind'],
             'physical_acceptance_claimed':False,'legal_verdict_claimed':False,
             'original_physical_audit':original_physical,
+            'physical_sweep_measurement':sweep_measurement,
             'scope':'synthetic diagnostic' if synthetic else 'saved original Native sources pending independent audit'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     with (attempt/'result.json').open('x') as stream:

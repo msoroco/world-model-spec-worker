@@ -2,6 +2,12 @@
 from __future__ import annotations
 
 CASES=('reference','contrast')
+SWEEP_MARGINS_M={
+    'right_of_way_physical_context-0000':0.5,
+    'right_of_way_physical_context-0001':2.0,
+    'right_of_way_physical_context-0002':1.0,
+    'right_of_way_physical_context-0003':1.5,
+}
 CANDIDATES=('primary','fallback1','fallback2','fallback3')
 BASE={'route_tracking_lookahead_m':4.0,'crosswalk_hold_margin_m':1.0,
       'overview_fov_deg':90.0,'rate_hz':20,'duration_s':24.0,
@@ -25,11 +31,16 @@ TRIGGERS={
 
 
 def parameters(case: str,candidate: str) -> dict:
-    if case not in CASES or candidate not in CANDIDATES:
+    if case not in CASES and case not in SWEEP_MARGINS_M or candidate not in CANDIDATES:
         raise ValueError('Unknown exact Walk case or risk candidate')
     knobs={**BASE,**CHANGES.get(candidate,{})}
+    if case in SWEEP_MARGINS_M:
+        base_margin=SWEEP_MARGINS_M[case]
+        knobs['crosswalk_hold_margin_m']=base_margin
+        if candidate=='fallback2':
+            knobs['target_speed_mps']=3.5
     return {'case':case,'candidate':candidate,
-            'yield_policy':'yield_request' if case=='reference' else 'no_yield_request',
+            'yield_policy':'no_yield_request' if case=='contrast' else 'yield_request',
             'knobs':knobs,
             'trigger':TRIGGERS.get(candidate),
             'physical_acceptance_claimed':False}

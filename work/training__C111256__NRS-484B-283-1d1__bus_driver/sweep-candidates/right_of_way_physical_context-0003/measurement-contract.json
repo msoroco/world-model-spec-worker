@@ -1,0 +1,68 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C111256__NRS-484B-283-1d1__bus_driver__right_of_way_physical_context-0003",
+  "selected": false,
+  "requirements": [
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "signal_presence_observation",
+      "method": "measure_signal_presence",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "video_frames.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "text-2",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "walk_crossing_observation",
+      "method": "measure_walk_crossing",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "video_frames.jsonl",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "bus_yield_observation",
+      "method": "measure_bus_yield",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "video_frames.jsonl",
+        "road_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "road_geometry.json"
+    ],
+    "error_contains": "Missing required source: road_geometry.json"
+  },
+  "original_source_gates": [
+    "independent pixel audit of illuminated Walk",
+    "Native signal governance and pedestrian heading",
+    "synchronized bus and pedestrian body history"
+  ],
+  "legal_verdict_claimed": false,
+  "sweep_observable": {
+    "name": "crosswalk_hold_margin_m",
+    "unit": "m",
+    "source": "native_samples.jsonl",
+    "method": "first requested hold bus-front distance to marked crossing; full 480-row source required",
+    "legal_verdict_claimed": false
+  }
+}

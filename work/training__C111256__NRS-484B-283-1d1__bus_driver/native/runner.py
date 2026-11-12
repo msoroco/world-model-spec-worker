@@ -42,7 +42,8 @@ def check(config):
        [(row['width'],row['height']) for row in cameras]!=[(1920,1080),(1280,720)]*1+[(1280,720)]*2:
         raise ValueError('Current four-camera source profile differs')
     PathController(route(),3.8,35,EngineeringKnobs(
-        lookahead_base_m=plan['knobs']['route_tracking_lookahead_m']))
+        lookahead_base_m=plan['knobs']['route_tracking_lookahead_m'],
+        target_speed_mps=plan['knobs'].get('target_speed_mps',5.0)))
     WalkYieldController(PathController(route(),3.8,35,EngineeringKnobs()),
                         policy=plan['yield_policy'],
                         hold_margin_m=plan['knobs']['crosswalk_hold_margin_m'])
@@ -124,7 +125,8 @@ def execute(config,output,host,port):
         steer=max(w.max_steer_angle for w in wheels)
         knobs=config['knobs'];plan=parameters(config['case_suffix'],config['candidate_id'])
         controller=WalkYieldController(PathController(route(),wheelbase,steer,
-            EngineeringKnobs(lookahead_base_m=knobs['route_tracking_lookahead_m'])),
+            EngineeringKnobs(lookahead_base_m=knobs['route_tracking_lookahead_m'],
+                             target_speed_mps=knobs.get('target_speed_mps',5.0))),
             policy=plan['yield_policy'],hold_margin_m=knobs['crosswalk_hold_margin_m'])
         geometry={'cell_id':'C111256','native_map_sha256':native_map_hash,
                   'bus_approach_road_id':approach.road_id,'bus_approach_lane_id':approach.lane_id,
