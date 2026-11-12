@@ -1,0 +1,51 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Both complete vehicle bodies enter one sourced crossing from different declared highways; original frame and time joins measure first entry and delta without a statutory simultaneity cutoff",
+      "source": "NRS 484B.250(2); inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "body_entry_timing",
+      "method": "measure_body_entry_timing",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "crossing_history.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Reviewed entrance/device inventory identifies whether an official device controls the selected crossing and retains subsection-4 uncertainty",
+      "source": "NRS 484B.250(2); inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "device_exclusion_context",
+      "method": "measure_device_exclusion",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "Original opposite approach headings, authored left-turn intention, and observed changing heading history identify a completed left turn without deciding legal applicability",
+      "source": "NRS 484B.250(2); inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "opposite_approach",
+      "method": "measure_opposite_approach",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "road_geometry.json",
+        "capture/evidence.jsonl",
+        "turn_intent.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "turn_intent.json"
+    ],
+    "error_contains": "Missing required source: turn_intent.json"
+  }
+}
