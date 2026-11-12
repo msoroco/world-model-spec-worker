@@ -72,9 +72,102 @@
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native approach timing or camera coverage may fail"
+        "reason": "Native other spawn, route tracking or four-camera body coverage may fail"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/source_verified_other_right_near_time/fallback1-construction.json",
+          "construction_sha256": "b80dd27940791a2ee39679e09033ac93c73e6381139af86c04364c9e25bb5038",
+          "trigger": {
+            "source": "native-exit-feedback.json and capture/evidence.jsonl",
+            "metric": "other spawn success and first visible approach frame",
+            "failure_condition": "Other spawn fails at the primary approach or first approach frame is absent"
+          },
+          "changed_knobs": [
+            "site.other_approach y: -10 -> -12 m",
+            "site.routes.other first waypoint y: -10 -> -12 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_near_time --candidate fallback1 --output .runtime-work/c125714-primary-fallback1-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "b80dd27940791a2ee39679e09033ac93c73e6381139af86c04364c9e25bb5038",
+            "log": "cases/source_verified_other_right_near_time/fallback1-offline.log",
+            "log_sha256": "331eeb5b1e7f191db8ac247d95a07a00b81d8fdd32076898973304f0c96faf8d"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_other_right_near_time/fallback1-compatibility-receipt.json",
+            "sha256": "9d74bc7b578291f468dd27446ecb8f05a355aa3fadc9ec21f4b3d118fd782e6c",
+            "log": "cases/source_verified_other_right_near_time/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/source_verified_other_right_near_time/fallback1-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/source_verified_other_right_near_time/fallback1-processing-receipt.json",
+            "sha256": "576f1677add64dddf283d232c3fb8d7bf20fb52040f23bf2f10978864fb91ef4"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/source_verified_other_right_near_time/fallback2-construction.json",
+          "construction_sha256": "6377dc6c38b3beabcbbdd8221c7e3e30a17713b6f3bbc0a2d584dad7767205b0",
+          "trigger": {
+            "source": "controller_history.jsonl and crossing_history.jsonl",
+            "metric": "other route target progress and lateral distance from sourced route",
+            "failure_condition": "Other route target stalls or lateral error exceeds 1 m before entering the crossing"
+          },
+          "changed_knobs": [
+            "other steering lookahead: 5.0 -> 4.0 m; ego remains at 5.0 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_near_time --candidate fallback2 --output .runtime-work/c125714-primary-fallback2-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "6377dc6c38b3beabcbbdd8221c7e3e30a17713b6f3bbc0a2d584dad7767205b0",
+            "log": "cases/source_verified_other_right_near_time/fallback2-offline.log",
+            "log_sha256": "f55f5ab0dbce45662bc5de8801297c95180157dbcd0ecc34ee8e559ab610e27a"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_other_right_near_time/fallback2-compatibility-receipt.json",
+            "sha256": "80d2ff33b7da68aa0b8b6bd0bf549a6162d3345f10acbfa9e5f31ef74d57280f",
+            "log": "cases/source_verified_other_right_near_time/fallback2-compatibility-analysis.log",
+            "negative_log": "cases/source_verified_other_right_near_time/fallback2-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/source_verified_other_right_near_time/fallback2-processing-receipt.json",
+            "sha256": "622631dfc3183de3d3d4d1b8c6b5d76a583e724a5c0a0024297f911b048da7bc"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/source_verified_other_right_near_time/fallback3-construction.json",
+          "construction_sha256": "2c70f506d31467d5a3b6293359c3fbe142ca40839ac6029ee17e677bc270fb17",
+          "trigger": {
+            "source": "capture/manifest.json and four source-camera frame streams",
+            "metric": "visible complete body bounding boxes in overview and approach cameras",
+            "failure_condition": "Either complete body leaves the planned overview or approach image during entry"
+          },
+          "changed_knobs": [
+            "overview pose height: 25 -> 28 m",
+            "approach pose x: -15 -> -18 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_near_time --candidate fallback3 --output .runtime-work/c125714-primary-fallback3-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "2c70f506d31467d5a3b6293359c3fbe142ca40839ac6029ee17e677bc270fb17",
+            "log": "cases/source_verified_other_right_near_time/fallback3-offline.log",
+            "log_sha256": "05b1a147250bbaee78c9ebbc1fc4452a32c6af45e183ff8a97a451483fdee53e"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_other_right_near_time/fallback3-compatibility-receipt.json",
+            "sha256": "0ded7fb00537a32f5c9355ee2a22fccecd4e3522a186dc10f442d88a5d86b04d",
+            "log": "cases/source_verified_other_right_near_time/fallback3-compatibility-analysis.log",
+            "negative_log": "cases/source_verified_other_right_near_time/fallback3-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/source_verified_other_right_near_time/fallback3-processing-receipt.json",
+            "sha256": "47dbc251fd795afde32fc952a49d0b1d3daa8137e2d21839213b4528a6f83e5f"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_left_near_time",
@@ -130,9 +223,101 @@
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Left approach lane, entry order or camera coverage may fail Native review"
+        "reason": "Native other spawn, route tracking or four-camera body coverage may fail"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/source_verified_other_left_near_time/fallback1-construction.json",
+          "construction_sha256": "a90552e0ed2a94e9f9e278ac45808d36de220456116aaae96e9453ee75806807",
+          "trigger": {
+            "source": "native-exit-feedback.json and capture/evidence.jsonl",
+            "metric": "other spawn success and first visible approach frame",
+            "failure_condition": "Other spawn fails at the primary approach or first approach frame is absent"
+          },
+          "changed_knobs": [
+            "other Native approach spawn and first waypoint move 2 m upstream along its declared heading"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_left_near_time --candidate fallback1 --output .runtime-work/c125714-other_left_near_time-fallback1-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "a90552e0ed2a94e9f9e278ac45808d36de220456116aaae96e9453ee75806807",
+            "log": "cases/source_verified_other_left_near_time/fallback1-offline.log",
+            "log_sha256": "d823ddfdb7a5ac50cbe9f6abf6486dbfa2d085f86d0226faea20ae44bbf5256b"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_other_left_near_time/fallback1-compatibility-receipt.json",
+            "sha256": "12aa10d095f2b432abd24574259baa6aa3286a297bdb3a70a064e17fb22fb779",
+            "log": "cases/source_verified_other_left_near_time/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/source_verified_other_left_near_time/fallback1-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/source_verified_other_left_near_time/fallback1-processing-receipt.json",
+            "sha256": "2b7cabcaaf31e8a3c088de42a5c0192b0e3ae272de21921981c34b5e71f834df"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/source_verified_other_left_near_time/fallback2-construction.json",
+          "construction_sha256": "544956534140a928f0c26138a9aac827c6c2231917fb1a75d6619d8ec74c1f34",
+          "trigger": {
+            "source": "controller_history.jsonl and crossing_history.jsonl",
+            "metric": "other route target progress and lateral distance from sourced route",
+            "failure_condition": "Other route target stalls or lateral error exceeds 1 m before entering the crossing"
+          },
+          "changed_knobs": [
+            "other steering lookahead 5.0 -> 4.0 m; ego remains 5.0 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_left_near_time --candidate fallback2 --output .runtime-work/c125714-other_left_near_time-fallback2-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "544956534140a928f0c26138a9aac827c6c2231917fb1a75d6619d8ec74c1f34",
+            "log": "cases/source_verified_other_left_near_time/fallback2-offline.log",
+            "log_sha256": "bc24742c19198803eef808149622772f4ddfeeb5136f98b448d773cd7f28d2f7"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_other_left_near_time/fallback2-compatibility-receipt.json",
+            "sha256": "0bfb770932e8b07655d3f64d1c28b4524e4e75505acbd7d035cda7fbf4eca058",
+            "log": "cases/source_verified_other_left_near_time/fallback2-compatibility-analysis.log",
+            "negative_log": "cases/source_verified_other_left_near_time/fallback2-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/source_verified_other_left_near_time/fallback2-processing-receipt.json",
+            "sha256": "da59dfbd87cdbd76c7f6f5cf3f19e75e89f605ea831375a06ec0b7c5787470d9"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/source_verified_other_left_near_time/fallback3-construction.json",
+          "construction_sha256": "a51f3d1e3dd7b35e10a9938706abb405c241d78a51c6e2fbba7964984b9ffa02",
+          "trigger": {
+            "source": "capture/manifest.json and four source-camera frame streams",
+            "metric": "visible complete body bounding boxes in overview and approach cameras",
+            "failure_condition": "Either complete body leaves the planned overview or approach image during entry"
+          },
+          "changed_knobs": [
+            "overview camera height +3 m",
+            "approach camera x -3 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_left_near_time --candidate fallback3 --output .runtime-work/c125714-other_left_near_time-fallback3-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "a51f3d1e3dd7b35e10a9938706abb405c241d78a51c6e2fbba7964984b9ffa02",
+            "log": "cases/source_verified_other_left_near_time/fallback3-offline.log",
+            "log_sha256": "7b0afc7da8a22e1ca36cca0b29d6a2154569f412c6346d416db9eb2ffed8cca0"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_other_left_near_time/fallback3-compatibility-receipt.json",
+            "sha256": "2a46bbd63bbd63f82d19856619a88b69764f459efed7a6fc41be34ae2f0aa3db",
+            "log": "cases/source_verified_other_left_near_time/fallback3-compatibility-analysis.log",
+            "negative_log": "cases/source_verified_other_left_near_time/fallback3-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/source_verified_other_left_near_time/fallback3-processing-receipt.json",
+            "sha256": "b96ad3df01580314e871df604d2bccb31ba397c2eba0e9b378bbc6dbabd35b5a"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_left_near_time --output .runtime-work/c125714-left-offline-v3",
         "exit_code": 0,
@@ -203,9 +388,101 @@
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Earlier other release may miss the intended source frame or camera coverage"
+        "reason": "Native other spawn, route tracking or four-camera body coverage may fail"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/source_verified_other_right_earlier/fallback1-construction.json",
+          "construction_sha256": "e0cae719f5cfbd88455714e52a24a424c06af57a5aa6b6c3b453540d201ce54e",
+          "trigger": {
+            "source": "native-exit-feedback.json and capture/evidence.jsonl",
+            "metric": "other spawn success and first visible approach frame",
+            "failure_condition": "Other spawn fails at the primary approach or first approach frame is absent"
+          },
+          "changed_knobs": [
+            "other Native approach spawn and first waypoint move 2 m upstream along its declared heading"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_earlier --candidate fallback1 --output .runtime-work/c125714-other_right_earlier-fallback1-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "e0cae719f5cfbd88455714e52a24a424c06af57a5aa6b6c3b453540d201ce54e",
+            "log": "cases/source_verified_other_right_earlier/fallback1-offline.log",
+            "log_sha256": "4ba21a9870eba7c12196ca6ea95abb7f13b2e3a2a5ebc6b30a248549cd9e3a31"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_other_right_earlier/fallback1-compatibility-receipt.json",
+            "sha256": "d432cc1e1ba5424e5ec36d843d7fd5103d4e6354e2d15ee5424b5b61f97d74b3",
+            "log": "cases/source_verified_other_right_earlier/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/source_verified_other_right_earlier/fallback1-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/source_verified_other_right_earlier/fallback1-processing-receipt.json",
+            "sha256": "c64c21fffb9810c71a29fc15cee3218e47e518deda36f272d5788974fce2cf35"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/source_verified_other_right_earlier/fallback2-construction.json",
+          "construction_sha256": "aaee443a1aa7de88801ec6e8f48022fb721784a5bd289d47cbaff428be3670b4",
+          "trigger": {
+            "source": "controller_history.jsonl and crossing_history.jsonl",
+            "metric": "other route target progress and lateral distance from sourced route",
+            "failure_condition": "Other route target stalls or lateral error exceeds 1 m before entering the crossing"
+          },
+          "changed_knobs": [
+            "other steering lookahead 5.0 -> 4.0 m; ego remains 5.0 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_earlier --candidate fallback2 --output .runtime-work/c125714-other_right_earlier-fallback2-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "aaee443a1aa7de88801ec6e8f48022fb721784a5bd289d47cbaff428be3670b4",
+            "log": "cases/source_verified_other_right_earlier/fallback2-offline.log",
+            "log_sha256": "47c24758447ac348d9b476dd7e9ff692e5608fd77438b1fc1d649314dfdb76fe"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_other_right_earlier/fallback2-compatibility-receipt.json",
+            "sha256": "7f6eb47e91a44eafe56100eaf9c80a38130482e83fc82c731899304e787f4f3b",
+            "log": "cases/source_verified_other_right_earlier/fallback2-compatibility-analysis.log",
+            "negative_log": "cases/source_verified_other_right_earlier/fallback2-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/source_verified_other_right_earlier/fallback2-processing-receipt.json",
+            "sha256": "484887075ff656d0a357ee13ab05c42c93a435594509f5558075e4722857519d"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/source_verified_other_right_earlier/fallback3-construction.json",
+          "construction_sha256": "299a3690f206297895b4df75d7aa385cd9515f0bda39aed73f3a59541524b68b",
+          "trigger": {
+            "source": "capture/manifest.json and four source-camera frame streams",
+            "metric": "visible complete body bounding boxes in overview and approach cameras",
+            "failure_condition": "Either complete body leaves the planned overview or approach image during entry"
+          },
+          "changed_knobs": [
+            "overview camera height +3 m",
+            "approach camera x -3 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_earlier --candidate fallback3 --output .runtime-work/c125714-other_right_earlier-fallback3-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "299a3690f206297895b4df75d7aa385cd9515f0bda39aed73f3a59541524b68b",
+            "log": "cases/source_verified_other_right_earlier/fallback3-offline.log",
+            "log_sha256": "ff3bdef04d90e9a40c80d9619ef63d8ba41ed1378d62671fd257e0be1b8b7152"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_other_right_earlier/fallback3-compatibility-receipt.json",
+            "sha256": "355d76f3f84866f0eaecbefce68ed7587907c3919eedb3b907a99ca001b015f3",
+            "log": "cases/source_verified_other_right_earlier/fallback3-compatibility-analysis.log",
+            "negative_log": "cases/source_verified_other_right_earlier/fallback3-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/source_verified_other_right_earlier/fallback3-processing-receipt.json",
+            "sha256": "c39632c7b672f1a6154114384edae05fd8a5a24004a98fa3e41fe8e7cd898c05"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_earlier --output .runtime-work/c125714-earlier-offline-v3",
         "exit_code": 0,
@@ -276,9 +553,101 @@
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Later other release may miss the intended crossing or camera coverage"
+        "reason": "Native other spawn, route tracking or four-camera body coverage may fail"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/source_verified_other_right_later/fallback1-construction.json",
+          "construction_sha256": "017eec2765c92e036677803dc3e0aae3bb211668dcce1f2540f5ffda6594e526",
+          "trigger": {
+            "source": "native-exit-feedback.json and capture/evidence.jsonl",
+            "metric": "other spawn success and first visible approach frame",
+            "failure_condition": "Other spawn fails at the primary approach or first approach frame is absent"
+          },
+          "changed_knobs": [
+            "other Native approach spawn and first waypoint move 2 m upstream along its declared heading"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_later --candidate fallback1 --output .runtime-work/c125714-other_right_later-fallback1-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "017eec2765c92e036677803dc3e0aae3bb211668dcce1f2540f5ffda6594e526",
+            "log": "cases/source_verified_other_right_later/fallback1-offline.log",
+            "log_sha256": "055d9ba212aeb4d96f929e18b2f28500093f3f75166a0cb4e0500a85df4626ab"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_other_right_later/fallback1-compatibility-receipt.json",
+            "sha256": "2f64c3330712655d2c0d70b86f271eb43e8e94b05ae66c992cf8fc0d04da3518",
+            "log": "cases/source_verified_other_right_later/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/source_verified_other_right_later/fallback1-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/source_verified_other_right_later/fallback1-processing-receipt.json",
+            "sha256": "c3c45341749e7641be5a06c3fec389630ea1e03c1005f856bc5194d95bf6a0ee"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/source_verified_other_right_later/fallback2-construction.json",
+          "construction_sha256": "5cb0efb3c39a59e9d0fa4ca0b24f7a95c1daa9f9f0b1f3012d6486d673a2156a",
+          "trigger": {
+            "source": "controller_history.jsonl and crossing_history.jsonl",
+            "metric": "other route target progress and lateral distance from sourced route",
+            "failure_condition": "Other route target stalls or lateral error exceeds 1 m before entering the crossing"
+          },
+          "changed_knobs": [
+            "other steering lookahead 5.0 -> 4.0 m; ego remains 5.0 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_later --candidate fallback2 --output .runtime-work/c125714-other_right_later-fallback2-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "5cb0efb3c39a59e9d0fa4ca0b24f7a95c1daa9f9f0b1f3012d6486d673a2156a",
+            "log": "cases/source_verified_other_right_later/fallback2-offline.log",
+            "log_sha256": "e6cc1edd5d798617f4d95403c0da9da3b5b2fcd6055d24a1ccf6110a4c5aac7e"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_other_right_later/fallback2-compatibility-receipt.json",
+            "sha256": "5e5e1ce1416c8a66754b46df921535f2468670d1d3c8a547998473d1b0cd305b",
+            "log": "cases/source_verified_other_right_later/fallback2-compatibility-analysis.log",
+            "negative_log": "cases/source_verified_other_right_later/fallback2-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/source_verified_other_right_later/fallback2-processing-receipt.json",
+            "sha256": "e02ddf9ed0c12a998a0f1a08165b9563d035ecfb974c13e89673f0b07909ce44"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/source_verified_other_right_later/fallback3-construction.json",
+          "construction_sha256": "5f4d2e57957ebb18d2cac7888794dc347291d2a4ded852903d6edd1da4ed8183",
+          "trigger": {
+            "source": "capture/manifest.json and four source-camera frame streams",
+            "metric": "visible complete body bounding boxes in overview and approach cameras",
+            "failure_condition": "Either complete body leaves the planned overview or approach image during entry"
+          },
+          "changed_knobs": [
+            "overview camera height +3 m",
+            "approach camera x -3 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_later --candidate fallback3 --output .runtime-work/c125714-other_right_later-fallback3-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "5f4d2e57957ebb18d2cac7888794dc347291d2a4ded852903d6edd1da4ed8183",
+            "log": "cases/source_verified_other_right_later/fallback3-offline.log",
+            "log_sha256": "2686a75fe4abd66bc35a44a4655fed8ea901fea937881896073e518237eb2b88"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_other_right_later/fallback3-compatibility-receipt.json",
+            "sha256": "0ab51db863a0275f44a519fc2f5e2d42267ceb7d870b58d8c3646eb7facb6fff",
+            "log": "cases/source_verified_other_right_later/fallback3-compatibility-analysis.log",
+            "negative_log": "cases/source_verified_other_right_later/fallback3-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/source_verified_other_right_later/fallback3-processing-receipt.json",
+            "sha256": "62d3680b400fa161dc2ba94bfb74f5938482c34f50e78e910f51790e8ea86059"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_later --output .runtime-work/c125714-later-offline-v3",
         "exit_code": 0,
@@ -349,9 +718,84 @@
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Opposite Native lane or straight trajectory may miss one crossing or camera"
+        "reason": "Native other spawn, route tracking or four-camera body coverage may fail"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/source_verified_opposite_straight/fallback1-construction.json",
+          "construction_sha256": "4a66893369d4df3a9153b44b2d7852b96e01c7ef405499b49da0c1f2583b250f",
+          "trigger": {
+            "source": "native-exit-feedback.json and capture/evidence.jsonl",
+            "metric": "other spawn success and first visible approach frame",
+            "failure_condition": "Other spawn fails at the primary approach or first approach frame is absent"
+          },
+          "changed_knobs": [
+            "other Native approach spawn and first waypoint move 2 m upstream along its declared heading"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_opposite_straight --candidate fallback1 --output .runtime-work/c125714-opposite_straight-fallback1-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "4a66893369d4df3a9153b44b2d7852b96e01c7ef405499b49da0c1f2583b250f",
+            "log": "cases/source_verified_opposite_straight/fallback1-offline.log",
+            "log_sha256": "91570eca9b567a7052c75bb593565f9626d79ca80898663cc2f5898a8c6cba15"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_opposite_straight/fallback1-compatibility-receipt.json",
+            "sha256": "37d2d9fc426992210eaa586ff92b87c008797a6513bffcff51a556fb958b2f99",
+            "log": "cases/source_verified_opposite_straight/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/source_verified_opposite_straight/fallback1-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/source_verified_opposite_straight/fallback1-processing-receipt.json",
+            "sha256": "398c20d6263d419180e856728922e4335502745760d84540bc1b35e8c273415e"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/source_verified_opposite_straight/fallback2-construction.json",
+          "construction_sha256": "7830514da373ea05ed70373586227d2e2b279691cf068e1878809bc31a8284a8",
+          "trigger": {
+            "source": "controller_history.jsonl and crossing_history.jsonl",
+            "metric": "other route target progress and lateral distance from sourced route",
+            "failure_condition": "Other route target stalls or lateral error exceeds 1 m before entering the crossing"
+          },
+          "changed_knobs": [
+            "other steering lookahead 5.0 -> 4.0 m; ego remains 5.0 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_opposite_straight --candidate fallback2 --output .runtime-work/c125714-opposite_straight-fallback2-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "7830514da373ea05ed70373586227d2e2b279691cf068e1878809bc31a8284a8",
+            "log": "cases/source_verified_opposite_straight/fallback2-offline.log",
+            "log_sha256": "84b93f101061aa0f15de5fcc1d6663bae95842eb6517724fd595f7ff4155fc09"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_opposite_straight/fallback2-compatibility-receipt.json",
+            "sha256": "c701d7627c7033ecd3816a8bcffd253fa07e09172645f7b5116929bbd4ed655f",
+            "log": "cases/source_verified_opposite_straight/fallback2-compatibility-analysis.log",
+            "negative_log": "cases/source_verified_opposite_straight/fallback2-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/source_verified_opposite_straight/fallback2-processing-receipt.json",
+            "sha256": "e9f2b2be4fa73ea1b57f6d239429293de3b97393078ef0f46537c72f768210b9"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/source_verified_opposite_straight/fallback3-construction.json",
+          "construction_sha256": "d171a322ceb3a9491331545361a52afc5f2bd7cc6acaf8529fcd19f178520d65",
+          "trigger": {
+            "source": "capture/manifest.json and four source-camera frame streams",
+            "metric": "visible complete body bounding boxes in overview and approach cameras",
+            "failure_condition": "Either complete body leaves the planned overview or approach image during entry"
+          },
+          "changed_knobs": [
+            "overview camera height +3 m",
+            "approach camera x -3 m"
+          ]
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_opposite_straight --output .runtime-work/c125714-opposite-straight-offline-v1",
         "exit_code": 0,
@@ -422,9 +866,50 @@
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Opposite Native path may not remain straight or preserve four-camera coverage"
+        "reason": "Native other spawn, route tracking or four-camera body coverage may fail"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/source_verified_opposite_intends_left/fallback1-construction.json",
+          "construction_sha256": "048d1a3f1b49cd15332312c3e0aa03cf3ee01afcf5db23a03f6a2eae29865c43",
+          "trigger": {
+            "source": "native-exit-feedback.json and capture/evidence.jsonl",
+            "metric": "other spawn success and first visible approach frame",
+            "failure_condition": "Other spawn fails at the primary approach or first approach frame is absent"
+          },
+          "changed_knobs": [
+            "other Native approach spawn and first waypoint move 2 m upstream along its declared heading"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/source_verified_opposite_intends_left/fallback2-construction.json",
+          "construction_sha256": "cc2321ec09fa791638346abfc0ddcf13054323696f3c26fa0ed78734bb79e71e",
+          "trigger": {
+            "source": "controller_history.jsonl and crossing_history.jsonl",
+            "metric": "other route target progress and lateral distance from sourced route",
+            "failure_condition": "Other route target stalls or lateral error exceeds 1 m before entering the crossing"
+          },
+          "changed_knobs": [
+            "other steering lookahead 5.0 -> 4.0 m; ego remains 5.0 m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/source_verified_opposite_intends_left/fallback3-construction.json",
+          "construction_sha256": "dfcda3da0d520ee020c3aaa7270c9c8b0e58156ecded9e7dad123bffc817053b",
+          "trigger": {
+            "source": "capture/manifest.json and four source-camera frame streams",
+            "metric": "visible complete body bounding boxes in overview and approach cameras",
+            "failure_condition": "Either complete body leaves the planned overview or approach image during entry"
+          },
+          "changed_knobs": [
+            "overview camera height +3 m",
+            "approach camera x -3 m"
+          ]
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_opposite_intends_left --output .runtime-work/c125714-opposite-intends-offline-v1",
         "exit_code": 0,
@@ -495,9 +980,50 @@
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native left turn may miss crossing, capture or complete turn"
+        "reason": "Native other spawn, route tracking or four-camera body coverage may fail"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/source_verified_opposite_makes_left/fallback1-construction.json",
+          "construction_sha256": "8bf034d7a63da635090086b1833266b5a63f461828f38da6bf8988cd45b166e5",
+          "trigger": {
+            "source": "native-exit-feedback.json and capture/evidence.jsonl",
+            "metric": "other spawn success and first visible approach frame",
+            "failure_condition": "Other spawn fails at the primary approach or first approach frame is absent"
+          },
+          "changed_knobs": [
+            "other Native approach spawn and first waypoint move 2 m upstream along its declared heading"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/source_verified_opposite_makes_left/fallback2-construction.json",
+          "construction_sha256": "fbc2398ebe1a5aa09a486dc52974891e0f48dcdfb46744f67d44b9c4a4428b99",
+          "trigger": {
+            "source": "controller_history.jsonl and crossing_history.jsonl",
+            "metric": "other route target progress and lateral distance from sourced route",
+            "failure_condition": "Other route target stalls or lateral error exceeds 1 m before entering the crossing"
+          },
+          "changed_knobs": [
+            "other steering lookahead 5.0 -> 4.0 m; ego remains 5.0 m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/source_verified_opposite_makes_left/fallback3-construction.json",
+          "construction_sha256": "f7b1b361af250d16e9e4cf979a89f6c638cc20f7dda80f96acb1e20afe91ebcf",
+          "trigger": {
+            "source": "capture/manifest.json and four source-camera frame streams",
+            "metric": "visible complete body bounding boxes in overview and approach cameras",
+            "failure_condition": "Either complete body leaves the planned overview or approach image during entry"
+          },
+          "changed_knobs": [
+            "overview camera height +3 m",
+            "approach camera x -3 m"
+          ]
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_opposite_makes_left --output .runtime-work/c125714-opposite-makes-offline-v1",
         "exit_code": 0,
@@ -568,9 +1094,50 @@
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Wide second roadway may not match Native site or four-camera coverage"
+        "reason": "Native other spawn, route tracking or four-camera body coverage may fail"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/source_verified_wide_separate_crossing/fallback1-construction.json",
+          "construction_sha256": "c987f8eff7105918103b07f1bd4865876e0a7002f39237a6eccb3e59d14ec2ba",
+          "trigger": {
+            "source": "native-exit-feedback.json and capture/evidence.jsonl",
+            "metric": "other spawn success and first visible approach frame",
+            "failure_condition": "Other spawn fails at the primary approach or first approach frame is absent"
+          },
+          "changed_knobs": [
+            "other Native approach spawn and first waypoint move 2 m upstream along its declared heading"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/source_verified_wide_separate_crossing/fallback2-construction.json",
+          "construction_sha256": "7bee06d0a92453da2288847b2b93978cab250793c7758ed43bb3ad34ce2aa36f",
+          "trigger": {
+            "source": "controller_history.jsonl and crossing_history.jsonl",
+            "metric": "other route target progress and lateral distance from sourced route",
+            "failure_condition": "Other route target stalls or lateral error exceeds 1 m before entering the crossing"
+          },
+          "changed_knobs": [
+            "other steering lookahead 5.0 -> 4.0 m; ego remains 5.0 m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/source_verified_wide_separate_crossing/fallback3-construction.json",
+          "construction_sha256": "53c8d79cc7441154f27d2006f6843bea7d029e72050a5c8f4b3d67066821054f",
+          "trigger": {
+            "source": "capture/manifest.json and four source-camera frame streams",
+            "metric": "visible complete body bounding boxes in overview and approach cameras",
+            "failure_condition": "Either complete body leaves the planned overview or approach image during entry"
+          },
+          "changed_knobs": [
+            "overview camera height +3 m",
+            "approach camera x -3 m"
+          ]
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_wide_separate_crossing --output .runtime-work/c125714-wide-offline-v4",
         "exit_code": 0,
