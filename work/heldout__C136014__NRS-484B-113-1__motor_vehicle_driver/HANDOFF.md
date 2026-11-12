@@ -34,3 +34,8 @@ Two zero-byte root compatibility logs, `fallback2-compat.log` and
 `primary-nine-compat.log` (SHA-256
 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`).
 Manifest log paths were updated and the scoped strict gate still passes.
+
+Two more byte-identical zero-byte nested compatibility logs for
+`reverse_close_traffic_steady` (fallback2 and fallback3) were consolidated into
+the same retained root log, with manifest paths rebound. The scoped strict
+gate still passes; no compatibility receipt or negative log was removed.

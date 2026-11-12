@@ -165,3 +165,29 @@ passes after both constructions. The latest full batch strict command
 finished with exit 1 at `preparation.py:276`, `Preparation acceptance failed:
 partial/missing packages remain`. It passed the return-file cap. The package
 status and reason remain truthful partial.
+
+### 2026-11-12 independent marked-course comparison protocol
+
+`comparison_audit.py` rereads both original site records, marker readbacks,
+frame maps and body paths and reruns source-joined measurements. It rejects a
+changed authority/site/marker, unequal capture count, identical body path or
+missing measured course contrast. With 160-frame original attempts it also
+requires all four named camera source files; full decode remains a separate
+delivery-audit requirement. Its CPU selftest passes one source-shaped positive
+and two negative probes (`comparison-audit-selftest.log`, SHA-256
+`485bfbffe2cd7f311c29146d54be61c6ad976f1d1d404d0d74b3a06823d38e84`;
+script SHA-256
+`66142f8b9f5b090d4b2f1d1b23811b6c7fd2b793256e52032f1b89a8afff7e47`).
+The case plan names the auditor; no original Native comparison or legal
+conformance is claimed. The scoped nonstrict gate passes after this addition.
+
+Resume with `.venv-cpu/bin/python work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/comparison_audit.py --selftest`, then develop the
+case-specific Native-shaped diagnostic and finalizer. The exact ready gate
+still requires positive/missing-source compatibility, saved processing,
+fallbacks, semantic stages, physical/delivery audits and an independent final
+review of the original law and site source.
+
+The final full batch strict rerun after this audit exited 1 at
+`preparation.py:276` with `Preparation acceptance failed: partial/missing
+packages remain`; its return-file cap passed. The 51 frozen assignments remain
+35 ready and 16 partial. This case is still partial for the CPU work above.

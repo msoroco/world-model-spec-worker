@@ -1220,3 +1220,25 @@ constructions, semantic proposals and independent audits. C111610's judgment
 sweeps and the other partial packages remain worker-owned CPU work. No frozen
 input, runtime or batch file was edited; no Git, CARLA, NERSC or SQLite command
 was run.
+
+The C126064 `marked_turn_course` independent comparison protocol now checks
+fixed original authority/site/physical-marker sources, equal frame count,
+changed original body path and measured course contrast. One positive and two
+negative source-shaped CPU probes pass (`comparison-audit-selftest.log`, SHA-256
+`485bfbffe2cd7f311c29146d54be61c6ad976f1d1d404d0d74b3a06823d38e84`).
+It does not establish an original Native comparison or legal conformance.
+Two byte-identical nested C136014 zero-byte compatibility logs were consolidated
+into its retained root log; its scoped strict gate still passes. C126064's
+scoped nonstrict gate passes, and `result.json` remains partial. The return
+inventory is 10,200/10,200 files. Complete batch strict must be rerun after
+this audit addition; source-bound compatibility, saved processing and the
+remaining 16 partial packages are still the gate's expected deficiency.
+
+The complete strict gate rerun after the comparison-audit addition finished
+with exit 1 at `runtime/scenario_pipeline/worker_exchange/preparation.py:276`:
+`Preparation acceptance failed: partial/missing packages remain`. The 10,200
+file-cap check passed. No C126064 status was promoted from the offline or
+source-shaped comparison probes. The next CPU task is its first source-bound
+positive/missing-source compatibility and saved-processing proof; the retained
+original site record must remain a verifiable input rather than a fixture-only
+derived channel.
