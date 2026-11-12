@@ -1,0 +1,40 @@
+{
+  "format": "c111256-physical-judgment-sweep-cpu-v1",
+  "status": "candidate_grid_not_selected",
+  "axis": "crosswalk_hold_margin_m",
+  "unit": "m",
+  "setpoints_m": [
+    0.5,
+    1.0,
+    1.5,
+    2.0
+  ],
+  "source": [
+    "native/controller.py: WalkYieldController hold_margin_m domain (0,5] m",
+    "native/geometry.py: marked near crosswalk y=-11 m",
+    "native/runner.py: original four-corner bus body and controller_request per Native frame"
+  ],
+  "rationale": "Fixed engineering coverage of the bus-front hold request at a marked crosswalk; no legal cutoff or compliance label.",
+  "measurement": "First source requested hold: marked crosswalk y minus measured bus body front y, with all 480 original frames required.",
+  "diagnostic_measurement": {
+    "observable": "crosswalk_hold_margin_m",
+    "unit": "m",
+    "value": 1.25,
+    "native_frame": 101,
+    "time_s": 5.050000000000001,
+    "method": "first requested hold: marked crosswalk y minus measured bus body front y",
+    "diagnostic": true,
+    "legal_outcome_claimed": false
+  },
+  "controller_grid_rows": 12,
+  "controller_true_and_false": true,
+  "negative_rejections": [
+    "missing_frame",
+    "invented_speed",
+    "missing_body",
+    "no_hold",
+    "time_order"
+  ],
+  "synthetic_original_rejected": true,
+  "original_recordings_accepted": 0
+}
