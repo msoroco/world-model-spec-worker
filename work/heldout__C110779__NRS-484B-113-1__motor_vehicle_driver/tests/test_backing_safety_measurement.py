@@ -47,7 +47,17 @@ class BackingTests(unittest.TestCase):
         self.assertEqual(result['minimum_surface_gap_during_backing_m']['other_1'], 3)
         self.assertAlmostEqual(result['minimum_sampled_surrounding_acceleration_during_backing_mps2']['other_1'], -20)
         self.assertEqual(result['observations'][0]['relative_bearings_deg']['other_1'], 180)
+        self.assertIsNone(result['observations'][0]['sampled_time_to_conflict_s']['other_1'])
+        self.assertAlmostEqual(result['observations'][1]['sampled_time_to_conflict_s']['other_1'], .25)
+        self.assertAlmostEqual(result['minimum_sampled_time_to_conflict_during_backing_s']['other_1'], .15)
         self.assertIsNone(result['interference_legal_judgment'])
+
+    def test_time_to_conflict_requires_observed_closure(self):
+        for row in self.motion:
+            row['participants']['other_1']['x_m'] = -8 - 2 * (row['frame'] - 30)
+        self.write()
+        result = self.result()
+        self.assertIsNone(result['minimum_sampled_time_to_conflict_during_backing_s']['other_1'])
 
     def test_rejects_contact_join_and_uncited_traffic_context(self):
         self.contacts[1]['frame'] = 40

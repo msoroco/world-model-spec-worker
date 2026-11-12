@@ -68,6 +68,7 @@ def measure(motion_path, contact_path, context_path):
     observations = []
     prior = None
     speeds = {}
+    prior_gaps = {}
     for row, contact in zip(motion, contacts):
         frame, time_s = row.get('frame'), row.get('time_s')
         if type(frame) is not int or type(time_s) not in (int, float) or not isfinite(time_s):
@@ -91,11 +92,19 @@ def measure(motion_path, contact_path, context_path):
         bodies = row.get('participants')
         if not isinstance(bodies, dict) or set(bodies) != set(participants):
             raise ValueError('Original surrounding actor identities differ')
-        gap, bearing, acceleration_by_actor = {}, {}, {}
+        gap, bearing, acceleration_by_actor, time_to_conflict = {}, {}, {}, {}
         for actor_id in participants:
             other = _body(bodies[actor_id], actor_id)
             dx, dy = other[0] - ego[0], other[1] - ego[1]
             gap[actor_id] = hypot(dx, dy) - ego[2] - other[2]
+            if gap[actor_id] <= 0:
+                time_to_conflict[actor_id] = 0.0
+            elif actor_id in prior_gaps:
+                closing_speed = (prior_gaps[actor_id] - gap[actor_id]) / .05
+                time_to_conflict[actor_id] = gap[actor_id] / closing_speed if closing_speed > 0 else None
+            else:
+                time_to_conflict[actor_id] = None
+            prior_gaps[actor_id] = gap[actor_id]
             bearing[actor_id] = degrees(atan2(heading[0] * dy - heading[1] * dx,
                                                 heading[0] * dx + heading[1] * dy))
             try:
@@ -114,6 +123,7 @@ def measure(motion_path, contact_path, context_path):
                              'ego_longitudinal_speed_mps': longitudinal,
                              'backing_observed': longitudinal < 0,
                              'surface_gaps_m': gap, 'relative_bearings_deg': bearing,
+                             'sampled_time_to_conflict_s': time_to_conflict,
                              'participant_acceleration_mps2': acceleration_by_actor,
                              'contact_actor_ids': contact_ids})
     backing = [row for row in observations if row['backing_observed']]
@@ -128,6 +138,11 @@ def measure(motion_path, contact_path, context_path):
             'backing_onset_frame': first, 'backing_end_frame': last,
             'minimum_surface_gap_during_backing_m': {
                 actor_id: min((row['surface_gaps_m'][actor_id] for row in window),
+                              default=None)
+                for actor_id in participants},
+            'minimum_sampled_time_to_conflict_during_backing_s': {
+                actor_id: min((row['sampled_time_to_conflict_s'][actor_id]
+                               for row in window if row['sampled_time_to_conflict_s'][actor_id] is not None),
                               default=None)
                 for actor_id in participants},
             'contact_frames_during_backing': [row['frame'] for row in window
