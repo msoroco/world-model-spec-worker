@@ -2,7 +2,7 @@
   "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
   "input_sha256": "912e2ac429853e443ff83b2d323134aca9fc59f31fecef23b322dcc620d3aef4",
   "status": "partial",
-  "readiness_kind": "twelve_case_far_selected_partial",
+  "readiness_kind": "twelve_case_audited_far_near_comparison_partial",
   "applied_update": 0,
   "tests": [
     {
@@ -1816,11 +1816,95 @@
       "exit_code": 0,
       "log": "cases/approaching_far/assignment-selected-v3.log",
       "sha256": "a5165396057b4eb55a93c9232431f354a98be5e870445d3d73803f56b08064e3"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/far_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far --output-root .runtime-work/c109749-far-delivery-v2 --media-root .runtime-work/c109749-far-media-v1",
+      "exit_code": 0,
+      "log": "cases/approaching_far/delivery-positive.log",
+      "sha256": "35c48e48ce6ff592cd0d391cc853cedfb8b31584788b3b1cd2a5f60dec0d2ef2"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cases/approaching_far/preflight-delivery-current.log",
+      "sha256": "f692ff5ecfe6a83275a89aee4d1be5bfb883335986d49538b0f17457439d1c16"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --updates",
+      "exit_code": 0,
+      "log": "cases/approaching_far/updates-delivery-current.log",
+      "sha256": "bc028da1339a9f9c4509c1460ad99c683c6b6ac8b7b6af6b378e3ffa7cdbb287"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/validate_manifest.py",
+      "exit_code": 0,
+      "log": "cases/approaching_far/manifest-delivery-current.log",
+      "sha256": "166d866c47d4159b14ff57a069e293c9af0d1711279c82538e8f3a7f9a793dfe"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/validate_semantic_chain.py",
+      "exit_code": 0,
+      "log": "cases/approaching_far/semantic-delivery-current.log",
+      "sha256": "9c0beea9d4f0434285f2d3efd3cc595b4a93e33140d4bc6fd51086e70ecdd248"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-253__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cases/approaching_far/cpu-tests-delivery-current.log",
+      "sha256": "61bd9cb197e106005d89ec7fb21b2ee0dd8ce6a684e93ce5187c1caaafcb70b9"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/prove_far_near_comparison.py --far-root .runtime-work/c109749-far-delivery-v2/attempt --output-root .runtime-work/c109749-far-near-comparison-v1",
+      "exit_code": 0,
+      "log": "cases/approaching_far/far-near-comparison-proof.log",
+      "sha256": "936b7062ec3fb5783fc870cd12818952af7a470fa215b0be66f7475b10f0ea3a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/near_matched_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_no_yield --output-root .runtime-work/c109749-near-matched-delivery-v1 --near-root .runtime-work/c109749-far-near-comparison-v1/near --media-root .runtime-work/c109749-far-media-v1",
+      "exit_code": 0,
+      "log": "cases/approaching_no_yield/matched-delivery-positive.log",
+      "sha256": "a7dc23cd66ff388f88b896a6beec76ee5588206a5f27b6b4f2863e9f9c3e78b1"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/prove_audited_far_near_comparison.py --far-root .runtime-work/c109749-far-delivery-v2/attempt --near-root .runtime-work/c109749-near-matched-delivery-v1/attempt --output .runtime-work/c109749-audited-far-near-comparison-v2",
+      "exit_code": 0,
+      "log": "cases/approaching_far/audited-far-near-comparison.log",
+      "sha256": "ba9178eb255b2a2b38ed9c699359e6926d31b7a2d47646d3f7996e54b35aa62d"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/validate_manifest.py",
+      "exit_code": 0,
+      "log": "cases/approaching_far/manifest-audited-pair.log",
+      "sha256": "166d866c47d4159b14ff57a069e293c9af0d1711279c82538e8f3a7f9a793dfe"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/validate_semantic_chain.py",
+      "exit_code": 0,
+      "log": "cases/approaching_far/semantic-audited-pair.log",
+      "sha256": "9c0beea9d4f0434285f2d3efd3cc595b4a93e33140d4bc6fd51086e70ecdd248"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-253__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cases/approaching_far/cpu-tests-audited-pair.log",
+      "sha256": "ce834116b9a15a149b21457c9ef4fa96dee871b84c55b58ef662b1f382f97a4d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cases/approaching_far/preflight-audited-pair.log",
+      "sha256": "e34b6b30346b690a75c395ae5135dd59a6a64351da6453a1731ac5b025ece12b"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --updates",
+      "exit_code": 0,
+      "log": "cases/approaching_far/updates-audited-pair.log",
+      "sha256": "bc028da1339a9f9c4509c1460ad99c683c6b6ac8b7b6af6b378e3ffa7cdbb287"
     }
   ],
   "remaining_gpu_checks": [
     "Actual opposing approach and subject motion, signal pixels and four-camera visibility."
   ],
-  "reason": "Twelve selected cases are now in the canonical plan/proposal/manifest. The far-approach primary and three fallbacks, and the root primary and three fallbacks affected by the new supported-case list, pass exact offline, compatibility and recorded-only saved processing. Twelve-case manifest, semantic chain and package compatibility receipts validate; 87 unit tests pass. The far case still lacks a case-specific independent full-duration delivery audit and comparison proof, and the remaining judgment sweeps and batch packages are incomplete. The result remains partial; synthetic tests do not establish Native motion, camera visibility or legal acceptance.",
+  "reason": "Matched far/near 900-frame diagnostic delivery audits and source comparison pass; synthetic static pixels do not prove actors or Native trajectories. Remaining statutory judgment sweep cases and other assignment CPU work remain incomplete; all 43 returns are partial.",
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

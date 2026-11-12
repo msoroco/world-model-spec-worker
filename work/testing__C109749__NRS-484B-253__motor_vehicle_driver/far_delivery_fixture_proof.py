@@ -106,10 +106,13 @@ def negative(root, source_root):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--case', required=True)
     parser.add_argument('--output-root', type=Path, required=True)
     parser.add_argument('--media-root', type=Path)
     parser.add_argument('--negative-source-root', type=Path)
     args = parser.parse_args()
+    if args.case != CASE:
+        raise ValueError('Exact far-approach case required')
     if args.negative_source_root:
         negative(args.output_root.resolve(), args.negative_source_root.resolve())
     else:

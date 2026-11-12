@@ -1559,15 +1559,15 @@
         ],
         "script": "approaching_delivery_audit.py",
         "script_sha256": "14cf0a03b10107cbe06c0954f6f7b78ffd487357a1b385d16b1ceec6b30f86e3",
-        "command": "PYTHONPATH=work/testing__C109749__NRS-484B-253__motor_vehicle_driver .venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/approaching_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_no_yield --output-root .runtime-work/c109749-approaching-no-yield-delivery-v1",
+        "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/near_matched_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_no_yield --output-root .runtime-work/c109749-near-matched-delivery-v1 --near-root .runtime-work/c109749-far-near-comparison-v1/near --media-root .runtime-work/c109749-far-media-v1",
         "test_exit_code": 0,
-        "test_log": "cases/approaching_no_yield/delivery-positive.log",
-        "test_log_sha256": "3e930b6ef90f6b34c41c0a3b5e1d7733817bd5e03e46cdab4433de2fd6f2f183",
-        "negative_command": "PYTHONPATH=work/testing__C109749__NRS-484B-253__motor_vehicle_driver .venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/approaching_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_no_yield --output-root .runtime-work/c109749-approaching-no-yield-delivery-negative-v1 --negative-source-root .runtime-work/c109749-approaching-no-yield-delivery-v1",
+        "test_log": "cases/approaching_no_yield/matched-delivery-positive.log",
+        "test_log_sha256": "a7dc23cd66ff388f88b896a6beec76ee5588206a5f27b6b4f2863e9f9c3e78b1",
+        "negative_command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/near_matched_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_no_yield --output-root .runtime-work/c109749-near-matched-delivery-negative-v1 --negative-source-root .runtime-work/c109749-near-matched-delivery-v1",
         "negative_exit_code": 1,
-        "negative_expected_error": "Sealed original source changed: interaction_history.jsonl",
-        "negative_log": "cases/approaching_no_yield/delivery-negative.log",
-        "negative_log_sha256": "2c9443116b329bd9b11bcf68e35e679cdc0a78f63e99f363f7677bee933fa2d8"
+        "negative_expected_error": "Sealed original source changed: intersection_geometry.json",
+        "negative_log": "cases/approaching_no_yield/matched-delivery-negative.log",
+        "negative_log_sha256": "da8f36d7096e57b0559a2e02bb7bc39e3ba5c4844ac6a75c48b5179ab52bf574"
       }
     },
     {
@@ -3100,6 +3100,32 @@
       "physical_preparation": {
         "receipt": "cases/approaching_far/physical-proofs/receipt.json",
         "sha256": "f3bbf28b9dc38f6b91fa57142a57c88a691754867d08bfba60cddb26b2aed4d3"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "far_delivery_audit.py",
+        "script_sha256": "056ccdaac1713bd4184834242b59c64824560aa39d283805f242c5233e17dd28",
+        "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/far_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far --output-root .runtime-work/c109749-far-delivery-v2 --media-root .runtime-work/c109749-far-media-v1",
+        "test_exit_code": 0,
+        "test_log": "cases/approaching_far/delivery-positive.log",
+        "test_log_sha256": "35c48e48ce6ff592cd0d391cc853cedfb8b31584788b3b1cd2a5f60dec0d2ef2",
+        "negative_command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/far_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far --output-root .runtime-work/c109749-far-delivery-negative-v2 --negative-source-root .runtime-work/c109749-far-delivery-v2",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed original source changed: overview.mkv",
+        "negative_log": "cases/approaching_far/delivery-negative.log",
+        "negative_log_sha256": "04adceaf3472ef50714c80d2bc2db30fedda3845161e4438fecde01aba3703c4"
       }
     }
   ]
