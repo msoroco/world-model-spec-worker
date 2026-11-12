@@ -4,7 +4,7 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from overtake_route import choose_target, select_overtake_route, steer_speed_control
+from overtake_route import case_target, choose_target, select_overtake_route, steer_speed_control
 
 
 def lanes(direction=1, same_direction=True, steps=75):
@@ -62,6 +62,39 @@ class OvertakeRouteTests(unittest.TestCase):
         fast = steer_speed_control([0, 0], [1, 0], [12, 0], [5, 0])
         self.assertEqual(fast['throttle'], 0)
         self.assertGreater(fast['brake'], 0)
+
+    def test_exact_lateral_and_signed_return_targets(self):
+        for direction in (1, -1):
+            with self.subTest(direction=direction):
+                world_map, _, _ = lanes(direction)
+                route = select_overtake_route(world_map)
+                row = {
+                    'road_tangent_xy': [direction, 0],
+                    'ego_corners': [[0, 3.5 * direction], [2 * direction, 3.5 * direction],
+                                    [2 * direction, 4.5 * direction], [0, 4.5 * direction]],
+                    'other_corners': [[3 * direction, -.5 * direction],
+                                      [5 * direction, -.5 * direction],
+                                      [5 * direction, .5 * direction],
+                                      [3 * direction, .5 * direction]],
+                }
+                wide = case_target(route, 'left_pass_wide', [0, 3.5 * direction],
+                                   row, passed_abreast=False)
+                narrow = case_target(route, 'left_pass_narrow', [0, 3.5 * direction],
+                                     row, passed_abreast=False)
+                self.assertEqual(wide['phase'], 'pass_left')
+                self.assertAlmostEqual(abs(wide['target_xy'][1] - narrow['target_xy'][1]), 1)
+                # Signed clearance permits the planned earlier return; the
+                # same original body geometry keeps the later return in lane 2.
+                row['ego_corners'] = [[4.8 * direction, 3.5 * direction],
+                                      [6.8 * direction, 3.5 * direction],
+                                      [6.8 * direction, 4.5 * direction],
+                                      [4.8 * direction, 4.5 * direction]]
+                early = case_target(route, 'return_before_clear', [5 * direction, 3.5 * direction],
+                                    row, passed_abreast=True)
+                late = case_target(route, 'return_after_clear', [5 * direction, 3.5 * direction],
+                                   row, passed_abreast=True)
+                self.assertEqual(early['phase'], 'return_right')
+                self.assertEqual(late['phase'], 'pass_left')
 
 
 if __name__ == '__main__':

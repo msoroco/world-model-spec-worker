@@ -1,6 +1,8 @@
 """Native same-direction two-lane overtaking route and return controller."""
 
-from math import atan2, hypot
+from math import atan2, hypot, isfinite
+
+from overtake_controller import TARGETS
 
 
 def _heading(waypoint):
@@ -52,7 +54,8 @@ def _point(waypoint):
 def choose_target(route, ego_xy, ego_rear_long_m, other_front_long_m,
                   *, passed_abreast=False, requested_return_clearance_m=3,
                   lookahead=3):
-    if requested_return_clearance_m < 0 or lookahead < 1:
+    if (not isfinite(requested_return_clearance_m) or
+            not -4 <= requested_return_clearance_m <= 10 or lookahead < 1):
         raise ValueError('Overtake return parameters invalid')
     right = route['right']
     nearest = min(range(len(right)), key=lambda i: hypot(
@@ -64,6 +67,47 @@ def choose_target(route, ego_xy, ego_rear_long_m, other_front_long_m,
             'phase': 'return_right' if clear else 'pass_left',
             'waypoint_index': index,
             'measured_body_clearance_m': ego_rear_long_m - other_front_long_m}
+
+
+def case_target(route, case_suffix, ego_xy, original_row, *, passed_abreast,
+                lookahead=3):
+    """Select the exact sweep's lane, signed return point and lateral aim."""
+    if case_suffix not in TARGETS:
+        raise ValueError('Unknown exact overtaking case')
+    left_gap, return_clearance = TARGETS[case_suffix]
+    hx, hy = original_row['road_tangent_xy']
+    length = hypot(hx, hy)
+    if not isfinite(length) or length < .99:
+        raise ValueError('Original road tangent invalid')
+    ax, ay = hx / length, hy / length
+    ego = original_row['ego_corners']
+    other = original_row['other_corners']
+    if len(ego) != 4 or len(other) != 4:
+        raise ValueError('Original four-corner bodies required')
+    if any(len(point) != 2 or not all(isfinite(value) for value in point)
+           for point in ego + other):
+        raise ValueError('Original body coordinates invalid')
+    ego_rear = min(x * ax + y * ay for x, y in ego)
+    other_front = max(x * ax + y * ay for x, y in other)
+    selected = choose_target(route, ego_xy, ego_rear, other_front,
+                             passed_abreast=passed_abreast,
+                             requested_return_clearance_m=return_clearance,
+                             lookahead=lookahead)
+    if selected['phase'] == 'return_right':
+        selected['target_xy'] = list(_point(selected['waypoint']))
+    else:
+        lx, ly = -ay, ax
+        other_left = max(x * lx + y * ly for x, y in other)
+        ego_left = [x * lx + y * ly for x, y in ego]
+        ego_center = sum(ego_left) / 4
+        desired_center = other_left + max(ego_left) - ego_center + left_gap
+        wx, wy = _point(selected['waypoint'])
+        offset = desired_center - (wx * lx + wy * ly)
+        if abs(offset) > 3:
+            raise ValueError('Left pass target outside mapped lane sweep')
+        selected['target_xy'] = [wx + offset * lx, wy + offset * ly]
+    selected['target_left_gap_m'] = left_gap
+    return selected
 
 
 def steer_speed_control(position_xy, heading_xy, velocity_xy, target_xy,
