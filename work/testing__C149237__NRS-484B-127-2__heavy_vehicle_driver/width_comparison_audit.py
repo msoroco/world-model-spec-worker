@@ -5,7 +5,9 @@ import json
 import math
 from pathlib import Path
 
-CASES=('gap_at_500ft','ego_width_below_80in','ego_width_at_80in','lead_width_below_80in')
+CASES=('gap_at_500ft','ego_width_below_80in','ego_width_at_80in',
+       'ego_width_above_80in','lead_width_below_80in',
+       'lead_width_at_80in','lead_width_above_80in')
 THRESHOLD=80*.0254
 
 
@@ -61,7 +63,7 @@ def inspect(root,suffix):
 def audit(paths):
     if set(paths)!=set(CASES):raise ValueError('Supply exact 80-inch control cases')
     facts={suffix:inspect(paths[suffix],suffix) for suffix in CASES}
-    base,ego_below,ego_at,lead_below=(facts[s] for s in CASES)
+    base,ego_below,ego_at,ego_above,lead_below,lead_at,lead_above=(facts[s] for s in CASES)
     for field in ('lane_count','road_id','lane_id','cameras','rate_hz','duration_s','required_atoms'):
         if len({json.dumps(facts[s][field],sort_keys=True) for s in CASES})!=1:
             raise ValueError('Width comparison changed fixed condition: '+field)
@@ -70,13 +72,16 @@ def audit(paths):
     if not (base['widths_m']['ego']>=THRESHOLD and base['widths_m']['lead']>=THRESHOLD and
             ego_below['widths_m']['ego']<THRESHOLD and
             math.isclose(ego_at['widths_m']['ego'],THRESHOLD,abs_tol=.005) and
-            lead_below['widths_m']['lead']<THRESHOLD):
+            ego_above['widths_m']['ego']>THRESHOLD and
+            lead_below['widths_m']['lead']<THRESHOLD and
+            math.isclose(lead_at['widths_m']['lead'],THRESHOLD,abs_tol=.005) and
+            lead_above['widths_m']['lead']>THRESHOLD):
         raise ValueError('80-inch source boundary classification failed')
-    if not (base['widths_m']['lead']==ego_below['widths_m']['lead']==ego_at['widths_m']['lead'] and
-            base['widths_m']['ego']==lead_below['widths_m']['ego']):
+    if not (base['widths_m']['lead']==ego_below['widths_m']['lead']==ego_at['widths_m']['lead']==ego_above['widths_m']['lead'] and
+            base['widths_m']['ego']==lead_below['widths_m']['ego']==lead_at['widths_m']['ego']==lead_above['widths_m']['ego']):
         raise ValueError('Width comparison changed fixed counterpart width')
-    if not (base['blueprints']['lead']==ego_below['blueprints']['lead']==ego_at['blueprints']['lead'] and
-            base['blueprints']['ego']==lead_below['blueprints']['ego']):
+    if not (base['blueprints']['lead']==ego_below['blueprints']['lead']==ego_at['blueprints']['lead']==ego_above['blueprints']['lead'] and
+            base['blueprints']['ego']==lead_below['blueprints']['ego']==lead_at['blueprints']['ego']==lead_above['blueprints']['ego']):
         raise ValueError('Width comparison changed fixed counterpart truck')
     return {'format':'worker-width-boundary-comparison-audit','passed':True,
             'comparison_id':'qualifying_vehicle_width',

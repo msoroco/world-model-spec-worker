@@ -8,7 +8,7 @@ from pathlib import Path
 from width_comparison_audit import CASES,audit
 
 ROOT=Path(__file__).resolve().parents[2]
-PATHS={s:ROOT/'.runtime-work'/('c149237-'+s+'-saved-v14')/'v0001/analysis'
+PATHS={s:ROOT/'.runtime-work'/('c149237-'+s+'-saved-v16')/'v0001/analysis'
        for s in CASES}
 FILES=('config.json','result.json','analysis-report.json','road_context.json',
        'truck_history.jsonl','video_frames.jsonl')
