@@ -15,10 +15,13 @@ def rows(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
 
-def audit(attempts):
+def audit(attempts, derived_roots=None):
     if len(attempts) != 3:
         raise ValueError('Three frozen ending-road release-delay points required')
     roots = [Path(path) for path in attempts]
+    derived_roots = [Path(path) for path in (derived_roots or roots)]
+    if len(derived_roots) != len(roots):
+        raise ValueError('Three matching saved analysis roots required')
     configs = [json.loads((root / 'config.json').read_text()) for root in roots]
     if [config.get('release_delay_frames') for config in configs] != [0, 160, 80]:
         raise ValueError('Ending-road physical release setpoints differ')
@@ -55,13 +58,13 @@ def audit(attempts):
     if any(traces[0][0] != trace[0] for trace in traces[1:]):
         raise ValueError('Ending-road initial subject motion setup changed')
     points = []
-    for root, config in zip(roots, configs):
+    for root, derived, config in zip(roots, derived_roots, configs):
         observed = measure(root / 'intersection_topology.json',
                            root / 'intersection_participants.jsonl')
-        stream = rows(root / 'subject_displacement_m.jsonl')
+        stream = rows(derived / 'subject_displacement_m.jsonl')
         if not stream or len(stream) != len(participants[0]):
             raise ValueError('Ending-road subject displacement stream incomplete')
-        entry_stream = rows(root / 'subject_entry_elapsed_s.jsonl')
+        entry_stream = rows(derived / 'subject_entry_elapsed_s.jsonl')
         observations = observed['observations']
         if len(entry_stream) != len(observations):
             raise ValueError('Ending-road subject entry timing stream incomplete')
@@ -77,9 +80,9 @@ def audit(attempts):
                        'last_displacement_m': stream[-1]['value'],
                        'entry_delta_s': observed['entry_delta_s'],
                        'subject_entry_elapsed_s': entry_stream[-1]['value'],
-                       'entry_timing_stream_sha256': digest(root / 'subject_entry_elapsed_s.jsonl'),
+                       'entry_timing_stream_sha256': digest(derived / 'subject_entry_elapsed_s.jsonl'),
                        'participant_source_sha256': digest(root / 'intersection_participants.jsonl'),
-                       'displacement_stream_sha256': digest(root / 'subject_displacement_m.jsonl')})
+                       'displacement_stream_sha256': digest(derived / 'subject_displacement_m.jsonl')})
     ordered = sorted(points, key=lambda point: point['setpoint_frames'])
     if [point['setpoint_frames'] for point in ordered] != [0, 80, 160] or not (
             ordered[0]['subject_entry_frame'] < ordered[1]['subject_entry_frame'] <
@@ -96,9 +99,10 @@ def main():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--point', action='append', required=True)
+    parser.add_argument('--analysis-root', action='append')
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
-    result = audit(args.point)
+    result = audit(args.point, args.analysis_root)
     Path(args.output).write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps(result))
 

@@ -8,32 +8,50 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests-latest.log",
-      "sha256": "0a25ad70916c29f5e3d9c8f31680b9e832dc4895cbbfeae74a3acb5d7b7366f4",
-      "passed": 70
+      "sha256": "90f92dcd0864fcb6e139c5a182218c453bd5791648ad198d5bc8d8500e197daa",
+      "passed": 71
     },
     {
-      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python pinned execution_manifest.validate and package_compatibility.check_receipts",
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python pinned execution_manifest.validate, package_compatibility.check_receipts and delivery_handoff.validate_case",
       "exit_code": 0,
       "log": "execution-validation-latest.log",
-      "sha256": "5a45d5f14dc8a229243dacebea25fd524ad9387d5abaed7ca2294c2b8e471d79"
+      "sha256": "c2182e683203a65ba4afbfc529dbacc2b91fe0ab0f2c1ce70afa3be56b84b82e"
     },
     {
-      "command": ".venv-cpu/bin/python qualitative_release_audit.py against current three saved attempts (expected rejection of incomplete 9-frame originals)",
+      "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/prove_full_release_compatibility.py --skip-unchanged-first",
       "exit_code": 0,
-      "log": "qualitative-release-current-negative.log",
-      "sha256": "e4f6a75f97adf49809e5d0a6cb587325d756b3a67e43f35bb17ccf81a422b94b"
+      "log": "full-release-corrected-compatibility.log",
+      "sha256": "9f79cd64318aca81872b4d97afe6dd81b5cbc7e35bb269587d6912dc45dde2b6"
     },
     {
-      "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/build_release_window.py --output .runtime-work/c111294-release-window --receipt work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/qualitative-release-window-proof.json",
+      "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/reprove_all_delivery.py",
       "exit_code": 0,
-      "log": "qualitative-release-window-build.log",
-      "sha256": "e53627256e63dc67bc5bf60c7435515ff55174286dddd5b9f6e54b5bb8553660"
+      "log": "full-release-delivery-reproof.log",
+      "sha256": "60ecb386c5643a93097b30ae497ad6d547093d74937f7be605ccba088c36636e"
+    },
+    {
+      "command": ".venv-cpu/bin/python all seven prove_*_saved.py scripts",
+      "exit_code": 0,
+      "log": "full-release-all-saved-reproof.log",
+      "sha256": "cb017b81cc438054bccfc9b5646de565f56912014fe612342f55366eb69b1f4c"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/prove_full_release_audit.py",
+      "exit_code": 0,
+      "log": "qualitative-release-saved-proof.log",
+      "sha256": "1747ec78c476f8b12d288ec89ab53d3b8b2a3a9529e454055a1902d270d4059e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/prove_full_release_comparison.py",
+      "exit_code": 0,
+      "log": "yield-release-full-window-comparison.log",
+      "sha256": "76e1ce606380d4272dfaf0aff802911d79e4b73e052e818d5817b9fb5b76c7b8"
     }
   ],
   "remaining_gpu_checks": [
     "Actual map suitability, two-vehicle motion and body clearance",
     "Physical camera visibility and capture quality"
   ],
-  "reason": "Partial: 70 CPU tests pass. A source-shaped synthetic 320-frame release-window builder now yields three measured original-body entry frames at 0/80/160-frame offsets, with complete frame-map/trace joins and tamper rejection. The generated packets live under .runtime-work and pass the independent qualitative audit, but the three selected diagnostic recipes and saved attempts still use nine-frame sources. Incorporate source-consistent full-window packets into their complete Native-shaped diagnostic recipes, rerun all affected exact compatibility, saved, delivery, physical and comparison proofs, then finish remaining qualitative branches, shared GPU queue, local integration proof and full-law review. No physical or legal outcome is claimed.",
+  "reason": "Partial: all three selected 320-frame release diagnostics and 12 primary/fallback exact compatibility receipts pass pinned CPU processing; nine selected saved-processing proofs and delivery audits are rebound to the current manifest. Independent saved-source audits measure release entry at frames 38038/38118/38198 for 0/80/160-frame setpoints and reject changed fixed through-actor evidence. Seventy-one local tests and pinned execution, compatibility and delivery validators pass. Other qualitative law branches, shared GPU queue/local integration proof, independent full-law review and strict assignment/batch delivery gates remain worker-owned CPU work. No physical or legal outcome is claimed.",
   "readiness_kind": "delivery_prepared"
 }
