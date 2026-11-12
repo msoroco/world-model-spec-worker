@@ -13,6 +13,8 @@ from pathlib import Path
 
 DIMENSIONS = {
     'body_gap': ({'requested_engineering_gap_m'}, 'gap'),
+    'body_gap_midpoint': ({'requested_engineering_gap_m'}, 'gap'),
+    'body_gap_midpoint_closer': ({'requested_engineering_gap_m'}, 'gap'),
     'ego_speed': ({'ego_target_speed_mps'}, 'ego_speed'),
     'lead_speed': ({'lead_target_speed_mps'}, 'lead_speed'),
     'lead_braking': ({'lead_brake_start_fraction'}, 'braking'),
@@ -23,6 +25,8 @@ DIMENSIONS = {
 IDENTITY = {'selected_case_id', 'supported_case_ids'}
 INITIAL_ACTOR_DIFFERENCES = {
     'body_gap': {'lead.body_vertices_xy_m'},
+    'body_gap_midpoint': {'lead.body_vertices_xy_m'},
+    'body_gap_midpoint_closer': {'lead.body_vertices_xy_m'},
     'ego_speed': {'ego.velocity_mps'},
     'lead_speed': {'lead.velocity_mps'},
     'lead_braking': set(),
@@ -94,10 +98,10 @@ def _metric(rows, kind):
 
 
 def audit_pair(folder, comparison_id, left_source, right_source, candidate=None,
-               left_candidate=None, right_candidate=None):
+               left_candidate=None, right_candidate=None, manifest_path=None):
     folder = Path(folder)
     plan = json.loads((folder / 'case-plan.json').read_text())
-    manifest = json.loads((folder / 'execution-manifest.json').read_text())
+    manifest = json.loads((Path(manifest_path) if manifest_path else folder / 'execution-manifest.json').read_text())
     pair = next(c for c in plan['comparisons'] if c['comparison_id'] == comparison_id)
     if len(pair['case_ids']) != 2 or comparison_id not in DIMENSIONS:
         raise ValueError('unsupported comparison')
@@ -160,10 +164,12 @@ def main():
     parser.add_argument('--candidate', choices=('fallback1', 'fallback2', 'fallback3'))
     parser.add_argument('--left-candidate', choices=('fallback1', 'fallback2', 'fallback3'))
     parser.add_argument('--right-candidate', choices=('fallback1', 'fallback2', 'fallback3'))
+    parser.add_argument('--manifest', type=Path)
     args = parser.parse_args()
     print(json.dumps(audit_pair(args.folder, args.comparison, args.left_source,
                                 args.right_source, args.candidate,
-                                args.left_candidate, args.right_candidate), sort_keys=True))
+                                args.left_candidate, args.right_candidate,
+                                args.manifest), sort_keys=True))
 
 
 if __name__ == '__main__':

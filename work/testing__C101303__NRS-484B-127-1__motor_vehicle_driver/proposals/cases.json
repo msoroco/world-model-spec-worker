@@ -1008,6 +1008,119 @@
         "reasonable and prudent"
       ],
       "sweep_measurements": []
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_midpoint",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Measure a source-backed 8.5 m engineering midpoint between the closer and base setpoints while keeping other conditions fixed; leave legal judgment unresolved.",
+      "variable_assignments": {
+        "requested_engineering_gap_m": {
+          "kind": "controller",
+          "value": 8.5,
+          "unit": "m"
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "lead_target_speed_mps": {
+          "kind": "controller",
+          "value": 3.5,
+          "unit": "m/s"
+        },
+        "lead_brake_start_fraction": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "fraction of corridor"
+        },
+        "requested_wetness_pct": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "percent"
+        },
+        "lane_change_start_fraction": {
+          "kind": "controller",
+          "value": 0.55,
+          "unit": "fraction of corridor"
+        },
+        "queued_traffic_required": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        }
+      },
+      "paired_probe_id": "c101303-controlled-following",
+      "deliberate_differences": [
+        "requested_engineering_gap_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_engineering_gap_m",
+        "comparison_or_standard": "reasonableness and prudence with both speeds, traffic and highway condition unresolved",
+        "target_value_or_branch": "following before lane change"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original actor.get_velocity 3D magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "uncertainty": "sampled at 20 Hz; between-frame state unresolved",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "lead_speed",
+            "unit": "m/s",
+            "method": "original actor.get_velocity 3D magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "uncertainty": "sampled at 20 Hz; between-frame state unresolved",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "longitudinal_body_gap",
+            "unit": "m",
+            "method": "original complete-body projection along following lane",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "uncertainty": "sampled at 20 Hz; between-frame state unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "highway_condition",
+            "unit": "structured record",
+            "method": "original Native weather and sourced road context"
+          },
+          {
+            "name": "traffic_state",
+            "unit": "structured record",
+            "method": "original Native actor inventory and lane identities"
+          }
+        ],
+        "limitations": [
+          "reasonable-and-prudent following remains a legal judgment",
+          "actual motion, road authority and visibility require local original-source review"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent"
+      ],
+      "sweep_measurements": []
     }
   ],
   "sweep_specs": [
