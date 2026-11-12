@@ -110,9 +110,20 @@ def measure_green_release(attempt: Path,native: list[dict],signal: dict,stop: di
     held=stop['value']['stationary_pre_crossing_frames']
     if held<10 or crossing<10:
         raise ValueError('Green-release full-body stop interval absent')
+    boundary=stop['value']['stopping_reference_y_m']
+    stop_start=next((i for i,row in enumerate(native[:crossing])
+                     if row['speed_mps']<=.05 and
+                     max(v[1] for v in row['native_body_xy_m'])<boundary),None)
+    if stop_start is None:
+        raise ValueError('Green-release first stationary full-body sample absent')
+    stationary_until_green=(crossing>=first_green and
+        all(row['speed_mps']<=.05 and
+            max(v[1] for v in row['native_body_xy_m'])<boundary
+            for row in native[stop_start:first_green]))
     return {'value':{'first_green_frame':first_green,
                      'first_front_crossing_frame':crossing,
-                     'remain_stopped_until_green':crossing>=first_green,
+                     'first_stationary_frame':stop_start,
+                     'remain_stopped_until_green':stationary_until_green,
                      'stationary_pre_crossing_frames':held},
             'method':'measure_green_release',
             'sources':{name:sha(source(attempt,name)) for name in

@@ -88,6 +88,11 @@ def main():
             damaged[160]["signal_state_observed"] = "Red"
             reject(lambda: finalize.measure_signal(attempt, damaged, geometry, suffix))
             reject(lambda: finalize.measure_signal(attempt, samples, geometry, "reference"))
+            if wait:
+                rolling = copy.deepcopy(samples)
+                rolling[145]["speed_mps"] = 0.5
+                changed = finalize.measure_green_release(attempt, rolling, signal, stop)
+                assert changed["value"]["remain_stopped_until_green"] is False
             summary[suffix] = {"candidates_checked": checked, **actual,
                                "synthetic_source_only": True,
                                "original_native_accepted": False}
