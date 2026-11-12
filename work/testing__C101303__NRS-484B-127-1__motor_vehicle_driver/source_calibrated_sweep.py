@@ -70,7 +70,7 @@ def trajectory(config, requested_gap_m, body_offset_m):
             'final_ego_position_m': ego.x, 'final_lead_position_m': lead.x}
 
 
-def probe(config_path, manifest_path, base_root, closer_root):
+def probe(config_path, manifest_path, base_root, midpoint_root, closer_root):
     config = json.loads(config_path.read_text())
     if (config.get('requested_engineering_gap_m') != 10.0 or
             config.get('ego_target_speed_mps') != 4.0 or
@@ -79,10 +79,11 @@ def probe(config_path, manifest_path, base_root, closer_root):
         raise ValueError('Reviewed base engineering configuration required')
     manifest = json.loads(manifest_path.read_text())
     selections = [selected_runner(manifest, suffix) for suffix in
-                  ('__source_verified_base', '__source_verified_closer')]
-    sources = [source_offsets(root) for root in (base_root, closer_root)]
-    if [source['requested_gap_m'] for source in sources] != [10.0, 7.0]:
-        raise ValueError('Sealed base/closer gap identities changed')
+                  ('__source_verified_base', '__source_verified_midpoint',
+                   '__source_verified_closer')]
+    sources = [source_offsets(root) for root in (base_root, midpoint_root, closer_root)]
+    if [source['requested_gap_m'] for source in sources] != [10.0, 8.5, 7.0]:
+        raise ValueError('Sealed three-point gap identities changed')
     offsets = [source['projected_body_offset_m'] for source in sources]
     if any(abs(value - 2.0) > 1e-6 for value in offsets):
         raise ValueError('Sealed diagnostic body offset changed')
@@ -123,10 +124,12 @@ def main():
     parser.add_argument('--config', type=Path, required=True)
     parser.add_argument('--manifest', type=Path, required=True)
     parser.add_argument('--base-root', type=Path, required=True)
+    parser.add_argument('--midpoint-root', type=Path, required=True)
     parser.add_argument('--closer-root', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    result = probe(args.config, args.manifest, args.base_root, args.closer_root)
+    result = probe(args.config, args.manifest, args.base_root,
+                   args.midpoint_root, args.closer_root)
     args.output.write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps({'format': result['format'], 'points': result['points'],
                       'physical_feasibility_proven': False,

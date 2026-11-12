@@ -20,12 +20,12 @@ def digest(path):
 
 def main():
     selected_path = ROOT / 'execution-manifest.json'
-    candidate_path = ROOT / 'body-geometry-draft/promotion-candidate.json'
+    candidate_path = ROOT / 'midpoint-promotion-ready.json'
     if digest(selected_path) != digest(candidate_path):
         raise ValueError('Selected manifest differs from proved promotion candidate')
     manifest = execution_validate(REPO, ROOT.name)
-    if len(manifest['cases']) != 8:
-        raise ValueError('Expected eight selected cases')
+    if len(manifest['cases']) != 9:
+        raise ValueError('Expected nine selected cases')
     assignment = json.loads((REPO / 'inputs' / ROOT.name / 'assignment.json').read_text())
     semantic_validate(ROOT, assignment, manifest)
     check_receipts(REPO, ROOT, manifest)

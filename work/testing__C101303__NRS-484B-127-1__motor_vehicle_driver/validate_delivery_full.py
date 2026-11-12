@@ -1,4 +1,4 @@
-"""Validate all eight exact diagnostic delivery receipts and their 900-frame scope."""
+"""Validate all nine exact diagnostic delivery receipts and their 900-frame scope."""
 import json
 import hashlib
 import sys
@@ -10,8 +10,8 @@ sys.path.insert(0,str(repo/'runtime/scenario_pipeline'))
 from worker_exchange.delivery_handoff import validate_case
 
 manifest=json.loads((folder/'execution-manifest.json').read_text())
-if len(manifest['cases'])!=8:
-    raise ValueError('Expected eight selected C101303 cases')
+if len(manifest['cases'])!=9:
+    raise ValueError('Expected nine selected C101303 cases')
 for entry in manifest['cases']:
     validate_case(folder,entry,{'demo-test','full-test'})
     spec=entry['delivery_acceptance']

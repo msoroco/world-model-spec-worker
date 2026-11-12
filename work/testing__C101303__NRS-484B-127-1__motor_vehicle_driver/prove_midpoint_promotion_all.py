@@ -6,9 +6,9 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
 REPO=ROOT.parents[1]
-MANIFEST=ROOT/'midpoint-promotion-candidate.json'
+MANIFEST=ROOT/'root-config-rebind-candidate.json'
 VALIDATOR=REPO/'.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck'
-TEMP=REPO/'.runtime-work/c101303-midpoint-promotion-all-v2'
+TEMP=REPO/'.runtime-work/c101303-midpoint-promotion-all-v3'
 PROOFS=ROOT/'midpoint-promotion-proofs'
 
 

@@ -7,8 +7,8 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
 REPO=ROOT.parents[1]
-MANIFEST=ROOT/'midpoint-promotion-candidate.json'
-TEMP=REPO/'.runtime-work/c101303-midpoint-promotion-all-v2'
+MANIFEST=ROOT/'root-config-rebind-candidate.json'
+TEMP=REPO/'.runtime-work/c101303-midpoint-promotion-all-v3'
 OUT=ROOT/'midpoint-promotion-proofs/physical'
 
 

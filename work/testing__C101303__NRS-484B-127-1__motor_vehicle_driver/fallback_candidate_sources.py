@@ -21,6 +21,16 @@ def config(row):
 
 
 def source_rows(entry):
+    if entry['case_id'].endswith('__source_verified_midpoint'):
+        source = repo / '.runtime-work/c101303-midpoint-comparison-v1/midpoint-projected-history.jsonl'
+        comparison = json.loads((folder / 'midpoint-promotion-proofs/comparison-proof.json').read_text())
+        if (comparison['diagnostic_only'] is not True or
+                sha(source) != comparison['source_sha256']['midpoint_projection']):
+            raise ValueError('Midpoint projection changed')
+        rows = [json.loads(line) for line in source.read_text().splitlines() if line]
+        if len(rows) != 900:
+            raise ValueError('Midpoint projection lacks full duration')
+        return source, rows
     recipe = json.loads((repo / entry['fixture_recipe']).read_text())
     source = repo / recipe['generator']['source']
     if sha(source) != recipe['generator']['sha256']:

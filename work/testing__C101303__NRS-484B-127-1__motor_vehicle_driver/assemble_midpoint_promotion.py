@@ -7,10 +7,10 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
 REPO=ROOT.parents[1]
-SOURCE=ROOT/'midpoint-promotion-candidate.json'
+SOURCE=ROOT/'root-config-rebind-candidate.json'
 INDEX=ROOT/'midpoint-promotion-proofs/proof-index.json'
 OUT=ROOT/'midpoint-promotion-proofs'
-TEMP=REPO/'.runtime-work/c101303-midpoint-promotion-all-v2'
+TEMP=REPO/'.runtime-work/c101303-midpoint-promotion-all-v3'
 OLD='testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_base'
 NEW='testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_midpoint'
 
@@ -27,9 +27,9 @@ def main():
     proofs={(row['case_id'],row['candidate_id']):row for row in index['proofs']}
     if len(proofs)!=36:
         raise ValueError('Missing exact construction proof')
-    base=next(x for x in manifest['cases'] if x['case_id']==OLD)
     midpoint=next(x for x in manifest['cases'] if x['case_id']==NEW)
-    midpoint['delivery_acceptance']=json.loads(json.dumps(base['delivery_acceptance']).replace(OLD,NEW))
+    if midpoint.get('delivery_acceptance',{}).get('case_id')!=NEW:
+        raise ValueError('Midpoint delivery receipt missing before rebinding')
     for case in manifest['cases']:
         label=case['case_id'].rsplit('source_verified_',1)[1]
         physical=OUT/'physical'/label/'receipt.json'

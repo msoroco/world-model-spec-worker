@@ -1,4 +1,4 @@
-"""Audit all seven linked comparisons against 900-frame diagnostic originals."""
+"""Audit all linked comparisons against 900-frame diagnostic originals."""
 import hashlib
 import json
 import sys
@@ -15,6 +15,13 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def source(case):
     label=case.rsplit('source_verified_',1)[1]
+    if label=='midpoint':
+        path=repo/'.runtime-work/c101303-midpoint-comparison-v1/midpoint-projected-history.jsonl'
+        receipt=json.loads((folder/'midpoint-promotion-proofs/comparison-proof.json').read_text())
+        if (receipt['diagnostic_only'] is not True or
+                receipt['source_sha256']['midpoint_projection']!=sha(path)):
+            raise ValueError('Midpoint diagnostic projection changed')
+        return path
     version='v2' if label=='faster_ego' else 'v1'
     path=repo/'.runtime-work/c101303-full-duration'/(label+'-positive-'+version+'/attempt/vehicle_history.jsonl')
     receipt=json.loads((folder/'delivery-proofs'/label/'diagnostic-audit.json').read_text())
@@ -33,8 +40,8 @@ for pair in plan['comparisons']:
         raise ValueError('Comparison did not cover planned duration')
     results.append(result)
     print(json.dumps(result,sort_keys=True))
-if len(results)!=7:
-    raise ValueError('Expected seven exact controlled comparisons')
+if len(results)!=9:
+    raise ValueError('Expected nine exact controlled comparisons')
 
 pair=next(p for p in plan['comparisons'] if p['comparison_id']=='body_gap')
 left,right=map(source,pair['case_ids'])
