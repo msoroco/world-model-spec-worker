@@ -68,11 +68,35 @@ def minimum_gap(files):
 
 
 def listener_energy(files):
-    samples = [sample for row in rows(files, 'ego_signal_audio.jsonl')
-               for sample in (row.get('listener_audio_samples') or [])]
+    motion = rows(files, 'ego_turn_motion.jsonl')
+    signals = rows(files, 'ego_signal_audio.jsonl')
+    packets = rows(files, 'listener_audio_original.jsonl')
+    if not motion or not (len(motion) == len(signals) == len(packets)):
+        raise ValueError('Original listener PCM frame coverage differs')
+    first_yaw = motion[0]['ego_yaw_deg']
+    onset = next((i for i, row in enumerate(motion)
+                  if abs(row['ego_yaw_deg'] - first_yaw) > 1e-6), None)
+    if onset is None or onset == 0:
+        raise ValueError('Measured turn onset is absent')
+    samples = []
+    for movement, signal, packet in zip(motion, signals, packets):
+        if movement['frame'] != signal['frame'] or movement['frame'] != packet['frame']:
+            raise ValueError('Original listener PCM frame join differs')
+        if packet.get('origin') != 'listener_pcm_capture' or packet.get('listener_id') != signal.get('listener_id'):
+            raise ValueError('Original listener identity differs')
+        source_samples = packet.get('samples')
+        if not isinstance(source_samples, list) or not source_samples or any(
+                not isinstance(value, (int, float)) or not math.isfinite(value)
+                for value in source_samples):
+            raise ValueError('Original listener PCM samples are invalid')
+        digest = sha_bytes(json.dumps(source_samples, separators=(',', ':')))
+        if packet.get('sha256') != digest or signal.get('listener_packet_sha256') != digest or signal.get('listener_audio_samples') != source_samples:
+            raise ValueError('Original listener PCM packet hash or signal projection differs')
+        if movement['frame'] < motion[onset]['frame']:
+            samples.extend(source_samples)
     if not samples:
-        raise ValueError('Original listener PCM is missing')
-    return sum(value * value for value in samples) / len(samples)
+        raise ValueError('Pre-turn original listener PCM is missing')
+    return math.sqrt(sum(value * value for value in samples) / len(samples))
 
 
 def audit(comparison_id, override_case=None, override=None):
@@ -109,8 +133,8 @@ def audit(comparison_id, override_case=None, override=None):
         if values['hand_source_frames'] != len(rows(b, 'ego_turn_motion.jsonl')):
             raise ValueError('Hand source does not cover the original turn frames')
     else:
-        values['listener_mean_square'] = [listener_energy(f) for f in (a, b)]
-        if not values['listener_mean_square'][0] > values['listener_mean_square'][1]:
+        values['pre_turn_listener_rms'] = [listener_energy(f) for f in (a, b)]
+        if not values['pre_turn_listener_rms'][0] > values['pre_turn_listener_rms'][1]:
             raise ValueError('Original listener PCM does not show diagnostic horn contrast')
         if 'horn_actuation.jsonl' not in a or 'horn_actuation.jsonl' in b:
             raise ValueError('Horn actuation original differs from comparison policy')

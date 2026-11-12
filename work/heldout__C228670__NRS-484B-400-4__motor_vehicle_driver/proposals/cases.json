@@ -4,6 +4,70 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__shared_baseline",
+      "target_law_id": "NRS-484B-400-4",
+      "target_type": "baseline",
+      "rationale": "Shared source-road and destination-road reference for the controlled turn probes; no additional recording.",
+      "variable_assignments": {
+        "approach_left_curb_offset_m": {
+          "kind": "world_setup",
+          "value": 1.25
+        },
+        "departure_centerline_offset_m": {
+          "kind": "controller",
+          "value": 1.8
+        },
+        "approach_left_curb_distance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "departure_centerline_signed_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "as close as practicable to the left-hand curb"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_left_curb_distance_m",
+            "unit": "m",
+            "method": "original four-corner body position relative to one-way source left curb",
+            "sampling_rate_hz": 20,
+            "time_window": "approach frames",
+            "reference_frame": "Native map ground plane",
+            "uncertainty": "lane-edge map geometry and sampled body corners"
+          },
+          {
+            "name": "departure_centerline_signed_m",
+            "unit": "m",
+            "method": "original four-corner body position relative to entered road directed centerline",
+            "sampling_rate_hz": 20,
+            "time_window": "leaving-intersection frames",
+            "reference_frame": "Native map ground plane",
+            "uncertainty": "road-center map geometry and sampled body corners"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_geometry",
+            "unit": "structured record",
+            "method": "original OpenDRIVE lane directionality and map curb/centerline readback"
+          },
+          {
+            "name": "body_footprints",
+            "unit": "structured record",
+            "method": "original joined subject ground-body corners and approach/departure phases"
+          }
+        ],
+        "limitations": [
+          "Practicability and actual right-of-centerline visibility require independent physical/legal review."
+        ]
+      }
+    },
+    {
       "case_id": "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right",
       "target_law_id": "NRS-484B-400-4",
       "target_type": "boundary_probe",
@@ -18,11 +82,11 @@
           "value": 1.8
         },
         "approach_left_curb_distance_m": {
-          "kind": "measurement",
+          "kind": "subject_behavior",
           "value": null
         },
         "departure_centerline_signed_m": {
-          "kind": "measurement",
+          "kind": "subject_behavior",
           "value": null
         }
       },
@@ -91,11 +155,11 @@
           "value": 1.8
         },
         "approach_left_curb_distance_m": {
-          "kind": "measurement",
+          "kind": "subject_behavior",
           "value": null
         },
         "departure_centerline_signed_m": {
-          "kind": "measurement",
+          "kind": "subject_behavior",
           "value": null
         }
       },
@@ -164,11 +228,11 @@
           "value": -1.0
         },
         "approach_left_curb_distance_m": {
-          "kind": "measurement",
+          "kind": "subject_behavior",
           "value": null
         },
         "departure_centerline_signed_m": {
-          "kind": "measurement",
+          "kind": "subject_behavior",
           "value": null
         }
       },
@@ -221,6 +285,23 @@
         "comparison_or_standard": "original full-body approach-to-curb distance",
         "target_value_or_branch": -1.0
       }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "approach_practicability_source_review",
+      "target_law_id": "NRS-484B-400-4",
+      "judgment_refs": [
+        {
+          "phrase": "as close as practicable to the left-hand curb of the one-way highway",
+          "note": "Original approach body/curb distance is measurable; feasible position and legal practicability require independent source review."
+        }
+      ],
+      "rationale": "Compare original body position and feasible approach context without assigning a legal distance cutoff.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Source-backed feasible approach alternatives and exact original-source judgment sweep remain to be constructed."
+      ]
     }
   ]
 }
