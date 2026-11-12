@@ -36,11 +36,11 @@ def prove(entry, candidate):
     output = Path(str(prefix) + '-processing')
     call([sys.executable, 'runtime.py', 'fixture', '--recipe',
           str(ROOT / entry['fixture_recipe']), '--output', str(fixture)],
-         HERE / (name + '-saved-fixture.log'))
+         Path(str(prefix) + '-fixture.log'))
     call([sys.executable, 'runtime.py', 'materialize', '--manifest',
           str(MANIFEST), '--case', case, '--candidate', candidate,
           '--output', str(attempt)],
-         HERE / (name + '-saved-materialize.log'))
+         Path(str(prefix) + '-materialize.log'))
     for source in fixture.iterdir():
         target = attempt / source.name
         if target.exists():

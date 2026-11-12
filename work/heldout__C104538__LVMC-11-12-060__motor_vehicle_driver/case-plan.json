@@ -84,7 +84,17 @@
       ],
       "deliberate_differences": [
         "measured reversal footprint directly in front of the entrance versus outside the mapped station region"
-      ]
+      ],
+      "audit_proof": {
+        "script": "comparison_audit.py",
+        "script_sha256": "2c2c06604053748afb65e9b0f8b37fd94ff20fb59d6afc1716980db8503177cf",
+        "receipt": "comparison-entrance_position-proof.json",
+        "receipt_sha256": "3e54be440851790840176f1ca3a7b5ea06761dafbc989f425b8b69c0a99ac176",
+        "log": "comparison-entrance_position.log",
+        "log_sha256": "d768d3dff24f213ae427eaae1c37471a0f0afa8ed1929377fc393bc4d999499b",
+        "exit_code": 0,
+        "command": ".venv-cpu/bin/python work/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/comparison_audit.py --comparison entrance_position --output work/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/comparison-entrance_position-proof.json"
+      }
     },
     {
       "comparison_id": "approach_position",
@@ -100,7 +110,17 @@
       ],
       "deliberate_differences": [
         "measured reversal footprint in the approach versus outside the mapped station region"
-      ]
+      ],
+      "audit_proof": {
+        "script": "comparison_audit.py",
+        "script_sha256": "2c2c06604053748afb65e9b0f8b37fd94ff20fb59d6afc1716980db8503177cf",
+        "receipt": "comparison-approach_position-proof.json",
+        "receipt_sha256": "bb1af1c2ccf02842838e4c759ebaf3146347b498eb1bff9742b72eefbc9bf61c",
+        "log": "comparison-approach_position.log",
+        "log_sha256": "6ad91e3f73ce25e7ae7ebc047fc292b5fbb7554c5f1522d8075508a96d8ede69",
+        "exit_code": 0,
+        "command": ".venv-cpu/bin/python work/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/comparison_audit.py --comparison approach_position --output work/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/comparison-approach_position-proof.json"
+      }
     },
     {
       "comparison_id": "driveway_use",
@@ -116,39 +136,73 @@
       ],
       "deliberate_differences": [
         "measured vehicle entry and reversal path through the driveway versus public-carriageway-only reversal"
-      ]
+      ],
+      "audit_proof": {
+        "script": "comparison_audit.py",
+        "script_sha256": "2c2c06604053748afb65e9b0f8b37fd94ff20fb59d6afc1716980db8503177cf",
+        "receipt": "comparison-driveway_use-proof.json",
+        "receipt_sha256": "e7ff907ff62a11e6629c026dfc8a46006eff397a176950f4bc701dc32e212f30",
+        "log": "comparison-driveway_use.log",
+        "log_sha256": "133058f8c917431ee95f6f3323f0086cb35aa962b68b9f9931afeaa478f6514a",
+        "exit_code": 0,
+        "command": ".venv-cpu/bin/python work/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/comparison_audit.py --comparison driveway_use --output work/heldout__C104538__LVMC-11-12-060__motor_vehicle_driver/comparison-driveway_use-proof.json"
+      }
     }
   ],
   "observations": [
     {
       "name": "fire_station_entrance_source",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original surveyed map geometry and original-frame Native vehicle pose/lane trace",
-      "method": "fire_station_geometry.py computes path classification; a saved finalizer remains to be implemented"
+      "method": "Derived by fire_station_finalizer.py from source-hashed original station context, participant state and frame map; physical station identity remains open."
     },
     {
       "name": "heading_change_deg",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original surveyed map geometry and original-frame Native vehicle pose/lane trace",
-      "method": "fire_station_geometry.py computes path classification; a saved finalizer remains to be implemented"
+      "method": "Derived by fire_station_finalizer.py from source-hashed original station context, participant state and frame map; physical station identity remains open."
     },
     {
       "name": "in_front_of_entrance_observed",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original surveyed map geometry and original-frame Native vehicle pose/lane trace",
-      "method": "fire_station_geometry.py computes path classification; a saved finalizer remains to be implemented"
+      "method": "Derived by fire_station_finalizer.py from source-hashed original station context, participant state and frame map; physical station identity remains open."
     },
     {
       "name": "entered_driveway",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original surveyed map geometry and original-frame Native vehicle pose/lane trace",
-      "method": "fire_station_geometry.py computes path classification; a saved finalizer remains to be implemented"
+      "method": "Derived by fire_station_finalizer.py from source-hashed original station context, participant state and frame map; physical station identity remains open."
     },
     {
       "name": "vehicle_footprint_intersection",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original surveyed map geometry and original-frame Native vehicle pose/lane trace",
-      "method": "fire_station_geometry.py computes path classification; a saved finalizer remains to be implemented"
+      "method": "Derived by fire_station_finalizer.py from source-hashed original station context, participant state and frame map; physical station identity remains open."
+    },
+    {
+      "name": "subject_center_xy",
+      "mandatory": true,
+      "source": "original Native participant_state.jsonl and video_frames.jsonl",
+      "method": "FireStationCaptureSession records original frame/time-aligned actor state; saved finalizer emits the named channel."
+    },
+    {
+      "name": "subject_heading_rad",
+      "mandatory": true,
+      "source": "original Native participant_state.jsonl and video_frames.jsonl",
+      "method": "FireStationCaptureSession records original frame/time-aligned actor state; saved finalizer emits the named channel."
+    },
+    {
+      "name": "subject_body_vertices_xy",
+      "mandatory": true,
+      "source": "original Native participant_state.jsonl and video_frames.jsonl",
+      "method": "FireStationCaptureSession records original frame/time-aligned actor state; saved finalizer emits the named channel."
+    },
+    {
+      "name": "subject_lane_id",
+      "mandatory": true,
+      "source": "original Native participant_state.jsonl and video_frames.jsonl",
+      "method": "FireStationCaptureSession records original frame/time-aligned actor state; saved finalizer emits the named channel."
     }
   ],
   "sources": [
@@ -221,11 +275,10 @@
   "source_observation_mapping": {
     "st.fire_station_entrance": {
       "measurement": "surveyed entrance geometry and station asset identity",
-      "evidence": "original map survey and Native capture required; currently CPU geometry contract only",
+      "evidence": "Saved original subject channels support geometric analysis; runtime operator survey and Native pixel review are still required to establish station identity and physical realization.",
       "channels": [
-        "map_survey.json",
-        "participant_state.jsonl",
-        "video_frames.jsonl"
+        "subject_body_vertices_xy",
+        "subject_lane_id"
       ],
       "source_refs": [
         {
@@ -236,11 +289,10 @@
     },
     "drv.u_turn": {
       "measurement": "observed original-frame heading reversal and path",
-      "evidence": "original map survey and Native capture required; currently CPU geometry contract only",
+      "evidence": "Saved original subject channels support geometric analysis; runtime operator survey and Native pixel review are still required to establish station identity and physical realization.",
       "channels": [
-        "map_survey.json",
-        "participant_state.jsonl",
-        "video_frames.jsonl"
+        "subject_center_xy",
+        "subject_heading_rad"
       ],
       "source_refs": [
         {
@@ -251,11 +303,9 @@
     },
     "kin.heading": {
       "measurement": "original subject heading per frame",
-      "evidence": "original map survey and Native capture required; currently CPU geometry contract only",
+      "evidence": "Saved original subject channels support geometric analysis; runtime operator survey and Native pixel review are still required to establish station identity and physical realization.",
       "channels": [
-        "map_survey.json",
-        "participant_state.jsonl",
-        "video_frames.jsonl"
+        "subject_heading_rad"
       ],
       "source_refs": [
         {
@@ -266,11 +316,9 @@
     },
     "rel.occupies": {
       "measurement": "full-body polygon intersection with surveyed entrance and approach",
-      "evidence": "original map survey and Native capture required; currently CPU geometry contract only",
+      "evidence": "Saved original subject channels support geometric analysis; runtime operator survey and Native pixel review are still required to establish station identity and physical realization.",
       "channels": [
-        "map_survey.json",
-        "participant_state.jsonl",
-        "video_frames.jsonl"
+        "subject_body_vertices_xy"
       ],
       "source_refs": [
         {
@@ -281,11 +329,10 @@
     },
     "kin.position": {
       "measurement": "original subject center and body footprint per frame",
-      "evidence": "original map survey and Native capture required; currently CPU geometry contract only",
+      "evidence": "Saved original subject channels support geometric analysis; runtime operator survey and Native pixel review are still required to establish station identity and physical realization.",
       "channels": [
-        "map_survey.json",
-        "participant_state.jsonl",
-        "video_frames.jsonl"
+        "subject_center_xy",
+        "subject_body_vertices_xy"
       ],
       "source_refs": [
         {
@@ -296,11 +343,10 @@
     },
     "st.driveway_or_alley_entrance": {
       "measurement": "surveyed separate driveway branch",
-      "evidence": "original map survey and Native capture required; currently CPU geometry contract only",
+      "evidence": "Saved original subject channels support geometric analysis; runtime operator survey and Native pixel review are still required to establish station identity and physical realization.",
       "channels": [
-        "map_survey.json",
-        "participant_state.jsonl",
-        "video_frames.jsonl"
+        "subject_lane_id",
+        "subject_body_vertices_xy"
       ],
       "source_refs": [
         {
@@ -311,11 +357,9 @@
     },
     "kin.path_length": {
       "measurement": "integrated original-frame subject path length",
-      "evidence": "original map survey and Native capture required; currently CPU geometry contract only",
+      "evidence": "Saved original subject channels support geometric analysis; runtime operator survey and Native pixel review are still required to establish station identity and physical realization.",
       "channels": [
-        "map_survey.json",
-        "participant_state.jsonl",
-        "video_frames.jsonl"
+        "subject_center_xy"
       ],
       "source_refs": [
         {
@@ -346,5 +390,33 @@
       ],
       "evidence_or_gap": "No accepted recordings; path entry, reversal and exit plus purpose context needed."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 12,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "subject body, public road, fire-station entrance candidate and driveway branch",
+        "interval": "all original frames"
+      },
+      {
+        "view": "approach",
+        "subject": "station approach road, route reversal and driveway entrance candidate",
+        "interval": "all original frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "station doorway/driveway candidate, lane branch and subject body footprint",
+        "interval": "all original frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-side road and turn prohibition device candidate",
+        "interval": "all original frames"
+      }
+    ],
+    "unverified": "Actual station identity, sign legibility and camera visibility require Native source and pixel review"
+  }
 }

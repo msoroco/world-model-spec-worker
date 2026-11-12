@@ -189,3 +189,5 @@ Additional small UTF-8 synthetic diagnostic logs were source-preservingly compac
 2026-11-12 return-cap checkpoint: 60 older UTF-8 logs were preserved with full text/path/SHA-256 in `work/_shared/prune-history-2.json`. Restore before scoped strict with `.venv-cpu/bin/python work/_shared/restore_compacted_zero_logs.py --assignment heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver`. Status remains partial.
 
 2026-11-12 return-cap checkpoint: 9 older UTF-8 logs were preserved with exact text/path/SHA-256 in `work/_shared/prune-history-2.json`. Restore before scoped strict with `.venv-cpu/bin/python work/_shared/restore_compacted_zero_logs.py --assignment heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver`. Status remains partial.
+
+2026-11-12 return-cap checkpoint: 81 source-hashed UTF-8 historical case receipts are retained with full text/path/SHA-256 in `work/_shared/prune-history-3.json`. Restore before future scoped strict with `.venv-cpu/bin/python work/_shared/restore_compacted_zero_logs.py --assignment heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver`. Status remains partial.

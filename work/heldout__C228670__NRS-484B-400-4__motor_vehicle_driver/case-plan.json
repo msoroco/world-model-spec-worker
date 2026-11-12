@@ -85,31 +85,45 @@
   "observations": [
     {
       "term": "drv.turning",
-      "note": "the left turn"
+      "note": "the left turn",
+      "name": "drv.turning",
+      "mandatory": false
     },
     {
       "term": "st.one_way_roadway",
-      "note": "the one-way highway approached on"
+      "note": "the one-way highway approached on",
+      "name": "st.one_way_roadway",
+      "mandatory": false
     },
     {
       "term": "st.road_edge",
-      "note": "its left-hand curb"
+      "note": "its left-hand curb",
+      "name": "approach_left_curb_distance_m",
+      "mandatory": true
     },
     {
       "term": "rel.occupies",
-      "note": "the approach position near that curb"
+      "note": "the approach position near that curb",
+      "name": "approach_left_curb_distance_m",
+      "mandatory": true
     },
     {
       "term": "st.centre_line",
-      "note": "the centreline of the two-directional highway entered"
+      "note": "the centreline of the two-directional highway entered",
+      "name": "departure_centerline_signed_m",
+      "mandatory": true
     },
     {
       "term": "kin.position",
-      "note": "the exit right of that centreline"
+      "note": "the exit right of that centreline",
+      "name": "departure_centerline_signed_m",
+      "mandatory": true
     },
     {
       "term": "st.intersection",
-      "note": "the intersection"
+      "note": "the intersection",
+      "name": "st.intersection",
+      "mandatory": false
     }
   ],
   "sources": [
@@ -178,5 +192,91 @@
       ],
       "evidence_or_gap": "Original Native map and body measurements planned; synthetic diagnostic does not establish physical completion or legal practicability."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full subject turn, one-way source left curb and entered road centerline",
+        "interval": "full 8-second continuous turn"
+      },
+      {
+        "view": "approach",
+        "subject": "subject four-corner approach position against one-way left curb",
+        "interval": "approach through intersection entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "original curb, intersection and two-directional centerline reference geometry",
+        "interval": "approach through departure"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject trajectory and entered-road side of centerline",
+        "interval": "full 8-second continuous turn"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "Original trace and four-corner body positions establish a left-turn path; Native execution and actual pixels remain to be reviewed.",
+      "channels": [],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-4__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.one_way_roadway": {
+      "evidence": "Original map road geometry and overview pixels identify source-way direction; map classification requires Native review.",
+      "channels": [],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-4__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.road_edge": {
+      "evidence": "Original one-way source left curb line is retained and joined to four-corner body footprints.",
+      "channels": [
+        "approach_left_curb_distance_m"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-4__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original four-corner body footprint distance to source left curb is measured in approach phase.",
+      "channels": [
+        "approach_left_curb_distance_m"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-4__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "Original two-directional entered-road centerline is retained and joined to four-corner departure footprints.",
+      "channels": [
+        "departure_centerline_signed_m"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-4__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.position": {
+      "evidence": "Original body corners on leaving the intersection are measured relative to entered-road centerline.",
+      "channels": [
+        "departure_centerline_signed_m"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-4__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Original map intersection and trace phase records locate approach, turning and departure. ",
+      "channels": [],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-4__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  }
 }

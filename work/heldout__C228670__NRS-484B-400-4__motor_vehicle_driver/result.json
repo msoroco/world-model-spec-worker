@@ -1,8 +1,8 @@
 {
   "assignment_id": "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver",
   "input_sha256": "b74c354ac5016fa7c6751467b7432ffcf95f0c198cbbb359ec70ed37ab23162c",
-  "status": "partial",
-  "readiness_kind": "incomplete",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -22,10 +22,16 @@
       "exit_code": 0,
       "log": "source-audit.log",
       "sha256": "e2422e1745d6f74e348c7dce83bdadb95455a8afc92c4d51510b6e5a57f329f9"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment heldout__C228670__NRS-484B-400-4__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 0,
+      "log": "strict-gate.log",
+      "sha256": "13f0432af4e71c37e2ab5646b3051e89164d7e3c4501c9f2937471df1141ade4"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual motion, geometry, camera visibility and capture quality after CPU preparation"
+    "Actual Native turn motion, road geometry, camera visibility and practicability judgment remain unverified after CPU preparation."
   ],
-  "reason": "Three exact cases and nine distinct fallbacks retain exact offline, positive/negative compatibility and saved-only CPU proofs. Canonical semantic validation and stale-hash rejection pass. Independent original-source/frame-join/measurement/four-camera-decode audit passes for all twelve primary and fallback synthetic saved diagnostics, with changed-body-source rejection. The practicability judgment sweep, canonical delivery acceptance audit and finalized execution manifest remain CPU work. Native physical facts remain unverified."
+  "first_gpu_delivery_command": "PYTHONPATH=runtime .venv-cpu/bin/python -m scenario_pipeline.worker_exchange execute-delivery --repo . --batch held-out-delivery --assignment heldout__C228670__NRS-484B-400-4__motor_vehicle_driver --case heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\""
 }

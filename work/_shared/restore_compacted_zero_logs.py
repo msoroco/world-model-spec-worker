@@ -10,7 +10,10 @@ def restore(assignment):
     root = Path(__file__).resolve().parents[2]
     inventories = [json.loads((root / name).read_text()) for name in
                    ('work/_shared/prune-history.json',
-                    'work/_shared/prune-history-2.json')]
+                    'work/_shared/prune-history-2.json',
+                    'work/_shared/prune-history-3.json',
+                    'work/_shared/prune-history-4.json',
+                    'work/_shared/prune-history-5.json')]
     prefix = f'work/{assignment}/'
     count = 0
     rows = [row for inventory in inventories for row in

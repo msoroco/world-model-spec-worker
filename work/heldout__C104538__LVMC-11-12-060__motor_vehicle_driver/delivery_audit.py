@@ -20,11 +20,12 @@ def digest(path):
 def rows(path):
     return [json.loads(s) for s in Path(path).read_text().splitlines() if s.strip()]
 
-def audit(case, attempt, *, diagnostic_fixture=False, tamper=False):
+def audit(case, attempt, processing=None, *, diagnostic_fixture=False, tamper=False):
     root = Path(attempt)
+    analyzed = Path(processing) if processing else root
     config = json.loads((root/'config.json').read_text())
-    report = json.loads((root/'analysis-report.json').read_text())
-    result = json.loads((root/'result.json').read_text())
+    report = json.loads((analyzed/'analysis-report.json').read_text())
+    result = json.loads((analyzed/'result.json').read_text())
     if (not case.startswith(PREFIX) or config.get('selected_case_id') != case or
             report.get('case_id') != case or result.get('case_id') != case or
             report.get('physical_acceptance_claimed') is not False or
@@ -83,15 +84,26 @@ def audit(case, attempt, *, diagnostic_fixture=False, tamper=False):
         if station_source.get('kind') == 'authored_diagnostic' or station_source != context.get('source'):
             raise ValueError('Native station source binding differs')
         survey = json.loads((root/'station-survey-verification.json').read_text())
+        original_manifest = (root/'station-survey-original.json').read_bytes()
+        operator_manifest = json.loads(original_manifest)
         if (survey.get('station_source') != station_source or
                 survey.get('map_name') != config['station_survey'].get('map_name') or
-                survey.get('verified') is not True):
+                survey.get('verified') is not True or
+                survey.get('operator_manifest_sha256') != sha256(original_manifest).hexdigest() or
+                station_source.get('source_sha256') != survey['operator_manifest_sha256'] or
+                operator_manifest.get('map_name') != survey['map_name'] or
+                operator_manifest.get('opendrive_sha256') != survey.get('opendrive_sha256') or
+                operator_manifest.get('station_object') != {
+                    key: value for key, value in survey.get('station_object',{}).items()
+                    if key != 'actual_transform'}):
             raise ValueError('Native station survey verification absent')
         seal = json.loads((root/'capture-seal.json').read_text())
         owner = json.loads((root/'native-exit.json').read_text())
         if (seal.get('provenance_kind') != 'native' or
                 seal.get('restoration',{}).get('restored') is not True or
-                owner.get('capture_seal_sha256') != digest(root/'capture-seal.json')):
+                owner.get('capture_seal_sha256') != digest(root/'capture-seal.json') or
+                any(seal.get('sources',{}).get(name) != digest(root/name) for name in
+                    (*SOURCES,'station-survey-original.json','station-survey-verification.json'))):
             raise ValueError('Native station owner closure differs')
         review = json.loads((root/'station-physical-pixel-review.json').read_text())
         if review.get('case_id') != case or not review.get('reviewer'):
@@ -127,11 +139,12 @@ def audit(case, attempt, *, diagnostic_fixture=False, tamper=False):
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('--case',required=True); p.add_argument('--attempt',required=True)
+    p.add_argument('--processing')
     p.add_argument('--diagnostic-fixture',action='store_true')
     p.add_argument('--tamper-source-hash',action='store_true')
     p.add_argument('--output')
     a=p.parse_args()
-    result=audit(a.case,a.attempt,diagnostic_fixture=a.diagnostic_fixture,
+    result=audit(a.case,a.attempt,a.processing,diagnostic_fixture=a.diagnostic_fixture,
                  tamper=a.tamper_source_hash)
     if a.output: Path(a.output).write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps({'case_id':result['case_id'],'frames':result['frames'],

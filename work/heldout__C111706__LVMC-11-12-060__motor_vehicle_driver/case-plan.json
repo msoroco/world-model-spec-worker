@@ -118,40 +118,40 @@
   ],
   "observations": [
     {
-      "name": "fire_station_identity",
-      "unit": "source-backed context",
-      "mandatory": true,
-      "source": "original station asset/map survey with hash"
-    },
-    {
-      "name": "subject_reversal_deg",
-      "unit": "degrees",
+      "name": "reversal_heading_deg",
+      "unit": "deg",
       "mandatory": true,
       "source": "original 20 Hz subject heading and body track"
     },
     {
-      "name": "entrance_body_overlap",
+      "name": "entrance_overlap_frames",
       "unit": "frames",
       "mandatory": true,
       "source": "original subject body corners and mapped entrance polygon"
     },
     {
-      "name": "approach_body_overlap",
+      "name": "approach_overlap_frames",
       "unit": "frames",
       "mandatory": true,
       "source": "original subject body corners and mapped approach polygon"
     },
     {
-      "name": "driveway_path_use",
+      "name": "driveway_lane_frames",
       "unit": "frames",
       "mandatory": true,
-      "source": "original subject lane identity and driveway branch"
+      "source": "original subject lane identity and distinct mapped driveway"
     },
     {
-      "name": "other_vehicle_clearance_m",
+      "name": "other_body_clearance_m",
       "unit": "m",
       "mandatory": true,
-      "source": "original other vehicle body corners on joined frames"
+      "source": "original two-actor body corners on joined frames"
+    },
+    {
+      "name": "subject_path_length_m",
+      "unit": "m",
+      "mandatory": true,
+      "source": "original 20 Hz subject body-center path"
     }
   ],
   "sources": [
@@ -166,9 +166,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "The four CARLA-lazy constructions, source capture, saved finalizer and synthetic CPU paths are implemented; a real source-verified fire-station asset/map and connected physical route remain to construct.",
+    "All 16 exact constructions pass offline, source-bound positive/missing-original compatibility and saved-only processing after Native survey/physical turn criterion rebind. Real station source is supplied and checked only at Native capture; no station identity is claimed from diagnostic media.",
     "Actual Native reversal, station identity, camera pixels, other-vehicle clearance and turning purpose remain unreviewed.",
-    "The judgment sweep has no justified physical range until a mapped station and feasible route are source verified."
+    "The qualitative station-region sweep has four explicit selected cases; its physical feasibility remains incomplete until a source-reviewed Native station site is supplied."
   ],
   "evidence_review": {
     "reviewer": "partition-04 CPU scope review",
@@ -202,109 +202,158 @@
   ],
   "source_observation_mapping": {
     "st.fire_station_entrance": {
-      "measurement": "fire_station_identity",
-      "evidence": [
-        "original station survey",
-        "subject and other 20 Hz body source"
-      ],
-      "channels": [
-        "fire_station_identity"
-      ],
+      "measurement": "st.fire_station_entrance",
+      "evidence": "source-reviewed station asset, Native scene object and original mapped entrance survey; physical identity remains for local review",
+      "channels": [],
       "source_refs": [
-        "station_survey.json",
-        "subject_original.jsonl",
-        "other_original.jsonl"
+        "station-runtime-manifest.json",
+        "station-survey-verification.json",
+        "station_survey.json"
       ]
     },
     "drv.u_turn": {
-      "measurement": "subject_reversal_deg",
-      "evidence": [
-        "original station survey",
-        "subject and other 20 Hz body source"
-      ],
+      "measurement": "drv.u_turn",
+      "evidence": "original subject heading reversal and full-body path, with physical completion independently checked",
       "channels": [
-        "subject_reversal_deg"
+        "reversal_heading_deg",
+        "subject_path_length_m"
       ],
       "source_refs": [
-        "station_survey.json",
         "subject_original.jsonl",
-        "other_original.jsonl"
+        "trace.jsonl"
       ]
     },
     "kin.heading": {
-      "measurement": "subject_reversal_deg",
-      "evidence": [
-        "original station survey",
-        "subject and other 20 Hz body source"
-      ],
+      "measurement": "kin.heading",
+      "evidence": "original subject heading samples and derived first-to-last reversal",
       "channels": [
-        "subject_reversal_deg"
+        "reversal_heading_deg"
       ],
       "source_refs": [
-        "station_survey.json",
-        "subject_original.jsonl",
-        "other_original.jsonl"
+        "subject_original.jsonl"
       ]
     },
     "rel.occupies": {
-      "measurement": "entrance_body_overlap",
-      "evidence": [
-        "original station survey",
-        "subject and other 20 Hz body source"
-      ],
+      "measurement": "rel.occupies",
+      "evidence": "original full-body overlap with mapped entrance and approach polygons",
       "channels": [
-        "entrance_body_overlap"
+        "entrance_overlap_frames",
+        "approach_overlap_frames"
       ],
       "source_refs": [
         "station_survey.json",
-        "subject_original.jsonl",
-        "other_original.jsonl"
+        "subject_original.jsonl"
       ]
     },
     "kin.position": {
-      "measurement": "approach_body_overlap",
-      "evidence": [
-        "original station survey",
-        "subject and other 20 Hz body source"
-      ],
+      "measurement": "kin.position",
+      "evidence": "original map XY subject body path and entrance/approach relation",
       "channels": [
-        "approach_body_overlap"
+        "entrance_overlap_frames",
+        "approach_overlap_frames"
       ],
       "source_refs": [
-        "station_survey.json",
         "subject_original.jsonl",
-        "other_original.jsonl"
+        "station_survey.json"
       ]
     },
     "st.driveway_or_alley_entrance": {
-      "measurement": "driveway_path_use",
-      "evidence": [
-        "original station survey",
-        "subject and other 20 Hz body source"
-      ],
+      "measurement": "st.driveway_or_alley_entrance",
+      "evidence": "distinct mapped driveway lane and original body occupation",
       "channels": [
-        "driveway_path_use"
+        "driveway_lane_frames"
       ],
       "source_refs": [
         "station_survey.json",
-        "subject_original.jsonl",
-        "other_original.jsonl"
+        "subject_original.jsonl"
       ]
     },
     "kin.path_length": {
-      "measurement": "subject_path_length_m",
-      "evidence": [
-        "original station survey",
-        "subject and other 20 Hz body source"
-      ],
+      "measurement": "kin.path_length",
+      "evidence": "original 20 Hz subject body-center path length",
       "channels": [
         "subject_path_length_m"
       ],
       "source_refs": [
-        "station_survey.json",
-        "subject_original.jsonl",
-        "other_original.jsonl"
+        "subject_original.jsonl"
       ]
     }
-  }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 12,
+    "fps": 20,
+    "composition": "synchronized_four_view_primary",
+    "implementation": "fire_station_camera_capture.py",
+    "sources": [
+      {
+        "name": "overview",
+        "size": [
+          1920,
+          1080
+        ],
+        "purpose": "whole station frontage and both vehicles"
+      },
+      {
+        "name": "approach",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "public-road approach and other-vehicle arrival"
+      },
+      {
+        "name": "reference_corner",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "station entrance, driveway and turning body"
+      },
+      {
+        "name": "driver_reference",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "driver-visible entrance and return path"
+      }
+    ],
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both actors, station and turn",
+        "interval": "all original frames through reversal and exit"
+      },
+      {
+        "view": "approach",
+        "subject": "public-road approach and other vehicle",
+        "interval": "all original frames through reversal and exit"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "driveway and full body turn",
+        "interval": "all original frames through reversal and exit"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-visible station approach",
+        "interval": "all original frames through reversal and exit"
+      }
+    ],
+    "limitation": "Local Native pixels must establish actual scene identity, both participants, maneuver and station frontage visibility."
+  },
+  "source_context_requirements": [
+    {
+      "name": "fire_station_identity",
+      "mandatory": true,
+      "source_refs": [
+        "station-runtime-manifest.json",
+        "station-source-material.json",
+        "station-survey-verification.json",
+        "station_survey.json"
+      ],
+      "audit": "Native-only station source and exact map/object verifier; finalizer and independent delivery audit reject stale or diagnostic provenance"
+    }
+  ]
 }
