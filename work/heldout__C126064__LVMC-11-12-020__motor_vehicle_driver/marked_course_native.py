@@ -8,6 +8,16 @@ from hashlib import sha256
 import json
 from math import atan2, hypot, isfinite
 from pathlib import Path
+from threading import Condition
+from time import monotonic
+
+
+CAMERAS = {
+    'overview': ((-8, 0, 8), (-12, 0, 0), (1920, 1080), 95),
+    'approach': ((1.2, 0, 2), (0, 0, 0), (1280, 720), 90),
+    'reference_corner': ((-3, 2.5, 2.6), (-7, 0, 0), (1280, 720), 100),
+    'driver_reference': ((0.6, -0.35, 1.6), (0, 0, 0), (1280, 720), 85),
+}
 
 
 def _xy(location):
@@ -133,3 +143,139 @@ def control_step(position_xy, heading_xy, velocity_xy, target_xy, *, target_spee
     return {'steer': max(-.5, min(.5, .8*error)),
             'throttle': max(0., min(.4, .22*(target_speed_mps-speed))),
             'brake': max(0., min(.4, .16*(speed-target_speed_mps)))}
+
+
+class FourCameraCapture:
+    """Native camera lifecycle with frame-joined original-image callbacks.
+
+    `on_frame(name, image)` must retain the raw source image for every callback;
+    it is supplied by the eventual recorder and is not inferred from a fixture.
+    """
+
+    def __init__(self, world, carla_module, ego, on_frame):
+        self.condition = Condition()
+        self.frames = {name: set() for name in CAMERAS}
+        self.errors = []
+        self.sensors = []
+        self.closed = False
+        try:
+            for name, (location, rotation, size, fov) in CAMERAS.items():
+                blueprint = world.get_blueprint_library().find('sensor.camera.rgb')
+                for key, value in (('image_size_x', size[0]), ('image_size_y', size[1]),
+                                   ('fov', fov), ('sensor_tick', .05)):
+                    blueprint.set_attribute(key, str(value))
+                transform = carla_module.Transform(carla_module.Location(*location),
+                                                   carla_module.Rotation(*rotation))
+                sensor = world.spawn_actor(blueprint, transform, attach_to=ego)
+                self.sensors.append(sensor)
+                sensor.listen(lambda image, source=name: self._receive(source, image, on_frame))
+        except BaseException:
+            self.close()
+            raise
+
+    def _receive(self, name, image, on_frame):
+        with self.condition:
+            if self.closed:
+                return
+            try:
+                if image.frame in self.frames[name]:
+                    raise ValueError('Duplicate original turn-camera frame')
+                if (image.width, image.height) != CAMERAS[name][2]:
+                    raise ValueError('Original turn-camera dimensions changed')
+                on_frame(name, image)
+                self.frames[name].add(image.frame)
+            except BaseException as error:
+                self.errors.append(error)
+            finally:
+                self.condition.notify_all()
+
+    def wait_for_frame(self, frame, *, timeout_s=10):
+        deadline = monotonic() + timeout_s
+        with self.condition:
+            while True:
+                if self.errors:
+                    raise ValueError('Original turn-camera callback failed') from self.errors[0]
+                if all(frame in observed for observed in self.frames.values()):
+                    return
+                remaining = deadline-monotonic()
+                if remaining <= 0:
+                    raise ValueError('Missing original turn-camera frame')
+                self.condition.wait(remaining)
+
+    def verify(self, frames):
+        expected = set(frames)
+        if not expected or any(observed != expected for observed in self.frames.values()):
+            raise ValueError('Missing or extra original turn-camera frames')
+        return {name: len(expected) for name in CAMERAS}
+
+    def close(self):
+        if not self.closed:
+            self.closed = True
+            for sensor in reversed(self.sensors):
+                sensor.stop()
+                sensor.destroy()
+
+
+def drive_turn(world, carla_module, ego, plan, cameras, record_sample,
+               *, max_ticks_per_target=120):
+    """Drive sourced targets and retain original frame/body observations.
+
+    The recorder receives raw Native frame identity, time and body vertices;
+    it must persist them with the four camera sources for saved processing.
+    """
+    settings = world.get_settings()
+    if (not settings.synchronous_mode
+            or abs(float(settings.fixed_delta_seconds)-.05) > 1e-6):
+        raise ValueError('Original turn capture requires synchronous 20 Hz Native world')
+    targets = plan['targets_xy_m']
+    if len(targets) < 3 or plan.get('actual_turn_observed') is not False:
+        raise ValueError('Unreviewed marked turn plan')
+    if type(max_ticks_per_target) is not int or max_ticks_per_target < 1:
+        raise ValueError('Invalid turn tick budget')
+    frames = []
+    for target in targets[1:]:
+        reached = False
+        for _ in range(max_ticks_per_target):
+            transform = ego.get_transform()
+            loc = transform.location
+            position = (float(loc.x), float(loc.y))
+            if hypot(target[0]-position[0], target[1]-position[1]) < .8:
+                reached = True
+                break
+            forward = transform.get_forward_vector()
+            velocity = ego.get_velocity()
+            controls = control_step(position, (float(forward.x), float(forward.y)),
+                                    (float(velocity.x), float(velocity.y)), target)
+            ego.apply_control(carla_module.VehicleControl(**controls))
+            frame = world.tick()
+            cameras.wait_for_frame(frame)
+            snapshot = world.get_snapshot()
+            if snapshot.frame != frame:
+                raise ValueError('Original Native snapshot frame mismatch')
+            body_transform = ego.get_transform()
+            vertices = ego.bounding_box.get_world_vertices(body_transform)
+            if len(vertices) != 8:
+                raise ValueError('Original Native body vertices incomplete')
+            corners = []
+            for vertex in vertices:
+                point = [float(vertex.x), float(vertex.y)]
+                if not any(hypot(point[0]-old[0], point[1]-old[1]) < 1e-4
+                           for old in corners):
+                    corners.append(point)
+            if len(corners) != 4:
+                raise ValueError('Original Native footprint corners incomplete')
+            sample = {'frame': frame, 'time_s': float(snapshot.timestamp.elapsed_seconds),
+                      'actor_id': ego.id,
+                      'corners_xy_m': corners}
+            record_sample(sample)
+            frames.append(frame)
+        if not reached:
+            loc = ego.get_transform().location
+            reached = hypot(target[0]-float(loc.x), target[1]-float(loc.y)) < .8
+        if not reached:
+            ego.apply_control(carla_module.VehicleControl(throttle=0., steer=0., brake=1.))
+            raise ValueError('Ego did not reach marked turn target within tick budget')
+    cameras.verify(frames)
+    ego.apply_control(carla_module.VehicleControl(throttle=0., steer=0., brake=1.))
+    return {'frames': frames, 'targets_reached': len(targets)-1,
+            'actual_turn_observed': bool(frames)}

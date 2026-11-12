@@ -1,0 +1,28 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Any motor vehicle may be equipped with one or more backup lamps either separately or in combination with other lamps. Backup lamps shall not be lighted when the vehicle is in forward motion.",
+      "source": "NRS 484D.205(4) full text in inputs/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/assignment.json",
+      "output_key": "backup_lamp_forward",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "motion.jsonl",
+        "equipment.json",
+        "video_frames.jsonl",
+        "other_vehicle.jsonl",
+        "intersection_context.json",
+        "trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "equipment.json"
+    ],
+    "error_contains": "Missing required source: equipment.json"
+  }
+}

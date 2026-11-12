@@ -6,7 +6,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from marked_course_native import control_step, place_markers, turn_targets
+from marked_course_native import CAMERAS, FourCameraCapture, control_step, drive_turn, place_markers, turn_targets
 
 
 class Location:
@@ -121,6 +121,82 @@ class NativeMarkerTests(unittest.TestCase):
         self.assertLessEqual(turn['throttle'], .4)
         with self.assertRaisesRegex(ValueError, 'engineering speed'):
             control_step((0, 0), (1, 0), (0, 0), (5, 0), target_speed_mps=20)
+
+    def test_four_named_original_camera_lifecycle_and_join(self):
+        class Blueprint:
+            def __init__(self): self.attributes = {}
+            def set_attribute(self, key, value): self.attributes[key] = value
+
+        class Sensor:
+            def __init__(self): self.stopped = self.destroyed = False
+            def listen(self, callback): self.callback = callback
+            def stop(self): self.stopped = True
+            def destroy(self): self.destroyed = True
+
+        class CameraWorld:
+            def __init__(self): self.blueprints, self.sensors = [], []
+            def get_blueprint_library(self): return self
+            def find(self, name):
+                self.blueprints.append(Blueprint())
+                return self.blueprints[-1]
+            def spawn_actor(self, blueprint, transform, attach_to):
+                sensor = Sensor(); self.sensors.append(sensor); return sensor
+
+        carla = type('Carla', (), {'Location': lambda *v: v,
+                                  'Rotation': lambda *v: v,
+                                  'Transform': lambda loc, rot: (loc, rot)})
+        world = CameraWorld(); originals = []
+        capture = FourCameraCapture(world, carla, object(),
+                                    lambda name, image: originals.append((name, image.frame)))
+        self.assertEqual(len(world.sensors), 4)
+        self.assertTrue(all(bp.attributes['sensor_tick'] == '0.05' for bp in world.blueprints))
+        for (name, (_, _, (width, height), _)), sensor in zip(CAMERAS.items(), world.sensors):
+            sensor.callback(type('Image', (), {'frame': 7, 'width': width, 'height': height})())
+        capture.wait_for_frame(7, timeout_s=.1)
+        self.assertEqual(capture.verify([7]), {name: 1 for name in CAMERAS})
+        self.assertEqual(set(name for name, _ in originals), set(CAMERAS))
+        capture.close()
+        self.assertTrue(all(sensor.stopped and sensor.destroyed for sensor in world.sensors))
+
+    def test_ego_turn_records_original_body_and_camera_frames(self):
+        class Ego:
+            id = 7
+            def __init__(self):
+                self.x = 0.
+                self.controls = []
+                self.bounding_box = self
+            def get_transform(self):
+                return type('Pose', (), {'location': Location(self.x, 0),
+                       'get_forward_vector': lambda _: Location(1, 0)})()
+            def get_velocity(self): return Location(0, 0)
+            def apply_control(self, control): self.controls.append(control)
+            def get_world_vertices(self, transform):
+                x = transform.location.x
+                return [type('Vertex', (), {'x': x+dx, 'y': dy})()
+                        for _ in (0, 1) for dx, dy in ((-.2, -.1), (.2, -.1),
+                                                         (.2, .1), (-.2, .1))]
+        class TurnWorld:
+            def __init__(self, ego): self.ego, self.frame = ego, 0
+            def get_settings(self):
+                return type('Settings', (), {'synchronous_mode': True,
+                                             'fixed_delta_seconds': .05})()
+            def tick(self):
+                self.frame += 1; self.ego.x += .5; return self.frame
+            def get_snapshot(self):
+                return type('Snapshot', (), {'frame': self.frame,
+                       'timestamp': type('Stamp', (), {'elapsed_seconds': self.frame*.05})()})()
+        class Cameras:
+            def wait_for_frame(self, frame): pass
+            def verify(self, frames): return {'overview': len(frames)}
+        carla = type('Carla', (), {'VehicleControl': lambda **kw: kw})
+        ego = Ego(); samples = []
+        result = drive_turn(TurnWorld(ego), carla, ego,
+                            {'targets_xy_m': [[0, 0], [1, 0], [2, 0]],
+                             'actual_turn_observed': False}, Cameras(), samples.append)
+        self.assertEqual(result['targets_reached'], 2)
+        self.assertEqual([sample['frame'] for sample in samples], result['frames'])
+        self.assertTrue(all(len(sample['corners_xy_m']) == 4 for sample in samples))
+        self.assertEqual(ego.controls[-1]['brake'], 1.)
 
 
 if __name__ == '__main__':

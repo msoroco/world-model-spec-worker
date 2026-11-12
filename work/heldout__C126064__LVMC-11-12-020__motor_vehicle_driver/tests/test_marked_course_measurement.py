@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import subprocess
 import sys
 from tempfile import TemporaryDirectory
 import unittest
@@ -51,6 +52,22 @@ class MarkedCourseTests(unittest.TestCase):
             (root / 'turn_body.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in bodies))
             with self.assertRaisesRegex(ValueError, 'identity'):
                 measure(root, 'case')
+
+    def test_saved_only_cli_replays_original_sources(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            fixture(root)
+            output = root / 'analysis.json'
+            script = Path(__file__).resolve().parents[1] / 'marked_course_measurement.py'
+            subprocess.run([sys.executable, str(script), '--source-dir', str(root),
+                            '--case-id', 'case', '--output', str(output)], check=True)
+            self.assertEqual(json.loads(output.read_text())['frame_count'], 3)
+            (root / 'turn_body.jsonl').unlink()
+            failed = subprocess.run([sys.executable, str(script), '--source-dir', str(root),
+                                     '--case-id', 'case', '--output', str(output)],
+                                    capture_output=True, text=True)
+            self.assertNotEqual(failed.returncode, 0)
+            self.assertIn('Original marker, body or frame-map source missing', failed.stderr)
 
 
 if __name__ == '__main__':

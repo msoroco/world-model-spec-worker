@@ -1,5 +1,6 @@
 """Source-joined physical marker and original turning-course measurements."""
 
+import argparse
 from hashlib import sha256
 import json
 from math import hypot
@@ -71,3 +72,17 @@ def measure(source_dir, case_id):
             'source_sha256': {name: sha256(path.read_bytes()).hexdigest()
                               for name, path in paths.items()},
             'direction_disobedience_legal_judgment': None}
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--source-dir', required=True)
+    parser.add_argument('--case-id', required=True)
+    parser.add_argument('--output', required=True)
+    args = parser.parse_args()
+    result = measure(args.source_dir, args.case_id)
+    Path(args.output).write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
+
+
+if __name__ == '__main__':
+    main()
