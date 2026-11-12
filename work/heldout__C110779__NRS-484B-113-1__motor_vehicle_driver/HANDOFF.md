@@ -1,5 +1,13 @@
 # heldout__C110779__NRS-484B-113-1__motor_vehicle_driver: CPU preparation checkpoint
 
+## 2026-11-12 returned six-case construction and source proof
+
+The returned `execution-manifest.json` now contains all six planned exact cases. The `no_reverse_control` and `backing_pedestrian` cases each return their primary and three distinct fallback inline constructions, measurement contract, compact source diagnostic and source-hashed fixture recipe. The exact planned comparison and law/actor/cell scope are unchanged. `returned-two-cases-proof.json` (SHA-256 `1cefa7f4556e4e40857f051cbc0226b5dea436b651e4ce870cd68bb6b761cbf7`) records 24 successful returned-manifest commands: offline, positive/missing-original compatibility and positive/negative saved processing for all eight candidates. Each saved positive retained original bytes and joined nine frames; missing `backing_motion.jsonl` was classified as incomplete evidence. Reproduce with the commands in that proof file; it names the returned manifest and exact candidate for every run. The diagnostic fixtures are synthetic and establish no physical or legal result.
+
+The source-pair activation and pedestrian audits each passed on the returned diagnostics and rejected a changed fixed other-vehicle motion row. The seven assignment unit tests and the scoped nonstrict worker check pass. Scoped strict still exits 1 at `Preparation acceptance failed: partial/missing packages remain`, matching the truthful `partial` result.
+
+Current CPU work: bind all six exact offline/compatibility/saved receipts and post-capture acceptance fields into the returned manifest, finish canonical semantic stage proposals, implement and test independent delivery/physical audits and all five comparison audits, then rerun affected proofs and the scoped strict gate. The old four-case proof bindings also require review against the new manifest. No CARLA motion, camera visibility, legal safety or interference outcome has been verified. The current pinned CPU runtime and tools are available; no dependency blocker remains.
+
 ## 2026-11-11 reverse feedback continuation
 
 `reverse_feedback.py` now provides a bounded, CARLA-independent closed-loop
@@ -187,3 +195,13 @@ The compact diagnostic SHA-256 is `646311e274f778eecf51d448f9d2906de1400aa878003
 Next CPU work: compact only source-hashed unbound history to free return slots, return and bind this case and the staged forward-only control, reconcile the complete six-case plan and canonical proposal, implement independent delivery/physical and comparison audits, and rerun all current exact case, fallback, saved-processing and scoped strict proofs. No CARLA run has occurred.
 
 Final checkpoint checks: `.venv-cpu/bin/python runtime.py preflight` passes with the restored CPU runtime and Lean/Lake; `worker_check.py --updates` returns version 0 with no pauses. The seven assignment unit tests and scoped `worker_check.py --assignment heldout__C110779__NRS-484B-113-1__motor_vehicle_driver --complete` pass. Scoped and complete-batch `--require-delivery-ready` both exit 1 with `Preparation acceptance failed: partial/missing packages remain`, matching the truthful partial status. The returned file count is 10,199 of 10,200. The next work is CPU construction, return binding and audits, not an environment or GPU prerequisite.
+
+
+## 2026-11-12 independent new-case comparison audits
+
+`audit_new_case_pairs.py` independently reads returned original-source diagnostics for `backing_activation` and `pedestrian_safety`. It holds the source inventory, cameras, graphs, other-vehicle motion and shared frame history fixed while checking signed reverse versus forward motion or the added pedestrian body. Its positive cases pass nine frames each; negative branches reject changed fixed traffic and absent declared differences. Run `.venv-cpu/bin/python work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/audit_new_case_pairs.py`. `new-case-pair-audit.log` SHA-256 is `be5c188b56329dd89e2f32be7f4ef0866ef4c52f7c604a5173abeb1d0c4e8143`. These are synthetic-source software checks; saved original Native sources still require local execution and independent review.
+
+
+## 2026-11-12 semantic proposal draft validation
+
+A source-hashed six-case semantic proposal chain was drafted in `proposals/`, using the frozen NRS 484B.113(1) quote and separate safety/interference observable plans. It is **not yet canonical-valid**. Run `PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python -c "import json; from pathlib import Path; from scenario_pipeline.worker_exchange.semantic_delivery import validate; p=Path('work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver'); print(validate(p,json.load(open('inputs/'+p.name+'/assignment.json')),json.load(open(p/'execution-manifest.json'))))"`. Current exit 1: `Unknown case target type` from the draft `cases.json`; `semantic-draft-validation.log` SHA-256 `1c3ce520b62b1bc52f0f10e21d8720f43f66f108308625b140cecfcfaf79146b`. Repair the case types and comparison metadata, then construct finite, source-grounded sweeps for both unresolved judgment phrases and rerun canonical validation. Do not add a legal numeric cutoff. Result remains partial.
