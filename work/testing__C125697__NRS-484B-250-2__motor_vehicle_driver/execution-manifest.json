@@ -164,7 +164,170 @@
           }
         }
       ]
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_ego_right_near_time",
+      "kind": "delivery",
+      "construction": "cases/off_ego_right_near_time/construction.json",
+      "construction_sha256": "b706f4435c9cbf984027031031389cac326d27b76cf1e6d3ec07072dcab7c665",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "cases/off_ego_right_near_time/measurement-contract.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The reversed approach can fail ego spawn/route geometry, original camera coverage, or relative entry timing independently; each fallback changes one engineering cause."
+      },
+      "fixture_recipe": "work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/cases/off_ego_right_near_time/diagnostic-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_ego_right_near_time --output .runtime-work/c125697-right-offline-v2",
+        "exit_code": 0,
+        "construction_sha256": "b706f4435c9cbf984027031031389cac326d27b76cf1e6d3ec07072dcab7c665",
+        "log": "right-offline-v2.log",
+        "log_sha256": "bafba655bd539e736b05e2c93de8d1d9623d6d7b913657535b6e632a061ec63f"
+      },
+      "compatibility": {
+        "receipt": "right-compatibility-receipt.json",
+        "sha256": "d3484ec0f0fd040ce119ee24c16df820010a343a205c7bebbf48e56b2181dba2",
+        "log": "right-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "right-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor identity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native vehicle blueprint",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor pose",
+          "evidence": "trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor velocity",
+          "evidence": "trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor speed magnitude",
+          "evidence": "trace.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "site_packet.py",
+          "method": "source-bound crossing polygon",
+          "evidence": "junction_context.json"
+        },
+        "rel.bearing": {
+          "entrypoint": "simultaneous_entries.py",
+          "method": "source approach projection",
+          "evidence": "junction_context.json"
+        },
+        "entry_timing": {
+          "entrypoint": "finalizer.py",
+          "method": "original body/frame join",
+          "evidence": "crossing_history.jsonl"
+        },
+        "entry_context": {
+          "entrypoint": "finalizer.py",
+          "method": "source crossing context",
+          "evidence": "junction_context.json"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/off_ego_right_near_time/fallback1-construction.json",
+          "construction_sha256": "a910e7c1608e59d919c6a2a806229f914e61b4ac65a29b34cd95082f7865d066",
+          "trigger": {
+            "source": "retained Native capture and original source-camera streams",
+            "metric": "retained Native ego spawn and approach waypoint",
+            "failure_condition": "ego cannot spawn or reach the selected junction approach"
+          },
+          "changed_knobs": [
+            "site.ego_approach",
+            "site.routes.ego[0]"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_ego_right_near_time --candidate fallback1 --output .runtime-work/c125697-right-fallback1-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "a910e7c1608e59d919c6a2a806229f914e61b4ac65a29b34cd95082f7865d066",
+            "log": "right-fallback1-offline-v1.log",
+            "log_sha256": "219b89e45159f31233dc2d71a08ea764e4833ddc0afeebe1c0c36426af94a629"
+          },
+          "compatibility": {
+            "receipt": "right-fallback1-compatibility-receipt.json",
+            "sha256": "2d3093e8c7645aececb1e40d65383917b9b6868a95637968ab4d2533ec695813",
+            "log": "right-fallback1-compatibility-analysis.log",
+            "negative_log": "right-fallback1-negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/off_ego_right_near_time/fallback2-construction.json",
+          "construction_sha256": "05c839c91739b3f7846b0654f7014c644db321000982e89c11c1da8a3fdb7f9b",
+          "trigger": {
+            "source": "retained Native capture and original source-camera streams",
+            "metric": "original approach source-camera complete-body/head visibility",
+            "failure_condition": "approach stream lacks a complete body or governing head in original frames"
+          },
+          "changed_knobs": [
+            "site.cameras.approach"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_ego_right_near_time --candidate fallback2 --output .runtime-work/c125697-right-fallback2-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "05c839c91739b3f7846b0654f7014c644db321000982e89c11c1da8a3fdb7f9b",
+            "log": "right-fallback2-offline-v1.log",
+            "log_sha256": "0623d47692fe477e264b4236d43b92077d388295acde17d3a92aa0c4695a75fa"
+          },
+          "compatibility": {
+            "receipt": "right-fallback2-compatibility-receipt.json",
+            "sha256": "c0c1c96a3b2bd1574581e2ebbfd2d91c8217f6d9990763b164eb5a0ac0b695c3",
+            "log": "right-fallback2-compatibility-analysis.log",
+            "negative_log": "right-fallback2-negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/off_ego_right_near_time/fallback3-construction.json",
+          "construction_sha256": "2d664de38997a2b70c4ea8028717ab8a0c337d0eefbe76ac3e6ab552bf196a42",
+          "trigger": {
+            "source": "retained Native capture and original source-camera streams",
+            "metric": "original complete-body entry time versus controller target",
+            "failure_condition": "other entry misses the planned near-time engineering target"
+          },
+          "changed_knobs": [
+            "other_release_frame"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_ego_right_near_time --candidate fallback3 --output .runtime-work/c125697-right-fallback3-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "2d664de38997a2b70c4ea8028717ab8a0c337d0eefbe76ac3e6ab552bf196a42",
+            "log": "right-fallback3-offline-v1.log",
+            "log_sha256": "81e1883511f59cdbaba369f3b706339f4a06fc30a8c16aef992733a821a474b1"
+          },
+          "compatibility": {
+            "receipt": "right-fallback3-compatibility-receipt.json",
+            "sha256": "6bb8f37e951ebe58404f20f382987ee969118e67e32ae3d303aa8cf263a4dd68",
+            "log": "right-fallback3-compatibility-analysis.log",
+            "negative_log": "right-fallback3-negative-analysis.log"
+          }
+        }
+      ]
     }
   ],
-  "status": "partial_first_case_diagnostic"
+  "status": "partial_two_case_construction"
 }

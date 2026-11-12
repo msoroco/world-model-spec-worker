@@ -10,6 +10,10 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 CASE = 'testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_ego_left_near_time'
+HEADINGS = ((101, 'ego', 0), (102, 'other', 90))
+RECORDER_START = (0, 0, 0)
+EGO_ROAD_S_AXIS = 0
+EGO_ROAD_S_OFFSET = 0
 
 
 def lines(rows):
@@ -51,7 +55,7 @@ def build():
         if (point['frame'], point['time_s']) != (frame, time_s):
             raise ValueError('Crossing and trace frame/time differ')
         participants = []
-        for actor_id, role, heading in ((101, 'ego', 0), (102, 'other', 90)):
+        for actor_id, role, heading in HEADINGS:
             vertices = row[role]['body_vertices_xy_m']
             x = sum(vertex[0] for vertex in vertices)/len(vertices)
             y = sum(vertex[1] for vertex in vertices)/len(vertices)
@@ -79,7 +83,8 @@ def build():
                                   'sun_altitude_angle': 45, 'wetness': 0},
                       'road_projection': {'road_id': context['ego_road_id'],
                                           'section_id': 0, 'lane_id': -1,
-                                          's_m': participants[0]['position_m'][0]}},
+                                          's_m': participants[0]['position_m'][EGO_ROAD_S_AXIS]
+                                                 + EGO_ROAD_S_OFFSET}},
             'original_observations': observations,
             'timing': {}, 'visibility': {}, 'supporting_only': True,
         })
@@ -106,7 +111,7 @@ def build():
     files['capture/evidence.jsonl'] = lines(evidence)
     files['capture/native/frames.jsonl'] = lines(native_frames)
     files['capture/recorder_info.txt'] = ('Version: 1\nMap: OpenDriveMap\n'
-                                          ' Create 101: vehicle.tesla.model3 (0) at (0, 0, 0)\n')
+                                          f' Create 101: vehicle.tesla.model3 (0) at {RECORDER_START}\n')
     files['road.xodr'] = xodr
     files['capture/manifest.json'] = json.dumps({
         'status': 'draft', 'acquisition': 'synthetic_diagnostic',
