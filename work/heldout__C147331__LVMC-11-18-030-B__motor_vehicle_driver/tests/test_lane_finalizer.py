@@ -51,6 +51,11 @@ class SavedLaneFinalizerTests(unittest.TestCase):
             result = build_result(root, report)
             self.assertEqual(report["case_id"], CASE)
             self.assertEqual(len(report["measurements"]["lane_boundary_observation"]["value"]["frames"]), 3)
+            control = report["measurements"]["turn_preparation_control"]
+            self.assertEqual(control["method"], "measure_turn_preparation_context")
+            self.assertEqual(len(control["value"]["frames"]), 3)
+            self.assertEqual(control["value"]["frames"][0]["ego_light_state"], None)
+            self.assertFalse(control["value"]["lawful_turn_preparation_confirmed"])
             self.assertFalse(result["physical_acceptance_claimed"])
             self.assertEqual(len((root / "lane_clearance_m.jsonl").read_text().splitlines()), 3)
             self.assertEqual(analyze(root, write_channel=False)["measurements"], report["measurements"])

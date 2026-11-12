@@ -69,26 +69,36 @@
     {
       "name": "approach_body_to_centerline",
       "unit": "m",
-      "mandatory": true,
-      "method": "Frame-joined full body footprint relative to recorded native centerline and travel direction through the approach."
+      "mandatory": false,
+      "method": "Frame-joined full body footprint relative to recorded native centerline and travel direction through the approach.",
+      "evidence_location": "turn_original_position measurement from turn_road_geometry.json, body_footprints.jsonl and video_frames.jsonl; not a separately named derived channel"
     },
     {
       "name": "entry_body_right_of_centerline",
       "unit": "boolean and m",
-      "mandatory": true,
-      "method": "Record body corners and centerline at intersection entry; preserve raw geometry."
+      "mandatory": false,
+      "method": "Record body corners and centerline at intersection entry; preserve raw geometry.",
+      "evidence_location": "turn_original_position measurement from turn_road_geometry.json, body_footprints.jsonl and video_frames.jsonl; not a separately named derived channel"
     },
     {
       "name": "departure_body_to_left_curb",
       "unit": "m",
-      "mandatory": true,
-      "method": "Frame-joined body footprint relative to native left curb on one-way departure."
+      "mandatory": false,
+      "method": "Frame-joined body footprint relative to native left curb on one-way departure.",
+      "evidence_location": "turn_original_position measurement from turn_road_geometry.json, body_footprints.jsonl and video_frames.jsonl; not a separately named derived channel"
     },
     {
       "name": "highway_directions",
       "unit": "lane directions",
+      "mandatory": false,
+      "method": "Source Native connected lanes and signs; verify two-directional approach and one-way departure.",
+      "evidence_location": "turn_original_position measurement from turn_road_geometry.json, body_footprints.jsonl and video_frames.jsonl; not a separately named derived channel"
+    },
+    {
+      "name": "turn_centerline_offset",
+      "unit": "m",
       "mandatory": true,
-      "method": "Source Native connected lanes and signs; verify two-directional approach and one-way departure."
+      "method": "Original body-corner offsets from the directed approach centerline emitted by saved finalizer."
     }
   ],
   "sources": [
@@ -169,5 +179,113 @@
       ],
       "evidence_or_gap": "No accepted originals; exact CPU diagnostics preserve legal practicability uncertainty."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "fps": 20,
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "complete ego body and intersection geometry",
+        "interval": "all original turn frames"
+      },
+      {
+        "view": "approach",
+        "subject": "two-directional approach and centerline entry",
+        "interval": "approach through intersection entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "ego body corners and destination left curb",
+        "interval": "entry through one-way departure"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-visible turn path and roadway direction context",
+        "interval": "all original turn frames"
+      }
+    ],
+    "implementation": "turn_camera.py",
+    "limitation": "Actual Native pixels and road geometry require independent review."
+  },
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "Original frame-joined Native road geometry, body footprint and/or trace records describe drv.turning; legal and physical applicability remain for independent review.",
+      "channels": [],
+      "source_refs": [
+        "body_footprints.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "Original frame-joined Native road geometry, body footprint and/or trace records describe st.centre_line; legal and physical applicability remain for independent review.",
+      "channels": [
+        "turn_centerline_offset"
+      ],
+      "source_refs": [
+        "turn_road_geometry.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original frame-joined Native road geometry, body footprint and/or trace records describe rel.occupies; legal and physical applicability remain for independent review.",
+      "channels": [
+        "turn_centerline_offset"
+      ],
+      "source_refs": [
+        "body_footprints.jsonl",
+        "turn_road_geometry.json"
+      ]
+    },
+    "st.one_way_roadway": {
+      "evidence": "Original frame-joined Native road geometry, body footprint and/or trace records describe st.one_way_roadway; legal and physical applicability remain for independent review.",
+      "channels": [],
+      "source_refs": [
+        "turn_road_geometry.json",
+        "turn-route-survey.json"
+      ]
+    },
+    "st.road_edge": {
+      "evidence": "Original frame-joined Native road geometry, body footprint and/or trace records describe st.road_edge; legal and physical applicability remain for independent review.",
+      "channels": [],
+      "source_refs": [
+        "turn_road_geometry.json"
+      ]
+    },
+    "kin.position": {
+      "evidence": "Original frame-joined Native road geometry, body footprint and/or trace records describe kin.position; legal and physical applicability remain for independent review.",
+      "channels": [
+        "turn_centerline_offset"
+      ],
+      "source_refs": [
+        "body_footprints.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Original frame-joined Native road geometry, body footprint and/or trace records describe st.intersection; legal and physical applicability remain for independent review.",
+      "channels": [],
+      "source_refs": [
+        "turn_road_geometry.json",
+        "turn-route-survey.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Original frame-joined Native road geometry, body footprint and/or trace records describe st.lane_enters; legal and physical applicability remain for independent review.",
+      "channels": [],
+      "source_refs": [
+        "turn_road_geometry.json",
+        "body_footprints.jsonl"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "Original frame-joined Native road geometry, body footprint and/or trace records describe st.lane_direction; legal and physical applicability remain for independent review.",
+      "channels": [],
+      "source_refs": [
+        "turn_road_geometry.json",
+        "turn-route-survey.json"
+      ]
+    }
+  }
 }

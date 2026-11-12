@@ -6,14 +6,20 @@ import json
 from pathlib import Path
 
 
-def restore(assignment):
+def restore(assignment, skip_existing_verified=False):
     root = Path(__file__).resolve().parents[2]
     inventories = [json.loads((root / name).read_text()) for name in
                    ('work/_shared/prune-history.json',
                     'work/_shared/prune-history-2.json',
                     'work/_shared/prune-history-3.json',
                     'work/_shared/prune-history-4.json',
-                    'work/_shared/prune-history-5.json')]
+                    'work/_shared/prune-history-5.json',
+                    'work/_shared/prune-history-6.json',
+                    'work/_shared/prune-history-7.json',
+                    'work/_shared/prune-history-8.json',
+                    'work/_shared/prune-history-9.json',
+                    'work/_shared/prune-history-10.json',
+                    'work/_shared/prune-history-11.json')]
     prefix = f'work/{assignment}/'
     count = 0
     rows = [row for inventory in inventories for row in
@@ -25,6 +31,8 @@ def restore(assignment):
             continue
         path = root / rel
         if path.exists():
+            if skip_existing_verified and sha256(path.read_bytes()).hexdigest() == row['sha256']:
+                continue
             raise ValueError(f'Refusing to overwrite restored log: {rel}')
         data = row['text'].encode('utf-8')
         if row['sha256'] != sha256(data).hexdigest():
@@ -38,5 +46,6 @@ def restore(assignment):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--assignment', required=True)
+    parser.add_argument('--skip-existing-verified', action='store_true')
     args = parser.parse_args()
-    print(restore(args.assignment))
+    print(restore(args.assignment, args.skip_existing_verified))

@@ -171,5 +171,147 @@
         "why_existing_insufficient": "No accepted recordings are listed."
       }
     ]
-  }
+  },
+  "source_observation_mapping": {
+    "st.intersection": {
+      "evidence": "Original Native junction boundary and connected route identify intersection entry.",
+      "channels": [
+        "entry_frame_and_region"
+      ],
+      "source_refs": [
+        "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Original approach and receiving lane connection fixes the corresponding other side.",
+      "channels": [
+        "entry_frame_and_region"
+      ],
+      "source_refs": [
+        "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Original closed Native marked-crosswalk polygon, not a scenario flag, identifies the crossing.",
+      "channels": [
+        "entry_frame_and_region"
+      ],
+      "source_refs": [
+        "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "First original 20 Hz body intersection with selected region is retained as the entry frame.",
+      "channels": [
+        "entry_frame_and_region"
+      ],
+      "source_refs": [
+        "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "At entry, project downstream occupant bodies onto the connected receiving corridor and retain contiguous free length.",
+      "channels": [
+        "downstream_available_length"
+      ],
+      "source_refs": [
+        "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.extent": {
+      "evidence": "Original Native ego body dimensions are measured as physical data, without a legal sufficiency cutoff.",
+      "channels": [
+        "downstream_available_length"
+      ],
+      "source_refs": [
+        "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.following": {
+      "evidence": "Original downstream vehicle identities and body footprints locate the queue relative to ego.",
+      "channels": [
+        "downstream_available_length"
+      ],
+      "source_refs": [
+        "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Original participant velocity and standing history are needed to identify whether the queue is stopped.",
+      "channels": [
+        "downstream_available_length"
+      ],
+      "source_refs": [
+        "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "Original control actor readback is retained at each frame; a proceed indication cannot waive the space rule.",
+      "channels": [
+        "signal_indication"
+      ],
+      "source_refs": [
+        "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.pedestrian": {
+      "evidence": "Original pedestrian identities and passage polygons are retained; physical route must be independently verified.",
+      "channels": [
+        "passage_obstruction"
+      ],
+      "source_refs": [
+        "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original ego body footprint overlap with participant passage polygons is retained after entry, without a legal obstruction verdict.",
+      "channels": [
+        "passage_obstruction"
+      ],
+      "source_refs": [
+        "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego, marked crosswalk or intersection, receiving space and passage users",
+        "interval": "full 8-second approach, entry and departure"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach and actual entry boundary",
+        "interval": "approach through entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "marked boundary, downstream standing vehicle and receiving corridor",
+        "interval": "entry through clearance"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego, signal indication and other road users",
+        "interval": "full 8-second approach, entry and departure"
+      }
+    ]
+  },
+  "requirement_dispositions": [
+    {
+      "requirement": "Before entering an intersection or marked crosswalk, measure space on the corresponding other side for the whole vehicle and retained passage of vehicles or pedestrians despite any proceed indication",
+      "source": "inputs/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__crosswalk_clear_downstream",
+        "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__crosswalk_blocked_downstream",
+        "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__intersection_clear_downstream",
+        "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__intersection_blocked_downstream"
+      ],
+      "evidence_or_gap": "No accepted entry recording; original Native entry, receiving corridor, body footprints, participant passage and signal state required."
+    }
+  ]
 }

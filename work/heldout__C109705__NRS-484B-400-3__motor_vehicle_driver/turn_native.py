@@ -34,7 +34,11 @@ def check_config(config):
             or survey.get('intersection_kind') != 'public_highway_non_alley'
             or not survey.get('source_sha256')):
         raise ValueError('Source-bound two-directional/one-way route survey required')
-    if config.get('cameras') != list(CAMERAS):
+    cameras = config.get('cameras')
+    camera_names = ([item.get('name') for item in cameras]
+                    if isinstance(cameras, list) and all(isinstance(item, dict) for item in cameras)
+                    else cameras)
+    if camera_names != list(CAMERAS):
         raise ValueError('Four named source cameras required')
     if config.get('lookahead_steps', 2) not in (1, 2):
         raise ValueError('Unsupported turn controller lookahead')

@@ -41,6 +41,27 @@ def observed_lateral_fraction(row):
     return abs(sum((ego[i] - center[i]) * normal[i] for i in (0, 1))) / width
 
 
+def measure_turn_preparation_context(mapping, trace, source_rows):
+    """Retain turn cues for a straight-travel control, without classifying lawfulness."""
+    return {
+        "role": "within-lane travel control; no turning movement selected",
+        "cross_cell_turn_reference": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver",
+        "frames": [{
+            "video_frame": frame["video_frame"],
+            "carla_frame": frame["carla_frame"],
+            "time_s": frame["time_s"],
+            "ego_light_state": lane.get("ego_light_state"),
+            "position": motion.get("position"),
+            "heading_deg": motion.get("heading_deg"),
+            "speed_mps": motion.get("speed_mps"),
+            "lane_road_id": lane["lane"].get("road_id"),
+            "lane_id": lane["lane"].get("lane_id"),
+        } for frame, motion, lane in zip(mapping, trace, source_rows)],
+        "lawful_turn_preparation_confirmed": False,
+        "physical_acceptance_claimed": False,
+    }
+
+
 def analyze(attempt, *, write_channel=True):
     root = Path(attempt)
     config_path, _ = required(root, "config.json")
@@ -98,9 +119,16 @@ def analyze(attempt, *, write_channel=True):
                                        for index, (time_s, value) in enumerate(values)))
     sources = {"video_frames.jsonl": map_sha, "trace.jsonl": trace_sha,
                "marked_lane_sources.jsonl": source_sha}
+    measurements = {"lane_boundary_observation": {
+        "method": "measure_saved_lane", "value": measured, "sources": sources}}
+    if case_id.endswith("__within_marked_lane"):
+        measurements["turn_preparation_control"] = {
+            "method": "measure_turn_preparation_context",
+            "value": measure_turn_preparation_context(mapping, trace, source_rows),
+            "sources": sources,
+        }
     return {"format": "worker-analysis-report", "case_id": case_id,
-            "measurements": {"lane_boundary_observation": {
-                "method": "measure_saved_lane", "value": measured, "sources": sources}},
+            "measurements": measurements,
             "limitations": ["Local waypoint lane slices and synthetic CPU fixture cannot establish physical marking visibility or legal exceptions."],
             "legal_acceptance_claimed": False, "physical_acceptance_claimed": False}
 

@@ -4,6 +4,67 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__baseline_common_left_turn",
+      "target_law_id": "NRS-484B-400-2c",
+      "target_type": "baseline",
+      "rationale": "Shared source review reference: two-directional intersection and opposing left turns, with front/rear order and device applicability held unresolved until original observations.",
+      "variable_assignments": {
+        "governing_device_inventory": {
+          "kind": "world_setup",
+          "value": "unresolved pending original survey"
+        },
+        "both_vehicles_turn_left": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "relative_front_lateral_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whether the observed passing is in front of each other",
+        "whether an official device governs the selected approaches"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "simultaneous_left_turn_frames",
+            "unit": "frames",
+            "method": "joined original Native body, heading and junction samples for both vehicles",
+            "sampling_rate_hz": 20,
+            "time_window": "both actors turning left inside selected junction",
+            "reference_frame": "Native original frame",
+            "uncertainty": "sparse 20 Hz capture and map junction extent"
+          },
+          {
+            "name": "closest_ground_body_clearance_m",
+            "unit": "m",
+            "method": "original ground-body corner polygons at closest simultaneous center separation",
+            "sampling_rate_hz": 20,
+            "time_window": "simultaneous left-turn frames",
+            "reference_frame": "Native map ground plane",
+            "uncertainty": "bounding-box approximation and sampling interval"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "opposing_topology",
+            "unit": "structured record",
+            "method": "original OpenDRIVE and connected waypoint inventory"
+          },
+          {
+            "name": "opposing_devices",
+            "unit": "structured record",
+            "method": "original approach-road signals and nearby Native lights"
+          }
+        ],
+        "limitations": [
+          "Front/rear crossing order, physical motion, camera pixels and official-device applicability require independent review."
+        ]
+      }
+    },
+    {
       "case_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__front_pass_no_device",
       "target_law_id": "NRS-484B-400-2c",
       "target_type": "boundary_probe",
@@ -62,6 +123,15 @@
         "limitations": [
           "Front/rear crossing order, physical motion, camera pixels and official-device applicability require independent review."
         ]
+      },
+      "paired_probe_id": "front_device_context",
+      "deliberate_differences": [
+        "governing_device_inventory"
+      ],
+      "probe": {
+        "primary_variable": "governing_device_inventory",
+        "comparison_or_standard": "Matched original subject/opposing turn geometry and four source cameras; exact-map operator device survey contrasts no-device and alternate-direction context, with legal applicability unreviewed",
+        "target_value_or_branch": "no_device_survey"
       }
     },
     {
@@ -80,7 +150,7 @@
         },
         "relative_front_lateral_geometry": {
           "kind": "subject_behavior",
-          "value": "subject two-tick release and 0.85 speed ratio; outcome unverified"
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
@@ -123,7 +193,184 @@
         "limitations": [
           "Front/rear crossing order, physical motion, camera pixels and official-device applicability require independent review."
         ]
+      },
+      "paired_probe_id": "rear_device_context",
+      "deliberate_differences": [
+        "governing_device_inventory"
+      ],
+      "probe": {
+        "primary_variable": "governing_device_inventory",
+        "comparison_or_standard": "Matched original subject/opposing turn geometry and four source cameras; exact-map operator device survey contrasts no-device and alternate-direction context, with legal applicability unreviewed",
+        "target_value_or_branch": "no_device_survey"
       }
+    },
+    {
+      "case_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__front_pass_device_alternate",
+      "target_law_id": "NRS-484B-400-2c",
+      "target_type": "boundary_probe",
+      "rationale": "Operator-observed device direction bound to an exact original map signal, with source-measured simultaneous opposing left turns and front passing geometry; legal exception applicability remains unreviewed.",
+      "variable_assignments": {
+        "governing_device_inventory": {
+          "kind": "world_setup",
+          "value": "directs_alternate only after exact-map signal and operator instruction survey"
+        },
+        "both_vehicles_turn_left": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "relative_front_lateral_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whether original Native passing geometry realizes the front branch",
+        "whether the operator-observed device legally governs both approaches"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "simultaneous_left_turn_frames",
+            "unit": "frames",
+            "method": "joined original Native body, heading and junction samples for both vehicles",
+            "sampling_rate_hz": 20,
+            "time_window": "both actors turning left inside selected junction",
+            "reference_frame": "Native original frame",
+            "uncertainty": "sparse 20 Hz capture and map junction extent"
+          },
+          {
+            "name": "closest_ground_body_clearance_m",
+            "unit": "m",
+            "method": "original ground-body corner polygons at closest simultaneous center separation",
+            "sampling_rate_hz": 20,
+            "time_window": "simultaneous left-turn frames",
+            "reference_frame": "Native map ground plane",
+            "uncertainty": "bounding-box approximation and sampling interval"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "opposing_topology",
+            "unit": "structured record",
+            "method": "original OpenDRIVE and connected waypoint inventory"
+          },
+          {
+            "name": "opposing_devices",
+            "unit": "structured record",
+            "method": "original approach-road signals and nearby Native lights"
+          }
+        ],
+        "limitations": [
+          "Front/rear crossing order, physical motion, camera pixels and official-device applicability require independent review."
+        ]
+      },
+      "paired_probe_id": "front_device_context",
+      "deliberate_differences": [
+        "governing_device_inventory"
+      ],
+      "probe": {
+        "primary_variable": "governing_device_inventory",
+        "comparison_or_standard": "Matched original subject/opposing turn geometry and four source cameras; exact-map operator device survey contrasts no-device and alternate-direction context, with legal applicability unreviewed",
+        "target_value_or_branch": "operator_observed_alternate"
+      }
+    },
+    {
+      "case_id": "heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver__rear_pass_device_alternate",
+      "target_law_id": "NRS-484B-400-2c",
+      "target_type": "boundary_probe",
+      "rationale": "Operator-observed device direction bound to an exact original map signal, with source-measured simultaneous opposing left turns and rear passing geometry; legal exception applicability remains unreviewed.",
+      "variable_assignments": {
+        "governing_device_inventory": {
+          "kind": "world_setup",
+          "value": "directs_alternate only after exact-map signal and operator instruction survey"
+        },
+        "both_vehicles_turn_left": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "relative_front_lateral_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whether original Native passing geometry realizes the rear branch",
+        "whether the operator-observed device legally governs both approaches"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "simultaneous_left_turn_frames",
+            "unit": "frames",
+            "method": "joined original Native body, heading and junction samples for both vehicles",
+            "sampling_rate_hz": 20,
+            "time_window": "both actors turning left inside selected junction",
+            "reference_frame": "Native original frame",
+            "uncertainty": "sparse 20 Hz capture and map junction extent"
+          },
+          {
+            "name": "closest_ground_body_clearance_m",
+            "unit": "m",
+            "method": "original ground-body corner polygons at closest simultaneous center separation",
+            "sampling_rate_hz": 20,
+            "time_window": "simultaneous left-turn frames",
+            "reference_frame": "Native map ground plane",
+            "uncertainty": "bounding-box approximation and sampling interval"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "opposing_topology",
+            "unit": "structured record",
+            "method": "original OpenDRIVE and connected waypoint inventory"
+          },
+          {
+            "name": "opposing_devices",
+            "unit": "structured record",
+            "method": "original approach-road signals and nearby Native lights"
+          }
+        ],
+        "limitations": [
+          "Front/rear crossing order, physical motion, camera pixels and official-device applicability require independent review."
+        ]
+      },
+      "paired_probe_id": "rear_device_context",
+      "deliberate_differences": [
+        "governing_device_inventory"
+      ],
+      "probe": {
+        "primary_variable": "governing_device_inventory",
+        "comparison_or_standard": "Matched original subject/opposing turn geometry and four source cameras; exact-map operator device survey contrasts no-device and alternate-direction context, with legal applicability unreviewed",
+        "target_value_or_branch": "operator_observed_alternate"
+      }
+    }
+  ],
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "opposing_turn_qualitative_source_review",
+      "target_law_id": "NRS-484B-400-2c",
+      "judgment_refs": [
+        {
+          "phrase": "both intersecting highways are two-directional",
+          "note": "Original approach-road lane directions and selected junction topology require source review."
+        },
+        {
+          "phrase": "simultaneous left turns by opposing traffic must be made in front of each other",
+          "note": "Original joined body/heading frames establish candidate simultaneity and relative geometry; legal front-passing interpretation remains reviewable."
+        },
+        {
+          "phrase": "except as otherwise directed by official traffic-control devices",
+          "note": "An exact-map operator survey may record a device instruction; legal applicability and both-approach scope remain unreviewed."
+        }
+      ],
+      "rationale": "The statute has qualitative front-passing, roadway-direction and device-applicability judgments; a numeric legal threshold cannot be frozen from the CPU fixture.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Reviewed original Native intersection/road-direction inventory",
+        "Original simultaneously captured front/rear passing geometry and four-camera pixels",
+        "Operator-observed device instruction and local legal applicability review"
+      ]
     }
   ]
 }

@@ -1,0 +1,116 @@
+{
+  "law_id": "LVMC-11-20-070",
+  "cell_id": "C382420",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__crosswalk_clear_downstream",
+  "supported_case_ids": [
+    "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__crosswalk_clear_downstream",
+    "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__crosswalk_blocked_downstream",
+    "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__intersection_clear_downstream",
+    "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__intersection_blocked_downstream"
+  ],
+  "required_atoms": [],
+  "source_packets": [],
+  "rate_hz": 20,
+  "duration_s": 8,
+  "frames": 160,
+  "ego_throttle": 0.22,
+  "blocker_offset_m": 3.0,
+  "overview_height_delta_m": 0.0,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "subject-mounted original entry, receiving space and participant view",
+      "fov_deg": 95
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original entry, receiving space and participant view",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original entry, receiving space and participant view",
+      "fov_deg": 100
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original entry, receiving space and participant view",
+      "fov_deg": 85
+    }
+  ],
+  "case": {
+    "case_id": "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__crosswalk_clear_downstream",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "entry_frame_and_region",
+          "unit": "binary flag",
+          "method": "original full-body intersection with Native marked entry region",
+          "sampling_rate_hz": 20,
+          "time_window": "approach and entry frames",
+          "reference_frame": "Native map ground plane and original synchronized frames",
+          "uncertainty": "Native map, actor footprints and pixel review remain unverified"
+        },
+        {
+          "name": "downstream_available_length",
+          "unit": "m",
+          "method": "contiguous receiving corridor length from original occupant footprints at entry",
+          "sampling_rate_hz": 20,
+          "time_window": "entry frame",
+          "reference_frame": "Native map ground plane and original synchronized frames",
+          "uncertainty": "Native map, actor footprints and pixel review remain unverified"
+        },
+        {
+          "name": "passage_obstruction",
+          "unit": "m^2",
+          "method": "original ego footprint overlap with other-road-user passage polygons",
+          "sampling_rate_hz": 20,
+          "time_window": "entry and following frames",
+          "reference_frame": "Native map ground plane and original synchronized frames",
+          "uncertainty": "Native map, actor footprints and pixel review remain unverified"
+        },
+        {
+          "name": "signal_indication",
+          "unit": "binary proceed flag",
+          "method": "original traffic-control signal state readback",
+          "sampling_rate_hz": 20,
+          "time_window": "full approach and entry",
+          "reference_frame": "Native map ground plane and original synchronized frames",
+          "uncertainty": "Native map, actor footprints and pixel review remain unverified"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "space_scene",
+          "unit": "structured record",
+          "method": "original Native map region, signal, receiving corridor and actor identity"
+        },
+        {
+          "name": "space_frames",
+          "unit": "structured record",
+          "method": "original ego, standing vehicle and pedestrian source frames"
+        }
+      ],
+      "limitations": [
+        "No numeric legal sufficiency or obstruction threshold is inferred from diagnostic geometry."
+      ]
+    }
+  },
+  "physical_completion": {
+    "criterion": "entry_and_receiving_space_observation",
+    "motion_source": "space_frames.jsonl",
+    "position_key": "ego_footprint",
+    "context_sources": [
+      "space_scene.json"
+    ]
+  }
+}
