@@ -11,7 +11,7 @@
         "center-lane"
       ],
       "description": "three clearly marked lanes with subject in right lane",
-      "construction_status": "planned_unconstructed",
+      "construction_status": "provisional_native_runner_offline_proven",
       "physical_risk": {
         "risk": "three-lane map ordering, lane markings, sight obstruction or posted sign may not be physically visible",
         "trigger_source": "original ego/lane polygons, source RGB views, sign/marking and traffic geometry",
@@ -41,7 +41,7 @@
         "center-lane"
       ],
       "description": "center-lane travel without an exception asserted",
-      "construction_status": "planned_unconstructed",
+      "construction_status": "provisional_native_runner_offline_pending",
       "physical_risk": {
         "risk": "three-lane map ordering, lane markings, sight obstruction or posted sign may not be physically visible",
         "trigger_source": "original ego/lane polygons, source RGB views, sign/marking and traffic geometry",
@@ -269,7 +269,7 @@
       }
     ]
   },
-  "review_status": "partial: nine exact cases and eight comparisons planned; original-frame lane-overlap component CPU-tested; construction pending",
+  "review_status": "partial: first right-lane exact Native bundle and saved finalizer built; offline proof passes; compatibility and eight other exact cases pending",
   "branch_inventory": [
     {
       "source": {
@@ -335,5 +335,39 @@
   "runtime_uncertainties": [
     "Pinned CPU preflight now passes. Exact construction and saved-processing proofs have not yet been run for this partial assignment.",
     "Actual CARLA motion, participant visibility, and physical capture remain unverified."
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "three clearly marked lane geometry and right-lane baseline occupancy",
+      "source": "NRS 484B.223(2) full text in inputs/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__right_baseline"
+      ],
+      "evidence_or_gap": "No accepted evidence; exact right-baseline construction and source-bound diagnostic proof in this package."
+    },
+    {
+      "requirement": "center-lane default prohibition without an asserted exception",
+      "source": "NRS 484B.223(2) full text in inputs/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__center_default"
+      ],
+      "evidence_or_gap": "No accepted recording; center-lane diagnostic and exact Native construction under test."
+    }
+  ],
+  "selected_branch": {
+    "law_id": "NRS-484B-223-2",
+    "cell_id": "C304406",
+    "actor": "motor_vehicle_driver",
+    "requirement": "NRS-484B-223-2",
+    "branch": "Center-lane exception (b), with the separate extreme-left prohibition retained.",
+    "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+    "source_index": 349,
+    "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+    "coverage_status": "pending_review",
+    "recording_ids": [],
+    "law_partition": "heldout",
+    "scenario_partition": "heldout"
+  }
 }

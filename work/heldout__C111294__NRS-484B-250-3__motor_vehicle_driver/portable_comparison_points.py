@@ -8,13 +8,10 @@ import argparse
 from hashlib import sha256
 import json
 from pathlib import Path
-import sys
 from tempfile import TemporaryDirectory
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-LINKED = HERE.parent / 'heldout__C293604__NRS-484B-250-3__motor_vehicle_driver'
-sys.path.insert(0, str(LINKED))
 from opposing_left_comparison_audit import audit as audit_left
 from opposing_left_measurement import measure_opposing_left
 from ending_road_measurement import classify_approaches, measure

@@ -34,16 +34,20 @@ def main():
         base = [sys.executable, str(HERE/'delivery_audit.py'),
                 '--case', case_id, '--attempt', str(attempt),
                 '--report', str(report)]
+        flag = ('--tamper-frontage-hash' if short == 'prohibition_403_3'
+                else '--tamper-motion-hash')
         positive = HERE/(short+'-delivery-positive.log')
         negative = HERE/(short+'-delivery-negative.log')
         with positive.open('w') as stream:
             passed = subprocess.run(base, cwd=ROOT, env=environment,
                                     stdout=stream, stderr=subprocess.STDOUT)
         with negative.open('w') as stream:
-            rejected = subprocess.run(base+['--tamper-motion-hash'],
+            rejected = subprocess.run(base+[flag],
                                       cwd=ROOT, env=environment,
                                       stdout=stream, stderr=subprocess.STDOUT)
-        expected = 'Original U-turn source hash differs: u_turn_motion.jsonl'
+        expected = ('Built frontage original source hash differs: u_turn_403_3_frontage.json'
+                    if short == 'prohibition_403_3' else
+                    'Original U-turn source hash differs: u_turn_motion.jsonl')
         if passed.returncode or rejected.returncode == 0 or expected not in negative.read_text():
             raise ValueError('Independent C230627 delivery audit failed: '+short)
         entry['delivery_acceptance'] = {
@@ -55,7 +59,7 @@ def main():
             'script_sha256': digest(HERE/'delivery_audit.py'),
             'command': ' '.join(base), 'test_exit_code': 0,
             'test_log': positive.name, 'test_log_sha256': digest(positive),
-            'negative_command': ' '.join(base+['--tamper-motion-hash']),
+            'negative_command': ' '.join(base+[flag]),
             'negative_exit_code': rejected.returncode,
             'negative_expected_error': expected,
             'negative_log': negative.name,

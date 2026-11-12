@@ -10,9 +10,12 @@ from u_turn_construction import (control_step, participant_placement,
                                  select_u_turn_scene, u_turn_targets,
                                  select_no_u_turn_device, verify_incoming_sight_extent)
 from u_turn_originals import UTurnSourceRecorder
+from u_turn_407_geometry import inspect_407_geometry
+from u_turn_403_3_frontage import select_403_3_candidate
 
 
-SUFFIXES = ('safety_clear', 'safety_conflict', 'prohibition_403_2')
+SUFFIXES = ('safety_clear', 'safety_conflict', 'prohibition_403_2',
+            'prohibition_403_3')
 PREFIX = 'heldout__C230627__NRS-484B-403-1__motor_vehicle_driver__'
 
 
@@ -91,9 +94,15 @@ def run(output_dir, host, port):
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
-        scene = select_u_turn_scene(world.get_map(),
-                                    waypoint_spacing_m=engineering.get('waypoint_spacing_m', 2.),
-                                    candidate_index=engineering.get('route_candidate_index', 0))
+        if config['selected_case_id'].endswith('__prohibition_403_3'):
+            scene, district_frontage = select_403_3_candidate(
+                world, carla,
+                waypoint_spacing_m=engineering.get('waypoint_spacing_m', 2.))
+        else:
+            scene = select_u_turn_scene(world.get_map(),
+                                        waypoint_spacing_m=engineering.get('waypoint_spacing_m', 2.),
+                                        candidate_index=engineering.get('route_candidate_index', 0))
+            district_frontage = None
         device = (select_no_u_turn_device(world.get_map(), scene)
                   if config['selected_case_id'].endswith('__prohibition_403_2')
                   else None)
@@ -105,8 +114,10 @@ def run(output_dir, host, port):
                     project_to_road=True, lane_type=carla.LaneType.Driving)
             sight_extent = verify_incoming_sight_extent(
                 world.get_map(), scene, route, project, required_m=230.0)
+            sight_geometry = inspect_407_geometry(scene)
         else:
             sight_extent = None
+            sight_geometry = None
         placement = participant_placement(
             scene, oncoming_distance_m=engineering.get('oncoming_distance_m', 24.),
             following_distance_m=engineering.get('following_distance_m', 18.))
@@ -130,6 +141,13 @@ def run(output_dir, host, port):
                                        device=device)
         if sight_extent is not None:
             (output/'sight-route-extent.json').write_text(json.dumps(sight_extent, indent=2)+'\n')
+            (output/'u_turn_407_geometry.json').write_text(json.dumps(sight_geometry, indent=2)+'\n')
+        if district_frontage is not None:
+            district_frontage['road_id'] = scene['road_id']
+            district_frontage['approach_lane_id'] = scene['approach_lane_id']
+            district_frontage['opposite_lane_id'] = scene['opposite_lane_id']
+            (output/'u_turn_403_3_frontage.json').write_text(json.dumps(
+                {'built_frontage_candidate': district_frontage}, indent=2)+'\n')
         frame_map = FrameMap(output/'video_frames.jsonl')
         target_index = 1
         start_time = None

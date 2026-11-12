@@ -2,6 +2,7 @@
 import argparse
 from hashlib import sha256
 import json
+from math import hypot
 from pathlib import Path
 import subprocess
 
@@ -32,7 +33,10 @@ def audit(attempt, report):
     case = config.get('selected_case_id')
     if case not in (PREFIX + 'right', PREFIX + 'left',
                     PREFIX.replace('baseline_', '') + 'passing_left',
-                    PREFIX.replace('baseline_', '') + 'closure_left'):
+                    PREFIX.replace('baseline_', '') + 'closure_left',
+                    PREFIX.replace('baseline_', '') + 'three_lane_left',
+                    PREFIX.replace('baseline_', '') + 'one_way_left',
+                    PREFIX.replace('baseline_', '') + 'narrow_left'):
         raise ValueError('Wrong exact baseline delivery identity')
     report_value = json.loads(Path(report).read_text())
     if report_value.get('case_id') != case:
@@ -98,6 +102,78 @@ def audit(attempt, report):
                 if not -width / 2 < lateral < 0:
                     raise ValueError('Original closure device outside right half')
         wanted = 'whole_body_left_half_beside_three_right_half_devices'
+    if case.endswith('__three_lane_left'):
+        setup = json.loads(sources['road_exception_context.json'].read_text()).get('three_lane_setup')
+        if (not isinstance(setup, dict) or setup.get('applicable_lane_rule') != 'undecided' or
+                setup.get('subject_path') != 'left_half'):
+            raise ValueError('Original three-lane setup missing or pre-decided')
+        expected_ids = setup.get('lane_ids')
+        for body in road:
+            lanes = body.get('lane_inventory')
+            if (not isinstance(lanes, list) or len(lanes) != 3 or
+                    [lane.get('lane_id') for lane in lanes] != expected_ids or
+                    body.get('applicable_lane_rule_verified') is not False or
+                    sum(lane.get('width_m', 0) for lane in lanes) != body['road_width_m']):
+                raise ValueError('Original three-lane inventory or width differs')
+            directed = body['road_travel_tangent_xy']
+            dots = [sum(a * b for a, b in zip(directed, lane['travel_tangent_xy']))
+                    for lane in lanes]
+            if not (dots[0] > .95 and dots[1] > .95 and dots[2] < -.95):
+                raise ValueError('Original three-lane direction pattern differs')
+        wanted = 'whole_body_left_half_on_three_lanes'
+    sign_sha = None
+    if case.endswith('__one_way_left'):
+        sign_path = _source(root, 'one_way_sign.jsonl')
+        sign_sha = _hash(sign_path)
+        signs = _rows(sign_path)
+        setup = json.loads(sources['road_exception_context.json'].read_text()).get('one_way_setup')
+        if (not isinstance(setup, dict) or setup.get('official_designation') != 'undecided' or
+                setup.get('posting_authority') != 'undecided' or
+                setup.get('subject_path') != 'left_half' or len(signs) != len(road)):
+            raise ValueError('Original one-way setup or sign source missing')
+        sign_position = None
+        for body, sign in zip(road, signs):
+            lanes = body.get('lane_inventory')
+            if (not isinstance(lanes, list) or len(lanes) != 2 or
+                    [lane.get('lane_id') for lane in lanes] != setup.get('lane_ids') or
+                    sum(lane.get('width_m', 0) for lane in lanes) != body['road_width_m'] or
+                    body.get('designation_verified') is not False or
+                    body.get('posting_authority_verified') is not False):
+                raise ValueError('Original one-way lane inventory differs')
+            tangent = body['road_travel_tangent_xy']
+            if not all(sum(a * b for a, b in zip(tangent, lane['travel_tangent_xy'])) > .95
+                       for lane in lanes):
+                raise ValueError('Original one-way lane direction differs')
+            if ((sign.get('frame'), sign.get('time_s')) != (body['frame'], body['time_s']) or
+                    sign.get('actor_id') != str(setup.get('sign_actor_id')) or
+                    'oneway' not in sign.get('blueprint_id', '').lower().replace('_', '') or
+                    sign.get('designation_verified') is not False or
+                    sign.get('posting_authority_verified') is not False):
+                raise ValueError('Original one-way sign identity/frame/authority differs')
+            if sign_position is None:
+                sign_position = sign.get('position_m')
+            elif sign.get('position_m') != sign_position:
+                raise ValueError('Original one-way sign moved between frames')
+        wanted = 'whole_body_left_half_on_two_same_direction_lanes_with_sign'
+    if case.endswith('__narrow_left'):
+        setup = json.loads(sources['road_exception_context.json'].read_text()).get('narrow_setup')
+        if (not isinstance(setup, dict) or setup.get('legal_sufficiency') != 'undecided' or
+                setup.get('subject_path') != 'left_half' or
+                setup.get('candidate_max_road_width_m') != 6.5 or
+                setup.get('subject_body_width_m', 0) <= 0):
+            raise ValueError('Original narrow-width setup missing or pre-decided')
+        for body in road:
+            width = body['road_width_m']
+            if (width > 6.5 or body.get('narrow_candidate_width_m') != width or
+                    body.get('legal_sufficiency_decided') is not False):
+                raise ValueError('Original narrow-width road source differs')
+            points = body['ego_corners_xy']
+            edges = [hypot(b[0] - a[0], b[1] - a[1]) for a in points for b in points if a != b]
+            if abs(min(edges) - setup['subject_body_width_m']) > .1:
+                raise ValueError('Original narrow-width body source differs')
+        if any(width > 6.5 for width in setup.get('selected_road_widths_m', [])):
+            raise ValueError('Original selected route exceeds narrow screen')
+        wanted = 'whole_body_left_half_on_measured_narrow_road'
     videos = {}
     for name in CAMERAS:
         path = _source(root, name + '.mkv')
@@ -117,6 +193,7 @@ def audit(attempt, report):
     return {'format': 'worker-right-half-delivery-audit', 'case_id': case,
             'frames': len(road), 'source_sha256': {name: _hash(path) for name,path in sources.items()},
             'source_video_sha256': videos, 'closure_source_sha256': closure_sha,
+            'one_way_sign_source_sha256': sign_sha,
             'body_side_observed': wanted,
             'originals_joined': True, 'analysis_recomputed': True,
             'four_camera_full_decode': True,

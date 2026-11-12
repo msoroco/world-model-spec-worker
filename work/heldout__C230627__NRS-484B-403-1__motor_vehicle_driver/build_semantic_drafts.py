@@ -38,7 +38,8 @@ def main():
         ('u_turn_route', 'controller', 'Opposing lane target arc request'),
         ('oncoming_spawn_distance_m', 'world_setup', 'Engineering participant spawn request; no legal safety cutoff'),
         ('physical_safety', 'subject_behavior', 'Null pending original motion and independent judgment'),
-        ('mapped_no_u_turn_device', 'world_setup', 'Mapped device candidate or null')]
+        ('mapped_no_u_turn_device', 'world_setup', 'Mapped device candidate or null'),
+        ('built_frontage_candidate', 'world_setup', 'Native building geometry candidate or null; business use remains unknown')]
     refs = [{'name': n, 'kind': k, 'range_or_domain': d} for n,k,d in parameters]
     template = {'template_id': TEMPLATE, 'law_id': LAW['id'], 'actor': 'motor_vehicle_driver',
                 'status': 'draft', 'quote': LAW['text'],
@@ -71,15 +72,34 @@ def main():
     bindings_ref = write('bindings.json', bindings)
     cases = json.loads((P / 'cases.json').read_text())
     import copy
+    case_id_403_3 = ROOT.name + '__prohibition_403_3'
+    if not any(case['case_id'] == case_id_403_3 for case in cases['cases']):
+        new_case = copy.deepcopy(next(case for case in cases['cases']
+                                      if case['case_id'].endswith('__safety_clear')))
+        new_case['case_id'] = case_id_403_3
+        new_case['target_type'] = 'boundary_probe'
+        new_case['rationale'] = 'Native built-frontage candidate in the frozen centerline cell; business/industrial use and statutory alternatives remain unresolved.'
+        new_case['variable_assignments']['built_frontage_candidate'] = {
+            'kind': 'world_setup', 'value': 'Native building-box frontage candidate'}
+        new_case['recording_description'] = json.loads(
+            (ROOT/'construction-prohibition_403_3.json').read_text())['recording_description']
+        cases['cases'].append(new_case)
     for case in cases['cases']:
         case['variable_assignments'].setdefault('mapped_no_u_turn_device',
+            {'kind': 'world_setup', 'value': None})
+        case['variable_assignments'].setdefault('built_frontage_candidate',
             {'kind': 'world_setup', 'value': None})
         if case['target_type'] != 'baseline':
             if case['target_type'] == 'prohibition_context':
                 case['target_type'] = 'boundary_probe'
             is_device = case['case_id'].endswith('__prohibition_403_2')
-            axis = 'mapped_no_u_turn_device' if is_device else 'oncoming_spawn_distance_m'
-            case['paired_probe_id'] = 'mapped_device_candidate' if is_device else 'safety_clearance'
+            is_frontage = case['case_id'].endswith('__prohibition_403_3')
+            axis = ('mapped_no_u_turn_device' if is_device else
+                    'built_frontage_candidate' if is_frontage else
+                    'oncoming_spawn_distance_m')
+            case['paired_probe_id'] = ('mapped_device_candidate' if is_device else
+                                       'built_frontage_candidate' if is_frontage else
+                                       'safety_clearance')
             case['deliberate_differences'] = [axis]
             case['probe'] = {'primary_variable': axis,
                              'comparison_or_standard': 'Original U-turn source measurements and separately sourced cited prohibition context; no legal verdict from CPU fixtures',

@@ -7,6 +7,7 @@ from math import isfinite
 from pathlib import Path
 
 from u_turn_measurement import measure
+from u_turn_403_3_frontage import FRONTAGE_M, WINDOW_M, measure_frontage
 
 
 def _required(root, name):
@@ -44,6 +45,33 @@ def measure_mapped_device(device_path, context_path):
                ('no u turn', 'u turn prohibited', 'u turn forbidden')):
         raise ValueError('Mapped source does not describe no-U-turn device')
     return value
+
+
+def measure_built_frontage(frontage_path, context_path):
+    source = json.loads(Path(frontage_path).read_text()).get('built_frontage_candidate')
+    if not isinstance(source,dict):
+        raise ValueError('Missing authored 403(3) built-frontage context')
+    context = json.loads(Path(context_path).read_text())
+    if (source.get('road_id') != context.get('approach_road_id') or
+            source.get('approach_lane_id') != context.get('approach_lane_id') or
+            source.get('opposite_lane_id') != context.get('opposite_lane_id') or
+            source.get('window_m') != WINDOW_M or
+            source.get('qualifying_frontage_m') != FRONTAGE_M or
+            source.get('business_district_legal_judgment') is not None or
+            source.get('intersection_exception_status') is not None or
+            source.get('divided_highway_opening_exception_status') is not None or
+            source.get('site_is_junction') is not False):
+        raise ValueError('Original 403(3) frontage identity or legal status differs')
+    recalculated = measure_frontage(source.get('buildings'),
+                                   source.get('turn_xy_m'),
+                                   source.get('forward_unit_xy'))
+    for key in ('frontage_by_side', 'combined_built',
+                'combined_sourced_qualifying_use'):
+        if recalculated[key] != source.get(key):
+            raise ValueError('Original 403(3) building frontage differs')
+    if recalculated['combined_built']['frontage_m'] < FRONTAGE_M:
+        raise ValueError('Original 403(3) built-frontage candidate absent')
+    return source
 
 
 def analyze(attempt, *, write_channels=True):
@@ -85,6 +113,13 @@ def analyze(attempt, *, write_channels=True):
             'value': measure_mapped_device(device_path, paths['u_turn_context.json'][0]),
             'sources': {'u_turn_device.json': device_hash,
                         'u_turn_context.json': paths['u_turn_context.json'][1]}}
+    if case_id.endswith('__prohibition_403_3'):
+        frontage_path, frontage_hash = _required(root, 'u_turn_403_3_frontage.json')
+        measurements['built_frontage_candidate'] = {
+            'method': 'measure_built_frontage',
+            'value': measure_built_frontage(frontage_path, paths['u_turn_context.json'][0]),
+            'sources': {'u_turn_403_3_frontage.json': frontage_hash,
+                        'u_turn_context.json': paths['u_turn_context.json'][1]}}
     if write_channels:
         channel = root / 'u_turn_observation.jsonl'
         if channel.exists():
@@ -117,6 +152,11 @@ def build_result(attempt, report):
                          'unit': 'structured context',
                          'reference': 'u_turn_device.json',
                          'sha256': _required(root, 'u_turn_device.json')[1]})
+    if report['case_id'].endswith('__prohibition_403_3'):
+        evidence.append({'name': 'built_frontage_candidate',
+                         'unit': 'structured context',
+                         'reference': 'u_turn_403_3_frontage.json',
+                         'sha256': _required(root, 'u_turn_403_3_frontage.json')[1]})
     return {'case_id': report['case_id'],
             'measured_values': {key: item['value'] for key, item in
                                 report['measurements'].items()},

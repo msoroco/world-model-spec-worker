@@ -1,0 +1,40 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C230627__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_3",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Whole-maneuver U-turn trajectory and surrounding-user clearance/braking observations",
+      "source": "inputs/heldout__C230627__NRS-484B-403-1__motor_vehicle_driver/assignment.json",
+      "output_key": "u_turn_observation",
+      "method": "measure_original_u_turn",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "u_turn_motion.jsonl",
+        "u_turn_context.json",
+        "video_frames.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Built frontage candidate for NRS 484B.403(3) and NRS 484B.010, with use and alternatives unresolved",
+      "source": "inputs/heldout__C230627__NRS-484B-403-1__motor_vehicle_driver/assignment.json",
+      "output_key": "built_frontage_candidate",
+      "method": "measure_built_frontage",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "u_turn_403_3_frontage.json",
+        "u_turn_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "u_turn_403_3_frontage.json"
+    ],
+    "error_contains": "Missing required source: u_turn_403_3_frontage.json"
+  }
+}

@@ -14,11 +14,39 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "cd214ecf86a95c652fd07ff65e57ad4e9007acb38e9927f7241bb5c41d9449f1",
-      "passed": 4
+      "sha256": "bda4d37a6293e41b0be33435d82477ac22425249021f381bed49a14e87d99968",
+      "passed": 16
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__right_baseline --output .runtime-work/c304406-right-baseline-offline3 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "right-baseline-offline.log",
+      "sha256": "d5fc530a06183155bc53b1ef10d7868fb68d2fed76331f7fe7f3c49e84d0d2c9"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__right_baseline --output .runtime-work/c304406-right-baseline-compatibility5 --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "right-baseline-compatibility-receipt.json",
+      "sha256": "3242bb28dfb27e180a02297bcb8924ceb273acf2cf07239f73867bcecbb51c8f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__right_baseline --attempt .runtime-work/c304406-right-baseline-saved-attempt2 --output .runtime-work/c304406-right-baseline-saved-output2 --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "right-baseline-saved.log",
+      "sha256": "b20955bcf875d75ecf16d84e9b69dbe3f4b026298a3294aae11c340d087b056b"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/audit_right_baseline_delivery.py --attempt .runtime-work/c304406-right-baseline-saved-attempt2 --processing .runtime-work/c304406-right-baseline-saved-output2/v0001/processing.json --output work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/right-baseline-source-audit.json",
+      "exit_code": 0,
+      "log": "right-baseline-source-audit.log",
+      "sha256": "193248b8d53a3929647de41ce7ec4c8ffbf497d97bace5ba9151cd51d7c75874"
     }
   ],
-  "remaining_gpu_checks": [],
-  "reason": "Partial: nine exact cases and eight comparisons are planned; original 20 Hz ordered three-lane body-overlap measurement passes four CPU tests. Native map/marking/sign/occluder construction, four cameras, saved finalizer and exact proofs, fallbacks, proposals and audits remain CPU work.",
-  "readiness_kind": "delivery_prepared"
+  "remaining_gpu_checks": [
+    "Actual three clearly marked lane appearance, lane use and subject motion",
+    "Actual passing sight line and traffic clearance",
+    "Actual left-turn preparation and exclusive allocation sign visibility",
+    "Four-camera subject and road visibility over full Native duration"
+  ],
+  "reason": "Partial: right-baseline exact construction passes offline, positive/missing-source compatibility, saved processing, and independent source audit. Eight selected cases, their distinct fallbacks, physical occluder/traffic/turn/sign construction, complete semantic sweeps, and controlled comparison dispatch/audits remain CPU work."
 }
