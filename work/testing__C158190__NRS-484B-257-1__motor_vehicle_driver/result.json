@@ -2,7 +2,7 @@
   "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
   "input_sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18",
   "status": "partial",
-  "readiness_kind": "four_exact_cases_synthetic_saved_checkpoint",
+  "readiness_kind": "four_exact_cases_twelve_fallbacks_independent_audit_checkpoint",
   "applied_update": 0,
   "tests": [
     {
@@ -22,12 +22,6 @@
       "exit_code": 0,
       "log": "cpu-tests-current.log",
       "sha256": "354c3606b41d80e8b9dd5840c1fa55197779bafa3bb909e9da37509daa21cc73"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "preflight-current.log",
-      "sha256": "c6d1d90b0de1615ba0f40c57e4c489b971c55ff45c28bdd0be24fbcac845f3b4"
     },
     {
       "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runner.py --check (cwd: work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver)",
@@ -226,10 +220,52 @@
       "exit_code": 0,
       "log": "cases/no_slow/primary-saved-replay-current.log",
       "sha256": "b1d1c05d27b6c5c3a031e45867e5d4bc6cb5537662bd6e75b3e3f2711c47f03d"
+    },
+    {
+      "command": "candidate_constructions.validate required=True candidate_count=4 and delivery_handoff.validate_case for all four exact cases",
+      "exit_code": 0,
+      "log": "fallback-static-current.log",
+      "sha256": "d8621680b0287dca182e45ea1faf52dc2dd58e5a29808de67d68e35147fc009d"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python comparison_audit.py positive three pairs and negative mismatched pair",
+      "exit_code": 0,
+      "log": "comparison-audit-current.log",
+      "sha256": "c4451d282f7d6baf27bd91e0e59788d77c27edc9f15416f401cb158cf0d32b24"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight-current.log",
+      "sha256": "ebe41e1091dceb08808ec865b2e05ced966eacccd08c5279864f84ca9feb3610"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-primary-compat-v3 --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_approaches --diagnostic-fixture",
+      "exit_code": 0,
+      "log": "delivery-audit-positive.log",
+      "sha256": "0dc54c09bbcb49b106964d6afb4e7bf519133ffd4209965eb5f4406ec772448c"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-through-entered-compat-v2 --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_entered --diagnostic-fixture",
+      "exit_code": 0,
+      "log": "cases/through_entered/delivery-audit-positive.log",
+      "sha256": "663e96f22eecbd1d4105fd56249831f07167b87819ac2ae9515a05b64acf9fb3"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-clear-compat-v3 --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear --diagnostic-fixture",
+      "exit_code": 0,
+      "log": "cases/clear/delivery-audit-positive.log",
+      "sha256": "eca8550446068be01e6fccd4e36e6a1a6c9af19acb2cd620761ab935f93f9961"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-no-slow-compat-v2 --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow --diagnostic-fixture",
+      "exit_code": 0,
+      "log": "cases/no_slow/delivery-audit-positive.log",
+      "sha256": "b63eca2ea8bc1b830694cbc0e2799f204af9f0a7ad2a9efc22d45867cc9332df"
     }
   ],
   "remaining_gpu_checks": [
     "Realized yield-sign governance, absence of line/crosswalk, visible through traffic, actual slowing and conflict behavior."
   ],
-  "reason": "All four C158190 exact cases have distinct inline constructions and synthetic four-camera source fixtures; all pass pinned offline, positive/negative compatibility, recorded-only saved processing, and static receipt verification. Branch-specific source checks show through-entered occupancy at nearest view, clear absence with matched 4.0 m/s target, and no-slow through presence with matched 6.0 m/s target and no sampled slowing. The 600-frame synthetic proofs preserve originals and claim no physical/legal acceptance. Three distinct tested fallbacks per selected case, complete canonical semantic proposals, independent delivery/comparison audits, and full batch delivery remain worker-owned CPU work. Frozen stop_sign cell versus selected yield branch remains a scope tension."
+  "reason": "All four selected C158190 exact cases have distinct inline constructions and prior synthetic offline, positive/negative compatibility and recorded-only saved-processing proofs. Twelve distinct physical-risk fallback constructions now pass exact offline and positive/negative compatibility checks, with candidate hashes statically verified. Four independent delivery-audit positive fixture and negative synthetic-review tests pass; three source-bound comparison audits pass and a mismatched pair is rejected. Remaining worker-owned CPU work: complete canonical semantic proposals/index, three physical-preparation outcome/lifecycle fixtures per exact case, bind comparison audits into the batch GPU queue and local integration proof, refresh affected saved-processing selections after manifest edits, then pass the assignment ready gate and all 43 package batch gate. Frozen stop_sign cell versus selected yield branch remains a recorded scope tension; no physical or legal acceptance is claimed."
 }
