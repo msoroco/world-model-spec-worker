@@ -86,11 +86,14 @@ def video_frames(path):
     return int(completed.stdout.strip())
 
 
-def derive_channels(attempt,config,native,mapping,geometry):
+def derive_channels(attempt,config,native,mapping,geometry,review=None):
     declared={row['name'] for row in config['recording_description']['channels']}
     require(declared==set(CHANNELS),'Declared channels differ from raw Walk derivation')
     output={name:[] for name in CHANNELS}
-    for sample,frame in zip(native,mapping):
+    for index,(sample,frame) in enumerate(zip(native,mapping)):
+        observed=review['observations'][index] if review is not None else None
+        display=observed['display'] if observed is not None else sample['walk_signal_display_observed']
+        facing=observed['pedestrian_facing_signal'] if observed is not None else sample['pedestrian_facing_signal']
         pedestrian=sample['pedestrian_body_xy_m'];bus=sample['bus_body_xy_m']
         strip=(0,3.5,-12,-10)
         def overlaps(body):
@@ -98,17 +101,18 @@ def derive_channels(attempt,config,native,mapping,geometry):
                    min(p[1] for p in body)<=strip[3] and max(p[1] for p in body)>=strip[2]
         ped_inside=overlaps(pedestrian);bus_inside=overlaps(bus)
         values={
-            'dev.pedestrian_signal':{'display':sample['walk_signal_display_observed'],
+            'dev.pedestrian_signal':{'display':display,
                 'actor_id':sample['walk_signal_actor_id'],
-                'display_source':sample.get('display_source','synthetic_native_sample')},
+                'display_source':'independent_original_pixel_review' if observed is not None
+                    else sample.get('display_source','synthetic_native_sample')},
             'st.crosswalk':{'y_range_m':geometry['crosswalk_y_range_m'],
                             'bus_lane_x_range_m':geometry['bus_lane_x_range_m']},
             'ru.pedestrian':{'actor_id':sample['pedestrian_actor_id'],
-                             'body_xy_m':pedestrian,'facing_signal':sample['pedestrian_facing_signal']},
+                             'body_xy_m':pedestrian,'facing_signal':facing},
             'rel.occupies':{'pedestrian_conflict_strip':ped_inside,
                             'bus_conflict_strip':bus_inside},
             'drv.yields_to':{'simultaneous_conflict_strip':ped_inside and bus_inside and
-                sample['pedestrian_facing_signal'] and sample['walk_signal_display_observed']=='Walk',
+                facing and display=='Walk',
                 'legal_yield_verdict':None},
             'kin.velocity':sample['bus_speed_mps'],
             'native_body_pose_control':sample,
@@ -148,18 +152,20 @@ def finalize(attempt,output):
     count=config['rate_hz']*config['duration_s']
     require(count==480,'Exact 480-frame Walk capture contract differs')
     native,mapping,geometry,synthetic,joins=joined_sources(attempt,count)
-    measurement=analyze(attempt)
+    original_physical=None
+    review=None
+    if not synthetic:
+        review_path=source(attempt,'official-walk-review.json')
+        original_physical=audit_original_physical(attempt,config['case_suffix'],review_path)
+        review=json.loads(review_path.read_text())
+    measurement=analyze(attempt,review)
     counts={name:video_frames(source(attempt,name+'.mkv')) for name in CAMERAS}
     require(all(value==count for value in counts.values()),
             'Original source video frame count differs')
-    derive_channels(attempt,config,native,mapping,geometry)
+    derive_channels(attempt,config,native,mapping,geometry,review)
     expected=config['case_suffix']=='reference'
     no_simultaneous=measurement['simultaneous_conflict_frames']==0
     matched=no_simultaneous==expected and measurement['directed_pedestrian_conflict_frames']>0
-    original_physical=None
-    if not synthetic:
-        review=source(attempt,'official-walk-review.json')
-        original_physical=audit_original_physical(attempt,config['case_suffix'],review)
     completed=original_physical is not None and \
         original_physical['physical_checks']['maneuver']['status']=='met' and matched
     recording=[{'name':row['name'],'unit':row['unit'],

@@ -102,7 +102,13 @@ def audit_original(attempt, suffix, review_path):
     official = audit_walk(attempt, review_path)
     samples, mapping, geometry, synthetic, joins = joined_sources(attempt, 480)
     require(synthetic is False, 'Synthetic source cannot prove original Native Walk motion')
-    measured = classify(samples, mapping, geometry, suffix)
+    review = json.loads(Path(review_path).read_text())
+    effective = []
+    for sample, observed in zip(samples, review['observations']):
+        effective.append({**sample,
+            'walk_signal_display_observed': observed['display'],
+            'pedestrian_facing_signal': observed['pedestrian_facing_signal']})
+    measured = classify(effective, mapping, geometry, suffix)
     return {'format': 'c111256-original-physical-walk-audit-v1',
             'case_suffix': suffix, 'physical_checks': {'maneuver': measured},
             'official_walk_audit': official, 'source_joins': joins,

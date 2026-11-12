@@ -5,7 +5,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 NATIVE = HERE / 'native'
-MODULES = ('finalize.py', 'physical_walk_audit.py',
+MODULES = ('finalize.py', 'measure_walk.py', 'physical_walk_audit.py',
            'official_walk_source_audit.py')
 
 

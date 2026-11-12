@@ -48,7 +48,7 @@ def run():
     reject(lambda:validate_review(damaged,mapping,hashes,620,diagnostic=True),'Walk review omits independent camera decode receipts');negatives.append('missing decode')
     reject(lambda:validate_review(review,mapping,hashes,620,diagnostic=False),'Walk review identity or source hashes differ');negatives.append('synthetic review as original')
     reject(lambda:audit_original(ATTEMPT,HERE/'nonexistent-review.json'),
-           'Synthetic or unverified Walk construction cannot prove official display');negatives.append('synthetic attempt as original')
+           'Original construction must retain pending Walk review state');negatives.append('synthetic attempt as original')
     proof={'format':'c111256-official-walk-source-cpu-proof-v1',
            'source_shape_frames':480,'source_hashes':hashes,
            'negative_rejections':negatives,'original_signal_governance_verified':False,

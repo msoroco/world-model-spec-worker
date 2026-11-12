@@ -4,7 +4,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from measure_walk import analyze, read_rows
+from measure_walk import read_rows
 
 CAMERAS=('overview','approach','reference_corner','driver_reference')
 SOURCES=('road_geometry.json','native_samples.jsonl','video_frames.jsonl',
@@ -68,24 +68,23 @@ def audit_original(attempt,review_path):
     attempt=Path(attempt);review_path=Path(review_path)
     geometry=json.loads((attempt/'road_geometry.json').read_text())
     require(geometry.get('synthetic_diagnostic') is False and
-            geometry.get('signal_governance_verified') is True and
-            geometry.get('walk_pixels_verified') is True,
-            'Synthetic or unverified Walk construction cannot prove official display')
+            geometry.get('signal_governance_verified') is False and
+            geometry.get('walk_pixels_verified') is False,
+            'Original construction must retain pending Walk review state')
     hashes={name:sha(attempt/name) for name in SOURCES}
     mapping=read_rows(attempt/'video_frames.jsonl')
     rows=read_rows(attempt/'native_samples.jsonl')
     require(len(rows)==len(mapping)==480 and all(
-        sample.get('display_source')=='original_pixel_audit' and
-        sample.get('pedestrian_facing_source')=='native_heading_measured' and
+        sample.get('walk_signal_display_observed')=='Unknown' and
+        sample.get('display_source')=='authored_debug_text_pending_original_pixel_review' and
+        sample.get('pedestrian_facing_source')=='authored_route_pending_original_heading_review' and
         sample.get('speed_provenance')=='native_measured'
-        for sample in rows), 'Original Walk/heading/speed sources absent')
+        for sample in rows), 'Original raw Walk/heading/speed source state differs')
     review=json.loads(review_path.read_text())
     summary=validate_review(review,mapping,hashes,geometry['walk_signal_id'])
-    require(all(sample.get('walk_signal_display_observed')==item.get('display') and
-                sample.get('pedestrian_facing_signal')==item.get('pedestrian_facing_signal') and
-                sample.get('walk_signal_actor_id')==item.get('signal_actor_id')
+    require(all(sample.get('walk_signal_actor_id')==item.get('signal_actor_id')
                 for sample,item in zip(rows,review['observations'])),
-            'Walk review disagrees with original frame samples')
+            'Walk review signal identity differs from raw samples')
     from scenario_pipeline.worker_exchange.media import audit as decode
     for camera in CAMERAS:
         with tempfile.TemporaryDirectory() as temporary:
@@ -99,10 +98,6 @@ def audit_original(attempt,review_path):
             require(decoded.get('rgb_sequence_sha256')==review['camera_rgb_sequence_sha256'][camera] and
                     decoded.get('frames')==480,
                     'Independent Walk camera RGB sequence differs')
-    measurement=analyze(attempt)
-    require(measurement['synthetic_diagnostic'] is False and
-            measurement['walk_display_frames']>=summary['directed_walk_frames'],
-            'Original Walk measurement differs from review')
     return {'format':'c111256-original-walk-source-audit-v1',
             'source_sha256':hashes,'review_sha256':sha(review_path),
             'reviewed_frames':480,'directed_walk_frames':summary['directed_walk_frames'],

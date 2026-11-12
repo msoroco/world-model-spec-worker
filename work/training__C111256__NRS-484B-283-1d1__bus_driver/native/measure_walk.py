@@ -33,7 +33,7 @@ def intersects(a: tuple[float,float,float,float],b: tuple[float,float,float,floa
     return a[0]<=b[1] and a[1]>=b[0] and a[2]<=b[3] and a[3]>=b[2]
 
 
-def analyze(folder: Path) -> dict:
+def analyze(folder: Path, review: dict | None = None) -> dict:
     folder=Path(folder)
     geometry_path=folder/'road_geometry.json'
     require(geometry_path.is_file(),'Missing required source: road_geometry.json')
@@ -45,12 +45,15 @@ def analyze(folder: Path) -> dict:
             'Original Walk/crosswalk geometry or signal identity differs')
     synthetic=geometry.get('synthetic_diagnostic') is True
     if not synthetic:
-        require(geometry.get('signal_governance_verified') is True and
-                geometry.get('walk_pixels_verified') is True,
-                'Original pedestrian Walk governance or pixels unverified')
+        require(review is not None and review.get('official_signal_verified') is True and
+                review.get('governance_verified') is True and
+                review.get('pedestrian_heading_verified') is True,
+                'Original pedestrian Walk review absent or unverified')
     samples=read_rows(folder/'native_samples.jsonl')
     mapping=read_rows(folder/'video_frames.jsonl')
-    require(samples and len(samples)==len(mapping), 'Original frame map/source count differs')
+    require(samples and len(samples)==len(mapping) and
+            (synthetic or len(review.get('observations',[]))==len(samples)),
+            'Original frame map/source or review count differs')
     conflict=(0.0,3.5,-12.0,-10.0)
     walk_frames=0;directed_frames=0;simultaneous=[];bus_frames=[];ped_frames=[]
     previous_frame=-1;previous_time=-1.0
@@ -68,15 +71,22 @@ def analyze(folder: Path) -> dict:
                 sample['bus_actor_id']!=sample['pedestrian_actor_id'] and
                 sample['walk_signal_actor_id']!=sample['pedestrian_actor_id'],
                 'Original bus, pedestrian or signal identity differs')
-        display=sample.get('walk_signal_display_observed')
+        observed=review['observations'][index] if review is not None and not synthetic else None
+        if observed is not None:
+            require(observed.get('native_frame')==ident and
+                    observed.get('signal_actor_id')==signal_id,
+                    'Original review/Native frame or signal identity differs')
+        display=observed['display'] if observed is not None else sample.get('walk_signal_display_observed')
         require(display in ('Walk','DontWalk','Wait','Unknown'),
                 'Original pedestrian signal display absent')
-        require(type(sample.get('pedestrian_facing_signal')) is bool,
+        facing=observed['pedestrian_facing_signal'] if observed is not None else sample.get('pedestrian_facing_signal')
+        require(type(facing) is bool,
                 'Original pedestrian facing observation absent')
         if not synthetic:
-            require(sample.get('display_source')=='original_pixel_audit' and
-                    sample.get('pedestrian_facing_source')=='native_heading_measured',
-                    'Original Walk display or pedestrian heading source unverified')
+            require(sample.get('walk_signal_display_observed')=='Unknown' and
+                    sample.get('display_source')=='authored_debug_text_pending_original_pixel_review' and
+                    sample.get('pedestrian_facing_source')=='authored_route_pending_original_heading_review',
+                    'Original raw Walk display or pedestrian heading state differs')
         provenance=sample.get('speed_provenance')
         expected_provenance='synthetic_native_sample' if synthetic else 'native_measured'
         require(provenance==expected_provenance and
@@ -87,7 +97,7 @@ def analyze(folder: Path) -> dict:
         pedestrian=rectangle(sample.get('pedestrian_body_xy_m'),'pedestrian')
         bus_inside=intersects(bus,conflict)
         ped_inside=intersects(pedestrian,conflict)
-        active=display=='Walk' and sample['pedestrian_facing_signal']
+        active=display=='Walk' and facing
         walk_frames+=int(display=='Walk')
         directed_frames+=int(active and ped_inside)
         if bus_inside:bus_frames.append(index)
@@ -102,7 +112,8 @@ def analyze(folder: Path) -> dict:
             'first_directed_pedestrian_conflict_frame':ped_frames[0] if ped_frames else None,
             'first_simultaneous_conflict_frame':simultaneous[0] if simultaneous else None,
             'source_sha256':{name:sha(folder/name) for name in
-                ('road_geometry.json','native_samples.jsonl','video_frames.jsonl')},
+                ('road_geometry.json','native_samples.jsonl','video_frames.jsonl',
+                 *(['official-walk-review.json'] if review is not None and not synthetic else []))},
             'synthetic_diagnostic':synthetic,
             'physical_acceptance_claimed':False,'legal_verdict_claimed':False}
 
