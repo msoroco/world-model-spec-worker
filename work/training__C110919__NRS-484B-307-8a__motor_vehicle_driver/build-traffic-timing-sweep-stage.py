@@ -23,7 +23,7 @@ def sha(path):
 
 
 def build():
-    stage = read(HERE / "proposals/cases.json")
+    stage = read(HERE / "proposals/right-of-way-base.json")
     binding = read(HERE / "proposals/bindings.json")
     proof_path = HERE / "update040-traffic-timing-sweep-proof.json"
     proof = read(proof_path)
@@ -53,8 +53,8 @@ def build():
             "unit": "s",
             "min": 20, "max": 60, "spacing": 10,
             "measurement": {
-                "method": "Saved Native full-body conflict occupancy and signal rows; subtract observed entry frames at 20 Hz",
-                "time_window": "entire 24 s / 480-frame attempt",
+                "method": "saved Native ego and directed-traffic full-body first conflict entry difference",
+                "time_window": "entire original 24 s attempt",
                 "statistic": "first"
             },
             "range_rationale": "Launch at 1 to 3 s inside a 24 s capture; fixed stop frame 260 leaves 10 to 12 s commanded travel before brake and 11 s afterward.",
@@ -85,13 +85,22 @@ def build():
         {"name": "four_source_cameras", "unit": "video",
          "method": "Full 480-frame source decode joined to Native frames"}
     ])
+    spec["recording_description"]["channels"].append({
+        "name": "ego_minus_traffic_entry_s", "unit": "s",
+        "sampling_rate_hz": 20,
+        "method": "Postcapture source-derived first-entry difference repeated against each saved Native frame for exact frame joins",
+        "time_window": "entire 24 s / 480-frame attempt",
+        "reference_frame": "Native full-body conflict zone and exact original frame identity",
+        "uncertainty": "50 ms sampling for each first entry; not a legal right-of-way threshold",
+    })
     spec["recording_description"]["limitations"].append(
         "Original vehicle trajectories, directed-signal activation and camera visibility require independent review")
-    binding["variable_parameters"].append({
-        "name": "traffic_launch_frame", "kind": "controller",
-        "range_or_domain": [20, 30, 40, 50, 60],
-        "used_by_laws": ["NRS-484B-307-8a"]
-    })
+    if "traffic_launch_frame" not in {p["name"] for p in binding["variable_parameters"]}:
+        binding["variable_parameters"].append({
+            "name": "traffic_launch_frame", "kind": "controller",
+            "range_or_domain": [20, 30, 40, 50, 60],
+            "used_by_laws": ["NRS-484B-307-8a"]
+        })
     validate_spec(spec)
     expand_sweeps(stage, [read(HERE / "proposals/template.json")], binding)
     selected = [c for c in stage["cases"] if c.get("sweep_id") == spec["sweep_id"]]

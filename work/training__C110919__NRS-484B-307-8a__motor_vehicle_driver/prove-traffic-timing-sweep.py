@@ -101,11 +101,11 @@ def main():
     changed[240]["time_s"] += 1
     negatives["altered_time"] = reject(lambda: measure(changed, launch_frame=30))
     negatives["unsupported_launch"] = reject(lambda: TrafficLaunch(260))
-    finalizer_attempt = ROOT / ".runtime-work/c110919-update040-sweep-finalizer/compatibility"
+    finalizer_attempt = ROOT / ".runtime-work/c110919-update045-sweep-finalizer/compatibility"
     finalizer_report = read(finalizer_attempt / "analysis-report.json")
     finalizer_result = read(finalizer_attempt / "result.json")
-    require(finalizer_report["case_id"] == HERE.name + "__C110919-right-of-way-0000" and
-            finalizer_report["measurements"]["traffic_timing_sweep"]["value"]["ego_minus_traffic_entry_s"] == 2.4 and
+    require(finalizer_report["case_id"] == "C110919-right-of-way-0000" and
+            finalizer_report["measurements"]["traffic_timing_sweep"]["value"]["ego_minus_traffic_entry_s"] == 2.9 and
             finalizer_result["measured_values"]["traffic_timing_sweep"]["legal_right_of_way_verdict"] is None and
             finalizer_result["provenance_kind"] == "synthetic_local_diagnostic" and
             finalizer_result["accepted"] is False and
@@ -115,7 +115,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix="c110919-sweep-negative-", dir=ROOT / ".runtime-work") as folder:
         damaged = Path(folder)
         for child in finalizer_attempt.iterdir():
-            if child.name in ("config.json", "result.json", "analysis-report.json", "channels"):
+            if child.name in ("config.json", "result.json", "analysis-report.json", "channels", "context"):
                 continue
             (damaged / child.name).symlink_to(child)
         wrong = read(finalizer_attempt / "config.json")
@@ -125,6 +125,8 @@ def main():
             lambda: finalize_sweep(damaged, damaged / "analysis-report.json"))
     proof = {"format": "c110919-traffic-timing-sweep-control-cpu-proof-v1",
              "manifest_sha256": sha(manifest_path),
+             "historical_manifest_case_plan_sha256": manifest["case_plan_sha256"],
+             "current_case_plan_sha256": sha(HERE / "case-plan.json"),
              "matrix_index_sha256": sha(index_path),
              "control_source_sha256": sha(HERE / "native/traffic_timing_sweep.py"),
              "runner_source_sha256": sha(HERE / "native/traffic_timing_sweep_runner.py"),

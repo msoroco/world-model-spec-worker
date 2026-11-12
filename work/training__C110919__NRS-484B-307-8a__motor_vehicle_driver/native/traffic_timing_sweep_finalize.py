@@ -199,7 +199,7 @@ def video_frames(path: Path):
     return int(completed.stdout.strip())
 
 
-def derive_channels(attempt: Path,config: dict,native: list[dict],mapping: list[dict],geometry: dict):
+def derive_channels(attempt: Path,config: dict,native: list[dict],mapping: list[dict],geometry: dict,timing: dict):
     """Rebuild observations from retained raw rows rather than incoming channels."""
     names={item['name'] for item in config['recording_description']['channels']}
     output={name:[] for name in names}
@@ -228,7 +228,8 @@ def derive_channels(attempt: Path,config: dict,native: list[dict],mapping: list[
                              'cross_traffic_signal_state':sample['other_traffic_signal_state_observed'],
                              'legal_yield_verdict':None},
             'native_body_pose_control':sample,
-            'camera_frame_join':frame}
+            'camera_frame_join':frame,
+            'ego_minus_traffic_entry_s':timing['ego_minus_traffic_entry_s']}
         if set(values)!=names:raise ValueError('Declared channels differ from raw derivation')
         for name,value in values.items():
             output[name].append(json.dumps({'time_s':frame['time_s'],'value':value},
@@ -281,12 +282,25 @@ def finalize(attempt: Path,output: Path):
         raise ValueError('Original source video frame count differs')
     expected=True
     observed=stop['value']['halt_before_nearest_boundary']
-    derive_channels(attempt,config,native,mapping,geometry)
+    derive_channels(attempt,config,native,mapping,geometry,timing)
     recording=[]
     for channel in config['recording_description']['channels']:
         name=channel['name'];relative='channels/'+name+'.jsonl'
         source(attempt,relative)
         recording.append({'name':name,'unit':channel['unit'],'reference':relative})
+    context_values={
+        'traffic_launch_frame':launch.start_frame,
+        'directed_traffic_signal_and_lane':{
+            'observed_signal_states':sorted({str(row['other_traffic_signal_state_observed']) for row in native}),
+            'west_approach_lane':geometry['lanes']['west_traffic_right']},
+        'four_source_cameras':counts}
+    context_folder=attempt/'context';context_folder.mkdir(exist_ok=True)
+    for context in config['recording_description']['context_inputs']:
+        name=context['name']
+        if name not in context_values:raise ValueError('Undeclared timing context input')
+        relative='context/'+name+'.json'
+        (attempt/relative).write_text(json.dumps({name:context_values[name]},allow_nan=False)+'\n')
+        recording.append({'name':name,'unit':context['unit'],'reference':relative})
     result={'case_id':config['case_id'],
         'measured_values':{'signal':signal['value'],'stop':stop['value'],'turn_yield':turn['value'],
                            'traffic_branch':traffic_branch['value'],
@@ -320,7 +334,8 @@ def finalize(attempt: Path,output: Path):
             'value':timing['ego_minus_traffic_entry_s'],'unit':'s',
             'method':'saved Native ego and directed-traffic full-body first conflict entry difference',
             'time_window':'entire original 24 s attempt','statistic':'first',
-            'reference':'native_samples.jsonl'}},
+            'sample_window_s':[mapping[0]['time_s'],mapping[-1]['time_s']],
+            'reference':'channels/ego_minus_traffic_entry_s.jsonl'}},
         'provenance_kind':'synthetic_local_diagnostic' if diagnostic_fixture else 'native',
         'diagnostic_fixture':diagnostic_fixture,
         'accepted':False,'legal_verdict_claimed':False}

@@ -3,9 +3,12 @@ import hashlib
 import json
 from copy import deepcopy
 from pathlib import Path
+import sys
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "traffic_timing_sweep_cases"
+sys.path.insert(0, str(HERE / "native"))
+from traffic_timing_sweep import TrafficLaunch, intersects
 
 
 def read(path):
@@ -27,6 +30,11 @@ def main():
     source_manifest = read(HERE / "draft-traffic-branch-execution-manifest.json")
     source = next(x for x in source_manifest["cases"] if
                   x["case_id"].endswith("__traffic_yield_wait"))
+    base_diagnostic = read(HERE / "traffic_branch_cases/traffic_yield_wait-diagnostic.json")
+    base_native = [json.loads(line) for line in
+                   base_diagnostic["files"]["native_samples.jsonl"].splitlines()]
+    if len(base_native) != 480:
+        raise ValueError("Source diagnostic has no 480-frame Native stream")
     by_candidate = {x["id"]: x for x in source["candidates"]}
     by_candidate["primary"] = {"id": "primary", "construction": source["construction"],
                                "construction_sha256": source["construction_sha256"]}
@@ -43,12 +51,38 @@ def main():
         "format": "c110919-timing-sweep-exact-candidates-v1",
         "assignment_id": HERE.name,
         "stage_sha256": sha(stage_path),
+        "runtime_manifest_sha256": sha(HERE.parents[1] / "runtime/pipeline/SOURCE-MANIFEST.json"),
         "status": "unselected_cpu_candidate",
         "cases": [],
     }
     for case in cases:
         ident = case["case_id"]
-        frame = case["sweep_point"]["traffic_launch_frame"]
+        frame = TrafficLaunch(case["sweep_point"]["traffic_launch_frame"]).start_frame
+        diagnostic = deepcopy(base_diagnostic)
+        native_rows = []
+        for index, baseline in enumerate(base_native):
+            row = deepcopy(baseline)
+            source_index = min(479, max(0, index - (frame - 30)))
+            traffic = base_native[source_index]
+            for key in ("other_traffic_center_xy_m", "other_traffic_body_xy_m",
+                        "other_traffic_speed_mps"):
+                row[key] = deepcopy(traffic[key])
+            row["traffic_conflict_occupied"] = intersects(row["other_traffic_body_xy_m"])
+            row["traffic_launch_frame"] = frame
+            native_rows.append(row)
+        diagnostic["files"]["native_samples.jsonl"] = "\n".join(
+            json.dumps(row, separators=(",", ":")) for row in native_rows) + "\n"
+        diagnostic_path = OUT / ident / "diagnostic.json"
+        save(diagnostic_path, diagnostic)
+        diagnostic_source = str(diagnostic_path.relative_to(ROOT := HERE.parents[1]))
+        recipe = {"format": "worker-fixture-recipe",
+                  "sources": [{"path": "diagnostic-input.json",
+                               "source": diagnostic_source,
+                               "sha256": sha(diagnostic_path)}],
+                  "generator": {"source": diagnostic_source,
+                                "sha256": sha(diagnostic_path)}}
+        recipe_path = OUT / ident / "fixture-recipe.json"
+        save(recipe_path, recipe)
         entry = {
             "case_id": ident,
             "sweep_id": "C110919-right-of-way",
@@ -57,8 +91,18 @@ def main():
                 "status": "physical",
                 "reason": "Original directed traffic and ego timing, full-body paths and four-camera pixels require Native review",
             },
+            "fixture_recipe": str(recipe_path.relative_to(ROOT)),
+            "measurement_procedure": {
+                "entrypoint": "finalize.py",
+                "output_schema": "c110919-saved-analysis-v1",
+            },
             "candidates": [],
         }
+        contract = deepcopy(read(HERE / source["measurement_contract"]))
+        contract["case_id"] = ident
+        contract_path = OUT / ident / "measurement-contract.json"
+        save(contract_path, contract)
+        entry["measurement_contract"] = str(contract_path.relative_to(HERE))
         for name in ("primary", "fallback1", "fallback2", "fallback3"):
             base_ref = by_candidate[name]
             path = HERE / base_ref["construction"]

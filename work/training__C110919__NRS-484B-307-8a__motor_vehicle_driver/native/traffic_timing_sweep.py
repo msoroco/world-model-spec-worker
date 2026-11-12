@@ -17,10 +17,14 @@ class TrafficLaunch:
     throttle: float = .25
 
     def __post_init__(self):
-        if (type(self.start_frame) is not int or type(self.stop_frame) is not int or
+        if (type(self.start_frame) not in (int, float) or
+                not math.isfinite(self.start_frame) or
+                int(self.start_frame) != self.start_frame or
+                type(self.stop_frame) is not int or
                 type(self.total_frames) is not int or
                 not (0 <= self.start_frame < self.stop_frame < self.total_frames)):
             raise ValueError("Traffic launch frames must fit the exact capture")
+        object.__setattr__(self, "start_frame", int(self.start_frame))
         if not isinstance(self.throttle, (int, float)) or not math.isfinite(self.throttle) or not 0 < self.throttle <= 1:
             raise ValueError("Traffic throttle must be finite and positive")
 

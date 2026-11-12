@@ -31,6 +31,7 @@ class TrafficTimingSweepTest(unittest.TestCase):
         self.assertEqual(launch.command(30)["throttle"], .25)
         self.assertEqual(launch.command(260)["throttle"], .25)
         self.assertTrue(launch.command(261)["hand_brake"])
+        self.assertEqual(TrafficLaunch(30.0).start_frame, 30)
         for invalid in (-1, 260, 480, 30.5, None):
             with self.assertRaises(ValueError):
                 TrafficLaunch(invalid)
