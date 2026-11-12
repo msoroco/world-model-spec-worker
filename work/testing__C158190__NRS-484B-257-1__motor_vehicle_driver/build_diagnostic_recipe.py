@@ -69,8 +69,12 @@ def build():
                               'hand_brake': False, 'reverse': False}}
                  for i, row in enumerate(frames)]
         bodies = [{'frame': row['carla_frame'], 'time_s': row['time_s'],
-                   'ego': {'body_vertices_m': body_vertices(trace[i]['position_m'][0], 1.8)},
-                   'through': {'body_vertices_m': body_vertices(1.8, through_y(i))}}
+                   'ego': {'actor_id': 101, 'road_id': 158190 if ego_x(i) < -8 else
+                           158192 if ego_x(i) < 8 else 158193, 'lane_id': -1,
+                           'body_vertices_m': body_vertices(trace[i]['position_m'][0], 1.8)},
+                   'through': {'actor_id': 202, 'road_id': 158194 if through_y(i) > 8 else
+                               158195 if through_y(i) >= -8 else 158196, 'lane_id': -1,
+                               'body_vertices_m': body_vertices(1.8, through_y(i))}}
                   for i, row in enumerate(frames)]
         for name, rows in (('video_frames.jsonl', frames),
                            ('control_inventory.jsonl', controls),

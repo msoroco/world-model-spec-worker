@@ -8,11 +8,23 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from finalizer import finalize
+from finalizer import finalize, measure_through_interaction
 from yield_context import CAMERAS
 
 
 class FinalizerTests(unittest.TestCase):
+    def test_rejects_through_actor_off_sourced_highway(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.sources(root)
+            rows = [json.loads(line) for line in (root/'interaction_history.jsonl').read_text().splitlines()]
+            rows[0]['through'] = {'road_id': 999, 'lane_id': -1,
+                                  'body_vertices_m': [[1,1,0], [2,1,0],
+                                                      [2,2,0], [1,2,0]]}
+            (root/'interaction_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            with self.assertRaisesRegex(ValueError, 'through-highway route'):
+                measure_through_interaction(root)
+
     def sources(self, root):
         shutil.copy(ROOT/'native-map-plan/yield-nearest-view.xodr', root/'road.xodr')
         shutil.copy(ROOT/'config.json', root/'config.json')
@@ -68,7 +80,7 @@ class FinalizerTests(unittest.TestCase):
         (root/'control_context.json').write_text(json.dumps({
             'intersection_xy_m': [[-8,-8],[8,-8],[8,8],[-8,8]]}))
         bodies=[{'frame': r['frame'], 'time_s': r['time_s'],
-                 'ego': {'body_vertices_m': [[-20+i*.1+j*.01,1.8,0] for j in range(8)]},
+                 'ego': {'body_vertices_m': [[-20+i*.1+(j%2)*.1,1.8+(j//2%2)*.1,0] for j in range(8)]},
                  'through': None} for i,r in enumerate(history)]
         (root/'interaction_history.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in bodies))
 

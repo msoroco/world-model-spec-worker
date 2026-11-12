@@ -37,6 +37,15 @@ def main():
         if not (entry['first_body_entry'] and entry['closest_view_before_entry']
                 and entry['sampled_slowness_before_entry']):
             raise ValueError('Diagnostic fixture lacks sampled slowing before full-body entry')
+        interaction = values['through_interaction']['value']
+        relation = values['yield_relation']['value']
+        if not (interaction['ego_first_full_exit_frame']
+                and interaction['through_present_frame_count'] == interaction['crossing_frame_count']
+                and interaction['through_intersection_entry_frame']
+                and relation['ego_first_body_entry_frame'] == interaction['ego_first_body_entry_frame']
+                and relation['yield_judgment'] == 'unresolved'
+                and relation['legal_adequacy_assessed'] is False):
+            raise ValueError('Synthetic full-crossing through/yield relation differs')
         negative = root / 'negative'
         materialize(REPO, HERE / 'diagnostic-recipe.json', negative)
         (negative / 'config.json').write_bytes((HERE / 'config.json').read_bytes())
@@ -52,6 +61,8 @@ def main():
     print(json.dumps({'case_id': case_id, 'measurements': sorted(values),
                       'speed_at_closest_view_mps': values['speed_at_closest_view_mps']['value'],
                       'first_body_entry_frame': entry['first_body_entry']['frame'],
+                      'ego_first_full_exit_frame': interaction['ego_first_full_exit_frame'],
+                      'through_intersection_entry_frame': interaction['through_intersection_entry_frame'],
                       'synthetic_clearance_status': physical['physical_checks']['maneuver']['status'],
                       'negative_error': failure, 'scope': 'synthetic source protocol only'}))
 

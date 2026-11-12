@@ -77,6 +77,90 @@ def measure_slowness_before_entry(attempt, report):
             'legal_adequacy_assessed': False}
 
 
+def measure_through_interaction(attempt):
+    """Measure original body overlap and separation across the whole ego crossing."""
+    from shapely.geometry import MultiPoint, Polygon
+
+    context = json.loads((attempt/'control_context.json').read_text())
+    road = json.loads((attempt/'road_context.json').read_text())
+    intersection = Polygon(context['intersection_xy_m'])
+    if not intersection.is_valid or intersection.area <= 0:
+        raise ValueError('Invalid sourced intersection polygon')
+    frames = _rows(attempt/'video_frames.jsonl')
+    history = _rows(attempt/'interaction_history.jsonl')
+    if len(frames) != len(history) or not history:
+        raise ValueError('Original interaction and camera frame counts differ')
+    through_road_ids = {158194, road['through_highway_id'], 158196}
+    observed, previous_frame, previous_time = [], -1, float('-inf')
+    for frame, row in zip(frames, history):
+        fid, time_s = row['frame'], row['time_s']
+        if (fid != frame['carla_frame'] or time_s != frame['time_s']
+                or fid <= previous_frame or time_s <= previous_time):
+            raise ValueError('Original interaction/camera frame join differs')
+        previous_frame, previous_time = fid, time_s
+        def body(state):
+            points = state.get('body_vertices_m')
+            if not isinstance(points, list) or len(points) < 4:
+                raise ValueError('Missing original participant body vertices')
+            vertices = [(float(p[0]), float(p[1])) for p in points]
+            if not all(__import__('math').isfinite(v) for point in vertices for v in point):
+                raise ValueError('Nonfinite original participant body')
+            shape = MultiPoint(vertices).convex_hull
+            if shape.is_empty or shape.area <= 0:
+                raise ValueError('Degenerate original participant body')
+            return shape
+        ego = body(row['ego'])
+        through_state = row.get('through')
+        through = None if through_state is None else body(through_state)
+        if through is not None and (through_state.get('road_id') not in through_road_ids
+                                    or through_state.get('lane_id') != -1):
+            raise ValueError('Through actor lacks sourced through-highway route')
+        observed.append((fid, time_s, ego, through))
+    crossing = [i for i, (_, _, ego, _) in enumerate(observed)
+                if ego.intersects(intersection)]
+    if not crossing:
+        return {'ego_first_body_entry_frame': None,
+                'ego_last_body_overlap_frame': None,
+                'ego_first_full_exit_frame': None,
+                'crossing_frame_count': 0, 'through_present_frame_count': 0,
+                'through_intersection_entry_frame': None,
+                'through_shared_intersection_frames': [],
+                'body_contact_frames': [], 'minimum_body_gap_m': None,
+                'immediate_hazard_judgment': 'unresolved'}
+    first, last = crossing[0], crossing[-1]
+    if crossing != list(range(first, last+1)):
+        raise ValueError('Original ego body leaves and reenters intersection')
+    inside = observed[first:last+1]
+    contact = [fid for fid, _, ego, through in inside
+               if through is not None and ego.intersects(through)]
+    shared = [fid for fid, _, _, through in inside
+              if through is not None and through.intersects(intersection)]
+    gaps = [ego.distance(through) for _, _, ego, through in inside if through is not None]
+    through_entries = [fid for fid, _, _, through in observed
+                       if through is not None and through.intersects(intersection)]
+    return {'ego_first_body_entry_frame': observed[first][0],
+            'ego_last_body_overlap_frame': observed[last][0],
+            'ego_first_full_exit_frame': observed[last+1][0] if last+1 < len(observed) else None,
+            'crossing_frame_count': len(inside),
+            'through_present_frame_count': len(gaps),
+            'through_intersection_entry_frame': through_entries[0] if through_entries else None,
+            'through_shared_intersection_frames': shared,
+            'body_contact_frames': contact,
+            'minimum_body_gap_m': min(gaps) if gaps else None,
+            'immediate_hazard_judgment': 'unresolved'}
+
+
+def measure_yield_relation(interaction, slowness):
+    """Retain observed timing and gap without imposing a legal cutoff."""
+    return {'sampled_slowness_before_entry': slowness['sampled_slowness_before_entry'],
+            'ego_first_body_entry_frame': interaction['ego_first_body_entry_frame'],
+            'through_intersection_entry_frame': interaction['through_intersection_entry_frame'],
+            'through_shared_intersection_frames': interaction['through_shared_intersection_frames'],
+            'body_contact_frames': interaction['body_contact_frames'],
+            'minimum_body_gap_m': interaction['minimum_body_gap_m'],
+            'yield_judgment': 'unresolved', 'legal_adequacy_assessed': False}
+
+
 def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / 'result.json').exists() or (attempt / 'channels').exists():
@@ -170,6 +254,11 @@ def finalize(attempt, output):
                        ('road.xodr', 'road_context.json', 'control_inventory.jsonl',
                         'capture/native_map_facts.json', 'rendered_marking_review.json',
                         'video_frames.jsonl', *CAMERAS)}
+    interaction = measure_through_interaction(attempt)
+    slowness = measure_slowness_before_entry(attempt, report)
+    interaction_sources = {name: _sha(attempt/name) for name in
+                           ('interaction_history.jsonl', 'control_context.json',
+                            'road_context.json', 'video_frames.jsonl')}
     analysis = {'format': 'worker-c158190-yield-analysis', 'case_id': case_id,
                 'measurements': {'speed_at_closest_view_mps': {
                     'value': measured, 'method': 'measure_speed_at_closest_view',
@@ -185,13 +274,24 @@ def finalize(attempt, output):
                                            'method': 'measure_control_exceptions',
                                            'sources': context_sources},
                     'slowness_before_entry': {
-                        'value': measure_slowness_before_entry(attempt, report),
+                        'value': slowness,
                         'method': 'measure_slowness_before_entry',
                         'sources': {name: _sha(attempt/name) for name in
                                     ('interaction_history.jsonl', 'control_context.json',
                                      'approach_history.jsonl', 'visibility_samples.json',
                                      'visibility_rays.jsonl', 'video_frames.jsonl',
-                                     'road_context.json')}}},
+                                     'road_context.json')}},
+                    'through_interaction': {
+                        'value': interaction, 'method': 'measure_through_interaction',
+                        'sources': interaction_sources},
+                    'yield_relation': {
+                        'value': measure_yield_relation(interaction, slowness),
+                        'method': 'measure_yield_relation',
+                        'sources': {name: _sha(attempt/name) for name in
+                                    ('interaction_history.jsonl', 'control_context.json',
+                                     'road_context.json', 'video_frames.jsonl',
+                                     'approach_history.jsonl', 'visibility_samples.json',
+                                     'visibility_rays.jsonl')}}},
                 'legal_conclusion': 'unresolved', 'source_report': report,
                 'source_review_sha256': context['source_review_sha256']}
     write_result(attempt, result)

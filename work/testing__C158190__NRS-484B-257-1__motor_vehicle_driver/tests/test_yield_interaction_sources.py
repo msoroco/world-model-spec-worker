@@ -30,6 +30,10 @@ class World:
     def get_snapshot(self):
         return type('Snapshot', (), {'frame': self.frame})()
 
+    def get_map(self):
+        return type('Map', (), {'get_waypoint': lambda self, location, project_to_road=False:
+                    type('Waypoint', (), {'road_id': 158195, 'lane_id': -1})()})()
+
 
 class InteractionTests(unittest.TestCase):
     def test_retains_bodies_and_context_for_physical_check(self):
@@ -37,6 +41,7 @@ class InteractionTests(unittest.TestCase):
         row = observe_interaction(world, Actor(1), Actor(2), 100, 5.)
         self.assertEqual(len(row['ego']['body_vertices_m']), 8)
         self.assertEqual(row['through']['actor_id'], 2)
+        self.assertEqual(row['through']['road_id'], 158195)
         with tempfile.TemporaryDirectory() as directory:
             writer = InteractionWriter(directory)
             writer.add(row)

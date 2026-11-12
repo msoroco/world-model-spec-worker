@@ -14,13 +14,17 @@ def _xyz(point):
     return values
 
 
-def _body(actor):
+def _body(world, actor):
     transform = actor.get_transform()
     vertices = [_xyz(point) for point in actor.bounding_box.get_world_vertices(transform)]
     if len(vertices) < 4:
         raise ValueError('Incomplete original actor body')
+    waypoint = world.get_map().get_waypoint(transform.location, project_to_road=False)
+    if waypoint is None:
+        raise ValueError('Original actor has no Native road waypoint')
     return {'actor_id': actor.id, 'blueprint': actor.type_id,
             'position_m': _xyz(transform.location),
+            'road_id': waypoint.road_id, 'lane_id': waypoint.lane_id,
             'body_vertices_m': vertices}
 
 
@@ -29,8 +33,8 @@ def observe_interaction(world, ego, through, frame, time_s):
         raise ValueError('Interaction observation frame differs')
     if isinstance(time_s, bool) or not isinstance(time_s, (int, float)) or not math.isfinite(time_s):
         raise ValueError('Missing original interaction time')
-    ego_state = _body(ego)
-    through_state = None if through is None else _body(through)
+    ego_state = _body(world, ego)
+    through_state = None if through is None else _body(world, through)
     if world.get_snapshot().frame != frame:
         raise ValueError('World advanced during interaction observation')
     return {'frame': frame, 'time_s': float(time_s),
