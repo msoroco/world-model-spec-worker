@@ -126,3 +126,16 @@ The compact `diagnostic-contact-vehicle.json` is 1381941 bytes with SHA-256 `149
 Independent comparison command: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/audit_contact_observation.py`. `contact-comparison.log` SHA-256 `58f0de2cd7d2a8659389dd650abbfc8292d2638c98289cce458c051b651721d3`. The fixture measures contact at frame 38038 and leaves safety/interference legal judgments null.
 
 Status remains **partial**. Next CPU steps: return/rebind the common manifest and first two constructions, implement pedestrian and no-reverse exact cases with three fallbacks each, add canonical semantic stages, independent delivery audits and all comparison receipts, rerun affected exact proofs and the scoped and batch strict gates. The contact candidate uses a Native hold policy while its fixture isolates the packet change; physical motion and whether the hold produces contact require later observation. No GPU command was run.
+
+## 2026-11-12 contact fallback correction and reproof
+
+The earlier contact construction hashes in this handoff are superseded. Fallback2 now changes `contact_hold_brake` from 1.0 to 0.7; the prior `other_throttle` change was masked by the hold policy. The retained Native runner validates and applies the brake setting. Current returned hashes:
+
+- `construction-contact-primary.json` SHA-256 `9a77032b85ca7242babd7bfaf5508e6eda5b75402544e8dca783e31fe9c65ec0`
+- `construction-contact-fallback1.json` SHA-256 `f9775698cd22dc9f4a7886ea2bcb6e3c90f600b32f770c544c99764f659c8cf3`
+- `construction-contact-fallback2.json` SHA-256 `25f070b5a950fa2e2ef7701baa42e82eb4af4281a1bdfe2429b63cec52ba7e74`
+- `construction-contact-fallback3.json` SHA-256 `a899be3c63923bb4c1aab95c7f2a348e87df381dc9ecd979d47685c8d10d2630`
+
+All four current candidates were rerun through exact offline, positive/missing-source compatibility and positive/negative saved processing using the staged manifest. Current offline and compatibility outputs are under `.runtime-work/c110779-native-stage/offline-contact-CANDIDATE-v2/` and `compat-contact-CANDIDATE-v2/`; each saved proof passed nine-frame joins, original-byte preservation and missing-motion feedback classification. The independent audit uses `compat-contact-primary-v2/compatibility.json` and passes with its negative branches. `contact-comparison.log` SHA-256 `58f0de2cd7d2a8659389dd650abbfc8292d2638c98289cce458c051b651721d3`. These are staged CPU receipts, pending returned manifest and proof binding. A complete-batch strict gate attempt was interrupted after prolonged no-output execution; the previous strict gate reported partial/missing packages. Status remains partial.
+
+The returned `work/` inventory is exactly 10,200 files, equal to the frozen cap. Before adding more returned artifacts, source-hash archive or remove only redundant generated history while preserving every current manifest-bound proof; rerun the complete gate after any compaction.
