@@ -126,6 +126,130 @@
         "receipt": "pedestrian-horn-primary-saved-receipt.json",
         "receipt_sha256": "5b947777ebab6483cf11fd1cad6c24b62fcf11f54098334dd1572c827ec28bb8"
       }
+    },
+    {
+      "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_no_horn_before_turn",
+      "kind": "delivery",
+      "construction": "pedestrian-no-horn-construction.json",
+      "construction_sha256": "ea582b03b75afa253dd166a6b4bdff01759a54ef7419533ed34084f5e2d4493b",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "pedestrian-no-horn-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/pedestrian-no-horn-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Pedestrian route proximity, independent listener audio continuity and camera visibility need physical readback."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "trigger": {
+            "source": "Native pedestrian and connected-route inventory",
+            "metric": "pedestrian distance to sampled route",
+            "failure_condition": "Primary placement does not make pedestrian potentially affected"
+          },
+          "changed_knobs": [
+            "pedestrian route-side offset 6/2 to 5/1.5 m"
+          ],
+          "construction": "pedestrian-no-horn-fallback1-construction.json",
+          "construction_sha256": "2e314f75d66d92ed4694468260aefec159e543453720eb7ee79121f01f675f01",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_no_horn_before_turn --candidate fallback1 --output .runtime-work/c111610-no-horn-fallback1-offline-proof --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "pedestrian-no-horn-fallback1-offline.log",
+            "log_sha256": "dad80855e575810a4d2a1b3aae2a921e3fe643d54b0caff3730eeeb40750ed92",
+            "construction_sha256": "2e314f75d66d92ed4694468260aefec159e543453720eb7ee79121f01f675f01"
+          },
+          "compatibility": {
+            "receipt": "pedestrian-no-horn-fallback1-receipt.json",
+            "sha256": "8269e2112d68c8f4d00ee6d36dd9e0b3ac4d2e9a2b99fbeceea1052e3e191efe",
+            "log": "pedestrian-no-horn-fallback1-analysis.log",
+            "negative_log": "pedestrian-no-horn-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "trigger": {
+            "source": "Original listener microphone PCM",
+            "metric": "20 Hz audio packet continuity",
+            "failure_condition": "Primary ALSA device loses or misaligns a listener packet"
+          },
+          "changed_knobs": [
+            "listener PCM rate 16000 to 32000 Hz"
+          ],
+          "construction": "pedestrian-no-horn-fallback2-construction.json",
+          "construction_sha256": "fac3c87f57157f178d7d196525b0f71a8fed20587d62be61ae5d8234f2919289",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_no_horn_before_turn --candidate fallback2 --output .runtime-work/c111610-no-horn-fallback2-offline-proof --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "pedestrian-no-horn-fallback2-offline.log",
+            "log_sha256": "78353f8f2b303a7a62c7941355cce1f4f1f83090a89626ef4f0b7a7e3a7c64c2",
+            "construction_sha256": "fac3c87f57157f178d7d196525b0f71a8fed20587d62be61ae5d8234f2919289"
+          },
+          "compatibility": {
+            "receipt": "pedestrian-no-horn-fallback2-receipt.json",
+            "sha256": "cf44f764610f5398fd2ed6d2675e1927300b0caa2c050baa9a1d880cda82387b",
+            "log": "pedestrian-no-horn-fallback2-analysis.log",
+            "negative_log": "pedestrian-no-horn-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "trigger": {
+            "source": "Original overview RGB decode",
+            "metric": "pedestrian visible pixel count",
+            "failure_condition": "Primary overview crops the potentially affected pedestrian"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "construction": "pedestrian-no-horn-fallback3-construction.json",
+          "construction_sha256": "2da1565bb34f716a86afbeb15066c16372c078bbadf789ca16d7024ab6b5543e",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_no_horn_before_turn --candidate fallback3 --output .runtime-work/c111610-no-horn-fallback3-offline-proof --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "pedestrian-no-horn-fallback3-offline.log",
+            "log_sha256": "7dd611c62a45994b3edbe745cc1e6d4a418dc71c11b8a67d46a1dd020a4540ae",
+            "construction_sha256": "2da1565bb34f716a86afbeb15066c16372c078bbadf789ca16d7024ab6b5543e"
+          },
+          "compatibility": {
+            "receipt": "pedestrian-no-horn-fallback3-receipt.json",
+            "sha256": "7fad728867e419206e9bb05327dff8f134ee099c93540672b1a281b5e0c03d88",
+            "log": "pedestrian-no-horn-fallback3-analysis.log",
+            "negative_log": "pedestrian-no-horn-fallback3-negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_no_horn_before_turn --candidate primary --output .runtime-work/c111610-no-horn-primary-offline-proof --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "pedestrian-no-horn-primary-offline.log",
+        "log_sha256": "47431bdb33cd972515362f7ec61af7d48c097eb649bfb09afe3eb0b2c0a09811",
+        "construction_sha256": "ea582b03b75afa253dd166a6b4bdff01759a54ef7419533ed34084f5e2d4493b"
+      },
+      "compatibility": {
+        "receipt": "pedestrian-no-horn-primary-receipt.json",
+        "sha256": "eda01f794c9dc1a7b9589f164bb0dd55585aec0972cba2cd0f3f234d7af9cd0a",
+        "log": "pedestrian-no-horn-primary-analysis.log",
+        "negative_log": "pedestrian-no-horn-primary-negative.log"
+      },
+      "negative": {
+        "log": "pedestrian-no-horn-primary-negative.log"
+      },
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_no_horn_before_turn --attempt .runtime-work/c111610-no-horn-saved-attempt-proof --output .runtime-work/c111610-no-horn-saved-proof --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "pedestrian-no-horn-saved.log",
+        "log_sha256": "810c9a64006aed3334f4140c180436c4316635bdbb12748a93dbc00a104fee62",
+        "receipt": "pedestrian-no-horn-saved-receipt.json",
+        "receipt_sha256": "810c9a64006aed3334f4140c180436c4316635bdbb12748a93dbc00a104fee62"
+      }
     }
   ]
 }
