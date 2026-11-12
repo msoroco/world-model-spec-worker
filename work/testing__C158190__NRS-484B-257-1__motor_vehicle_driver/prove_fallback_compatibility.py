@@ -23,7 +23,7 @@ def main():
         suffix = entry['case_id'].rsplit('__', 1)[-1]
         for candidate in entry['candidates']:
             ident = candidate['id']
-            output = REPO / '.runtime-work' / f'c158190-{suffix}-{ident}-compat-v1'
+            output = REPO / '.runtime-work' / f'c158190-{suffix}-{ident}-compat-v2'
             command = [str(REPO / '.venv-cpu/bin/python'), str(REPO / 'runtime.py'),
                        'compatibility', '--manifest', str(MANIFEST),
                        '--case', entry['case_id'], '--candidate', ident,

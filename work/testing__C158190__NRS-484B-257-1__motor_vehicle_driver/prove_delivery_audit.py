@@ -11,10 +11,10 @@ ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 MANIFEST = ROOT / 'execution-manifest.json'
 ATTEMPTS = {
-    'yield_nearest_view_through_approaches': '.runtime-work/c158190-primary-compat-v3',
-    'yield_nearest_view_through_entered': '.runtime-work/c158190-through-entered-compat-v2',
-    'yield_nearest_view_clear': '.runtime-work/c158190-clear-compat-v3',
-    'yield_nearest_view_no_slow': '.runtime-work/c158190-no-slow-compat-v2',
+    'yield_nearest_view_through_approaches': '.runtime-work/c158190-yield_nearest_view_through_approaches-primary-compat-v4',
+    'yield_nearest_view_through_entered': '.runtime-work/c158190-yield_nearest_view_through_entered-primary-compat-v4',
+    'yield_nearest_view_clear': '.runtime-work/c158190-yield_nearest_view_clear-primary-compat-v4',
+    'yield_nearest_view_no_slow': '.runtime-work/c158190-yield_nearest_view_no_slow-primary-compat-v4',
 }
 
 
