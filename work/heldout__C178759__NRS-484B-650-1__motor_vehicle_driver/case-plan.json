@@ -8,7 +8,7 @@
       "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass",
       "target_law_id": "NRS-484B-650-1",
       "description": "Two separately source-measured rightward order reversals of the same fixed overtaken vehicle, with paved reentry and lead reclaim between, plus independent speeding and immediate-hazard source review",
-      "construction_status": "physical_request_helper_only",
+      "construction_status": "primary_exact_offline_compatibility_saved_passed",
       "physical_risk": {
         "risk": "Native map may not have a traversable off-paved shoulder or enough same-vehicle gap reversal to reset between passes",
         "trigger_source": "20 Hz original ego/lead geometry, paved boundary source and four synchronized cameras",
@@ -18,7 +18,35 @@
     }
   ],
   "comparisons": [],
-  "observations": [],
+  "observations": [
+    {
+      "name": "path_length_m",
+      "mandatory": true,
+      "source": "original 20 Hz ego world positions",
+      "measurement": "cumulative continuous path",
+      "case_ids": [
+        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass"
+      ]
+    },
+    {
+      "name": "mapped_road_edge_clearance_m",
+      "mandatory": true,
+      "source": "original actor position and separately retained OpenDRIVE road edge",
+      "measurement": "signed mapped outer-edge clearance, not legal pavement classification",
+      "case_ids": [
+        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass"
+      ]
+    },
+    {
+      "name": "two_right_pass_observation",
+      "mandatory": false,
+      "source": "saved-only source joins",
+      "measurement": "two candidate order reversals and measured event envelope with legal findings null",
+      "case_ids": [
+        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass"
+      ]
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
@@ -35,8 +63,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "CARLA motion, exact map geometry, four-camera visibility and delivered footage remain unverified.",
-    "The selected law branches have not yet been constructed or source-bound through finalization and saved processing."
+    "CARLA motion, actual paved material, camera visibility and delivered footage remain unverified.",
+    "Three distinct physical-risk fallbacks, semantic comparisons, and independent delivery/comparison audits remain CPU work."
   ],
   "status": "draft",
   "law_text": "A driver commits an offense of aggressive driving if, during any single, continuous period of driving within the course of 1 mile, the driver does all the following, in any sequence: (a) Commits one or more acts of speeding in violation of NRS 484B.363 or 484B.600 [NRS-484B-363-1, NRS-484B-363-2, NRS-484B-600-1a, NRS-484B-600-1b, NRS-484B-600-1c, NRS-484B-600-1e]. (b) Commits two or more of the following acts, in any combination, or commits any of the following acts more than once: (1) Failing to obey an official traffic-control device in violation of NRS 484B.300 [NRS-484B-300-1]. (2) Overtaking and passing another vehicle upon the right by driving off the paved portion of the highway in violation of NRS 484B.210 [NRS-484B-210-3]. (3) Improper or unsafe driving upon a highway that has marked lanes for traffic in violation of NRS 484B.223 [NRS-484B-223-1b, NRS-484B-223-2, NRS-484B-223-3a, NRS-484B-223-3b, NRS-484B-223-3c, NRS-484B-223-4a, NRS-484B-223-4b]. (4) Following another vehicle too closely in violation of NRS 484B.127 [LVMC-11-12-080-A, NRS-484B-127-2, NRS-484B-127-3]. (5) Failing to yield the right-of-way in violation of any provision of NRS 484B.250 to 484B.267, inclusive [NRS-484B-250-1, NRS-484B-250-2, NRS-484B-250-3, NRS-484B-250-4, NRS-484B-253, NRS-484B-257-1, NRS-484B-257-2, NRS-484B-260, NRS-484B-263, NRS-484B-267-1a, NRS-484B-267-1b, NRS-484B-267-1c, NRS-484B-267-2a, NRS-484B-267-2b, NRS-484B-267-2c, NRS-484B-267-2d, NRS-484B-267-2e, NRS-484B-267-2f]. (c) Creates an immediate hazard, regardless of its duration, to another vehicle or to another person, whether or not the other person is riding in or upon the vehicle of the driver or any other vehicle.",
@@ -69,5 +97,16 @@
       "Hazard has no supplied numeric legal threshold."
     ]
   },
-  "selected_branch": "Speeding context plus repeated off-pavement right passing"
+  "selected_branch": "Speeding context plus repeated off-pavement right passing",
+  "requirement_dispositions": [
+    {
+      "requirement": "Single continuous one-mile window with one speeding act, two separately sourced off-pavement right passes of the fixed other vehicle, and immediate hazard to vehicle or person",
+      "source": "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass"
+      ],
+      "evidence_or_gap": "Exact two-pass source collection and one-mile event-envelope measurement requested; original pavement, speeding predicate and hazard judgments remain independent review."
+    }
+  ]
 }

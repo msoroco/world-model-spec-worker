@@ -98,6 +98,70 @@
         "saved_processing_receipt": "outer-saved-processing.json",
         "saved_processing_sha256": "2397b02990a2f215effe6a3956d399fc644d350e7f76c11e78a5a7eafcff680c"
       }
+    },
+    {
+      "case_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_west",
+      "kind": "delivery",
+      "construction": "construction-center_west.json",
+      "construction_sha256": "7958d714272c2ec4d502852feae9bfbccf82c1a6378f80b81e62ddf57be9c6dd",
+      "measurement_procedure": {
+        "entrypoint": "west_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-left_center_west.json",
+      "fixture_recipe": "work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/fixture-recipe-left_center_west.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Westbound connected center lane may be unavailable or designation unverified; map and motion require Native review"
+      },
+      "candidates": [],
+      "acquisition": {
+        "turn_origin_observation": {
+          "entrypoint": "west_runner.py",
+          "method": "20 Hz original Native westbound lane/heading source recorder",
+          "evidence": "turn_origin_native.jsonl, case_context.json, trace.jsonl, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_west --output .runtime-work/c374648-west-offline-3",
+        "exit_code": 0,
+        "log": "west-offline.log",
+        "log_sha256": "6ffb345e1dfe0fd2d0460d4dde5372957e5d94acf257c054ebb8c8d921f77225",
+        "construction_sha256": "7958d714272c2ec4d502852feae9bfbccf82c1a6378f80b81e62ddf57be9c6dd"
+      },
+      "compatibility": {
+        "receipt": "west-compatibility.json",
+        "sha256": "218b1040e0900554f3bb2a1eafb60372d8bebcc8dd11e76d6d5c0e4d8f938351",
+        "log": "west-compat-analysis.log",
+        "negative_log": "west-negative.log"
+      },
+      "negative": {
+        "log": "west-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_west --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/v0001/feedback.json\"",
+        "test_log": "west-saved.log",
+        "test_log_sha256": "4c859268f51a4ff6f00801546c76e698bcb6a6ed58b53e8d3f426640783e0e2f",
+        "saved_processing_receipt": "west-saved-processing.json",
+        "saved_processing_sha256": "4c859268f51a4ff6f00801546c76e698bcb6a6ed58b53e8d3f426640783e0e2f"
+      }
+    },
+    {
+      "case_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_outer_west",
+      "kind": "delivery",
+      "construction": "construction-outer_west.json",
+      "construction_sha256": "c798b80462924f9e47955ab1ef59d73512665674884a1f61ac74a01e43dc9c47",
+      "measurement_procedure": {
+        "entrypoint": "west_outer_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-left_outer_west.json",
+      "fixture_recipe": "work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/fixture-recipe-left_outer_west.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Westbound outer lane may cross into candidate center lane before turn; map and motion require Native review"
+      },
+      "candidates": []
     }
   ]
 }

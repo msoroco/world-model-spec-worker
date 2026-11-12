@@ -1,0 +1,87 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "c7e38089d1e09b65603efb2efd6a0c15b8158cf86740ed9e902d938a8830ae29",
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/diagnostic-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "two_pass_finalizer.py",
+        "output": "analysis-report.json"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The same fixed lead may fail to reclaim its position, either mapped-road-edge pass may fail, or the requested trajectory may not create an immediate hazard in original Native motion."
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass --candidate primary --output .runtime-work/c178759-repeated-right-pass-primary-offline-v5",
+        "exit_code": 0,
+        "construction_sha256": "c7e38089d1e09b65603efb2efd6a0c15b8158cf86740ed9e902d938a8830ae29",
+        "log": "repeated-right-pass-primary-offline.log",
+        "log_sha256": "65378dcad145da2497120819bebfc3c46534dce9714ce064b3d809a56654aca2"
+      },
+      "compatibility": {
+        "receipt": "repeated-right-pass-primary-compatibility.json",
+        "sha256": "0d7d5ff1662e96d10c9bb1245c40ecf1e66d41b9f1e726341e7b6bde920f7c15",
+        "log": "repeated-right-pass-primary-compat-analysis.log",
+        "negative_log": "repeated-right-pass-primary-negative.log"
+      },
+      "negative": {
+        "log": "repeated-right-pass-primary-negative.log",
+        "log_sha256": "56b634323156942d753d9f8ac5082238e16b07c759c4c8ea6799dd0ca755844a"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "cpu_saved_receipt": "repeated-right-pass-primary-saved-receipt.json",
+        "cpu_saved_receipt_sha256": "af3c23979c674f3a0f8c676142740460d0c387b4561174dee399b907fbd9cfbd"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/repeated_right_pass/fallback1/construction.json",
+          "construction_sha256": "ed433039db7ef2210578fd2491c7058b23c9111bfc9637349c99309bc0b5fd0e",
+          "trigger": {
+            "source": "Original Native route geometry and synchronized RGB",
+            "metric": "route continuity and participant visibility",
+            "failure_condition": "route continuity or four-camera coverage fails"
+          },
+          "changed_knobs": [
+            "route_candidate_index"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/repeated_right_pass/fallback2/construction.json",
+          "construction_sha256": "869dc3db0d5178054e33b3a121937874bcaeb7a7d034caa0b85f1693ab324ab1",
+          "trigger": {
+            "source": "Original 20 Hz ego/lead signed route progress",
+            "metric": "inter-pass lead reclaim and second reset",
+            "failure_condition": "the fixed lead does not regain position before the second pass"
+          },
+          "changed_knobs": [
+            "reclaim_lead_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/repeated_right_pass/fallback3/construction.json",
+          "construction_sha256": "e9941efb570e65cc4620b9df448d9f3e68ca79cf35d004c441d4aa139f50a838",
+          "trigger": {
+            "source": "Original mapped outer-road-edge signed clearance and synchronized RGB",
+            "metric": "two separate mapped-edge crossings",
+            "failure_condition": "the ego does not cross the mapped outer road edge on either pass"
+          },
+          "changed_knobs": [
+            "beyond_mapped_edge_m"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "selected_case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass",
+  "law_id": "NRS-484B-650-1",
+  "cell_id": "C178759",
+  "actor": "motor_vehicle_driver",
+  "rate_hz": 20,
+  "frames": 2000,
+  "duration_s": 100,
+  "required_atoms": [],
+  "source_packets": [],
+  "case": {
+    "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "path_length_m",
+          "unit": "m",
+          "method": "cumulative original 20 Hz ego world positions",
+          "sampling_rate_hz": 20,
+          "time_window": "entire continuous source drive",
+          "reference_frame": "Native world ground plane",
+          "uncertainty": "Native pose sample resolution"
+        },
+        {
+          "name": "mapped_road_edge_clearance_m",
+          "unit": "m",
+          "method": "signed original ego position against retained OpenDRIVE driving and shoulder outer edges",
+          "sampling_rate_hz": 20,
+          "time_window": "both pass requests and intervening reset",
+          "reference_frame": "Native road ground plane",
+          "uncertainty": "Map geometry does not establish pavement material"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "fixed_overtaken_vehicle",
+          "unit": "Native actor ID",
+          "method": "same lead actor ID retained with per-frame ego and lead positions and speed"
+        },
+        {
+          "name": "paved_versus_traveled_boundary",
+          "unit": "source geometry and RGB pixels",
+          "method": "driving-lane and mapped road edges retained separately; paved surface requires independent original-pixel review"
+        },
+        {
+          "name": "governing_cross_referenced_rule",
+          "unit": "sourced legal context",
+          "method": "NRS 484B.210 and 484B.650 source identity retained; no automatic violation finding"
+        }
+      ],
+      "limitations": [
+        "Mapped road edge is a physical controller proxy, not proof of the paved portion.",
+        "Speeding, two lawful predicate violations, immediate hazard and aggressive-driving legal judgment remain independent review."
+      ]
+    }
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 95,
+      "pose_strategy": "ego-mounted original following view; visibility requires Native review"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-mounted original following view; visibility requires Native review"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 100,
+      "pose_strategy": "ego-mounted original following view; visibility requires Native review"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "ego-mounted original following view; visibility requires Native review"
+    }
+  ],
+  "supported_case_ids": [
+    "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass"
+  ],
+  "engineering": {
+    "route_candidate_index": 0,
+    "lead_spawn_station_m": 30,
+    "beyond_mapped_edge_m": 1.5,
+    "reclaim_lead_speed_mps": 20
+  }
+}

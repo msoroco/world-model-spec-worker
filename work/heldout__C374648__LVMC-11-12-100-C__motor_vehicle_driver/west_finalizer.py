@@ -36,6 +36,7 @@ def analyze(attempt, *, write_channels=True):
                               ('turn_origin_native.jsonl', 'video_frames.jsonl', 'trace.jsonl'))
     context = json.loads(sources['case_context.json'][0].read_text())
     if (len(native) != len(mapping) or len(native) != len(trace)
+            or context.get('case_id') != CASE
             or context.get('ego_actor_id') != int(value['ego_id'])
             or context.get('target_start_frame') != native[0]['frame']
             or context.get('requested_maneuver') != 'left turn'

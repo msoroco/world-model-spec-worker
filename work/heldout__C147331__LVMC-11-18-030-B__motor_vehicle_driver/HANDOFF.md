@@ -374,3 +374,7 @@ The C147331 fixed travel cell cannot locally construct the lawful-turn-preparati
 - C147331 semantic index SHA-256 `5d8ecbe5dee705fdc76192a1132710656e22b1b449591d596cd7d635220b2536`
 
 Zero-byte synthetic diagnostic logs were source-preservingly compacted into `work/_shared/prune-history.json` (`compacted_zero_logs`) to respect the frozen return-file cap. Their exact former paths and empty-byte SHA256 are retained; restore them with `work/_shared/restore_compacted_zero_logs.py --assignment heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver` before its scoped strict proof sweep. The assignment remains partial.
+
+2026-11-12 return-cap compaction: 47 small UTF-8 diagnostic logs have exact path, contents and SHA256 stored in `work/_shared/prune-history.json.compacted_text_files`. Scoped nonstrict preparation passes after compaction. Restore before any strict completion sweep with `.venv-cpu/bin/python work/_shared/restore_compacted_zero_logs.py --assignment heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver`; status remains partial.
+
+Additional cap compaction after the previous note archived 61 more UTF-8 diagnostic logs under the same hashed shared inventory. Total newly compacted on 2026-11-12: 108 files. Scoped nonstrict still passes. The same restore command restores all compacted logs for this assignment.

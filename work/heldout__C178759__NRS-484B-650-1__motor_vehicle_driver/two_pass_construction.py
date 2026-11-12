@@ -19,10 +19,10 @@ class Phase:
 
 
 PHASES = (
-    Phase('approach', 0, 260, 'paved_lane', 18, 10),
+    Phase('approach', 0, 260, 'paved_lane', 16, 16),
     Phase('first_right_pass_request', 260, 450, 'right_of_paved_edge', 24, 10),
     Phase('first_reentry', 450, 500, 'paved_lane', 12, 12),
-    Phase('lead_reclaim_request', 500, 580, 'right_of_paved_edge', 6, 22),
+    Phase('lead_reclaim_request', 500, 580, 'right_of_paved_edge', 6, 20),
     Phase('second_reentry', 580, 660, 'paved_lane', 12, 12),
     Phase('second_right_pass_request', 660, 880, 'right_of_paved_edge', 24, 10),
     Phase('exit', 880, 2200, 'paved_lane', 16, 16),

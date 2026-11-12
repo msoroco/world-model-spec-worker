@@ -1,4 +1,4 @@
-"""Restore source-hashed empty diagnostic logs from the return inventory."""
+"""Restore source-hashed compacted diagnostic logs from the return inventory."""
 
 import argparse
 from hashlib import sha256
@@ -11,17 +11,20 @@ def restore(assignment):
     inventory = json.loads((root / 'work/_shared/prune-history.json').read_text())
     prefix = f'work/{assignment}/'
     count = 0
-    for row in inventory.get('compacted_zero_logs', []):
+    rows = (inventory.get('compacted_zero_logs', []) +
+            inventory.get('compacted_text_files', []))
+    for row in rows:
         rel = row['path']
         if not rel.startswith(prefix):
             continue
         path = root / rel
         if path.exists():
             raise ValueError(f'Refusing to overwrite restored log: {rel}')
-        if row['text'] != '' or row['sha256'] != sha256(b'').hexdigest():
-            raise ValueError(f'Invalid compacted empty log: {rel}')
+        data = row['text'].encode('utf-8')
+        if row['sha256'] != sha256(data).hexdigest():
+            raise ValueError(f'Invalid compacted log: {rel}')
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(b'')
+        path.write_bytes(data)
         count += 1
     return count
 

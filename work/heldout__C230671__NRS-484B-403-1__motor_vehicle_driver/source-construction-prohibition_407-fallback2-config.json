@@ -1,0 +1,105 @@
+{
+  "selected_case_id": "heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_407",
+  "law_id": "NRS-484B-403-1",
+  "cell_id": "C230671",
+  "actor": "motor_vehicle_driver",
+  "rate_hz": 20,
+  "frames": 160,
+  "required_atoms": [
+    "st.sight_distance"
+  ],
+  "source_packets": [],
+  "duration_s": 8,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 95,
+      "pose_strategy": "subject-mounted provisional U-turn and surrounding-user source view"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "subject-mounted provisional U-turn and surrounding-user source view"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 100,
+      "pose_strategy": "subject-mounted provisional U-turn and surrounding-user source view"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "subject-mounted provisional U-turn and surrounding-user source view"
+    }
+  ],
+  "case": {
+    "case_id": "heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_407",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "u_turn_observation",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "joined original Native ego and surrounding-participant bodies, yaw and speeds",
+          "time_window": "entire 8 s original maneuver",
+          "reference_frame": "world ground plane",
+          "uncertainty": "20 Hz source sampling and circumscribed body-radius approximation"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "participant_roles",
+          "unit": "structured context",
+          "method": "original Native actor identities and opposing/following lane role citation"
+        },
+        {
+          "name": "curve_crest_geometry",
+          "unit": "structured context",
+          "method": "Native two-direction sampled curve/crest site geometry"
+        },
+        {
+          "name": "two_direction_500ft_visibility",
+          "unit": "structured context",
+          "method": "original 20 Hz nine-body-ray probe at 152.4 m on both incoming lanes"
+        }
+      ],
+      "limitations": [
+        "Source-shaped CPU media does not establish actual U-turn completion, sight lines, prohibition applicability or legal safety."
+      ]
+    }
+  },
+  "engineering": {
+    "waypoint_spacing_m": 2.0,
+    "route_candidate_index": 0,
+    "arc_extension_m": 4.0,
+    "oncoming_distance_m": 24.0,
+    "following_distance_m": 18.0,
+    "target_speed_mps": 5.0,
+    "heading_gain": 1.4,
+    "speed_gain": 0.25
+  },
+  "supported_case_ids": [
+    "heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_407"
+  ],
+  "physical_completion": {
+    "format": "worker-physical-completion-criteria",
+    "criterion": "turn",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "heading_key": "heading_deg",
+    "turn_degrees": 180,
+    "turn_tolerance_deg": 30,
+    "minimum_progress_m": 1.0,
+    "minimum_samples": 2,
+    "context_sources": [],
+    "engineering_tolerances_not_legal": true
+  }
+}

@@ -1,0 +1,50 @@
+"""Portable westbound outer-origin source checks."""
+
+import json
+from pathlib import Path
+import sys
+import tempfile
+import unittest
+
+HERE = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(HERE))
+import test_west_source
+from west_outer_finalizer import CASE, analyze
+from west_outer_runner import check_config
+
+
+class WestOuterSourceTests(unittest.TestCase):
+    def _source(self, root):
+        root = Path(root)
+        test_west_source.WestSourceTests()._source(root)
+        config = json.loads((root/'config.json').read_text())
+        config['selected_case_id'] = CASE
+        config['case']['case_id'] = CASE
+        (root/'config.json').write_text(json.dumps(config)+'\n')
+        rows = [json.loads(line) for line in
+                (root/'turn_origin_native.jsonl').read_text().splitlines()]
+        for row in rows:
+            row['lane_id'] = -2
+        (root/'turn_origin_native.jsonl').write_text(''.join(
+            json.dumps(row)+'\n' for row in rows))
+        context = json.loads((root/'case_context.json').read_text())
+        context['case_id'] = CASE
+        (root/'case_context.json').write_text(json.dumps(context)+'\n')
+        return config
+
+    def test_outer_west_origin_is_distinct(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            config = self._source(tmp)
+            self.assertEqual(check_config(config), CASE)
+            value = analyze(tmp)['measurements']['turn_origin_observation']['value']
+            self.assertFalse(value['origin_matches_center_lane'])
+            self.assertEqual(value['maximum_left_deflection_deg'], 90)
+
+    def test_wrong_original_context_rejects(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self._source(tmp)
+            context = json.loads((Path(tmp)/'case_context.json').read_text())
+            context['case_id'] = 'wrong'
+            (Path(tmp)/'case_context.json').write_text(json.dumps(context)+'\n')
+            with self.assertRaisesRegex(ValueError, 'source/intent binding'):
+                analyze(tmp)

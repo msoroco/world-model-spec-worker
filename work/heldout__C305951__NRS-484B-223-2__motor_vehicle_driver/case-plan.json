@@ -307,11 +307,188 @@
   ],
   "branch_analysis": {
     "source": "inputs/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/assignment.json",
-    "status": "planning_only",
+    "status": "exact_full_text_review_in_progress",
     "alternatives_and_boundaries": [
-      "Heavy-vehicle footprint and vehicle classification differ from motor-vehicle C147331; do not reuse its physical measurements.",
-      "Compare marked-lane containment with unexcused boundary crossing while preserving heavy-vehicle geometry.",
-      "Lawful passing and lawful-turn-preparation exceptions require separate context; the fixed travel cell may not support an actual lawful turn."
+      "The selected continuous extreme-left prohibition applies at any time while the three-clearly-marked-lane highway premise holds.",
+      "Center-lane passing, left-turn preparation, and exclusive posted same-direction allocation are separate exception comparisons, with physical and legal judgments unresolved.",
+      "No statutory numeric safe-distance threshold is supplied; engineering gap probes are measurements only."
     ]
+  },
+  "requirement_dispositions": [
+    {
+      "requirement": "three clearly marked lane geometry and right-lane baseline occupancy",
+      "source": "NRS 484B.223(2) full text in inputs/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__right_baseline"
+      ],
+      "evidence_or_gap": "No accepted source evidence; exact C305951 construction and CPU source proof are being prepared. Physical and legal review remain open."
+    },
+    {
+      "requirement": "center-lane default prohibition without an asserted exception",
+      "source": "NRS 484B.223(2) full text in inputs/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_no_exception"
+      ],
+      "evidence_or_gap": "No accepted source evidence; exact C305951 construction and CPU source proof are being prepared. Physical and legal review remain open."
+    },
+    {
+      "requirement": "extreme-left-lane driving prohibited at any time",
+      "source": "NRS 484B.223(2) full text in inputs/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__left_travel"
+      ],
+      "evidence_or_gap": "No accepted source evidence; exact C305951 construction and CPU source proof are being prepared. Physical and legal review remain open."
+    },
+    {
+      "requirement": "center lane overtaking/passing with clear visibility and safe-distance traffic gap",
+      "source": "NRS 484B.223(2) full text in inputs/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_pass_clear",
+        "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_pass_occluded"
+      ],
+      "evidence_or_gap": "No accepted source evidence; exact C305951 construction and CPU source proof are being prepared. Physical and legal review remain open."
+    },
+    {
+      "requirement": "center lane preparation for left turn",
+      "source": "NRS 484B.223(2) full text in inputs/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_prepare_left"
+      ],
+      "evidence_or_gap": "No accepted source evidence; exact C305951 construction and CPU source proof are being prepared. Physical and legal review remain open."
+    },
+    {
+      "requirement": "center lane exclusive same-direction allocation with posted sign",
+      "source": "NRS 484B.223(2) full text in inputs/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_allocated_signed",
+        "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_allocated_unsigned"
+      ],
+      "evidence_or_gap": "No accepted source evidence; exact C305951 construction and CPU source proof are being prepared. Physical and legal review remain open."
+    }
+  ],
+  "selected_branch": "Extreme-left-lane prohibition at any time during highway activation.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full three-lane road, subject and relevant traffic or roadside sign candidate",
+        "interval": "all original frames"
+      },
+      {
+        "view": "approach",
+        "subject": "forward highway sight line, passing target, occluder or left junction approach",
+        "interval": "all original frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "lane markings, center occupancy and passing/turn reference geometry",
+        "interval": "all original frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-side forward roadway and roadside sign candidate",
+        "interval": "all original frames"
+      }
+    ],
+    "unverified": "Actual pixel visibility and legibility require Native source audit"
+  },
+  "source_observation_mapping": {
+    "st.lane_adjacency": {
+      "evidence": "Mapped three-lane adjacency and markings; visual paint remains unverified",
+      "channels": [],
+      "source_refs": [
+        "three_lane_map_readback.json",
+        "three_lane_frames.jsonl"
+      ]
+    },
+    "drv.extreme_lane": {
+      "evidence": "Framewise extreme-left body occupancy",
+      "channels": [
+        "three_lane_observation"
+      ],
+      "source_refs": [
+        "three_lane_frames.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Framewise subject body and ordered lane polygon overlap",
+      "channels": [
+        "three_lane_observation"
+      ],
+      "source_refs": [
+        "three_lane_frames.jsonl"
+      ]
+    },
+    "drv.overtaking": {
+      "evidence": "Passing target and subject path source; completed pass requires Native review",
+      "channels": [],
+      "source_refs": [
+        "passing_frames.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "st.sight_distance": {
+      "evidence": "Occluder body geometry and camera source for physical sight-line review",
+      "channels": [],
+      "source_refs": [
+        "occluder_frames.jsonl",
+        "approach.mkv"
+      ]
+    },
+    "rel.visible": {
+      "evidence": "Original camera and center traffic sources for physical visibility review",
+      "channels": [],
+      "source_refs": [
+        "approach.mkv",
+        "passing_frames.jsonl"
+      ]
+    },
+    "rel.oncoming": {
+      "evidence": "Original center-lane traffic body and gap source",
+      "channels": [],
+      "source_refs": [
+        "passing_frames.jsonl"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Connected mapped left exit, approach distance and body source",
+      "channels": [],
+      "source_refs": [
+        "left_turn_plan.json",
+        "left_turn_frames.jsonl"
+      ]
+    },
+    "sig.turn_indicator": {
+      "evidence": "Original 20 Hz left indicator readback",
+      "channels": [],
+      "source_refs": [
+        "left_turn_frames.jsonl"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Candidate sign body and original camera; notice text/authority unverified",
+      "channels": [],
+      "source_refs": [
+        "allocation_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "Mapped center and right lane direction readback",
+      "channels": [],
+      "source_refs": [
+        "three_lane_map_readback.json",
+        "allocation_plan.json"
+      ]
+    }
   }
 }
