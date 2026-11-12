@@ -50,8 +50,27 @@ def analyze(root:Path)->dict:
                 "all_entrances_source","sign_governance_source","sign_face_video_source","native_yield_sign_id",
                 "median_spacing_source"):
         if ctx.get(key) is None:raise ValueError("Missing sourced crossing context: "+key)
-    if ctx["ego_highway_id"]==ctx["other_highway_id"]:
-        raise ValueError("Approaches are not from different highways")
+    relation=ctx.get("approach_relation","different_highways")
+    if relation=="different_highways":
+        if ctx["ego_highway_id"]==ctx["other_highway_id"]:
+            raise ValueError("Approaches are not from different highways")
+    elif relation=="opposite_directions":
+        if ctx["ego_highway_id"]!=ctx["other_highway_id"]:
+            raise ValueError("Opposite approaches must share a highway")
+        if ctx.get("turn_intent_source")!="controller_history.jsonl":
+            raise ValueError("Opposite left-turn intention needs original controller source")
+        other_forward=ctx.get("other_approach_forward_xy")
+        ego_forward=ctx.get("ego_approach_forward_xy")
+        if (not isinstance(other_forward,list) or not isinstance(ego_forward,list) or
+                len(other_forward)!=2 or len(ego_forward)!=2):
+            raise ValueError("Opposite approach headings required")
+        ox,oy=(_number(v,"other approach direction") for v in other_forward)
+        ex,ey=(_number(v,"ego approach direction") for v in ego_forward)
+        norm=math.hypot(ox,oy)*math.hypot(ex,ey)
+        if norm==0 or (ox*ex+oy*ey)/norm>-.8:
+            raise ValueError("Approaches are not opposite")
+    else:
+        raise ValueError("Unknown approach relation")
     if ctx.get("same_statutory_crossing") is not True:
         raise ValueError("One median-opening roadway crossing not sourced")
     polygon=Polygon(ctx.get("intersection_polygon_xy_m",[]))
@@ -68,6 +87,8 @@ def analyze(root:Path)->dict:
             raise ValueError("Original video frame join failed")
         if row.get("governing_yield_sign_id")!=ctx["native_yield_sign_id"]:
             raise ValueError("Governing Native yield sign identity mismatch")
+        if relation=="opposite_directions" and row.get("other_left_turn_intended") is not True:
+            raise ValueError("Original left-turn intention missing")
         sample={"frame":fid,"time_s":time}
         for role in ("ego","other"):
             actor=row.get(role)
@@ -81,6 +102,14 @@ def analyze(root:Path)->dict:
             sample[role]={"body_in_crossing":inside}
         samples.append(sample)
     if not all(first.values()):raise ValueError("Both original body entries required")
+    if relation=="opposite_directions":
+        center=polygon.centroid
+        for role in ("ego","other"):
+            hx,hy=(_number(v,role+" approach direction") for v in ctx[role+"_approach_forward_xy"])
+            toward=(center.x-start[role][0],center.y-start[role][1])
+            length=math.hypot(hx,hy)*math.hypot(*toward)
+            if length==0 or (hx*toward[0]+hy*toward[1])/length<.7:
+                raise ValueError("Original "+role+" approach does not match heading")
     forward=ctx.get("ego_approach_forward_xy")
     if not isinstance(forward,list) or len(forward)!=2:raise ValueError("Ego approach bearing missing")
     fx,fy=(_number(v,"approach direction") for v in forward)
@@ -90,8 +119,9 @@ def analyze(root:Path)->dict:
     dy=start["other"][1]-start["ego"][1]
     right_cross=(fx*dy-fy*dx)/norm
     return {"format":"worker-median-crossing-entry-timing","sources":hashes,
+            "approach_relation":relation,
             "first_body_entry":first,"absolute_entry_time_difference_s":abs(first["ego"]["time_s"]-first["other"]["time_s"]),
-            "other_spatially_right_of_ego_approach":right_cross<0,
+            "other_spatially_right_of_ego_approach":right_cross<0 if relation=="different_highways" else None,
             "other_right_signed_cross_m":right_cross,"samples":samples,
             "approximately_same_time_judgment":"unresolved; no legal numeric window",
             "opposite_direction_left_turn_exception_judgment":"unresolved",

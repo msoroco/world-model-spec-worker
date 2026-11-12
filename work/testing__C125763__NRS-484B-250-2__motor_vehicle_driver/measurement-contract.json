@@ -1,0 +1,65 @@
+{
+  "format": "worker-measurement-contract",
+  "assignment_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver",
+  "selected_case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_near_time",
+  "requirements": [
+    {
+      "requirement": "One sourced median-opening crossing and entrance highways",
+      "source": "inputs/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "crossing_identity",
+      "method": "source_crossing_identity",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": ["junction_context.json"]
+    },
+    {
+      "requirement": "Both complete bodies enter and original entry-time difference is measured without a legal cutoff",
+      "source": "NRS 484B.250(2); inputs/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "entry_timing",
+      "method": "complete_body_first_entry",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": ["crossing_history.jsonl", "video_frames.jsonl", "junction_context.json"]
+    },
+    {
+      "requirement": "Relative left/right approach geometry, inapplicable for the opposite-direction exception case",
+      "source": "NRS 484B.250(2); inputs/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "relative_right_side",
+      "method": "original_approach_cross_product",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": ["crossing_history.jsonl", "junction_context.json"]
+    },
+    {
+      "requirement": "Native governing yield sign and unresolved official-device and subsection-4 qualification",
+      "source": "NRS 484B.250(2); inputs/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "device_qualification_context",
+      "method": "native_yield_sign_identity",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": ["junction_context.json", "crossing_history.jsonl"]
+    },
+    {
+      "requirement": "Opposite-direction left-turn exception remains separately measured and unresolved",
+      "source": "NRS 484B.250(2); inputs/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "opposite_left_turn_context",
+      "method": "original_approach_and_controller_intention",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": ["junction_context.json", "crossing_history.jsonl", "controller_history.jsonl"]
+    },
+    {
+      "requirement": "Original yield slowdown and conflict-hold control samples without asserting legal yielding",
+      "source": "NRS 484B.250(2); inputs/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "yield_observation",
+      "method": "original_yield_slowdown_and_conflict_hold",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": ["controller_history.jsonl", "crossing_history.jsonl", "video_frames.jsonl"]
+    }
+  ],
+  "negative": {
+    "remove": ["controller_history.jsonl"],
+    "error_contains": "Missing required source: controller_history.jsonl"
+  }
+}

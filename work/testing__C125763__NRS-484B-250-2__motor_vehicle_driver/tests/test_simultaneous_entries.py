@@ -79,6 +79,39 @@ class EntryTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,"frame join"):
                 measure.analyze(root)
 
+    def test_opposite_left_turn_uses_original_intention_and_headings(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root)
+            ctx=json.loads((root/'junction_context.json').read_text())
+            ctx.update({'approach_relation':'opposite_directions',
+                        'other_highway_id':ctx['ego_highway_id'],
+                        'other_approach_forward_xy':[-1,0],
+                        'turn_intent_source':'controller_history.jsonl'})
+            (root/'junction_context.json').write_text(json.dumps(ctx))
+            rows=[json.loads(line) for line in
+                  (root/'crossing_history.jsonl').read_text().splitlines()]
+            for row,(ego_x,other_x) in zip(rows,((0,30),(10,20),(15,15))):
+                row['ego']=vehicle(ego_x,0,1)
+                row['other']=vehicle(other_x,0,2)
+                row['other_left_turn_intended']=True
+            (root/'crossing_history.jsonl').write_text(''.join(
+                json.dumps(row)+'\n' for row in rows))
+            report=measure.analyze(root)
+            self.assertEqual(report['approach_relation'],'opposite_directions')
+            self.assertIsNone(report['other_spatially_right_of_ego_approach'])
+            rows[1]['other_left_turn_intended']=False
+            (root/'crossing_history.jsonl').write_text(''.join(
+                json.dumps(row)+'\n' for row in rows))
+            with self.assertRaisesRegex(ValueError,'left-turn intention'):
+                measure.analyze(root)
+            rows[1]['other_left_turn_intended']=True
+            (root/'crossing_history.jsonl').write_text(''.join(
+                json.dumps(row)+'\n' for row in rows))
+            ctx['other_approach_forward_xy']=[1,0]
+            (root/'junction_context.json').write_text(json.dumps(ctx))
+            with self.assertRaisesRegex(ValueError,'not opposite'):
+                measure.analyze(root)
+
 
 if __name__=="__main__":
     unittest.main()
