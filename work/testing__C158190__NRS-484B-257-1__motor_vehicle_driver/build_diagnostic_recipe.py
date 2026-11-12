@@ -42,7 +42,13 @@ def through_y(i):
     return 20.0 - min(i, 300)*.2
 
 
-def build():
+def build(variant=None):
+    if variant not in (None, 'through_entered'):
+        raise ValueError('Unsupported exact diagnostic variant')
+    target_root = HERE if variant is None else HERE / 'cases' / variant
+    config_path = target_root / 'config.json'
+    def actor_y(i):
+        return through_y(i) if variant is None else 4.0 - min(i, 220)*.2
     spec_path = HERE / 'tests/test_finalizer.py'
     loader = importlib.util.spec_from_file_location('c158190_test_finalizer', spec_path)
     module = importlib.util.module_from_spec(loader)
@@ -72,9 +78,9 @@ def build():
                    'ego': {'actor_id': 101, 'road_id': 158190 if ego_x(i) < -8 else
                            158192 if ego_x(i) < 8 else 158193, 'lane_id': -1,
                            'body_vertices_m': body_vertices(trace[i]['position_m'][0], 1.8)},
-                   'through': {'actor_id': 202, 'road_id': 158194 if through_y(i) > 8 else
-                               158195 if through_y(i) >= -8 else 158196, 'lane_id': -1,
-                               'body_vertices_m': body_vertices(1.8, through_y(i))}}
+                   'through': {'actor_id': 23, 'road_id': 158194 if actor_y(i) > 8 else
+                               158195 if actor_y(i) >= -8 else 158196, 'lane_id': -1,
+                               'body_vertices_m': body_vertices(1.8, actor_y(i))}}
                   for i, row in enumerate(frames)]
         for name, rows in (('video_frames.jsonl', frames),
                            ('control_inventory.jsonl', controls),
@@ -121,10 +127,10 @@ def build():
                        body_vertices_m=bodies[i]['ego']['body_vertices_m'],
                        speed_mps=trace[i]['speed_mps'],
                        velocity_mps=trace[i]['velocity_mps'])
-            through.update(actor_id=23, position_m=[1.8, through_y(i), 0],
+            through.update(actor_id=23, position_m=[1.8, actor_y(i), 0],
                            body_vertices_m=bodies[i]['through']['body_vertices_m'],
-                           speed_mps=4 if i <= 300 else 0,
-                           velocity_mps=[0, -4 if i <= 300 else 0, 0])
+                           speed_mps=4 if i <= (300 if variant is None else 220) else 0,
+                           velocity_mps=[0, -4 if i <= (300 if variant is None else 220) else 0, 0])
             evidence.append(event)
             base = f'graphs/base/{frame:08d}.pkl'
             abstract = f'graphs/abstract/{frame:08d}.pkl'
@@ -151,7 +157,7 @@ def build():
         (source / 'capture/native/frames.jsonl').write_text(''.join(json.dumps(e,separators=(',', ':'))+'\n'
                                                                  for e in frame_index))
         (source / 'capture/recorder_info.txt').write_text(reference['files']['capture/recorder_info.txt'])
-        configuration = json.loads((HERE / 'config.json').read_text())
+        configuration = json.loads(config_path.read_text())
         manifest = {'status': 'draft', 'acquisition': 'synthetic_diagnostic',
                     'case_id': configuration['selected_case_id'],
                     'map': 'Carla/Maps/OpenDriveMap', 'frames': frame_count,
@@ -179,7 +185,7 @@ def build():
         review['last_carla_frame'] = frames[-1]['carla_frame']
         review['source_sha256'] = {name: sha(generated / name) for name in CAMERAS}
         (source / 'rendered_marking_review.json').write_text(json.dumps(review, indent=2) + '\n')
-        targets = HERE / 'diagnostic-sources'
+        targets = target_root / 'diagnostic-sources'
         targets.mkdir(exist_ok=True)
         items = []
         for file in sorted(source.rglob('*')):
@@ -193,24 +199,24 @@ def build():
             target.write_bytes(file.read_bytes())
             items.append({'path': str(relative), 'source': str(target.relative_to(ROOT)),
                           'sha256': sha(target)})
-        diagnostic_path = HERE / 'diagnostic.json'
+        diagnostic_path = target_root / 'diagnostic.json'
         diagnostic_path.write_text(json.dumps(diagnostic, separators=(',', ':')) + '\n')
         if diagnostic_path.stat().st_size > 2 * 1024 * 1024:
             raise ValueError('Diagnostic specification exceeds worker file size limit')
         recipe = {'format': 'worker-fixture-recipe', 'sources': items,
                   'generator': {'source': str(diagnostic_path.relative_to(ROOT)),
                                 'sha256': sha(diagnostic_path)}}
-        recipe_path = HERE / 'diagnostic-recipe.json'
+        recipe_path = target_root / 'diagnostic-recipe.json'
         recipe_path.write_text(json.dumps(recipe, indent=2) + '\n')
     with tempfile.TemporaryDirectory(dir=ROOT / '.runtime-work') as temp:
         fixture = Path(temp) / 'fixture'
         receipt = materialize(ROOT, recipe_path, fixture)
         from finalizer import finalize
-        (fixture / 'config.json').write_bytes((HERE / 'config.json').read_bytes())
+        (fixture / 'config.json').write_bytes(config_path.read_bytes())
         positive = finalize(fixture, fixture / 'analysis-report.json')
         negative = Path(temp) / 'negative'
         materialize(ROOT, recipe_path, negative)
-        (negative / 'config.json').write_bytes((HERE / 'config.json').read_bytes())
+        (negative / 'config.json').write_bytes(config_path.read_bytes())
         (negative / 'visibility_rays.jsonl').unlink()
         try:
             finalize(negative, negative / 'analysis-report.json')
@@ -225,4 +231,8 @@ def build():
 
 
 if __name__ == '__main__':
-    print(json.dumps(build(), indent=2))
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--variant', choices=('through_entered',))
+    args = parser.parse_args()
+    print(json.dumps(build(args.variant), indent=2))

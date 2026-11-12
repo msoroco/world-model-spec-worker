@@ -21,11 +21,14 @@ FILES = ('runner.py', 'camera_setup.py', 'camera_encoder.py', 'yield_site.py',
          'tests/test_yield_measurements.py', 'config.json')
 
 
-def main():
-    config = json.loads((ROOT / 'config.json').read_text())
+def main(variant=None):
+    if variant not in (None, 'through_entered'):
+        raise ValueError('Unsupported exact construction variant')
+    target = ROOT if variant is None else ROOT / 'cases' / variant
+    config = json.loads((target / 'config.json').read_text())
     files = []
     for name in FILES:
-        source = ROOT / name
+        source = (target / name) if name == 'config.json' else (ROOT / name)
         files.append({'path': name, 'content': source.read_text(),
                       'source': str(source.relative_to(REPO))})
     construction = {
@@ -56,10 +59,14 @@ def main():
                        'saved-only hash-bound camera review and finalization'],
         'files': files,
     }
-    (ROOT / 'construction.json').write_text(json.dumps(construction, indent=2) + '\n')
+    (target / 'construction.json').write_text(json.dumps(construction, indent=2) + '\n')
     print(json.dumps({'case_id': construction['case_id'], 'files': len(files),
                       'status': 'draft'}))
 
 
 if __name__ == '__main__':
-    main()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--variant', choices=('through_entered',))
+    args = parser.parse_args()
+    main(args.variant)
