@@ -1,5 +1,6 @@
 """Exercise every exact sweep construction without CARLA or original acceptance."""
 import hashlib
+import argparse
 import json
 from pathlib import Path
 import subprocess
@@ -31,7 +32,7 @@ def run(folder, *args):
     return completed.stdout
 
 
-def main():
+def main(tag):
     stage_path = HERE / 'proposals/sweep-stage-candidate.json'
     manifest = read(HERE / 'sweep-execution-candidate.json')
     if manifest['case_stage_sha256'] != hashlib.sha256(stage_path.read_bytes()).hexdigest():
@@ -85,7 +86,7 @@ def main():
               'bundles': proven, 'offline_bundles_passed': len(proven),
               'setpoint_mutations_rejected': len(proven),
               'selected': False, 'original_recordings_accepted': 0}
-    path = HERE / 'update027-sweep-construction-proof.json'
+    path = HERE / f'{tag}-sweep-construction-proof.json'
     path.write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps({'proof': path.name, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
                       'offline_bundles_passed': len(proven),
@@ -94,4 +95,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--tag', default='update029')
+    main(parser.parse_args().tag)
