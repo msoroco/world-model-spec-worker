@@ -84,11 +84,12 @@ def variants():
     finalizer = (HERE / 'finalizer.py').read_text().replace(LEFT, CASE)
     finalizer = once(finalizer,
                      'from simultaneous_entries import analyze',
-                     'from simultaneous_entries import analyze\n'
-                     'from opposite_turn_measurement import measure_opposite_turn_context')
+                     'from simultaneous_entries import analyze\nimport math')
     begin = finalizer.index('def measure_opposite_turn_context(')
     end = finalizer.index('\ndef measure_yield_observation(', begin)
-    finalizer = finalizer[:begin] + finalizer[end + 1:]
+    turn_source = (OUT / 'opposite_turn_measurement.py').read_text()
+    functions = turn_source[turn_source.index('def _number('):]
+    finalizer = finalizer[:begin] + functions + '\n\n' + finalizer[end + 1:]
     finalizer = once(finalizer,
                      'measure_opposite_turn_context(context),\n'
                      "                                       ['junction_context.json']),",

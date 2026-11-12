@@ -63,7 +63,8 @@ def build():
             body = [[vertex[0], vertex[1], z] for vertex in vertices for z in (0, 1.5)]
             participants.append({
                 'actor_id': actor_id, 'blueprint': 'vehicle.tesla.model3',
-                'position_m': [x, y, 0], 'heading_deg': heading,
+                'position_m': [x, y, 0],
+                'heading_deg': row[role].get('heading_deg', heading),
                 'speed_mps': row[role].get('speed_mps', 0),
                 'velocity_mps': row[role].get('velocity_mps', [0, 0, 0]),
                 'body_vertices_m': body, 'accel_longitudinal_mps2': 0,

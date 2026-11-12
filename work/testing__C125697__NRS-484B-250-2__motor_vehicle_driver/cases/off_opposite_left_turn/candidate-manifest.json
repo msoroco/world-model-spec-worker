@@ -658,7 +658,7 @@
       "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_opposite_left_turn",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "2e289703f99d69ea2a23113ddabc8accd561a1cc1487a52ab27698775e999f87",
+      "construction_sha256": "1c6bc18c203ea0a9ec8b8e68d1feb0604d3edc714c5e486b0d261bb5cb08c881",
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
@@ -672,7 +672,55 @@
         "status": "physical",
         "reason": "Opposite approach lane and actual left turn may fail in Native motion."
       },
-      "candidates": []
+      "candidates": [],
+      "fixture_recipe": "work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/cases/off_opposite_left_turn/diagnostic-recipe.json",
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor identity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native vehicle blueprint",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor pose",
+          "evidence": "trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor velocity",
+          "evidence": "trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor speed magnitude",
+          "evidence": "trace.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "site_packet.py",
+          "method": "source-bound crossing polygon",
+          "evidence": "junction_context.json"
+        },
+        "rel.bearing": {
+          "entrypoint": "simultaneous_entries.py",
+          "method": "source approach projection",
+          "evidence": "junction_context.json"
+        },
+        "entry_timing": {
+          "entrypoint": "finalizer.py",
+          "method": "original body/frame join",
+          "evidence": "crossing_history.jsonl"
+        },
+        "entry_context": {
+          "entrypoint": "finalizer.py",
+          "method": "source crossing context",
+          "evidence": "junction_context.json"
+        }
+      }
     }
   ],
   "status": "partial_four_case_operative_diagnostic"

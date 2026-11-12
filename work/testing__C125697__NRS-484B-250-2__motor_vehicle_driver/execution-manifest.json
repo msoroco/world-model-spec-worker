@@ -653,7 +653,171 @@
       "negative": {
         "log": "operative-primary-negative-analysis.log"
       }
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_opposite_left_turn",
+      "kind": "delivery",
+      "construction": "cases/off_opposite_left_turn/construction.json",
+      "construction_sha256": "1c6bc18c203ea0a9ec8b8e68d1feb0604d3edc714c5e486b0d261bb5cb08c881",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "cases/off_opposite_left_turn/measurement-contract.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Opposite approach lane and actual left turn may fail in Native motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/off_opposite_left_turn/fallback1-construction.json",
+          "construction_sha256": "67f9e12dc68cdfd04cdbced3d09dea2e52c9127d3923e8841d3be85eb743d9c5",
+          "trigger": {
+            "source": "retained Native motion and original source-camera streams",
+            "metric": "opposite-lane spawn and westbound approach reachability",
+            "failure_condition": "other vehicle cannot spawn or travel from the east approach"
+          },
+          "changed_knobs": [
+            "site.other_approach",
+            "site.routes.other[0]"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/opposite-candidate-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_opposite_left_turn --candidate fallback1 --output .runtime-work/c125697-opposite-fallback1-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "67f9e12dc68cdfd04cdbced3d09dea2e52c9127d3923e8841d3be85eb743d9c5",
+            "log": "opposite-fallback1-offline-v1.log",
+            "log_sha256": "3c7eae20740862dfc2b5d41dc0c68e0f0c6b62df33a6eb3be8806724ae4d4ceb"
+          },
+          "compatibility": {
+            "receipt": "opposite-fallback1-compatibility-receipt.json",
+            "sha256": "cde74014559eb1259bbe55ee4d04586f3b6241aa4613783b97855376dcedb8f8",
+            "log": "opposite-fallback1-compatibility-analysis.log",
+            "negative_log": "opposite-fallback1-negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/off_opposite_left_turn/fallback2-construction.json",
+          "construction_sha256": "ddcd82b17b70c51f94d67fb22130ed708b91c151991351df1c2b7c7a341f635b",
+          "trigger": {
+            "source": "retained Native motion and original source-camera streams",
+            "metric": "original approach-camera view of opposing body and signal head",
+            "failure_condition": "approach camera loses the westbound body or governing head"
+          },
+          "changed_knobs": [
+            "site.cameras.approach"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/opposite-candidate-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_opposite_left_turn --candidate fallback2 --output .runtime-work/c125697-opposite-fallback2-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "ddcd82b17b70c51f94d67fb22130ed708b91c151991351df1c2b7c7a341f635b",
+            "log": "opposite-fallback2-offline-v1.log",
+            "log_sha256": "4e2333ca0fbd47037f6becae9d04af70c3b01ba47b5d0942696a5f607de02ee4"
+          },
+          "compatibility": {
+            "receipt": "opposite-fallback2-compatibility-receipt.json",
+            "sha256": "373ae8d291fe7d84eff9a51e0b77ff9959d5cade7e5d5ac9fa06d5afe5ec88dc",
+            "log": "opposite-fallback2-compatibility-analysis.log",
+            "negative_log": "opposite-fallback2-negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/off_opposite_left_turn/fallback3-construction.json",
+          "construction_sha256": "9ec42d6e31fa65c284f24b5933482ee858fc17fd16a912a604dedc5e7e104300",
+          "trigger": {
+            "source": "retained Native motion and original source-camera streams",
+            "metric": "source-measured opposite-vehicle entry and turn timing",
+            "failure_condition": "opposing vehicle entry or left-turn timing drifts from target"
+          },
+          "changed_knobs": [
+            "other_release_frame"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/opposite-candidate-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_opposite_left_turn --candidate fallback3 --output .runtime-work/c125697-opposite-fallback3-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "9ec42d6e31fa65c284f24b5933482ee858fc17fd16a912a604dedc5e7e104300",
+            "log": "opposite-fallback3-offline-v1.log",
+            "log_sha256": "9082edd8f3003f31a966c48e0cd5d5f328ea3f72f07fcebbca6bbf76ca16eb3f"
+          },
+          "compatibility": {
+            "receipt": "opposite-fallback3-compatibility-receipt.json",
+            "sha256": "1fed6ee7a06b932dff190892ad09c4e0331c3808deab7f1b25a151ed4753af2d",
+            "log": "opposite-fallback3-compatibility-analysis.log",
+            "negative_log": "opposite-fallback3-negative-analysis.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/cases/off_opposite_left_turn/diagnostic-recipe.json",
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor identity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native vehicle blueprint",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor pose",
+          "evidence": "trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor velocity",
+          "evidence": "trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor speed magnitude",
+          "evidence": "trace.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "site_packet.py",
+          "method": "source-bound crossing polygon",
+          "evidence": "junction_context.json"
+        },
+        "rel.bearing": {
+          "entrypoint": "simultaneous_entries.py",
+          "method": "source approach projection",
+          "evidence": "junction_context.json"
+        },
+        "entry_timing": {
+          "entrypoint": "finalizer.py",
+          "method": "original body/frame join",
+          "evidence": "crossing_history.jsonl"
+        },
+        "entry_context": {
+          "entrypoint": "finalizer.py",
+          "method": "source crossing context",
+          "evidence": "junction_context.json"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/opposite-candidate-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_opposite_left_turn --output .runtime-work/c125697-opposite-primary-offline-v1",
+        "exit_code": 0,
+        "construction_sha256": "1c6bc18c203ea0a9ec8b8e68d1feb0604d3edc714c5e486b0d261bb5cb08c881",
+        "log": "opposite-primary-offline-v1.log",
+        "log_sha256": "20b06c95de2246042e9093c32983520f02f79a8700bb6cbaee8b764acd0e0db4"
+      },
+      "compatibility": {
+        "receipt": "opposite-primary-compatibility-receipt.json",
+        "sha256": "ed709fec89267b097e7d78a7e91592ec13f8755bd9a1e307d5dcd3031e7ce6c6",
+        "log": "opposite-primary-compatibility-analysis.log",
+        "negative_log": "opposite-primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "opposite-primary-negative-analysis.log"
+      }
     }
   ],
-  "status": "partial_four_case_operative_diagnostic"
+  "status": "partial_five_case_opposite_source_diagnostic"
 }
