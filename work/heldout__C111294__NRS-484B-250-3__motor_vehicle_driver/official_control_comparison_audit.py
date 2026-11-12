@@ -69,14 +69,50 @@ def audit_sources(uncontrolled, controlled):
             'legal_exception_claimed':False}
 
 
+def audit_attempts(uncontrolled_attempt, controlled_attempt):
+    """Audit retained original files from two saved Native attempts."""
+    names = ('intersection_participants.jsonl', 'video_frames.jsonl',
+             'trace.jsonl', 'intersection_topology.json',
+             'control_inventory.json', 'official_device_context.json',
+             'official_device_states.jsonl')
+    roots = (Path(uncontrolled_attempt), Path(controlled_attempt))
+    if roots[0].resolve() == roots[1].resolve():
+        raise ValueError('Official-control comparison requires distinct attempts')
+    files = []
+    for root, needed in zip(roots, (names[:5], names[:4] + names[5:])):
+        if not root.is_dir():
+            raise ValueError('Missing original comparison attempt: ' + str(root))
+        missing = [name for name in needed if not (root / name).is_file()]
+        if missing:
+            raise ValueError('Missing original comparison source: ' + missing[0])
+        files.append({name: (root / name).read_text() for name in needed})
+    result = audit_sources(*files)
+    result['original_source_sha256'] = [
+        {name: sha256((root / name).read_bytes()).hexdigest() for name in source}
+        for root, source in zip(roots, files)
+    ]
+    return result
+
+
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument('--uncontrolled',required=True)
-    parser.add_argument('--controlled',required=True)
+    parser.add_argument('--uncontrolled')
+    parser.add_argument('--controlled')
+    parser.add_argument('--uncontrolled-attempt')
+    parser.add_argument('--controlled-attempt')
+    parser.add_argument('--output')
     args=parser.parse_args()
-    first=json.loads(Path(args.uncontrolled).read_text())['files']
-    second=json.loads(Path(args.controlled).read_text())['files']
-    print(json.dumps(audit_sources(first,second),indent=2))
+    if args.uncontrolled_attempt and args.controlled_attempt and not (args.uncontrolled or args.controlled):
+        result = audit_attempts(args.uncontrolled_attempt, args.controlled_attempt)
+    elif args.uncontrolled and args.controlled and not (args.uncontrolled_attempt or args.controlled_attempt):
+        first=json.loads(Path(args.uncontrolled).read_text())['files']
+        second=json.loads(Path(args.controlled).read_text())['files']
+        result = audit_sources(first,second)
+    else:
+        parser.error('select both diagnostic recipes or both saved attempts')
+    if args.output:
+        Path(args.output).write_text(json.dumps(result,indent=2)+'\n')
+    print(json.dumps(result,indent=2))
 
 
 if __name__=='__main__':main()

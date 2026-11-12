@@ -15,6 +15,7 @@ ROOT = HERE.parents[1]
 MANIFEST = HERE / "execution-manifest.json"
 PLAN = HERE / "case-plan.json"
 OUTPUT = HERE / "gpu-queue.json"
+AUDIT_SCRIPT = HERE / "official_control_comparison_audit.py"
 SAVED_PROOFS = {
     "same_arrival_ending_yields": "ending-yields-saved-proof.json",
     "same_arrival_ending_enters_first": "ending-enters-first-saved-proof.json",
@@ -116,7 +117,25 @@ def build(manifest_path=MANIFEST, plan_path=PLAN):
     for item in plan["comparisons"]:
         if not set(item["case_ids"]) <= set(selected):
             raise ValueError("Queue comparison names an unselected case")
-        comparisons.append({"comparison_id": item["comparison_id"], "case_ids": item["case_ids"]})
+        row = {"comparison_id": item["comparison_id"], "case_ids": item["case_ids"]}
+        if item["comparison_id"] == "official_control_exception":
+            proof = json.loads((manifest_path.parent / "official-attempt-comparison-proof.json").read_text())
+            if (proof.get("auditor_sha256") != digest(AUDIT_SCRIPT) or
+                    proof.get("positive_exit_code") != 0 or
+                    proof.get("negative_exit_code") == 0):
+                raise ValueError("Official-control attempt comparison proof is stale")
+            for label in ("positive", "negative"):
+                if digest(manifest_path.parent / proof[f"{label}_log"]) != proof[f"{label}_log_sha256"]:
+                    raise ValueError("Official-control attempt comparison log is stale")
+            row["audit_script_sha256"] = digest(AUDIT_SCRIPT)
+            row["audit_proof_sha256"] = digest(manifest_path.parent / "official-attempt-comparison-proof.json")
+            row["audit_command"] = (
+                f'.venv-cpu/bin/python {AUDIT_SCRIPT.relative_to(ROOT)} '
+                '--uncontrolled-attempt "$UNCONTROLLED_ATTEMPT" '
+                '--controlled-attempt "$CONTROLLED_ATTEMPT" '
+                '--output "$COMPARISON_REPORT"'
+            )
+        comparisons.append(row)
     return {
         "format": "worker-assignment-ordered-gpu-queue",
         "assignment_id": assignment,
