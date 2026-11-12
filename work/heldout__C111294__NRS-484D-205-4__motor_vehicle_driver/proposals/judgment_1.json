@@ -1,7 +1,7 @@
 {
   "template_id": "NRS-484D-205-4@motor_vehicle_driver",
   "phrase": "lighted",
-  "note": "No legal pixel cutoff or grace period is inferred from a Native light-state bit.",
+  "note": "Native reverse-light state is a source observation; actual emitted rear-lamp pixels need independent original-camera review.",
   "status": "draft",
   "observable_requirements": {
     "observables": [
@@ -24,11 +24,13 @@
     "context_inputs": [
       {
         "name": "installed_backup_lamps",
-        "description": "Source-backed asset inspection, including separate or combined hardware and motor-vehicle identity."
+        "description": "Source-backed asset inspection, including separate or combined hardware and motor-vehicle identity.",
+        "unit": "source record"
       },
       {
         "name": "other_vehicle_context",
-        "description": "Separate intersection vehicle position, motion, priority and purpose; presence alone is not lamp activation evidence."
+        "description": "Separate intersection vehicle position, motion, priority and purpose; presence alone is not lamp activation evidence.",
+        "unit": "source record"
       }
     ],
     "sweep_dimensions": [
@@ -36,6 +38,11 @@
         "name": "equipment_and_native_lamp_state",
         "unit": "categorical",
         "description": "Optional equipment and on/off Native request are controlled in separate comparisons."
+      },
+      {
+        "name": "command_backup_lamp_on",
+        "unit": "boolean",
+        "description": "Native backup-lamp command setpoint; original Native state and emitted rear pixels remain separately measured."
       }
     ],
     "landmarks": [],

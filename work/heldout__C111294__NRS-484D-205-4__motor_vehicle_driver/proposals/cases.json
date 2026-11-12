@@ -5,11 +5,20 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
-      "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_off",
-      "target_law_id": "NRS-484D-205-4",
-      "target_type": "delivery",
-      "rationale": "Diagnostic forward-motion backup-lamp source measurement; no legal label inferred.",
-      "variable_assignments": {},
+      "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared intersection and forward-motion equipment reference; no delivery recording",
+      "variable_assignments": {
+        "installed_backup_lamps": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "command_backup_lamp_on": {
+          "kind": "controller",
+          "value": 0
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -47,21 +56,168 @@
             "time_window": "all original frames",
             "reference_frame": "Native world and original frame identity",
             "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          },
+          {
+            "name": "original_motion_equipment_and_four_cameras",
+            "unit": "original sources",
+            "sampling_rate_hz": 20,
+            "method": "retain original motion, equipment, light state, frame map and four named RGB streams",
+            "time_window": "entire original capture",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "source inventory does not establish physical visibility"
+          },
+          {
+            "name": "original_rear_lamp_pixels",
+            "unit": "review record",
+            "sampling_rate_hz": 20,
+            "method": "independent full decode of original rear-view camera frames and pixel review",
+            "time_window": "every forward-motion frame",
+            "reference_frame": "original camera frame identity",
+            "uncertainty": "actual emitted pixels remain unverified until Native capture"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "installed_backup_lamps",
+            "unit": "source record",
+            "method": "independent source-backed equipment inventory including separate or combined hardware"
+          },
+          {
+            "name": "other_vehicle_context",
+            "unit": "source record",
+            "method": "original actor identity, position, velocity and reviewed travel purpose"
+          }
+        ],
         "limitations": [
           "Actual emitted pixels, asset equipment classification and legal outcome require independent original-source review."
         ]
       },
-      "sweep_measurements": []
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_off",
+      "target_law_id": "NRS-484D-205-4",
+      "target_type": "judgment_sweep",
+      "rationale": "Diagnostic forward-motion backup-lamp source measurement; no legal label inferred.",
+      "variable_assignments": {
+        "installed_backup_lamps": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "command_backup_lamp_on": {
+          "kind": "controller",
+          "value": 0
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_backup_lamp_on",
+            "unit": "boolean",
+            "method": "saved original Native frame join",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          },
+          {
+            "name": "forward_motion_observed",
+            "unit": "boolean",
+            "method": "saved original Native frame join",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          },
+          {
+            "name": "longitudinal_speed_mps",
+            "unit": "m/s",
+            "method": "saved original Native frame join",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          },
+          {
+            "name": "other_vehicle_center_xy_m",
+            "unit": "m",
+            "method": "saved original Native frame join",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          },
+          {
+            "name": "original_motion_equipment_and_four_cameras",
+            "unit": "original sources",
+            "sampling_rate_hz": 20,
+            "method": "retain original motion, equipment, light state, frame map and four named RGB streams",
+            "time_window": "entire original capture",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "source inventory does not establish physical visibility"
+          },
+          {
+            "name": "original_rear_lamp_pixels",
+            "unit": "review record",
+            "sampling_rate_hz": 20,
+            "method": "independent full decode of original rear-view camera frames and pixel review",
+            "time_window": "every forward-motion frame",
+            "reference_frame": "original camera frame identity",
+            "uncertainty": "actual emitted pixels remain unverified until Native capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "installed_backup_lamps",
+            "unit": "source record",
+            "method": "independent source-backed equipment inventory including separate or combined hardware"
+          },
+          {
+            "name": "other_vehicle_context",
+            "unit": "source record",
+            "method": "original actor identity, position, velocity and reviewed travel purpose"
+          }
+        ],
+        "limitations": [
+          "Actual emitted pixels, asset equipment classification and legal outcome require independent original-source review."
+        ]
+      },
+      "sweep_measurements": [],
+      "paired_probe_id": "backup_lamp_conditions",
+      "deliberate_differences": [
+        "command_backup_lamp_on"
+      ],
+      "probe": {
+        "primary_variable": "command_backup_lamp_on",
+        "comparison_or_standard": "controlled original-source comparison",
+        "target_value_or_branch": "forward_backup_lamp_off"
+      },
+      "unresolved_judgment_calls": [
+        "lighted"
+      ],
+      "sweep_id": "forward_lamp_command",
+      "sweep_point": {
+        "command_backup_lamp_on": 0.0
+      },
+      "sweep_spec_version": "da6e27473e85b5e8eb2f8e0673998d281814f7419900599b5f092ee95c33ec17",
+      "planned_case_count": 2,
+      "selection_rank": 0
     },
     {
       "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__no_backup_lamp_installed",
       "target_law_id": "NRS-484D-205-4",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "rationale": "Diagnostic forward-motion backup-lamp source measurement; no legal label inferred.",
-      "variable_assignments": {},
+      "variable_assignments": {
+        "installed_backup_lamps": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "command_backup_lamp_on": {
+          "kind": "controller",
+          "value": 0
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -99,21 +255,71 @@
             "time_window": "all original frames",
             "reference_frame": "Native world and original frame identity",
             "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          },
+          {
+            "name": "original_motion_equipment_and_four_cameras",
+            "unit": "original sources",
+            "sampling_rate_hz": 20,
+            "method": "retain original motion, equipment, light state, frame map and four named RGB streams",
+            "time_window": "entire original capture",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "source inventory does not establish physical visibility"
+          },
+          {
+            "name": "original_rear_lamp_pixels",
+            "unit": "review record",
+            "sampling_rate_hz": 20,
+            "method": "independent full decode of original rear-view camera frames and pixel review",
+            "time_window": "every forward-motion frame",
+            "reference_frame": "original camera frame identity",
+            "uncertainty": "actual emitted pixels remain unverified until Native capture"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "installed_backup_lamps",
+            "unit": "source record",
+            "method": "independent source-backed equipment inventory including separate or combined hardware"
+          },
+          {
+            "name": "other_vehicle_context",
+            "unit": "source record",
+            "method": "original actor identity, position, velocity and reviewed travel purpose"
+          }
+        ],
         "limitations": [
           "Actual emitted pixels, asset equipment classification and legal outcome require independent original-source review."
         ]
       },
-      "sweep_measurements": []
+      "sweep_measurements": [],
+      "paired_probe_id": "backup_lamp_conditions",
+      "deliberate_differences": [
+        "installed_backup_lamps"
+      ],
+      "probe": {
+        "primary_variable": "installed_backup_lamps",
+        "comparison_or_standard": "controlled original-source comparison",
+        "target_value_or_branch": "no_backup_lamp_installed"
+      },
+      "unresolved_judgment_calls": [
+        "lighted"
+      ]
     },
     {
       "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_on",
       "target_law_id": "NRS-484D-205-4",
-      "target_type": "delivery",
+      "target_type": "judgment_sweep",
       "rationale": "Diagnostic forward-motion backup-lamp source measurement; no legal label inferred.",
-      "variable_assignments": {},
+      "variable_assignments": {
+        "installed_backup_lamps": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "command_backup_lamp_on": {
+          "kind": "controller",
+          "value": 1
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -151,16 +357,186 @@
             "time_window": "all original frames",
             "reference_frame": "Native world and original frame identity",
             "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          },
+          {
+            "name": "original_motion_equipment_and_four_cameras",
+            "unit": "original sources",
+            "sampling_rate_hz": 20,
+            "method": "retain original motion, equipment, light state, frame map and four named RGB streams",
+            "time_window": "entire original capture",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "source inventory does not establish physical visibility"
+          },
+          {
+            "name": "original_rear_lamp_pixels",
+            "unit": "review record",
+            "sampling_rate_hz": 20,
+            "method": "independent full decode of original rear-view camera frames and pixel review",
+            "time_window": "every forward-motion frame",
+            "reference_frame": "original camera frame identity",
+            "uncertainty": "actual emitted pixels remain unverified until Native capture"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "installed_backup_lamps",
+            "unit": "source record",
+            "method": "independent source-backed equipment inventory including separate or combined hardware"
+          },
+          {
+            "name": "other_vehicle_context",
+            "unit": "source record",
+            "method": "original actor identity, position, velocity and reviewed travel purpose"
+          }
+        ],
         "limitations": [
           "Actual emitted pixels, asset equipment classification and legal outcome require independent original-source review."
         ]
       },
-      "sweep_measurements": []
+      "sweep_measurements": [],
+      "paired_probe_id": "backup_lamp_conditions",
+      "deliberate_differences": [
+        "command_backup_lamp_on"
+      ],
+      "probe": {
+        "primary_variable": "command_backup_lamp_on",
+        "comparison_or_standard": "controlled original-source comparison",
+        "target_value_or_branch": "forward_backup_lamp_on"
+      },
+      "unresolved_judgment_calls": [
+        "lighted"
+      ],
+      "sweep_id": "forward_lamp_command",
+      "sweep_point": {
+        "command_backup_lamp_on": 1.0
+      },
+      "sweep_spec_version": "da6e27473e85b5e8eb2f8e0673998d281814f7419900599b5f092ee95c33ec17",
+      "planned_case_count": 2,
+      "selection_rank": 1
     }
   ],
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "forward_lamp_command",
+      "target_law_id": "NRS-484D-205-4",
+      "judgment_refs": [
+        {
+          "phrase": "lighted",
+          "note": "Native reverse-light state is a source observation; actual emitted rear-lamp pixels need independent original-camera review."
+        }
+      ],
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "command_backup_lamp_on",
+          "observable": "command_backup_lamp_on",
+          "unit": "boolean",
+          "min": 0,
+          "max": 1,
+          "spacing": 1,
+          "measurement": {
+            "method": "Native command setpoint and original light-state/pixel review",
+            "time_window": "all forward-motion frames",
+            "statistic": "max"
+          },
+          "range_rationale": "Binary Native request covers the two selected on/off conditions",
+          "spacing_rationale": "The controller accepts off and on only",
+          "feasibility_evidence": "Returned exact off/on constructions and source-shaped diagnostics; physical emission remains unverified"
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Compare both Native requests during forward motion while independently reviewing actual emitted rear-lamp pixels; no legal cutoff is assigned.",
+      "variable_assignments": {
+        "installed_backup_lamps": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "command_backup_lamp_on": {
+          "kind": "controller",
+          "value": 0
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_backup_lamp_on",
+            "unit": "boolean",
+            "method": "saved original Native frame join",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          },
+          {
+            "name": "forward_motion_observed",
+            "unit": "boolean",
+            "method": "saved original Native frame join",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          },
+          {
+            "name": "longitudinal_speed_mps",
+            "unit": "m/s",
+            "method": "saved original Native frame join",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          },
+          {
+            "name": "other_vehicle_center_xy_m",
+            "unit": "m",
+            "method": "saved original Native frame join",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          },
+          {
+            "name": "original_motion_equipment_and_four_cameras",
+            "unit": "original sources",
+            "sampling_rate_hz": 20,
+            "method": "retain original motion, equipment, light state, frame map and four named RGB streams",
+            "time_window": "entire original capture",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "source inventory does not establish physical visibility"
+          },
+          {
+            "name": "original_rear_lamp_pixels",
+            "unit": "review record",
+            "sampling_rate_hz": 20,
+            "method": "independent full decode of original rear-view camera frames and pixel review",
+            "time_window": "every forward-motion frame",
+            "reference_frame": "original camera frame identity",
+            "uncertainty": "actual emitted pixels remain unverified until Native capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "installed_backup_lamps",
+            "unit": "source record",
+            "method": "independent source-backed equipment inventory including separate or combined hardware"
+          },
+          {
+            "name": "other_vehicle_context",
+            "unit": "source record",
+            "method": "original actor identity, position, velocity and reviewed travel purpose"
+          }
+        ],
+        "limitations": [
+          "Actual emitted pixels, asset equipment classification and legal outcome require independent original-source review."
+        ]
+      },
+      "spec_version": "da6e27473e85b5e8eb2f8e0673998d281814f7419900599b5f092ee95c33ec17",
+      "planned_case_count": 2,
+      "selection_order": [
+        "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_off",
+        "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_on"
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }
