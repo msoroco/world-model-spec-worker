@@ -3,6 +3,7 @@ import copy
 import hashlib
 import json
 from pathlib import Path
+from selected_camera_contract import cameras
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -67,6 +68,7 @@ def main():
                 config.update({"case_id": cid, "selected_case_id": cid,
                                "supported_case_ids": [cid], "case": case,
                                "recording_description": case["recording_description"]})
+                config["cameras"] = cameras()
                 files["config.json"] = json.dumps(config, indent=2) + "\n"
                 package["files"] = [{"path": path, "content": content}
                                     for path, content in files.items()]

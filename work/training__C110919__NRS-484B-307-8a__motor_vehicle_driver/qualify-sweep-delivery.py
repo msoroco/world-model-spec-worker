@@ -20,9 +20,19 @@ def save(path, value):
 
 
 def main():
+    plan = read(HERE / "case-plan.json")
+    if len(plan["cases"]) == 20:
+        current = read(HERE / "proposals/cases.json")
+        selected = [c["case_id"] for c in current["cases"]
+                    if c["target_type"] != "baseline"]
+        if len(selected) != 20 or selected != [c["case_id"] for c in plan["cases"]]:
+            raise ValueError("Existing qualified stage and plan differ")
+        print(json.dumps({"qualified_sweep_cases": 10,
+                          "planned_cases": 20, "selection_count": 20,
+                          "already_qualified": True}))
+        return
     source = read(HERE / "proposals/extreme-right-sweep-candidate.json")
     stage = copy.deepcopy(source)
-    plan = read(HERE / "case-plan.json")
     sweep_cases = [case for case in stage["cases"] if case.get("sweep_id")]
     if len(sweep_cases) != 10 or len(plan["cases"]) not in (10, 20):
         raise ValueError("Unexpected source or plan case count")

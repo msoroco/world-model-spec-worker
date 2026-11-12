@@ -233,6 +233,19 @@ def finalize(attempt: Path,output: Path):
         name=channel['name'];relative='channels/'+name+'.jsonl'
         source(attempt,relative)
         recording.append({'name':name,'unit':channel['unit'],'reference':relative})
+    context_values={
+        'four_source_cameras':counts,
+        'surveyed_C110919_intersection':{
+            'native_map_sha256':geometry['native_map_sha256'],
+            'signal_actor_id':geometry['signal_actor_id'],
+            'lanes':geometry['lanes']}}
+    context_folder=attempt/'context';context_folder.mkdir(exist_ok=True)
+    for context in config['recording_description']['context_inputs']:
+        name=context['name']
+        if name not in context_values:raise ValueError('Undeclared stop-branch context input')
+        relative='context/'+name+'.json'
+        (attempt/relative).write_text(json.dumps({name:context_values[name]},allow_nan=False)+'\n')
+        recording.append({'name':name,'unit':context['unit'],'reference':relative})
     result={'case_id':config['case_id'],
         'measured_values':{'signal':signal['value'],'stop':stop['value'],'turn_yield':turn['value'],
                            **({'green_release':green_release['value']} if green_release else {})},
@@ -265,6 +278,8 @@ def finalize(attempt: Path,output: Path):
             'candidate_id':config['candidate_id'],
             'measurements':{'steady_red_activation':signal,
                             'right_turn_stop':stop,'right_turn_yield':turn,
+                            **({'stop_boundary_alternative':stop}
+                               if suffix.startswith('absent_reference') else {}),
                             **({'green_release':green_release} if green_release else {})},
             'original_joins':original,'video_frames':counts,
             'provenance_kind':result['provenance_kind'],
