@@ -20,8 +20,9 @@ class LifecycleAuditTests(unittest.TestCase):
             (attempt / name).write_text('source-shaped unit test: ' + name)
         construction = sha(attempt / 'construction.json')
         sources = {str(p.relative_to(attempt)): sha(p) for p in attempt.rglob('*') if p.is_file()}
-        seal = {'format':'worker-sealed-capture', 'provenance_kind':'native',
-                'diagnostic_fixture':False, 'source_shaped_unit_test':True,
+        seal = {'format':'worker-sealed-capture',
+                'provenance_kind':'source_shaped_unit_test',
+                'diagnostic_fixture':True, 'source_shaped_unit_test':True,
                 'frames':240, 'events':EVENTS[:3],
                 'restoration':{'restored':True},
                 'encoder_exit_codes':{camera:0 for camera in CAMERAS},
@@ -39,8 +40,8 @@ class LifecycleAuditTests(unittest.TestCase):
             'native_exit_sha256':sha(attempt/'native-exit.json'),
             'native_construction_sha256':construction}))
         result = saved / 'analysis/result.json'
-        result.write_text(json.dumps({'case_id':'case','provenance_kind':'native_source_shape_unverified',
-                                      'diagnostic_fixture':False,
+        result.write_text(json.dumps({'case_id':'case','provenance_kind':'synthetic_local_diagnostic',
+                                      'diagnostic_fixture':True,
                                       'source_shaped_unit_test':True}))
         processing = saved / 'processing.json'
         processing.write_text(json.dumps({'format':'worker-saved-processing',
@@ -62,17 +63,21 @@ class LifecycleAuditTests(unittest.TestCase):
                           test_shape=True)
             self.assertEqual(proof['events'], EVENTS)
             self.assertEqual(proof['exit_code'], 0)
-            # The selected finalizer omits this optional field on a real run.
+            # A source-shaped result must retain its diagnostic marker.
             result = root / 'saved/v0001/analysis/result.json'
             value = json.loads(result.read_text())
-            value.pop('diagnostic_fixture')
+            value['diagnostic_fixture'] = False
             result.write_text(json.dumps(value))
             receipt = json.loads(processing.read_text())
             receipt['result_sha256'] = sha(result)
             processing.write_text(json.dumps(receipt))
-            self.assertEqual(audit(attempt, owner, processing, 'case', construction,
-                                   test_shape=True)
-                             ['events'], EVENTS)
+            with self.assertRaisesRegex(ValueError, 'synthetic'):
+                audit(attempt, owner, processing, 'case', construction,
+                      test_shape=True)
+            value['diagnostic_fixture'] = True
+            result.write_text(json.dumps(value))
+            receipt['result_sha256'] = sha(result)
+            processing.write_text(json.dumps(receipt))
             with self.assertRaisesRegex(ValueError, 'Source-shaped unit test'):
                 audit(attempt, owner, processing, 'case', construction)
             # The shape test never writes a physical preparation receipt.
@@ -89,7 +94,7 @@ class LifecycleAuditTests(unittest.TestCase):
             attempt, owner, processing, construction = self.shape(root)
             result = root / 'saved/v0001/analysis/result.json'
             value = json.loads(result.read_text())
-            value['provenance_kind'] = 'synthetic_local_diagnostic'
+            value['provenance_kind'] = 'native_source_shape_unverified'
             result.write_text(json.dumps(value))
             value = json.loads(processing.read_text())
             value['result_sha256'] = sha(result)

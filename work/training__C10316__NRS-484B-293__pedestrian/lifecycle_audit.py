@@ -43,8 +43,9 @@ def audit(attempt: Path, owner_receipt: Path, processing_path: Path,
             "Source-shaped unit test cannot establish original Native lifecycle")
     revision = seal.get("native_revision", {})
     require(seal.get("format") == "worker-sealed-capture" and
-            seal.get("provenance_kind") == "native" and
-            seal.get("diagnostic_fixture") is False and
+            seal.get("provenance_kind") == ("source_shaped_unit_test" if test_shape
+                                            else "native") and
+            seal.get("diagnostic_fixture") is test_shape and
             seal.get("frames") == 240 and
             seal.get("events") == EVENTS[:3] and
             seal.get("restoration", {}).get("restored") is True and
@@ -94,8 +95,11 @@ def audit(attempt: Path, owner_receipt: Path, processing_path: Path,
             "Saved result is missing or changed")
     result = read(result_path)
     require(result.get("case_id") == case_id and
-            result.get("provenance_kind") == "native_source_shape_unverified" and
-            result.get("diagnostic_fixture") in (None, False) and
+            result.get("provenance_kind") ==
+                ("synthetic_local_diagnostic" if test_shape else
+                 "native_source_shape_unverified") and
+            (result.get("diagnostic_fixture") is True if test_shape else
+             result.get("diagnostic_fixture") in (None, False)) and
             (result.get("source_shaped_unit_test") is True) == test_shape,
             "Saved result is synthetic or for another case")
     return {"case_id": case_id, "construction_sha256": construction_sha256,
