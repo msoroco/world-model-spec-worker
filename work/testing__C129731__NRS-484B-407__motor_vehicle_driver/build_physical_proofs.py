@@ -26,9 +26,9 @@ def rel(path):
     return str(Path(path).relative_to(HERE))
 
 
-def run_one(slug, feature, probe, manifest_name, saved_name):
+def run_one(slug, feature, probe, manifest_name, saved_name, case_id=None):
     manifest = HERE / manifest_name
-    case_id = HERE.name + "__" + feature + "__" + probe
+    case_id = case_id or HERE.name + "__" + feature + "__" + probe
     entry = next(e for e in json.loads(manifest.read_text())["cases"] if e["case_id"] == case_id)
     target = HERE / "physical-proofs" / slug
     target.mkdir(parents=True, exist_ok=True)

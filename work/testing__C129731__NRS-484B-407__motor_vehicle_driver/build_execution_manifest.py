@@ -14,6 +14,7 @@ CASES = (
     ("crest-at", "diagnostic-crest-at-manifest.json", "rebound-crest-at-offline.log", "rebound-crest-at-compatibility.json", "rebound-crest-at-negative-analysis.log", "rebound-crest-at-processing.json", "crest-at"),
     ("crest-beyond", "diagnostic-crest-beyond-manifest.json", "rebound-crest-beyond-offline.log", "rebound-crest-beyond-compatibility.json", "rebound-crest-beyond-negative-analysis.log", "rebound-crest-beyond-processing.json", "crest-beyond"),
 )
+PROMOTED = ("canonical-at-approach-b", "canonical-at-near-b")
 
 
 def read(name):
@@ -96,6 +97,52 @@ def build():
                                "construction_sha256": item["construction_sha256"]}
             item["compatibility"] = compatibility(receipt_name, negative_name)
             item["post_capture"] = saved_proof(tests, saved_name)
+            alternatives.append(item)
+        if {x["id"] for x in alternatives} != {"fallback1", "fallback2", "fallback3"}:
+            raise ValueError("Three distinct fallback proofs required: " + selected)
+        entry["candidates"] = alternatives
+        entries.append(entry)
+    for name in PROMOTED:
+        source_manifest = read("diagnostic-" + name + "-manifest.json")
+        entry = dict(source_manifest["cases"][0])
+        selected = entry["case_id"]
+        offline_name = name + "-branch-offline.log"
+        offline = claim(tests, offline_name)
+        entry["offline"] = {"command": offline["command"], "exit_code": 0,
+                            "log": offline_name, "log_sha256": sha(offline_name),
+                            "construction_sha256": entry["construction_sha256"]}
+        entry["compatibility"] = compatibility(name + "-branch-compatibility.json",
+                                                name + "-branch-negative-analysis.log")
+        entry["negative"] = {"log": name + "-branch-negative-analysis.log"}
+        entry["post_capture"] = saved_proof(tests, name + "-branch-processing.json")
+        entry["native_handoff"] = {"python_env_var": "CARLA_PYTHON", "host_env_var": "CARLA_HOST",
+                                   "port_env_var": "CARLA_PORT"}
+        physical = "physical-proofs/" + name + "/receipt.json"
+        receipt = read(physical)
+        if receipt["case_id"] != selected or receipt["construction_sha256"] != entry["construction_sha256"]:
+            raise ValueError("Stale distinct-case physical proof: " + selected)
+        entry["physical_preparation"] = {"receipt": physical, "sha256": sha(physical)}
+        acceptance = "delivery-proofs/" + name + "/acceptance.json"
+        if (HERE / acceptance).is_file():
+            declared = read(acceptance)
+            if (declared.get("case_id") != selected or declared.get("script_sha256") != sha("delivery_audit.py") or
+                    declared.get("test_log_sha256") != sha(declared["test_log"]) or
+                    declared.get("negative_log_sha256") != sha(declared["negative_log"])):
+                raise ValueError("Stale distinct-case delivery audit proof: " + selected)
+            entry["delivery_acceptance"] = declared
+        fallback_manifest = read("diagnostic-" + name + "-fallback-manifest.json")
+        alternatives = []
+        for candidate in fallback_manifest["cases"][0]["candidates"]:
+            item = dict(candidate)
+            prefix = name + "-" + item["id"]
+            candidate_offline = prefix + "-offline.log"
+            proof = claim(tests, candidate_offline)
+            item["offline"] = {"command": proof["command"], "exit_code": 0,
+                               "log": candidate_offline, "log_sha256": sha(candidate_offline),
+                               "construction_sha256": item["construction_sha256"]}
+            item["compatibility"] = compatibility(prefix + "-compatibility.json",
+                                                    prefix + "-negative-analysis.log")
+            item["post_capture"] = saved_proof(tests, prefix + "-processing.json")
             alternatives.append(item)
         if {x["id"] for x in alternatives} != {"fallback1", "fallback2", "fallback3"}:
             raise ValueError("Three distinct fallback proofs required: " + selected)
