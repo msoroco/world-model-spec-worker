@@ -301,5 +301,105 @@
       ],
       "evidence_or_gap": "Original 20 Hz motion, traffic context, frame map and contact; no legal cutoff"
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego and all surrounding road-user bodies across reverse corridor",
+        "interval": "all original 8 s frames"
+      },
+      {
+        "view": "approach",
+        "subject": "reverse trajectory and closing body clearance",
+        "interval": "all original 8 s frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "intersection corner, side approach and participant body corners",
+        "interval": "all original 8 s frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "reverse path, side and rear road users from subject reference",
+        "interval": "all original 8 s frames"
+      }
+    ],
+    "source_review": "Four synchronized source decodes and frame counts are CPU checked; actual body pixels, realized reverse motion and physical clearance require local Native review."
+  },
+  "source_observation_mapping": {
+    "drv.backing": {
+      "evidence": "Original ego heading, velocity and body positions are joined at 20 Hz to detect the continuous reverse interval.",
+      "channels": [
+        "backing_safety_observation"
+      ],
+      "source_refs": [
+        "backing_motion.jsonl",
+        "backing_safety_observation.jsonl"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Sampled closure over successive original full-body gaps yields an operational time-to-conflict proxy; no legal cutoff is inferred.",
+      "channels": [
+        "backing_safety_observation"
+      ],
+      "source_refs": [
+        "backing_motion.jsonl",
+        "backing_safety_observation.jsonl"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Saved measurement computes participant body-radius separation from original per-frame ego and surrounding actor bodies.",
+      "channels": [
+        "backing_safety_observation"
+      ],
+      "source_refs": [
+        "backing_motion.jsonl",
+        "backing_safety_observation.jsonl"
+      ]
+    },
+    "drv.hard_deceleration": {
+      "evidence": "Successive original participant speed samples yield deceleration during the reverse window; whether it is interference is left for review.",
+      "channels": [
+        "backing_safety_observation"
+      ],
+      "source_refs": [
+        "backing_motion.jsonl",
+        "backing_safety_observation.jsonl"
+      ]
+    },
+    "ru.pedestrian": {
+      "evidence": "Original actor context identifies pedestrian kind and separately cites route and highway use; source RGB review must confirm visible person.",
+      "channels": [
+        "backing_safety_observation"
+      ],
+      "source_refs": [
+        "backing_context.json",
+        "backing_safety_observation.jsonl"
+      ]
+    },
+    "rel.bearing": {
+      "evidence": "Saved measurement computes heading-relative bearing from original ego and surrounding actor positions.",
+      "channels": [
+        "backing_safety_observation"
+      ],
+      "source_refs": [
+        "backing_motion.jsonl",
+        "backing_safety_observation.jsonl"
+      ]
+    },
+    "rel.contact": {
+      "evidence": "Original per-frame contact callbacks are joined to motion and participant IDs; physical collision remains unconfirmed until Native review.",
+      "channels": [
+        "backing_safety_observation"
+      ],
+      "source_refs": [
+        "backing_contacts.jsonl",
+        "backing_safety_observation.jsonl"
+      ]
+    }
+  }
 }

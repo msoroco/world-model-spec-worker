@@ -8,6 +8,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from combined_lamp_asset import (construct_combined, validate_combined_inventory,
                                  verify_combined_capture)
+from runner_combined import check_config as check_combined_runner
 
 
 class CombinedLampAssetTests(unittest.TestCase):
@@ -84,6 +85,23 @@ class CombinedLampAssetTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Exact combined construction'):
                 construct_combined(object(), object(), config, self.path)
             construct.assert_not_called()
+
+    def test_exact_runner_requires_combined_case_and_preserves_capture_contract(self):
+        root = Path(__file__).resolve().parents[1]
+        config = json.loads((root / 'config.json').read_text())
+        config.update(selected_case_id=(
+            'heldout__C111294__NRS-484D-205-4__motor_vehicle_driver'
+            '__forward_combined_backup_lamp_off'),
+            case_branch='forward_combined_backup_lamp_off',
+            lamp_arrangement='combined')
+        self.assertTrue(check_combined_runner(config))
+        config['lamp_arrangement'] = 'separate'
+        with self.assertRaisesRegex(ValueError, 'Exact combined case'):
+            check_combined_runner(config)
+        config['lamp_arrangement'] = 'combined'
+        config['frames'] = 159
+        with self.assertRaisesRegex(ValueError, '160 frames'):
+            check_combined_runner(config)
 
 
 if __name__ == '__main__':
