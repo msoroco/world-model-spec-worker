@@ -39,7 +39,7 @@ def main():
     negatives = {}
     for entry in manifest["cases"]:
         suffix = entry["case_id"].removeprefix(HERE.name + "__")
-        run = RUNS / suffix / "primary"
+        run = RUNS / sha(MANIFEST)[:12] / suffix / "primary"
         attempt = run / "compatibility"
         processing = run / "saved/v0001/processing.json"
         row = next((item for item in index["results"] if

@@ -38,7 +38,7 @@ def task(entry, candidate_id, candidate):
     case_id = entry["case_id"]
     folder = PROOFS / suffix / candidate_id
     folder.mkdir(parents=True, exist_ok=True)
-    run = RUN_ROOT / suffix / candidate_id
+    run = RUN_ROOT / sha(MANIFEST)[:12] / suffix / candidate_id
     common = ["--manifest", str(MANIFEST), "--case", case_id]
     offline = command(["offline", *common, "--candidate", candidate_id,
                        "--output", str(run / "offline"), "--python", sys.executable],

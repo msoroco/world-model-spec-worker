@@ -59,7 +59,7 @@ def load(suffix, *, diagnostic):
             proof["construction_sha256"] == entry["construction_sha256"] and
             proof["original_native_accepted"] is False,
             "Final-hash comparison candidate proof changed")
-    run = RUNS / suffix / "primary"
+    run = RUNS / sha(MANIFEST)[:12] / suffix / "primary"
     attempt = run / "compatibility"
     compat_path = attempt / "compatibility.json"
     saved_path = run / "saved/v0001/processing.json"

@@ -64,7 +64,7 @@ def audit(index):
                     sha(HERE / candidate["construction"]) and
                     proof["original_native_accepted"] is False,
                     "Final-hash candidate proof changed")
-            run = RUNS / suffix / ident
+            run = RUNS / digest[:12] / suffix / ident
             attempt = run / "compatibility"
             compat_path = attempt / "compatibility.json"
             compat = read(compat_path)
