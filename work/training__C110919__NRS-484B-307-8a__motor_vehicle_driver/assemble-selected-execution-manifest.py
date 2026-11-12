@@ -50,7 +50,7 @@ def bind_proof(entry, name, ref, manifest_path, run, source_log, ordinary):
     saved = run / "saved/v0001/processing.json"
     offline_log = copy_text(offline_source, destination / "offline.log")
     compat_receipt = copy_text(compat / "compatibility.json", destination / "compatibility.json")
-    analysis_log = copy_text(compat / "compatibility-analysis.log", destination / "compatibility-analysis.log")
+    analysis_log = copy_text(compat / "compatibility-analysis.log", destination / "analysis.log")
     negative_log = copy_text(compat / "negative-analysis.log", destination / "negative-analysis.log")
     saved_receipt = copy_text(saved, destination / "processing.json")
     proof = read(HERE / compat_receipt)
