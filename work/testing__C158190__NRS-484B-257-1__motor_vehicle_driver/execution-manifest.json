@@ -158,6 +158,26 @@
           "entrypoint": "finalizer.py",
           "method": "rebuild from original sight rays",
           "evidence": "visibility_rays.jsonl"
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "finalizer.py",
+          "method": "join original approach distance to intersection with saved frame map",
+          "evidence": "approach_history.jsonl and video_frames.jsonl"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native ego body vertices and lane state to saved frame map",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_position": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native through actor body vertices and lane state; retain explicit absent actor state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "derive finite difference through actor center motion from original Native body history with explicit absent state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
         }
       },
       "offline": {
@@ -173,6 +193,32 @@
         "log": "primary-compatibility-analysis.log",
         "negative_log": "primary-negative-analysis.log",
         "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_approaches --output .runtime-work/c158190-yield_nearest_view_through_approaches-primary-compat-v4 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_approaches",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2070692d030e2f00e5033f42b592212af9358b2f5db0c68000e4649730d8a83d",
+        "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-yield_nearest_view_through_approaches-primary-compat-v4 --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_approaches --diagnostic-fixture",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-positive.log",
+        "test_log_sha256": "17725d90d5010ae7926e0a85566768cbc970fcf74179b0603fefc2b4053dc3e0",
+        "negative_command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-yield_nearest_view_through_approaches-primary-compat-v4 --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_approaches",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent original-camera pixel reviewer required",
+        "negative_log": "delivery-audit-negative.log",
+        "negative_log_sha256": "9d48815fe39aed276428eb7e58c292ad53b89b6dd8f361073164288e4fefcc0d"
       }
     },
     {
@@ -330,6 +376,26 @@
           "entrypoint": "finalizer.py",
           "method": "rebuild from original sight rays",
           "evidence": "visibility_rays.jsonl"
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "finalizer.py",
+          "method": "join original approach distance to intersection with saved frame map",
+          "evidence": "approach_history.jsonl and video_frames.jsonl"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native ego body vertices and lane state to saved frame map",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_position": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native through actor body vertices and lane state; retain explicit absent actor state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "derive finite difference through actor center motion from original Native body history with explicit absent state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
         }
       },
       "offline": {
@@ -345,6 +411,32 @@
         "log": "cases/through_entered/primary-compatibility-analysis.log",
         "negative_log": "cases/through_entered/primary-negative-analysis.log",
         "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_entered --output .runtime-work/c158190-yield_nearest_view_through_entered-primary-compat-v4 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_entered",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2070692d030e2f00e5033f42b592212af9358b2f5db0c68000e4649730d8a83d",
+        "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-yield_nearest_view_through_entered-primary-compat-v4 --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_entered --diagnostic-fixture",
+        "test_exit_code": 0,
+        "test_log": "cases/through_entered/delivery-audit-positive.log",
+        "test_log_sha256": "393f2d825967c7d94ebf64239a04df010c1f7865154b5f936fdc535729e7bd15",
+        "negative_command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-yield_nearest_view_through_entered-primary-compat-v4 --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_entered",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent original-camera pixel reviewer required",
+        "negative_log": "cases/through_entered/delivery-audit-negative.log",
+        "negative_log_sha256": "9d48815fe39aed276428eb7e58c292ad53b89b6dd8f361073164288e4fefcc0d"
       }
     },
     {
@@ -407,6 +499,13 @@
             "log": "cases/clear/fallbacks/fallback2-offline.log",
             "log_sha256": "6f87b98e0368d7e1791f3e17aa2a85947fe3937ce2f94f7b39b5b08de26faea4",
             "construction_sha256": "711b01580d47eddaefa5f217f7d11e4895c388454448fc4db7edc3883780efe7"
+          },
+          "compatibility": {
+            "receipt": "cases/clear/fallbacks/fallback2-compatibility.json",
+            "sha256": "c7c54cb5064dca31fe58f63ac491c61fa2b115aac8d0d609c1624b46b6c67079",
+            "log": "cases/clear/fallbacks/fallback2-compatibility-analysis.log",
+            "negative_log": "cases/clear/fallbacks/fallback2-negative-analysis.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear --candidate fallback2 --output .runtime-work/c158190-yield_nearest_view_clear-fallback2-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
           }
         },
         {
@@ -427,6 +526,13 @@
             "log": "cases/clear/fallbacks/fallback3-offline.log",
             "log_sha256": "5b61a5d6592a323be72cf7b0d57979dc92fc4b468ca9b1dc947a7052f53c8949",
             "construction_sha256": "7d5acf111fd266a491cd610bc6ca8ac77ee312adfb04c3d20bf8719f70db70c4"
+          },
+          "compatibility": {
+            "receipt": "cases/clear/fallbacks/fallback3-compatibility.json",
+            "sha256": "208e8ae2b1ecbca877cfd1c17f232e0c8ea6012e2e44e8012a16e5d5d57c5011",
+            "log": "cases/clear/fallbacks/fallback3-compatibility-analysis.log",
+            "negative_log": "cases/clear/fallbacks/fallback3-negative-analysis.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear --candidate fallback3 --output .runtime-work/c158190-yield_nearest_view_clear-fallback3-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
           }
         }
       ],
@@ -488,6 +594,26 @@
           "entrypoint": "finalizer.py",
           "method": "rebuild from original sight rays",
           "evidence": "visibility_rays.jsonl"
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "finalizer.py",
+          "method": "join original approach distance to intersection with saved frame map",
+          "evidence": "approach_history.jsonl and video_frames.jsonl"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native ego body vertices and lane state to saved frame map",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_position": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native through actor body vertices and lane state; retain explicit absent actor state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "derive finite difference through actor center motion from original Native body history with explicit absent state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
         }
       },
       "offline": {
@@ -503,6 +629,32 @@
         "log": "cases/clear/primary-compatibility-analysis.log",
         "negative_log": "cases/clear/primary-negative-analysis.log",
         "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear --output .runtime-work/c158190-yield_nearest_view_clear-primary-compat-v4 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2070692d030e2f00e5033f42b592212af9358b2f5db0c68000e4649730d8a83d",
+        "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-yield_nearest_view_clear-primary-compat-v4 --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear --diagnostic-fixture",
+        "test_exit_code": 0,
+        "test_log": "cases/clear/delivery-audit-positive.log",
+        "test_log_sha256": "59fe7080a8550c230d3c92a7325af8ca5cfeb4679b5d5bd7541b65536f3bde2a",
+        "negative_command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-yield_nearest_view_clear-primary-compat-v4 --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent original-camera pixel reviewer required",
+        "negative_log": "cases/clear/delivery-audit-negative.log",
+        "negative_log_sha256": "9d48815fe39aed276428eb7e58c292ad53b89b6dd8f361073164288e4fefcc0d"
       }
     },
     {
@@ -538,6 +690,13 @@
             "log": "cases/no_slow/fallbacks/fallback1-offline.log",
             "log_sha256": "f337a720a2712878e844f62275217c055e68759d9f570032b0f4ac8af7c70331",
             "construction_sha256": "dcdc897376f79bbc4c8b59329dce8eb69fa452bea1f8af4a16e27fb57d6055ee"
+          },
+          "compatibility": {
+            "receipt": "cases/no_slow/fallbacks/fallback1-compatibility.json",
+            "sha256": "108d3b39980c12a852a97c23213c2e398216adf894d8739ba96f35da0956ead0",
+            "log": "cases/no_slow/fallbacks/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/no_slow/fallbacks/fallback1-negative-analysis.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow --candidate fallback1 --output .runtime-work/c158190-yield_nearest_view_no_slow-fallback1-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
           }
         },
         {
@@ -558,6 +717,13 @@
             "log": "cases/no_slow/fallbacks/fallback2-offline.log",
             "log_sha256": "9dea5414c7a7b5d8a341c52bbb40f4c6ed6eb40059a36531d99a569a17a0bfa4",
             "construction_sha256": "07c248c08a4d8f56d10529746ca7c0427c89452eeb139b23d78a8daf21831afe"
+          },
+          "compatibility": {
+            "receipt": "cases/no_slow/fallbacks/fallback2-compatibility.json",
+            "sha256": "68bed9237d648ad54ae1cf7fa7254f8f2726ae373bd9c7f31dfef68cc05c735d",
+            "log": "cases/no_slow/fallbacks/fallback2-compatibility-analysis.log",
+            "negative_log": "cases/no_slow/fallbacks/fallback2-negative-analysis.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow --candidate fallback2 --output .runtime-work/c158190-yield_nearest_view_no_slow-fallback2-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
           }
         },
         {
@@ -578,6 +744,13 @@
             "log": "cases/no_slow/fallbacks/fallback3-offline.log",
             "log_sha256": "f337a720a2712878e844f62275217c055e68759d9f570032b0f4ac8af7c70331",
             "construction_sha256": "69d00ee2af13e5ba3b8f0b7d4b61678b0764f45fa5f498af7885128516d9ff24"
+          },
+          "compatibility": {
+            "receipt": "cases/no_slow/fallbacks/fallback3-compatibility.json",
+            "sha256": "d1a9cb55751269da576062cab3622ed8b3756933034afbf73bdb5c7eb8c6f746",
+            "log": "cases/no_slow/fallbacks/fallback3-compatibility-analysis.log",
+            "negative_log": "cases/no_slow/fallbacks/fallback3-negative-analysis.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow --candidate fallback3 --output .runtime-work/c158190-yield_nearest_view_no_slow-fallback3-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
           }
         }
       ],
@@ -639,6 +812,26 @@
           "entrypoint": "finalizer.py",
           "method": "rebuild from original sight rays",
           "evidence": "visibility_rays.jsonl"
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "finalizer.py",
+          "method": "join original approach distance to intersection with saved frame map",
+          "evidence": "approach_history.jsonl and video_frames.jsonl"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native ego body vertices and lane state to saved frame map",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_position": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native through actor body vertices and lane state; retain explicit absent actor state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "derive finite difference through actor center motion from original Native body history with explicit absent state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
         }
       },
       "offline": {
@@ -654,6 +847,32 @@
         "log": "cases/no_slow/primary-compatibility-analysis.log",
         "negative_log": "cases/no_slow/primary-negative-analysis.log",
         "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow --output .runtime-work/c158190-yield_nearest_view_no_slow-primary-compat-v4 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2070692d030e2f00e5033f42b592212af9358b2f5db0c68000e4649730d8a83d",
+        "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-yield_nearest_view_no_slow-primary-compat-v4 --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow --diagnostic-fixture",
+        "test_exit_code": 0,
+        "test_log": "cases/no_slow/delivery-audit-positive.log",
+        "test_log_sha256": "764bd546bcb37fe5eaaa9cc8dba99357d9dd78e68ef06d4d4020b6be2095aa2f",
+        "negative_command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-yield_nearest_view_no_slow-primary-compat-v4 --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent original-camera pixel reviewer required",
+        "negative_log": "cases/no_slow/delivery-audit-negative.log",
+        "negative_log_sha256": "9d48815fe39aed276428eb7e58c292ad53b89b6dd8f361073164288e4fefcc0d"
       }
     }
   ]
