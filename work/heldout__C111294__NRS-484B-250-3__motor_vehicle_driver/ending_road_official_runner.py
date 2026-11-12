@@ -9,6 +9,7 @@ from ending_road_camera import CAMERAS, EndingRoadCameraCapture, LosslessSourceS
 from ending_road_device import DeviceSourceRecorder, devices_at_junction, select_ending_approach_device
 from ending_road_route import select_t_routes
 from ending_road_source_capture import EndingRoadSourceRecorder, topology_from_native, _body
+from official_geometry_binding import bind_geometry, require_expected_geometry
 
 ASSIGNMENT = 'heldout__C111294__NRS-484B-250-3__motor_vehicle_driver'
 CASE = ASSIGNMENT + '__official_device_control'
@@ -96,8 +97,10 @@ def _governed_route(lights, ending, through):
         return False
 
 
-def run(config, output, host='127.0.0.1', port=2000):
+def run(config, output, host='127.0.0.1', port=2000, expected_geometry=None):
     check_config(config)
+    if expected_geometry is None:
+        raise ValueError('Official capture requires expected Native geometry binding')
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
@@ -128,6 +131,15 @@ def run(config, output, host='127.0.0.1', port=2000):
         lights = list(world.get_actors().filter('traffic.traffic_light*'))
         routes = select_t_routes(world.get_map(), route_accept=lambda ending, through:
                                  _governed_route(lights, ending, through))
+        selected_device = select_ending_approach_device(
+            lights, routes['subject'], routes['junction_id'])
+        binding = require_expected_geometry(
+            bind_geometry(world.get_map(), routes, selected_device),
+            json.loads(Path(expected_geometry).read_text()))
+        binding_path = output / 'official_geometry_binding.json'
+        if binding_path.exists():
+            raise FileExistsError('Retain prior official Native geometry binding')
+        binding_path.write_text(json.dumps(binding, indent=2) + '\n')
         subject_path = extend_exit(routes['subject'])
         other_path = extend_exit(routes['other'])
         routes['subject'], routes['other'] = subject_path, other_path
@@ -146,7 +158,6 @@ def run(config, output, host='127.0.0.1', port=2000):
         topology = topology_from_native(subject_path, other_path, subject,
                                         other, junction, polygon)
         recorder = EndingRoadSourceRecorder(output, topology, subject, other)
-        selected_device = select_ending_approach_device(lights, subject_path, routes['junction_id'])
         device_recorder = DeviceSourceRecorder(output, selected_device, routes['junction_id'])
         pipeline = PipelineCapture(client, subject, output, CASE,
                                    required_observations=config.get('required_atoms', []))
@@ -211,6 +222,7 @@ def main():
     parser.add_argument('--output-dir')
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
+    parser.add_argument('--expected-geometry')
     parser.add_argument('--run', action='store_true')
     parser.add_argument('--check', action='store_true')
     args = parser.parse_args()
@@ -218,7 +230,7 @@ def main():
     check_config(config)
     if not args.check:
         if not args.output_dir: raise ValueError('Fresh Native output directory required')
-        run(config, args.output_dir, args.host, args.port)
+        run(config, args.output_dir, args.host, args.port, args.expected_geometry)
 
 
 if __name__ == '__main__':
