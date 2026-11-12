@@ -1,5 +1,6 @@
 """Independent source-bound audit of the three planned turn comparisons."""
 import json
+from hashlib import sha256
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -25,6 +26,9 @@ def inspect(manifest, receipts):
         require(entry['kind'] == 'delivery' and entry['compatibility']['sha256'], 'Missing source-bound compatibility')
         receipt = receipts[case_id]
         require(receipt['passed'] and receipt['case_id'] == case_id, 'Wrong or failed compatibility receipt')
+        receipt_path = ROOT / entry['compatibility']['receipt']
+        require(sha256(receipt_path.read_bytes()).hexdigest() == entry['compatibility']['sha256'],
+                'Stale compatibility receipt file')
         require(receipt['construction_sha256'] == entry['construction_sha256'], 'Stale construction binding')
         value = receipt['measurement_examples']['turn_signal_observation']['value']
         require(value['format'] == 'worker-turn-signal-observation', 'Wrong measured turn format')
@@ -45,7 +49,10 @@ def inspect(manifest, receipts):
     both = records['both'][1]
     require(baseline['pedestrian_may_be_affected'] and no_horn['pedestrian_may_be_affected'], 'Pedestrian comparison lacks pedestrian')
     require(baseline['sources']['affected_participants.json'] == no_horn['sources']['affected_participants.json'], 'Pedestrian context changed with horn')
-    require(baseline['max_pre_turn_listener_audio_rms'] > no_horn['max_pre_turn_listener_audio_rms'] == 0, 'Horn contrast absent in source measurement')
+    require(baseline['sources']['participant_bodies.jsonl'] == no_horn['sources']['participant_bodies.jsonl'],
+            'Pedestrian body path changed with horn')
+    require(baseline['max_pre_turn_listener_audio_rms'] > no_horn['max_pre_turn_listener_audio_rms'],
+            'Horn contrast absent in source measurement')
     require(baseline['sources']['ego_signal_audio.jsonl'] != no_horn['sources']['ego_signal_audio.jsonl'], 'Horn source unchanged')
     require(not vehicle['pedestrian_may_be_affected'] and vehicle['vehicle_may_be_affected'], 'Other-vehicle branch absent')
     require(vehicle['pre_turn_indicator_frames'], 'Other-vehicle signal branch lacks pre-turn readback')

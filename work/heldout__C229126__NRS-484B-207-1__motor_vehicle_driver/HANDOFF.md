@@ -123,3 +123,12 @@ The four-camera creation test verifies four sensor spawn/listen calls, joined
 frames and rejection of a missing source frame. The source-shaped finalizer
 result also passes pinned `worker_exchange.native_output.validate_result`.
 All 18 tests pass; current `cpu-tests.log` SHA256 `8f609695c5cb417a48a7a9218da0b60a95365a72ac6e96a16a480793c58605a3`.
+
+After the 18-test checkpoint, the complete strict command
+`.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready`
+was rerun and exited 1 at `runtime/scenario_pipeline/worker_exchange/preparation.py:276`
+with `ValueError: Preparation acceptance failed: partial/missing packages remain`.
+The updated environment preflight and this assignment's scoped nonstrict gate
+pass. C229126 remains a truthful partial CPU construction, and 16 of the 51
+batch assignments remain partial. Resume with the exact first-case bundle and
+proof work listed above, then rerun scoped strict and the complete strict gate.
