@@ -8,6 +8,9 @@ from pathlib import Path
 
 from u_turn_measurement import measure
 from u_turn_403_3_frontage import FRONTAGE_M, WINDOW_M, measure_frontage
+from u_turn_227_divider import measure_divider_candidate
+from u_turn_363_school import measure_school_candidate
+from types import SimpleNamespace
 
 
 def _required(root, name):
@@ -74,6 +77,70 @@ def measure_built_frontage(frontage_path, context_path):
     return source
 
 
+def measure_mapped_divider(divider_path, context_path):
+    source = json.loads(Path(divider_path).read_text()).get('divider_candidate')
+    context = json.loads(Path(context_path).read_text())
+    if (not isinstance(source,dict) or
+            source.get('road_id') != context.get('approach_road_id') or
+            source.get('approach_lane_id') != context.get('approach_lane_id') or
+            source.get('opposite_lane_id') != context.get('opposite_lane_id') or
+            any(source.get(key) is not None for key in
+                ('divided_highway_legal_judgment','public_authority_opening_status',
+                 'crossover_or_intersection_status')) or
+            source.get('actual_barrier_crossing_verified') is not False):
+        raise ValueError('Original 227 divider identity or legal status differs')
+    def lane(xy,width,lane_id):
+        forward = source['approach_forward_unit_xy']
+        transform = SimpleNamespace(
+            location=SimpleNamespace(x=xy[0],y=xy[1]),
+            get_forward_vector=lambda:SimpleNamespace(x=forward[0],y=forward[1]))
+        return SimpleNamespace(transform=transform,road_id=source['road_id'],
+                               lane_id=lane_id,lane_width=width)
+    scene = {'approach':lane(source['approach_xy_m'],source['lane_widths_m'][0],
+                             source['approach_lane_id']),
+             'opposite':lane(source['opposite_xy_m'],source['lane_widths_m'][1],
+                             source['opposite_lane_id'])}
+    recalculated = measure_divider_candidate(scene,source.get('nearby_divider_boxes',[]))
+    for key in ('lane_center_separation_m','lane_widths_m',
+                'unoccupied_lane_edge_gap_m','nearby_divider_boxes'):
+        if recalculated[key] != source.get(key):
+            raise ValueError('Original 227 divider geometry differs')
+    if source['unoccupied_lane_edge_gap_m'] < 1.0 or not source['nearby_divider_boxes']:
+        raise ValueError('Original 227 mapped divider candidate absent')
+    return source
+
+
+def measure_school_zone_candidate(school_path, context_path):
+    source = json.loads(Path(school_path).read_text()).get('school_zone_candidate')
+    context = json.loads(Path(context_path).read_text())
+    if (not isinstance(source, dict) or
+            source.get('road_id') != context.get('approach_road_id') or
+            source.get('approach_lane_id') != context.get('approach_lane_id') or
+            any(source.get(key) is not None for key in (
+                'official_zone_designation', 'children_present',
+                'school_in_session', 'governing_body_exempt_period',
+                'operational_beacon', 'pupils_in_class',
+                'yellow_beacon_lights_flashing',
+                'sign_speed_limit_in_effect',
+                'legal_prohibition_applicable'))):
+        raise ValueError('Original 363 school-zone identity or legal status differs')
+    xy = source.get('approach_xy_m')
+    if not isinstance(xy, list) or len(xy) != 2:
+        raise ValueError('Original 363 approach point missing')
+    waypoint = SimpleNamespace(
+        road_id=source['road_id'], lane_id=source['approach_lane_id'],
+        transform=SimpleNamespace(location=SimpleNamespace(x=xy[0], y=xy[1])))
+    recalculated = measure_school_candidate(
+        {'approach': waypoint}, source.get('source_landmarks', []),
+        max_distance_m=source.get('search_radius_m', 60.0))
+    for key in recalculated:
+        if source.get(key) != recalculated[key]:
+            raise ValueError('Original 363 school-zone source differs: ' + key)
+    if not source.get('matching_landmarks'):
+        raise ValueError('Original 363 mapped school-zone candidate absent')
+    return source
+
+
 def analyze(attempt, *, write_channels=True):
     root = Path(attempt)
     config = json.loads(_required(root, 'config.json')[0].read_text())
@@ -120,6 +187,20 @@ def analyze(attempt, *, write_channels=True):
             'value': measure_built_frontage(frontage_path, paths['u_turn_context.json'][0]),
             'sources': {'u_turn_403_3_frontage.json': frontage_hash,
                         'u_turn_context.json': paths['u_turn_context.json'][1]}}
+    if case_id.endswith('__prohibition_227'):
+        divider_path, divider_hash = _required(root, 'u_turn_227_divider.json')
+        measurements['divider_candidate'] = {
+            'method': 'measure_mapped_divider',
+            'value': measure_mapped_divider(divider_path, paths['u_turn_context.json'][0]),
+            'sources': {'u_turn_227_divider.json': divider_hash,
+                        'u_turn_context.json': paths['u_turn_context.json'][1]}}
+    if case_id.endswith('__prohibition_363'):
+        school_path, school_hash = _required(root, 'u_turn_363_school.json')
+        measurements['school_zone_candidate'] = {
+            'method': 'measure_school_zone_candidate',
+            'value': measure_school_zone_candidate(school_path, paths['u_turn_context.json'][0]),
+            'sources': {'u_turn_363_school.json': school_hash,
+                        'u_turn_context.json': paths['u_turn_context.json'][1]}}
     if write_channels:
         channel = root / 'u_turn_observation.jsonl'
         if channel.exists():
@@ -157,6 +238,16 @@ def build_result(attempt, report):
                          'unit': 'structured context',
                          'reference': 'u_turn_403_3_frontage.json',
                          'sha256': _required(root, 'u_turn_403_3_frontage.json')[1]})
+    if report['case_id'].endswith('__prohibition_227'):
+        evidence.append({'name': 'divider_candidate',
+                         'unit': 'structured context',
+                         'reference': 'u_turn_227_divider.json',
+                         'sha256': _required(root, 'u_turn_227_divider.json')[1]})
+    if report['case_id'].endswith('__prohibition_363'):
+        evidence.append({'name': 'school_zone_candidate',
+                         'unit': 'structured context',
+                         'reference': 'u_turn_363_school.json',
+                         'sha256': _required(root, 'u_turn_363_school.json')[1]})
     return {'case_id': report['case_id'],
             'measured_values': {key: item['value'] for key, item in
                                 report['measurements'].items()},

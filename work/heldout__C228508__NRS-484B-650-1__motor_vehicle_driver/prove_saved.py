@@ -29,16 +29,18 @@ def prove(entry, candidate):
     label = short + '-' + candidate
     selected = (entry if candidate == 'primary' else
                 next(item for item in entry['candidates'] if item['id'] == candidate))
+    wrapper_logs = ROOT / '.runtime-work' / 'c228508-saved-wrapper-logs'
+    wrapper_logs.mkdir(parents=True, exist_ok=True)
     prefix = ROOT / '.runtime-work' / ('c228508-saved-' + label + '-' + str(time_ns()))
     fixture, attempt, output = (Path(str(prefix) + suffix)
                                 for suffix in ('-fixture', '-attempt', '-processing'))
     call([sys.executable, 'runtime.py', 'fixture', '--recipe',
           str(ROOT / entry['fixture_recipe']), '--output', str(fixture)],
-         HERE / (label + '-saved-fixture.log'))
+         wrapper_logs / (label + '-saved-fixture.log'))
     call([sys.executable, 'runtime.py', 'materialize', '--manifest',
           str(MANIFEST), '--case', case, '--candidate', candidate,
           '--output', str(attempt)],
-         HERE / (label + '-saved-materialize.log'))
+         wrapper_logs / (label + '-saved-materialize.log'))
     for source in fixture.iterdir():
         target = attempt / source.name
         if target.exists():

@@ -12,10 +12,12 @@ from u_turn_construction import (control_step, participant_placement,
 from u_turn_originals import UTurnSourceRecorder
 from u_turn_407_geometry import inspect_407_geometry
 from u_turn_403_3_frontage import select_403_3_candidate
+from u_turn_227_divider import select_227_candidate
+from u_turn_363_school import select_363_candidate
 
 
 SUFFIXES = ('safety_clear', 'safety_conflict', 'prohibition_403_2',
-            'prohibition_403_3')
+            'prohibition_403_3', 'prohibition_227', 'prohibition_363')
 PREFIX = 'heldout__C230627__NRS-484B-403-1__motor_vehicle_driver__'
 
 
@@ -94,15 +96,30 @@ def run(output_dir, host, port):
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
-        if config['selected_case_id'].endswith('__prohibition_403_3'):
+        if config['selected_case_id'].endswith('__prohibition_227'):
+            scene, divider_report = select_227_candidate(
+                world, carla,
+                waypoint_spacing_m=engineering.get('waypoint_spacing_m', 2.))
+            district_frontage = None
+            school_report = None
+        elif config['selected_case_id'].endswith('__prohibition_363'):
+            scene, school_report = select_363_candidate(
+                world.get_map(),
+                waypoint_spacing_m=engineering.get('waypoint_spacing_m', 2.))
+            district_frontage = divider_report = None
+        elif config['selected_case_id'].endswith('__prohibition_403_3'):
             scene, district_frontage = select_403_3_candidate(
                 world, carla,
                 waypoint_spacing_m=engineering.get('waypoint_spacing_m', 2.))
+            divider_report = None
+            school_report = None
         else:
             scene = select_u_turn_scene(world.get_map(),
                                         waypoint_spacing_m=engineering.get('waypoint_spacing_m', 2.),
                                         candidate_index=engineering.get('route_candidate_index', 0))
             district_frontage = None
+            divider_report = None
+            school_report = None
         device = (select_no_u_turn_device(world.get_map(), scene)
                   if config['selected_case_id'].endswith('__prohibition_403_2')
                   else None)
@@ -148,6 +165,12 @@ def run(output_dir, host, port):
             district_frontage['opposite_lane_id'] = scene['opposite_lane_id']
             (output/'u_turn_403_3_frontage.json').write_text(json.dumps(
                 {'built_frontage_candidate': district_frontage}, indent=2)+'\n')
+        if divider_report is not None:
+            (output/'u_turn_227_divider.json').write_text(json.dumps(
+                {'divider_candidate': divider_report}, indent=2)+'\n')
+        if school_report is not None:
+            (output/'u_turn_363_school.json').write_text(json.dumps(
+                {'school_zone_candidate': school_report}, indent=2)+'\n')
         frame_map = FrameMap(output/'video_frames.jsonl')
         target_index = 1
         start_time = None

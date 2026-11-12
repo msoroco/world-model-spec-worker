@@ -11,7 +11,7 @@
         "center-lane"
       ],
       "description": "three clearly marked lanes with subject in right lane",
-      "construction_status": "provisional_native_runner_offline_proven",
+      "construction_status": "provisional_native_runner_offline_compatibility_saved_proven",
       "physical_risk": {
         "risk": "three-lane map ordering, lane markings, sight obstruction or posted sign may not be physically visible",
         "trigger_source": "original ego/lane polygons, source RGB views, sign/marking and traffic geometry",
@@ -26,7 +26,7 @@
         "extreme-left"
       ],
       "description": "same highway with subject in extreme left lane",
-      "construction_status": "planned_unconstructed",
+      "construction_status": "provisional_native_runner_offline_compatibility_saved_proven",
       "physical_risk": {
         "risk": "three-lane map ordering, lane markings, sight obstruction or posted sign may not be physically visible",
         "trigger_source": "original ego/lane polygons, source RGB views, sign/marking and traffic geometry",
@@ -41,7 +41,7 @@
         "center-lane"
       ],
       "description": "center-lane travel without an exception asserted",
-      "construction_status": "provisional_native_runner_offline_pending",
+      "construction_status": "provisional_native_runner_offline_compatibility_saved_proven",
       "physical_risk": {
         "risk": "three-lane map ordering, lane markings, sight obstruction or posted sign may not be physically visible",
         "trigger_source": "original ego/lane polygons, source RGB views, sign/marking and traffic geometry",
@@ -269,7 +269,7 @@
       }
     ]
   },
-  "review_status": "partial: first right-lane exact Native bundle and saved finalizer built; offline proof passes; compatibility and eight other exact cases pending",
+  "review_status": "partial: right baseline, center default, and extreme-left exact proof chains pass; six other exact cases, fallbacks and semantic sweeps remain",
   "branch_inventory": [
     {
       "source": {
@@ -277,7 +277,7 @@
         "sha256": "f5fb9b129d7c026444219f3e595695032918e1bdf3c980a8143eab4133c3976d"
       },
       "requirement": "extreme-left-lane driving prohibited at any time",
-      "status": "cases_planned_lane_geometry_cpu_tested_exact_bundle_pending"
+      "status": "extreme_left_exact_cpu_proven_other_cases_pending"
     },
     {
       "source": {
@@ -285,7 +285,7 @@
         "sha256": "f5fb9b129d7c026444219f3e595695032918e1bdf3c980a8143eab4133c3976d"
       },
       "requirement": "center lane default prohibited",
-      "status": "cases_planned_lane_geometry_cpu_tested_exact_bundle_pending"
+      "status": "center_default_exact_cpu_proven_other_exceptions_pending"
     },
     {
       "source": {
@@ -333,7 +333,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Pinned CPU preflight now passes. Exact construction and saved-processing proofs have not yet been run for this partial assignment.",
+    "Pinned CPU preflight and two exact source-bound proof chains pass; seven selected case constructions and CPU proofs remain.",
     "Actual CARLA motion, participant visibility, and physical capture remain unverified."
   ],
   "requirement_dispositions": [
@@ -353,7 +353,16 @@
       "case_ids": [
         "heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__center_default"
       ],
-      "evidence_or_gap": "No accepted recording; center-lane diagnostic and exact Native construction under test."
+      "evidence_or_gap": "No accepted recording; center-default exact Native construction, source-bound diagnostic, saved-processing and right-versus-center occupancy audit pass."
+    },
+    {
+      "requirement": "extreme-left-lane driving prohibited at any time",
+      "source": "NRS 484B.223(2) full text in inputs/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__extreme_left"
+      ],
+      "evidence_or_gap": "No accepted recording; exact Native counterflow construction, source-bound diagnostic, saved processing and independent occupancy comparison pass."
     }
   ],
   "selected_branch": {

@@ -1,0 +1,28 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__off_pavement_right_pass",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Continuous one-mile window containing one speeding act, two listed acts or one repeated listed act, and immediate hazard to person or vehicle, in any sequence",
+      "source": "inputs/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+      "output_key": "aggressive_window_observation",
+      "method": "measure_aggressive_window",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "video_frames.jsonl",
+        "driving_trace.jsonl",
+        "event_annotations.json",
+        "following_sources.jsonl",
+        "device_lane_sources.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "event_annotations.json"
+    ],
+    "error_contains": "Missing required source: event_annotations.json"
+  }
+}

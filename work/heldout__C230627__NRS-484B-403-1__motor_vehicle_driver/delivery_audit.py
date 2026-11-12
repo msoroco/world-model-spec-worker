@@ -6,7 +6,8 @@ import json
 from pathlib import Path
 
 from u_turn_measurement import measure
-from u_turn_finalizer import measure_built_frontage, measure_mapped_device
+from u_turn_finalizer import (measure_built_frontage, measure_mapped_device,
+                              measure_mapped_divider, measure_school_zone_candidate)
 
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -65,6 +66,30 @@ def audit_attempt(attempt, report, *, decoder=None):
         if measure_built_frontage(root/'u_turn_403_3_frontage.json',
                                   root/'u_turn_context.json') != frontage['value']:
             raise ValueError('Independent built frontage measurement differs')
+    if case_id.endswith('__prohibition_227'):
+        divider = report['measurements'].get('divider_candidate')
+        if not isinstance(divider,dict) or set(divider.get('sources',{})) != {
+                'u_turn_227_divider.json','u_turn_context.json'}:
+            raise ValueError('Mapped divider original source inventory differs')
+        for name,expected in divider['sources'].items():
+            path=root/name
+            if not path.is_file() or _digest(path) != expected:
+                raise ValueError('Mapped divider original source hash differs: '+name)
+        if measure_mapped_divider(root/'u_turn_227_divider.json',
+                                  root/'u_turn_context.json') != divider['value']:
+            raise ValueError('Independent mapped divider measurement differs')
+    if case_id.endswith('__prohibition_363'):
+        school = report['measurements'].get('school_zone_candidate')
+        if not isinstance(school, dict) or set(school.get('sources', {})) != {
+                'u_turn_363_school.json', 'u_turn_context.json'}:
+            raise ValueError('School-zone original source inventory differs')
+        for name, expected in school['sources'].items():
+            path = root/name
+            if not path.is_file() or _digest(path) != expected:
+                raise ValueError('School-zone original source hash differs: ' + name)
+        if measure_school_zone_candidate(root/'u_turn_363_school.json',
+                                         root/'u_turn_context.json') != school['value']:
+            raise ValueError('Independent school-zone measurement differs')
     mapping, trace, motion = (_rows(root/name) for name in
                               ('video_frames.jsonl', 'trace.jsonl',
                                'u_turn_motion.jsonl'))
@@ -102,12 +127,18 @@ def main():
     parser.add_argument('--report', required=True)
     parser.add_argument('--tamper-motion-hash', action='store_true')
     parser.add_argument('--tamper-frontage-hash', action='store_true')
+    parser.add_argument('--tamper-divider-hash', action='store_true')
+    parser.add_argument('--tamper-school-hash', action='store_true')
     args = parser.parse_args()
     report = json.loads(Path(args.report).read_text())
     if args.tamper_motion_hash:
         report['measurements']['u_turn_observation']['sources']['u_turn_motion.jsonl'] = '0'*64
     if args.tamper_frontage_hash:
         report['measurements']['built_frontage_candidate']['sources']['u_turn_403_3_frontage.json'] = '0'*64
+    if args.tamper_divider_hash:
+        report['measurements']['divider_candidate']['sources']['u_turn_227_divider.json'] = '0'*64
+    if args.tamper_school_hash:
+        report['measurements']['school_zone_candidate']['sources']['u_turn_363_school.json'] = '0'*64
     result = audit_attempt(args.attempt, report)
     if result['case_id'] != args.case:
         raise ValueError('C230627 delivery audit case argument differs')

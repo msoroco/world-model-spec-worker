@@ -35,6 +35,8 @@ def main():
                 '--case', case_id, '--attempt', str(attempt),
                 '--report', str(report)]
         flag = ('--tamper-frontage-hash' if short == 'prohibition_403_3'
+                else '--tamper-divider-hash' if short == 'prohibition_227'
+                else '--tamper-school-hash' if short == 'prohibition_363'
                 else '--tamper-motion-hash')
         positive = HERE/(short+'-delivery-positive.log')
         negative = HERE/(short+'-delivery-negative.log')
@@ -47,6 +49,10 @@ def main():
                                       stdout=stream, stderr=subprocess.STDOUT)
         expected = ('Built frontage original source hash differs: u_turn_403_3_frontage.json'
                     if short == 'prohibition_403_3' else
+                    'Mapped divider original source hash differs: u_turn_227_divider.json'
+                    if short == 'prohibition_227' else
+                    'School-zone original source hash differs: u_turn_363_school.json'
+                    if short == 'prohibition_363' else
                     'Original U-turn source hash differs: u_turn_motion.jsonl')
         if passed.returncode or rejected.returncode == 0 or expected not in negative.read_text():
             raise ValueError('Independent C230627 delivery audit failed: '+short)

@@ -39,7 +39,8 @@ def main():
         ('oncoming_spawn_distance_m', 'world_setup', 'Engineering participant spawn request; no legal safety cutoff'),
         ('physical_safety', 'subject_behavior', 'Null pending original motion and independent judgment'),
         ('mapped_no_u_turn_device', 'world_setup', 'Mapped device candidate or null'),
-        ('built_frontage_candidate', 'world_setup', 'Native building geometry candidate or null; business use remains unknown')]
+        ('built_frontage_candidate', 'world_setup', 'Native building geometry candidate or null; business use remains unknown'),
+        ('divider_candidate', 'world_setup', 'Native lane median and mapped barrier candidate or null; authority opening unresolved')]
     refs = [{'name': n, 'kind': k, 'range_or_domain': d} for n,k,d in parameters]
     template = {'template_id': TEMPLATE, 'law_id': LAW['id'], 'actor': 'motor_vehicle_driver',
                 'status': 'draft', 'quote': LAW['text'],
@@ -84,21 +85,38 @@ def main():
         new_case['recording_description'] = json.loads(
             (ROOT/'construction-prohibition_403_3.json').read_text())['recording_description']
         cases['cases'].append(new_case)
+    case_id_227 = ROOT.name + '__prohibition_227'
+    if not any(case['case_id'] == case_id_227 for case in cases['cases']):
+        new_case = copy.deepcopy(next(case for case in cases['cases']
+                                      if case['case_id'].endswith('__safety_clear')))
+        new_case['case_id'] = case_id_227
+        new_case['target_type'] = 'boundary_probe'
+        new_case['rationale'] = 'Native median gap and mapped barrier candidate; divided-highway status and public-authority crossing alternatives remain unresolved.'
+        new_case['variable_assignments']['divider_candidate'] = {
+            'kind': 'world_setup', 'value': 'Native mapped median-barrier candidate'}
+        new_case['recording_description'] = json.loads(
+            (ROOT/'construction-prohibition_227.json').read_text())['recording_description']
+        cases['cases'].append(new_case)
     for case in cases['cases']:
         case['variable_assignments'].setdefault('mapped_no_u_turn_device',
             {'kind': 'world_setup', 'value': None})
         case['variable_assignments'].setdefault('built_frontage_candidate',
+            {'kind': 'world_setup', 'value': None})
+        case['variable_assignments'].setdefault('divider_candidate',
             {'kind': 'world_setup', 'value': None})
         if case['target_type'] != 'baseline':
             if case['target_type'] == 'prohibition_context':
                 case['target_type'] = 'boundary_probe'
             is_device = case['case_id'].endswith('__prohibition_403_2')
             is_frontage = case['case_id'].endswith('__prohibition_403_3')
+            is_divider = case['case_id'].endswith('__prohibition_227')
             axis = ('mapped_no_u_turn_device' if is_device else
                     'built_frontage_candidate' if is_frontage else
+                    'divider_candidate' if is_divider else
                     'oncoming_spawn_distance_m')
             case['paired_probe_id'] = ('mapped_device_candidate' if is_device else
                                        'built_frontage_candidate' if is_frontage else
+                                       'mapped_divider_candidate' if is_divider else
                                        'safety_clearance')
             case['deliberate_differences'] = [axis]
             case['probe'] = {'primary_variable': axis,
