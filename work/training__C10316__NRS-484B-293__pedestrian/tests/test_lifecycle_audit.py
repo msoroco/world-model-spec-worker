@@ -39,7 +39,7 @@ class LifecycleAuditTests(unittest.TestCase):
             'native_exit_sha256':sha(attempt/'native-exit.json'),
             'native_construction_sha256':construction}))
         result = saved / 'analysis/result.json'
-        result.write_text(json.dumps({'case_id':'case','provenance_kind':'native',
+        result.write_text(json.dumps({'case_id':'case','provenance_kind':'native_source_shape_unverified',
                                       'diagnostic_fixture':False,
                                       'source_shaped_unit_test':True}))
         processing = saved / 'processing.json'

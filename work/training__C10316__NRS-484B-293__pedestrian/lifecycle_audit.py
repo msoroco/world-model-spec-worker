@@ -94,7 +94,7 @@ def audit(attempt: Path, owner_receipt: Path, processing_path: Path,
             "Saved result is missing or changed")
     result = read(result_path)
     require(result.get("case_id") == case_id and
-            result.get("provenance_kind") == "native" and
+            result.get("provenance_kind") == "native_source_shape_unverified" and
             result.get("diagnostic_fixture") in (None, False) and
             (result.get("source_shaped_unit_test") is True) == test_shape,
             "Saved result is synthetic or for another case")
