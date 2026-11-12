@@ -9,7 +9,7 @@ spec = importlib.util.spec_from_file_location('selected_pair', HERE / 'audit-sel
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 manifest = module.read(HERE / 'execution-manifest.json')
-matrix = module.read(HERE / 'update022-selected-process-saved-matrix.json')
+matrix = module.read(HERE / 'update024-selected-process-saved-matrix.json')
 positive = module.audit(manifest, matrix)
 assert positive['selected_cases'] == 2 and positive['candidate_receipts_verified'] == 8
 rejected = []

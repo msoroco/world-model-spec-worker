@@ -9,7 +9,7 @@ ROOT = HERE.parents[1]
 
 
 def paths(suffix):
-    base = ROOT / '.runtime-work/c111256-update022-selected' / suffix / 'primary'
+    base = ROOT / '.runtime-work/c111256-update024-selected' / suffix / 'primary'
     return base / 'selected-attempt', base / 'processed/v0001/processing.json'
 
 

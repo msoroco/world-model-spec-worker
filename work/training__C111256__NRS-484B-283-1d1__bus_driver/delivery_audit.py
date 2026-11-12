@@ -11,6 +11,7 @@ NATIVE = HERE / 'native'
 sys.path.insert(0, str(NATIVE))
 from finalize import CAMERAS, joined_sources, source, video_frames
 from physical_walk_audit import audit_original as audit_physical
+from exception_applicability_audit import audit_original as audit_exceptions
 
 CHECKS = ('native_source', 'all_participants', 'time_join',
           'full_video_decode', 'actual_pixels', 'physical_completion')
@@ -97,6 +98,10 @@ def audit(case_id, candidate_id, attempt, processing_path, *, diagnostic=False):
     require(processing.get('original_source_hashes', {}).get('official-walk-review.json') ==
             sha(review_path), 'Independent Walk review source changed')
     physical = audit_physical(attempt, suffix, review_path)
+    exception_review = source(attempt, 'exception-review.json')
+    require(processing.get('original_source_hashes', {}).get('exception-review.json') ==
+            sha(exception_review), 'Independent exception review source changed')
+    exceptions = audit_exceptions(attempt, exception_review)
     require(physical['physical_checks']['maneuver']['status'] == 'met' and
             result.get('maneuver_completed') is True and
             result.get('setup_confirmed') is True and
@@ -108,7 +113,8 @@ def audit(case_id, candidate_id, attempt, processing_path, *, diagnostic=False):
             'source_sha256': {**hashes, 'official-walk-review.json': sha(review_path)},
             'source_frame_counts': counts, 'source_joins': joins,
             'result_sha256': sha(result_path), 'processing_sha256': sha(processing_path),
-            'physical_audit': physical, 'legal_verdict_claimed': False}
+            'physical_audit': physical, 'exception_applicability_audit': exceptions,
+            'legal_verdict_claimed': False}
 
 
 def main():
