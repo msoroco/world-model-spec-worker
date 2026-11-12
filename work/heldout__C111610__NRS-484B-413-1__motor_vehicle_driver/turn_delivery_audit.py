@@ -42,7 +42,9 @@ def audit(case, attempt, processed, negative=False):
             'Stale exact construction')
     observed = report['measurements']['turn_signal_observation']
     names = (*ORIGINALS, *VIDEOS)
-    if case.endswith(('__pedestrian_horn_before_turn', '__both_users_both_signals')):
+    if case.endswith(('__pedestrian_horn_before_turn',
+                      '__pedestrian_farther_horn_before_turn',
+                      '__both_users_both_signals')):
         names += ('horn_actuation.jsonl',)
     hashes = {name: digest(attempt / name) for name in names}
     if negative:
