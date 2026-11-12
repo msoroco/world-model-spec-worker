@@ -26,7 +26,7 @@ def audit(attempts):
            for rank, config in enumerate(configs)):
         raise ValueError('Ending-road exact sweep case order differs')
     for name in ('intersection_topology.json', 'control_inventory.json',
-                 'video_frames.jsonl', 'trace.jsonl'):
+                 'video_frames.jsonl'):
         if len({digest(root / name) for root in roots}) != 1:
             raise ValueError('Ending-road fixed original route or frame setup changed: ' + name)
     participants = [rows(root / 'intersection_participants.jsonl') for root in roots]
@@ -40,6 +40,20 @@ def audit(attempts):
     if any(participants[0][0]['subject_corners'] != other[0]['subject_corners']
            for other in participants[1:]):
         raise ValueError('Ending-road initial subject setup changed')
+    frame_map = rows(roots[0] / 'video_frames.jsonl')
+    traces = [rows(root / 'trace.jsonl') for root in roots]
+    if len(frame_map) != 320 or any(len(trace) != len(frame_map) for trace in traces):
+        raise ValueError('Ending-road release sweep lacks complete original motion')
+    for trace, body in zip(traces, participants):
+        for index, (motion, video, actor) in enumerate(zip(trace, frame_map, body)):
+            if (video.get('video_frame') != index or
+                    (motion.get('frame'), motion.get('time_s')) !=
+                    (video.get('carla_frame'), video.get('time_s')) or
+                    (actor.get('frame'), actor.get('time_s')) !=
+                    (video.get('carla_frame'), video.get('time_s'))):
+                raise ValueError('Ending-road release original motion/frame join differs')
+    if any(traces[0][0] != trace[0] for trace in traces[1:]):
+        raise ValueError('Ending-road initial subject motion setup changed')
     points = []
     for root, config in zip(roots, configs):
         observed = measure(root / 'intersection_topology.json',
@@ -59,12 +73,18 @@ def audit(attempts):
                 raise ValueError('Ending-road subject entry timing differs from original bodies')
         points.append({'case_id': config['selected_case_id'],
                        'setpoint_frames': config['release_delay_frames'],
+                       'subject_entry_frame': observed['subject_entry_frame'],
                        'last_displacement_m': stream[-1]['value'],
                        'entry_delta_s': observed['entry_delta_s'],
                        'subject_entry_elapsed_s': entry_stream[-1]['value'],
                        'entry_timing_stream_sha256': digest(root / 'subject_entry_elapsed_s.jsonl'),
                        'participant_source_sha256': digest(root / 'intersection_participants.jsonl'),
                        'displacement_stream_sha256': digest(root / 'subject_displacement_m.jsonl')})
+    ordered = sorted(points, key=lambda point: point['setpoint_frames'])
+    if [point['setpoint_frames'] for point in ordered] != [0, 80, 160] or not (
+            ordered[0]['subject_entry_frame'] < ordered[1]['subject_entry_frame'] <
+            ordered[2]['subject_entry_frame']):
+        raise ValueError('Ending-road release sweep lacks measured entry contrast')
     return {'format': 'worker-ending-road-physical-sweep-audit',
             'comparison_id': 'yield_release_delay_sweep',
             'fixed_topology_sha256': digest(roots[0] / 'intersection_topology.json'),

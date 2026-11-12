@@ -25,14 +25,17 @@ def write(path, value):
     Path(path).write_text(json.dumps(value, indent=2) + "\n")
 
 
-def prove():
+def prove(skip_unchanged_first=False):
     generated = ROOT / ".runtime-work" / ("c111294-full-release-" + str(time_ns()))
     summaries = expand(generated)
     for rank in range(3):
         short = f"yield_release_delay-{rank:04d}"
-        shutil.copyfile(generated / f"{short}-candidate.json",
-                        HERE / f"diagnostic-yield-sweep-{rank:04d}.json")
         source = HERE / f"diagnostic-yield-sweep-{rank:04d}.json"
+        new_source = generated / f"{short}-candidate.json"
+        if rank == 0 and skip_unchanged_first and digest(source) != digest(new_source):
+            raise ValueError("First selected diagnostic changed; cannot reuse its receipts")
+        shutil.copyfile(generated / f"{short}-candidate.json",
+                        source)
         recipe_path = HERE / f"diagnostic-recipe-yield-sweep-{rank:04d}.json"
         recipe = json.loads(recipe_path.read_text())
         recipe["generator"]["sha256"] = digest(source)
@@ -45,6 +48,8 @@ def prove():
         if "__yield_release_delay-" not in entry["case_id"]:
             continue
         short = entry["case_id"].rsplit("__", 1)[-1]
+        if skip_unchanged_first and short.endswith("-0000"):
+            continue
         for candidate, target in [("primary", entry)] + [
             (item["id"], item) for item in entry["candidates"]]:
             label = short + "-full-window-" + candidate
@@ -77,4 +82,8 @@ def prove():
 
 
 if __name__ == "__main__":
-    print(json.dumps(prove(), indent=2))
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--skip-unchanged-first", action="store_true")
+    args = parser.parse_args()
+    print(json.dumps(prove(skip_unchanged_first=args.skip_unchanged_first), indent=2))

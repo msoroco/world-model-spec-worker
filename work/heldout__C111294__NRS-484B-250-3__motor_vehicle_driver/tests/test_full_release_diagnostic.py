@@ -41,10 +41,11 @@ class FullReleaseDiagnosticTest(unittest.TestCase):
                 graph_paths = {graph["path"] for graph in source["graphs"]}
                 self.assertTrue(all("capture/native/" + row["base"] in graph_paths
                                     for row in native))
+                source_rank = (0, 2, 1)[rank]
                 entries.append(json.loads((Path(temporary) / "originals" /
-                    f"yield_release_delay-{rank:04d}" / "config.json").read_text())
+                    f"yield_release_delay-{source_rank:04d}" / "config.json").read_text())
                                ["release_delay_frames"])
-            self.assertEqual(entries, [0, 80, 160])
+            self.assertEqual(entries, [0, 160, 80])
 
 
 if __name__ == "__main__":

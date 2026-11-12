@@ -11,7 +11,7 @@ from hashlib import sha256
 import json
 from pathlib import Path
 
-from build_release_window import DELAYS, FIRST_FRAME, FRAME_COUNT, HERE, build
+from build_release_window import DELAYS, FRAME_COUNT, HERE, build
 
 
 def compact(rows):
@@ -26,10 +26,22 @@ def expand(output):
     baseline = json.loads((HERE / "diagnostic-yield-sweep-0000.json").read_text())
     baseline_files = baseline["files"]
     summaries = []
-    for rank, delay in enumerate(DELAYS):
+    # The frozen selected constructions order their later points as 160, 80.
+    # Read that order explicitly so source motion follows each exact case's
+    # controller setpoint rather than the helper's numerical sweep order.
+    source_ranks = (0, 2, 1)
+    for rank, source_rank in enumerate(source_ranks):
+        delay = DELAYS[source_rank]
         short = f"yield_release_delay-{rank:04d}"
-        original = source_root / short
+        original = source_root / f"yield_release_delay-{source_rank:04d}"
         source = json.loads((HERE / f"diagnostic-yield-sweep-{rank:04d}.json").read_text())
+        selected = next(entry for entry in json.loads((HERE / "execution-manifest.json").read_text())["cases"]
+                        if entry["case_id"].endswith("__" + short))
+        construction = json.loads((HERE / selected["construction"]).read_text())
+        config = json.loads(next(item["content"] for item in construction["files"]
+                                 if item["path"] == "config.json"))
+        if config.get("release_delay_frames") != delay:
+            raise ValueError("Diagnostic release delay differs from selected construction")
         rows = [json.loads(line) for line in (original / "intersection_participants.jsonl").read_text().splitlines()]
         frames = [json.loads(line) for line in (original / "video_frames.jsonl").read_text().splitlines()]
         trace_join = [json.loads(line) for line in (original / "trace.jsonl").read_text().splitlines()]
