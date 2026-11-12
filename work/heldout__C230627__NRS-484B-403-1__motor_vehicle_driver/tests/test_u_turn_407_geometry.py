@@ -6,7 +6,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from u_turn_407_geometry import candidate_screen, inspect_407_geometry, select_407_candidate
+from u_turn_407_geometry import candidate_screen, inspect_407_geometry, select_407_candidate, validate_geometry_packet
 
 
 class Waypoint:
@@ -76,6 +76,17 @@ class GeometryTests(unittest.TestCase):
             selected, report = select_407_candidate(object())
         self.assertIs(selected, curved)
         self.assertEqual(report['candidate_index'], 2)
+
+    def test_saved_geometry_recalculation_and_tamper(self):
+        scene = {'approach': Waypoint(-1,0,curve=True),
+                 'opposite': Waypoint(1,0,crest=True)}
+        report = inspect_407_geometry(scene)
+        context = {'approach_road_id':7,'approach_lane_id':-1,
+                   'opposite_lane_id':1}
+        self.assertEqual(validate_geometry_packet(report,context),report)
+        report['directions']['approach']['probe_xyz_m'][0] += 1
+        with self.assertRaisesRegex(ValueError,'metric differs'):
+            validate_geometry_packet(report,context)
 
 
 if __name__ == '__main__':

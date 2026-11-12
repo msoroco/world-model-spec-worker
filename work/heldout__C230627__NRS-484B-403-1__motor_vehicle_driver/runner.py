@@ -10,14 +10,15 @@ from u_turn_construction import (control_step, participant_placement,
                                  select_u_turn_scene, u_turn_targets,
                                  select_no_u_turn_device, verify_incoming_sight_extent)
 from u_turn_originals import UTurnSourceRecorder
-from u_turn_407_geometry import inspect_407_geometry
+from u_turn_407_geometry import inspect_407_geometry, select_407_candidate
 from u_turn_403_3_frontage import select_403_3_candidate
 from u_turn_227_divider import select_227_candidate
 from u_turn_363_school import select_363_candidate
 
 
 SUFFIXES = ('safety_clear', 'safety_conflict', 'prohibition_403_2',
-            'prohibition_403_3', 'prohibition_227', 'prohibition_363')
+            'prohibition_403_3', 'prohibition_227', 'prohibition_363',
+            'prohibition_407')
 PREFIX = 'heldout__C230627__NRS-484B-403-1__motor_vehicle_driver__'
 
 
@@ -102,17 +103,25 @@ def run(output_dir, host, port):
                 waypoint_spacing_m=engineering.get('waypoint_spacing_m', 2.))
             district_frontage = None
             school_report = None
+            curve_report = None
+        elif config['selected_case_id'].endswith('__prohibition_407'):
+            scene, curve_report = select_407_candidate(
+                world.get_map(),
+                waypoint_spacing_m=engineering.get('waypoint_spacing_m', 2.))
+            district_frontage = divider_report = school_report = None
         elif config['selected_case_id'].endswith('__prohibition_363'):
             scene, school_report = select_363_candidate(
                 world.get_map(),
                 waypoint_spacing_m=engineering.get('waypoint_spacing_m', 2.))
             district_frontage = divider_report = None
+            curve_report = None
         elif config['selected_case_id'].endswith('__prohibition_403_3'):
             scene, district_frontage = select_403_3_candidate(
                 world, carla,
                 waypoint_spacing_m=engineering.get('waypoint_spacing_m', 2.))
             divider_report = None
             school_report = None
+            curve_report = None
         else:
             scene = select_u_turn_scene(world.get_map(),
                                         waypoint_spacing_m=engineering.get('waypoint_spacing_m', 2.),
@@ -120,6 +129,7 @@ def run(output_dir, host, port):
             district_frontage = None
             divider_report = None
             school_report = None
+            curve_report = None
         device = (select_no_u_turn_device(world.get_map(), scene)
                   if config['selected_case_id'].endswith('__prohibition_403_2')
                   else None)
@@ -131,7 +141,7 @@ def run(output_dir, host, port):
                     project_to_road=True, lane_type=carla.LaneType.Driving)
             sight_extent = verify_incoming_sight_extent(
                 world.get_map(), scene, route, project, required_m=230.0)
-            sight_geometry = inspect_407_geometry(scene)
+            sight_geometry = curve_report or inspect_407_geometry(scene)
         else:
             sight_extent = None
             sight_geometry = None

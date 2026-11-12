@@ -1667,6 +1667,159 @@
         "negative_log": "off_pavement_right_pass-delivery-audit-negative.log",
         "negative_log_sha256": "df0822e21378314542bb4b0ddb64c88063e9ec78cf1e52a28f0cc528ea9355f5"
       }
+    },
+    {
+      "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__too_close",
+      "kind": "delivery",
+      "construction": "cases/too_close/construction.json",
+      "construction_sha256": "8b9cac8579ba4de220c14a062c2e48fa542fa5876dbc254fe3bb39be6260be68",
+      "measurement_procedure": {
+        "entrypoint": "aggressive_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Lead speed and spawn requests may fail to produce original short-headway geometry or a legally too-close following act."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/too_close/fallback1/construction.json",
+          "construction_sha256": "55dc2df4c0ce6a32f8df427357118439539377d1236a8e7389df405ab9ba1b05",
+          "trigger": {
+            "source": "Native OpenDRIVE signal/route and four RGB originals",
+            "metric": "governed approach continuity and device visibility",
+            "failure_condition": "primary signal site route or original light coverage fails"
+          },
+          "changed_knobs": [
+            "route_candidate_index"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__too_close --candidate fallback1 --output .runtime-work/c228508-too_close-fallback1-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "55dc2df4c0ce6a32f8df427357118439539377d1236a8e7389df405ab9ba1b05",
+            "log": "too_close-fallback1-offline.log",
+            "log_sha256": "dc5c1b68a26a6e977ee01a49eba6ee156d81f0c4926f910db096517de3ab0730"
+          },
+          "compatibility": {
+            "receipt": "too_close-fallback1-compatibility.json",
+            "sha256": "20e745d15a24600cd7b02b6e42b8cba9739bfcf67e389c6482b8f40d5d31452a",
+            "log": "too_close-fallback1-compat-analysis.log"
+          },
+          "negative": {
+            "log": "too_close-fallback1-negative.log",
+            "log_sha256": "07bb4c102576a73b2de4d3ff2a299a40c1bb9e2fcd346ce7be2374b6b918abb0"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/too_close/fallback2/construction.json",
+          "construction_sha256": "ecd45e68c069408f636ebad3b097f701f00dae423d522f50236cc7daa350ebb6",
+          "trigger": {
+            "source": "Original ego/lead body positions",
+            "metric": "initial body gap and spawn nonoverlap",
+            "failure_condition": "primary 25 m lead spawn overlaps ego or fails"
+          },
+          "changed_knobs": [
+            "lead_spawn_station_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__too_close --candidate fallback2 --output .runtime-work/c228508-too_close-fallback2-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "ecd45e68c069408f636ebad3b097f701f00dae423d522f50236cc7daa350ebb6",
+            "log": "too_close-fallback2-offline.log",
+            "log_sha256": "27cfd6e55887c0ab6c29e7f29e0ac24b4855a4e4732e60f777fe5734371d1f36"
+          },
+          "compatibility": {
+            "receipt": "too_close-fallback2-compatibility.json",
+            "sha256": "ef04a34fd2c74e49cc6393ce08bbc9c51f4551e3c70d04541ebcc40eb9bc8d7a",
+            "log": "too_close-fallback2-compat-analysis.log"
+          },
+          "negative": {
+            "log": "too_close-fallback2-negative.log",
+            "log_sha256": "f2e2a26446091bdaa27ea013ef821715bf2b0fec41c46496379dd566502fdeb0"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/too_close/fallback3/construction.json",
+          "construction_sha256": "a99e7e4abc80164e81ecb64a4f9082bafed2b2c9035b5fdab16c3fc47159614f",
+          "trigger": {
+            "source": "Original ego/lead body headway and speed",
+            "metric": "positive body gap and short-headway duration",
+            "failure_condition": "primary 7 m/s lead response causes collision or unusable overlap"
+          },
+          "changed_knobs": [
+            "closing_lead_speed_mps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__too_close --candidate fallback3 --output .runtime-work/c228508-too_close-fallback3-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "a99e7e4abc80164e81ecb64a4f9082bafed2b2c9035b5fdab16c3fc47159614f",
+            "log": "too_close-fallback3-offline.log",
+            "log_sha256": "2e522776c3d501fe4299f0771218f73539145c35eebdf15ea85fc3d35c0e7e9b"
+          },
+          "compatibility": {
+            "receipt": "too_close-fallback3-compatibility.json",
+            "sha256": "8a810ac2995f7b65336c72ddf5c6ede9fc164852e10820ef3b5f20fe39641e3e",
+            "log": "too_close-fallback3-compat-analysis.log"
+          },
+          "negative": {
+            "log": "too_close-fallback3-negative.log",
+            "log_sha256": "2baf7c1f9fd3f21f453353007680d3c4046e015150b56724d7b1324d30d93aaf"
+          }
+        }
+      ],
+      "measurement_contract": "cases/too_close/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/cases/too_close/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__too_close --candidate primary --output .runtime-work/c228508-too_close-primary-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "8b9cac8579ba4de220c14a062c2e48fa542fa5876dbc254fe3bb39be6260be68",
+        "log": "too_close-primary-offline.log",
+        "log_sha256": "9891cd005161bc5bce662db6abe2963885a2bc43f6aa816a1e62e3712f0ed86c"
+      },
+      "compatibility": {
+        "receipt": "too_close-primary-compatibility.json",
+        "sha256": "a90c1e265b44f42f166d63cef33dbaed358579d4e7a8ba3db98be3abc67dad2e",
+        "log": "too_close-primary-compat-analysis.log"
+      },
+      "negative": {
+        "log": "too_close-primary-negative.log",
+        "log_sha256": "90835bf1dfd3c815dc3a8a9e063e52d2c5efb2630684d420814afb1c92a6c2d3"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__too_close",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "device_source",
+          "following_source",
+          "too_close_native_geometry"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/cases/too_close/delivery_audit.py --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__too_close --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c228508-too_close-primary-compat-v1 --diagnostic-fixture",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/cases/too_close/delivery_audit.py --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__too_close --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c228508-too_close-primary-compat-v1",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed Native source and owner exit missing",
+        "script": "cases/too_close/delivery_audit.py",
+        "script_sha256": "c50f994f692f66d72071de5cafb56bb2119ce91aba0a566cbbdb28f1f387ba1a",
+        "test_log": "too_close-delivery-audit-positive.log",
+        "test_log_sha256": "39b4bd1400d70af5fc2fd7a2684ff72f73d3150cb9db87a3bbea89bf434361ef",
+        "negative_log": "too_close-delivery-audit-negative.log",
+        "negative_log_sha256": "00340ae62c0e38d3cf9fdfc93f595d8d30f7adaedfaa39701fbc843e57625b6e"
+      }
     }
   ]
 }

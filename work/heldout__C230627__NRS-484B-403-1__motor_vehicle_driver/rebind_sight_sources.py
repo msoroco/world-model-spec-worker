@@ -13,15 +13,21 @@ SOURCES = {name: (HERE / name).read_text()
                         'tests/test_u_turn_construction.py',
                         'u_turn_407_geometry.py',
                         'tests/test_u_turn_407_geometry.py',
+                        'u_turn_407_measurement.py',
+                        'tests/test_u_turn_407_measurement.py',
                         'u_turn_403_3_frontage.py',
                         'tests/test_u_turn_403_3_frontage.py',
                         'tests/test_u_turn_403_3_runner.py',
                         'u_turn_227_divider.py',
-                        'tests/test_u_turn_227_divider.py')}
+                        'tests/test_u_turn_227_divider.py',
+                        'u_turn_363_school.py',
+                        'tests/test_u_turn_363_school.py')}
 ADDED = {'u_turn_407_geometry.py', 'tests/test_u_turn_407_geometry.py',
+         'u_turn_407_measurement.py', 'tests/test_u_turn_407_measurement.py',
          'u_turn_403_3_frontage.py', 'tests/test_u_turn_403_3_frontage.py',
          'tests/test_u_turn_403_3_runner.py', 'u_turn_227_divider.py',
-         'tests/test_u_turn_227_divider.py'}
+         'tests/test_u_turn_227_divider.py',
+         'u_turn_363_school.py', 'tests/test_u_turn_363_school.py'}
 
 
 def digest(path):

@@ -97,6 +97,42 @@ def candidate_screen(report, *, deflection_deg=8.0, crest_prominence_m=0.5):
                for side in report['directions'].values())
 
 
+def validate_geometry_packet(packet, context):
+    """Recompute the saved map packet without claiming a visible obstruction."""
+    if (not isinstance(packet, dict) or
+            packet.get('method') != 'Native incoming-lane waypoint elevation and heading screen' or
+            packet.get('statutory_sight_probe_m') != PROBE_M or
+            packet.get('curve_or_crest_legal_finding') is not None or
+            packet.get('both_direction_body_ray_visibility') is not None or
+            packet.get('physical_occlusion_verified') is not False):
+        raise ValueError('Original 407 geometry identity or legal status differs')
+    directions = packet.get('directions')
+    if not isinstance(directions, dict) or set(directions) != {'approach','opposite'}:
+        raise ValueError('Original 407 two-direction geometry missing')
+    for name, lane_key in (('approach','approach_lane_id'),
+                           ('opposite','opposite_lane_id')):
+        side = directions[name]
+        rows = side.get('samples')
+        if (side.get('road_id') != context.get('approach_road_id') or
+                side.get('lane_id') != context.get(lane_key) or
+                not isinstance(rows, list) or len(rows)<2 or
+                rows[0].get('distance_m') != 0 or
+                rows[-1].get('distance_m',0) < ROUTE_M or
+                any(not all(isfinite(float(v)) for v in row.get('xyz_m',[])) or
+                    len(row.get('xyz_m',[])) != 3 for row in rows) or
+                any(b['distance_m'] <= a['distance_m']
+                    for a,b in zip(rows,rows[1:]))):
+            raise ValueError('Original 407 sampled route differs')
+        probe = _probe_point(rows)
+        if (any(abs(a-b)>1e-6 for a,b in zip(probe,side.get('probe_xyz_m',[]))) or
+                abs(_deflection_deg(rows)-side.get('cumulative_deflection_deg',-1))>1e-6 or
+                abs(_crest_prominence_m(rows,probe)-side.get('crest_prominence_m',-1))>1e-6):
+            raise ValueError('Original 407 curve or crest metric differs')
+    if not candidate_screen(packet):
+        raise ValueError('Original 407 curve/crest candidate absent')
+    return packet
+
+
 def select_407_candidate(carla_map, *, waypoint_spacing_m=2.0, max_candidates=500):
     """Search Native opposing-lane sites for a measurable curve or crest.
 

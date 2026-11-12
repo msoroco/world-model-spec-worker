@@ -10,6 +10,8 @@ from u_turn_measurement import measure
 from u_turn_403_3_frontage import FRONTAGE_M, WINDOW_M, measure_frontage
 from u_turn_227_divider import measure_divider_candidate
 from u_turn_363_school import measure_school_candidate
+from u_turn_407_geometry import validate_geometry_packet
+from u_turn_407_measurement import measure_407_visibility
 from types import SimpleNamespace
 
 
@@ -141,6 +143,15 @@ def measure_school_zone_candidate(school_path, context_path):
     return source
 
 
+def measure_curve_crest_geometry(geometry_path, context_path):
+    return validate_geometry_packet(json.loads(Path(geometry_path).read_text()),
+                                    json.loads(Path(context_path).read_text()))
+
+
+def measure_two_direction_500ft_visibility(capture_path, motion_path, context_path):
+    return measure_407_visibility(capture_path, motion_path, context_path)
+
+
 def analyze(attempt, *, write_channels=True):
     root = Path(attempt)
     config = json.loads(_required(root, 'config.json')[0].read_text())
@@ -201,6 +212,23 @@ def analyze(attempt, *, write_channels=True):
             'value': measure_school_zone_candidate(school_path, paths['u_turn_context.json'][0]),
             'sources': {'u_turn_363_school.json': school_hash,
                         'u_turn_context.json': paths['u_turn_context.json'][1]}}
+    if case_id.endswith('__prohibition_407'):
+        geometry_path, geometry_hash = _required(root, 'u_turn_407_geometry.json')
+        capture_path, capture_hash = _required(root, 'capture/evidence.jsonl')
+        geometry = json.loads(geometry_path.read_text())
+        context = json.loads(paths['u_turn_context.json'][0].read_text())
+        measurements['curve_crest_geometry'] = {
+            'method': 'measure_curve_crest_geometry',
+            'value': measure_curve_crest_geometry(geometry_path, paths['u_turn_context.json'][0]),
+            'sources': {'u_turn_407_geometry.json': geometry_hash,
+                        'u_turn_context.json': paths['u_turn_context.json'][1]}}
+        measurements['two_direction_500ft_visibility'] = {
+            'method': 'measure_two_direction_500ft_visibility',
+            'value': measure_two_direction_500ft_visibility(capture_path,
+                        paths['u_turn_motion.jsonl'][0], paths['u_turn_context.json'][0]),
+            'sources': {'capture/evidence.jsonl': capture_hash,
+                        'u_turn_motion.jsonl': paths['u_turn_motion.jsonl'][1],
+                        'u_turn_context.json': paths['u_turn_context.json'][1]}}
     if write_channels:
         channel = root / 'u_turn_observation.jsonl'
         if channel.exists():
@@ -210,6 +238,14 @@ def analyze(attempt, *, write_channels=True):
             'value': {'heading_change_deg': observation['heading_change_deg'],
                       'surface_gaps_m': observation['surface_gaps_m']}},
             allow_nan=False) + '\n' for observation in value['observations']))
+        if case_id.endswith('__prohibition_407'):
+            context_file = root/'u_turn_407_context.json'
+            if context_file.exists():
+                raise ValueError('Retain prior derived 407 context')
+            context_file.write_text(json.dumps({
+                'curve_crest_geometry': measurements['curve_crest_geometry']['value'],
+                'two_direction_500ft_visibility': measurements['two_direction_500ft_visibility']['value']},
+                allow_nan=False)+'\n')
     return {'format': 'worker-analysis-report', 'case_id': case_id,
             'measurements': measurements,
             'limitations': ['Source-shaped CPU media does not establish physical U-turn completion, sight lines, cited prohibition applicability or legal safety.'],
@@ -248,6 +284,14 @@ def build_result(attempt, report):
                          'unit': 'structured context',
                          'reference': 'u_turn_363_school.json',
                          'sha256': _required(root, 'u_turn_363_school.json')[1]})
+    if report['case_id'].endswith('__prohibition_407'):
+        evidence.extend([
+            {'name':'curve_crest_geometry','unit':'structured context',
+             'reference':'u_turn_407_context.json',
+             'sha256':_required(root,'u_turn_407_context.json')[1]},
+            {'name':'two_direction_500ft_visibility','unit':'structured context',
+             'reference':'u_turn_407_context.json',
+             'sha256':_required(root,'u_turn_407_context.json')[1]}])
     return {'case_id': report['case_id'],
             'measured_values': {key: item['value'] for key, item in
                                 report['measurements'].items()},

@@ -37,6 +37,7 @@ def main():
         flag = ('--tamper-frontage-hash' if short == 'prohibition_403_3'
                 else '--tamper-divider-hash' if short == 'prohibition_227'
                 else '--tamper-school-hash' if short == 'prohibition_363'
+                else '--tamper-visibility-hash' if short == 'prohibition_407'
                 else '--tamper-motion-hash')
         positive = HERE/(short+'-delivery-positive.log')
         negative = HERE/(short+'-delivery-negative.log')
@@ -53,6 +54,8 @@ def main():
                     if short == 'prohibition_227' else
                     'School-zone original source hash differs: u_turn_363_school.json'
                     if short == 'prohibition_363' else
+                    '407 original source hash differs: capture/evidence.jsonl'
+                    if short == 'prohibition_407' else
                     'Original U-turn source hash differs: u_turn_motion.jsonl')
         if passed.returncode or rejected.returncode == 0 or expected not in negative.read_text():
             raise ValueError('Independent C230627 delivery audit failed: '+short)

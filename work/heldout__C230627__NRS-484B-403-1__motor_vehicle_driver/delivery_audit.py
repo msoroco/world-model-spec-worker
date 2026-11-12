@@ -8,6 +8,8 @@ from pathlib import Path
 from u_turn_measurement import measure
 from u_turn_finalizer import (measure_built_frontage, measure_mapped_device,
                               measure_mapped_divider, measure_school_zone_candidate)
+from u_turn_407_geometry import validate_geometry_packet
+from u_turn_407_measurement import measure_407_visibility
 
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -90,6 +92,24 @@ def audit_attempt(attempt, report, *, decoder=None):
         if measure_school_zone_candidate(root/'u_turn_363_school.json',
                                          root/'u_turn_context.json') != school['value']:
             raise ValueError('Independent school-zone measurement differs')
+    if case_id.endswith('__prohibition_407'):
+        for key, required in (
+                ('curve_crest_geometry', {'u_turn_407_geometry.json','u_turn_context.json'}),
+                ('two_direction_500ft_visibility', {'capture/evidence.jsonl',
+                                                     'u_turn_motion.jsonl','u_turn_context.json'})):
+            item = report['measurements'].get(key)
+            if not isinstance(item,dict) or set(item.get('sources',{})) != required:
+                raise ValueError('407 original source inventory differs: '+key)
+            for name,expected in item['sources'].items():
+                if not (root/name).is_file() or _digest(root/name) != expected:
+                    raise ValueError('407 original source hash differs: '+name)
+        geometry = json.loads((root/'u_turn_407_geometry.json').read_text())
+        context = json.loads((root/'u_turn_context.json').read_text())
+        if validate_geometry_packet(geometry,context) != report['measurements']['curve_crest_geometry']['value']:
+            raise ValueError('Independent 407 curve/crest geometry differs')
+        if measure_407_visibility(root/'capture/evidence.jsonl',
+                root/'u_turn_motion.jsonl',root/'u_turn_context.json') != report['measurements']['two_direction_500ft_visibility']['value']:
+            raise ValueError('Independent 407 body-ray visibility differs')
     mapping, trace, motion = (_rows(root/name) for name in
                               ('video_frames.jsonl', 'trace.jsonl',
                                'u_turn_motion.jsonl'))
@@ -129,6 +149,7 @@ def main():
     parser.add_argument('--tamper-frontage-hash', action='store_true')
     parser.add_argument('--tamper-divider-hash', action='store_true')
     parser.add_argument('--tamper-school-hash', action='store_true')
+    parser.add_argument('--tamper-visibility-hash', action='store_true')
     args = parser.parse_args()
     report = json.loads(Path(args.report).read_text())
     if args.tamper_motion_hash:
@@ -139,6 +160,8 @@ def main():
         report['measurements']['divider_candidate']['sources']['u_turn_227_divider.json'] = '0'*64
     if args.tamper_school_hash:
         report['measurements']['school_zone_candidate']['sources']['u_turn_363_school.json'] = '0'*64
+    if args.tamper_visibility_hash:
+        report['measurements']['two_direction_500ft_visibility']['sources']['capture/evidence.jsonl'] = '0'*64
     result = audit_attempt(args.attempt, report)
     if result['case_id'] != args.case:
         raise ValueError('C230627 delivery audit case argument differs')

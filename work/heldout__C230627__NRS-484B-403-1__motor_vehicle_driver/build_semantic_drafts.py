@@ -40,7 +40,10 @@ def main():
         ('physical_safety', 'subject_behavior', 'Null pending original motion and independent judgment'),
         ('mapped_no_u_turn_device', 'world_setup', 'Mapped device candidate or null'),
         ('built_frontage_candidate', 'world_setup', 'Native building geometry candidate or null; business use remains unknown'),
-        ('divider_candidate', 'world_setup', 'Native lane median and mapped barrier candidate or null; authority opening unresolved')]
+        ('divider_candidate', 'world_setup', 'Native lane median and mapped barrier candidate or null; authority opening unresolved'),
+        ('school_zone_candidate', 'world_setup', 'Native mapped school-zone landmark candidate or null; statutory exceptions unresolved'),
+        ('curve_crest_geometry', 'world_setup', 'Native two-direction 500 ft route geometry candidate or null'),
+        ('two_direction_500ft_visibility', 'observation', 'Original nine-body-ray sight packet or null; legal recognition unresolved')]
     refs = [{'name': n, 'kind': k, 'range_or_domain': d} for n,k,d in parameters]
     template = {'template_id': TEMPLATE, 'law_id': LAW['id'], 'actor': 'motor_vehicle_driver',
                 'status': 'draft', 'quote': LAW['text'],
@@ -97,6 +100,32 @@ def main():
         new_case['recording_description'] = json.loads(
             (ROOT/'construction-prohibition_227.json').read_text())['recording_description']
         cases['cases'].append(new_case)
+    case_id_363 = ROOT.name + '__prohibition_363'
+    if not any(case['case_id'] == case_id_363 for case in cases['cases']):
+        new_case = copy.deepcopy(next(case for case in cases['cases']
+                                      if case['case_id'].endswith('__safety_clear')))
+        new_case['case_id'] = case_id_363
+        new_case['target_type'] = 'boundary_probe'
+        new_case['rationale'] = 'Native mapped school-zone landmark candidate; official designation, children, hours and sign/beacon alternatives remain unresolved.'
+        new_case['variable_assignments']['school_zone_candidate'] = {
+            'kind': 'world_setup', 'value': 'Native mapped school-zone landmark candidate'}
+        new_case['recording_description'] = json.loads(
+            (ROOT/'construction-prohibition_363.json').read_text())['recording_description']
+        cases['cases'].append(new_case)
+    case_id_407 = ROOT.name + '__prohibition_407'
+    if not any(case['case_id'] == case_id_407 for case in cases['cases']):
+        new_case = copy.deepcopy(next(case for case in cases['cases']
+                                      if case['case_id'].endswith('__safety_clear')))
+        new_case['case_id'] = case_id_407
+        new_case['target_type'] = 'boundary_probe'
+        new_case['rationale'] = 'Native curve/crest route and original two-direction nine-body-ray 500 ft candidate; physical obstruction and legal visibility remain unresolved.'
+        new_case['variable_assignments']['curve_crest_geometry'] = {
+            'kind': 'world_setup', 'value': 'Native sampled curve/crest candidate'}
+        new_case['variable_assignments']['two_direction_500ft_visibility'] = {
+            'kind': 'observation', 'value': 'Original 152.4 m body-ray packet'}
+        new_case['recording_description'] = json.loads(
+            (ROOT/'construction-prohibition_407.json').read_text())['recording_description']
+        cases['cases'].append(new_case)
     for case in cases['cases']:
         case['variable_assignments'].setdefault('mapped_no_u_turn_device',
             {'kind': 'world_setup', 'value': None})
@@ -104,19 +133,31 @@ def main():
             {'kind': 'world_setup', 'value': None})
         case['variable_assignments'].setdefault('divider_candidate',
             {'kind': 'world_setup', 'value': None})
+        case['variable_assignments'].setdefault('school_zone_candidate',
+            {'kind': 'world_setup', 'value': None})
+        case['variable_assignments'].setdefault('curve_crest_geometry',
+            {'kind': 'world_setup', 'value': None})
+        case['variable_assignments'].setdefault('two_direction_500ft_visibility',
+            {'kind': 'observation', 'value': None})
         if case['target_type'] != 'baseline':
             if case['target_type'] == 'prohibition_context':
                 case['target_type'] = 'boundary_probe'
             is_device = case['case_id'].endswith('__prohibition_403_2')
             is_frontage = case['case_id'].endswith('__prohibition_403_3')
             is_divider = case['case_id'].endswith('__prohibition_227')
+            is_school = case['case_id'].endswith('__prohibition_363')
+            is_sight = case['case_id'].endswith('__prohibition_407')
             axis = ('mapped_no_u_turn_device' if is_device else
                     'built_frontage_candidate' if is_frontage else
                     'divider_candidate' if is_divider else
+                    'school_zone_candidate' if is_school else
+                    'two_direction_500ft_visibility' if is_sight else
                     'oncoming_spawn_distance_m')
             case['paired_probe_id'] = ('mapped_device_candidate' if is_device else
                                        'built_frontage_candidate' if is_frontage else
                                        'mapped_divider_candidate' if is_divider else
+                                       'mapped_school_zone_candidate' if is_school else
+                                       'two_direction_500ft_visibility' if is_sight else
                                        'safety_clearance')
             case['deliberate_differences'] = [axis]
             case['probe'] = {'primary_variable': axis,
@@ -143,7 +184,7 @@ def main():
                         'template': template_ref, 'judgment_observables': [judgment_ref],
                         'bindings': bindings_ref, 'cases': cases_ref},
              'status': 'draft_incomplete_cases',
-             'limitations': ['Case stage currently contains only three constructed cases; remaining cited prohibition cases require construction and exact proofs.']}
+             'limitations': ['Physical and legal school-zone applicability and other remaining cited prohibitions require local original sources and review.']}
     write('semantic-index.json', index)
     print('draft semantic stages written; cases:', len(cases['cases']))
 
