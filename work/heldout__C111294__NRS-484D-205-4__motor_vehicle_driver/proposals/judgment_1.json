@@ -1,0 +1,53 @@
+{
+  "template_id": "NRS-484D-205-4@motor_vehicle_driver",
+  "phrase": "lighted",
+  "note": "No legal pixel cutoff or grace period is inferred from a Native light-state bit.",
+  "status": "draft",
+  "observable_requirements": {
+    "observables": [
+      {
+        "name": "forward_motion_observed",
+        "unit": "boolean",
+        "description": "Original heading/velocity dot product on every 20 Hz frame."
+      },
+      {
+        "name": "native_backup_lamp_on",
+        "unit": "boolean",
+        "description": "Original Native reverse-light-state readback on joined frames."
+      },
+      {
+        "name": "original_rear_lamp_pixels",
+        "unit": "review record",
+        "description": "Independently reviewed full-decoded original rear-lamp camera pixels for every forward frame."
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "installed_backup_lamps",
+        "description": "Source-backed asset inspection, including separate or combined hardware and motor-vehicle identity."
+      },
+      {
+        "name": "other_vehicle_context",
+        "description": "Separate intersection vehicle position, motion, priority and purpose; presence alone is not lamp activation evidence."
+      }
+    ],
+    "sweep_dimensions": [
+      {
+        "name": "equipment_and_native_lamp_state",
+        "unit": "categorical",
+        "description": "Optional equipment and on/off Native request are controlled in separate comparisons."
+      }
+    ],
+    "landmarks": [],
+    "recording_needs": [
+      {
+        "name": "original_motion_equipment_and_four_cameras",
+        "unit": "original sources",
+        "description": "20 Hz synchronized motion/equipment/light-state packets and four full-decoded original camera streams."
+      }
+    ],
+    "limitations": [
+      "Actual emitted pixels and qualifying equipment remain unverified until local Native source review; no legal conclusion from fixtures."
+    ]
+  }
+}
