@@ -30,7 +30,8 @@ def main():
     expected_cases = [row["case_id"] for row in plan["cases"]]
     if (law != "NRS-484B-307-8a" or assignment["cell_id"] != "C110919" or
             actor != "motor_vehicle_driver" or plan["source_law_text"] != quote or
-            [row["case_id"] for row in cases["cases"]] != expected_cases or
+            [row["case_id"] for row in cases["cases"]
+             if row["target_type"] != "baseline"] != expected_cases or
             len(expected_cases) != 10 or len(plan["comparisons"]) != 5):
         raise ValueError("Frozen law, scope, ten cases or comparisons changed")
     relevance = {"cell_id": "C110919", "actor": actor, "status": "draft",

@@ -1,9 +1,39 @@
 {
   "format": "worker-draft-proposals-v1",
+  "cell_id": "C110919",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__reference",
-      "target_type": "attempt",
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral definition for fixed C110919 right-turn context; not selected for delivery",
+      "variable_assignments": {
+        "halt_before_nearest_boundary": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "halt_before_intersection_when_no_crosswalk_sign_or_marking": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "remain_stopped_until_green": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "pedestrian_conflict_response": {
+          "kind": "controller",
+          "value": "yield_wait"
+        },
+        "signal_directed_other_traffic_response": {
+          "kind": "controller",
+          "value": "traffic_yield_wait"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -101,11 +131,195 @@
         "limitations": [
           "CPU source tests do not prove CARLA realization or accepted recording"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "situated on the extreme right of the highway",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__reference",
+      "target_law_id": "NRS-484B-307-8a",
+      "target_type": "boundary_probe",
+      "rationale": "halt before legally applicable boundary versus entry without halt; right-turn yield separately Original activation and judgment remain unverified.",
+      "paired_probe_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__comparison_main",
+      "deliberate_differences": [
+        "halt_before_nearest_boundary"
+      ],
+      "probe": {
+        "primary_variable": "halt_before_nearest_boundary",
+        "comparison_or_standard": "Controlled physical branch; legal judgment unresolved",
+        "target_value_or_branch": "reference"
+      },
+      "variable_assignments": {
+        "halt_before_nearest_boundary": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value",
+          "requested_target": "reference"
+        },
+        "halt_before_intersection_when_no_crosswalk_sign_or_marking": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "remain_stopped_until_green": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "pedestrian_conflict_response": {
+          "kind": "controller",
+          "value": "yield_wait"
+        },
+        "signal_directed_other_traffic_response": {
+          "kind": "controller",
+          "value": "traffic_yield_wait"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.traffic_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "time_window": "entire 24 s / 480-frame attempt",
+            "reference_frame": "surveyed Native map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+          },
+          {
+            "name": "st.stop_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "time_window": "entire 24 s / 480-frame attempt",
+            "reference_frame": "surveyed Native map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "time_window": "entire 24 s / 480-frame attempt",
+            "reference_frame": "surveyed Native map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "time_window": "entire 24 s / 480-frame attempt",
+            "reference_frame": "surveyed Native map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "time_window": "entire 24 s / 480-frame attempt",
+            "reference_frame": "surveyed Native map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+          },
+          {
+            "name": "drv.extreme_lane",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "time_window": "entire 24 s / 480-frame attempt",
+            "reference_frame": "surveyed Native map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+          },
+          {
+            "name": "st.one_way_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "time_window": "entire 24 s / 480-frame attempt",
+            "reference_frame": "surveyed Native map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "time_window": "entire 24 s / 480-frame attempt",
+            "reference_frame": "surveyed Native map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "time_window": "entire 24 s / 480-frame attempt",
+            "reference_frame": "surveyed Native map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "time_window": "entire 24 s / 480-frame attempt",
+            "reference_frame": "surveyed Native map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "CPU source tests do not prove CARLA realization or accepted recording"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "situated on the extreme right of the highway",
+        "yield the right-of-way"
+      ]
     },
     {
       "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__contrast",
-      "target_type": "attempt",
+      "target_law_id": "NRS-484B-307-8a",
+      "target_type": "boundary_probe",
+      "rationale": "halt before legally applicable boundary versus entry without halt; right-turn yield separately Original activation and judgment remain unverified.",
+      "paired_probe_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__comparison_main",
+      "deliberate_differences": [
+        "halt_before_nearest_boundary"
+      ],
+      "probe": {
+        "primary_variable": "halt_before_nearest_boundary",
+        "comparison_or_standard": "Controlled physical branch; legal judgment unresolved",
+        "target_value_or_branch": "contrast"
+      },
+      "variable_assignments": {
+        "halt_before_nearest_boundary": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value",
+          "requested_target": "contrast"
+        },
+        "halt_before_intersection_when_no_crosswalk_sign_or_marking": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "remain_stopped_until_green": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "pedestrian_conflict_response": {
+          "kind": "controller",
+          "value": "yield_wait"
+        },
+        "signal_directed_other_traffic_response": {
+          "kind": "controller",
+          "value": "traffic_yield_wait"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -203,11 +417,52 @@
         "limitations": [
           "CPU source tests do not prove CARLA realization or accepted recording"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "situated on the extreme right of the highway",
+        "yield the right-of-way"
+      ]
     },
     {
       "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference",
-      "target_type": "attempt",
+      "target_law_id": "NRS-484B-307-8a",
+      "target_type": "boundary_probe",
+      "rationale": "Steady red right turn with no nearest-side crosswalk, stop sign or stopping pavement marking: full-body halt before the intersection boundary versus entry without halt; pedestrian/traffic yield recorded separately. Original activation and judgment remain unverified.",
+      "paired_probe_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__comparison_absent_reference",
+      "deliberate_differences": [
+        "halt_before_intersection_when_no_crosswalk_sign_or_marking"
+      ],
+      "probe": {
+        "primary_variable": "halt_before_intersection_when_no_crosswalk_sign_or_marking",
+        "comparison_or_standard": "Controlled physical branch; legal judgment unresolved",
+        "target_value_or_branch": "reference"
+      },
+      "variable_assignments": {
+        "halt_before_nearest_boundary": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "halt_before_intersection_when_no_crosswalk_sign_or_marking": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value",
+          "requested_target": "reference"
+        },
+        "remain_stopped_until_green": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "pedestrian_conflict_response": {
+          "kind": "controller",
+          "value": "yield_wait"
+        },
+        "signal_directed_other_traffic_response": {
+          "kind": "controller",
+          "value": "traffic_yield_wait"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -305,11 +560,52 @@
         "limitations": [
           "CPU fixtures do not prove absence in original Native map/pixels or accepted recording"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "situated on the extreme right of the highway",
+        "yield the right-of-way"
+      ]
     },
     {
       "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast",
-      "target_type": "attempt",
+      "target_law_id": "NRS-484B-307-8a",
+      "target_type": "boundary_probe",
+      "rationale": "Steady red right turn with no nearest-side crosswalk, stop sign or stopping pavement marking: full-body halt before the intersection boundary versus entry without halt; pedestrian/traffic yield recorded separately. Original activation and judgment remain unverified.",
+      "paired_probe_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__comparison_absent_reference",
+      "deliberate_differences": [
+        "halt_before_intersection_when_no_crosswalk_sign_or_marking"
+      ],
+      "probe": {
+        "primary_variable": "halt_before_intersection_when_no_crosswalk_sign_or_marking",
+        "comparison_or_standard": "Controlled physical branch; legal judgment unresolved",
+        "target_value_or_branch": "contrast"
+      },
+      "variable_assignments": {
+        "halt_before_nearest_boundary": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "halt_before_intersection_when_no_crosswalk_sign_or_marking": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value",
+          "requested_target": "contrast"
+        },
+        "remain_stopped_until_green": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "pedestrian_conflict_response": {
+          "kind": "controller",
+          "value": "yield_wait"
+        },
+        "signal_directed_other_traffic_response": {
+          "kind": "controller",
+          "value": "traffic_yield_wait"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -407,215 +703,337 @@
         "limitations": [
           "CPU fixtures do not prove absence in original Native map/pixels or accepted recording"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "situated on the extreme right of the highway",
+        "yield the right-of-way"
+      ]
     },
     {
       "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_wait",
-      "target_type": "attempt",
+      "target_law_id": "NRS-484B-307-8a",
+      "target_type": "boundary_probe",
+      "rationale": "After a full-body stop at the marked line, remain stopped until the red signal turns green versus the separately permitted right turn on red after stopping and yielding; neither branch is automatically a legal violation. Original activation and judgment remain unverified.",
+      "paired_probe_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__comparison_green_release",
+      "deliberate_differences": [
+        "remain_stopped_until_green"
+      ],
+      "probe": {
+        "primary_variable": "remain_stopped_until_green",
+        "comparison_or_standard": "Controlled physical branch; legal judgment unresolved",
+        "target_value_or_branch": "wait_for_green"
+      },
+      "variable_assignments": {
+        "halt_before_nearest_boundary": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "halt_before_intersection_when_no_crosswalk_sign_or_marking": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "remain_stopped_until_green": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value",
+          "requested_target": "wait_for_green"
+        },
+        "pedestrian_conflict_response": {
+          "kind": "controller",
+          "value": "yield_wait"
+        },
+        "signal_directed_other_traffic_response": {
+          "kind": "controller",
+          "value": "traffic_yield_wait"
+        }
+      },
       "recording_description": {
         "channels": [
           {
             "name": "dev.traffic_signal",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "st.stop_line",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "st.crosswalk",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "drv.stopped",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "kin.velocity",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "drv.extreme_lane",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "st.one_way_roadway",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "drv.yields_to",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "native_body_pose_control",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "camera_frame_join",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           }
         ],
         "context_inputs": [],
         "limitations": [
-          "CPU source tests do not prove CARLA realization or accepted recording"
+          "CPU fixtures do not prove original Native red-to-green release or accepted recording"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "situated on the extreme right of the highway",
+        "yield the right-of-way"
+      ]
     },
     {
       "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn",
-      "target_type": "attempt",
+      "target_law_id": "NRS-484B-307-8a",
+      "target_type": "boundary_probe",
+      "rationale": "After a full-body stop at the marked line, remain stopped until the red signal turns green versus the separately permitted right turn on red after stopping and yielding; neither branch is automatically a legal violation. Original activation and judgment remain unverified.",
+      "paired_probe_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__comparison_green_release",
+      "deliberate_differences": [
+        "remain_stopped_until_green"
+      ],
+      "probe": {
+        "primary_variable": "remain_stopped_until_green",
+        "comparison_or_standard": "Controlled physical branch; legal judgment unresolved",
+        "target_value_or_branch": "right_on_red_after_stop"
+      },
+      "variable_assignments": {
+        "halt_before_nearest_boundary": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "halt_before_intersection_when_no_crosswalk_sign_or_marking": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "remain_stopped_until_green": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value",
+          "requested_target": "right_on_red_after_stop"
+        },
+        "pedestrian_conflict_response": {
+          "kind": "controller",
+          "value": "yield_wait"
+        },
+        "signal_directed_other_traffic_response": {
+          "kind": "controller",
+          "value": "traffic_yield_wait"
+        }
+      },
       "recording_description": {
         "channels": [
           {
             "name": "dev.traffic_signal",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "st.stop_line",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "st.crosswalk",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "drv.stopped",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "kin.velocity",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "drv.extreme_lane",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "st.one_way_roadway",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "drv.yields_to",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "native_body_pose_control",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           },
           {
             "name": "camera_frame_join",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native actor/signal/map readback and full-frame join; authored intent separate",
+            "method": "Retained Native actor, body, signal and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
-            "reference_frame": "surveyed Native map and original frame identity",
-            "uncertainty": "50 ms sampling; physical signal and pixel evidence required"
+            "reference_frame": "surveyed Native intersection map and original frame identity",
+            "uncertainty": "50 ms sampling; physical signal transition, stop/release timing and pixels require independent review"
           }
         ],
         "context_inputs": [],
         "limitations": [
-          "CPU source tests do not prove CARLA realization or accepted recording"
+          "CPU fixtures do not prove original Native red-to-green release or accepted recording"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "situated on the extreme right of the highway",
+        "yield the right-of-way"
+      ]
     },
     {
       "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_wait",
+      "target_law_id": "NRS-484B-307-8a",
       "target_type": "boundary_probe",
+      "rationale": "After the same red-signal full-body stop, compare waiting for an occupied signal-directed pedestrian conflict zone with a deliberate entry probe; legal right-of-way remains unresolved. Original activation and judgment remain unverified.",
+      "paired_probe_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__comparison_pedestrian_yield",
+      "deliberate_differences": [
+        "pedestrian_conflict_response"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_conflict_response",
+        "comparison_or_standard": "Controlled physical branch; legal judgment unresolved",
+        "target_value_or_branch": "yield_wait"
+      },
+      "variable_assignments": {
+        "halt_before_nearest_boundary": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "halt_before_intersection_when_no_crosswalk_sign_or_marking": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "remain_stopped_until_green": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "pedestrian_conflict_response": {
+          "kind": "controller",
+          "value": "yield_wait"
+        },
+        "signal_directed_other_traffic_response": {
+          "kind": "controller",
+          "value": "traffic_yield_wait"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -713,11 +1131,51 @@
         "limitations": [
           "CPU diagnostics do not prove original pedestrian timing, video visibility or legal right-of-way"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "situated on the extreme right of the highway",
+        "yield the right-of-way"
+      ]
     },
     {
       "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_conflict_entry",
+      "target_law_id": "NRS-484B-307-8a",
       "target_type": "boundary_probe",
+      "rationale": "After the same red-signal full-body stop, compare waiting for an occupied signal-directed pedestrian conflict zone with a deliberate entry probe; legal right-of-way remains unresolved. Original activation and judgment remain unverified.",
+      "paired_probe_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__comparison_pedestrian_yield",
+      "deliberate_differences": [
+        "pedestrian_conflict_response"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_conflict_response",
+        "comparison_or_standard": "Controlled physical branch; legal judgment unresolved",
+        "target_value_or_branch": "yield_conflict_entry"
+      },
+      "variable_assignments": {
+        "halt_before_nearest_boundary": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "halt_before_intersection_when_no_crosswalk_sign_or_marking": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "remain_stopped_until_green": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "pedestrian_conflict_response": {
+          "kind": "controller",
+          "value": "yield_conflict_entry"
+        },
+        "signal_directed_other_traffic_response": {
+          "kind": "controller",
+          "value": "traffic_yield_wait"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -815,212 +1273,331 @@
         "limitations": [
           "CPU diagnostics do not prove original pedestrian timing, video visibility or legal right-of-way"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "situated on the extreme right of the highway",
+        "yield the right-of-way"
+      ]
     },
     {
       "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__traffic_yield_wait",
+      "target_law_id": "NRS-484B-307-8a",
       "target_type": "boundary_probe",
+      "rationale": "After the same red-signal full-body stop, compare waiting for signal-directed cross traffic with a deliberate occupied-lane entry probe. Original traffic direction and legal right-of-way remain unresolved. Original activation and judgment remain unverified.",
+      "paired_probe_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__comparison_other_traffic_yield",
+      "deliberate_differences": [
+        "signal_directed_other_traffic_response"
+      ],
+      "probe": {
+        "primary_variable": "signal_directed_other_traffic_response",
+        "comparison_or_standard": "Controlled physical branch; legal judgment unresolved",
+        "target_value_or_branch": "traffic_yield_wait"
+      },
+      "variable_assignments": {
+        "halt_before_nearest_boundary": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "halt_before_intersection_when_no_crosswalk_sign_or_marking": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "remain_stopped_until_green": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "pedestrian_conflict_response": {
+          "kind": "controller",
+          "value": "yield_wait"
+        },
+        "signal_directed_other_traffic_response": {
+          "kind": "controller",
+          "value": "traffic_yield_wait"
+        }
+      },
       "recording_description": {
         "channels": [
           {
             "name": "dev.traffic_signal",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "st.stop_line",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "st.crosswalk",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "drv.stopped",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "kin.velocity",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "drv.extreme_lane",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "st.one_way_roadway",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "drv.yields_to",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "native_body_pose_control",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "camera_frame_join",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           }
         ],
         "context_inputs": [],
         "limitations": [
-          "CPU source tests do not prove signal-directed other-traffic motion, camera visibility or accepted recording"
+          "CPU diagnostics do not prove original other-traffic timing, video visibility or legal right-of-way"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "situated on the extreme right of the highway",
+        "yield the right-of-way"
+      ]
     },
     {
       "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__traffic_conflict_entry",
+      "target_law_id": "NRS-484B-307-8a",
       "target_type": "boundary_probe",
+      "rationale": "After the same red-signal full-body stop, compare waiting for signal-directed cross traffic with a deliberate occupied-lane entry probe. Original traffic direction and legal right-of-way remain unresolved. Original activation and judgment remain unverified.",
+      "paired_probe_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__comparison_other_traffic_yield",
+      "deliberate_differences": [
+        "signal_directed_other_traffic_response"
+      ],
+      "probe": {
+        "primary_variable": "signal_directed_other_traffic_response",
+        "comparison_or_standard": "Controlled physical branch; legal judgment unresolved",
+        "target_value_or_branch": "traffic_conflict_entry"
+      },
+      "variable_assignments": {
+        "halt_before_nearest_boundary": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "halt_before_intersection_when_no_crosswalk_sign_or_marking": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "remain_stopped_until_green": {
+          "kind": "subject_behavior",
+          "value": null,
+          "note": "Observe original motion; no authored behavior value"
+        },
+        "pedestrian_conflict_response": {
+          "kind": "controller",
+          "value": "yield_wait"
+        },
+        "signal_directed_other_traffic_response": {
+          "kind": "controller",
+          "value": "traffic_conflict_entry"
+        }
+      },
       "recording_description": {
         "channels": [
           {
             "name": "dev.traffic_signal",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "st.stop_line",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "st.crosswalk",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "drv.stopped",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "kin.velocity",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "drv.extreme_lane",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "st.one_way_roadway",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "drv.yields_to",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "native_body_pose_control",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           },
           {
             "name": "camera_frame_join",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Original Native ego, cross-traffic actor, both signals, map and full-frame join; authored intent separate",
+            "method": "Retained Native actor, full-body, walker, other traffic, both signals and map readback joined to original frames",
             "time_window": "entire 24 s / 480-frame attempt",
             "reference_frame": "surveyed Native intersection and exact original frame identity",
-            "uncertainty": "50 ms sampling; physical traffic direction, body overlap and pixels require independent review"
+            "uncertainty": "50 ms sampling; cross-traffic signal direction and pixels require independent review"
           }
         ],
         "context_inputs": [],
         "limitations": [
-          "CPU source tests do not prove signal-directed other-traffic motion, camera visibility or accepted recording"
+          "CPU diagnostics do not prove original other-traffic timing, video visibility or legal right-of-way"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "situated on the extreme right of the highway",
+        "yield the right-of-way"
+      ]
     }
   ],
-  "status": "unselected"
+  "sweep_specs": [
+    {
+      "sweep_id": "C110919-extreme-right",
+      "target_law_id": "NRS-484B-307-8a",
+      "judgment_refs": [
+        {
+          "phrase": "situated on the extreme right of the highway",
+          "note": "Measure original full-body lane/highway position; no invented legal lateral cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical coverage plan for an unresolved statutory judgment; no legal cutoff or label",
+      "missing_inputs": [
+        "A documented scalar controller/world_setup axis mapped to a canonical measured binding parameter",
+        "Verified physical range, spacing and feasibility evidence from the C110919 construction and capture profile",
+        "Source-complete recording description for the judgment's original observations and context"
+      ]
+    },
+    {
+      "sweep_id": "C110919-right-of-way",
+      "target_law_id": "NRS-484B-307-8a",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way",
+          "note": "Retain original pedestrian and traffic paths and temporal precedence; no invented legal time-gap cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical coverage plan for an unresolved statutory judgment; no legal cutoff or label",
+      "missing_inputs": [
+        "A documented scalar controller/world_setup axis mapped to a canonical measured binding parameter",
+        "Verified physical range, spacing and feasibility evidence from the C110919 construction and capture profile",
+        "Source-complete recording description for the judgment's original observations and context"
+      ]
+    }
+  ]
 }

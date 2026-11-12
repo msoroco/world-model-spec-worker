@@ -47,9 +47,15 @@ def audit(index, *, template_override=None):
             template["law_id"] == source["law_id"] and
             template["actor"] == source["actor"],
             "Frozen law or relevance source changed")
-    require([row["case_id"] for row in cases["cases"]] ==
-            [row["case_id"] for row in plan["cases"]] and len(cases["cases"]) == 10 and
+    require([row["case_id"] for row in cases["cases"] if row["target_type"] != "baseline"] ==
+            [row["case_id"] for row in plan["cases"]] and len(cases["cases"]) == 11 and
             len(plan["comparisons"]) == 5, "Semantic ten-case inventory changed")
+    require(cases.get("cell_id") == source["cell_id"] and
+            cases.get("actor") == source["actor"] and
+            len(cases.get("sweep_specs", [])) == 2 and
+            all(spec.get("status") == "incomplete" and spec.get("missing_inputs")
+                for spec in cases["sweep_specs"]),
+            "Judgment sweep gaps or case-stage identity changed")
     comparison_vars = {difference for item in plan["comparisons"]
                        for difference in item["deliberate_differences"]}
     require(comparison_vars <= {row["name"] for row in bindings["variable_parameters"]} and
