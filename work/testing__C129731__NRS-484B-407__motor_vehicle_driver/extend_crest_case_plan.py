@@ -71,7 +71,12 @@ def main():
             ("crest_short_near_direction", "near_summit", "approach_b", "near_summit", "approach_a", "occluded_direction"),
         )
     else:
-        pairs = ()
+        pairs = (
+            ("crest_beyond_b_placement", "approach_to_crest", "approach_b", "near_summit", "approach_b", "site_placement"),
+            ("crest_beyond_approach_direction", "approach_to_crest", "approach_b", "approach_to_crest", "approach_a", "occluded_direction"),
+            ("crest_beyond_a_placement", "approach_to_crest", "approach_a", "near_summit", "approach_a", "site_placement"),
+            ("crest_beyond_near_direction", "near_summit", "approach_b", "near_summit", "approach_a", "occluded_direction"),
+        )
     for cid, p1, d1, p2, d2, variable in pairs:
         left = HERE.name + "__crest__" + args.probe + "__" + p1 + "__occluded_" + d1
         right = HERE.name + "__crest__" + args.probe + "__" + p2 + "__occluded_" + d2

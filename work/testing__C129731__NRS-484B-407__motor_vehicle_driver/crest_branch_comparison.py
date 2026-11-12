@@ -228,6 +228,31 @@ def audit_canonical_short_pair(attempts):
             "limitations": ["Synthetic rays and roads do not prove physical occlusion or driver recognition"]}
 
 
+def audit_canonical_beyond_pairs(attempts):
+    names = ("canonical-beyond-approach-b", "canonical-beyond-near-b",
+             "canonical-beyond-approach-a", "canonical-beyond-near-a")
+    if set(attempts) != set(names):
+        raise ValueError("Four distinct exact beyond-500-foot crest attempts required")
+    views = {name: inspect(name, attempts[name], "beyond_500ft", canonical=True) for name in names}
+    pairs = ((names[0], names[1], "site_placement"), (names[0], names[2], "occluded_direction"),
+             (names[2], names[3], "site_placement"), (names[1], names[3], "occluded_direction"))
+    for left, right, variable in pairs:
+        a, b = views[left], views[right]
+        changing = "placement" if variable == "site_placement" else "direction"
+        fixed = "direction" if variable == "site_placement" else "placement"
+        if a[changing] == b[changing] or a[fixed] != b[fixed]:
+            raise ValueError("Beyond comparison changed wrong site variable")
+        for key in ("fixed_config", "fixed_site", "normalized_motion", "worlds"):
+            if a[key] != b[key]:
+                raise ValueError("Unrelated beyond comparison source condition differs: " + key)
+    return {"format": "worker-crest-exact-beyond-comparison-diagnostic",
+            "comparisons": [{"case_ids": [views[left]["case_id"], views[right]["case_id"]],
+                             "deliberate_difference": variable} for left, right, variable in pairs],
+            "source_sha256": {name: views[name]["source_sha256"] for name in names},
+            "software_checks_passed": True, "passed": False, "physical_acceptance_claimed": False,
+            "limitations": ["Synthetic rays and roads do not prove physical occlusion or driver recognition"]}
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
