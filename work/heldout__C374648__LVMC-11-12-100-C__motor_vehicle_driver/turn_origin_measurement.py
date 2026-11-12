@@ -42,26 +42,30 @@ def measure(path, *, left_detector_deg=60):
                 abs(row['time_s']-rows[index-1]['time_s']-.05) > 1e-4):
             raise ValueError('Original turn source is not continuous 20 Hz')
         _unit(row.get('ego_forward_xy'), 'ego heading')
-    approach = [i for i, row in enumerate(rows) if row.get('is_junction') is False]
-    if not approach or approach[0] != 0:
+    entries = [i for i, row in enumerate(rows) if row.get('is_junction') is True]
+    if not entries or entries[0] == 0:
         raise ValueError('Left-turn source lacks approach')
-    origin_index = approach[-1]
+    origin_index = entries[0]-1
     origin = rows[origin_index]
-    if origin_index == len(rows)-1 or approach != list(range(origin_index+1)) or any(
-            row.get('is_junction') is not True for row in rows[origin_index+1:]):
+    if (any(row.get('is_junction') is not False for row in rows[:origin_index+1]) or
+            entries != list(range(entries[0], entries[-1]+1)) or
+            any(row.get('is_junction') is not False for row in rows[entries[-1]+1:])):
         raise ValueError('Left-turn source lacks a single junction entry')
     road_id, lane_id = origin.get('road_id'), origin.get('lane_id')
     center_road, center_lane = origin.get('center_turn_road_id'), origin.get('center_turn_lane_id')
     if any(type(v) is not int for v in (road_id, lane_id, center_road, center_lane)) or road_id != center_road or lane_id == 0 or center_lane == 0:
         raise ValueError('Original approach lacks designated lane identity')
     designation = origin.get('designation_source')
-    marking_ids = origin.get('center_marking_actor_ids')
+    marking_ids = origin.get('center_marking_source_ids',
+                             origin.get('center_marking_actor_ids'))
     if not isinstance(designation, str) or not designation or not isinstance(marking_ids, list) or not marking_ids:
         raise ValueError('Original approach lacks center-lane designation source')
     if any(row.get('center_turn_lane_id') != center_lane or
            row.get('center_turn_road_id') != center_road or
            row.get('designation_source') != designation or
-           row.get('center_marking_actor_ids') != marking_ids for row in rows[:origin_index+1]):
+           row.get('center_marking_source_ids',
+                   row.get('center_marking_actor_ids')) != marking_ids
+           for row in rows[:origin_index+1]):
         raise ValueError('Center-lane designation changed during approach')
     heading = _unit(origin['ego_forward_xy'], 'approach heading')
     def deflection(row):
@@ -85,7 +89,7 @@ def measure(path, *, left_detector_deg=60):
             'maximum_left_deflection_deg': -min(deflection(row) for row in turn_rows),
             'engineering_detector_deg': left_detector_deg,
             'designation_source': designation,
-            'center_marking_actor_ids': marking_ids,
+            'center_marking_source_ids': marking_ids,
             'designation_authority_verified': False,
             'physical_completion_verified': False,
             'legal_acceptance_claimed': False}

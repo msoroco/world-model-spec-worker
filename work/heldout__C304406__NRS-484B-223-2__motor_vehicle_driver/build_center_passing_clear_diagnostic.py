@@ -53,8 +53,10 @@ def main():
     target = HERE/'center-passing-clear-diagnostic.json'
     target.write_text(json.dumps(build(source), separators=(',',':'), allow_nan=False)+'\n')
     recipe = {'format':'worker-fixture-recipe','sources':[{'path':'diagnostic-input.json',
-        'source':str(target),'sha256':sha256(target.read_bytes()).hexdigest()}],
-        'generator':{'source':str(target),'sha256':sha256(target.read_bytes()).hexdigest()}}
+        'source':'work/' + HERE.name + '/' + target.name,
+        'sha256':sha256(target.read_bytes()).hexdigest()}],
+        'generator':{'source':'work/' + HERE.name + '/' + target.name,
+        'sha256':sha256(target.read_bytes()).hexdigest()}}
     (HERE/'center-passing-clear-diagnostic-recipe.json').write_text(json.dumps(recipe,indent=2)+'\n')
     print(target, target.stat().st_size)
 

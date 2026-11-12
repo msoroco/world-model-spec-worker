@@ -70,6 +70,16 @@ class TurnOriginMeasurementTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'single junction entry'):
             self.measure_rows(bad)
 
+    def test_static_map_marking_sources_are_distinct_from_actor_ids(self):
+        source = rows()
+        for row in source:
+            del row['center_marking_actor_ids']
+            row['center_marking_source_ids'] = ['road:17:lane:1:left:Solid',
+                                                'road:17:lane:1:right:Broken']
+        result = self.measure_rows(source)
+        self.assertEqual(len(result['center_marking_source_ids']), 2)
+        self.assertFalse(result['designation_authority_verified'])
+
 
 if __name__ == '__main__':
     unittest.main()

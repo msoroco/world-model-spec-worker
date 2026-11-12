@@ -1820,6 +1820,159 @@
         "negative_log": "too_close-delivery-audit-negative.log",
         "negative_log_sha256": "00340ae62c0e38d3cf9fdfc93f595d8d30f7adaedfaa39701fbc843e57625b6e"
       }
+    },
+    {
+      "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__yield",
+      "kind": "delivery",
+      "construction": "cases/yield/construction.json",
+      "construction_sha256": "f285fac08ac8fdc746be22ae61d8ddf10a4c58ddb9cc31de0540868cba0abc77",
+      "measurement_procedure": {
+        "entrypoint": "aggressive_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map may lack governed perpendicular junction or cross vehicle may not enter first and remain visible in same one-mile window"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield/fallback1/construction.json",
+          "construction_sha256": "9b562372ac792559dd79b98aede40b00d1d4fe8f38f657102262ce000688258f",
+          "trigger": {
+            "source": "Native junction, signal and actor originals",
+            "metric": "governed junction continuity",
+            "failure_condition": "primary route has no governed perpendicular cross-highway lane"
+          },
+          "changed_knobs": [
+            "route_candidate_index"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__yield --candidate fallback1 --output .runtime-work/c228508-yield-fallback1-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "9b562372ac792559dd79b98aede40b00d1d4fe8f38f657102262ce000688258f",
+            "log": "yield-fallback1-offline.log",
+            "log_sha256": "dfe4fedb90c607062ae4e1109920a5f2f30962a59b7e7e1e76c21f4a4a0a2758"
+          },
+          "compatibility": {
+            "receipt": "yield-fallback1-compatibility.json",
+            "sha256": "58f49fec3368970d1420462aee849c134194685525f6f2ff0caf3366e3a0cf95",
+            "log": "yield-fallback1-compat-analysis.log"
+          },
+          "negative": {
+            "log": "yield-fallback1-negative.log",
+            "log_sha256": "bbb87621b7048e2c18c6a9a04cef417c91be13ef7cd633092d7c152b4b3bbf98"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/yield/fallback2/construction.json",
+          "construction_sha256": "fdc8022aa9bf9b918f828a53d895993a046780ad3a65839b7c138048ff0ca53f",
+          "trigger": {
+            "source": "Native junction, signal and actor originals",
+            "metric": "cross vehicle initial body separation",
+            "failure_condition": "cross vehicle spawn collides or overlaps"
+          },
+          "changed_knobs": [
+            "cross_spawn_offset_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__yield --candidate fallback2 --output .runtime-work/c228508-yield-fallback2-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "fdc8022aa9bf9b918f828a53d895993a046780ad3a65839b7c138048ff0ca53f",
+            "log": "yield-fallback2-offline.log",
+            "log_sha256": "36e632bbf6589bac8037ace7030ead9f8c8947bdb0f34d0e4b025484e5464ee7"
+          },
+          "compatibility": {
+            "receipt": "yield-fallback2-compatibility.json",
+            "sha256": "b0c35e642c734ae0871bebc60bbda712c5c35de5f202b305dc002c56ed7ea169",
+            "log": "yield-fallback2-compat-analysis.log"
+          },
+          "negative": {
+            "log": "yield-fallback2-negative.log",
+            "log_sha256": "9a7e178e78b9bbf904fba6094846fbe849ebdbe1540976f05ba0e0b71f9c49dd"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/yield/fallback3/construction.json",
+          "construction_sha256": "93f8bdaa4869eac6012c49d9278358bfa417e3ef89dc85a7750047ab15e7ea61",
+          "trigger": {
+            "source": "Native junction, signal and actor originals",
+            "metric": "cross vehicle junction arrival before ego",
+            "failure_condition": "cross vehicle does not enter before ego"
+          },
+          "changed_knobs": [
+            "cross_speed_mps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__yield --candidate fallback3 --output .runtime-work/c228508-yield-fallback3-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "93f8bdaa4869eac6012c49d9278358bfa417e3ef89dc85a7750047ab15e7ea61",
+            "log": "yield-fallback3-offline.log",
+            "log_sha256": "c7de476d1b78f867b2bbe4e9d11b5587cebe9384a2c3f2a5dc48ff78e0c49d6d"
+          },
+          "compatibility": {
+            "receipt": "yield-fallback3-compatibility.json",
+            "sha256": "9e6f814957a588842f864abf72658f0b7d3f4851482517c15b8c5a46d66ca4b7",
+            "log": "yield-fallback3-compat-analysis.log"
+          },
+          "negative": {
+            "log": "yield-fallback3-negative.log",
+            "log_sha256": "7237ea0b95cc17c81828f8aaea9f82cc2c2a66b8a18c7187cceeb102f247b5b8"
+          }
+        }
+      ],
+      "measurement_contract": "cases/yield/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/cases/yield/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__yield --candidate primary --output .runtime-work/c228508-yield-primary-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "f285fac08ac8fdc746be22ae61d8ddf10a4c58ddb9cc31de0540868cba0abc77",
+        "log": "yield-primary-offline.log",
+        "log_sha256": "859c15d29d1fd160e58e9aee3984c26a00ec4c9593eb7ed1da62fc34b45b19a9"
+      },
+      "compatibility": {
+        "receipt": "yield-primary-compatibility.json",
+        "sha256": "6a60c61000fff893dc13f222da8f9de1f388f642c3fb2d6b94bce64e84fb6367",
+        "log": "yield-primary-compat-analysis.log"
+      },
+      "negative": {
+        "log": "yield-primary-negative.log",
+        "log_sha256": "32e218f9b4b1083695f76bb5e049da85079fb706d5751e0f37352dfaa9fba3f8"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__yield",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "device_source",
+          "yield_source",
+          "yield_pixels"
+        ],
+        "command": ".venv-cpu/bin/python work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/cases/yield/delivery_audit.py --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__yield --attempt .runtime-work/c228508-yield-primary-compat-v1 --diagnostic-fixture",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/cases/yield/delivery_audit.py --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__yield --attempt .runtime-work/c228508-yield-primary-compat-v1",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed Native source and owner exit missing",
+        "script": "cases/yield/delivery_audit.py",
+        "script_sha256": "2564cefbbe7fe9ab61ad7f511046870d752ef6d0a5c3e6c944300ea439eb139e",
+        "test_log": "yield-delivery-audit-positive.log",
+        "test_log_sha256": "9bdc5ed113963b01574ec300311b523afbadf293152c960fcd0faf12974536c3",
+        "negative_log": "yield-delivery-audit-negative.log",
+        "negative_log_sha256": "b20ffdd2f91d077ff82dff1a65c850f21302f6f3b75cdccfc475dc2a6de3b292"
+      }
     }
   ]
 }

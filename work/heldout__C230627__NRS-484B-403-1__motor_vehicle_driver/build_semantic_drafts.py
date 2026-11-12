@@ -43,7 +43,7 @@ def main():
         ('divider_candidate', 'world_setup', 'Native lane median and mapped barrier candidate or null; authority opening unresolved'),
         ('school_zone_candidate', 'world_setup', 'Native mapped school-zone landmark candidate or null; statutory exceptions unresolved'),
         ('curve_crest_geometry', 'world_setup', 'Native two-direction 500 ft route geometry candidate or null'),
-        ('two_direction_500ft_visibility', 'observation', 'Original nine-body-ray sight packet or null; legal recognition unresolved')]
+        ('two_direction_500ft_visibility', 'world_setup', 'Original nine-body-ray sight packet or null; legal recognition unresolved')]
     refs = [{'name': n, 'kind': k, 'range_or_domain': d} for n,k,d in parameters]
     template = {'template_id': TEMPLATE, 'law_id': LAW['id'], 'actor': 'motor_vehicle_driver',
                 'status': 'draft', 'quote': LAW['text'],
@@ -122,7 +122,7 @@ def main():
         new_case['variable_assignments']['curve_crest_geometry'] = {
             'kind': 'world_setup', 'value': 'Native sampled curve/crest candidate'}
         new_case['variable_assignments']['two_direction_500ft_visibility'] = {
-            'kind': 'observation', 'value': 'Original 152.4 m body-ray packet'}
+            'kind': 'world_setup', 'value': 'Original 152.4 m body-ray packet'}
         new_case['recording_description'] = json.loads(
             (ROOT/'construction-prohibition_407.json').read_text())['recording_description']
         cases['cases'].append(new_case)
@@ -138,7 +138,8 @@ def main():
         case['variable_assignments'].setdefault('curve_crest_geometry',
             {'kind': 'world_setup', 'value': None})
         case['variable_assignments'].setdefault('two_direction_500ft_visibility',
-            {'kind': 'observation', 'value': None})
+            {'kind': 'world_setup', 'value': None})
+        case['variable_assignments']['two_direction_500ft_visibility']['kind'] = 'world_setup'
         if case['target_type'] != 'baseline':
             if case['target_type'] == 'prohibition_context':
                 case['target_type'] = 'boundary_probe'

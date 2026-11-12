@@ -6,6 +6,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from three_lane_passing_finalizer import measure_passing_sources
+from three_lane_passing_near_finalizer import measure_passing_sources as measure_near_sources
+from three_lane_passing_occluded_finalizer import measure_occluded_sources
 from three_lane_source_capture import ThreeLaneSourceRecorder
 from test_three_lane_route import corridor
 from test_three_lane_source_capture import Ego
@@ -42,6 +44,37 @@ class PassingSavedSourcesTests(unittest.TestCase):
             self.assertTrue(result['observations'][0]['center_engineering_interval_clear'])
             self.assertGreater(result['observations'][0]['target_right_lane_fraction'], .95)
             self.assertIsNone(result['highway_clearly_visible'])
+
+    def test_near_center_actor_is_measured_from_original_source(self):
+        spec = json.loads((Path(__file__).resolve().parents[1] /
+            'center-passing-near-traffic-diagnostic.json').read_text())
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            for name in ('passing_frames.jsonl', 'three_lane_frames.jsonl',
+                         'three_lane_context.json', 'three_lane_map_readback.json',
+                         'trace.jsonl', 'video_frames.jsonl'):
+                (root / name).write_text(spec['files'][name])
+            measured = measure_near_sources(root)
+            self.assertEqual(len(measured['observations']), 9)
+            self.assertTrue(all(not row['center_engineering_interval_clear']
+                                and row['center_blocked_actors']
+                                for row in measured['observations']))
+
+    def test_upright_occluder_geometry_is_source_bound_without_visibility_claim(self):
+        spec = json.loads((Path(__file__).resolve().parents[1] /
+            'center-passing-occluded-diagnostic.json').read_text())
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            for name in ('passing_frames.jsonl', 'occluder_frames.jsonl',
+                         'three_lane_frames.jsonl', 'three_lane_context.json',
+                         'three_lane_map_readback.json', 'trace.jsonl', 'video_frames.jsonl'):
+                (root / name).write_text(spec['files'][name])
+            measured = measure_occluded_sources(root)
+            self.assertGreater(measured['occluder_geometry'][0]['height_m'], 2)
+            self.assertFalse(measured['physical_sight_occlusion_confirmed'])
+            (root / 'occluder_frames.jsonl').unlink()
+            with self.assertRaisesRegex(ValueError, 'Missing required source'):
+                measure_occluded_sources(root)
 
     def test_missing_source_and_wrong_target_lane_rejected(self):
         with tempfile.TemporaryDirectory() as temp:

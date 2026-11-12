@@ -111,9 +111,10 @@ def run(config, output, host, port):
             target = route[min(2 + index // 8, len(route) - 1)].transform.location
             command = control_step((position.x, position.y),
                                    (forward.x, forward.y),
-                                   (velocity.x, velocity.y), (target.x, target.y))
+                                   (velocity.x, velocity.y), (target.x, target.y),
+                                   target_speed_mps=config.get('ego_target_speed_mps', 8.0))
             ego.apply_control(carla.VehicleControl(**command))
-            slower.apply_control(carla.VehicleControl(throttle=0.10))
+            slower.apply_control(carla.VehicleControl(throttle=0.04))
             frame = world.tick()
             cameras.wait_for_frame(frame)
             snapshot = world.get_snapshot()

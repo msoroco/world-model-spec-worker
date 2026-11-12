@@ -83,7 +83,10 @@ def build_result(attempt, report):
     channel = Path(attempt) / 'passing_observation.jsonl'
     if channel.exists():
         raise ValueError('Retain prior derived passing channel')
-    channel.write_text(''.join(json.dumps(row, allow_nan=False) + '\n'
+    channel.write_text(''.join(json.dumps({'frame': row['frame'], 'time_s': row['time_s'],
+                               'value': {key: value for key, value in row.items()
+                                         if key not in ('frame', 'time_s')}},
+                               allow_nan=False) + '\n'
                                for row in measured['observations']))
     result['measured_values']['passing_observation'] = measured
     result['recording_evidence'].append({
@@ -91,10 +94,10 @@ def build_result(attempt, report):
         'reference': channel.name, 'sha256': sha256(channel.read_bytes()).hexdigest()})
     result['realized_observables']['passing_observation'] = {
         'unit': 'meters', 'method': 'original target and ego bodies at 20 Hz',
-        'time_window': 'all original frames', 'statistic': 'initial_to_final_gap',
+        'time_window': 'all original frames', 'statistic': 'signed_gap_change',
         'reference': channel.name,
-        'value': [measured['observations'][0]['ego_target_longitudinal_gap_m'],
-                  measured['observations'][-1]['ego_target_longitudinal_gap_m']],
+        'value': (measured['observations'][-1]['ego_target_longitudinal_gap_m'] -
+                  measured['observations'][0]['ego_target_longitudinal_gap_m']),
         'sample_window_s': [measured['observations'][0]['time_s'],
                             measured['observations'][-1]['time_s']]}
     return result
