@@ -35,6 +35,10 @@ def check_config(config):
         raise ValueError('Four-view 20 Hz entry capture contract missing')
     if not .1 <= float(config.get('ego_throttle', .22)) <= .35:
         raise ValueError('Unsafe or ineffective ego controller setting')
+    if not 1.0 <= float(config.get('route_step_m', 2.0)) <= 3.0:
+        raise ValueError('Unsupported connected route sampling step')
+    if not 0.0 <= float(config.get('overview_height_delta_m', 0.0)) <= 2.0:
+        raise ValueError('Unsupported overview camera mount')
     if not 2 <= float(config.get('blocker_offset_m', 3.0)) <= 6:
         raise ValueError('Downstream physical blocker offset outside engineered range')
     return CASES[suffix]
@@ -116,7 +120,8 @@ def run(output, host, port):
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
         world_map = world.get_map()
-        route = connected_entry_route(world_map)
+        route = connected_entry_route(world_map,
+                                      step_m=float(config.get('route_step_m', 2.0)))
         region = choose_region(world_map, route, kind)
         crossing = choose_region(world_map, route, 'marked_crosswalk')
         origin, end, corridor = receiving_geometry(route, region)

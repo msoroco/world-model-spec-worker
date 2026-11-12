@@ -93,9 +93,19 @@ def result(attempt, report):
                          'reference': path.name, 'sha256': sha(path)})
         realized[name] = {'unit': channel['unit'], 'method': channel['method'],
                           'time_window': channel['time_window'],
-                          'statistic': 'original sampled values', 'reference': path.name,
-                          'value': [row['value'] for row in rows],
+                          'statistic': 'minimum' if name == 'signal_indication' else 'maximum',
+                          'reference': path.name,
+                          'value': (min if name == 'signal_indication' else max)(row['value'] for row in rows),
                           'sample_window_s': [rows[0]['time_s'], rows[-1]['time_s']]}
+    for name, source_name in (('space_scene', 'space_scene.json'),
+                              ('space_frames', 'space_frames.jsonl')):
+        output = root / (name + '-recorded.json')
+        if output.exists():
+            raise ValueError('Retain prior derived source context: ' + name)
+        data = json.loads((root / source_name).read_text()) if source_name.endswith('.json') else read_rows(root / source_name)
+        output.write_text(json.dumps({name: data}) + '\n')
+        recorded.append({'name': name, 'unit': 'structured record',
+                         'reference': output.name, 'sha256': sha(output)})
     return {'case_id': report['case_id'], 'measured_values': {'space_at_entry': measured},
             'target_checks': [{'target': 'space available beyond actual entry and passage occupation',
                                'requested': report['case_id'], 'measured': measured,

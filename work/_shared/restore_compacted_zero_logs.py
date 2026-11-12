@@ -19,7 +19,9 @@ def restore(assignment, skip_existing_verified=False):
                     'work/_shared/prune-history-8.json',
                     'work/_shared/prune-history-9.json',
                     'work/_shared/prune-history-10.json',
-                    'work/_shared/prune-history-11.json')]
+                    'work/_shared/prune-history-11.json',
+                    'work/_shared/prune-history-12.json',
+                    'work/_shared/prune-history-13.json')]
     prefix = f'work/{assignment}/'
     count = 0
     rows = [row for inventory in inventories for row in
