@@ -221,5 +221,97 @@
       ],
       "evidence_or_gap": "No accepted recordings; original turn, affected user, Native indication and independent listener PCM must be joined before legal review."
     }
-  ]
+  ],
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "Original ego turn motion, yaw and frame joins",
+      "channels": [
+        "turn_signal_observation"
+      ],
+      "source_refs": [
+        "ego_turn_motion.jsonl",
+        "turn_originals.jsonl"
+      ]
+    },
+    "drv.lane_change": {
+      "evidence": "Original direct-course departure trajectory; no separate lane-change claim",
+      "channels": [
+        "turn_signal_observation"
+      ],
+      "source_refs": [
+        "ego_turn_motion.jsonl",
+        "turn_scene_context.json"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Original body clearance and relative motion proxy; no legal safety cutoff",
+      "channels": [
+        "turn_signal_observation"
+      ],
+      "source_refs": [
+        "ego_turn_motion.jsonl",
+        "participant_bodies.jsonl"
+      ]
+    },
+    "ru.pedestrian": {
+      "evidence": "Original affected pedestrian route/body context",
+      "channels": [
+        "turn_signal_observation"
+      ],
+      "source_refs": [
+        "affected_participants.json",
+        "participant_bodies.jsonl"
+      ]
+    },
+    "sig.horn": {
+      "evidence": "Horn relay acknowledgement and independent listener PCM in horn cases; no physical emission or audibility conclusion from the fixture",
+      "channels": [
+        "turn_signal_observation"
+      ],
+      "source_refs": [
+        "horn_actuation.jsonl",
+        "listener_audio_original.jsonl"
+      ]
+    },
+    "sig.turn_indicator": {
+      "evidence": "Native original indicator readback and four camera streams",
+      "channels": [
+        "turn_signal_observation"
+      ],
+      "source_refs": [
+        "ego_signal_audio.jsonl",
+        "overview.mkv"
+      ]
+    },
+    "sig.hand_signal": {
+      "evidence": "Original scene context and signal readback identify the indicator choice; arm-signal alternative remains unconstructed and is not claimed as captured",
+      "channels": [
+        "turn_signal_observation"
+      ],
+      "source_refs": [
+        "turn_scene_context.json",
+        "ego_signal_audio.jsonl"
+      ]
+    },
+    "drv.following": {
+      "evidence": "Original affected vehicle body path and turn-relative context",
+      "channels": [
+        "turn_signal_observation"
+      ],
+      "source_refs": [
+        "affected_participants.json",
+        "participant_bodies.jsonl"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Original ego/participant body radii and sampled gap",
+      "channels": [
+        "turn_signal_observation"
+      ],
+      "source_refs": [
+        "ego_turn_motion.jsonl",
+        "participant_bodies.jsonl"
+      ]
+    }
+  }
 }

@@ -1,0 +1,100 @@
+{
+  "cell_id": "C111610",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "established_contexts": [
+    "intersection layout",
+    "turn maneuver",
+    "pedestrian control"
+  ],
+  "law_refs": [
+    {
+      "template_id": "NRS-484B-413-1@motor_vehicle_driver",
+      "binding_kind": "direct"
+    }
+  ],
+  "context_refs": [],
+  "fixed_parameters": [
+    {
+      "name": "cell_layout",
+      "value": "intersection",
+      "rationale": "Frozen catalog layout"
+    },
+    {
+      "name": "cell_maneuver",
+      "value": "turn",
+      "rationale": "Frozen catalog maneuver"
+    },
+    {
+      "name": "cell_control",
+      "value": "pedestrian",
+      "rationale": "Frozen catalog control"
+    }
+  ],
+  "variable_parameters": [
+    {
+      "name": "affected_vehicle_clearance_path_m",
+      "kind": "world_setup",
+      "range_or_domain": "engineering scalar s: affected vehicle offset (max(0,s),s) m at -1, 2 or 5; no legal safety cutoff",
+      "used_by_laws": [
+        "NRS-484B-413-1"
+      ]
+    },
+    {
+      "name": "indicator_activation_frame_index",
+      "kind": "controller",
+      "range_or_domain": "requested Native capture frame index 2, 4 or 6 for left indicator; measured turn onset and appropriateness remain unresolved",
+      "used_by_laws": [
+        "NRS-484B-413-1"
+      ]
+    },
+    {
+      "name": "hand_signal_pose",
+      "kind": "controller",
+      "range_or_domain": "none or selected left-arm original Native bone pose",
+      "used_by_laws": [
+        "NRS-484B-413-1"
+      ]
+    },
+    {
+      "name": "horn_actuation",
+      "kind": "controller",
+      "range_or_domain": "none or identified relay request with separate listener PCM",
+      "used_by_laws": [
+        "NRS-484B-413-1"
+      ]
+    },
+    {
+      "name": "listener_route_lateral_offset_m",
+      "kind": "world_setup",
+      "range_or_domain": "engineering listener sidewalk offsets 2, 4 or 6 m; no legal audibility cutoff",
+      "used_by_laws": [
+        "NRS-484B-413-1"
+      ]
+    },
+    {
+      "name": "pedestrian_may_be_affected",
+      "kind": "world_setup",
+      "range_or_domain": "planned pedestrian route and measured body proximity; actual effect unresolved",
+      "used_by_laws": [
+        "NRS-484B-413-1"
+      ]
+    },
+    {
+      "name": "turn_indicator_state",
+      "kind": "controller",
+      "range_or_domain": "off or left with Native readback",
+      "used_by_laws": [
+        "NRS-484B-413-1"
+      ]
+    },
+    {
+      "name": "vehicle_may_be_affected",
+      "kind": "world_setup",
+      "range_or_domain": "planned other-vehicle route and measured body proximity; actual effect unresolved",
+      "used_by_laws": [
+        "NRS-484B-413-1"
+      ]
+    }
+  ]
+}

@@ -5,6 +5,70 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__semantic_baseline",
+      "target_law_id": "NRS-484B-413-1",
+      "target_type": "baseline",
+      "rationale": "Neutral semantic comparison anchor for the C111610 pedestrian cell; no additional recording or manifest entry.",
+      "variable_assignments": {
+        "affected_vehicle_clearance_path_m": {
+          "kind": "world_setup",
+          "value": "not_selected"
+        },
+        "indicator_activation_frame_index": {
+          "kind": "controller",
+          "value": "not_selected"
+        },
+        "hand_signal_pose": {
+          "kind": "controller",
+          "value": "none"
+        },
+        "horn_actuation": {
+          "kind": "controller",
+          "value": "none"
+        },
+        "listener_route_lateral_offset_m": {
+          "kind": "world_setup",
+          "value": "not_selected"
+        },
+        "pedestrian_may_be_affected": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "turn_indicator_state": {
+          "kind": "controller",
+          "value": "off"
+        },
+        "vehicle_may_be_affected": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable safety",
+        "clearly audible signal",
+        "any pedestrian may be affected",
+        "appropriate signal",
+        "any other vehicle may be affected"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and listener audio status",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "sampled 20 Hz state; lamp pixels and legal appropriateness require later review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      }
+    },
+    {
       "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn",
       "target_law_id": "NRS-484B-413-1",
       "target_type": "boundary_probe",
@@ -297,6 +361,38 @@
       }
     }
   ],
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "c111610_unexpanded_judgment_dimensions",
+      "target_law_id": "NRS-484B-413-1",
+      "judgment_refs": [
+        {
+          "phrase": "reasonable safety",
+          "note": "Original turn/body gap and context are retained; no legal safety cutoff."
+        },
+        {
+          "phrase": "clearly audible signal",
+          "note": "Listener PCM and actuator request are separate observations; audibility requires physical review."
+        },
+        {
+          "phrase": "any pedestrian may be affected",
+          "note": "Retain original pedestrian body path and turn corridor; effect remains a judgment."
+        },
+        {
+          "phrase": "appropriate signal",
+          "note": "Retain Native indicator readback or original hand pose and source pixels; appropriateness remains unresolved."
+        },
+        {
+          "phrase": "any other vehicle may be affected",
+          "note": "Retain original vehicle body path and turn corridor; effect remains a judgment."
+        }
+      ],
+      "rationale": "The four current exact comparisons test conditional signals, but do not yet form finite physical grids for every judgment phrase. Retain this explicit incomplete planning state until selected sweep cases and source-backed dimensions are constructed.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Finite, exact selected cases for safety clearance, listener audibility, pedestrian effect, signal appropriateness and other-vehicle effect; full original-source measurements and exact CPU proofs for each."
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }
