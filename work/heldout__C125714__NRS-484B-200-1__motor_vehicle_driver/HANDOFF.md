@@ -211,3 +211,7 @@ The complete assignment-scoped strict gate `.venv-cpu/bin/python worker_check.py
 ### 2026-11-12 return file-count compaction
 
 Removed 29 redundant `probe-*-compatibility.log` stdout copies that were cited only by historical `result.json.tests` entries. The corresponding source-bound compatibility receipts, analysis logs, negative logs, exact construction hashes and manifest bindings remain. The redundant test entries were removed. The assignment-scoped strict gate still exits 0.
+
+### 2026-11-12 proof-preserving return compaction
+
+Thirty-one byte-identical empty compatibility analysis logs were consolidated with execution-manifest paths repointed to the retained identical bytes. The assignment-scoped strict ready gate passed afterward; existing ready status is unchanged.

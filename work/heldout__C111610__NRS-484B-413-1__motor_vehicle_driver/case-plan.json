@@ -115,6 +115,22 @@
         "trigger_metric": "spawn success, sampled surface gap and image visibility",
         "failure_condition": "missing actor, incomplete turn or absent vehicle pixels"
       }
+    },
+    {
+      "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_after_onset",
+      "target_law_id": "NRS-484B-413-1",
+      "gap_ids": [
+        "turn-safety",
+        "signal-timing"
+      ],
+      "construction_state": "exact_offline_compatibility_saved_physical_delivery_cpu_proved",
+      "purpose": "Request the horn after the diagnostic turn onset while holding the pedestrian path, turn and cameras fixed; compare measured timing without a legal audibility finding.",
+      "physical_risk": {
+        "risk": "Native horn emission/reception and affected road-user visibility may not be realized",
+        "trigger_source": "original motion, audio and four named camera streams",
+        "trigger_metric": "turn onset, received horn interval and signal timing by actor",
+        "failure_condition": "missing source, inaudible horn or user out of view"
+      }
     }
   ],
   "comparisons": [
@@ -210,6 +226,23 @@
       "audit_script_sha256": "a06d5939c0dea5858af608ab03a5b038926b57238978b84ff4724d43b02968e0",
       "audit_log": "vehicle-far-comparison-audit.log",
       "audit_log_sha256": "487790e1a942d0b0e635ebdc4b9a5e5b0956e031025c03154ea65c67d47c4603"
+    },
+    {
+      "comparison_id": "horn_request_timing_sweep",
+      "case_ids": [
+        "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn",
+        "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_after_onset"
+      ],
+      "fixed_conditions": [
+        "same turn route, pedestrian body path, horn relay, 20 Hz duration and four cameras"
+      ],
+      "deliberate_differences": [
+        "horn request at Native frame 20 versus frame 120 in the late construction; diagnostic actuation at source frame 38035 versus 38040"
+      ],
+      "audit_script": "horn_timing_comparison_audit.py",
+      "audit_script_sha256": "8015f784b1793fd3df287ea75202d71b873a118b1fc571677e320b64c78cb9d4",
+      "audit_log": "horn-timing-comparison-audit.log",
+      "audit_log_sha256": "01c58520ea1e4603f26f324de5746764e9a05766a235f4e44a3abd379f1226b7"
     }
   ],
   "observations": [
@@ -316,7 +349,8 @@
         "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__both_users_both_signals",
         "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_farther_horn_before_turn",
         "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__vehicle_clearance_near_before_turn",
-        "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__vehicle_clearance_far_before_turn"
+        "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__vehicle_clearance_far_before_turn",
+        "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_after_onset"
       ],
       "evidence_or_gap": "No accepted recordings; original turn, affected user, Native indication and independent listener PCM must be joined before legal review."
     }

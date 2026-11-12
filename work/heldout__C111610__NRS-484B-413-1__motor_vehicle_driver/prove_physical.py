@@ -32,6 +32,8 @@ def main():
     output.mkdir(exist_ok=True)
     for entry in manifest['cases']:
         case = entry['case_id']
+        if '--case' in sys.argv and case != sys.argv[sys.argv.index('--case') + 1]:
+            continue
         short = case.rsplit('__', 1)[-1]
         fixtures = []
         for kind in ('complete_motion', 'incomplete_motion', 'missing_evidence'):
