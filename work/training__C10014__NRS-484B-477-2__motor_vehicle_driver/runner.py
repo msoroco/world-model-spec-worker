@@ -38,6 +38,17 @@ def frame_map_row(index,frame,time_s):
     return {'video_frame':index,'native_frame':frame,'carla_frame':frame,'time_s':time_s}
 
 
+def weather_readback(weather):
+    """Retain actual Native weather after applying the requested preset."""
+    values={key:getattr(weather,key) for key in dir(weather)
+            if not key.startswith('_') and isinstance(getattr(weather,key),(bool,int,float,str,type(None)))}
+    if 'sun_altitude_angle' not in values or not values or any(
+            isinstance(value,(int,float)) and not math.isfinite(value)
+            for value in values.values()):
+        raise RuntimeError('Native weather readback missing or nonfinite')
+    return values
+
+
 def check(config):
     geometry=geometry_check();suffix=config['case_suffix'];candidate=config['candidate_id']
     if suffix not in STOP_X_M or candidate not in NAMES:
@@ -142,6 +153,7 @@ def execute(config,output,host,port):
         settings.fixed_delta_seconds=.05;settings.substepping=True
         settings.max_substep_delta_time=.01;settings.max_substeps=10
         world.apply_settings(settings);world.set_weather(carla.WeatherParameters.ClearNoon)
+        actual_weather=weather_readback(world.get_weather())
         mapping=world.get_map();native_xml=mapping.to_opendrive()
         native_hash=hashlib.sha256(native_xml.encode()).hexdigest()
         survey=map_survey(carla,mapping,native_hash)
@@ -173,6 +185,7 @@ def execute(config,output,host,port):
             'native_map_sha256':native_hash,'vehicle_blueprint':ego.type_id,
             'wheelbase_m':wheelbase,'max_steer_deg':max_steer,
             'initial_body_xy_native_m':initial,'controller_knobs':vars(knobs),
+            'native_weather_readback':actual_weather,
             'requested_stop_x_m':engineering['stop_x_m'],
             'requested_route_points':len(native_route),
             'physical_success_claimed':False})

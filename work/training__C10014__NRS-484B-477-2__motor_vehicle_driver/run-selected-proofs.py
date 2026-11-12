@@ -36,12 +36,12 @@ def main():
         for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
             selected = entry if candidate == 'primary' else next(
                 item for item in entry['candidates'] if item['id'] == candidate)
-            offline = ROOT/'.runtime-work'/f'c10014-update019-{suffix}-{candidate}-offline'
-            attempt = ROOT/'.runtime-work'/f'c10014-update019-{suffix}-{candidate}-compat'
-            saved = ROOT/'.runtime-work'/f'c10014-update019-{suffix}-{candidate}-saved'
+            offline = ROOT/'.runtime-work'/f'c10014-update020-{suffix}-{candidate}-offline'
+            attempt = ROOT/'.runtime-work'/f'c10014-update020-{suffix}-{candidate}-compat'
+            saved = ROOT/'.runtime-work'/f'c10014-update020-{suffix}-{candidate}-saved'
             if offline.exists() or attempt.exists() or saved.exists():
                 raise FileExistsError(f'Retain prior attempt; update version: {attempt}')
-            proof = HERE/'selected-proof-bindings-019'/suffix/candidate
+            proof = HERE/'selected-proof-bindings-020'/suffix/candidate
             proof.mkdir(parents=True, exist_ok=True)
             offline_command = run([str(PYTHON), str(ROOT/'runtime.py'),
                 'offline', '--manifest', str(MANIFEST), '--case', entry['case_id'],
@@ -51,7 +51,7 @@ def main():
             common = ['--manifest', str(MANIFEST), '--case', entry['case_id'],
                       '--library', str(ROOT/'runtime/pipeline/library'),
                       '--validator', str(VALIDATOR)]
-            compatibility_log = HERE/f'update019-{suffix}-{candidate}-compat.log'
+            compatibility_log = HERE/f'update020-{suffix}-{candidate}-compat.log'
             compatibility_command = run([str(PYTHON), str(ROOT/'runtime.py'),
                 'compatibility', *common, '--candidate', candidate,
                 '--output', str(attempt)], compatibility_log)
@@ -62,7 +62,7 @@ def main():
                     receipt.get('candidate_id') != candidate or
                     receipt.get('negative_removed') != 'native_samples.jsonl'):
                 raise ValueError('Compatibility identity or negative proof incomplete')
-            saved_log = HERE/f'update019-{suffix}-{candidate}-saved.log'
+            saved_log = HERE/f'update020-{suffix}-{candidate}-saved.log'
             saved_command = run([str(PYTHON), str(ROOT/'runtime.py'),
                 'process-saved', *common, '--attempt', str(attempt),
                 '--output', str(saved)], saved_log)
@@ -96,10 +96,10 @@ def main():
                 'saved_log_sha256': sha(saved_log)})
             print(json.dumps({'case': suffix, 'candidate': candidate,
                               'compatibility': True, 'saved': True}), flush=True)
-    report = {'format': 'c10014-update019-selected-cpu-proofs',
+    report = {'format': 'c10014-update020-selected-cpu-proofs',
               'staged_execution_manifest_sha256': sha(MANIFEST), 'proofs': results,
               'scope': 'selected CPU constructions; synthetic diagnostics only; no Native or legal acceptance'}
-    (HERE/'update019-selected-proof-summary.json').write_text(json.dumps(report, indent=2)+'\n')
+    (HERE/'update020-selected-proof-summary.json').write_text(json.dumps(report, indent=2)+'\n')
     print(json.dumps({'passed': True, 'attempts': len(results)}))
 
 

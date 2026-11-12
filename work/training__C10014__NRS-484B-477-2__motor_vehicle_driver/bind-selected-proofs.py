@@ -18,7 +18,7 @@ def read(path):
 def bind():
     path = HERE/'execution-manifest.json'
     manifest = read(path)
-    summary = read(HERE/'update019-selected-proof-summary.json')
+    summary = read(HERE/'update020-selected-proof-summary.json')
     if (manifest['status'] != 'partial_selected_cpu_proofs_pending_physical_unverified' or
             summary['staged_execution_manifest_sha256'] != sha(path)):
         raise ValueError('Selected proof run did not use current staged manifest')
@@ -34,7 +34,7 @@ def bind():
             if (sha(HERE/selected['construction']) != selected['construction_sha256'] or
                     proof['construction_sha256'] != selected['construction_sha256']):
                 raise ValueError('Selected construction/proof binding differs')
-            base = HERE/'selected-proof-bindings-019'/suffix/candidate
+            base = HERE/'selected-proof-bindings-020'/suffix/candidate
             receipt = read(base/'compatibility.json')
             saved = read(base/'saved-processing.json')
             if (receipt['passed'] is not True or receipt['case_id'] != entry['case_id'] or
@@ -47,7 +47,7 @@ def bind():
                     saved['missing_evidence'] is not False or
                     saved['native_revision']['construction_sha256'] != selected['construction_sha256']):
                 raise ValueError('Selected compatibility/saved proof incomplete')
-            relative = f'selected-proof-bindings-019/{suffix}/{candidate}'
+            relative = f'selected-proof-bindings-020/{suffix}/{candidate}'
             selected['offline'] = {'exit_code': 0,
                 'construction_sha256': selected['construction_sha256'],
                 'command': proof['offline_command'],
@@ -57,7 +57,7 @@ def bind():
                 'sha256': sha(base/'compatibility.json'),
                 'log': relative+'/analysis.log',
                 'negative_log': relative+'/negative-analysis.log'}
-        entry['negative'] = {'log': f'selected-proof-bindings-019/{suffix}/primary/negative-analysis.log'}
+        entry['negative'] = {'log': f'selected-proof-bindings-020/{suffix}/primary/negative-analysis.log'}
         entry['preparation_status'] = 'selected_cpu_offline_compat_saved_proven_physical_unverified'
         entry['acquisition'] = {
             'st.alley': {'entrypoint': 'runner.py',
@@ -89,8 +89,8 @@ def bind():
         entry['post_capture'] = {'recorded_only': True,
             'command': primary['saved_command'],
             'feedback_command': primary['saved_command'],
-            'test_log': f'update019-{suffix}-primary-saved.log',
-            'test_log_sha256': sha(HERE/f'update019-{suffix}-primary-saved.log'),
+            'test_log': f'update020-{suffix}-primary-saved.log',
+            'test_log_sha256': sha(HERE/f'update020-{suffix}-primary-saved.log'),
             'test_exit_code': 0,
             'scope': 'synthetic saved-processing proof; actual Native feedback unverified'}
     manifest['status'] = 'partial_selected_cpu_proofs_bound_physical_unverified'

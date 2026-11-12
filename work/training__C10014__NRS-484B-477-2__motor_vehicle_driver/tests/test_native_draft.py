@@ -8,10 +8,20 @@ from controller import EngineeringKnobs,PathController
 from engineering import TRIGGERS,parameters
 from geometry import STOP_X_M,check,route
 from measure_entrance import entrance_overlap_m
-from runner import seal_after_release
+from runner import seal_after_release,weather_readback
 
 
 class AlleyDraftTests(unittest.TestCase):
+    def test_native_weather_readback_is_actual_and_finite(self):
+        from types import SimpleNamespace
+        observed=SimpleNamespace(sun_altitude_angle=74.2,cloudiness=13.0)
+        self.assertEqual(weather_readback(observed),
+                         {'sun_altitude_angle':74.2,'cloudiness':13.0})
+        with self.assertRaises(RuntimeError):
+            weather_readback(SimpleNamespace(cloudiness=0))
+        with self.assertRaises(RuntimeError):
+            weather_readback(SimpleNamespace(sun_altitude_angle=float('nan')))
+
     def test_both_routes_and_fallback_start(self):
         self.assertEqual(check()['roads'],[1,2])
         for suffix,stop in STOP_X_M.items():
