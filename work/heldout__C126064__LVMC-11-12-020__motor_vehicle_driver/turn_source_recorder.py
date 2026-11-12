@@ -84,6 +84,7 @@ class SourceRecorder:
                       'indicated_course_xy_m'):
             if not source.get(field):
                 raise ValueError('Marked intersection citation missing: ' + field)
+        (self.output / 'authority_source_original.json').write_bytes(raw)
         scene = {'case_id': case_id, 'ego_actor_id': ego_actor_id,
                  'municipal_jurisdiction_source': source['municipal_jurisdiction_source'],
                  'intersection_source': source['intersection_source'],
@@ -140,4 +141,7 @@ class SourceRecorder:
         return {'frames': len(frames), 'sources': sorted(self.frame_rows),
                 'original_body_source': 'turn_body.jsonl',
                 'frame_map_source': 'video_frames.jsonl',
-                'scene_source': 'marked_intersection.json'}
+                'scene_source': 'marked_intersection.json',
+                'authority_source': 'authority_source_original.json',
+                'authority_source_sha256': sha256(
+                    (self.output / 'authority_source_original.json').read_bytes()).hexdigest()}

@@ -34,11 +34,25 @@ def _distance(point, polyline):
 
 def measure(source_dir, case_id):
     root = Path(source_dir)
-    names = ('marked_intersection.json', 'turn_body.jsonl', 'video_frames.jsonl')
+    names = ('marked_intersection.json', 'turn_body.jsonl', 'video_frames.jsonl',
+             'authority_source_original.json')
     paths = {name: root / name for name in names}
     if any(not path.is_file() for path in paths.values()):
-        raise ValueError('Original marker, body or frame-map source missing')
+        raise ValueError('Original marker, body, frame-map or authority source missing')
     scene = json.loads(paths[names[0]].read_text())
+    authority_raw = paths['authority_source_original.json'].read_bytes()
+    if sha256(authority_raw).hexdigest() != scene.get('authority_source_sha256'):
+        raise ValueError('Original authority source hash changed')
+    authority = json.loads(authority_raw)
+    for source_key, scene_key in (
+            ('municipal_jurisdiction_source', 'municipal_jurisdiction_source'),
+            ('intersection_source', 'intersection_source'),
+            ('authorization_source', 'authorization_source'),
+            ('intersection_polygon_xy_m', 'intersection_polygon_xy_m'),
+            ('indicated_course_xy_m', 'indicated_course_xy_m'),
+            ('median_opening_with_intersecting_road', 'median_opening_with_intersecting_road')):
+        if authority.get(source_key) != scene.get(scene_key):
+            raise ValueError('Original authority source differs from captured scene: ' + source_key)
     if (scene.get('case_id') != case_id or not scene.get('municipal_jurisdiction_source')
             or not scene.get('intersection_source') or not scene.get('authorization_source')
             or scene.get('median_opening_with_intersecting_road') is not True):

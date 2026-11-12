@@ -93,3 +93,23 @@ Status remains **partial**. Next exact CPU work is to bind a reviewed site/map s
 `marked_course_native.drive_turn` now collects exactly 160 synchronized 20 Hz camera/body frames for either compared turn. After the sourced targets are reached, it applies the brake and continues recording original camera frames and body footprints through the fixed window. It rejects a turn that exceeds that window rather than silently producing a shorter or incomparable recording. The Native fixture exercises the full 160-frame body/time join and the overrun rejection. All 17 assignment CPU tests pass (`cpu-tests.log` SHA-256 `306075f01c2e9ab48d68240d639d263047b6ff3d3d345eadd79301c7d1c45b67`). The changed controller is work-owned source, not yet bound into an exact manifest; exact offline, compatibility and saved-processing receipts remain CPU work. This test does not establish actual Native turn motion or camera visibility.
 
 The updated pinned CPU preflight passes. The complete strict batch gate rerun after the C111610 construction returned exit 1 at `preparation.py:276`, `Preparation acceptance failed: partial/missing packages remain`. Its frozen file-count and preliminary checks passed. This assignment remains **partial**. Resume with the exact indicated-course construction, source-hashed synthetic diagnostic and saved-only finalizer; then build the divergent comparison and its three risk-triggered fallbacks per selected case. Do not use the fixture authority text as municipal authorization. The next scoped gate is `.venv-cpu/bin/python worker_check.py --assignment heldout__C126064__LVMC-11-12-020__motor_vehicle_driver --complete --require-delivery-ready` after all CPU proof bindings exist.
+
+### 2026-11-12 retained authority-source binding
+
+`turn_source_recorder.py` now copies the exact SHA-256-checked site/authority
+source into the original saved attempt as `authority_source_original.json` and
+binds its digest in the source seal. `marked_course_measurement.py` requires that
+original record, checks its digest against `marked_intersection.json`, and checks
+that the cited jurisdiction, intersection, authorization, polygon, indicated
+course and median-opening claims agree with the source. A saved attempt with a
+missing, changed or scene-mismatched source now fails before turn measurements.
+This is source provenance, not proof that the fixture claim is legally authorized.
+
+`.venv-cpu/bin/python -m unittest discover -s work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/tests -v`
+passes 18 tests; `cpu-tests.log` SHA-256 is
+`3a13435d0bda28947bc091d1c0675d459781622a66b8f4266163ee81599eee62`.
+The next exact construction is the indicated-course bundle with a synthetic,
+explicitly unverified diagnostic site source, a source-bound Native finalizer,
+and exact offline, positive/negative compatibility and saved-only proofs. Then
+construct the divergent case, fallbacks, proposals and independent audits.
+`result.json` remains partial; no physical or legal acceptance is claimed.

@@ -1,4 +1,5 @@
 import json
+from hashlib import sha256
 from pathlib import Path
 import subprocess
 import sys
@@ -16,6 +17,13 @@ def fixture(root):
              'intersection_polygon_xy_m': [[-2, -2], [4, -2], [4, 4], [-2, 4]],
              'physical_markers_xy_m': [[1, 1]],
              'indicated_course_xy_m': [[0, 0], [3, 0], [3, 3]]}
+    authority = {key: scene[key] for key in (
+        'municipal_jurisdiction_source', 'intersection_source', 'authorization_source',
+        'median_opening_with_intersecting_road', 'intersection_polygon_xy_m',
+        'indicated_course_xy_m')}
+    original = json.dumps(authority).encode()
+    (root / 'authority_source_original.json').write_bytes(original)
+    scene['authority_source_sha256'] = sha256(original).hexdigest()
     (root / 'marked_intersection.json').write_text(json.dumps(scene))
     bodies = [{'frame': 10 + i, 'time_s': i / 20, 'actor_id': 7,
                'corners_xy_m': [[i, 0], [i + .4, 0], [i + .4, .4], [i, .4]]}
@@ -34,7 +42,7 @@ class MarkedCourseTests(unittest.TestCase):
             fixture(root)
             result = measure(root, 'case')
             self.assertEqual(result['frame_count'], 3)
-            self.assertEqual(len(result['source_sha256']), 3)
+            self.assertEqual(len(result['source_sha256']), 4)
             self.assertIsNone(result['direction_disobedience_legal_judgment'])
             self.assertTrue(all(row['inside_intersection'] for row in result['observations']))
 
@@ -67,7 +75,25 @@ class MarkedCourseTests(unittest.TestCase):
                                      '--case-id', 'case', '--output', str(output)],
                                     capture_output=True, text=True)
             self.assertNotEqual(failed.returncode, 0)
-            self.assertIn('Original marker, body or frame-map source missing', failed.stderr)
+            self.assertIn('Original marker, body, frame-map or authority source missing', failed.stderr)
+
+    def test_missing_or_changed_original_authority_rejected(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            scene, _ = fixture(root)
+            authority = root / 'authority_source_original.json'
+            authority.unlink()
+            with self.assertRaisesRegex(ValueError, 'authority source missing'):
+                measure(root, 'case')
+            fixture(root)
+            authority.write_text('{}')
+            with self.assertRaisesRegex(ValueError, 'authority source hash changed'):
+                measure(root, 'case')
+            fixture(root)
+            scene['indicated_course_xy_m'] = [[0, 0], [2, 0], [3, 3]]
+            (root / 'marked_intersection.json').write_text(json.dumps(scene))
+            with self.assertRaisesRegex(ValueError, 'differs from captured scene'):
+                measure(root, 'case')
 
 
 if __name__ == '__main__':

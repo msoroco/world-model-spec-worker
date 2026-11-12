@@ -49,6 +49,9 @@ class SourceRecorderTests(unittest.TestCase):
                                         'actor_id': 7, 'corners_xy_m': [[3, 5]] * 4})
             result = recorder.seal()
             self.assertEqual(result['frames'], 2)
+            self.assertEqual(result['authority_source'], 'authority_source_original.json')
+            self.assertEqual(result['authority_source_sha256'], hashlib.sha256(
+                (Path(temp) / result['authority_source']).read_bytes()).hexdigest())
             self.assertTrue((Path(temp) / 'turn_body.jsonl').is_file())
             self.assertTrue((Path(temp) / 'video_frames.jsonl').is_file())
             measurement_spec = importlib.util.spec_from_file_location(
