@@ -66,7 +66,7 @@ def build():
                                        "--case", case, "--candidate", "primary",
                                        "--output", "${ATTEMPT_DIR}", "--host", "${CARLA_HOST}",
                                        "--port", "${CARLA_PORT}", "--python", "${NATIVE_PYTHON}"),
-            "postprocessing_command": command(PY, "runtime.py", "process-saved", "--manifest", MANIFEST,
+            "postprocessing_command": command(PY, f"work/{AID}/original_postprocess_handoff.py", "--manifest", MANIFEST,
                                               "--case", case, "--attempt", "${ATTEMPT_DIR}",
                                               "--output", "${PROCESSED_DIR}", "--library", "${DECODER_LIBRARY}",
                                               "--validator", "${VALIDATOR}",

@@ -49,21 +49,40 @@ def check_camera(attempt, saved, name, *, decoded=None):
             "full_decode_verified": decoded is not None}
 
 
-def check_release(seal, exit_record, release, saved, case_id, candidate_id,
-                  seal_sha256, exit_sha256, release_sha256, cameras):
+def check_release(seal, exit_record, release, saved, handoff, case_id, candidate_id,
+                  seal_sha256, exit_sha256, release_sha256, processing_sha256, cameras):
     """Check cross-record closure bindings; caller must verify original files."""
-    require(seal.get("provenance_kind") == "native" and
+    construction_sha256 = saved.get("native_revision", {}).get("construction_sha256")
+    events = ["capture_finished", "encoders_closed", "restoration_verified",
+              "native_exit", "owner_released", "saved_processing_started"]
+    require(isinstance(construction_sha256, str) and len(construction_sha256) == 64 and
+            seal.get("native_revision", {}).get("construction_sha256") == construction_sha256 and
+            seal.get("format") == "worker-sealed-capture" and
+            seal.get("events") == events[:3] and seal.get("frames") == 480 and
+            seal.get("provenance_kind") == "native" and
             seal.get("diagnostic_fixture") is False and
             exit_record.get("event") == "native_exit" and
             exit_record.get("native_process_exit_code") == 0 and
+            exit_record.get("capture_command_failed") is False and
             exit_record.get("capture_seal_sha256") == seal_sha256 and
-            release.get("event") == "owner_release" and
-            release.get("capture_seal_sha256") == seal_sha256 and
+            exit_record.get("native_revision") == seal.get("native_revision") and
+            release.get("event") == "owner_released" and
+            release.get("operator_attested") is True and
+            release.get("no_resource_operation_performed") is True and
+            release.get("native_construction_sha256") == construction_sha256 and
             release.get("native_exit_sha256") == exit_sha256 and
-            saved.get("owner_release_sha256") == release_sha256 and
-            release.get("case_id") == case_id and
-            release.get("candidate_id") == candidate_id and
             (saved.get("events") or [None])[0] == "saved_processing_started" and
+            handoff.get("format") == "c110454-original-owner-handoff-v1" and
+            handoff.get("case_id") == case_id and
+            handoff.get("candidate_id") == candidate_id and
+            handoff.get("construction_sha256") == construction_sha256 and
+            handoff.get("capture_seal_sha256") == seal_sha256 and
+            handoff.get("native_exit_sha256") == exit_sha256 and
+            handoff.get("owner_release_sha256") == release_sha256 and
+            handoff.get("processing_sha256") == processing_sha256 and
+            handoff.get("events") == events and
+            handoff.get("recording_accepted") is False and
+            handoff.get("physical_or_legal_acceptance_claimed") is False and
             all(seal.get("sources", {}).get(name + ".mkv") == item["sha256"]
                 for name, item in cameras.items()),
             "Native exit, owner release or camera seal differs")
@@ -92,10 +111,14 @@ def audit(attempt, processing_path, case_id, candidate_id, construction_sha256,
     if not diagnostic:
         seal_path, exit_path = attempt / "capture-seal.json", attempt / "native-exit.json"
         release_path = attempt / "owner-release.json"
-        require(release_path.is_file(), "Owner release missing before saved processing")
-        seal, exit_record, release = map(read, (seal_path, exit_path, release_path))
-        check_release(seal, exit_record, release, saved, case_id, candidate_id,
-                      sha(seal_path), sha(exit_path), sha(release_path), cameras)
+        handoff_path = processing_path.parent / "owner-handoff.json"
+        require(release_path.is_file() and handoff_path.is_file(),
+                "Owner release handoff missing before saved processing")
+        seal, exit_record, release, handoff = map(read, (seal_path, exit_path,
+                                                       release_path, handoff_path))
+        check_release(seal, exit_record, release, saved, handoff, case_id, candidate_id,
+                      sha(seal_path), sha(exit_path), sha(release_path),
+                      sha(processing_path), cameras)
     return {"format": "c110454-camera-lifecycle-cpu-v1", "case_id": case_id,
             "candidate_id": candidate_id, "source_join_sha256": joined["source_sha256"],
             "camera_sources": cameras, "diagnostic_fixture": diagnostic,

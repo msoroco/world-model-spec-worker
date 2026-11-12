@@ -53,6 +53,8 @@ def check(fragment):
                     "Fallback preparation identity changed")
         require("--owner-release-receipt" in shlex.split(row["postprocessing_command"]),
                 "Saved processing lost owner release binding")
+        require("original_postprocess_handoff.py" in row["postprocessing_command"],
+                "Selected queue bypasses source-bound owner handoff")
     expected = [item for item in plan["comparisons"]
                 if item["comparison_id"].removeprefix(MODULE.AID + "__comparison_") in MODULE.PAIRS]
     comparisons = fragment["comparison_audit_commands"]
@@ -100,6 +102,11 @@ def main():
                 ("--pixel-review", "--context-review", "--primary-video", "--core-trace",
                  "--decode-receipt", "--job-id", "--attempt-number", "--recording-id")),
             "Delivery auditor CLI changed")
+    handoff_help = cli_help(py, str(HERE / "original_postprocess_handoff.py"), "--help")
+    require(all(flag in handoff_help for flag in
+                ("--manifest", "--case", "--attempt", "--output", "--library",
+                 "--validator", "--owner-release-receipt")),
+            "Original postprocessing handoff CLI changed")
     rejected = []
     for name, mutation in (
         ("missing_case", lambda f: f["cases"].pop()),
@@ -122,7 +129,7 @@ def main():
              "cases": len(fragment["cases"]),
              "fallbacks": sum(len(row["candidate_commands"]) for row in fragment["cases"]),
              "comparisons": len(fragment["comparison_audit_commands"]),
-             "cli_help_checked": 7, "mutations_rejected": rejected,
+             "cli_help_checked": 8, "mutations_rejected": rejected,
              "fragment_sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
              "dispatchable": False, "physical_or_local_acceptance_claimed": False}
     (HERE / "update020-selected-queue-proof.json").write_text(json.dumps(proof, indent=2) + "\n")
