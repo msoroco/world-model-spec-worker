@@ -14,8 +14,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 MANIFEST = HERE / "execution-manifest.json"
 AUDITOR = HERE / "delivery_audit.py"
-RUNS = ROOT / ".runtime-work/c110454-update024-six-selected"
-PROOFS = HERE / "update024-selected-proofs"
+RUNS = ROOT / ".runtime-work/c110454-update025-six-selected"
+PROOFS = HERE / "update025-selected-proofs"
 
 
 def run(case: str, *, negative: bool = False) -> dict:

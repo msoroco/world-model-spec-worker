@@ -9,8 +9,8 @@ from source_join_audit import read, require, sha
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 MANIFEST = HERE / "execution-manifest.json"
-RUNS = ROOT / ".runtime-work/c110454-update024-six-selected"
-PROOFS = HERE / "update024-selected-proofs"
+RUNS = ROOT / ".runtime-work/c110454-update025-six-selected"
+PROOFS = HERE / "update025-selected-proofs"
 OUTPUT = HERE / "update025-source-receipts"
 CHECKS = {"actual_analysis", "native_validation", "mandatory_observations",
           "lean_decoder", "render", "final_decode", "acquisition_unchanged",
