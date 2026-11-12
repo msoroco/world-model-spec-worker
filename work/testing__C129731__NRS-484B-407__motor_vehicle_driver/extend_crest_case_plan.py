@@ -63,15 +63,24 @@ def main():
             ("crest_at_a_placement", "approach_to_crest", "approach_a", "near_summit", "approach_a", "site_placement"),
             ("crest_at_near_direction", "near_summit", "approach_b", "near_summit", "approach_a", "occluded_direction"),
         )
-        for cid, p1, d1, p2, d2, variable in pairs:
-            left = HERE.name + "__crest__at_500ft__" + p1 + "__occluded_" + d1
-            right = HERE.name + "__crest__at_500ft__" + p2 + "__occluded_" + d2
-            if left in ids and right in ids and not any(row["comparison_id"] == cid for row in plan["comparisons"]):
-                plan["comparisons"].append({
-                    "comparison_id": cid, "case_ids": [left, right],
-                    "fixed_conditions": ["same authored crest road, actor and U-turn controller", "same 500-foot probe", "same 55-second 20 Hz source-camera profile", "same " + ("occluded_direction" if variable == "site_placement" else "site_placement")],
-                    "deliberate_differences": [variable],
-                })
+    elif args.probe == "short_of_500ft":
+        pairs = (
+            ("crest_short_b_placement", "approach_to_crest", "approach_b", "near_summit", "approach_b", "site_placement"),
+            ("crest_short_approach_direction", "approach_to_crest", "approach_b", "approach_to_crest", "approach_a", "occluded_direction"),
+            ("crest_short_a_placement", "approach_to_crest", "approach_a", "near_summit", "approach_a", "site_placement"),
+            ("crest_short_near_direction", "near_summit", "approach_b", "near_summit", "approach_a", "occluded_direction"),
+        )
+    else:
+        pairs = ()
+    for cid, p1, d1, p2, d2, variable in pairs:
+        left = HERE.name + "__crest__" + args.probe + "__" + p1 + "__occluded_" + d1
+        right = HERE.name + "__crest__" + args.probe + "__" + p2 + "__occluded_" + d2
+        if left in ids and right in ids and not any(row["comparison_id"] == cid for row in plan["comparisons"]):
+            plan["comparisons"].append({
+                "comparison_id": cid, "case_ids": [left, right],
+                "fixed_conditions": ["same authored crest road, actor and U-turn controller", "same " + args.probe + " probe", "same 55-second 20 Hz source-camera profile", "same " + ("occluded_direction" if variable == "site_placement" else "site_placement")],
+                "deliberate_differences": [variable],
+            })
     PLAN.write_text(json.dumps(plan, indent=2, sort_keys=True) + "\n")
     proposals = json.loads(PROPOSALS.read_text())
     if not any(row["case_id"] == case for row in proposals["cases"]):

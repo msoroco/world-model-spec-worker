@@ -38,7 +38,7 @@ def configure(placement, direction, probe="short_of_500ft", canonical=False):
     CANONICAL = canonical
     SUFFIX = {"short_of_500ft": "short", "at_500ft": "at", "beyond_500ft": "beyond"}[probe]
     NAME = ("near" if placement == "near_summit" else "approach") + ("-a" if direction == "approach_a" else "-b")
-    if probe != "short_of_500ft":
+    if probe != "short_of_500ft" or canonical:
         NAME = SUFFIX + "-" + NAME
     if canonical:
         NAME = "canonical-" + NAME
