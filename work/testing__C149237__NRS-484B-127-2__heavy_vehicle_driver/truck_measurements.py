@@ -54,6 +54,9 @@ def analyze(root: Path) -> dict:
     count = context["same_direction_lane_count"]
     if type(count) is not int or count < 1:
         raise ValueError("Invalid same-direction lane count")
+    passing_lane = context.get('passing_lane_id')
+    if passing_lane is not None and (type(passing_lane) is not int or passing_lane == context['lane_id'] or count != 1):
+        raise ValueError('Invalid opposing passing lane context')
     tangent = context["lane_forward_xy"]
     if not isinstance(tangent, list) or len(tangent) != 2:
         raise ValueError("Missing lane tangent")
@@ -77,13 +80,15 @@ def analyze(root: Path) -> dict:
         participants = {}
         for name in ("ego", "lead"):
             actor = row.get(name)
-            if not isinstance(actor, dict) or actor.get("road_id") != context["road_id"] or actor.get("lane_id") != context["lane_id"]:
+            allowed = {context['lane_id'], passing_lane} if name == 'ego' and passing_lane is not None else {context['lane_id']}
+            if not isinstance(actor, dict) or actor.get("road_id") != context["road_id"] or actor.get("lane_id") not in allowed:
                 raise ValueError("Participant not in sourced following lane: " + name)
             width = _finite(actor.get("overall_width_m"), "overall width")
             points = _body_span(actor, name)
             along = [x * tx + y * ty for x, y in points]
             participants[name] = {"width_m": width, "length_interval_m": [min(along), max(along)],
-                                  "is_truck_or_combination": actor.get("is_truck_or_combination") is True}
+                                  "is_truck_or_combination": actor.get("is_truck_or_combination") is True,
+                                  "lane_id": actor['lane_id']}
         gap = participants["lead"]["length_interval_m"][0] - participants["ego"]["length_interval_m"][1]
         samples.append({"frame": frame_id, "time_s": time, "longitudinal_body_gap_m": gap,
                         "ego_behind_lead": gap >= 0,

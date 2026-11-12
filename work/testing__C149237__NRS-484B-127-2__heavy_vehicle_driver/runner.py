@@ -14,6 +14,11 @@ from truck_construction import spawn_exact_gap_pair
 from truck_follow_controller import apply_pair
 from truck_site import GAP_TARGETS_M, ROAD, validate_site
 from width_construction import CASES as WIDTH_CASES, spawn_width_control_pair
+from two_lane_construction import spawn_two_lane_pair
+from two_lane_site import ROAD as TWO_LANE_ROAD
+from overtaking_site import ROAD as OVERTAKING_ROAD
+from overtaking_construction import spawn_overtaking_pair
+from overtaking_controller import PassingPolicy
 
 
 ASSIGNMENT = 'testing__C149237__NRS-484B-127-2__heavy_vehicle_driver'
@@ -25,8 +30,9 @@ def validate_config(config):
         raise ValueError('Wrong heavy-truck case identity')
     selected = config.get('selected_case_id', '')
     suffix=selected.removeprefix(ASSIGNMENT + '__')
-    if not selected.startswith(ASSIGNMENT + '__') or suffix not in GAP_TARGETS_M and suffix not in WIDTH_CASES:
-        raise ValueError('Runner supports only authored gap and width cases')
+    if (not selected.startswith(ASSIGNMENT + '__') or
+            suffix not in GAP_TARGETS_M and suffix not in WIDTH_CASES and suffix not in ('two_same_direction_lanes','overtaking')):
+        raise ValueError('Runner supports only authored gap, width, lane and passing cases')
     if config.get('rate_hz') != 20 or config.get('duration_s') != 45:
         raise ValueError('Truck capture requires 20 Hz for 45 seconds')
     cameras = config.get('cameras')
@@ -86,7 +92,10 @@ def capture(args, config):
     errors = []
     restoration = None
     try:
-        client.generate_opendrive_world(ROAD.read_text())
+        selected_case=config['selected_case_id'].removeprefix(ASSIGNMENT + '__')
+        authored_road=(TWO_LANE_ROAD if selected_case=='two_same_direction_lanes' else
+                       OVERTAKING_ROAD if selected_case=='overtaking' else ROAD)
+        client.generate_opendrive_world(authored_road.read_text())
         world = client.get_world()
         settings = world.get_settings()
         settings.synchronous_mode = True
@@ -99,9 +108,12 @@ def capture(args, config):
         lead_bp.set_attribute('role_name', 'NRS-484B-127-2-heavy-lead')
         transform_at = lambda x,y,heading: carla.Transform(
             carla.Location(x=x,y=y,z=.5), carla.Rotation(yaw=heading))
-        selected_case=config['selected_case_id'].removeprefix(ASSIGNMENT + '__')
         if selected_case in GAP_TARGETS_M:
             pair_context=spawn_exact_gap_pair(world,ego_bp,lead_bp,selected_case,transform_at)
+        elif selected_case=='two_same_direction_lanes':
+            pair_context=spawn_two_lane_pair(world,ego_bp,lead_bp,transform_at)
+        elif selected_case=='overtaking':
+            pair_context=spawn_overtaking_pair(world,ego_bp,lead_bp,transform_at)
         else:
             varied=[bp.find(identifier) for identifier in config['width_candidate_blueprint_ids']]
             pair_context=spawn_width_control_pair(world,selected_case,ego_bp,varied,transform_at)
@@ -111,11 +123,13 @@ def capture(args, config):
                        'lane_id': pair['site']['lane_id'],
                        'same_direction_lane_count': pair['site']['same_direction_lane_count'],
                        'lane_forward_xy': [1.0, 0.0],
-                       'lane_count_source': 'authored OpenDRIVE single driving lane; per-frame Native actor lane identity only',
+                       'lane_count_source': 'authored OpenDRIVE '+str(pair['site']['same_direction_lane_count'])+' same-direction driving lanes; per-frame Native actor lane identity only',
                        'authored_road_sha256': pair['site']['road_sha256'],
                        'native_opendrive_sha256': hashlib.sha256(mapping.to_opendrive().encode()).hexdigest(),
                        'legal_highway_status': 'source review required',
                        'overall_width_limit': 'single vehicles; Native bounding boxes, no trailer claim'}
+            if selected_case=='overtaking':
+                context['passing_lane_id']=pair['site']['passing_lane_id']
             (output/'road_context.json').write_text(json.dumps(context,indent=2)+'\n')
             with source_cameras(world, ego, camera_transforms(carla)) as cameras:
                 queues = {name: Queue() for name in CAMERAS}
@@ -128,9 +142,13 @@ def capture(args, config):
                     history = stack.enter_context((output/'truck_history.jsonl').open('x',buffering=1))
                     helper = PipelineCapture(client, ego, output, config['selected_case_id'],
                                              required_observations=config['required_atoms'])
+                    passing_policy=PassingPolicy() if selected_case=='overtaking' else None
                     try:
                         for _ in range(config['rate_hz'] * config['duration_s']):
-                            apply_pair(ego, lead, carla.VehicleControl)
+                            if passing_policy is None:
+                                apply_pair(ego, lead, carla.VehicleControl)
+                            else:
+                                passing_policy.apply(ego, lead, carla.VehicleControl)
                             world.tick()
                             snap = world.get_snapshot()
                             for name in CAMERAS:

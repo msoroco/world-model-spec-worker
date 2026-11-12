@@ -1,0 +1,67 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "both trucks or combinations are at least 80 inches wide",
+      "source": "NRS 484B.127(2)",
+      "output_key": "minimum_overall_width_m",
+      "method": "measure_truck_widths",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "truck_history.jsonl",
+        "road_context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "500 feet of space between qualifying following trucks when conditions permit",
+      "source": "NRS 484B.127(2)",
+      "output_key": "minimum_sampled_body_gap_m",
+      "method": "measure_minimum_truck_body_gap",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "truck_history.jsonl",
+        "road_context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "exception for highways with two or more available lanes in the same direction",
+      "source": "NRS 484B.127(2)",
+      "output_key": "same_direction_lane_count",
+      "method": "measure_lane_count",
+      "value_type": "number",
+      "kind": "sourced_context",
+      "inputs": [
+        "truck_history.jsonl",
+        "road_context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "preserved ability to overtake and pass the motor vehicle being followed",
+      "source": "NRS 484B.127(2)",
+      "output_key": "overtaking_phase_sequence",
+      "method": "measure_overtaking_sequence",
+      "value_type": "array",
+      "kind": "measured",
+      "inputs": [
+        "truck_history.jsonl",
+        "road_context.json",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "truck_history.jsonl"
+    ],
+    "error_contains": "Missing required source: truck_history.jsonl"
+  }
+}

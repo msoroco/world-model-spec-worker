@@ -10,11 +10,17 @@ ASSIGNMENT = FOLDER.name
 CASE = ASSIGNMENT + '__gap_below_500ft'
 GAP_SUFFIXES = ('gap_below_500ft','gap_at_500ft','gap_above_500ft')
 WIDTH_SUFFIXES = ('ego_width_below_80in','ego_width_at_80in','lead_width_below_80in')
+TWO_LANE_SUFFIX = 'two_same_direction_lanes'
+OVERTAKING_SUFFIX = 'overtaking'
 FILES = ('runner.py', 'camera_setup.py', 'camera_encoder.py',
-         'truck_site.py', 'truck_construction.py', 'width_construction.py',
-         'truck_follow_controller.py',
+         'truck_site.py', 'two_lane_site.py', 'overtaking_site.py',
+         'truck_construction.py', 'width_construction.py',
+         'two_lane_construction.py', 'overtaking_construction.py',
+         'truck_follow_controller.py', 'overtaking_controller.py',
          'truck_capture_sources.py', 'truck_measurements.py', 'finalizer.py',
-         'native-map-plan/one-way-truck-road.xodr', 'tests/test_bundle.py',
+         'native-map-plan/one-way-truck-road.xodr',
+         'native-map-plan/two-lane-truck-road.xodr',
+         'native-map-plan/overtaking-truck-road.xodr', 'tests/test_bundle.py',
          'config.json')
 
 
@@ -90,7 +96,7 @@ def main():
                            'candidates': []}],
                 'status': 'partial_first_case_offline_only'}
     (FOLDER/'gap-constructions').mkdir(exist_ok=True)
-    for suffix in GAP_SUFFIXES[1:]+WIDTH_SUFFIXES:
+    for suffix in GAP_SUFFIXES[1:]+WIDTH_SUFFIXES+(TWO_LANE_SUFFIX,OVERTAKING_SUFFIX):
         case_id=ASSIGNMENT+'__'+suffix
         other_config=dict(config,selected_case_id=case_id)
         if suffix in WIDTH_SUFFIXES:
@@ -107,13 +113,15 @@ def main():
                                   'construction':relative,
                                   'construction_sha256':sha(FOLDER/relative),
                                   'measurement_procedure':{'entrypoint':'finalizer.py'},
-                                  'measurement_contract':'measurement-contract.json',
+                                  'measurement_contract':('measurement-contract-overtaking.json' if suffix==OVERTAKING_SUFFIX else 'measurement-contract.json'),
                                   'fixture_recipe':str((FOLDER/('fixture-recipe-'+suffix+'.json')).relative_to(REPO)),
                                   'candidate_risk':{'status':'physical',
                                     'reason':('no pinned Native truck asset may meet the exact 80-inch width category' if suffix in WIDTH_SUFFIXES else
+                                              'Native two-lane map availability and same-direction lane interpretation may diverge' if suffix==TWO_LANE_SUFFIX else
+                                              'opposing-lane pass may not complete or preserve safe clearance in Native motion' if suffix==OVERTAKING_SUFFIX else
                                               'realized truck body gap and visibility may diverge from the '+suffix+' target')},
                                   'candidates':[]})
-    manifest['status']='partial_gap_and_width_primaries_unproved'
+    manifest['status']='partial_eight_primaries_unproved'
     (FOLDER/'execution-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 
 

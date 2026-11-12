@@ -27,46 +27,53 @@ def body(x, y=1.75, width=2.2):
 
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument('--gap',choices=tuple(GAPS)+tuple(WIDTH_CASES),default='gap_below_500ft')
+    parser.add_argument('--gap',choices=tuple(GAPS)+tuple(WIDTH_CASES)+('two_same_direction_lanes','overtaking'),default='gap_below_500ft')
     args=parser.parse_args()
     suffix=args.gap
     case=FOLDER.name+'__'+suffix
-    lead_offset=GAPS.get(suffix,152.4)+10.0
+    lead_offset=(150.0 if suffix=='two_same_direction_lanes' else GAPS.get(suffix,152.4))+10.0
     spec = json.loads(TEMPLATE.read_text())
     evidence = [json.loads(line) for line in spec['files']['capture/evidence.jsonl'].splitlines()]
     trace = [json.loads(line) for line in spec['files']['trace.jsonl'].splitlines()]
     history = []
     for i, row in enumerate(evidence):
-        x = 100.0 + i*.6
+        x = ([100,120,140,160,240,280,300,320,340][i]
+             if suffix=='overtaking' else 100.0 + i*.6)
+        lead_x = ([260,264,268,272,276,280,284,288,292][i]
+                  if suffix=='overtaking' else x+lead_offset)
+        ego_lane = (1 if i in (2,3,4,5,6) else -1) if suffix=='overtaking' else -1
+        ego_y = (1.9 if ego_lane==1 else -1.9) if suffix=='overtaking' else 1.75
+        lead_y = -1.9 if suffix=='overtaking' else 1.75
         ego = row['original_observations']['participants'][0]
         ego['blueprint'] = 'vehicle.carlamotors.european_hgv'
         ego['blueprint_attributes']['base_type'] = 'truck'
         ego['blueprint_attributes']['ros_name'] = ego['blueprint']
-        ego['position_m'] = [x, 1.75, 0]
+        ego['position_m'] = [x, ego_y, 0]
         ego_width=WIDTH_CASES[suffix][1] if suffix in WIDTH_CASES and WIDTH_CASES[suffix][0]=='ego' else 2.2
         lead_width=WIDTH_CASES[suffix][1] if suffix in WIDTH_CASES and WIDTH_CASES[suffix][0]=='lead' else 2.2
-        ego['body_vertices_m'] = body(x,width=ego_width)
+        ego['body_vertices_m'] = body(x,y=ego_y,width=ego_width)
         ego['velocity_mps'] = [12, 0, 0]
         ego['speed_mps'] = 12
         row['ego'].update(position_m=ego['position_m'], speed_mps=12,
                           speed_provenance='synthetic_native_sample',
                           body_vertices_m=ego['body_vertices_m'])
         trace[i].update(position_m=ego['position_m'],
-                        position={'x':x,'y':1.75,'z':0},
+                        position={'x':x,'y':ego_y,'z':0},
                         speed_mps=12, speed_mph=12/.44704,
                         velocity_mps=[12,0,0])
         row['world']['road_projection'].update(s_m=x)
+        if suffix=='overtaking':row['world']['road_projection']['lane_id']=ego_lane
         lead = json.loads(json.dumps(ego))
         lead['actor_id'] = 206
         lead['blueprint'] = 'vehicle.carlamotors.carlacola'
         lead['blueprint_attributes']['ros_name'] = lead['blueprint']
-        lead['position_m'] = [x+lead_offset, 1.75, 0]
-        lead['body_vertices_m'] = body(x+lead_offset,width=lead_width)
+        lead['position_m'] = [lead_x, lead_y, 0]
+        lead['body_vertices_m'] = body(lead_x,y=lead_y,width=lead_width)
         row['original_observations']['participants'] = [ego, lead]
         row['original_observations']['map_context']['core_assumptions'] = [['asm.public_highway', True]]
         def actor(a):
             return {'actor_id':a['actor_id'],'blueprint_id':a['blueprint'],
-                    'road_id':1,'lane_id':-1,
+                    'road_id':1,'lane_id':ego_lane if a['actor_id']==ego['actor_id'] else -1,
                     'overall_width_m':ego_width if a['actor_id']==ego['actor_id'] else lead_width,
                     'is_truck_or_combination':True,
                     'body_vertices_xy_m':[[p[0],p[1]] for p in a['body_vertices_m'][:4]],
@@ -76,10 +83,13 @@ def main():
     spec['files']['capture/evidence.jsonl'] = lines(evidence)
     spec['files']['trace.jsonl'] = lines(trace)
     spec['files']['truck_history.jsonl'] = lines(history)
-    spec['files']['road_context.json'] = json.dumps({
+    road_context = {
         'native_map_id':'synthetic-truck-diagnostic-template','road_id':1,'lane_id':-1,
-        'same_direction_lane_count':1,'lane_forward_xy':[1,0],
-        'lane_count_source':'synthetic diagnostic template; not a physical lane-count claim'})+'\n'
+        'same_direction_lane_count':2 if suffix=='two_same_direction_lanes' else 1,
+        'lane_forward_xy':[1,0],
+        'lane_count_source':'synthetic diagnostic template; not a physical lane-count claim'}
+    if suffix=='overtaking':road_context['passing_lane_id']=1
+    spec['files']['road_context.json'] = json.dumps(road_context)+'\n'
     spec['files']['fixture-provenance.json'] = json.dumps({
         'scope':'synthetic software compatibility only', 'case_id':case,
         'template':str(TEMPLATE.relative_to(REPO)),

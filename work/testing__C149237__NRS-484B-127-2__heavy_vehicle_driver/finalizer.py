@@ -34,6 +34,22 @@ def measure_lane_count(report):
     return report['native_road_context']['same_direction_lane_count']
 
 
+def measure_overtaking_sequence(report):
+    following=report['native_road_context']['lane_id']
+    passing=report['native_road_context'].get('passing_lane_id')
+    if passing is None:
+        raise ValueError('Overtaking case lacks sourced opposing passing lane')
+    phases=[]
+    for sample in report['samples']:
+        lane=sample['ego']['lane_id']
+        gap=sample['longitudinal_body_gap_m']
+        phases.append('following_behind' if lane==following and gap>0 else
+                      'passing_behind' if lane==passing and gap>0 else
+                      'passing_ahead' if lane==passing and gap<0 else
+                      'returned_ahead' if lane==following and gap<0 else 'ambiguous')
+    return phases
+
+
 def finalize(attempt: Path, output: Path):
     from worker_exchange.native_output import physical_result, write_result
     attempt, output = Path(attempt), Path(output)
@@ -47,7 +63,7 @@ def finalize(attempt: Path, output: Path):
     config = json.loads((attempt/'config.json').read_text())
     case = config.get('selected_case_id', '')
     suffix = case.removeprefix('testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__')
-    if suffix not in GAP_TARGETS_M and suffix not in WIDTH_CASES:
+    if suffix not in GAP_TARGETS_M and suffix not in WIDTH_CASES and suffix not in ('two_same_direction_lanes','overtaking'):
         raise ValueError('Wrong exact truck case')
     report = analyze(attempt)
     samples = report['samples']
@@ -90,7 +106,7 @@ def finalize(attempt: Path, output: Path):
                         'matched': abs(minimum-GAP_TARGETS_M[suffix]) <= 2.0,
                         'physical_cause_confirmed': False,
                         'cause_evidence': ['truck_history.jsonl','video_frames.jsonl']}
-    else:
+    elif suffix in WIDTH_CASES:
         role, category = WIDTH_CASES[suffix]
         threshold = 80 * .0254
         value = widths[role]
@@ -102,6 +118,33 @@ def finalize(attempt: Path, output: Path):
                         'matched': abs(value-requested) <= .005,
                         'physical_cause_confirmed': False,
                         'cause_evidence': ['truck_history.jsonl','video_frames.jsonl']}
+    elif suffix=='two_same_direction_lanes':
+        lane_count=measure_lane_count(report)
+        target_check={'target':'same_direction_lane_count',
+                      'requested':2,'measured':lane_count,
+                      'method':'authored OpenDRIVE lane inventory and original Native actor lane readback',
+                      'tolerance':0,'matched':lane_count==2,
+                      'physical_cause_confirmed':False,
+                      'cause_evidence':['road_context.json','truck_history.jsonl']}
+    else:
+        phases=measure_overtaking_sequence(report)
+        expected=('following_behind','passing_behind','passing_ahead','returned_ahead')
+        indexes=[]
+        cursor=0
+        for phase in expected:
+            while cursor<len(phases) and phases[cursor]!=phase:
+                cursor+=1
+            if cursor==len(phases):break
+            indexes.append(cursor)
+            cursor+=1
+        matched=(len(indexes)==len(expected) and abs(samples[0]['longitudinal_body_gap_m']-150)<=2
+                 and measure_lane_count(report)==1)
+        target_check={'target':'source_observed_overtaking_sequence',
+                      'requested':list(expected),'measured':phases,
+                      'method':'original Native ego lane and body ordering across frame join',
+                      'tolerance':0,'matched':matched,
+                      'physical_cause_confirmed':False,
+                      'cause_evidence':['road_context.json','truck_history.jsonl','video_frames.jsonl']}
     result = {'case_id': case,
               'measured_values': {'minimum_sampled_body_gap_m': minimum,
                                   'minimum_overall_width_m': widths,
@@ -132,6 +175,9 @@ def finalize(attempt: Path, output: Path):
                                                   'method': 'measure_lane_count',
                                                   'sources': report['sources']}},
                 'legal_conclusion': 'unresolved', 'source_report': report}
+    if suffix=='overtaking':
+        analysis['measurements']['overtaking_phase_sequence']={
+            'value':phases,'method':'measure_overtaking_sequence','sources':report['sources']}
     write_result(attempt, result)
     output.write_text(json.dumps(analysis,indent=2,allow_nan=False)+'\n')
     return analysis

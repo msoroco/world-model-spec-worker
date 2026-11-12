@@ -14,7 +14,8 @@ class BundleTests(unittest.TestCase):
     def test_exact_identity_and_four_source_camera_contract(self):
         config = json.loads(Path(runner.__file__).with_name('config.json').read_text())
         selected = runner.validate_config(config)['selected_case_id']
-        self.assertIn(selected.removeprefix(runner.ASSIGNMENT+'__'), set(GAP_TARGETS_M)|set(WIDTH_CASES))
+        self.assertIn(selected.removeprefix(runner.ASSIGNMENT+'__'),
+                      set(GAP_TARGETS_M)|set(WIDTH_CASES)|{'two_same_direction_lanes','overtaking'})
         self.assertEqual(config['rate_hz'] * config['duration_s'], 900)
         self.assertEqual([item['name'] for item in config['cameras']], list(runner.CAMERAS))
 
