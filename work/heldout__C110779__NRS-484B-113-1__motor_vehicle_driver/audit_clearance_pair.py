@@ -3,7 +3,8 @@ from hashlib import sha256
 import json
 from pathlib import Path
 
-STAGE=Path(__file__).resolve().parent
+WORK=Path(__file__).resolve().parent
+STAGE=WORK.parents[1]/'.runtime-work/c110779-native-stage'
 PREFIX='heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__'
 
 def digest(path):return sha256(Path(path).read_bytes()).hexdigest()
@@ -52,6 +53,6 @@ def check(clear,near,clear_receipt,near_receipt):
             'measured_clearance_narrower':True,'legal_safety_claimed':False,'physical_acceptance_claimed':False}
 
 if __name__=='__main__':
-    result=check(load(STAGE/'diagnostic-first-primary.json'),load(STAGE/'diagnostic-near-vehicle.json'),
+    result=check(load(WORK/'diagnostic-first-primary.json'),load(WORK/'diagnostic-near-vehicle.json'),
                  load(STAGE/'compat-clear-primary-two/compatibility.json'),load(STAGE/'compat-near-primary/compatibility.json'))
     print(json.dumps(result,indent=2))

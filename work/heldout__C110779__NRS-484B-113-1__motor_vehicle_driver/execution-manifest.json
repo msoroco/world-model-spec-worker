@@ -112,6 +112,14 @@
       "physical_preparation": {
         "receipt": "backing-clear-physical-proof.json",
         "sha256": "a1b8bc639dba37cbd0184428f26878cbce9f5f7fb7dae81e82caef1f5f8a3812"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_clear_vehicle --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool $OUTPUT/feedback.json # heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_clear_vehicle",
+        "test_log": "backing-clear-lifecycle.log",
+        "test_log_sha256": "c369c5d015e585258067c24ddd46ccba10976963ef62d7574c55a82a2c2f8c20",
+        "test_exit_code": 0
       }
     },
     {
@@ -223,6 +231,14 @@
       "physical_preparation": {
         "receipt": "backing-near-physical-proof.json",
         "sha256": "9a18395197e49665defde3aac7883cc07859733b1e4777a8a4dbbbee752eb7f3"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_near_vehicle --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool $OUTPUT/feedback.json # heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_near_vehicle",
+        "test_log": "backing-near-lifecycle.log",
+        "test_log_sha256": "732e7ee37ea08e3f6d8a8a23cb1418ec68db6b18ed58fb989aefd6447e51f730",
+        "test_exit_code": 0
       }
     },
     {
@@ -334,6 +350,14 @@
       "physical_preparation": {
         "receipt": "backing-brakes-physical-proof.json",
         "sha256": "00be46d84e9eb043c04ad949af761abe5ef83d839c26a2109f81782799273f20"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_brakes --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool $OUTPUT/feedback.json # heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_brakes",
+        "test_log": "backing-brakes-lifecycle.log",
+        "test_log_sha256": "d6f40a9bfc8766529b73b62788f1421c2a3cc89429916c461c286b8c52184ab2",
+        "test_exit_code": 0
       }
     },
     {
@@ -367,7 +391,20 @@
           },
           "changed_knobs": [
             "target_reverse_speed_mps: 1.5"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_contact --candidate fallback1 --output .runtime-work/c110779-contact-returned-fallback1-offline",
+            "exit_code": 0,
+            "construction_sha256": "c488fe8fccbef9b4999f527e575e82d0f645b0338202f1ed0bf866f382c8d5f8",
+            "log": "backing-clear-primary-offline.log",
+            "log_sha256": "edecde55c6deed9a44f005853dbf1b80bb79f5daf63b49aa23fa401cf6e41cc0"
+          },
+          "compatibility": {
+            "receipt": "backing-contact-fallback1-compatibility.json",
+            "sha256": "eda71a6458a6f77e4eb194cc1e9ab8f00cd8eb77b61d0aba0c67ea55146110b9",
+            "log": "backing-clear-fallback1-compat.log",
+            "negative_log": "backing-contact-fallback1-negative.log"
+          }
         },
         {
           "id": "fallback2",
@@ -380,7 +417,20 @@
           },
           "changed_knobs": [
             "contact_hold_brake: 0.7"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_contact --candidate fallback2 --output .runtime-work/c110779-contact-returned-fallback2-offline",
+            "exit_code": 0,
+            "construction_sha256": "7bc6cc0fa5c1ba2310103e32a2669db7ae75ebcd11915eb3a7401c16a5b46925",
+            "log": "backing-clear-fallback3-offline.log",
+            "log_sha256": "3efc3bd5f9b54b089f852ad6b401ee5c3dafa5c72c296e25c9c78023519d5286"
+          },
+          "compatibility": {
+            "receipt": "backing-contact-fallback2-compatibility.json",
+            "sha256": "7f8214ab103f5ddb35e36f415bfe5739d5821de0e82429ccd739cc3ee1828fbc",
+            "log": "backing-clear-fallback1-compat.log",
+            "negative_log": "backing-contact-fallback2-negative.log"
+          }
         },
         {
           "id": "fallback3",
@@ -393,7 +443,20 @@
           },
           "changed_knobs": [
             "overview_height_delta_m: 2"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_contact --candidate fallback3 --output .runtime-work/c110779-contact-returned-fallback3-offline",
+            "exit_code": 0,
+            "construction_sha256": "cf1c8c90ed8f85977d8a46eef5c981c487a0368b04024544319791cd3dac8828",
+            "log": "backing-clear-primary-offline.log",
+            "log_sha256": "edecde55c6deed9a44f005853dbf1b80bb79f5daf63b49aa23fa401cf6e41cc0"
+          },
+          "compatibility": {
+            "receipt": "backing-contact-fallback3-compatibility.json",
+            "sha256": "0077805b7087cf8c5a1e7729337f8bd85c4f2622bb5d11fb74c7397770f728be",
+            "log": "backing-clear-fallback1-compat.log",
+            "negative_log": "backing-contact-fallback3-negative.log"
+          }
         }
       ],
       "offline": {
@@ -406,6 +469,39 @@
       "physical_preparation": {
         "receipt": "backing-contact-physical-proof.json",
         "sha256": "3117c8ced7bcfb8244b9e89a3ced0b1bbb2733ce183aef651392f3190584f341"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_contact --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool $OUTPUT/feedback.json # heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_contact",
+        "test_log": "backing-contact-lifecycle.log",
+        "test_log_sha256": "495b9e3a171c0b4b239391c53f9747a7fd7bb5e0318d0439d387305a182e114c",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_contact",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b04f2bc0cd1120ad72a037725f6f033f976bd9aebccce37047ca5b7db31d4c93",
+        "command": ".venv-cpu/bin/python work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/delivery_audit.py --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_contact --attempt .runtime-work/c110779-contact-returned-fallback1-compat",
+        "test_exit_code": 0,
+        "test_log": "backing-contact-delivery-positive.log",
+        "test_log_sha256": "4e1d9c7bd0e83a38109ef90a10bc8e21e990324de32d91468c3fee6a9c0b4f58",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/prove_delivery_negative.py --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_contact --attempt .runtime-work/c110779-contact-returned-fallback1-compat",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: backing_motion.jsonl",
+        "negative_log": "backing-contact-delivery-negative.log",
+        "negative_log_sha256": "f9d68114a70f1183ac68f3a95f27ef224e80789f2acc18f556a7f4cd60550eaa"
       }
     },
     {
@@ -439,7 +535,20 @@
           },
           "changed_knobs": [
             "forward_throttle: .1"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__no_reverse_control --candidate fallback1 --output .runtime-work/c110779-returned-no_reverse_control-fallback1-offline",
+            "exit_code": 0,
+            "construction_sha256": "f184d26f68317e3b0b6ea70d4a84ff9d8a8e1f3363cc8b9bd8298de95f2fd511",
+            "log": "backing-clear-primary-offline.log",
+            "log_sha256": "edecde55c6deed9a44f005853dbf1b80bb79f5daf63b49aa23fa401cf6e41cc0"
+          },
+          "compatibility": {
+            "receipt": "backing-no_reverse_control-fallback1-compatibility.json",
+            "sha256": "a2b4756f275750245cfa23bd1c03254a5427e1a0e52df92ca7d32ea3f9535191",
+            "log": "backing-clear-fallback1-compat.log",
+            "negative_log": "backing-no_reverse_control-fallback1-negative.log"
+          }
         },
         {
           "id": "fallback2",
@@ -452,7 +561,20 @@
           },
           "changed_knobs": [
             "forward_throttle: .3"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__no_reverse_control --candidate fallback2 --output .runtime-work/c110779-returned-no_reverse_control-fallback2-offline",
+            "exit_code": 0,
+            "construction_sha256": "951f46f13ebd775915994fc1fee6f07240c32b9c29dac49044af88def3965c91",
+            "log": "backing-clear-primary-offline.log",
+            "log_sha256": "edecde55c6deed9a44f005853dbf1b80bb79f5daf63b49aa23fa401cf6e41cc0"
+          },
+          "compatibility": {
+            "receipt": "backing-no_reverse_control-fallback2-compatibility.json",
+            "sha256": "0925a5bbbf8de9e0a20c46239d2d451bcd790126ad1a338fe9d657d8dd45ff0c",
+            "log": "backing-clear-fallback1-compat.log",
+            "negative_log": "backing-no_reverse_control-fallback2-negative.log"
+          }
         },
         {
           "id": "fallback3",
@@ -465,7 +587,20 @@
           },
           "changed_knobs": [
             "overview_height_delta_m: 2"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__no_reverse_control --candidate fallback3 --output .runtime-work/c110779-returned-no_reverse_control-fallback3-offline",
+            "exit_code": 0,
+            "construction_sha256": "d3a28dd0567d0fd5dc1c2d75ce46d07ad23c85ce9d698e5ebcf006157507e90a",
+            "log": "backing-clear-primary-offline.log",
+            "log_sha256": "edecde55c6deed9a44f005853dbf1b80bb79f5daf63b49aa23fa401cf6e41cc0"
+          },
+          "compatibility": {
+            "receipt": "backing-no_reverse_control-fallback3-compatibility.json",
+            "sha256": "99a2ac7f9caab507e1f945c62e45e56ed4e5ec5153c2ec3d8e81b1d82dc24a24",
+            "log": "backing-clear-fallback1-compat.log",
+            "negative_log": "backing-no_reverse_control-fallback3-negative.log"
+          }
         }
       ],
       "offline": {
@@ -474,6 +609,18 @@
         "construction_sha256": "d278f591d66e1728c87ded27623e0fe21eb41092aca47283bd0210f6a86f1f8e",
         "log": "backing-clear-fallback1-offline.log",
         "log_sha256": "edecde55c6deed9a44f005853dbf1b80bb79f5daf63b49aa23fa401cf6e41cc0"
+      },
+      "physical_preparation": {
+        "receipt": "backing-activation-physical-proof.json",
+        "sha256": "1fc562a10f6269d1e84774238c7867766d8895256da038ea517ae60fc7648933"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__no_reverse_control --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool $OUTPUT/feedback.json # heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__no_reverse_control",
+        "test_log": "backing-activation-lifecycle.log",
+        "test_log_sha256": "1f6de84cebdfe17cb79b14bde7f7908b444b49b51eeabd97133834f7348c51b9",
+        "test_exit_code": 0
       }
     },
     {
@@ -507,7 +654,20 @@
           },
           "changed_knobs": [
             "pedestrian_speed_mps: 0.5"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_pedestrian --candidate fallback1 --output .runtime-work/c110779-returned-backing_pedestrian-fallback1-offline",
+            "exit_code": 0,
+            "construction_sha256": "c139c3922d07a3725c52b45ebebc6e5bb9cdc9e2e66dbf3e509af455426c15bf",
+            "log": "backing-brakes-fallback1-offline.log",
+            "log_sha256": "c39c88100a3b6b5a07400fd4f9264af9dcb67d8bf0752a29fda6fee19edc8cbc"
+          },
+          "compatibility": {
+            "receipt": "backing-backing_pedestrian-fallback1-compatibility.json",
+            "sha256": "f87f620f0cf2a515469b076320cfe8e66f92e02cf3ae79c543a4a5d3f937fc29",
+            "log": "backing-clear-fallback1-compat.log",
+            "negative_log": "backing-backing_pedestrian-fallback1-negative.log"
+          }
         },
         {
           "id": "fallback2",
@@ -520,7 +680,20 @@
           },
           "changed_knobs": [
             "pedestrian_speed_mps: 1.0"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_pedestrian --candidate fallback2 --output .runtime-work/c110779-returned-backing_pedestrian-fallback2-offline",
+            "exit_code": 0,
+            "construction_sha256": "f5a0b891926f05d6972f6d5a9fd7cb473588b206a57c332a6fdb56c9a1f046b1",
+            "log": "backing-brakes-fallback1-offline.log",
+            "log_sha256": "c39c88100a3b6b5a07400fd4f9264af9dcb67d8bf0752a29fda6fee19edc8cbc"
+          },
+          "compatibility": {
+            "receipt": "backing-backing_pedestrian-fallback2-compatibility.json",
+            "sha256": "8ab6b772412f24d5556508b0c43c2640fac8c855bec90f720f5f70abeb65e6fb",
+            "log": "backing-clear-fallback1-compat.log",
+            "negative_log": "backing-backing_pedestrian-fallback2-negative.log"
+          }
         },
         {
           "id": "fallback3",
@@ -533,7 +706,20 @@
           },
           "changed_knobs": [
             "overview_height_delta_m: 2"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_pedestrian --candidate fallback3 --output .runtime-work/c110779-returned-backing_pedestrian-fallback3-offline",
+            "exit_code": 0,
+            "construction_sha256": "f5abd7035e9c8854146fa54ff01793dd8839a9943808a749fa05d98c86c80624",
+            "log": "backing-clear-primary-offline.log",
+            "log_sha256": "edecde55c6deed9a44f005853dbf1b80bb79f5daf63b49aa23fa401cf6e41cc0"
+          },
+          "compatibility": {
+            "receipt": "backing-backing_pedestrian-fallback3-compatibility.json",
+            "sha256": "e18b519154bf6b703bb9aa648d33f26c00941ca8f1f45ed58004cf4a7c755f74",
+            "log": "backing-clear-fallback1-compat.log",
+            "negative_log": "backing-backing_pedestrian-fallback3-negative.log"
+          }
         }
       ],
       "offline": {
@@ -542,6 +728,18 @@
         "construction_sha256": "f820537549f6dfaae38ae2323d99c28a566cf7cbd2d2ad1a7d7f92ff9dd2c6ab",
         "log": "backing-clear-fallback1-offline.log",
         "log_sha256": "edecde55c6deed9a44f005853dbf1b80bb79f5daf63b49aa23fa401cf6e41cc0"
+      },
+      "physical_preparation": {
+        "receipt": "backing-pedestrian-physical-proof.json",
+        "sha256": "fbfef05c85076d5f61992570dcdd7fbb4ef21cb46294f507f45a7d979c5bb5b7"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_pedestrian --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool $OUTPUT/feedback.json # heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_pedestrian",
+        "test_log": "backing-pedestrian-lifecycle.log",
+        "test_log_sha256": "c18994322fede9a264cd6b6876fdd1a718d71eeb495761791f3855db90210f68",
+        "test_exit_code": 0
       }
     }
   ]
