@@ -22,6 +22,7 @@ from geometry import route
 from traffic_geometry import check as traffic_geometry_check, open_drive as traffic_open_drive
 from traffic_branch import POLICIES, decide
 from traffic_timing_sweep import TrafficLaunch
+from extreme_right_sweep import LateralOffset, approach_widths
 
 ROOT=Path(__file__).resolve().parent
 
@@ -33,12 +34,17 @@ def write_new(path: Path, value: object):
 def check(config: dict) -> dict:
     suffix=config.get('case_suffix')
     candidate=config.get('candidate_id')
-    if suffix!='traffic_yield_wait' or candidate not in ('primary','fallback1','fallback2','fallback3'):
+    if suffix not in ('traffic_yield_wait','extreme_right_sweep') or candidate not in ('primary','fallback1','fallback2','fallback3'):
         raise ValueError('Unknown exact case or candidate')
-    if config.get('sweep_id')!='C110919-right-of-way' or not re.fullmatch(
-            r'(?:training__C110919__NRS-484B-307-8a__motor_vehicle_driver__)?C110919-right-of-way-[0-9]{4}',
+    sweep=config.get('sweep_id')
+    if (sweep!='C110919-right-of-way' and sweep!='C110919-extreme-right') or not re.fullmatch(
+            r'(?:training__C110919__NRS-484B-307-8a__motor_vehicle_driver__)?'+re.escape(sweep)+r'-[0-9]{4}',
             str(config.get('case_id',''))):
         raise ValueError('Timing-sweep case identity differs')
+    lateral=LateralOffset(config.get('lateral_right_offset_m',0))
+    if (suffix=='extreme_right_sweep') != (sweep=='C110919-extreme-right') or \
+            (suffix!='extreme_right_sweep' and lateral.right_m!=0):
+        raise ValueError('Lateral sweep controls differ')
     launch=TrafficLaunch(config.get('traffic_launch_frame'))
     if config.get('cell_id')!='C110919' or config.get('law_id')!='NRS-484B-307-8a':
         raise ValueError('Cell or law differs')
@@ -54,11 +60,12 @@ def check(config: dict) -> dict:
     if len(cameras)!=4 or cameras[0]['width']!=1920 or cameras[0]['height']!=1080:
         raise ValueError('Original camera profile differs')
     EngineeringKnobs(lookahead_base_m=settings['knobs']['route_tracking_lookahead_m']).validate()
-    PathController(route(),2.8,70.0,EngineeringKnobs(
+    PathController(lateral.route(),2.8,70.0,EngineeringKnobs(
         lookahead_base_m=settings['knobs']['route_tracking_lookahead_m']))
     return {'offline_geometry':geom,'candidate':candidate,'case':suffix,
             'camera_count':4,'route_samples':len(route()),
             'traffic_launch_frame':launch.start_frame,
+            'lateral_right_offset_m':lateral.right_m,
             'native_imported':False,'physical_success_claimed':False}
 
 def body_xy(actor):
@@ -95,8 +102,23 @@ def survey(carla,mapping,native_hash,case_suffix):
            ('approach_right','west_traffic_right','destination_right')) or \
             observed['west_traffic_right']['forward_xy'][0]<=0:
         raise RuntimeError('Ego or signal-directed traffic lane mapping differs')
+    approach=mapping.get_waypoint(carla.Location(x=1.75,y=-30,z=.2),project_to_road=False,
+                                  lane_type=carla.LaneType.Driving)
+    left_lane=approach.get_left_lane()
+    if left_lane is None or left_lane.road_id!=approach.road_id or left_lane.lane_id!=1:
+        raise RuntimeError('Native opposite approach lane width unavailable')
+    right_vector=approach.transform.get_right_vector()
+    center=approach.transform.location
+    widths=approach_widths(approach.lane_width,left_lane.lane_width)
+    lateral={'road_id':approach.road_id,'lane_id':approach.lane_id,
+             'lane_center_x_m':center.x,'lane_width_m':approach.lane_width,
+             'right_edge_x_m':center.x+right_vector.x*approach.lane_width/2,
+             'left_neighbor_lane_id':left_lane.lane_id,
+             'left_neighbor_width_m':left_lane.lane_width,
+             'highway_width_m':widths['highway_width_m']}
     absent=case_suffix.startswith('absent_reference')
     return {'native_map_sha256':native_hash,'lanes':observed,
+            'approach_lateral_geometry':lateral,
             'stop_line_y_m':None if absent else -14.0,
             'nearest_crosswalk_y_m':None if absent else -11.0,
             'intersection_near_y_m':-7.0,
@@ -155,8 +177,9 @@ def execute(config: dict,output: Path,host: str,port: int):
         library=world.get_blueprint_library()
         blueprint=library.find('vehicle.lincoln.mkz_2020')
         blueprint.set_attribute('role_name','c110919_ego')
+        lateral=LateralOffset(config.get('lateral_right_offset_m',0))
         ego=world.spawn_actor(blueprint,carla.Transform(
-            carla.Location(x=1.75,y=-40,z=.5),carla.Rotation(yaw=90)))
+            carla.Location(x=1.75+lateral.right_m,y=-40,z=.5),carla.Rotation(yaw=90)))
         owned.append(ego)
         ego.apply_control(carla.VehicleControl(brake=1,hand_brake=True))
         for _ in range(40):world.tick()
@@ -165,7 +188,7 @@ def execute(config: dict,output: Path,host: str,port: int):
         wheelbase=(max(w.position.x for w in wheels)-min(w.position.x for w in wheels))/100
         steer=max(w.max_steer_angle for w in wheels)
         knobs=config['knobs']
-        controller=PathController(route(),wheelbase,steer,EngineeringKnobs(
+        controller=PathController(lateral.route(),wheelbase,steer,EngineeringKnobs(
             lookahead_base_m=knobs['route_tracking_lookahead_m']))
         # A destination-crosswalk walker is an actor proposal. Observed conflict
         # occupancy and clearance are measured from saved actor history later.
@@ -190,6 +213,7 @@ def execute(config: dict,output: Path,host: str,port: int):
             'authored_intent':'controlled signal-directed other-traffic conflict comparison after the same red-signal stop',
             'traffic_policy':config['case_suffix'],
             'traffic_launch_frame':config['traffic_launch_frame'],
+            'lateral_right_offset_m':lateral.right_m,
             'physical_completion_claimed':False})
         for spec in camera_plan(config['candidate_id']):
             bp=library.find('sensor.camera.rgb')
@@ -247,7 +271,7 @@ def execute(config: dict,output: Path,host: str,port: int):
                 if stop_needed:
                     command.update(throttle=0.0,brake=1.0,hand_brake=speed<.05)
                     if speed<.05 and max(p[1] for p in body_xy(ego))<stop_boundary:held+=1
-                yield_decision=decide(config['case_suffix'],
+                yield_decision=decide('traffic_yield_wait' if config['case_suffix']=='extreme_right_sweep' else config['case_suffix'],
                     red_stop_completed=held>=30,
                     in_merge_approach=pose.location.y>-10 and pose.location.x<10,
                     traffic_conflict_occupied=occupied,
@@ -265,12 +289,25 @@ def execute(config: dict,output: Path,host: str,port: int):
                 other_pose=other.get_transform();other_velocity=other.get_velocity()
                 other_speed=math.sqrt(other_velocity.x**2+other_velocity.y**2+other_velocity.z**2)
                 other_body=body_xy(other)
+                ego_waypoint=mapping.get_waypoint(pose.location,project_to_road=False,
+                    lane_type=carla.LaneType.Driving)
+                if ego_waypoint is None:
+                    raise RuntimeError('Per-frame Native lane readback unavailable')
+                lane_pose=ego_waypoint.transform
+                lane_right=lane_pose.get_right_vector()
+                lane_center=lane_pose.location
+                lane_readback={'road_id':ego_waypoint.road_id,'lane_id':ego_waypoint.lane_id,
+                    'lane_width_m':ego_waypoint.lane_width,
+                    'lane_center_xy_m':[lane_center.x,lane_center.y],
+                    'right_edge_xy_m':[lane_center.x+lane_right.x*ego_waypoint.lane_width/2,
+                                       lane_center.y+lane_right.y*ego_waypoint.lane_width/2]}
                 traffic_occupied=(max(v[0] for v in other_body)>=8 and
                                   min(v[0] for v in other_body)<=12 and
                                   max(v[1] for v in other_body)>=-4 and
                                   min(v[1] for v in other_body)<=4)
                 sample={'time_s':time_s,'native_frame':frame,'native_center_xy_m':[pose.location.x,pose.location.y],
                         'native_yaw_deg':pose.rotation.yaw,'native_body_xy_m':body,'speed_mps':speed,
+                        'native_lane_geometry':lane_readback,
                         'walker_center_xy_m':[ped.x,ped.y],
                         'walker_conflict_occupied':8<=ped.x<=12 and -4<=ped.y<=4,
                         'other_traffic_center_xy_m':[other_pose.location.x,other_pose.location.y],
@@ -282,6 +319,7 @@ def execute(config: dict,output: Path,host: str,port: int):
                         'controller_request':command,
                         'traffic_policy':config['case_suffix'],
                         'traffic_launch_frame':config['traffic_launch_frame'],
+                        'lateral_right_offset_m':lateral.right_m,
                         'traffic_decision_reason':yield_decision.reason}
                 capture.capture(frame,time_s,extra={'c110919_native':sample})
                 native_file.write(json.dumps(sample,allow_nan=False)+'\n')
@@ -302,6 +340,7 @@ def execute(config: dict,output: Path,host: str,port: int):
                                          'other_traffic_conflict_occupied':traffic_occupied,
                                          'cross_traffic_signal_state':sample['other_traffic_signal_state_observed']},
                         'native_body_pose_control':sample,
+                        'native_lane_geometry':lane_readback,
                         'camera_frame_join':{'native_frame':frame,'video_frame':index}}
                 for name,stream in channels.items():
                     stream.write(json.dumps({'time_s':time_s,'value':values[name]},allow_nan=False)+'\n')
