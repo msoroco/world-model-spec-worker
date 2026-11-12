@@ -17,9 +17,10 @@ CLEAR = PREFIX + 'backing_clear_vehicle'
 BRAKES = PREFIX + 'backing_vehicle_brakes'
 
 
-def write(path, value):
+def write(path, value, compact=False):
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, indent=2) + '\n')
+    path.write_text(json.dumps(value, separators=(',', ':') if compact else None,
+                               indent=None if compact else 2) + '\n')
     return sha256(path.read_bytes()).hexdigest()
 
 
@@ -40,15 +41,15 @@ def main():
         other['x_m'] = x
         other['speed_mps'] = 1.0 if index < 4 else .25
     files['backing_motion.jsonl'] = ''.join(json.dumps(row) + '\n' for row in motions)
-    diagnostic = STAGE / 'diagnostic-braking-vehicle.json'
-    diagnostic_sha = write(diagnostic, primary)
+    diagnostic = WORK / 'diagnostic-braking-vehicle.json'
+    diagnostic_sha = write(diagnostic, primary, compact=True)
     recipe = {
         'format': 'worker-fixture-recipe',
         'sources': [{'path': 'diagnostic-input.json',
                      'source': str(diagnostic.relative_to(ROOT)), 'sha256': diagnostic_sha}],
         'generator': {'source': str(diagnostic.relative_to(ROOT)), 'sha256': diagnostic_sha},
     }
-    recipe_path = STAGE / 'diagnostic-recipe-braking-vehicle.json'
+    recipe_path = WORK / 'diagnostic-recipe-braking-vehicle.json'
     write(recipe_path, recipe)
 
     base = json.loads((STAGE / 'construction-first-primary.json').read_text())
@@ -105,7 +106,46 @@ def main():
                            'Native through-vehicle braking onset may not produce an observable deceleration.'},
         'candidates': [],
     })
+    braking_entry = manifest['cases'][-1]
+    clear_entry = next(case for case in manifest['cases'] if case['case_id'] == CLEAR)
+    base_config = next(file for file in construction['files'] if file['path'] == 'config.json')
+    for fallback in clear_entry['candidates']:
+        source = json.loads((STAGE / fallback['construction']).read_text())
+        source_config = json.loads(next(file['content'] for file in source['files']
+                                        if file['path'] == 'config.json'))
+        alternate = json.loads(json.dumps(construction))
+        config_file = next(file for file in alternate['files'] if file['path'] == 'config.json')
+        config = json.loads(base_config['content'])
+        for knob in ('target_reverse_speed_mps', 'other_throttle', 'overview_height_delta_m'):
+            if knob in source_config:
+                config[knob] = source_config[knob]
+        config_file['content'] = json.dumps(config, indent=2) + '\n'
+        alternate['mechanisms'].append('Shared engineering ' + fallback['id'] + ': ' +
+                                       ', '.join(fallback['changed_knobs']))
+        alternate_path = STAGE / ('construction-braking-' + fallback['id'] + '.json')
+        alternate_sha = write(alternate_path, alternate)
+        braking_entry['candidates'].append({
+            'id': fallback['id'], 'construction': alternate_path.name,
+            'construction_sha256': alternate_sha,
+            'trigger': fallback['trigger'], 'changed_knobs': fallback['changed_knobs'],
+        })
     write(STAGE / 'execution-manifest.json', manifest)
+    plan = json.loads((STAGE / 'case-plan.json').read_text())
+    disposition = plan['requirement_dispositions'][0]
+    disposition['case_ids'] = sorted(set(disposition['case_ids']) | {BRAKES})
+    for case in plan['cases']:
+        if case['case_id'] == BRAKES:
+            case['construction_status'] = 'staged_cpu_proven'
+    write(STAGE / 'case-plan.json', plan)
+    proposal = json.loads((STAGE / 'proposals/cases.json').read_text())
+    proposal['cases'] = [case for case in proposal['cases'] if case['case_id'] != BRAKES]
+    braking = json.loads(json.dumps(next(case for case in proposal['cases'] if case['case_id'] == CLEAR)))
+    braking['case_id'] = BRAKES
+    braking['rationale'] = ('Same backing corridor and initial through-vehicle placement; '
+                            'other vehicle is commanded to brake, with actual response measured')
+    braking['variable_assignments'] = {'other_brake_after_frame': 4}
+    proposal['cases'].append(braking)
+    write(STAGE / 'proposals/cases.json', proposal)
     return {'case_id': BRAKES, 'construction_sha256': construction_sha,
             'diagnostic_sha256': diagnostic_sha}
 
