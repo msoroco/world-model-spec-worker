@@ -54,7 +54,7 @@ def main():
              "negative_checks": ["synthetic_as_original_all_3", "changed_weather_all_3",
                                  "changed_capture_config_all_3", "changed_declared_difference_all_3"],
              "original_comparisons_accepted": 0}
-    path = HERE / "update023-original-comparison-proof.json"
+    path = HERE / "update024-original-comparison-proof.json"
     path.write_text(json.dumps(proof, indent=2) + "\n")
     print(json.dumps({"comparisons": len(results),
                       "proof_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}))
