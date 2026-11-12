@@ -44,6 +44,39 @@ class NativeTurnSourcesTests(unittest.TestCase):
                 config['engineering']['pedestrian_left_m'] = bad
                 check_config(config)
 
+    def test_runner_accepts_bounded_vehicle_sweep_offsets(self):
+        construction = json.loads((ROOT.parent / 'native-horn-primary-construction.json').read_text())
+        config = json.loads(next(item['content'] for item in construction['files']
+                                if item['path'] == 'config.json'))
+        config['engineering']['vehicle_along_m'] = 5.
+        config['engineering']['vehicle_left_m'] = 5.
+        self.assertEqual(check_config(config)['vehicle_left_m'], 5.)
+        for bad in (float('nan'), float('inf'), 26., True, '5'):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                config['engineering']['vehicle_left_m'] = bad
+                check_config(config)
+
+    def test_vehicle_sweep_uses_approach_relative_native_transform(self):
+        fake_carla = SimpleNamespace(Location=lambda **fields: SimpleNamespace(**fields),
+                                     Transform=lambda location, rotation: SimpleNamespace(
+                                         location=location, rotation=rotation))
+        for heading, near_xy, far_xy in [((1., 0.), (15., 25.), (15., 35.)),
+                                         ((-1., 0.), (5., 15.), (5., 5.)),
+                                         ((0., 1.), (5., 25.), (-5., 25.)),
+                                         ((0., -1.), (15., 15.), (25., 15.))]:
+            with self.subTest(heading=heading):
+                transform = SimpleNamespace(location=SimpleNamespace(x=10., y=20., z=1.),
+                                            rotation=SimpleNamespace(yaw=0.),
+                                            get_forward_vector=lambda: SimpleNamespace(x=heading[0], y=heading[1]))
+                waypoint = SimpleNamespace(transform=transform)
+                near = participant_spawn_transform(fake_carla, waypoint, along_m=5., left_m=5.)
+                far = participant_spawn_transform(fake_carla, waypoint, along_m=5., left_m=15.)
+                self.assertAlmostEqual(near.location.x, near_xy[0])
+                self.assertAlmostEqual(near.location.y, near_xy[1])
+                self.assertAlmostEqual(far.location.x, far_xy[0])
+                self.assertAlmostEqual(far.location.y, far_xy[1])
+                self.assertEqual(near.location.z, 1.5)
+
     def test_pedestrian_sweep_geometry_follows_both_approach_headings(self):
         def waypoint(dx, dy):
             transform = SimpleNamespace(location=SimpleNamespace(x=10., y=20.),

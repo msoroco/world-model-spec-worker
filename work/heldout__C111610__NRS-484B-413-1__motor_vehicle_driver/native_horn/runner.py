@@ -28,15 +28,20 @@ def check_config(config):
     engineering = config.get('engineering', {})
     if set(engineering) - {'route_spacing_m', 'approach_steps', 'route_candidate_index',
                            'target_speed_mps', 'speed_gain', 'overview_x_m',
-                           'pedestrian_along_m', 'pedestrian_left_m'}:
+                           'pedestrian_along_m', 'pedestrian_left_m',
+                           'vehicle_along_m', 'vehicle_left_m'}:
         raise ValueError('Unknown turn engineering control')
     if engineering.get('route_spacing_m', 2.) <= 0 or engineering.get('approach_steps', 6) < 4:
         raise ValueError('Invalid connected turn sampling')
     for key, lower, upper in (('pedestrian_along_m', 0., 30.),
-                              ('pedestrian_left_m', -25., 25.)):
-        value = engineering.get(key, 6. if key == 'pedestrian_along_m' else 2.)
+                              ('pedestrian_left_m', -25., 25.),
+                              ('vehicle_along_m', 0., 30.),
+                              ('vehicle_left_m', -25., 25.)):
+        defaults = {'pedestrian_along_m': 6., 'pedestrian_left_m': 2.,
+                    'vehicle_along_m': 5., 'vehicle_left_m': 5.}
+        value = engineering.get(key, defaults[key])
         if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(value) or not lower <= value <= upper:
-            raise ValueError('Invalid Native pedestrian construction offset: ' + key)
+            raise ValueError('Invalid Native participant construction offset: ' + key)
     if not isinstance(config.get('case', {}).get('recording_description'), dict):
         raise ValueError('Missing exact recording description')
     return engineering
@@ -75,8 +80,11 @@ def run(output_dir, host, port):
         ego = world.try_spawn_actor(library.find('vehicle.tesla.model3'), scene['approach'][0].transform)
         if ego is None:
             raise ValueError('Native turn ego spawn failed')
-        distant_exit = carla.Transform(scene['exit'].transform.location + carla.Location(x=50, y=50), scene['exit'].transform.rotation)
-        affected_vehicle = world.try_spawn_actor(library.find('vehicle.audi.tt'), distant_exit)
+        vehicle_pose = participant_spawn_transform(
+            carla, scene['approach'][0],
+            along_m=engineering.get('vehicle_along_m', 5.),
+            left_m=engineering.get('vehicle_left_m', 5.))
+        affected_vehicle = world.try_spawn_actor(library.find('vehicle.audi.tt'), vehicle_pose)
         if affected_vehicle is None:
             raise ValueError('Affected Native vehicle spawn failed')
         pedestrian = world.try_spawn_actor(library.find('walker.pedestrian.0001'),
@@ -97,8 +105,8 @@ def run(output_dir, host, port):
         context = {
             'pedestrian_may_be_affected': True,
             'pedestrian_may_be_affected_source': 'Native pedestrian near selected connected left-turn corridor',
-            'vehicle_may_be_affected': False,
-            'vehicle_may_be_affected_source': 'Native vehicle displaced from selected left-turn corridor',
+            'vehicle_may_be_affected': True,
+            'vehicle_may_be_affected_source': 'Constructed vehicle near selected approach; original body clearance requires independent possible-effect review',
             'participant_types': {'ped_listener': 'pedestrian', 'affected_vehicle': 'vehicle'},
             'listener_position_source': 'original Native pedestrian transform',
             'participant_geometry_source': 'original Native actor transforms and bounding-box extents',
@@ -196,7 +204,7 @@ def run(output_dir, host, port):
                  context={'native_map_name': world.get_map().name,
                           'connected_left_route': True,
                           'pedestrian_may_be_affected': True,
-                          'vehicle_may_be_affected': False})
+                          'vehicle_may_be_affected': True})
 
 
 def main():
