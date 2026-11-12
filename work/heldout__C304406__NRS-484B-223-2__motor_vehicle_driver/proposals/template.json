@@ -1,0 +1,71 @@
+{
+  "template_id": "NRS-484B-223-2@motor_vehicle_driver",
+  "law_id": "NRS-484B-223-2",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Upon a highway which has been divided into three clearly marked lanes, a vehicle must not be driven in the extreme left lane at any time. A vehicle on such a highway must not be driven in the center lane except: (a) When overtaking and passing another vehicle where the highway is clearly visible and the center lane is clear of traffic for a safe distance; (b) In preparation for a left turn; or (c) When the center lane is allocated exclusively to traffic moving in the direction in which the vehicle is proceeding and a sign is posted to give notice of such allocation.",
+  "structure": {
+    "law_id": "NRS-484B-223-2",
+    "activation": {
+      "condition": "Highway divided into three clearly marked lanes; vehicle lane occupancy observed.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Do not drive in extreme left lane at any time; center lane use is limited to the three stated exceptions.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "When overtaking and passing another vehicle where the highway is clearly visible and the center lane is clear of traffic for a safe distance",
+        "description": "Passing with visible highway and center lane clear for a safe distance"
+      },
+      {
+        "source_clause": "In preparation for a left turn",
+        "description": "Left-turn preparation"
+      },
+      {
+        "source_clause": "When the center lane is allocated exclusively to traffic moving in the direction in which the vehicle is proceeding and a sign is posted to give notice of such allocation",
+        "description": "Exclusive same-direction allocation with posted notice"
+      }
+    ],
+    "timing": {
+      "description": "Extreme-left prohibition applies at any time; center exception is assessed during its maneuver interval.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "three clearly marked lanes",
+        "note": "Physical lane marking visibility and three-lane geometry are independently reviewed."
+      },
+      {
+        "phrase": "highway is clearly visible",
+        "note": "Passing sight is a physical line-of-sight question, not a map assertion."
+      },
+      {
+        "phrase": "clear of traffic for a safe distance",
+        "note": "No numerical legal distance is supplied."
+      },
+      {
+        "phrase": "In preparation for a left turn",
+        "note": "Intent and preparation require source motion and context beyond a route request."
+      },
+      {
+        "phrase": "allocated exclusively to traffic moving in the direction in which the vehicle is proceeding and a sign is posted",
+        "note": "Map direction and candidate prop do not establish allocation authority or posted notice text."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "subject_lane",
+      "kind": "world_setup",
+      "range_or_domain": "right, center, extreme_left initial lane request; original body occupancy is measured"
+    },
+    {
+      "name": "exception_premise",
+      "kind": "world_setup",
+      "range_or_domain": "passing, turn, allocation or no-exception source setup; physical/legal applicability remains unverified"
+    }
+  ]
+}

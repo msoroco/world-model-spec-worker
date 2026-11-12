@@ -292,6 +292,357 @@
       },
       "negative": {
         "log": "safety_conflict-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__safety_conflict",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e6dc9be5b489d690257ab0e7cac47a3e91af22561bc0114c445adb48f422775b",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/delivery_audit.py --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__safety_conflict --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-saved-safety_conflict-1794469374749816118-processing/v0001/analysis --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-saved-safety_conflict-1794469374749816118-processing/v0001/analysis/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "safety_conflict-delivery-positive.log",
+        "test_log_sha256": "c7b8e72b72de05fa9ab053d6db938be93f660aea975cf5a5e92522de9ea43bc4",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/delivery_audit.py --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__safety_conflict --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-saved-safety_conflict-1794469374749816118-processing/v0001/analysis --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-saved-safety_conflict-1794469374749816118-processing/v0001/analysis/analysis-report.json --tamper-motion-hash",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original U-turn source hash differs: u_turn_motion.jsonl",
+        "negative_log": "safety_conflict-delivery-negative.log",
+        "negative_log_sha256": "b86f3525b876eb6c0f5383b519c72fd98482cf4d2b7cc219610b161c19da05dd"
+      }
+    },
+    {
+      "case_id": "heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_2",
+      "kind": "delivery",
+      "construction": "construction-prohibition_403_2.json",
+      "construction_sha256": "a1898f81a3f3761da1cf01dea3264154817a3c7f54e3d8490a2f4626caa3dc27",
+      "measurement_procedure": {
+        "entrypoint": "u_turn_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-prohibition_403_2.json",
+      "fixture_recipe": "work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/diagnostic-recipe-prohibition_403_2.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Mapped no-U-turn landmark availability, turn completion, actors and camera visibility may fail"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-prohibition_403_2-fallback1.json",
+          "construction_sha256": "5dad082e7052a95697d1cd6cc7c11a0d733d83e26f0c5e30fe7cb2e576495f9c",
+          "trigger": {
+            "source": "Native mapped-landmark and opposing-lane inventory",
+            "metric": "eligible device-lane pair count",
+            "failure_condition": "primary 2 m sampling finds no sign-adjacent opposing pair"
+          },
+          "changed_knobs": [
+            "waypoint_spacing_m = 1.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_2 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-prohibition_403_2-fallback1-1794469903273532471-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "prohibition_403_2-fallback1-offline-tests.log",
+            "log_sha256": "87617112b7384556ec6e520307cae8293778cfecdb38e97b3f3645899acdae8e",
+            "construction_sha256": "5dad082e7052a95697d1cd6cc7c11a0d733d83e26f0c5e30fe7cb2e576495f9c"
+          },
+          "compatibility": {
+            "receipt": "prohibition_403_2-fallback1-compatibility.json",
+            "sha256": "87d9b094ab0283b2b5bed4b2c4a3a8984e0993f98c0ca58d0b65f0506f01e0b6",
+            "log": "prohibition_403_2-fallback1-compat-analysis.log",
+            "negative_log": "prohibition_403_2-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-prohibition_403_2-fallback2.json",
+          "construction_sha256": "4e274bdecee933afff33e445f002ad4cb4c48142f489ad5d85cfc4ce3e6903c3",
+          "trigger": {
+            "source": "Original ego body and road envelope",
+            "metric": "turn arc sweep",
+            "failure_condition": "primary 6 m arc leaves usable road envelope near device"
+          },
+          "changed_knobs": [
+            "arc_extension_m = 4.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_2 --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-prohibition_403_2-fallback2-1794469907277610381-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "prohibition_403_2-fallback2-offline-tests.log",
+            "log_sha256": "0327d048bf9451bf7f8fd66cef334d2918e399d3af725af5763f049eb7f6e63d",
+            "construction_sha256": "4e274bdecee933afff33e445f002ad4cb4c48142f489ad5d85cfc4ce3e6903c3"
+          },
+          "compatibility": {
+            "receipt": "prohibition_403_2-fallback2-compatibility.json",
+            "sha256": "aeb582a952d7c30c6af3d660a53e1594b128e18d5d9501704155ed68e3619c51",
+            "log": "prohibition_403_2-fallback2-compat-analysis.log",
+            "negative_log": "prohibition_403_2-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-prohibition_403_2-fallback3.json",
+          "construction_sha256": "7027b37c8829affb3bc5a72a2a7f9f6f354c0cb6ea70bddbd4d3d651d9fb3e9d",
+          "trigger": {
+            "source": "Native following actor spawn readback",
+            "metric": "following spawn success",
+            "failure_condition": "primary 18 m following spawn overlaps occupied actor"
+          },
+          "changed_knobs": [
+            "following_distance_m = 24.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_2 --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-prohibition_403_2-fallback3-1794469911370144618-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "prohibition_403_2-fallback3-offline-tests.log",
+            "log_sha256": "0327d048bf9451bf7f8fd66cef334d2918e399d3af725af5763f049eb7f6e63d",
+            "construction_sha256": "7027b37c8829affb3bc5a72a2a7f9f6f354c0cb6ea70bddbd4d3d651d9fb3e9d"
+          },
+          "compatibility": {
+            "receipt": "prohibition_403_2-fallback3-compatibility.json",
+            "sha256": "d0707e3cbca722511482de1570064c6d8a60148fb204b56bcfd68e7c5fcc11e5",
+            "log": "prohibition_403_2-fallback3-compat-analysis.log",
+            "negative_log": "prohibition_403_2-fallback3-negative.log"
+          }
+        }
+      ],
+      "acquisition": {
+        "u_turn_observation": {
+          "entrypoint": "u_turn_finalizer.py",
+          "method": "original actor body/yaw/speed join",
+          "evidence": "u_turn_motion.jsonl, u_turn_context.json, trace.jsonl, video_frames.jsonl"
+        },
+        "mapped_no_u_turn_device": {
+          "entrypoint": "u_turn_finalizer.py",
+          "method": "source-bound Native map landmark fields and distance",
+          "evidence": "u_turn_device.json, u_turn_context.json"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original incoming-lane virtual-eye rays",
+          "evidence": "capture/evidence.jsonl, road.xodr, trace.jsonl"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_2 --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\""
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-prohibition_403_2-primary-1794469899290175231-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "prohibition_403_2-primary-offline-tests.log",
+        "log_sha256": "c582ab7bd59bcf8f396b6ca3a05a08791dea86ed2bc1d41f426f49e8cee759c6",
+        "construction_sha256": "a1898f81a3f3761da1cf01dea3264154817a3c7f54e3d8490a2f4626caa3dc27"
+      },
+      "compatibility": {
+        "receipt": "prohibition_403_2-primary-compatibility.json",
+        "sha256": "962f3091fa75a10a347f30c8e3c6fa67d40adce998c1528b7636478e6a46fe57",
+        "log": "prohibition_403_2-primary-compat-analysis.log",
+        "negative_log": "prohibition_403_2-primary-negative.log"
+      },
+      "negative": {
+        "log": "prohibition_403_2-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_2",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e6dc9be5b489d690257ab0e7cac47a3e91af22561bc0114c445adb48f422775b",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/delivery_audit.py --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_2 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-saved-prohibition_403_2-1794469932054051142-processing/v0001/analysis --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-saved-prohibition_403_2-1794469932054051142-processing/v0001/analysis/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "prohibition_403_2-delivery-positive.log",
+        "test_log_sha256": "8c10b1a7406f86503d58217858b01c3efe4aa82b581cda1b57e73d47ba11c09a",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/delivery_audit.py --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_2 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-saved-prohibition_403_2-1794469932054051142-processing/v0001/analysis --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-saved-prohibition_403_2-1794469932054051142-processing/v0001/analysis/analysis-report.json --tamper-motion-hash",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original U-turn source hash differs: u_turn_motion.jsonl",
+        "negative_log": "prohibition_403_2-delivery-negative.log",
+        "negative_log_sha256": "b86f3525b876eb6c0f5383b519c72fd98482cf4d2b7cc219610b161c19da05dd"
+      }
+    },
+    {
+      "case_id": "heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_3",
+      "kind": "delivery",
+      "construction": "construction-prohibition_403_3.json",
+      "construction_sha256": "f7be6ec5ee90da6af6f8d9950a7d05bf0c7ebea1ffcfcdae2af971f5fed59c11",
+      "measurement_procedure": {
+        "entrypoint": "u_turn_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native built frontage may be insufficient, use unsourced, or U-turn/visibility may fail"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-prohibition_403_3-fallback1.json",
+          "construction_sha256": "5e6dabe5d3d83afa53bc0d634b021cfb8beee3364e6f9f43ea1a8ae293fce97f",
+          "trigger": {
+            "source": "Native opposing-lane waypoint inventory",
+            "metric": "eligible nonjunction opposing pair count",
+            "failure_condition": "primary 2 m sampling finds no usable pair"
+          },
+          "changed_knobs": [
+            "waypoint_spacing_m = 1.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_3 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-prohibition_403_3-fallback1-1794470582647765127-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "prohibition_403_3-fallback1-offline-tests.log",
+            "log_sha256": "c582ab7bd59bcf8f396b6ca3a05a08791dea86ed2bc1d41f426f49e8cee759c6",
+            "construction_sha256": "5e6dabe5d3d83afa53bc0d634b021cfb8beee3364e6f9f43ea1a8ae293fce97f"
+          },
+          "compatibility": {
+            "receipt": "prohibition_403_3-fallback1-compatibility.json",
+            "sha256": "1e0c5e2a902cca985ce9cb74e7b860a1418c08704d528b0f1b9eb1cdeb4485f1",
+            "log": "prohibition_403_3-fallback1-compat-analysis.log",
+            "negative_log": "prohibition_403_3-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-prohibition_403_3-fallback2.json",
+          "construction_sha256": "86774a621182d9381633edb11aa219548596a43cc585f6589606d196a38fcf75",
+          "trigger": {
+            "source": "Original ego body and route geometry",
+            "metric": "turn arc sweep and road-width occupation",
+            "failure_condition": "primary 6 m arc leaves usable road envelope"
+          },
+          "changed_knobs": [
+            "arc_extension_m = 4.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_3 --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-prohibition_403_3-fallback2-1794470586883452057-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "prohibition_403_3-fallback2-offline-tests.log",
+            "log_sha256": "c582ab7bd59bcf8f396b6ca3a05a08791dea86ed2bc1d41f426f49e8cee759c6",
+            "construction_sha256": "86774a621182d9381633edb11aa219548596a43cc585f6589606d196a38fcf75"
+          },
+          "compatibility": {
+            "receipt": "prohibition_403_3-fallback2-compatibility.json",
+            "sha256": "2f254cc1f3062f134eec1acfb2d28217fa8c843c963b6659ec9ba40f4e111885",
+            "log": "prohibition_403_3-fallback2-compat-analysis.log",
+            "negative_log": "prohibition_403_3-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-prohibition_403_3-fallback3.json",
+          "construction_sha256": "c46141a0f2ff670931ae93a7d3c6c67766c47992bce5da3d9dbce27efc56b684",
+          "trigger": {
+            "source": "Native participant spawn readback",
+            "metric": "following actor spawn success",
+            "failure_condition": "primary 18 m following spawn overlaps occupied road user"
+          },
+          "changed_knobs": [
+            "following_distance_m = 24.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_3 --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-prohibition_403_3-fallback3-1794470591134339133-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "prohibition_403_3-fallback3-offline-tests.log",
+            "log_sha256": "4022a98aa5fc720575cf5aba02411328965f46df425f5eece2e87a5c2ae92a72",
+            "construction_sha256": "c46141a0f2ff670931ae93a7d3c6c67766c47992bce5da3d9dbce27efc56b684"
+          },
+          "compatibility": {
+            "receipt": "prohibition_403_3-fallback3-compatibility.json",
+            "sha256": "f952c1f695cbe3a815dd9953803f05b58300282a40c039f8c8662eaaddeef55e",
+            "log": "prohibition_403_3-fallback3-compat-analysis.log",
+            "negative_log": "prohibition_403_3-fallback3-negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/diagnostic-recipe-prohibition_403_3.json",
+      "measurement_contract": "measurement-contract-prohibition_403_3.json",
+      "acquisition": {
+        "u_turn_observation": {
+          "entrypoint": "u_turn_finalizer.py",
+          "method": "joined original Native ego and surrounding actor bodies/yaw/speeds",
+          "evidence": "u_turn_motion.jsonl, u_turn_context.json, trace.jsonl, video_frames.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original incoming-lane virtual-eye rays to nine sampled subject-body points",
+          "evidence": "capture/evidence.jsonl, road.xodr, trace.jsonl"
+        },
+        "built_frontage_candidate": {
+          "entrypoint": "runner.py",
+          "method": "Native building boxes projected onto local road tangent, with independent use unknown",
+          "evidence": "u_turn_403_3_frontage.json and u_turn_context.json"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_3 --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\""
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-prohibition_403_3-primary-1794470578525694442-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "prohibition_403_3-primary-offline-tests.log",
+        "log_sha256": "4022a98aa5fc720575cf5aba02411328965f46df425f5eece2e87a5c2ae92a72",
+        "construction_sha256": "f7be6ec5ee90da6af6f8d9950a7d05bf0c7ebea1ffcfcdae2af971f5fed59c11"
+      },
+      "compatibility": {
+        "receipt": "prohibition_403_3-primary-compatibility.json",
+        "sha256": "9f3eb8b9a468fe3ac50ae5f8d36e8706f22a60726d58ace089f8590a9dff52ab",
+        "log": "prohibition_403_3-primary-compat-analysis.log",
+        "negative_log": "prohibition_403_3-primary-negative.log"
+      },
+      "negative": {
+        "log": "prohibition_403_3-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_3",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e6dc9be5b489d690257ab0e7cac47a3e91af22561bc0114c445adb48f422775b",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/delivery_audit.py --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_3 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-saved-prohibition_403_3-1794470660946204952-processing/v0001/analysis --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-saved-prohibition_403_3-1794470660946204952-processing/v0001/analysis/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "prohibition_403_3-delivery-positive.log",
+        "test_log_sha256": "aa655c738c33992d9b388d8a74f5f35453bce8ac7be61fca916053ce203f80a6",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230671__NRS-484B-403-1__motor_vehicle_driver/delivery_audit.py --case heldout__C230671__NRS-484B-403-1__motor_vehicle_driver__prohibition_403_3 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-saved-prohibition_403_3-1794470660946204952-processing/v0001/analysis --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230671-saved-prohibition_403_3-1794470660946204952-processing/v0001/analysis/analysis-report.json --tamper-frontage-hash",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Built frontage original source hash differs: u_turn_403_3_frontage.json",
+        "negative_log": "prohibition_403_3-delivery-negative.log",
+        "negative_log_sha256": "a60c2923141fbb4df4ea6b6535ea822dae191f98ea4ceb29adceccdf1648b454"
       }
     }
   ]

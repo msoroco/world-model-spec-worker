@@ -41,3 +41,5 @@ Canonical root `config.json`, `construction.json`, four-view camera plan and exa
 - `turn-sweep-proof.json` SHA-256 `aa6ac62e2239b16b4f984ae2fe730bb8ba82677d0d7e8cacde440f2c3146f4f2`
 - `turn-comparison-proof-v2.json` SHA-256 `32dc5c686ae4a8451589418ef031a5d6668a1b70dc57af62b56e04b71023f084`
 - `supplemental-ready-import-preflight.log` SHA-256 `0247d6d92e87487449d81a9635237daa98886a0b1e8eba280f5067fda4eb6328`
+
+Zero-byte synthetic diagnostic logs were source-preservingly compacted into `work/_shared/prune-history.json` (`compacted_zero_logs`) to respect the frozen return-file cap. Their exact former paths and empty-byte SHA256 are retained; restore them with `work/_shared/restore_compacted_zero_logs.py --assignment heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver` before its scoped strict proof sweep. The assignment remains partial.

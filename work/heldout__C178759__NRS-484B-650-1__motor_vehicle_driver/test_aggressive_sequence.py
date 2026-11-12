@@ -1,6 +1,7 @@
 import unittest
 
 from aggressive_sequence import MILE_M, measure_sequence
+from two_pass_construction import PHASES, phase_at, transition_guard, validate_schedule
 
 
 def sample(distance_m):
@@ -16,6 +17,42 @@ def episodes():
 
 
 class SequenceTests(unittest.TestCase):
+    def test_two_pass_requests_have_reentry_and_original_geometry_guards(self):
+        self.assertTrue(validate_schedule())
+        self.assertEqual(phase_at(300).name, 'first_right_pass_request')
+        self.assertEqual(phase_at(480).name, 'first_reentry')
+        self.assertEqual(phase_at(540).name, 'lead_reclaim_request')
+        self.assertEqual(phase_at(620).name, 'second_reentry')
+        self.assertEqual(phase_at(750).name, 'second_right_pass_request')
+        self.assertEqual(PHASES[1].ego_target, 'right_of_paved_edge')
+        self.assertEqual(PHASES[3].ego_speed_mps, 6)
+        self.assertGreater(PHASES[3].lead_speed_mps, PHASES[3].ego_speed_mps)
+        nominal_to_second_pass_s = sum((p.end_m-p.start_m)/p.ego_speed_mps for p in PHASES[:-1])
+        self.assertLess(nominal_to_second_pass_s, 60)
+        first_gain_m = (PHASES[1].ego_speed_mps-PHASES[1].lead_speed_mps) * (PHASES[1].end_m-PHASES[1].start_m)/PHASES[1].ego_speed_mps
+        reclaim_gain_m = (PHASES[3].lead_speed_mps-PHASES[3].ego_speed_mps) * (PHASES[3].end_m-PHASES[3].start_m)/PHASES[3].ego_speed_mps
+        second_gain_m = (PHASES[5].ego_speed_mps-PHASES[5].lead_speed_mps) * (PHASES[5].end_m-PHASES[5].start_m)/PHASES[5].ego_speed_mps
+        self.assertGreater(-15 + first_gain_m, 5)
+        self.assertLess(-15 + first_gain_m - reclaim_gain_m, -5)
+        self.assertGreater(-15 + first_gain_m - reclaim_gain_m + second_gain_m, 5)
+        for previous, current, gap, edge in (
+            ('approach', 'first_right_pass_request', -12, -1),
+            ('first_right_pass_request', 'first_reentry', 12, 2),
+            ('first_reentry', 'lead_reclaim_request', 10, -1),
+            ('lead_reclaim_request', 'second_reentry', -12, 2),
+            ('second_reentry', 'second_right_pass_request', -12, -1),
+        ):
+            self.assertTrue(transition_guard(previous, current, gap, edge))
+        for previous, current, gap, edge in (
+            ('approach', 'first_right_pass_request', 2, -1),
+            ('first_right_pass_request', 'first_reentry', -2, 2),
+            ('first_reentry', 'lead_reclaim_request', 10, 2),
+            ('lead_reclaim_request', 'second_reentry', 8, 2),
+            ('second_reentry', 'second_right_pass_request', -12, 2),
+        ):
+            with self.assertRaises(ValueError):
+                transition_guard(previous, current, gap, edge)
+
     def test_event_envelope_below_at_and_above_one_mile(self):
         for distance, expected in ((MILE_M - .01, True), (MILE_M, True),
                                    (MILE_M + .01, False)):
