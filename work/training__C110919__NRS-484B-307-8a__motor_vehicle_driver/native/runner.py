@@ -16,6 +16,7 @@ import traceback
 from cameras import camera_plan
 from controller import EngineeringKnobs, PathController
 from engineering import parameters
+from engineering import CASES
 from geometry import route
 from variant_geometry import check_for as geometry_check_for, open_drive_for
 
@@ -29,7 +30,7 @@ def write_new(path: Path, value: object):
 def check(config: dict) -> dict:
     suffix=config.get('case_suffix')
     candidate=config.get('candidate_id')
-    if suffix not in ('reference','contrast','absent_reference','absent_reference_contrast') or candidate not in ('primary','fallback1','fallback2','fallback3'):
+    if suffix not in CASES or candidate not in ('primary','fallback1','fallback2','fallback3'):
         raise ValueError('Unknown exact case or candidate')
     if config.get('case_id')!='training__C110919__NRS-484B-307-8a__motor_vehicle_driver__'+suffix:
         raise ValueError('Case identity differs')
@@ -190,6 +191,9 @@ def execute(config: dict,output: Path,host: str,port: int):
              (output/'body_history.jsonl').open('x') as body_file, \
              (output/'video_frames.jsonl').open('x') as frame_file:
             for index in range(config['rate_hz']*config['duration_s']):
+                green_release=config['case_suffix'].startswith('green_release_')
+                if green_release and index==160:
+                    signal_actor.set_state(carla.TrafficLightState.Green)
                 pose=ego.get_transform();velocity=ego.get_velocity()
                 speed=math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
                 command=controller.step(position_xy_m=(pose.location.x,pose.location.y),
@@ -200,7 +204,11 @@ def execute(config: dict,output: Path,host: str,port: int):
                     walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(0,-1,0),speed=3.0))
                 else:
                     walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(0,0,0),speed=0.0))
-                stop_needed=config['case_suffix'] in ('reference','absent_reference') and held<30 and pose.location.y>-25
+                full_stop=config['case_suffix'] in ('reference','absent_reference',
+                    'green_release_wait','green_release_red_turn')
+                wait_for_green=(config['case_suffix']=='green_release_wait' and
+                                signal_actor.get_state()!=carla.TrafficLightState.Green)
+                stop_needed=full_stop and (held<30 or wait_for_green) and pose.location.y>-25
                 if stop_needed:
                     command.update(throttle=0.0,brake=1.0,hand_brake=speed<.05)
                     if speed<.05 and max(p[1] for p in body_xy(ego))<stop_boundary:held+=1
@@ -229,7 +237,8 @@ def execute(config: dict,output: Path,host: str,port: int):
                 body_file.write(json.dumps({'frame':frame,'time_s':time_s,
                     'body_vertices_m':[[v.x,v.y,v.z] for v in ego.bounding_box.get_world_vertices(pose)]},
                     allow_nan=False)+'\n')
-                values={'dev.traffic_signal':{'authored_request':'steady_red',
+                values={'dev.traffic_signal':{'authored_request':('red_until_frame_160_then_green'
+                                                    if green_release else 'steady_red'),
                                                'observed_state':sample['signal_state_observed'],
                                                'native_actor_id':signal_actor.id},
                         'st.stop_line':readback['stop_line_y_m'],'st.crosswalk':readback['nearest_crosswalk_y_m'],

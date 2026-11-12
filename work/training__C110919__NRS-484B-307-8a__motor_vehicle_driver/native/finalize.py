@@ -50,9 +50,16 @@ def joins(attempt: Path,count: int):
                              ('trace.jsonl','capture/evidence.jsonl','video_frames.jsonl',
                               'native_samples.jsonl','body_history.jsonl','capture/manifest.json')}}
 
-def measure_signal(attempt: Path,native: list[dict],geometry: dict):
+def measure_signal(attempt: Path,native: list[dict],geometry: dict,case_suffix: str|None=None):
     states=[sample.get('signal_state_observed') for sample in native]
-    if not states or any(state not in ('Red','TrafficLightState.Red','steady_red') for state in states):
+    red=('Red','TrafficLightState.Red','steady_red')
+    green=('Green','TrafficLightState.Green')
+    green_release=case_suffix in ('green_release_wait','green_release_red_turn')
+    if green_release:
+        if len(states)!=480 or any(state not in red for state in states[:160]) or \
+           any(state not in green for state in states[160:]):
+            raise ValueError('Original governing red-to-green transition differs')
+    elif not states or any(state not in red for state in states):
         raise ValueError('Original governing steady red state absent')
     absent=geometry.get('stopping_reference_kind')=='intersection_boundary'
     reference=geometry.get('stopping_reference_y_m',geometry.get('stop_line_y_m'))
@@ -62,7 +69,10 @@ def measure_signal(attempt: Path,native: list[dict],geometry: dict):
                    geometry.get('nearest_crosswalk_y_m') is not None or
                    geometry.get('intersection_near_y_m')!=-7.0):
         raise ValueError('Absent-reference branch still has a marked stop reference')
-    return {'value':{'steady_red_frames':len(states),'native_signal_actor_id':geometry['signal_actor_id'],
+    return {'value':{'steady_red_frames':160 if green_release else len(states),
+                     'green_frames':len(states)-160 if green_release else 0,
+                     'first_green_frame':160 if green_release else None,
+                     'native_signal_actor_id':geometry['signal_actor_id'],
                      'stopping_reference_kind':'intersection_boundary' if absent else 'marked_stop_line',
                      'stopping_reference_y_m':reference},
             'method':'measure_signal','sources':{name:sha(source(attempt,name))
@@ -91,6 +101,22 @@ def measure_stop(attempt: Path,native: list[dict],geometry: dict):
                      'stopping_reference_y_m':boundary},
             'method':'measure_stop','sources':{name:sha(source(attempt,name))
                 for name in ('native_samples.jsonl','road_geometry.json')}}
+
+def measure_green_release(attempt: Path,native: list[dict],signal: dict,stop: dict):
+    first_green=signal['value']['first_green_frame']
+    crossing=stop['value']['first_front_crossing_frame']
+    if first_green is None or not stop['value']['halt_before_nearest_boundary']:
+        raise ValueError('Green-release comparison requires red stop and green transition')
+    held=stop['value']['stationary_pre_crossing_frames']
+    if held<10 or crossing<10:
+        raise ValueError('Green-release full-body stop interval absent')
+    return {'value':{'first_green_frame':first_green,
+                     'first_front_crossing_frame':crossing,
+                     'remain_stopped_until_green':crossing>=first_green,
+                     'stationary_pre_crossing_frames':held},
+            'method':'measure_green_release',
+            'sources':{name:sha(source(attempt,name)) for name in
+                       ('native_samples.jsonl','road_geometry.json')}}
 
 def measure_turn_yield(attempt: Path,native: list[dict],geometry: dict):
     if 'destination_crosswalk_x_m' not in geometry:
@@ -177,15 +203,19 @@ def finalize(attempt: Path,output: Path):
                        row.get('ego',{}).get('speed_provenance')=='synthetic_native_sample'
                        for row in evidence):
             raise ValueError('Synthetic speed must retain diagnostic provenance')
-    signal=measure_signal(attempt,native,geometry)
+    suffix=config['case_suffix']
+    signal=measure_signal(attempt,native,geometry,suffix)
     stop=measure_stop(attempt,native,geometry)
+    green_release=(measure_green_release(attempt,native,signal,stop)
+                   if suffix in ('green_release_wait','green_release_red_turn') else None)
     turn=measure_turn_yield(attempt,native,geometry)
     videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     counts={name:video_frames(attempt/name) for name in videos}
     if any(value!=count for value in counts.values()):
         raise ValueError('Original source video frame count differs')
-    expected=config['case_suffix'] in ('reference','absent_reference')
-    observed=stop['value']['halt_before_nearest_boundary']
+    expected=(suffix in ('reference','absent_reference','green_release_wait'))
+    observed=(green_release['value']['remain_stopped_until_green'] if green_release
+              else stop['value']['halt_before_nearest_boundary'])
     derive_channels(attempt,config,native,mapping,geometry)
     recording=[]
     for channel in config['recording_description']['channels']:
@@ -193,9 +223,11 @@ def finalize(attempt: Path,output: Path):
         source(attempt,relative)
         recording.append({'name':name,'unit':channel['unit'],'reference':relative})
     result={'case_id':config['case_id'],
-        'measured_values':{'signal':signal['value'],'stop':stop['value'],'turn_yield':turn['value']},
-        'target_checks':[{'target':'authored controlled halt before applicable stopping reference',
-            'requested':expected,'measured':observed,'method':'saved original full body and speed before stopping-reference crossing',
+        'measured_values':{'signal':signal['value'],'stop':stop['value'],'turn_yield':turn['value'],
+                           **({'green_release':green_release['value']} if green_release else {})},
+        'target_checks':[{'target':('remain stopped until green after full-body halt' if green_release
+                                   else 'authored controlled halt before applicable stopping reference'),
+            'requested':expected,'measured':observed,'method':'saved original full body, speed and signal before stopping-reference crossing',
             'tolerance':0,'matched':observed==expected,'physical_cause_confirmed':False,
             'cause_evidence':['native_samples.jsonl','road_geometry.json']}],
         'setup_confirmed':not diagnostic_fixture,'behavior_attempted':not diagnostic_fixture,
@@ -221,7 +253,8 @@ def finalize(attempt: Path,output: Path):
     report={'format':'c110919-saved-analysis-v1','case_id':config['case_id'],
             'candidate_id':config['candidate_id'],
             'measurements':{'steady_red_activation':signal,
-                            'right_turn_stop':stop,'right_turn_yield':turn},
+                            'right_turn_stop':stop,'right_turn_yield':turn,
+                            **({'green_release':green_release} if green_release else {})},
             'original_joins':original,'video_frames':counts,
             'provenance_kind':result['provenance_kind'],
             'scope':('synthetic CPU saved sources and decoded synthetic video' if diagnostic_fixture

@@ -5,10 +5,11 @@ from geometry import (INTERSECTION_NEAR_Y_M, STOP_LINE_Y_M, check as base_check,
                       open_drive as base_open_drive)
 
 ABSENT = ("absent_reference", "absent_reference_contrast")
+GREEN = ("green_release_wait", "green_release_red_turn")
 
 
 def open_drive_for(case_suffix):
-    if case_suffix not in ("reference", "contrast", *ABSENT):
+    if case_suffix not in ("reference", "contrast", *ABSENT, *GREEN):
         raise ValueError("Unknown right-turn geometry variant")
     if case_suffix not in ABSENT:
         return base_open_drive()
@@ -23,7 +24,7 @@ def open_drive_for(case_suffix):
 
 
 def check_for(case_suffix):
-    if case_suffix not in ("reference", "contrast", *ABSENT):
+    if case_suffix not in ("reference", "contrast", *ABSENT, *GREEN):
         raise ValueError("Unknown right-turn geometry variant")
     check = base_check()
     root = ET.fromstring(open_drive_for(case_suffix))

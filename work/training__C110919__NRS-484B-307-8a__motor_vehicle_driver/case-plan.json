@@ -19,17 +19,21 @@
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__reference",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__contrast",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference",
-        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast"
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_wait",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn"
       ]
     },
     {
       "requirement": "text-1",
       "source": "inputs/coverage/branch-sources.json",
       "status": "exception_pending",
-      "evidence_or_gap": "Exact statute: Vehicular traffic facing the signal must stop before entering the crosswalk on the nearest side of the intersection where the sign or pavement marking indicates where the stop must be made, or in the absence of any such crosswalk, sign or marking, then before entering the intersection, and, except as otherwise provided in paragraphs (c) and (d) [(c) is appended below, NRS-484B-307-8d], must remain stopped or standing until the green signal is shown.; no measured Native evidence or source-hashed equivalence receipt yet. Authored absent-reference branch pair exercises the intersection-boundary alternative; original absence and green-release still unproven.",
+      "evidence_or_gap": "Exact statute: Vehicular traffic facing the signal must stop before entering the crosswalk on the nearest side of the intersection where the sign or pavement marking indicates where the stop must be made, or in the absence of any such crosswalk, sign or marking, then before entering the intersection, and, except as otherwise provided in paragraphs (c) and (d) [(c) is appended below, NRS-484B-307-8d], must remain stopped or standing until the green signal is shown.; no measured Native evidence or source-hashed equivalence receipt yet. Authored absent-reference branch pair exercises the intersection-boundary alternative; original absence and green-release still unproven. Authored green-release/right-on-red timing pair is CPU-probed only; original signal transition and paragraph (d) exception remain unverified.",
       "case_ids": [
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference",
-        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast"
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_wait",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn"
       ]
     },
     {
@@ -41,7 +45,9 @@
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__reference",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__contrast",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference",
-        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast"
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_wait",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn"
       ]
     },
     {
@@ -53,7 +59,9 @@
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__reference",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__contrast",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference",
-        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast"
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_wait",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn"
       ]
     }
   ],
@@ -153,6 +161,48 @@
       ],
       "stopping_reference_kind": "intersection_boundary",
       "reference_absence_source": "authored OpenDRIVE object inventory; original map and pixel absence still unverified"
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_wait",
+      "target_law_id": "NRS-484B-307-8a",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "remain_stopped_until_green",
+      "comparison_unit": "bool",
+      "requested_setting": "wait_for_green",
+      "recorded_value": null,
+      "case_description": "After a full-body stop at the marked line, remain stopped until the red signal turns green versus the separately permitted right turn on red after stopping and yielding; neither branch is automatically a legal violation.",
+      "fixed_context": "Same C110919 marked-reference road, actor, right-turn route, red-to-green frame-160 schedule, receiving road, weather, pedestrian schedule, controller settings except release timing, and four-camera profile.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "gap_ids": [
+        "green_release_and_exceptions",
+        "selected_delivery_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn",
+      "target_law_id": "NRS-484B-307-8a",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "remain_stopped_until_green",
+      "comparison_unit": "bool",
+      "requested_setting": "right_on_red_after_stop",
+      "recorded_value": null,
+      "case_description": "After a full-body stop at the marked line, remain stopped until the red signal turns green versus the separately permitted right turn on red after stopping and yielding; neither branch is automatically a legal violation.",
+      "fixed_context": "Same C110919 marked-reference road, actor, right-turn route, red-to-green frame-160 schedule, receiving road, weather, pedestrian schedule, controller settings except release timing, and four-camera profile.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "gap_ids": [
+        "green_release_and_exceptions",
+        "selected_delivery_comparison"
+      ]
     }
   ],
   "comparisons": [
@@ -192,6 +242,28 @@
         "legal context",
         "traffic controls",
         "weather",
+        "other controller settings",
+        "camera and capture profile"
+      ],
+      "status": "planned_unverified"
+    },
+    {
+      "comparison_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__comparison_green_release",
+      "case_ids": [
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_wait",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn"
+      ],
+      "deliberate_differences": [
+        "remain_stopped_until_green"
+      ],
+      "fixed_conditions": [
+        "marked stop line and nearest crosswalk",
+        "cell",
+        "actor",
+        "right-turn route",
+        "red-to-green signal schedule",
+        "weather",
+        "pedestrian schedule",
         "other controller settings",
         "camera and capture profile"
       ],

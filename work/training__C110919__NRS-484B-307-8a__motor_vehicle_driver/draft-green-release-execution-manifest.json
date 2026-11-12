@@ -1,0 +1,122 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver",
+  "status": "draft_green_release_not_selected",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "cases": [
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_wait",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red-to-green signal, full-body stopping and release timing, pedestrian yield and pixels require Native evidence"
+      },
+      "measurement_contract": "green-release-candidates/green_release_wait/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110919-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "green-release-candidates/green_release_wait/fallback1/construction.json",
+          "construction_sha256": "8371d6ce12d271eb351b14b82c3260e12631944b86f0cb0826a6099cf4534d5a",
+          "trigger": {
+            "source": "original Native ego pose joined to authored route and map readback",
+            "metric": "max_route_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "green-release-candidates/green_release_wait/fallback2/construction.json",
+          "construction_sha256": "ff06540a843bbc72f9234536015208e3ad6302c1a9e9922c51e3f9fa2504c010",
+          "trigger": {
+            "source": "original Native pedestrian and ego conflict-zone crossing times",
+            "metric": "min_pedestrian_clearance_s",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "yield_clearance_margin_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "green-release-candidates/green_release_wait/fallback3/construction.json",
+          "construction_sha256": "4f888a09a0a53fc1b9fbe373cf3df39cd126f6e2e17ebc9700dd58c8e8b21356",
+          "trigger": {
+            "source": "decoded original signal and body mask corners in overview video",
+            "metric": "min_signal_or_body_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/update026-green_release_wait-recipe.json",
+      "construction": "green-release-candidates/green_release_wait/primary/construction.json",
+      "construction_sha256": "8e88225a51eeb937fa5d185495361048a05a750952dbd60d26dc91f7169c38c6"
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red-to-green signal, full-body stopping and release timing, pedestrian yield and pixels require Native evidence"
+      },
+      "measurement_contract": "green-release-candidates/green_release_red_turn/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110919-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "green-release-candidates/green_release_red_turn/fallback1/construction.json",
+          "construction_sha256": "734623170b89fab7351b3bd516c8d6187dc351b22337173ee14819221d053b6f",
+          "trigger": {
+            "source": "original Native ego pose joined to authored route and map readback",
+            "metric": "max_route_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "green-release-candidates/green_release_red_turn/fallback2/construction.json",
+          "construction_sha256": "e8c4e1b81751a926e1442bd9a2b0a3470074e8d42dde583e47d5d19540783684",
+          "trigger": {
+            "source": "original Native pedestrian and ego conflict-zone crossing times",
+            "metric": "min_pedestrian_clearance_s",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "yield_clearance_margin_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "green-release-candidates/green_release_red_turn/fallback3/construction.json",
+          "construction_sha256": "de73fe8905fde5ee18e4dafcfa0132175b44fe5998bcebb5608834207ffb2a3c",
+          "trigger": {
+            "source": "decoded original signal and body mask corners in overview video",
+            "metric": "min_signal_or_body_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/update026-green_release_red_turn-recipe.json",
+      "construction": "green-release-candidates/green_release_red_turn/primary/construction.json",
+      "construction_sha256": "02618c52f1562ba965ed2cd1791ebe03238dede8c5a4b3d0297b3527693d5852"
+    }
+  ]
+}
