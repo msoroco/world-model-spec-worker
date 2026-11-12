@@ -2,7 +2,7 @@
   "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
   "input_sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18",
   "status": "partial",
-  "readiness_kind": "first_case_compatibility_saved_synthetic_checkpoint",
+  "readiness_kind": "three_exact_cases_synthetic_saved_checkpoint",
   "applied_update": 0,
   "tests": [
     {
@@ -27,7 +27,7 @@
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "preflight-current.log",
-      "sha256": "919b49ac37a30ffc75307979bdb960b1a8e242786de5c24d9b9e11bf50daf924"
+      "sha256": "c6d1d90b0de1615ba0f40c57e4c489b971c55ff45c28bdd0be24fbcac845f3b4"
     },
     {
       "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runner.py --check (cwd: work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver)",
@@ -94,10 +94,100 @@
       "exit_code": 0,
       "log": "primary-saved-current.log",
       "sha256": "61219ef2050dc8191b58819455cb4d78754e36945bec06c3052b83fefc5a6e45"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_entered --output .runtime-work/c158190-through-entered-offline-v1",
+      "exit_code": 0,
+      "log": "cases/through_entered/primary-offline-receipt.log",
+      "sha256": "9c82fcb1408c6d639ae16e53248fca14a7fc54f494f74797853f6a83b671206f"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/build_diagnostic_recipe.py --variant through_entered",
+      "exit_code": 0,
+      "log": "cases/through_entered/diagnostic-build.log",
+      "sha256": "372c57239ae5f9c73ad6442393175091d8fbaebf73bf194a46763c5af7920098"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-output-root-20261111 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_entered --output .runtime-work/c158190-through-entered-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/through_entered/primary-compatibility-current.log",
+      "sha256": "a9f0411283fe64eaaa1b19fc9342688498991b6bc6fdcf6b8d7c7eecbae9ae71"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-output-root-20261111 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_entered --attempt .runtime-work/c158190-through-entered-compat-v1 --output .runtime-work/c158190-through-entered-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/through_entered/saved-current.log",
+      "sha256": "0aab8ff915cb2f040f6336ab0512ce735193b69e035809254fdbdd160355ebb5"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-output-root-20261111 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_entered --output .runtime-work/c158190-through-entered-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/through_entered/primary-compatibility-replay-current.log",
+      "sha256": "071dc9a3f71339d82f4fca0376f7f699656ba4305b37414b66dd306f02a9ddae"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-output-root-20261111 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_entered --attempt .runtime-work/c158190-through-entered-compat-v2 --output .runtime-work/c158190-through-entered-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/through_entered/saved-replay-current.log",
+      "sha256": "03d4c71e858367243069f539b64e5bfa3b517d4059e87fe7d8709099c010673e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/through_entered/check_case.py",
+      "exit_code": 0,
+      "log": "cases/through_entered/case-proof.log",
+      "sha256": "b427cb3bd05590cab109ffdafbf642c43b85fcfe9b5de9bae58b1e9fd5972b9d"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -c worker_exchange.package_compatibility.check_receipts",
+      "exit_code": 0,
+      "log": "primary-compatibility-static-current.log",
+      "sha256": "a9ac0c3ac83c40e1b4c3416066d63d324ee9f8c144641dfeed72d140b6557245"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear --output .runtime-work/c158190-clear-offline-v1",
+      "exit_code": 0,
+      "log": "cases/clear/primary-offline-receipt.log",
+      "sha256": "577634e93a85bf0552acf25235d96f6922cb1640770ff9e743bfc802afb01b3e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/build_diagnostic_recipe.py --variant clear",
+      "exit_code": 0,
+      "log": "cases/clear/diagnostic-build.log",
+      "sha256": "10f11c37b443e9d7772c83b6b34430b529d6369cf0f56ec0d80aa9f17d7fddf1"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/clear/check_case.py",
+      "exit_code": 0,
+      "log": "cases/clear/case-proof.log",
+      "sha256": "9d0b0c42201254672b22ba034fb6b211b3cceafc4309b8484a2cd278c7c91cec"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-output-root-20261111 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear --output .runtime-work/c158190-clear-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/clear/primary-compatibility-current.log",
+      "sha256": "55258ce0c4b7f6d570a3acbc13c2676990b12c55a8123637ff825ce583829d42"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-output-root-20261111 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear --attempt .runtime-work/c158190-clear-compat-v2 --output .runtime-work/c158190-clear-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/clear/primary-saved-current.log",
+      "sha256": "f4d3538a0bdc9f1ae3fe3c8939c309d5336a59dcb86c11855e8975cc52957d2e"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-output-root-20261111 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear --output .runtime-work/c158190-clear-compat-v3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/clear/primary-compatibility-replay-current.log",
+      "sha256": "5680197c9bd0ba61ba9902c4bde65fbfc51fdd7cb0189b10a787c717fd10f231"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-output-root-20261111 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear --attempt .runtime-work/c158190-clear-compat-v3 --output .runtime-work/c158190-clear-saved-v3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/clear/primary-saved-replay-current.log",
+      "sha256": "fd24306769ed01c9978c82a012e19ce644e6400175e8feb29191a905e29b99c5"
     }
   ],
   "remaining_gpu_checks": [
     "Realized yield-sign governance, absence of line/crosswalk, visible through traffic, actual slowing and conflict behavior."
   ],
-  "reason": "First exact case has seven source-bound statutory outputs. Its 600-frame four-camera synthetic fixture passes pinned positive/negative package compatibility, Native validation, converter, all nine ontology atoms, Lean decoder, final video decode, and recorded-only process-saved with originals preserved. Through entry frame 157, ego body entry 171, ego full exit 298; physical clearance is synthetic-only. Missing sight rays and off-route through actor are rejected. The first-case execution manifest and proposals/cases catalog remain drafts. The other three exact cases, three tested fallbacks per selected case, complete canonical semantic proposals, independent delivery/comparison audits and full batch acceptance remain worker-owned and incomplete. No physical/legal acceptance is claimed; frozen stop_sign cell versus selected yield branch remains a scope tension."
+  "reason": "Three exact C158190 cases have separate inline constructions and synthetic four-camera source fixtures; each passes pinned offline, positive/negative package compatibility, and recorded-only saved processing. The new clear case has no through actor across all 600 original interaction frames, matches its 4.0 m/s nearest-view target, fully exits the intersection, and leaves legal yielding unresolved. Its comparison with approaching traffic now declares the controller response as a deliberate difference rather than falsely claiming an identical ego speed profile. The no-slow exact case, three tested fallbacks per selected case, complete canonical semantic proposals, independent audits and full batch delivery remain worker-owned CPU work. No physical/legal acceptance is claimed; frozen stop_sign cell versus selected yield branch remains a scope tension."
 }

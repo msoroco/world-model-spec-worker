@@ -43,12 +43,18 @@ def through_y(i):
 
 
 def build(variant=None):
-    if variant not in (None, 'through_entered'):
+    if variant not in (None, 'through_entered', 'clear', 'no_slow'):
         raise ValueError('Unsupported exact diagnostic variant')
     target_root = HERE if variant is None else HERE / 'cases' / variant
     config_path = target_root / 'config.json'
     def actor_y(i):
-        return through_y(i) if variant is None else 4.0 - min(i, 220)*.2
+        return 4.0 - min(i, 220)*.2 if variant == 'through_entered' else through_y(i)
+    def subject_x(i):
+        return (-20.0 + min(i, 375)*.2 if variant == 'clear' else
+                -20.0 + min(i, 250)*.3 if variant == 'no_slow' else ego_x(i))
+    def subject_speed(i):
+        return ((4.0 if i <= 375 else 0.0) if variant == 'clear' else
+                (6.0 if i <= 250 else 0.0) if variant == 'no_slow' else ego_speed(i))
     spec_path = HERE / 'tests/test_finalizer.py'
     loader = importlib.util.spec_from_file_location('c158190_test_finalizer', spec_path)
     module = importlib.util.module_from_spec(loader)
@@ -57,6 +63,18 @@ def build(variant=None):
         source = Path(temp) / 'source'
         source.mkdir()
         module.FinalizerTests().sources(source)
+        if variant in ('clear', 'no_slow'):
+            approach = [json.loads(line) for line in (source/'approach_history.jsonl').read_text().splitlines()]
+            approach[0]['ego_speed_mps'] = 4.0 if variant == 'clear' else 6.0
+            approach[1]['ego_speed_mps'] = 4.0 if variant == 'clear' else 6.0
+            approach[1]['distance_to_intersection_m'] = 11.8 if variant == 'clear' else 11.7
+            (source/'approach_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in approach))
+            samples = json.loads((source/'visibility_samples.json').read_text())
+            samples[1]['distance_to_intersection_m'] = 11.8 if variant == 'clear' else 11.7
+            (source/'visibility_samples.json').write_text(json.dumps(samples))
+            rays = [json.loads(line) for line in (source/'visibility_rays.jsonl').read_text().splitlines()]
+            rays[1]['distance_to_intersection_m'] = 11.8 if variant == 'clear' else 11.7
+            (source/'visibility_rays.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rays))
         frame_count = 600
         frames = [{'video_frame': i, 'carla_frame': 100+i,
                    'time_s': round(5+i*.05, 6)} for i in range(frame_count)]
@@ -66,22 +84,32 @@ def build(variant=None):
                      'native_crosswalk_vertices_m': [], 'competing_controls': []}
                     for row in frames]
         trace = [{'frame': row['carla_frame'], 'time_s': row['time_s'],
-                  'position_m': [ego_x(i), 1.8, 0],
-                  'position': {'x': ego_x(i), 'y': 1.8, 'z': 0},
-                  'heading_deg': 0, 'speed_mps': ego_speed(i),
-                  'speed_mph': ego_speed(i) / .44704,
-                  'velocity_mps': [ego_speed(i), 0, 0],
+                  'position_m': [subject_x(i), 1.8, 0],
+                  'position': {'x': subject_x(i), 'y': 1.8, 'z': 0},
+                  'heading_deg': 0, 'speed_mps': subject_speed(i),
+                  'speed_mph': subject_speed(i) / .44704,
+                  'velocity_mps': [subject_speed(i), 0, 0],
                   'control': {'throttle': 0, 'steer': 0, 'brake': 0,
                               'hand_brake': False, 'reverse': False}}
                  for i, row in enumerate(frames)]
         bodies = [{'frame': row['carla_frame'], 'time_s': row['time_s'],
-                   'ego': {'actor_id': 101, 'road_id': 158190 if ego_x(i) < -8 else
-                           158192 if ego_x(i) < 8 else 158193, 'lane_id': -1,
+                   'ego': {'actor_id': 101, 'road_id': 158190 if subject_x(i) < -8 else
+                           158192 if subject_x(i) < 8 else 158193, 'lane_id': -1,
                            'body_vertices_m': body_vertices(trace[i]['position_m'][0], 1.8)},
-                   'through': {'actor_id': 23, 'road_id': 158194 if actor_y(i) > 8 else
+                   'through': None if variant == 'clear' else
+                              {'actor_id': 23, 'road_id': 158194 if actor_y(i) > 8 else
                                158195 if actor_y(i) >= -8 else 158196, 'lane_id': -1,
                                'body_vertices_m': body_vertices(1.8, actor_y(i))}}
                   for i, row in enumerate(frames)]
+        if variant == 'clear':
+            samples = json.loads((source / 'visibility_samples.json').read_text())
+            for sample in samples:
+                sample['visible_through_vehicle_ids'] = []
+            (source / 'visibility_samples.json').write_text(json.dumps(samples))
+            rays = [json.loads(line) for line in (source / 'visibility_rays.jsonl').read_text().splitlines()]
+            for ray in rays:
+                ray['visible_through_vehicle_ids'] = []
+            (source / 'visibility_rays.jsonl').write_text(''.join(json.dumps(ray)+'\n' for ray in rays))
         for name, rows in (('video_frames.jsonl', frames),
                            ('control_inventory.jsonl', controls),
                            ('trace.jsonl', trace),
@@ -109,7 +137,7 @@ def build(variant=None):
                             world_settings={'no_rendering_mode': False},
                             rgb_sensors=[{'actor_id': 401+j, 'blueprint': 'sensor.camera.rgb'}
                                          for j in range(4)])
-            observed['relations'] = [{'a': 101, 'b': 23, 'visible': i > 0}]
+            observed['relations'] = [] if variant == 'clear' else [{'a': 101, 'b': 23, 'visible': i > 0}]
             samples = bodies[i]['ego']['body_vertices_m'] + [trace[i]['position_m']]
             event['visibility'] = {
                 'visibility_criterion': 'any_of_nine_body_samples',
@@ -122,15 +150,19 @@ def build(variant=None):
                 'approaches': [{'lane_id': -1, 'any_sample_clear_at_probe': True,
                                 'any_body_sight_horizon': {'bound': 'at_least',
                                                            'distance_m': 25}}]}
-            ego, through = observed['participants']
+            ego = observed['participants'][0]
             ego.update(position_m=trace[i]['position_m'],
                        body_vertices_m=bodies[i]['ego']['body_vertices_m'],
                        speed_mps=trace[i]['speed_mps'],
                        velocity_mps=trace[i]['velocity_mps'])
-            through.update(actor_id=23, position_m=[1.8, actor_y(i), 0],
-                           body_vertices_m=bodies[i]['through']['body_vertices_m'],
-                           speed_mps=4 if i <= (300 if variant is None else 220) else 0,
-                           velocity_mps=[0, -4 if i <= (300 if variant is None else 220) else 0, 0])
+            if variant == 'clear':
+                observed['participants'] = [ego]
+            else:
+                through = observed['participants'][1]
+                through.update(actor_id=23, position_m=[1.8, actor_y(i), 0],
+                               body_vertices_m=bodies[i]['through']['body_vertices_m'],
+                               speed_mps=4 if i <= (220 if variant == 'through_entered' else 300) else 0,
+                               velocity_mps=[0, -4 if i <= (220 if variant == 'through_entered' else 300) else 0, 0])
             evidence.append(event)
             base = f'graphs/base/{frame:08d}.pkl'
             abstract = f'graphs/abstract/{frame:08d}.pkl'
@@ -233,6 +265,6 @@ def build(variant=None):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--variant', choices=('through_entered',))
+    parser.add_argument('--variant', choices=('through_entered', 'clear', 'no_slow'))
     args = parser.parse_args()
     print(json.dumps(build(args.variant), indent=2))

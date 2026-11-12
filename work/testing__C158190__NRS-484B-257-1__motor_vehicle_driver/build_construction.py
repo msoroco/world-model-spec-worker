@@ -22,7 +22,7 @@ FILES = ('runner.py', 'camera_setup.py', 'camera_encoder.py', 'yield_site.py',
 
 
 def main(variant=None):
-    if variant not in (None, 'through_entered'):
+    if variant not in (None, 'through_entered', 'clear', 'no_slow'):
         raise ValueError('Unsupported exact construction variant')
     target = ROOT if variant is None else ROOT / 'cases' / variant
     config = json.loads((target / 'config.json').read_text())
@@ -67,6 +67,6 @@ def main(variant=None):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--variant', choices=('through_entered',))
+    parser.add_argument('--variant', choices=('through_entered', 'clear', 'no_slow'))
     args = parser.parse_args()
     main(args.variant)
