@@ -72,6 +72,21 @@ def audit_attempt(folder, saved, selected, entry, candidate):
             result['maneuver_completed'] is False and
             result['provenance_kind'] == 'synthetic_local_diagnostic',
             'synthetic result claimed physical or legal acceptance')
+    saved_result_path = Path(processing['result']).resolve()
+    require(saved.resolve() in saved_result_path.parents and saved_result_path.is_file(),
+            'saved physical result escapes selected processing version')
+    saved_result = read(saved_result_path)
+    for candidate_result in (result, saved_result):
+        checks = candidate_result.get('physical_checks', {})
+        require(set(checks) == {'setup', 'target', 'maneuver', 'attempt'} and
+                all(checks[name].get('status') == 'unverified' and
+                    checks[name].get('sources', {}).get('native_samples.jsonl') ==
+                    sha(folder/'native_samples.jsonl') and
+                    checks[name].get('sources', {}).get('road_geometry.json') ==
+                    sha(folder/'road_geometry.json') for name in checks) and
+                candidate_result.get('maneuver_completed') is False and
+                candidate_result.get('provenance_kind') == 'synthetic_local_diagnostic',
+                'synthetic saved result promoted physical completion or lost source binding')
     require(tuple(camera['name'] for camera in config['cameras']) == CAMERAS and
             set(result['video_references']) == {name+'.mkv' for name in CAMERAS},
             'four source camera contract differs')
