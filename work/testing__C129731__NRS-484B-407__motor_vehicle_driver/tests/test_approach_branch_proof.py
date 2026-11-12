@@ -12,6 +12,20 @@ from site_construction import validate_site
 
 
 class ApproachBranchProofTests(unittest.TestCase):
+    def test_distinct_approach_b_case_binds_runner_config_and_raw_manifest(self):
+        folder = PACKAGE / "branch-proof-canonical-at-approach-b"
+        case = PACKAGE.name + "__crest__at_500ft__approach_to_crest__occluded_approach_b"
+        config = json.loads((folder / "config.json").read_text())
+        source_manifest = json.loads((folder / "sources/capture/manifest.json").read_text())
+        construction = json.loads((folder / "construction.json").read_text())
+        self.assertEqual(config["selected_case_id"], case)
+        self.assertIn(case, config["supported_case_ids"])
+        self.assertEqual(source_manifest["case_id"], case)
+        self.assertEqual(construction["case_id"], case)
+        runner = next(row for row in construction["files"] if row["path"] == "runner.py")
+        self.assertIn(repr(case), runner["content"])
+        self.assertEqual(runner["content"], (PACKAGE.parents[1] / runner["source"]).read_text())
+
     def test_at_and_beyond_branch_sources_bind_geometry_and_distinct_rays(self):
         for suffix, station, bracket in (("at", 152.4, [152.4, 152.4]),
                                          ("beyond", 160.0, [160.0, 160.125])):

@@ -24,19 +24,27 @@ TURN_X = -40
 OCCLUDED = "approach_b"
 PROBE = "short_of_500ft"
 SUFFIX = "short"
+CANONICAL = False
+CASE_ID = None
 
 
-def configure(placement, direction, probe="short_of_500ft"):
-    global NAME, DEST, SITE, TURN_X, OCCLUDED, BASE, PROBE, SUFFIX
+def configure(placement, direction, probe="short_of_500ft", canonical=False):
+    global NAME, DEST, SITE, TURN_X, OCCLUDED, BASE, PROBE, SUFFIX, CANONICAL, CASE_ID
     if placement not in ("near_summit", "approach_to_crest") or direction not in ("approach_a", "approach_b"):
         raise ValueError("Unknown crest branch")
     if probe not in ("short_of_500ft", "at_500ft", "beyond_500ft"):
         raise ValueError("Unknown crest boundary probe")
     PROBE = probe
+    CANONICAL = canonical
     SUFFIX = {"short_of_500ft": "short", "at_500ft": "at", "beyond_500ft": "beyond"}[probe]
     NAME = ("near" if placement == "near_summit" else "approach") + ("-a" if direction == "approach_a" else "-b")
     if probe != "short_of_500ft":
         NAME = SUFFIX + "-" + NAME
+    if canonical:
+        NAME = "canonical-" + NAME
+        CASE_ID = HERE.name + "__crest__" + probe + "__" + placement + "__occluded_" + direction
+    else:
+        CASE_ID = None
     DEST = HERE / ("branch-proof-" + NAME)
     site_name = placement + "__occluded_" + direction + ".json"
     if probe != "short_of_500ft":
@@ -150,6 +158,8 @@ def transform_sources(site, site_hash):
             raise ValueError("Returned source exceeds 2 MiB: " + name)
         transformed[name] = path
     manifest = json.loads(transformed["capture/manifest.json"].read_text())
+    if CANONICAL:
+        manifest["case_id"] = CASE_ID
     manifest["sources"]["road.xodr"] = sha(transformed["road.xodr"])
     manifest["sources"]["trace.jsonl"] = sha(transformed["trace.jsonl"])
     transformed["capture/manifest.json"].write_text(
@@ -169,6 +179,9 @@ def build():
     site_path.write_bytes(SITE.read_bytes())
     site_hash = sha(site_path)
     config = json.loads((HERE / ("config-crest-" + SUFFIX + ".json")).read_text())
+    if CANONICAL:
+        config["selected_case_id"] = CASE_ID
+        config["supported_case_ids"] = list(dict.fromkeys(config["supported_case_ids"] + [CASE_ID]))
     config["site_source"] = {"path": site_path.name, "sha256": site_hash}
     config_path = DEST / "config.json"
     dump(config_path, config)
@@ -190,6 +203,8 @@ def build():
               "generator": {"source": str(spec_path.relative_to(ROOT)), "sha256": sha(spec_path)}}
     dump(DEST / "recipe.json", recipe)
     construction = copy.deepcopy(json.loads((HERE / ("construction-crest-" + SUFFIX + ".json")).read_text()))
+    if CANONICAL:
+        construction["case_id"] = CASE_ID
     for file in construction["files"]:
         if file["path"] == "config.json":
             file["content"] = config_path.read_text()
@@ -197,6 +212,15 @@ def build():
         elif file["path"] == site_path.name:
             file["content"] = site_path.read_text()
             file["source"] = str(site_path.relative_to(ROOT))
+        elif CANONICAL and file["path"] == "runner.py":
+            marker = 'for probe in ("short_of_500ft", "at_500ft", "beyond_500ft")}\n'
+            if file["content"].count(marker) != 1:
+                raise ValueError("Cannot bind new exact case in runner")
+            file["content"] = file["content"].replace(
+                marker, marker + "CASES[" + repr(CASE_ID) + "] = ('crest', " + repr(PROBE) + ")\n")
+            generated = DEST / "runner.py"
+            generated.write_text(file["content"])
+            file["source"] = str(generated.relative_to(ROOT))
     construction["branch_engineering"] = {
         "placement": "at sampled crest summit" if TURN_X == 0 else "40 m before authored crest summit",
         "occluded_direction": OCCLUDED,
@@ -204,6 +228,8 @@ def build():
     construction_path = DEST / "construction.json"
     dump(construction_path, construction)
     manifest = copy.deepcopy(json.loads((HERE / ("diagnostic-crest-" + SUFFIX + "-manifest.json")).read_text()))
+    if CANONICAL:
+        manifest["cases"][0]["case_id"] = CASE_ID
     manifest["cases"][0]["construction"] = str(construction_path.relative_to(HERE))
     manifest["cases"][0]["construction_sha256"] = sha(construction_path)
     manifest["cases"][0]["fixture_recipe"] = str((DEST / "recipe.json").relative_to(ROOT))
@@ -225,6 +251,7 @@ if __name__ == "__main__":
     parser.add_argument("--direction", choices=("approach_a", "approach_b"), default="approach_b")
     parser.add_argument("--probe", choices=("short_of_500ft", "at_500ft", "beyond_500ft"),
                         default="short_of_500ft")
+    parser.add_argument("--canonical", action="store_true")
     args = parser.parse_args()
-    configure(args.placement, args.direction, args.probe)
+    configure(args.placement, args.direction, args.probe, args.canonical)
     build()

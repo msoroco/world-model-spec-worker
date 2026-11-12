@@ -29,6 +29,12 @@ CLAIMS = (
     ("crest-probe-branch-proof-record.log", ".venv-cpu/bin/python " + PREFIX + "record_crest_probe_branch_proofs.py"),
     ("crest-at-branch-comparison-proof.log", ".venv-cpu/bin/python " + PREFIX + "prove_crest_branch_comparison.py --probe at_500ft"),
     ("crest-beyond-branch-comparison-proof.log", ".venv-cpu/bin/python " + PREFIX + "prove_crest_branch_comparison.py --probe beyond_500ft"),
+    ("canonical-at-approach-b-plan.log", ".venv-cpu/bin/python " + PREFIX + "extend_crest_case_plan.py"),
+    ("canonical-at-approach-b-branch-build.log", ".venv-cpu/bin/python " + PREFIX + "build_approach_branch_proof.py --probe at_500ft --placement approach_to_crest --direction approach_b --canonical"),
+    ("canonical-at-approach-b-branch-offline.log", ".venv-cpu/bin/python runtime.py offline --manifest " + PREFIX + "diagnostic-canonical-at-approach-b-manifest.json --case " + AID + "__crest__at_500ft__approach_to_crest__occluded_approach_b --output .runtime-work/c129731-canonical-at-approach-b-offline-v2"),
+    ("canonical-at-approach-b-branch-compatibility.json", "SCENARIO_PIPELINE_OUTPUT_ROOT=" + OUTPUT_ROOT + " .venv-cpu/bin/python runtime.py compatibility --manifest " + PREFIX + "diagnostic-canonical-at-approach-b-manifest.json --case " + AID + "__crest__at_500ft__approach_to_crest__occluded_approach_b --output .runtime-work/c129731-canonical-at-approach-b-compat-v3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"),
+    ("canonical-at-approach-b-branch-processing.json", "SCENARIO_PIPELINE_OUTPUT_ROOT=" + OUTPUT_ROOT + " .venv-cpu/bin/python runtime.py process-saved --manifest " + PREFIX + "diagnostic-canonical-at-approach-b-manifest.json --case " + AID + "__crest__at_500ft__approach_to_crest__occluded_approach_b --attempt .runtime-work/c129731-canonical-at-approach-b-compat-v3 --output .runtime-work/c129731-canonical-at-approach-b-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"),
+    ("canonical-at-approach-b-proof.log", ".venv-cpu/bin/python " + PREFIX + "record_promoted_crest_case.py"),
     ("assignment-check.log", ".venv-cpu/bin/python worker_check.py --assignment " + AID + " --complete"),
 )
 
@@ -117,15 +123,18 @@ def main():
         "Six exact selected cases and all 18 risk-triggered fallbacks have current offline, positive/negative "
         "compatibility and recorded-only saved-processing proofs. Seven semantic stages, the six-case canonical "
         "execution manifest, six physical classifier/lifecycle receipts and six independent full-path diagnostic "
-        "delivery audit positive/negative proofs validate. Four CPU-tested diagnostic crest alternatives now "
-        "construct near-summit and approach-to-crest turn sites with either approach ray occluded; a separate "
-        "source-bound OpenDRIVE crest road plan verifies lane stations and grade geometry; a separate curved "
-        "OpenDRIVE road plan verifies six source-bound curve probe/direction site packets. The four short-probe "
-        "crest branch site plans now place the prop near face at the synthetic ray packet's 150 m first-occlusion "
-        "station and have current exact offline, positive/negative compatibility, recorded-only saved-processing "
-        "and independent comparison proofs. Strict delivery readiness remains open: source-grounded at/beyond "
-        "crest placement/direction alternatives, Native asset/site review and CARLA ingestion verification, "
-        "a completed judgment sweep, shared branch review/GPU queue/local integration proof, and full-batch "
+        "delivery audit positive/negative proofs validate. Twelve CPU-tested diagnostic crest alternatives "
+        "construct near-summit and approach-to-crest turn sites for all three 500-foot probes and both obscured "
+        "approach directions. Their planned prop near faces align with the synthetic ray stations at 150, 152.4 "
+        "and 160 m. All twelve have exact offline, positive/negative compatibility and recorded-only saved "
+        "processing proofs; each four-branch probe group has an independent source comparison and two negative "
+        "tampering proofs. A source-bound OpenDRIVE crest plan checks twelve lane/grade sites; a curved road "
+        "plan checks six curve probe/direction sites. Strict delivery readiness remains open: Native asset/site "
+        "review and CARLA ingestion verification, the remaining distinct exact case IDs and controlled "
+        "comparisons for the statute's approach-to/near-crest and either-direction alternatives (one "
+        "approach-to-crest/B case at 500 feet now has a separate ID and complete CPU path; its comparison is "
+        "still pending), any justified risk fallbacks, a completed judgment sweep, shared branch "
+        "review/GPU queue/local integration proof, and full-batch "
         "ready packages are unfinished worker CPU work. Synthetic pixels/rays prove no physical or legal acceptance.")
     path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
     plan_path = HERE / "case-plan.json"
