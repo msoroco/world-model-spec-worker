@@ -1,0 +1,49 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Both complete vehicle bodies enter one sourced crossing from different declared highways; original frame and time joins measure first entry and delta without a statutory simultaneity cutoff",
+      "source": "NRS 484B.250(2); inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "body_entry_timing",
+      "method": "measure_body_entry_timing",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "crossing_history.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Reciprocal approach headings and origins measure which vehicle is geometrically on the other driver's right",
+      "source": "NRS 484B.250(2); inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "approach_side",
+      "method": "measure_approach_side",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Reviewed entrance/device inventory identifies whether an official device controls the selected crossing and retains subsection-4 uncertainty",
+      "source": "NRS 484B.250(2); inputs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "device_exclusion_context",
+      "method": "measure_device_exclusion",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "crossing_history.jsonl"
+    ],
+    "error_contains": "Missing required source: crossing_history.jsonl"
+  }
+}

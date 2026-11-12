@@ -13,6 +13,9 @@ class RightLaterCaseTests(unittest.TestCase):
         files = {item['path']: item['content'] for item in construction['files']}
         config = json.loads(files['config.json'])
         self.assertEqual((config['ego_release_frame'], config['other_release_frame']), (20, 40))
+        contract = json.loads((CASE / 'measurement-contract.json').read_text())
+        self.assertEqual({row['disposition_index'] for row in contract['requirements']}, {0, 1, 2})
+        self.assertEqual(contract['negative']['remove'], ['crossing_history.jsonl'])
         namespace = {'__name__': 'right_later_control'}
         exec(compile(files['yield_controller.py'], 'yield_controller.py', 'exec'), namespace)
         hold = namespace['later_entry_hold']

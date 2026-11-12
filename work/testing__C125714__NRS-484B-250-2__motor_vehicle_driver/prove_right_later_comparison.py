@@ -9,7 +9,7 @@ from prove_right_timing_comparison import BASE, EARLIER, check as check_earlier,
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-LATER = REPO / '.runtime-work/c125714-later-compat-v2'
+LATER = REPO / '.runtime-work/c125714-later-compat-v3'
 FIXED = ('road_geometry.json', 'road.xodr', 'video_frames.jsonl', 'trace.jsonl',
          'overview.mkv', 'approach.mkv', 'reference_corner.mkv',
          'driver_reference.mkv')

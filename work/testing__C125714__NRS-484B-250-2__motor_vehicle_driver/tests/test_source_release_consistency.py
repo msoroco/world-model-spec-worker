@@ -7,7 +7,8 @@ ROOT = Path(__file__).resolve().parents[1]
 CASE_DIRS = (ROOT,
              ROOT / 'cases/source_verified_other_left_near_time',
              ROOT / 'cases/source_verified_other_right_earlier',
-             ROOT / 'cases/source_verified_other_right_later')
+             ROOT / 'cases/source_verified_other_right_later',
+             ROOT / 'cases/source_verified_opposite_straight')
 
 
 class SourceReleaseConsistencyTests(unittest.TestCase):

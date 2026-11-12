@@ -147,10 +147,23 @@ def build():
         proposals.write_text(dump(proposal))
     plan_path = ROOT / 'case-plan.json'
     plan = json.loads(plan_path.read_text())
-    for disposition in plan['requirement_dispositions']:
-        if CASE not in disposition['case_ids']:
+    for index, disposition in enumerate(plan['requirement_dispositions']):
+        if index in (0, 1, 2) and CASE not in disposition['case_ids']:
             disposition['case_ids'].append(CASE)
+        if index not in (0, 1, 2) and CASE in disposition['case_ids']:
+            disposition['case_ids'].remove(CASE)
     plan_path.write_text(dump(plan))
+    contract = copy.deepcopy(json.loads((ROOT / 'measurement-contract.json').read_text()))
+    contract['requirements'] = [row for row in contract['requirements']
+                                if row['disposition_index'] in (0, 1, 2)]
+    contract['negative'] = {'remove': ['crossing_history.jsonl'],
+                            'error_contains': 'Missing required source: crossing_history.jsonl'}
+    contract_path = OUT / 'measurement-contract.json'
+    contract_path.write_text(dump(contract))
+    manifest = json.loads(manifest_path.read_text())
+    next(entry for entry in manifest['cases'] if entry['case_id'] == CASE)['measurement_contract'] = str(
+        contract_path.relative_to(ROOT))
+    manifest_path.write_text(dump(manifest))
     print(json.dumps({'case_id': CASE, 'construction_sha256': sha(text),
                       'diagnostic_sha256': hashlib.sha256(diagnostic_path.read_bytes()).hexdigest()}))
 
