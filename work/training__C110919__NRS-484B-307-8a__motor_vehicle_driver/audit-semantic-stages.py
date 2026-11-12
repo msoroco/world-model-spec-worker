@@ -48,8 +48,8 @@ def audit(index, *, template_override=None):
             template["actor"] == source["actor"],
             "Frozen law or relevance source changed")
     require([row["case_id"] for row in cases["cases"]] ==
-            [row["case_id"] for row in plan["cases"]] and len(cases["cases"]) == 8 and
-            len(plan["comparisons"]) == 4, "Semantic eight-case inventory changed")
+            [row["case_id"] for row in plan["cases"]] and len(cases["cases"]) == 10 and
+            len(plan["comparisons"]) == 5, "Semantic ten-case inventory changed")
     comparison_vars = {difference for item in plan["comparisons"]
                        for difference in item["deliberate_differences"]}
     require(comparison_vars <= {row["name"] for row in bindings["variable_parameters"]} and
@@ -72,7 +72,9 @@ def audit(index, *, template_override=None):
         item = read(path)
         require(item["template_id"] == template["template_id"] and
                 item["observable_requirements"]["observables"] and
-                item["observable_requirements"]["limitations"],
+                item["observable_requirements"]["limitations"] and
+                item["observable_requirements"]["sweep_dimensions"] and
+                item["observable_requirements"]["landmarks"] == [],
                 "Judgment source or limits missing")
         phrases.add(item["phrase"])
     require(phrases == {"situated on the extreme right of the highway",
@@ -80,7 +82,7 @@ def audit(index, *, template_override=None):
     return {"format": "c110919-semantic-stage-source-audit-v1",
             "assignment_source_sha256": sha(SOURCE),
             "semantic_index_sha256": sha(INDEX), "stages_checked": 7,
-            "cases_checked": 8, "comparisons_checked": 4,
+            "cases_checked": 10, "comparisons_checked": 5,
             "paragraph_d_status": "unresolved_frozen_text",
             "canonical_selected": False}
 
@@ -114,9 +116,9 @@ def main():
     else:
         raise AssertionError("False paragraph (d) resolution was accepted")
     outcome["negative_rejections"] = negatives
-    path = HERE / "update031-semantic-stage-audit.json"
+    path = HERE / "update038-semantic-stage-audit.json"
     path.write_text(json.dumps(outcome, indent=2) + "\n")
-    print(json.dumps({"stages_checked": 7, "cases_checked": 8,
+    print(json.dumps({"stages_checked": 7, "cases_checked": 10,
                       "negative_rejections": len(negatives), "audit_sha256": sha(path),
                       "canonical_selected": False}))
 

@@ -1,4 +1,4 @@
-"""Source-grounded draft semantic stages for eight C110919 cases."""
+"""Source-grounded draft semantic stages for ten C110919 cases."""
 import hashlib
 import json
 from pathlib import Path
@@ -31,8 +31,8 @@ def main():
     if (law != "NRS-484B-307-8a" or assignment["cell_id"] != "C110919" or
             actor != "motor_vehicle_driver" or plan["source_law_text"] != quote or
             [row["case_id"] for row in cases["cases"]] != expected_cases or
-            len(expected_cases) != 8 or len(plan["comparisons"]) != 4):
-        raise ValueError("Frozen law, scope, eight cases or comparisons changed")
+            len(expected_cases) != 10 or len(plan["comparisons"]) != 5):
+        raise ValueError("Frozen law, scope, ten cases or comparisons changed")
     relevance = {"cell_id": "C110919", "actor": actor, "status": "draft",
                  "relevant_laws": [{"law_id": law, "quote": quote,
                                     "applies_to": [actor], "relevance_type": "direct",
@@ -82,7 +82,19 @@ def main():
                         "context_inputs": [{"name": "surveyed_C110919_intersection",
                                             "unit": "structured",
                                             "description": "Original map, official signal and road controls"}],
-                        "sweep_dimensions": [], "landmarks": [],
+                        "sweep_dimensions": ([
+                            {"name": "full_body_lateral_position_in_highway", "unit": "m",
+                             "description": "Observed ego full-body lateral extent relative to the surveyed approach lane and highway edges over approach, stop and turn."},
+                            {"name": "approach_lane_and_highway_width", "unit": "m",
+                             "description": "Original lane and highway boundary geometry at each sampled ego position."}]
+                            if slug == "extreme-right" else [
+                            {"name": "ego_entry_relative_to_signal_directed_pedestrian", "unit": "s",
+                             "description": "Observed timing of ego full-body entry relative to the pedestrian's signal-directed conflict occupancy."},
+                            {"name": "ego_entry_relative_to_signal_directed_traffic", "unit": "s",
+                             "description": "Observed timing of ego full-body entry relative to other traffic's signal-directed conflict occupancy."},
+                            {"name": "participant_path_and_speed", "unit": "m,s",
+                             "description": "Original pedestrian and other-traffic full-body paths and speed histories through the turn conflict."}]),
+                        "landmarks": [],
                         "recording_needs": [{"name": "four_source_cameras", "unit": "video",
                                              "description": "Original all-frame pixel review for signal, body and participant visibility"}],
                         "limitations": limitations}}
@@ -99,7 +111,8 @@ def main():
                     {"name": "halt_before_nearest_boundary", "kind": "subject_behavior", "range_or_domain": [True, False], "used_by_laws": [law]},
                     {"name": "halt_before_intersection_when_no_crosswalk_sign_or_marking", "kind": "subject_behavior", "range_or_domain": [True, False], "used_by_laws": [law]},
                     {"name": "remain_stopped_until_green", "kind": "subject_behavior", "range_or_domain": [True, False], "used_by_laws": [law]},
-                    {"name": "pedestrian_conflict_response", "kind": "controller", "range_or_domain": ["yield_wait", "yield_conflict_entry"], "used_by_laws": [law]}]}
+                    {"name": "pedestrian_conflict_response", "kind": "controller", "range_or_domain": ["yield_wait", "yield_conflict_entry"], "used_by_laws": [law]},
+                    {"name": "signal_directed_other_traffic_response", "kind": "controller", "range_or_domain": ["traffic_yield_wait", "traffic_conflict_entry"], "used_by_laws": [law]}]}
     bindings_ref = write("bindings.json", bindings)
     cases_ref = {"path": "proposals/cases.json", "sha256": sha(OUT / "cases.json")}
     index = {"format": "worker-semantic-delivery", "assignment_id": HERE.name,
@@ -109,7 +122,7 @@ def main():
                         "bindings": bindings_ref, "cases": cases_ref}}
     path = OUT / "semantic-index.json"
     path.write_text(json.dumps(index, indent=2) + "\n")
-    print(json.dumps({"cases": len(expected_cases), "comparisons": 4,
+    print(json.dumps({"cases": len(expected_cases), "comparisons": 5,
                       "stages": 7, "semantic_index_sha256": sha(path),
                       "canonical_selected": False}))
 
