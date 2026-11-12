@@ -140,3 +140,66 @@ For this 24-test checkpoint, pinned `runtime.py preflight` and the assignment
 `strict-gate.log` with `Preparation acceptance failed: partial/missing packages
 remain`. `result.json` stays partial and binds the current test-log hash. No
 frozen input, runtime, batch file or Git action was changed.
+
+## Isolated primary offline and audit checkpoint, 2026-11-12
+
+The current `cpu-tests.log` records **28 passing tests**. `audit_delivery.py`
+independently checks retained source hashes, complete original-frame joins,
+entry measurements and yield-sign identity. `audit_comparisons.py` checks fixed
+crossing/sign/actor/source conditions and declared side or entry-time
+differences for `yield_sign_relative_side` and `yield_sign_entry_timing`;
+`tests/test_audits.py` exercises positive and missing/changed-source cases
+against actual saved-finalizer outputs. These are software audits, and their
+delivery report explicitly says `delivery_ready: false`.
+
+`finalizer.py` has six top-level measurement methods, and
+`measurement-contract.json` binds them to the six selected requirement
+dispositions in `case-plan.json` for
+`testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_near_time`.
+Pinned measurement-contract validation returned six rows. `runner.py --check`
+now loads materialized `config.json` by default, as required by the runtime
+offline invocation.
+
+`build_primary_bundle.py` builds
+`cases/yield_ego_left_near_time/construction.json` and its isolated
+`candidate-manifest.json` from an explicitly synthetic five-document yield
+site packet. Rebuild with:
+
+```
+.venv-cpu/bin/python work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/build_primary_bundle.py
+```
+
+The exact offline command below passed (`primary-offline-v2.log` and
+`.runtime-work/c125763-yield-left-primary-offline-v2/offline.log`), with all
+four named cameras, one materialized CPU test and `carla_started: false`:
+
+```
+.venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/cases/yield_ego_left_near_time/candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_near_time --output .runtime-work/c125763-yield-left-primary-offline-v2
+```
+
+This is an isolated partial primary diagnostic. The synthetic packet does not
+establish an actual reviewed median opening, an official sign or physical
+camera visibility. This candidate manifest also lacks a diagnostic fixture
+recipe and does not yet satisfy the full execution-manifest and compatibility
+contract. Construct that recipe from retained source-shaped capture data,
+place an exact manifest at assignment root when all selected cases are ready,
+then run exact compatibility and recorded-only saved-processing proofs. Extend
+the construction/configuration to the other three selected cases, implement
+three distinct tested fallback constructions for each, complete canonical
+proposals and compare all declared pairs. These are unfinished worker CPU
+tasks, not an external blocker. No status is marked ready.
+
+Rechecked with the installed CPU environment:
+
+```
+MPLCONFIGDIR=/tmp/c125763-mpl .venv-cpu/bin/python runtime.py preflight
+.venv-cpu/bin/python worker_check.py --assignment testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete
+.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready
+```
+
+The first two exit 0 (`preflight.log`, `assignment-check.log`). The full gate
+exits 1 (`strict-gate.log`): `Preparation acceptance failed: partial/missing
+packages remain`. `worker_check.py --updates` reports version 0, no notices
+and no paused assignments. `result.json` remains partial and binds the
+current 28-test log hash. No frozen inputs, runtime, batch file or Git action
+was changed.

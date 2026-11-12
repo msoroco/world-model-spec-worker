@@ -71,6 +71,13 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(len(report['named_source_cameras']),4)
             self.assertFalse(report['carla_started'])
 
+    def test_materialized_offline_check_reads_local_config(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.packet(root)
+            completed=subprocess.run([sys.executable,str(ROOT/'runner.py'),'--check'],
+                                     cwd=root,text=True,capture_output=True,check=True)
+            self.assertTrue(json.loads(completed.stdout)['cpu_check_passed'])
+
     def test_stale_packet_and_wrong_case_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);config,packet,cfg,_=self.packet(root)

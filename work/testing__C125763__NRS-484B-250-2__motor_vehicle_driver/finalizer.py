@@ -43,6 +43,39 @@ def _controls(attempt,samples,relation):
             'legal_yield_judgment':'unresolved'}
 
 
+def source_crossing_identity(context):
+    return {key:context[key] for key in ('native_map_id','intersection_id',
+        'ego_highway_id','other_highway_id','same_statutory_crossing')}
+
+
+def complete_body_first_entry(report):
+    return {'first_body_entry':report['first_body_entry'],
+            'absolute_difference_s':report['absolute_entry_time_difference_s'],
+            'approximately_same_time_judgment':'unresolved'}
+
+
+def original_approach_cross_product(report,relation):
+    return {'other_spatially_right':report['other_spatially_right_of_ego_approach'],
+            'inapplicable_to_opposite_exception':relation=='opposite_directions',
+            'signed_lateral_offset_m':report['other_right_signed_cross_m']}
+
+
+def native_yield_sign_identity(context):
+    return {'native_yield_sign_id':context['native_yield_sign_id'],
+            'official_device_judgment':'unresolved',
+            'governance_judgment':'unresolved',
+            'subsection_4_judgment':'unresolved'}
+
+
+def original_approach_and_controller_intention(relation):
+    return {'opposite_approach':relation=='opposite_directions',
+            'exception_judgment':'unresolved'}
+
+
+def original_yield_slowdown_and_conflict_hold(control):
+    return control
+
+
 def finalize(attempt,output):
     from worker_exchange.native_output import physical_result,write_result
 
@@ -86,43 +119,32 @@ def finalize(attempt,output):
     sources={name:_sha(attempt/name) for name in required}
     measured={
       'crossing_identity':{'method':'source_crossing_identity',
-        'value':{'native_map_id':context['native_map_id'],
-                 'intersection_id':context['intersection_id'],
-                 'ego_highway_id':context['ego_highway_id'],
-                 'other_highway_id':context['other_highway_id'],
-                 'same_statutory_crossing':context['same_statutory_crossing']},
+        'value':source_crossing_identity(context),
         'sources':{'junction_context.json':sources['junction_context.json']}},
       'entry_timing':{'method':'complete_body_first_entry',
-        'value':{'first_body_entry':report['first_body_entry'],
-                 'absolute_difference_s':report['absolute_entry_time_difference_s'],
-                 'approximately_same_time_judgment':'unresolved'},
+        'value':complete_body_first_entry(report),
         'sources':{name:sources[name] for name in
                    ('crossing_history.jsonl','video_frames.jsonl','junction_context.json')}},
       'relative_right_side':{'method':'original_approach_cross_product',
-        'value':{'other_spatially_right':side,
-                 'inapplicable_to_opposite_exception':expected_relation=='opposite_directions',
-                 'signed_lateral_offset_m':report['other_right_signed_cross_m']},
+        'value':original_approach_cross_product(report,expected_relation),
         'sources':{name:sources[name] for name in
                    ('crossing_history.jsonl','junction_context.json')}},
       'device_qualification_context':{'method':'native_yield_sign_identity',
-        'value':{'native_yield_sign_id':context['native_yield_sign_id'],
-                 'official_device_judgment':'unresolved',
-                 'governance_judgment':'unresolved',
-                 'subsection_4_judgment':'unresolved'},
+        'value':native_yield_sign_identity(context),
         'sources':{name:sources[name] for name in
                    ('junction_context.json','crossing_history.jsonl')}},
       'opposite_left_turn_context':{'method':'original_approach_and_controller_intention',
-        'value':{'opposite_approach':expected_relation=='opposite_directions',
-                 'exception_judgment':'unresolved'},
+        'value':original_approach_and_controller_intention(expected_relation),
         'sources':{name:sources[name] for name in
                    ('junction_context.json','crossing_history.jsonl','controller_history.jsonl')}},
       'yield_observation':{'method':'original_yield_slowdown_and_conflict_hold',
-        'value':control,
+        'value':original_yield_slowdown_and_conflict_hold(control),
         'sources':{name:sources[name] for name in
                    ('controller_history.jsonl','crossing_history.jsonl','video_frames.jsonl')}}}
     channels=attempt/'channels';channels.mkdir()
     (channels/'entry_context.json').write_text(json.dumps(
-        {'case_id':case_id,'measurements':measured,'legal_conclusion':'unresolved'},
+        {'entry_context':{'case_id':case_id,'measurements':measured,
+                          'legal_conclusion':'unresolved'}},
         indent=2,allow_nan=False)+'\n')
     (channels/'entry_timing.jsonl').write_text(''.join(json.dumps(
         {'time_s':row['time_s'],'value':{'frame':row['frame'],
