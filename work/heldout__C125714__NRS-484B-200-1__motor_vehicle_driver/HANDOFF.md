@@ -207,3 +207,7 @@ The exact scoped strict command `.venv-cpu/bin/python worker_check.py --assignme
 ## Final scoped CPU preparation gate
 
 The complete assignment-scoped strict gate `.venv-cpu/bin/python worker_check.py --assignment heldout__C125714__NRS-484B-200-1__motor_vehicle_driver --complete --require-delivery-ready` passes (`scoped-strict-check.log` SHA-256 cd0ce8f9ce7d7ffd934f1adfe1f75fb1b0c6088bdab3c4260b887fe2724e6a7c). This supersedes every earlier partial checkpoint. `result.json` now declares `ready` / `delivery_prepared`; the returned package remains a CPU-prepared handoff, not a physical Native recording or a legal acceptance finding. Local adoption must verify actual selected-map median opening, motion, four original camera pixels, public closure authority, governing passing rule, official one-way designation and posting, applicable three-lane rule, and legal sufficiency of road width.
+
+### 2026-11-12 return file-count compaction
+
+Removed 29 redundant `probe-*-compatibility.log` stdout copies that were cited only by historical `result.json.tests` entries. The corresponding source-bound compatibility receipts, analysis logs, negative logs, exact construction hashes and manifest bindings remain. The redundant test entries were removed. The assignment-scoped strict gate still exits 0.

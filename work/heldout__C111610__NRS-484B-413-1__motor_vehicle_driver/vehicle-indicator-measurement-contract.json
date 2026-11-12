@@ -1,0 +1,33 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__other_vehicle_signal_before_turn",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "A driver shall not turn a vehicle from a direct course upon a highway unless and until such movement can be made with reasonable safety, and then only after giving a clearly audible signal by sounding the horn if any pedestrian may be affected by such movement and after giving an appropriate signal if any other vehicle may be affected by such movement.",
+      "source": "inputs/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/assignment.json",
+      "output_key": "turn_signal_observation",
+      "method": "measure_turn_indicator",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "ego_turn_motion.jsonl",
+        "ego_signal_audio.jsonl",
+        "affected_participants.json",
+        "participant_bodies.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "ego_signal_audio.jsonl"
+    ],
+    "error_contains": "Missing required source: ego_signal_audio.jsonl"
+  }
+}
